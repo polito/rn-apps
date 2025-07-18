@@ -1,0 +1,23 @@
+import { PropsWithChildren } from 'react';
+import { TextProps } from 'react-native';
+import { MixedStyleDeclaration } from 'react-native-render-html';
+
+import { linkUrls, replaceImgWithAnchorTags } from '../../utils/html';
+import { HtmlView } from './HtmlView';
+import React from 'react';
+
+type Props = {
+  baseStyle?: MixedStyleDeclaration;
+} & PropsWithChildren<TextProps>;
+
+export const TextWithLinks = ({ baseStyle, children, style }: Props) => {
+  if (!children || typeof children !== 'string') return null;
+  const html = linkUrls(replaceImgWithAnchorTags(children));
+  return (
+    <HtmlView
+      source={{ html }}
+      baseStyle={{ padding: 0, ...baseStyle }}
+      defaultTextProps={{ style: style }}
+    />
+  );
+};

@@ -1,0 +1,49 @@
+import { memo, useCallback } from 'react';
+import { NativeSyntheticEvent } from 'react-native';
+
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { useBottomSheetInternal } from '@gorhom/bottom-sheet';
+import {
+  TranslucentTextField,
+  TranslucentTextFieldProps
+} from './TranslucentTextField'
+import React from 'react';
+
+const BottomSheetTextFieldComponent = ({
+  onFocus,
+  onBlur,
+  ...rest
+}: TranslucentTextFieldProps) => {
+  const { shouldHandleKeyboardEvents } = useBottomSheetInternal();
+
+  const handleOnFocus = useCallback(
+    (args: NativeSyntheticEvent<any>) => {
+      shouldHandleKeyboardEvents.value = true;
+      if (onFocus) {
+        onFocus(args);
+      }
+    },
+    [onFocus, shouldHandleKeyboardEvents],
+  );
+  const handleOnBlur = useCallback(
+    (args: NativeSyntheticEvent<any>) => {
+      shouldHandleKeyboardEvents.value = false;
+      if (onBlur) {
+        onBlur(args);
+      }
+    },
+    [onBlur, shouldHandleKeyboardEvents],
+  );
+
+  return (
+    <TranslucentTextField
+      autoCorrect={false}
+      leadingIcon={faSearch}
+      onFocus={handleOnFocus}
+      onBlur={handleOnBlur}
+      {...rest}
+    />
+  );
+};
+
+export const BottomSheetTextField = memo(BottomSheetTextFieldComponent);

@@ -1,0 +1,1071 @@
+{
+  "agendaScreen": {
+    "backToToday": "Back to today",
+    "dailyLayout": "Daily layout",
+    "emptyDay": "You have no events today",
+    "emptyWeek": "You have no events during this week",
+    "refresh": "Refresh",
+    "room": "Room {{roomName}}",
+    "rooms": "Rooms {{roomNames}}",
+    "selectDate": "Select date",
+    "title": "Agenda",
+    "weeklyLayout": "Weekly layout"
+  },
+  "bookingScreen": {
+    "barCodeTitle": "Barcode",
+    "bookingStatus": {
+      "available": "Available",
+      "booked": "Booked",
+      "full": "Full",
+      "notAvailable": "Not available"
+    },
+    "cancelBooking": "Cancel booking",
+    "cancelBookingText": "Are you sure you want to cancel this booking?",
+    "cancelFeedback": "Booking canceled",
+    "checkIn": "Check-in",
+    "checkInFeedback": "Check in done!",
+    "checkLocationErrorFeedback": "You are not in the right place to check in the booking",
+    "locationType": {
+      "place": "Place",
+      "virtualPlace": "Link virtual place"
+    }
+  },
+  "bookingSeatScreen": {
+    "confirm": "Confirm booking",
+    "deadlineExpired": "We're sorry,\nthe deadline to book for this round has passed",
+    "noSeatSelected": "No seat",
+    "noSeatsAvailable": "We're sorry,\nthere are no places available",
+    "seatStatus": {
+      "available": "Available",
+      "booked": "Booked",
+      "notAvailable": "Non bookable"
+    },
+    "slotBookableFrom": "This slot will be bookable starting from ",
+    "title": "Select a seat",
+    "zoomInToEnableSeatSelection": "Zoom in to enable seat selection"
+  },
+  "bookingsScreen": {
+    "emptyState": "You have no active bookings",
+    "newBooking": "New booking",
+    "sectionTitle": "Active",
+    "title": "Bookings"
+  },
+  "colors": {
+    "amber": "Amber",
+    "blue": "Blue",
+    "cyan": "Cyan",
+    "darkBlue": "Dark blue",
+    "darkOrange": "Dark orange",
+    "emerald": "Emerald",
+    "fuchsia": "Fuchsia",
+    "green": "Green",
+    "indigo": "Indigo",
+    "lightBlue": "Light blue",
+    "lime": "Lime",
+    "orange": "Orange",
+    "pink": "Pink",
+    "purple": "Purple",
+    "red": "Red",
+    "rose": "Rose",
+    "teal": "Teal",
+    "violet": "Violet",
+    "yellow": "Yellow"
+  },
+  "common": {
+    "actionPotentiallyNotUndoable": "This action may not be undoable",
+    "activeStatus": {
+      "false": "Non active",
+      "true": "Active"
+    },
+    "agenda": "Agenda",
+    "agent": "Agent",
+    "all": "All",
+    "appFeedback": "App Feedback",
+    "areYouSure?": "Are you sure?",
+    "back": "Back",
+    "booking": "Booking",
+    "booking_plural": "Bookings",
+    "building": "Building",
+    "cache": "Cache",
+    "cacheMiss": "Come back online to view",
+    "camera": "Camera",
+    "campus": "Campus",
+    "cancel": "Cancel",
+    "capacity": "Capacity",
+    "career": "Career",
+    "cfu": "CFU",
+    "classroomsNotSpecified": "Classroom not specified",
+    "cleanCourseFiles": "Remove all course files",
+    "close": "Close",
+    "color": "Color",
+    "comingSoon": "Coming soon",
+    "confirm": "Confirm",
+    "contact": "Contact",
+    "course": "Course",
+    "course_plural": "Courses",
+    "createdAt": "Created at",
+    "credits": "Credits",
+    "creditsWithUnit": "{{credits}} CFU",
+    "creditsWithoutUnit": "{{credits}}",
+    "dateAndHours": "Date and hour",
+    "dateToBeDefined": "Date to be defined",
+    "dateToBeDefinedShort": "To be defined",
+    "day": "Day",
+    "deadline": "Deadline",
+    "deadline_plural": "Deadlines",
+    "delete": "Delete",
+    "department": "Department",
+    "desk": "Desk",
+    "done": "Done",
+    "doubleClickToSeeLinks": "Tap twice to see links",
+    "doubleTapToActive": "Tap twice to activate",
+    "doubleTapToDeactivate": "Tap twice to deactivate",
+    "download": "Download",
+    "downloadError": "Something went wrong with the download",
+    "downloadStatus": {
+      "false": "Not downloaded",
+      "true": "Downloaded"
+    },
+    "duration": "Duration",
+    "earnedCredits": "Earned credits",
+    "ects": "CFU",
+    "elementCount": "Element {{count}} of {{total}}",
+    "email": "Email",
+    "en": "English",
+    "enableLocationPermissionFeedback": "Enable location permission to complete the operation",
+    "enableLocationServiceFeedback": "Enable location service to complete the operation",
+    "endRefresh": "Refresh completed",
+    "error": "Error",
+    "event": "Event",
+    "event_plural": "Events",
+    "exam": "Exam",
+    "examCall": "Exam call",
+    "examCall_plural": "Exam calls",
+    "examStatus": {
+      "available": "Available",
+      "booked": "Booked",
+      "requestAccepted": "Booked",
+      "requestRejected": "Request rejected",
+      "requestable": "Requestable",
+      "requested": "Requested",
+      "unavailable": "Unavailable"
+    },
+    "externalLink": "External link. By pressing the link you will be redirected to an external browser",
+    "facilities": "Facilities",
+    "faculty": "Faculty",
+    "file": "File",
+    "file_plural": "Files",
+    "floor": "Floor",
+    "follow": "Follow",
+    "free": "Free",
+    "grade": "Grade",
+    "hiddenEvents": "Hidden events",
+    "hide": "Hide",
+    "hideInAgenda": "Hide in Agenda",
+    "hour": "Hour",
+    "hours": "Hour",
+    "icon": "Icon",
+    "image": "Image",
+    "inYourAgenda": "in your agenda",
+    "it": "Italian",
+    "language": "Language",
+    "lecture": "Lecture",
+    "lecture_plural": "Lectures",
+    "legend": "Legend",
+    "loading": "Loading",
+    "location": "Location",
+    "logout": "Logout",
+    "mightTakeAWhile": "This might take a while",
+    "minutes": "Minutes",
+    "navigate": "Navigate",
+    "newItems": "New item",
+    "newItems_plural": "New items",
+    "next": "Next",
+    "noInternet": "You are offline, some features may not be available",
+    "noValue": "No value",
+    "notFound": "Not found",
+    "notes": "Notes",
+    "notice": "Notice",
+    "notice_plural": "Notices",
+    "notifications": "Notifications",
+    "now": "Now",
+    "objectives": "Objectives",
+    "of": "Of",
+    "ok": "Ok",
+    "open": "Open",
+    "openSettings": "Open settings",
+    "openSource": "Open Source",
+    "openedStatus": {
+      "false": "Closed",
+      "true": "Open"
+    },
+    "openedStatusAction": {
+      "false": "Double tap to open",
+      "true": "Double tap to close"
+    },
+    "options": "Options",
+    "other": "Other",
+    "pause": "Pause",
+    "period": "Period",
+    "phone": "Phone",
+    "phoneContacts": "Phone contacts",
+    "play": "Play",
+    "preferences": "Preferences",
+    "profilePic": "Profile picture",
+    "recentlyViewed": "Recently viewed",
+    "refresh": "Refresh",
+    "remaining": "{{value}} remaining",
+    "remove": "Remove",
+    "reset": "Reset",
+    "retract": "Retract",
+    "roleCollaborator": "Collaborator",
+    "roleHolder": "Holder",
+    "search": "Search",
+    "seat": "Seat",
+    "selectAnOption": "Please select an option",
+    "services": "Services",
+    "show": "Show",
+    "shortUsername": "ID",
+    "somethingWentWrong": "Something went wrong, try again later",
+    "startRefresh": "Loading",
+    "status": "Status",
+    "stop": "Stop",
+    "stopFollowing": "Stop following",
+    "structure": "Structure",
+    "switchCareerLabel": "Tap to switch career",
+    "teacher": "Teacher",
+    "theme": "Theme",
+    "ticket_plural": "Tickets",
+    "time": "Time",
+    "timeToBeDefined": "Time to be defined",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "transcript": "Transcript",
+    "unnamedFile": "Unnamed file",
+    "untitled": "Untitled",
+    "updatedAt": "Updated at",
+    "upload": "Upload",
+    "username": "Student ID",
+    "videoLecture": "Video lecture",
+    "videoLecture_plural": "Video lecture",
+    "virtualClassroom": "Virtual classroom",
+    "virtualClassroom_plural": "Virtual classrooms",
+    "visualization": "Visualization",
+    "year": "year",
+    "yesterday": "Yesterday"
+  },
+  "contactsScreen": {
+    "cancelRecentSearch": "Remove",
+    "cancelRecentSearchText": "Remove recent search",
+    "clearSearch": "Clear search",
+    "clearSearches": "Clear searches",
+    "emptyState": "No people found",
+    "recentSearch": "Recent search",
+    "recentSearches": "Recent searches",
+    "search": "Search people",
+    "title": "Contacts"
+  },
+  "courseAssignmentPdfCreationScreen": {
+    "ctaAddPage": "Add",
+    "ctaConfirm": "Create PDF",
+    "ctaDeletePage": "Delete",
+    "failureFeedback": "PDF creation failed: {{reason}}",
+    "title": "Create PDF"
+  },
+  "courseAssignmentUploadConfirmationScreen": {
+    "ctaUpload": "Upload",
+    "descriptionLabel": "Assignment description",
+    "emptyDescriptionError": "Please insert a description",
+    "previewSectionTitle": "File preview",
+    "successFeedback": "Assignment uploaded successfully",
+    "title": "Assignment preview"
+  },
+  "courseAssignmentUploadScreen": {
+    "backTitle": "Pick file",
+    "ctaCreatePDF": "Scan a document",
+    "ctaCreatePDFSubtitle": "Create a pdf file",
+    "ctaUploadFile": "Pick a file",
+    "ctaUploadFileSubtitle": "On your phone or on the cloud",
+    "title": "Upload assignment"
+  },
+  "courseAssignmentsTab": {
+    "emptyState": "There are no assignments here",
+    "title": "Assignments"
+  },
+  "courseDirectoryListItem": {
+    "subtitle": "{{count}} file",
+    "subtitle_plural": "{{count}} files"
+  },
+  "courseDirectoryScreen": {
+    "clearSearch": "Clear search",
+    "emptyRootFolder": "There are no files",
+    "emptyFolder": "The folder is empty",
+    "noResult": "No results found",
+    "navigateRecentFiles": "View recent",
+    "search": "Search"
+  },
+  "courseFileListItem": {
+    "openFileError": "Cannot open the file.",
+    "reDownloadFile": "Redownload file",
+    "fileSavedDocumentsPath": "File saved in the documents folder",
+    "fileSaved": "File saved in {{cachedFilePath}}"
+  },
+  "courseFilesTab": {
+    "browseFiles": "Browse files",
+    "empty": "There are no files",
+    "navigateFolders": "Navigate folders",
+    "recentSectionTitle": "Recent files",
+    "title": "Files"
+  },
+  "courseGuideScreen": {
+    "title": "Course guide"
+  },
+  "courseHideEventScreen": {
+    "button": "Show in Agenda",
+    "selectItems": "Select all"
+  },
+  "courseIconPickerScreen": {
+    "title": "Pick an icon"
+  },
+  "courseInfoTab": {
+    "agendaSectionEmptyState": "This course has no entries in the agenda",
+    "agendaSectionTitle": "This course in the agenda",
+    "creditsLabel": "Credits",
+    "linkDefaultTitle": "Link to",
+    "linksSectionEmptyState": "There are no links related to the course",
+    "linksSectionTitle": "Useful links",
+    "moreSectionTitle": "More",
+    "staffSectionTitle": "Staff",
+    "teacherLabel": "Teacher",
+    "title": "Info",
+    "yearLabel": "Year"
+  },
+  "courseLecturesTab": {
+    "emptyState": "There are no lectures here",
+    "title": "Lectures",
+    "virtualClassroomsSectionTitle": "Virtual classrooms"
+  },
+  "courseListItem": {
+    "courseWithoutDetailsAlertTitle": "This course doesn't have any details",
+    "extra": "Extra APSP",
+    "overbooking": "Overbooking"
+  },
+  "courseNoticesTab": {
+    "emptyState": "There are no notices here",
+    "title": "Notices"
+  },
+  "coursePreferencesScreen": {
+    "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
+    "cleanCacheFeedback": "Files were successfully deleted",
+    "cleanCourseFiles": "Clean course files",
+    "cleanCourseFilesSubtitle": "This will free approximately {{size}} of memory",
+    "filesSubtitle": "New material available",
+    "hideInExtracts": "Hide in extracts",
+    "lecturesSubtitle": "New lectures available",
+    "noticesSubtitle": "Notices sent by the professor",
+    "showInExtracts": "Show in extracts",
+    "showInExtractsSubtitle": "In home screen and agenda"
+  },
+  "courseScreen": {
+    "fileDownloadFailed": "The download failed. Please try again later."
+  },
+  "courseVirtualClassroomScreen": {
+    "liveCta": "Join live streaming",
+    "title": "Virtual classroom"
+  },
+  "coursesScreen": {
+    "emptyState": "No courses available",
+    "otherCoursesSectionTitle": "Other courses",
+    "title": "Courses",
+    "total": "There are {{total}} courses"
+  },
+  "cpdSurveysScreen": {
+    "emptyState": "There are no surveys",
+    "total": "There are {{ total }} surveys"
+  },
+  "createTicketScreen": {
+    "insert": "Insert ticket",
+    "messageLabel": "Describe your problem and, if you want, attach a file",
+    "sendTicket": "Send ticket",
+    "subject": "Subject",
+    "subjectLabel": "Enter the subject of the ticket",
+    "subtitle": "Enter your request",
+    "subtopicDescription": "Select the subtopic",
+    "subtopicDropdownLabel": "Subtopic",
+    "subtopicDropdownPlaceholder": "Pick a subtopic",
+    "title": "Create ticket",
+    "topicDescription": "Select topic",
+    "topicDropdownLabel": "Topic",
+    "topicDropdownPlaceholder": "Pick a topic"
+  },
+  "degreeCourseScreen": {
+    "classroomExercise": "Classroom excercise",
+    "examMode": "Exam mode",
+    "hours": "{{hours}} hours",
+    "labExercise": "Lab excercise",
+    "lecture": "Lecture",
+    "noStaff": "No teacher is associated to this course",
+    "period": "Period",
+    "staff": "Staff",
+    "title": "Course",
+    "tutoring": "Tutoring"
+  },
+  "degreeScreen": {
+    "cohort": "Coorte",
+    "degreeClass": "Degree code",
+    "info": "Info",
+    "jobOpportunities": "Job opportunities",
+    "title": "Degree",
+    "tracks": "Tracks"
+  },
+  "escRequestScreen": {
+    "title": "European Student Card",
+    "firstTitle": "What is the European Student Card?",
+    "firstSection": "The ESC (European Student Card) is a digital identification that allows university students across Europe to access services and benefits offered by educational institutions and student organizations in a simple and secure way.",
+    "secondTitle": "Why should I use it?",
+    "secondSection": "Using the European Student Card offers numerous advantages, including:",
+    "secondSectionList": {
+      "first": "Simplified access to services from partner universities across Europe.",
+      "second": "Reduced need for paper documentation.",
+      "third": "Easier participation in international mobility programs, such as Erasmus+.",
+      "fourth": "Access to discounts and promotions reserved for students in various European countries."
+    },
+    "cardRequest": {
+      "firstSectionNormalText":"To activate your Card for each of your careers, we need ",
+      "sectionBoldText":"authorization to transmit the following data ",
+      "secondSectionNormalText":"to the relevant EU authority:",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "id": "Student ID number",
+      "mail": "Institutional email",
+      "studyProgram": "Study program"
+    },
+    "authorize": "Authorize",
+    "escModalInfo": "All card management and revocation settings can be found within the Education Portal"
+  },
+  "escModalInfo": {
+    "revoke": "Revoke authorisation",
+    "revokeConfirm": "Revoking the authorization to keep your data in the ESC-Router will deactivate this card and any other cards linked to your academic careers, if any",
+    "text": "To obtain your European Student Card (ESC), you authorized the transmission of your data through ESC_router. You can revoke this authorization at any time.",
+    "title":"ESC Data Settings"
+  },
+  "europeanCardScreen": {
+    "title": "THE EUROPEAN STUDENT CARD",
+    "expiredTitle": "Your Card has expired",
+    "expiredText": "Student not enrolled in the current school year",
+    "inactive": "Your Card is suspended"
+  },
+  "eventPlacesScreen": {
+    "title": "Event locations"
+  },
+  "examCpdModalContent": {
+    "message": " Before proceeding with booking this exam, you must complete the following surveys:",
+    "title": "CPD survey"
+  },
+  "examRequestScreen": {
+    "error": "Fill in the text field before proceeding with the request",
+    "placeholder": "Explain why you need to take the exam early",
+    "title": "You can request the course holder to take the exam without having attended the classes"
+  },
+  "examRescheduleScreen": {
+    "button": "Send request",
+    "ctaRescheduleSuccess": "Request sent",
+    "ctaRequest": "Request exam call date change",
+    "error": "Fill in the text field before proceeding with the request.",
+    "requestDetails": "Enter the dates to be suggested here",
+    "requestDetailsTitle": "What dates would you recommend to the coordinator?",
+    "responsibilityDeclaration": "I hereby declare that I take responsibility for the following.",
+    "requestReason": "Enter your reasons for requesting a change of exam call date here",
+    "requestReasonTitle": "You can ask the college coordinator if you can change the date of your exam call",
+    "screenTitle": "Exam call date change"
+  },
+  "examScreen": {
+    "bookedCount": "Booked students",
+    "bookingEndsAt": "Booking ends on",
+    "ctaBook": "Book exam",
+    "ctaBookSuccess": "Exam booked",
+    "ctaCancel": "Cancel booking",
+    "ctaCancelSuccess": "Booking cancelled",
+    "ctaRequest": "Request",
+    "location": "Location",
+    "noClassroom": "No place specified for this exam call",
+    "noLocation": "Room to be defined",
+    "notAvailable": "Booking not available",
+    "notes": "Notes",
+    "title": "Exam call",
+    "noBookedCount": "Data not available"
+  },
+  "examsScreen": {
+    "emptyState": "There are no open exam calls",
+    "title": "Exam calls",
+    "total": "There are {{ total }} exam calls"
+  },
+  "freeRoomsScreen": {
+    "noFreeRooms": "No free rooms found",
+    "title": "Free rooms",
+    "maxViewLimitMessage": "Maximum display limit reached "
+  },
+  "grades": {
+    "absent": "Abs",
+    "fail": "Fail",
+    "pass": "Pass"
+  },
+  "guideScreen": {
+    "copiedFieldFeedback": "{{field}} copied",
+    "title": "Guide"
+  },
+  "guidesScreen": {
+    "title": "Guides",
+    "total": "There are {{ total }} guides"
+  },
+  "jobOfferScreen": {
+    "application": "Application",
+    "companyMission": "Mission",
+    "contactInformation": "For information contact",
+    "contractType": "Contract type: ",
+    "description": "Description",
+    "email": "E-mail: ",
+    "endsAtDate": "Expiration: ",
+    "freePositions": "Free positions: ",
+    "location": "Company location: ",
+    "requirements": "Requirements",
+    "salary": "Salary: ",
+    "title": "Job offers",
+    "url": "Website: "
+  },
+  "jobOffersScreen": {
+    "endsAtDate": "expiration: ",
+    "title": "Job offers"
+  },
+  "josOffersScreen": {
+    "title": "Offers screen"
+  },
+  "lectureScreen": {
+    "courseFilesCta": "Go to course files",
+    "hideEventAlertTitle": "Hide event",
+    "hideEventAlertMessage": " You are hiding the {{ day }} {{ title }} event from {{ fromTime }} to {{ toTime }}",
+    "hideEventButtonTitle": "Hide from the agenda"
+  },
+  "libraryScreen": {
+    "title": "Library"
+  },
+  "loginScreen": {
+    "authnError": "Authentication error",
+    "authnErrorDescription": "The credentials you provided may be wrong.",
+    "cta": "Login",
+    "forgotYourPassword": "Forgot your password?",
+    "hidePassword": "Hide password",
+    "passwordLabel": "Password",
+    "passwordLabelAccessibility": "Enter your password here",
+    "showPassword": "Show password",
+    "title": "Log in with your polito.it credentials",
+    "unsupportedUserType": "User type not supported: only students can log in to PoliTO Students.",
+    "usernameLabel": "Student ID",
+    "usernameLabelAccessibility": "Enter your username here",
+    "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received."
+  },
+  "messageScreen": {
+    "backTitle": "Archive",
+    "sender": "Sender",
+    "title": "Message"
+  },
+  "messagesScreen": {
+    "empty": "You have no messages",
+    "end": "End",
+    "readNext": "Read next",
+    "sentAt": "Sent at",
+    "title": "Messages archive",
+    "unreadMessages": "Message ({{read}} of {{total}})",
+    "youHaveUnreadMessages": "You have {{total}} unread messages"
+  },
+  "messagingView": {
+    "pickFile": "Pick file",
+    "pickFileHint": "From your device or from the cloud",
+    "pickPhoto": "Pick image",
+    "pickPhotoHint": "From your library",
+    "takePhoto": "Take photo",
+    "takePhotoHint": "Take one or more photos and generate a file"
+  },
+  "newsScreen": {
+    "createdAt": "Published on ",
+    "eventStartTime": "Starts on ",
+    "information": "Information",
+    "logo": "Logo",
+    "title": "News & Events"
+  },
+  "notifications": {
+    "events": "Events",
+    "important": "Important",
+    "reservationPresence": "Reservations"
+  },
+  "notificationsScreen": {
+    "title": "Notifications",
+    "perCourseTitle": "Courses",
+    "globalTitle": "Global",
+    "globalSubtitle": "Important notifications are always active"
+  },
+  "offeringBachelorScreen": {
+    "title": "Bachelor degree"
+  },
+  "offeringMasterScreen": {
+    "title": "Master degree"
+  },
+  "offeringScreen": {
+    "bachelor": "Bachelor degree",
+    "emptyMessage": "No course available",
+    "master": "Master degree",
+    "title": "Offering"
+  },
+  "onboardingScreen": {
+    "steps": {
+      "0": {
+        "content": "You can customize what you see and make your agenda more organized by choosing the courses to view, the colors and the icons.",
+        "title": "What has changed?"
+      },
+      "1": {
+        "content": "You will find your way around the Polytechnic more easily thanks to the new system of maps and filters to find what you are looking for.",
+        "title": "What has changed?"
+      },
+      "2": {
+        "content": "Your comments help us improve: you can send feedback on the new app by opening a ticket that will go directly to the development team.",
+        "title": "How to give feedback?"
+      },
+      "3": {
+        "content": "To have access to your Polito email, follow the “Configure your email” guide in the new “Guides” section.",
+        "title": "How to configure email?"
+      }
+    },
+    "title": "What's new"
+  },
+  "personScreen": {
+    "call": "Call",
+    "contacts": "Contacts",
+    "coursesLabel": "List of courses offered by the teacher",
+    "department": "Department",
+    "moreInfo": "More information",
+    "role": "Role",
+    "sentEmail": "Send e-mail",
+    "totalCourses": "There are {{total}} courses"
+  },
+  "placeCategories": {
+    "classrooms": "Classrooms",
+    "libraries": "Libraries",
+    "studyRooms": "Study rooms"
+  },
+  "placeScreen": {
+    "capacity": "{{count}} seat",
+    "capacity_plural": "{{count}} seats",
+    "placeNotFound": "Place not found",
+    "title": "Place",
+    "placeDetail" : "Place details"
+  },
+  "placesScreen": {
+    "changeFloor": "Change floor",
+    "goToMyPosition": "Go to my position",
+    "multipleFloors": "Results are on multiple floors",
+    "noCategoriesFound": "No categories found",
+    "noPlacesFound": "No places found",
+    "searchCategories": "Search categories",
+    "title": "Places",
+    "viewWholeCampus": "View the whole campus"
+  },
+  "placesSearchScreen": {
+    "searchPlaceholder": "Try with \"Room 1\""
+  },
+  "profileScreen": {
+    "careerStatus": "Career status:",
+    "careerStatusEnum": {
+      "active": "Active",
+      "cancelled": "Cancelled",
+      "career_closed": "Closed",
+      "closed": "Closed",
+      "graduated": "Graduated"
+    },
+    "course": "Course",
+    "enrollmentYear": "Enrollment year {{- enrollmentYear}}",
+    "notifications": "Notifications archive",
+    "settings": "Settings",
+    "smartCard": "Smartcard",
+    "title": "Profile",
+    "trainingOffer": "Training offer"
+  },
+  "provisionalGradeScreen": {
+    "acceptGradeConfirmMessage": "By requesting immediate registration, the evaluation will be recorded in your transcript and you will no longer be able to change your decision",
+    "acceptGradeCta": "Request immediate registration",
+    "acceptGradeFeedback": "The evaluation has been recorded, it will appear in the transcript",
+    "contactProfessorCta": "Contact the teacher",
+    "rejectGradeConfirmMessage": "By rejecting this evaluation you will no longer be able to change your decision",
+    "rejectGradeCta": "Reject the evaluation by: <br><b>{{date}}</b>",
+    "rejectGradeFeedback": "Evaluation rejected, it will be recorded in the next few hours",
+    "title": "Evaluation"
+  },
+  "recordedGradeScreen": {
+    "additionalPoint": "Additional Scores",
+    "recordedGradeTitle": "Recorded grade",
+    "staff": "Staff",
+    "teacher": "Holder",
+    "textModal": "Having taken the exam by the first useful session, you are awarded an additional score of 0.5 out of a maximum of 4.\nYou can consult your total on-time points on career",
+    "titleOnTimePoint": "On-time Exam points",
+    "ctaButtonModal": "Access your career"
+  },
+  "sectionHeader": {
+    "cta": "See all",
+    "ctaMoreSuffix": "({{- count}} more)"
+  },
+  "servicesScreen": {
+    "subTitleOne": "Information services",
+    "subTitleTwo": "Operational services",
+    "title": "Services"
+  },
+  "settingsScreen": {
+    "appVersion": "Version {{version}}",
+    "cleanCacheConfirmMessage": "You will need to download files again to be able to open them",
+    "openLanguageMenu": "Tap twice to open the language selection menu",
+    "openThemeMenu": "Tap twice to open the theme selection menu",
+    "title": "Settings"
+  },
+  "surveysScreen": {
+    "compiledEmptyState": "There are no compiled surveys",
+    "compiledTitle": "Compiled surveys",
+    "title": "Surveys",
+    "toBeCompiledEmptyState": "There are no surveys to be compiled",
+    "toBeCompiledTitle": "Surveys to be compiled"
+  },
+  "teachingScreen": {
+    "allCoursesHidden": "You've hidden all your courses",
+    "cpdTitle": "CPD Surveys",
+    "title": "Teaching"
+  },
+  "theme": {
+    "dark": "Dark",
+    "light": "Light",
+    "system": "System"
+  },
+  "ticketFaqScreen": {
+    "headerBackTitle": "New",
+    "noResultFound": "Didn't find what you are looking for?",
+    "title": "FAQ",
+    "writeTicket": "Open ticket"
+  },
+  "ticketFaqsScreen": {
+    "emptyState": "No results found",
+    "findFAQ": "Search the FAQs",
+    "findFAQSubtitle": "Before posting a ticket, look for an answer in the FAQs.",
+    "noResultFound": "Didn't find what you were looking for?",
+    "search": "Search (type at least 3 characters)",
+    "searchMinLengthHint": "Please, insert at least 3 characters.",
+    "title": "FAQs",
+    "writeTicket": "Write ticket"
+  },
+  "ticketScreen": {
+    "headerBackTitle": "Tickets",
+    "new": "New ticket",
+    "pickFileTitle": "You can include one attachment per message",
+    "reply": "Reply",
+    "sendError": "There was an error while sending the message. Try again.",
+    "ticketNumber": "Ticket number",
+    "title": "Ticket",
+    "youCanReopenTheTicket": "You can reopen the ticket at any time by submitting a reply"
+  },
+  "tickets": {
+    "close": "Close ticket",
+    "closeTip": "Are you sure you want to close this ticket?",
+    "menuAction": "Ticket actions",
+    "status": {
+      "closed": "Closed",
+      "new": "Open",
+      "pending": "Pending"
+    }
+  },
+  "ticketsScreen": {
+    "addNew": "Add ticket",
+    "closed": "Closed tickets",
+    "closedEmptyState": "There are no closed tickets",
+    "openEmptyState": "There are no open tickets",
+    "opened": "Open tickets",
+    "title": "Ticket"
+  },
+  "transcriptGradeScreen": {
+    "title": "Evaluation"
+  },
+  "transcriptGradesScreen": {
+    "autoRegistration": "Automatic registration in:",
+    "emptyState": "You haven't taken any exams",
+    "expiredCountdown": "Expired",
+    "provisionalEmptyState": "There are no provisional grades",
+    "provisionalTitle": "Provisional",
+    "recordedTitle": "Recorded",
+    "rejectedSubtitle": "Rejected on {{-date}} at {{-time}}",
+    "rejectionCountdown": "Rejectable by: <b>{{hours}}</b>",
+    "title": "Grades",
+    "total": "There are {{total}} grades"
+  },
+  "transcriptMetricsScreen": {
+    "acquiredCreditsLabel": "Acquired credits",
+    "attendedCreditsLabel": "Attended credits",
+    "averages": "Averages",
+    "averagesAndGrades": "Averages and grades",
+    "averageLabel": "Average grade for admission to the Final Examination",
+    "finalAverageLabelDescription":{
+      "description":  "It is the average grade, weighted according to the credits relating to each exam with a grade*, adjusted for the {{-excludedCreditsNumber}} worst credits",
+      "formula": "(sum (grade * credits) / sum of credits) * (110/30) ,\nexcluding the {{-excludedCreditsNumber}} worst credits"
+    },
+    "laude": "*Honours does not count toward the calculation",
+    "masterAdmissionAverage": "Master admission average grade",
+    "masterAdmissionAverageLabelDescription":{
+      "description":"It is the average grade, weighted according to the credits relating to each exam with grade*, adjusted for the worst n credits\n(To find out more about n, refer to the Student Guide)",
+      "formula":"sum (grade * credits) / sum of credits\n(excluding the n worst credits)"
+    },
+    "NB": "Note",
+    "NBDescription": "These definitions are indicative. To find out more, refer to the Student Guide.\nOnly graded exams are considered in all average grade above.",
+    "onTimeScores": "On-time Exams points",
+    "pointTitle": "Scores",
+    "pointModal": "The total of the Exam on-time points earned. This value can never exceed the maximum allowed by the degree program.\nTo find out more, refer to the Student Guide.",
+    "thisYear": "This academic year",
+    "title": "Career",
+    "weightedAverageLabelDescription":{
+      "description":"This is the average, weighted according to the credits relating to each exam with a grade*",
+      "formula": "(sum (grade * credits) / sum of credits) * (110/30)"
+    },
+    "weightedAverage": "Weighted average of grades",
+    "weightedAverageDescription":{
+      "description":"It is the average grade, weighted according to the credits relating to each exam with a grade*, expressed in thirtieths.",
+      "formula": "sum (grade * credits) / sum of credits"
+    },
+    "yourCareer": "Your career"
+  },
+  "videoControls": {
+    "changePlaybackRate": "Change playback rate",
+    "tenSec": "10s",
+    "tenSecForward": "Advance 10 seconds",
+    "tenSecReverse": "Reverse 10 seconds",
+    "toggleFullscreen": "Toggle fullscreen"
+  },
+  "videoPlayer": {
+    "speedSectionTitle": "Speed"
+  },
+  "other" :{
+    "personalInfo": "Personal info",
+    "residence" : "Residence",
+    "fiscalResidence" : "Fiscal residence",
+    "telephone" : "Telephone",
+    "privateMail" : "Private Mail",
+    "publications" : "Publications",
+    "settings" : "Settings",
+    "currentCourses" : "Current year courses",
+    "other" : "Other",
+    "profile" : "Profile",
+    "modifyProfile" : "Modify Profile",
+    "contacts" : "Contacts",
+    "refreshProfile" :"Refresh Profile",
+    "services" : "Services",
+    "digitalSignature" : "Digital Signature",
+    "reportsFault" : "Report Fault",
+    "enterResidence" : "Enter your residence",
+    "enterFiscalResidence" : "Enter your fiscal residence",
+    "enterTelephone" : "Enter your telephone",
+    "enterMail" : "Enter your mail",
+    "enterPrivateMail" : "Enter your private mail",
+    "places" : "Places",
+    "bookPlaces" : "Book Places",
+    "emergencies" : "Emergencies",
+    "support" : "Audio-video support in the classroom",
+    "lookForPersone" : "Look for someone...",
+    "noPersona" : "No one found",
+    "preferred" : "Preferred",
+    "otherInfo" : "Other information",
+     "currentYearCourses" : "Current year courses",
+     "toBeSigned" : "To be signed",
+     "signedByYou" : "Signed by you",
+     "waitingForSigns" : "Waiting signs",
+     "completedSigns" : "Completed signs",
+     "toBeSignedUntil" : "To be signed until",
+     "uploadedBy" : "Uploaded by",
+     "sign" : "Sign",
+    "showPrev" : "Show Preview",
+    "waiting" : "waiting",
+     "resolved" : "resolved",
+     "rejected" : "rejected",
+     "newReport" : "New report",
+     "report" : "Report",
+     "placeOfFault" : "Place of the fault",
+     "details" : "Details",
+     "cancelReport" : "Cancel Report",
+    "zone" : "Zone",
+    "assignedRoom" : "Assigned Room",
+    "newReportFault" : "New Report Fault",
+    "selectPlace" : "Select Place",
+    "selectDate" : "Select Date",
+    "selectSlot" : "Select slot",
+    "selectDeskType" : "Select desk type",
+    "DeskType" : "Desk type",
+    "startTime" : "Start time",
+    "endTime" : "End time",
+    "desk1" : "Equipped desk ",
+    "desk2" : "Advanced equipped desk",
+    "desk3" : "Table Box",
+    "desk4" : "Wall Box",
+    "notImportant" : "Not important",
+    "enterCapacity" : "Enter capacity",
+    "selectRoomSite" : "Select room site",
+    "requestReason" : "Request reason",
+    "sendRequest" : "Send Request",
+    "describeFault" : "Describe the fault",
+    "enterDetails" : "Enter details",
+    "noSelection" : "No selection",
+    "date" : "Date",
+    "sendReport" : "Send report",
+    "requestRoom" : "Request room",
+    "requestEventsPlaces" : "Request events places",
+    "bookStructurePlaces" : "Book structure places",
+    "request" : "Request",
+    "newRequest" : "New request",
+    "requirements" : "Requirements",
+    "capacity" : "Room Capacity",
+    "powerSockets" :"Power Sockets",
+    "cancelRequest" :"Cancel Request",
+    "accepted" : "accepted",
+    "deskType" : "Desk type",
+    "expectedParticipants" : "Expected participants",
+    "enterNumberOfParticipants" : "Enter number of participants",
+    "selectLocal" :"Select local",
+    "booking" : "Booking",
+    "local" : "Local",
+        "selectBefore" : "Select date and time slots before",
+        "book" : "Book",
+          "fire" : "Fire",
+    "evacuation" : "Evacuation",
+    "earthquake" : "Earthquake",
+    "robbery/assault": "Robbery/Assault",
+  "dangerousSubstances": "Dangerous Substances",
+  "injury": "Injury",
+  "callCentral": "Call the Turin Headquarters",
+  "call112": "Call 112",
+  "whatToDoInCaseOf": "What to do in case of ",
+  "callEmergencyService": "Call the emergency service",
+  "sharePosition": "Share emergency location",
+    "audiovideoSupport" : "Audio-video support",
+  "avtext1": "Reporting problems and faults related to audio-video systems",
+  "avtext2": "Monday to Friday",
+  "avtext3": "AUDIOVISUAL SYSTEMS",
+  "avtext4": "Call 5003 from an internal phone",
+  "avtext5": "or",
+   "myCourses": "My Courses",
+  "managedCourses": "Managed Courses",
+  "appeals": "Exam calls",
+  "showMore": "Show More",
+  "period": "Period",
+  "today": "Today",
+  "enrolledStudents": "Enrolled Students",
+  "students": "Students",
+  "managingAccesses": "Manage Accesses",
+  "modify": "Modify",
+  "showFolders": "Show Folders",
+  "showFiles": "Show Files",
+  "searchForStudent": "Search by Name or ID",
+  "addStudent": "Add Students",
+  "selectStudents": "Select Students",
+  "noFilters": "No Filters",
+  "currentY": "Current Year",
+  "notExaminated": "Not Examined",
+  "Examinated": "Examined",
+  "delete": "Delete",
+  "download": "Download",
+  "owner": "Owner",
+  "collaborator": "Collaborator",
+  "canDelete": "Can Delete",
+  "canRead": "Can Read",
+  "addCollaborator": "Add Collaborator",
+  "courseAccess": "Course Access",
+  "canEdit": "Can Edit",
+  "removeCollaborator": "Remove Collaborator",
+  "confirm": "Confirm",
+  "createNewNotice": "Create New Notice",
+  "title": "Title",
+  "description": "Description",
+  "setValidity": "Set Validity",
+  "startDate": "Start Date",
+  "endDate": "End Date",
+  "publishNotice": "Publish Notice",
+  "expiresOn": "Expires On",
+  "visibility": "Visibility",
+  "visibleToAll": "Visible to All",
+  "hiddenFromStudents": "Hidden from Students",
+  "lesson": "Lesson",
+  "topic": "Topic",
+  "additionalInformation": "Additional Information",
+  "lessonRoom": "Lesson Room",
+  "contact": "Contact",
+  "degreeCourse": "Degree Course",
+  "passedExams": "Passed Exams",
+  "uploadMaterial": "Upload Material",
+  "folder": "Folder",
+  "selectDirectory": "Select Directory",
+  "uploadFile": "Upload File",
+  "upload": "Upload",
+  "createLesson": "Create Lesson",
+  "selectType": "Select Type",
+  "enterTopic": "Enter Topic",
+  "selectRoom": "Select Room",
+  "selectLanguage": "Select Language",
+  "roomAndLanguage": "Room and Language",
+  "lessonTime": "Lesson Time",
+  "selectStaff": "Select Staff",
+  "you": "You",
+  "publishLesson": "Publish Lesson",
+  "never" : "Never",
+  "insertTitle" : "Insert title",
+  "insertDescription" : "Insert description",
+  "type" : "Type",
+  "selectAll" : "Select all",
+  "contactSelectedStudents" : "Contact selected students",
+  "appeal" : "Exam Call",
+  "appealInfo" : "Exam call info",
+  "examDate" : "Exam date",
+  "bookingDeadline" : "Booking deadline",
+  "modality" : "Modality",
+  "place" : "Place",
+  "open" : "Open",
+  "closed" : "Closed",
+  "oral" : "Oral",
+  "written" :"Written",
+  "numberOfBooked" : "Number of booked",
+  "lookForStudent" :"Look for student...",
+  "createEvent" : "Create event",
+  "eventType" : "Event type",
+  "appointment" : "Appointment",
+  "uploadEvent" : "Upload event",
+  "refresh" : "Refresh",
+  "weeklyLayout" :"Weekly layout",
+  "deleteFromAgenda" : "Delete from agenda",
+  "subject" : "Subject",
+  "setDate" : "Set date",
+  "alertTextAgenda" : "Do you want to add this event to the Agenda?",
+  "alertTextAgenda2" : "Are you sure to delete this element from Agenda?",
+  "error" : "Error",
+  "insertValidCapacity" : "Insert a valid capacity",
+  "alertBooking" : "Are you sure to send booking request?",
+  "alertBooking2" : "Are you sure to cancel this booking?",
+  "alertSegnalation" : "Are you sure to cancel this segnalation?",
+  "alertSegnalation2" : "Are you sure to send this segnalation?",
+  "alertSignature" : "Are you sure to sign this document?",
+  "verify" : "Verify",
+  "OTPPIN" : "OTP or PIN not valid",
+  "alertFile" : "Are you sure to upload this file?",
+  "alertFile2" : "Are you sure to delete this file?",
+  "alertLecture" : "Are you sure to upload this lesson?",
+  "alertStaffAccess" : "Are you sure to set the access level to ",
+  "alertStaffAccess2" : "Are you sure to remove ",
+  "alertStaffAccess3" : " from course?",
+  "alertStaffAccess4" : "this collaborator",
+  "alertNotice" : "Are you sure to publish this notice?",
+  "alertNotice2" : "Are you sure to delete this notice?",
+  "alertAssignment" : "Are you sure to delete this assignment?",
+  "publish" : "Publish",
+  "add" : "Add",
+  "lookForPeople" : "Look for people...",
+  "renderingToMail" : "Rendering to mail...",
+  "examInfo" : "Exam info",
+  "modifyLecture" : "Modify Lecture"
+  }
+}

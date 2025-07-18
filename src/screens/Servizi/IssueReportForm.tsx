@@ -1,0 +1,253 @@
+import React, {useLayoutEffect, useState} from 'react';
+import {
+  Alert,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {useTheme} from '../../ui/hooks/useTheme';
+import {useNavigation} from '@react-navigation/native';
+import {useBottomBarAwareStyles} from '../../core/hooks/useBottomBarAwareStyles';
+import {useStylesheet} from '../../ui/hooks/useStylesheet';
+import {faArrowLeft, faEnvelope} from '@fortawesome/free-solid-svg-icons';
+import {IconButton} from '../../ui/components/IconButton';
+import {Text} from '../../ui/components/Text';
+import {Card} from '../../ui/components/Card';
+import {Row} from '../../ui/components/Row';
+import {CtaButton} from '../../ui/components/CtaButton';
+import {Select} from '../../ui/components/Select';
+import {Switch} from '../../ui/components/Switch';
+import {BottomBarSpacer} from '../../core/components/BottomBarSpacer';
+import {useCourses} from '../../core/contexts/CoursesContext';
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker';
+import {DateRow} from '../../ui/components/DateRow';
+import { useTranslation } from 'react-i18next';
+
+const availableSlots = [
+  '08:30',
+  '10:00',
+  '11:30',
+  '13:00',
+  '14:30',
+  '16:00',
+  '17:30',
+  '19:00',
+];
+
+const places = [
+  'Aula 1',
+  'Aula 2',
+  'Aula 3',
+  'Aula 4',
+  'Aula 5',
+  'Aula 6',
+  'Aula 7',
+  'Aula 8',
+  'Aula 9',
+];
+export const IssueReportForm = () => {
+  const {t} = useTranslation();
+  const {spacing, colors} = useTheme();
+  const navigation = useNavigation();
+  const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [startDate, setStartDate] = useState(new Date());
+  const [selectedStartSlot, setSelectedStartSlot] = useState('');
+  const [selectedEndSlot, setSelectedEndSlot] = useState('');
+  const [capacity, setCapacity] = useState('');
+  const [hasPowerPlugs, setHasPowerPlugs] = useState(false);
+  const [selectedPlace, setSelectedPlace] = useState('');
+  const [description, setDescription] = useState('');
+  const {addIssue} = useCourses();
+
+  const handleDateChange = (
+    event: DateTimePickerEvent,
+    selectedDate: Date | undefined,
+    setShowPicker: React.Dispatch<React.SetStateAction<boolean>>,
+    setDate: React.Dispatch<React.SetStateAction<Date>>,
+  ) => {
+    if (event.type === 'set' && selectedDate) {
+      setShowPicker(false);
+      setDate(selectedDate);
+    } else if (event.type === 'dismissed') {
+      setShowPicker(false);
+    }
+  };
+
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    return `${year}-${day}-${month}`;
+  };
+
+  const filteredStartSlots = availableSlots.filter(
+    slot => !selectedEndSlot || slot < selectedEndSlot,
+  );
+  const filteredEndSlots = availableSlots.filter(
+    slot => !selectedStartSlot || slot > selectedStartSlot,
+  );
+
+  const generateRandomId = () => {
+    return Date.now() + Math.floor(Math.random() * 1000);
+  };
+
+  const handlePublish = () => {
+    Alert.alert(
+      t('other.confirm'),
+      t('other.alertSegnalation2'),
+      [
+        {
+          text: t('common.cancel'),
+          style: 'cancel',
+        },
+        {
+          text: t('other.confirm'),
+          onPress: () => {
+            const newId = generateRandomId();
+            const formattedStartDate = formatDate(startDate);
+
+            const Issue = {
+              id: newId,
+              type: 0,
+              title: `Segnalazione #${Math.floor(
+                10000 + Math.random() * 90000,
+              )}`,
+              date: formattedStartDate,
+              details: description,
+              where: selectedPlace,
+              status: 'in attesa',
+            };
+
+            addIssue(Issue);
+            navigation.goBack();
+          },
+        },
+      ],
+    );
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <IconButton
+          icon={faArrowLeft}
+          size={22}
+          onPress={() => navigation.navigate('IssueReport')}
+        />
+      ),
+      headerTitle: () => (
+        <Text
+          variant="heading"
+          style={{
+            textAlign: 'center',
+            width: '100%',
+            marginLeft: Platform.OS === 'android' ? -25 : -55,
+          }}>
+          {t('other.newReportFault')}
+        </Text>
+      ),
+    });
+  }, [navigation, colors]);
+
+  return (
+    <>
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
+          <Card>
+            <Text variant="heading" style={styles.label}>
+              {t('other.selectDate')}
+            </Text>
+            <DateRow
+              label={t('other.date')}
+              date={formatDate(startDate)}
+              onPressCalendar={() => setShowStartPicker(true)}
+            />
+          </Card>
+          {showStartPicker && (
+            <DateTimePicker
+              value={startDate}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={(event, date) =>
+                handleDateChange(event, date, setShowStartPicker, setStartDate)
+              }
+            />
+          )}
+
+          <Card style={{marginBottom: spacing[4]}}>
+            <Text variant="heading" style={styles.label}>
+              {t('other.selectPlace')}
+            </Text>
+            <Select
+              label={t('other.noSelection')}
+              value={selectedPlace}
+              onSelectOption={setSelectedPlace}
+              options={places.map(slot => ({id: slot, title: slot}))}
+            />
+          </Card>
+          <Card>
+            <Text
+              variant="heading"
+              style={{
+                marginLeft: 17,
+                marginTop: 5,
+                color: colors.formTitle,
+              }}>
+              {t('other.describeFault')}
+            </Text>
+            <TextInput
+              placeholder={t('other.enterDetails')}
+              value={description}
+              onChangeText={setDescription}
+              multiline={true}
+              numberOfLines={4}
+              textAlignVertical="top"
+              style={{
+                borderBottomWidth: 0,
+                padding: spacing[2],
+                marginLeft: 10,
+                fontSize: 16,
+                color: colors.formPlaceHolder,
+                minHeight: 50, // puoi regolare l'altezza minima
+              }}
+            />
+          </Card>
+          <View style={{marginBottom: spacing[10]}} />
+      </ScrollView>
+      <CtaButton
+        title={t('other.sendReport')}
+        action={() => {
+          handlePublish();
+        }}
+        absolute={false}
+        variant="filled"
+        disabled={!startDate || !selectedPlace} // Disabilita il pulsante se uno dei campi è vuoto
+      />
+    </>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingBottom: 20,
+    paddingTop: 10,
+  },
+  label: {
+    marginLeft: 17,
+    marginTop: 5,
+    color: '#333',
+  },
+  input: {
+    borderBottomWidth: 0,
+    padding: 10,
+    marginLeft: 10,
+    fontSize: 16,
+  },
+});
