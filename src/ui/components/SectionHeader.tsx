@@ -1,23 +1,30 @@
 import React, { JSX } from 'react';
-import { StyleSheet, useColorScheme, View, TouchableOpacity, StyleProp, TextStyle, TouchableOpacityProps, TextProps } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-//import { colors } from '../../core/constants/colors';
-import { Separator } from './Separator';
-import { useTheme } from '../hooks/useTheme';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { TeachingScreen } from '../../screens/Teaching/TeachingScreen';
-import { EmptyScreen } from '../../screens/EmptyScreen';
-import {Link} from '@react-navigation/native'
-import { Text } from './Text';
-import { Theme } from '../types/theme';
-import { useStylesheet } from '../hooks/useStylesheet';
-import { Props as FAProps } from '@fortawesome/react-native-fontawesome';
-import { IconButton } from './IconButton';
 import { useTranslation } from 'react-i18next';
+import {
+  StyleProp,
+  StyleSheet,
+  TextProps,
+  TextStyle,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  View,
+} from 'react-native';
+
+import { Props as FAProps } from '@fortawesome/react-native-fontawesome';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { To } from '../../utils/resolveLinkTo';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
+import { IconButton } from './IconButton';
+// import { colors } from '../../core/constants/colors';
+import { Separator } from './Separator';
+import { Text } from './Text';
 
 type SectionHeaderProps = {
   title: string;
-  linkTo?: string; // Nome della schermata di destinazione
+  linkTo?: To<any>; // Nome della schermata di destinazione
   titleStyle?: StyleProp<TextStyle>;
   subtitle?: string;
   subtitleStyle?: StyleProp<TextStyle>;
@@ -31,13 +38,11 @@ type SectionHeaderProps = {
     TouchableOpacityProps & {
       iconStyle?: FAProps['style'];
     };
-  linkname?  : string;
-
+  linkname?: string;
 };
-const Stack = createNativeStackNavigator();
 
-export const SectionHeader: React.FC<SectionHeaderProps> = ({ 
-  title, 
+export const SectionHeader: React.FC<SectionHeaderProps> = ({
+  title,
   linkTo,
   titleStyle,
   subtitle,
@@ -45,23 +50,20 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
   ellipsizeTitle = true,
   accessibilityLabel = undefined,
   accessible = true,
-  linkToMoreCount,
   separator = true,
   trailingItem,
   trailingIcon,
-  linkname
- }) => {
-  const { colors } = useTheme();
-  const navigation = useNavigation();
+  linkname,
+}) => {
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const styles = useStylesheet(createStyles);
   const ellipsis: Partial<TextProps> = ellipsizeTitle
-  ? {
-      numberOfLines: 1,
-      ellipsizeMode: 'tail',
-    }
-  : {};
+    ? {
+        numberOfLines: 1,
+        ellipsizeMode: 'tail',
+      }
+    : {};
   const { t } = useTranslation();
-
 
   const Header = () => {
     return (
@@ -99,16 +101,19 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
         {trailingItem && trailingItem}
 
         {linkTo && (
-          <TouchableOpacity onPress={() => navigation.navigate(linkTo)} accessible={true} accessibilityRole="button">
+          <TouchableOpacity
+            onPress={() => navigation.navigate(linkTo as any)}
+            accessible={true}
+            accessibilityRole="button"
+          >
             <Text variant="link">
-            {linkname ? linkname : t('other.showMore')}
+              {linkname ? linkname : t('other.showMore')}
             </Text>
           </TouchableOpacity>
         )}
       </View>
     );
   };
-
 
   if (!linkTo) {
     return (
@@ -124,32 +129,30 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
   }
 
   return (
-          <TouchableOpacity
-        style={styles.container}
-        accessible={accessible}
-        accessibilityRole={linkTo ? 'button' : 'header'}
-        accessibilityLabel={accessibilityLabel}
-        onPress={() => {
-          if (linkTo) {
-            if (typeof linkTo === 'string') {
-              navigation.navigate(linkTo);
-            } else {
-              navigation.navigate(linkTo.screen, linkTo.params);
-            }
+    <TouchableOpacity
+      style={styles.container}
+      accessible={accessible}
+      accessibilityRole={linkTo ? 'button' : 'header'}
+      accessibilityLabel={accessibilityLabel}
+      onPress={() => {
+        if (linkTo) {
+          if (typeof linkTo === 'string') {
+            navigation.navigate(linkTo as any);
+          } else {
+            navigation.navigate(linkTo.screen as any, linkTo.params);
           }
-        }}
-      >
-        <Header />
-      </TouchableOpacity>
+        }
+      }}
+    >
+      <Header />
+    </TouchableOpacity>
   );
 };
-
-
 
 const createStyles = ({ spacing, colors }: Theme) =>
   StyleSheet.create({
     container: {
-      paddingHorizontal: spacing[4] , 
+      paddingHorizontal: spacing[4],
     },
     innerContainer: {
       flexDirection: 'row',
@@ -157,7 +160,7 @@ const createStyles = ({ spacing, colors }: Theme) =>
     },
     title: {
       color: colors.heading,
-      marginEnd: spacing[5] ,
+      marginEnd: spacing[5],
     },
     titleContainer: {
       flex: 1,

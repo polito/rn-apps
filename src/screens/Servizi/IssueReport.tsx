@@ -1,71 +1,40 @@
-import {useEffect, useLayoutEffect, useMemo, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {
-  View,
-  Image,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
-import {ListItem} from '../../ui/components/ListItem';
-import {MetricCard} from '../../ui/components/MetricCard';
-import {Section} from '../../ui/components/Section';
-import {SectionHeader} from '../../ui/components/SectionHeader';
-import {SectionList} from '../../ui/components/SectionList';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {useCourses} from '../../core/contexts/CoursesContext';
-import React from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {useBottomBarAwareStyles} from '../../core/hooks/useBottomBarAwareStyles';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useStylesheet} from '../../ui/hooks/useStylesheet';
-import {Theme} from '../../ui/types/Theme';
-import {Text} from '../../ui/components/Text';
-import {Icon} from '../../ui/components/Icon';
-import {Logo} from '../../core/components/Logo';
-import {Row} from '../../ui/components/Row';
-import {IconButton} from '../../ui/components/IconButton';
-import {
-  faArrowLeft,
-  faChevronRight,
-  faInbox,
-  faPerson,
-  faPhone,
-  faPlus,
-  faSearch,
-} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {GlobalStyles} from '../../core/components/GlobalStyles';
-import {BottomBarSpacer} from '../../core/components/BottomBarSpacer';
-import {IndentedDivider} from '../../ui/components/IndentedDivider';
-import {EmptyState} from '../../ui/components/EmptyState';
-import {useSafeAreaSpacing} from '../../core/hooks/useSafeAreaSpacing';
-import {CtaButton} from '../../ui/components/CtaButton';
-import {Badge} from '../../ui/components/Badge';
-import {NavBar} from '../../core/components/NavBar';
-import {Platform} from 'react-native';
+import { useEffect, useLayoutEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FlatList, ScrollView } from 'react-native';
+import { Platform } from 'react-native';
+
+import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
+import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
+import { Badge } from '../../ui/components/Badge';
+import { CtaButton } from '../../ui/components/CtaButton';
+import { IconButton } from '../../ui/components/IconButton';
+import { IndentedDivider } from '../../ui/components/IndentedDivider';
+import { ListItem } from '../../ui/components/ListItem';
+import { Text } from '../../ui/components/Text';
+import { useTheme } from '../../ui/hooks/useTheme';
+import { ProfileStackParamList } from './ServiceNavigator';
 
 export const IssueReport = () => {
-  const {t} = useTranslation();
-  const {spacing, colors} = useTheme();
-  const navigation = useNavigation();
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const styles = useStylesheet(createStyles);
-  const {setOptions} = useNavigation();
-  const {fontSizes} = useTheme();
-  const {user, setSelectedProfile} = useCourses();
-  const [searchText, setSearchText] = useState('');
-  const {issues, setSelectedIssue} = useCourses();
-  const {paddingHorizontal} = useSafeAreaSpacing();
-useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+  const { issues, setSelectedIssue } = useCourses();
+  const { paddingHorizontal } = useSafeAreaSpacing();
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', e => {
       e.preventDefault();
       navigation.navigate('Servizi');
     });
-  
-    return unsubscribe; 
+
+    return unsubscribe;
   }, [navigation]);
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -83,85 +52,85 @@ useEffect(() => {
             textAlign: 'center',
             width: '100%',
             marginLeft: Platform.OS === 'android' ? -25 : -55,
-          }}>
+          }}
+        >
           {t('other.reportsFault')}
         </Text>
       ),
     });
-  }, [navigation, colors]);
+  }, [navigation, colors, t]);
 
   return (
     <>
       <ScrollView
-        style={{flex: 1}}
+        style={{ flex: 1 }}
         contentContainerStyle={bottomBarAwareStyles}
         contentInsetAdjustmentBehavior="automatic"
-        bounces={false}>
-        <>
-          <FlatList
-            data={issues}
-            keyExtractor={item => item.id.toString()}
-            contentContainerStyle={paddingHorizontal}
-            ItemSeparatorComponent={() => <IndentedDivider />}
-            renderItem={({item}) => {
-              const getBadgeColors = (status: string) => {
-                switch (status) {
-                  case 'in attesa':
-                    return {
-                      backgroundColor: '#FFF3CD',
-                      foregroundColor: '#856404',
-                    }; // light yellow bg, dark yellow text
-                  case 'risolta':
-                    return {
-                      backgroundColor: '#D4EDDA',
-                      foregroundColor: '#155724',
-                    }; // light green bg, dark green text
-                  case 'respinta':
-                    return {
-                      backgroundColor: '#F8D7DA',
-                      foregroundColor: '#721C24',
-                    }; // light red bg, dark red text
-                  default:
-                    return {
-                      backgroundColor: '#E2E3E5',
-                      foregroundColor: '#6C757D',
-                    }; // default grey
+        bounces={false}
+      >
+        <FlatList
+          data={issues}
+          keyExtractor={item => item.id.toString()}
+          contentContainerStyle={paddingHorizontal}
+          ItemSeparatorComponent={() => <IndentedDivider />}
+          renderItem={({ item }) => {
+            const getBadgeColors = (status: string) => {
+              switch (status) {
+                case 'in attesa':
+                  return {
+                    backgroundColor: '#FFF3CD',
+                    foregroundColor: '#856404',
+                  }; // light yellow bg, dark yellow text
+                case 'risolta':
+                  return {
+                    backgroundColor: '#D4EDDA',
+                    foregroundColor: '#155724',
+                  }; // light green bg, dark green text
+                case 'respinta':
+                  return {
+                    backgroundColor: '#F8D7DA',
+                    foregroundColor: '#721C24',
+                  }; // light red bg, dark red text
+                default:
+                  return {
+                    backgroundColor: '#E2E3E5',
+                    foregroundColor: '#6C757D',
+                  }; // default grey
+              }
+            };
+
+            const { backgroundColor, foregroundColor } = getBadgeColors(
+              item.status,
+            );
+
+            return (
+              <ListItem
+                title={item.title.replace(/^Segnalazione/, t('other.report'))}
+                subtitle={item.details}
+                onPress={() => {
+                  setSelectedIssue(item);
+                  navigation.navigate('IssueDetails');
+                }}
+                trailingItem={
+                  <Badge
+                    text={
+                      item.status === 'in attesa'
+                        ? t('other.waiting')
+                        : item.status === 'risolta'
+                          ? t('other.resolved')
+                          : item.status === 'respinta'
+                            ? t('other.rejected')
+                            : item.status
+                    }
+                    backgroundColor={backgroundColor}
+                    foregroundColor={foregroundColor}
+                  />
                 }
-              };
-
-              const {backgroundColor, foregroundColor} = getBadgeColors(
-                item.status,
-              );
-
-              return (
-                <ListItem
-                  title={item.title.replace(/^Segnalazione/, t('other.report'))}
-                  subtitle={item.details}
-                  onPress={() => {
-                    setSelectedIssue(item);
-                    navigation.navigate('IssueDetails');
-                  }}
-                  trailingItem={
-                    <Badge
-                      text={
-  item.status === 'in attesa'
-    ? t('other.waiting')
-    : item.status === 'risolta'
-    ? t('other.resolved')
-    : item.status === 'respinta'
-    ? t('other.rejected')
-    : item.status
-}
-                      backgroundColor={backgroundColor}
-                      foregroundColor={foregroundColor}
-                    />
-                  }
-                />
-              );
-            }}
-            ListFooterComponent={<BottomBarSpacer />}
-          />
-        </>
+              />
+            );
+          }}
+          ListFooterComponent={<BottomBarSpacer />}
+        />
       </ScrollView>
       <CtaButton
         title={t('other.newReport')}
@@ -175,17 +144,3 @@ useEffect(() => {
     </>
   );
 };
-
-const createStyles = ({colors, spacing}: Theme) =>
-  StyleSheet.create({
-    centeredContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingVertical: 40,
-    },
-
-    buttonSpacing: {
-      width: '100%',
-    },
-  });

@@ -1,34 +1,33 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, { useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Alert,
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   TextInput,
   View,
 } from 'react-native';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {useNavigation} from '@react-navigation/native';
-import {useBottomBarAwareStyles} from '../../core/hooks/useBottomBarAwareStyles';
-import {useStylesheet} from '../../ui/hooks/useStylesheet';
-import {faArrowLeft, faEnvelope} from '@fortawesome/free-solid-svg-icons';
-import {IconButton} from '../../ui/components/IconButton';
-import {Text} from '../../ui/components/Text';
-import {Card} from '../../ui/components/Card';
-import {Row} from '../../ui/components/Row';
-import {CtaButton} from '../../ui/components/CtaButton';
-import {Select} from '../../ui/components/Select';
-import {Switch} from '../../ui/components/Switch';
-import {BottomBarSpacer} from '../../core/components/BottomBarSpacer';
-import {useCourses} from '../../core/contexts/CoursesContext';
+
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker, {
-  DateTimePickerEvent,
   DateTimePickerAndroid,
+  DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
-import {DateRow} from '../../ui/components/DateRow';
-import {useTranslation} from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
+import { Card } from '../../ui/components/Card';
+import { CtaButton } from '../../ui/components/CtaButton';
+import { DateRow } from '../../ui/components/DateRow';
+import { IconButton } from '../../ui/components/IconButton';
+import { Row } from '../../ui/components/Row';
+import { Select } from '../../ui/components/Select';
+import { Text } from '../../ui/components/Text';
+import { useTheme } from '../../ui/hooks/useTheme';
+import { ProfileStackParamList } from './ServiceNavigator';
 
 const availableSlots = [
   '08:30',
@@ -44,9 +43,10 @@ const availableSlots = [
 const places = ['Aula Magna', 'Sala Conferenze'];
 
 export const BookEventsForm = () => {
-  const {t} = useTranslation();
-  const {spacing, colors} = useTheme();
-  const navigation = useNavigation();
+  const { t } = useTranslation();
+  const { spacing, colors } = useTheme();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
@@ -56,7 +56,7 @@ export const BookEventsForm = () => {
   const [hasPowerPlugs, setHasPowerPlugs] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState('');
   const [description, setDescription] = useState('');
-  const {addBooking} = useCourses();
+  const { addBooking } = useCourses();
 
   const openAndroidDatePicker = () => {
     DateTimePickerAndroid.open({
@@ -102,7 +102,7 @@ export const BookEventsForm = () => {
     }
 
     Alert.alert(t('other.confirm'), t('other.alertBooking'), [
-      {text: t('common.cancel'), style: 'cancel'},
+      { text: t('common.cancel'), style: 'cancel' },
       {
         text: t('other.confirm'),
         onPress: () => {
@@ -120,7 +120,7 @@ export const BookEventsForm = () => {
             date: formattedStartDate,
             time: selectedStartSlot + ' - ' + selectedEndSlot,
             details: description,
-            capacity: parseInt(capacity),
+            capacity: parseInt(capacity, 10),
             status: 'in attesa',
           };
 
@@ -137,7 +137,7 @@ export const BookEventsForm = () => {
         <IconButton
           icon={faArrowLeft}
           size={22}
-          onPress={() => navigation.navigate('Prenota_spaziEventi')}
+          onPress={() => navigation.navigate('PrenotaSpaziEventi')}
         />
       ),
       headerTitle: () => (
@@ -147,7 +147,8 @@ export const BookEventsForm = () => {
             textAlign: 'center',
             width: '100%',
             marginLeft: Platform.OS === 'android' ? -25 : -55,
-          }}>
+          }}
+        >
           {t('other.requestEventsPlaces')}
         </Text>
       ),
@@ -183,12 +184,12 @@ export const BookEventsForm = () => {
             }
           />
         )}
-        <Card style={{marginBottom: spacing[4]}}>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
             {t('other.selectSlot')}
           </Text>
           <Row justify="space-between">
-            <View style={{flex: 1, marginRight: spacing[2]}}>
+            <View style={{ flex: 1, marginRight: spacing[2] }}>
               <Select
                 label={t('other.startTime')}
                 value={selectedStartSlot}
@@ -199,7 +200,7 @@ export const BookEventsForm = () => {
                 }))}
               />
             </View>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <Select
                 label={t('other.endTime')}
                 value={selectedEndSlot}
@@ -212,7 +213,7 @@ export const BookEventsForm = () => {
             </View>
           </Row>
         </Card>
-        <Card style={{marginBottom: spacing[4]}}>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
             {t('other.expectedParticipants')}
           </Text>
@@ -232,7 +233,7 @@ export const BookEventsForm = () => {
           />
         </Card>
 
-        <Card style={{marginBottom: spacing[4]}}>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
             {t('other.selectLocal')}
           </Text>
@@ -240,7 +241,7 @@ export const BookEventsForm = () => {
             label={t('other.noSelection')}
             value={selectedPlace}
             onSelectOption={setSelectedPlace}
-            options={places.map(slot => ({id: slot, title: slot}))}
+            options={places.map(slot => ({ id: slot, title: slot }))}
           />
         </Card>
         <Card>
@@ -250,7 +251,8 @@ export const BookEventsForm = () => {
               marginLeft: 17,
               marginTop: 5,
               color: colors.formTitle,
-            }}>
+            }}
+          >
             {t('other.requestReason')}
           </Text>
           <TextInput
@@ -270,7 +272,7 @@ export const BookEventsForm = () => {
             }}
           />
         </Card>
-        <View style={{marginBottom: spacing[10]}} />
+        <View style={{ marginBottom: spacing[10] }} />
       </ScrollView>
       <CtaButton
         title={t('other.sendRequest')}

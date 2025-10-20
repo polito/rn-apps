@@ -1,23 +1,23 @@
 import { JSX, useContext, useState } from 'react';
+import React from 'react';
 import { Animated, Platform, StyleSheet, View, ViewStyle } from 'react-native';
 import {
   useSafeAreaFrame,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+
 import {
-  getDefaultHeaderHeight,
   HeaderBackground,
   HeaderOptions,
   HeaderShownContext,
   HeaderTitle,
   Layout,
+  getDefaultHeaderHeight,
 } from '@react-navigation/elements';
 import { useTheme as useNavigationTheme } from '@react-navigation/native';
+
 import { useTheme } from '../../ui/hooks/useTheme';
-
 import { CollapsingHeaderContext } from '../contexts/CollapsingHeaderContext';
-import React from 'react';
-
 
 type Props = HeaderOptions & {
   /**
@@ -33,11 +33,11 @@ type Props = HeaderOptions & {
    */
   title: string;
   /**
-   * The bottom view   
+   * The bottom view
    * */
 
   bottom?: JSX.Element;
-  
+
   headerLeftLabelVisible?: boolean;
 
   scrollTop?: Animated.Value;
@@ -67,7 +67,7 @@ export const Header = (props: Props) => {
   const [largeTitleHeight, setLargeTitleHeight] = useState(0);
 
   const isParentHeaderShown = useContext(HeaderShownContext);
-   const { enabled, scrollTop } = useContext(CollapsingHeaderContext);
+  const { enabled, scrollTop } = useContext(CollapsingHeaderContext);
 
   const {
     title,
@@ -148,43 +148,41 @@ export const Header = (props: Props) => {
     warnIfHeaderStylesDefined(unsafeStyles);
   }
 
-
-
   const safeStyles: Record<string, unknown> = {
-  backgroundColor,
-  borderBottomColor,
-  borderBottomEndRadius,
-  borderBottomLeftRadius,
-  borderBottomRightRadius,
-  borderBottomStartRadius,
-  borderBottomWidth,
-  borderColor,
-  borderEndColor,
-  borderEndWidth,
-  borderLeftColor,
-  borderLeftWidth,
-  borderRadius,
-  borderRightColor,
-  borderRightWidth,
-  borderStartColor,
-  borderStartWidth,
-  borderStyle,
-  borderTopColor,
-  borderTopEndRadius,
-  borderTopLeftRadius,
-  borderTopRightRadius,
-  borderTopStartRadius,
-  borderTopWidth,
-  borderWidth,
-  boxShadow,
-  elevation,
-  shadowColor,
-  shadowOffset,
-  shadowOpacity,
-  shadowRadius,
-  opacity,
-  transform,
-};
+    backgroundColor,
+    borderBottomColor,
+    borderBottomEndRadius,
+    borderBottomLeftRadius,
+    borderBottomRightRadius,
+    borderBottomStartRadius,
+    borderBottomWidth,
+    borderColor,
+    borderEndColor,
+    borderEndWidth,
+    borderLeftColor,
+    borderLeftWidth,
+    borderRadius,
+    borderRightColor,
+    borderRightWidth,
+    borderStartColor,
+    borderStartWidth,
+    borderStyle,
+    borderTopColor,
+    borderTopEndRadius,
+    borderTopLeftRadius,
+    borderTopRightRadius,
+    borderTopStartRadius,
+    borderTopWidth,
+    borderWidth,
+    boxShadow,
+    elevation,
+    shadowColor,
+    shadowOffset,
+    shadowOpacity,
+    shadowRadius,
+    opacity,
+    transform,
+  };
 
   // Setting a property to undefined triggers default style
   // So we need to filter them out
@@ -208,7 +206,6 @@ export const Header = (props: Props) => {
       borderBottomWidth: 0,
     },
   ];
-  console.log('Bg styles', backgroundStyle);
 
   const leftButton = headerLeft
     ? headerLeft({
@@ -223,8 +220,8 @@ export const Header = (props: Props) => {
         tintColor: headerTintColor,
         pressColor: headerPressColor,
         pressOpacity: headerPressOpacity,
-        canGoBack: false
-    })
+        canGoBack: false,
+      })
     : null;
 
   const headerTitle =
@@ -244,12 +241,12 @@ export const Header = (props: Props) => {
           {
             zIndex: 0,
             opacity: enabled
-            ? scrollTop.interpolate({
-                inputRange: [largeTitleHeight - 5, largeTitleHeight],
-                outputRange: [0, 1],
-                extrapolate: 'clamp',
-              })
-            : undefined,
+              ? scrollTop.interpolate({
+                  inputRange: [largeTitleHeight - 5, largeTitleHeight],
+                  outputRange: [0, 1],
+                  extrapolate: 'clamp',
+                })
+              : undefined,
           },
           backgroundContainerStyle,
         ]}
@@ -264,7 +261,7 @@ export const Header = (props: Props) => {
       </Animated.View>
       <Animated.View
         pointerEvents="box-none"
-        style={[{ height, minHeight, maxHeight, opacity, transform }]}
+        style={{ height, minHeight, maxHeight, opacity, transform }}
       >
         <View pointerEvents="none" style={{ height: headerStatusBarHeight }} />
         <View pointerEvents="box-none" style={styles.content}>
@@ -301,13 +298,13 @@ export const Header = (props: Props) => {
                         insets.left -
                         insets.right),
 
-                        opacity: enabled
-                        ? scrollTop.interpolate({
-                            inputRange: [largeTitleHeight - 5, largeTitleHeight],
-                            outputRange: [0, 1],
-                            extrapolate: 'clamp',
-                          })
-                        : undefined,
+                opacity: enabled
+                  ? scrollTop.interpolate({
+                      inputRange: [largeTitleHeight - 5, largeTitleHeight],
+                      outputRange: [0, 1],
+                      extrapolate: 'clamp',
+                    })
+                  : undefined,
               },
               titleContainerStyle,
             ]}
@@ -339,54 +336,54 @@ export const Header = (props: Props) => {
       </Animated.View>
       {enabled && (
         <Animated.View
-        style={{
-          paddingLeft: typeof spacing[4] === 'number' ? spacing[4] : 0, // Assicurati che sia un numero
-          paddingRight: typeof spacing[4] === 'number' ? spacing[4] : 0, // Assicurati che sia un numero
-          height:
-            largeTitleHeight !== 0
-              ? scrollTop.interpolate({
-                  inputRange: [0, largeTitleHeight],
-                  outputRange: [largeTitleHeight, 0],
-                  extrapolateLeft: 'extend',
-                  extrapolateRight: 'clamp',
-                })
-              : undefined,
-          overflow: 'hidden',
-        }}
-      >
-        {headerTitle({
-          children: title,
-          allowFontScaling: titleAllowFontScaling,
-          tintColor: headerTintColor,
-          onLayout: e => {
-            const { height: titleHeight } = e.nativeEvent.layout;
-            if (titleHeight > 0 && !largeTitleHeight) {
-              setLargeTitleHeight(titleHeight);
-            }
-          },
-          style: [
-            titleStyle,
-            {
-              fontFamily: `${fontFamilies.heading}-semibold`,
-              height: largeTitleHeight > 0 ? largeTitleHeight : undefined,
-              fontSize: fontSizes['4xl'],
-              transform: [
-                {
-                  translateY: scrollTop.interpolate({
-                    inputRange: [0, 10],
-                    outputRange: [0, -10],
-                    extrapolate: 'extend',
-                  }),
-                },
-              ],
+          style={{
+            paddingLeft: typeof spacing[4] === 'number' ? spacing[4] : 0, // Assicurati che sia un numero
+            paddingRight: typeof spacing[4] === 'number' ? spacing[4] : 0, // Assicurati che sia un numero
+            height:
+              largeTitleHeight !== 0
+                ? scrollTop.interpolate({
+                    inputRange: [0, largeTitleHeight],
+                    outputRange: [largeTitleHeight, 0],
+                    extrapolateLeft: 'extend',
+                    extrapolateRight: 'clamp',
+                  })
+                : undefined,
+            overflow: 'hidden',
+          }}
+        >
+          {headerTitle({
+            children: title,
+            allowFontScaling: titleAllowFontScaling,
+            tintColor: headerTintColor,
+            onLayout: e => {
+              const { height: titleHeight } = e.nativeEvent.layout;
+              if (titleHeight > 0 && !largeTitleHeight) {
+                setLargeTitleHeight(titleHeight);
+              }
             },
-          ],
-        })}
-      </Animated.View>
-            )}
- 
-            {bottom && bottom}
-          </>
+            style: [
+              titleStyle,
+              {
+                fontFamily: `${fontFamilies.heading}-semibold`,
+                height: largeTitleHeight > 0 ? largeTitleHeight : undefined,
+                fontSize: fontSizes['4xl'],
+                transform: [
+                  {
+                    translateY: scrollTop.interpolate({
+                      inputRange: [0, 10],
+                      outputRange: [0, -10],
+                      extrapolate: 'extend',
+                    }),
+                  },
+                ],
+              },
+            ],
+          })}
+        </Animated.View>
+      )}
+
+      {bottom && bottom}
+    </>
   );
 };
 

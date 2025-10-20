@@ -9,7 +9,6 @@ import { Platform, ScrollView, ScrollViewProps } from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
 import { Props as TabProps } from './Tab';
-import React from 'react';
 
 interface Props {
   selectedIndexes?: number[];
@@ -37,8 +36,8 @@ export const Tabs = ({
       horizontal
       contentContainerStyle={[
         {
-          paddingHorizontal: spacing[4] ,
-          paddingVertical: spacing[2] ,
+          paddingHorizontal: spacing[4],
+          paddingVertical: spacing[2],
           gap: spacing[2],
         },
         rest.contentContainerStyle,

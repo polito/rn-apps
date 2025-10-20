@@ -1,7 +1,5 @@
-import { PillButton, PillButtonProps } from './PillButton';
-
 import { DropdownActivator } from './DropdownActivator';
-import React from 'react';
+import { PillButton, PillButtonProps } from './PillButton';
 
 export type PillDropdownActivatorProps = PillButtonProps;
 

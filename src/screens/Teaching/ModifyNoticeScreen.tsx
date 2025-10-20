@@ -1,23 +1,24 @@
-import React, {useLayoutEffect, useState} from 'react';
 import {
-  Platform,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
+  GestureHandlerRootView,
+  ScrollView,
+} from 'react-native-gesture-handler';
+
+import React, { useLayoutEffect, useState } from 'react';
+import { Platform, StyleSheet, TextInput, View } from 'react-native';
+
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
-import {Card} from '../../ui/components/Card';
-import {useNavigation} from '@react-navigation/native';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
-import {IconButton} from '../../ui/components/IconButton';
-import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
-import {useCourses} from '../../core/contexts/CoursesContext';
-import {Text} from '../../ui/components/Text';
-import {CtaButton} from '../../ui/components/CtaButton';
-import {DateRow} from '../../ui/components/DateRow';
+import { useNavigation } from '@react-navigation/native';
+
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { Card } from '../../ui/components/Card';
+import { CtaButton } from '../../ui/components/CtaButton';
+import { DateRow } from '../../ui/components/DateRow';
+import { IconButton } from '../../ui/components/IconButton';
+import { Text } from '../../ui/components/Text';
+import { useTheme } from '../../ui/hooks/useTheme';
 
 // Gestione compatibile del cambio data
 const handleDateChange = (
@@ -63,23 +64,23 @@ export const ModifyNoticeScreen = () => {
     selectedCourse,
     updateCourseNotice,
     selectedNotice,
-    setSelectedNotice
+    setSelectedNotice,
   } = useCourses();
 
   const navigation = useNavigation();
-  const {colors, spacing} = useTheme();
+  const { colors, spacing } = useTheme();
 
   const [title, setTitle] = useState(selectedNotice?.title || '');
   const [description, setDescription] = useState(selectedNotice?.content || '');
 
   const [startDate, setStartDate] = useState<Date>(
     selectedNotice?.startDate
-      ? parseDateString(selectedNotice.startDate) ?? new Date()
-      : new Date()
+      ? (parseDateString(selectedNotice.startDate) ?? new Date())
+      : new Date(),
   );
 
   const [endDate, setEndDate] = useState<Date | null>(
-    selectedNotice?.endDate ? parseDateString(selectedNotice.endDate) : null
+    selectedNotice?.endDate ? parseDateString(selectedNotice.endDate) : null,
   );
 
   const [showStartPicker, setShowStartPicker] = useState(false);
@@ -92,16 +93,16 @@ export const ModifyNoticeScreen = () => {
     const formattedEndDate = endDate ? formatDate(endDate) : 'Mai';
 
     const noticeToUpdate = {
-      id : selectedNotice.id,
+      id: selectedNotice.id,
       title,
       content: description,
       startDate: formattedStartDate,
       endDate: formattedEndDate,
-      visible : selectedNotice.visible
+      visible: selectedNotice.visible,
     };
 
     updateCourseNotice(selectedCourse.id, selectedNotice.id, noticeToUpdate);
-    setSelectedNotice(noticeToUpdate)
+    setSelectedNotice(noticeToUpdate);
     navigation.goBack();
   };
 
@@ -110,7 +111,8 @@ export const ModifyNoticeScreen = () => {
       headerTitle: () => (
         <Text
           variant="heading"
-          style={{marginLeft: Platform.OS === 'android' ? 70 : 0}}>
+          style={{ marginLeft: Platform.OS === 'android' ? 70 : 0 }}
+        >
           Modifica avviso
         </Text>
       ),
@@ -125,10 +127,12 @@ export const ModifyNoticeScreen = () => {
   }, [navigation, colors]);
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
-        <Card style={{marginBottom: spacing[4]}}>
-          <Text variant="heading" style={styles.label}>Titolo</Text>
+        <Card style={{ marginBottom: spacing[4] }}>
+          <Text variant="heading" style={styles.label}>
+            Titolo
+          </Text>
           <TextInput
             placeholder="Inserisci il titolo"
             value={title}
@@ -137,19 +141,23 @@ export const ModifyNoticeScreen = () => {
           />
         </Card>
 
-        <Card style={{marginBottom: spacing[4]}}>
-          <Text variant="heading" style={styles.label}>Descrizione</Text>
+        <Card style={{ marginBottom: spacing[4] }}>
+          <Text variant="heading" style={styles.label}>
+            Descrizione
+          </Text>
           <TextInput
             placeholder="Descrizione"
             value={description}
             onChangeText={setDescription}
             multiline
-            style={[styles.input, {minHeight: 100}]}
+            style={[styles.input, { minHeight: 100 }]}
           />
         </Card>
 
-        <Card style={{marginBottom: spacing[4]}}>
-          <Text variant="heading" style={styles.label}>Imposta validità</Text>
+        <Card style={{ marginBottom: spacing[4] }}>
+          <Text variant="heading" style={styles.label}>
+            Imposta validità
+          </Text>
 
           <DateRow
             label="Data inizio"
@@ -182,16 +190,21 @@ export const ModifyNoticeScreen = () => {
             mode="date"
             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
             onChange={(event, date) =>
-              handleDateChangeNullable(event, date, setShowEndPicker, setEndDate)
+              handleDateChangeNullable(
+                event,
+                date,
+                setShowEndPicker,
+                setEndDate,
+              )
             }
           />
         )}
 
-        <View style={{marginBottom: spacing[8]}} />
+        <View style={{ marginBottom: spacing[8] }} />
       </ScrollView>
 
       <CtaButton
-        title={'Conferma modifica'}
+        title="Conferma modifica"
         action={handleModify}
         absolute={false}
         variant="filled"

@@ -1,14 +1,13 @@
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { DateTime } from 'luxon';
+
 import { Col } from '../../../ui/components/Col';
 import { Row } from '../../../ui/components/Row';
 import { Text } from '../../../ui/components/Text';
 import { useStylesheet } from '../../../ui/hooks/useStylesheet';
 import { Theme } from '../../../ui/types/Theme';
-
-import { DateTime } from 'luxon';
-
 import { AgendaWeek } from '../types/AgendaWeek';
 import { DailyAgenda } from './DailyAgenda';
 import { EmptyWeek } from './EmptyWeek';

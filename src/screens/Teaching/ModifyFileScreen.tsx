@@ -1,25 +1,27 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { View, TextInput, Button, Platform, StyleSheet, TouchableOpacity } from 'react-native';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { Card } from '../../ui/components/Card';
-import { Select } from '../../ui/components/Select';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+import React, { useLayoutEffect, useState } from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
+
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
+import { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
-import { Row } from '../../ui/components/Row';
-import { IconButton } from '../../ui/components/IconButton';
-import { faArrowLeft, faPencil } from '@fortawesome/free-solid-svg-icons';
+
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { faFileUpload, faVideo } from '@fortawesome/free-solid-svg-icons';
-import { Text } from '../../ui/components/Text';
+import { Card } from '../../ui/components/Card';
 import { CtaButton } from '../../ui/components/CtaButton';
+import { IconButton } from '../../ui/components/IconButton';
+import { Select } from '../../ui/components/Select';
+import { Text } from '../../ui/components/Text';
+import { useTheme } from '../../ui/hooks/useTheme';
 
 // Funzione per gestire il cambio della data (gestione robusta per Android)
 const handleDateChange = (
   event: DateTimePickerEvent | undefined,
   selectedDate: Date | undefined,
   setShowPicker: React.Dispatch<React.SetStateAction<boolean>>,
-  setDate: React.Dispatch<React.SetStateAction<Date>>
+  setDate: React.Dispatch<React.SetStateAction<Date>>,
 ) => {
   if (!event) {
     // Evento undefined/null (es. Android chiusura picker senza selezionare)
@@ -36,16 +38,25 @@ const handleDateChange = (
 };
 
 const availableSlots = [
-  '08:30', '10:00', '11:30', '13:00', '14:30', '16:00', '17:30', '19:00'
+  '08:30',
+  '10:00',
+  '11:30',
+  '13:00',
+  '14:30',
+  '16:00',
+  '17:30',
+  '19:00',
 ];
 
 export const ModifyFileScreen = () => {
   const navigation = useNavigation();
-  const { selectedCourse, addNoticeToCourse, updateCourseFile, addLesson, selectedFile } = useCourses();
+  const { selectedCourse, updateCourseFile, selectedFile } = useCourses();
   const { colors, spacing } = useTheme();
 
   const [title, setTitle] = useState(selectedFile?.name ?? '');
-  const [selectedDirectory, setSelectedDirectory] = useState(selectedFile?.dirId.toString() ?? '');
+  const [selectedDirectory, setSelectedDirectory] = useState(
+    selectedFile?.dirId.toString() ?? '',
+  );
 
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
@@ -70,7 +81,12 @@ export const ModifyFileScreen = () => {
       dirId: Number(selectedDirectory),
     };
 
-    updateCourseFile(selectedCourse.id, selectedFile.id, newMaterial, Number(selectedDirectory));
+    updateCourseFile(
+      selectedCourse.id,
+      selectedFile.id,
+      newMaterial,
+      Number(selectedDirectory),
+    );
 
     navigation.goBack();
   };
@@ -83,7 +99,11 @@ export const ModifyFileScreen = () => {
         </Text>
       ),
       headerLeft: () => (
-        <IconButton icon={faArrowLeft} size={22} onPress={() => navigation.goBack()} />
+        <IconButton
+          icon={faArrowLeft}
+          size={22}
+          onPress={() => navigation.goBack()}
+        />
       ),
     });
   }, [navigation, colors]);
@@ -132,7 +152,7 @@ export const ModifyFileScreen = () => {
             value={selectedDirectory}
             onSelectOption={setSelectedDirectory}
             options={
-              selectedCourse?.directories?.map((dir) => ({
+              selectedCourse?.directories?.map(dir => ({
                 id: dir.id.toString(),
                 title: dir.name,
               })) || []
@@ -151,7 +171,7 @@ export const ModifyFileScreen = () => {
         >
           <IconButton
             icon={faFileUpload}
-            onPress={() => console.log('Gestione upload PDF')}
+            onPress={() => {}}
             noPadding
             size={40}
           />
@@ -159,7 +179,7 @@ export const ModifyFileScreen = () => {
         </Card>
       </View>
       <CtaButton
-        title={'Conferma modifica'}
+        title="Conferma modifica"
         action={handlePublish}
         absolute={false}
         variant="filled"

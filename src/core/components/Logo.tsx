@@ -1,10 +1,10 @@
 import Svg, { Path } from 'react-native-svg';
-import { useTheme } from '../../ui/hooks/useTheme';
-import React from 'react';
-import { IS_ANDROID } from './costant';
-import { Row, RowProps } from '../../ui/components/Row';
 
-export const Logo = (props: RowProps) =>  {
+import { Row, RowProps } from '../../ui/components/Row';
+import { useTheme } from '../../ui/hooks/useTheme';
+import { IS_ANDROID } from './costant';
+
+export const Logo = (props: RowProps) => {
   const { palettes, dark } = useTheme();
 
   return (
@@ -21,4 +21,4 @@ export const Logo = (props: RowProps) =>  {
       </Svg>
     </Row>
   );
-  };
+};

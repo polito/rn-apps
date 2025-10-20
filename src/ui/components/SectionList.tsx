@@ -1,7 +1,6 @@
-
-import React from 'react';
 import { PropsWithChildren } from 'react';
 import { ActivityIndicator, Platform } from 'react-native';
+
 import { List } from '../../ui/components/List';
 import { useTheme } from '../hooks/useTheme';
 import { Card } from './Card';
@@ -22,14 +21,14 @@ export const SectionList = ({ children, loading = false, dividers }: Props) => {
     <Card
       rounded={Platform.select({ android: false })}
       style={{
-        marginVertical: spacing[2] ,
+        marginVertical: spacing[2],
         marginHorizontal: Platform.select({ ios: spacing[4] }),
       }}
     >
       {loading ? (
         <ActivityIndicator
           style={{
-            marginVertical: spacing[8] ,
+            marginVertical: spacing[8],
           }}
         />
       ) : (

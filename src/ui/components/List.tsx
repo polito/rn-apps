@@ -1,10 +1,9 @@
 import { Children, PropsWithChildren, isValidElement } from 'react';
 import { Platform } from 'react-native';
 
+import { useTheme } from '../../ui/hooks/useTheme';
 import { Divider } from './Divider';
 import { IndentedDivider } from './IndentedDivider';
-import { useTheme } from '../../ui/hooks/useTheme';
-import React from 'react';
 
 interface Props {
   dividers?: boolean;
@@ -40,7 +39,7 @@ export const List = ({
                     <Divider
                       key={`div-${i}`}
                       style={{
-                        marginStart: spacing[5] ,
+                        marginStart: spacing[5],
                       }}
                     />
                   ))}

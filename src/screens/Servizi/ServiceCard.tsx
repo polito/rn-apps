@@ -5,6 +5,9 @@ import { StyleSheet } from 'react-native';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
 import { faStar as faStarFilled } from '@fortawesome/free-solid-svg-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 import { Icon } from '../../ui/components/Icon';
 import { IconButton } from '../../ui/components/IconButton';
 import { Row } from '../../ui/components/Row';
@@ -17,11 +20,7 @@ import { UnreadBadge } from '../../ui/components/UnreadBadge';
 import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
 import { Theme } from '../../ui/types/Theme';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
 import { uniformInsets } from '../../utils/insets';
-
 
 interface Props extends PropsWithChildren<TouchableCardProps> {
   name: string;
@@ -57,9 +56,7 @@ export const ServiceCard = ({
   return (
     <TouchableCard
       accessibilityRole="button"
-      onPress={
-        linkTo ? () => navigation.navigate(linkTo) : onPress
-      }
+      onPress={linkTo ? () => navigation.navigate(linkTo) : onPress}
       {...props}
       disabled={disabled}
       style={[styles.touchable, props.style]}

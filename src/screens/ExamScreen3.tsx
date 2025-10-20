@@ -1,4 +1,5 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Alert,
   FlatList,
@@ -8,15 +9,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useCourses } from '../core/contexts/CoursesContext';
-import { useNavigation } from '@react-navigation/native';
-import { Section } from '../ui/components/Section';
-import { useBottomBarAwareStyles } from '../core/hooks/useBottomBarAwareStyles';
-import { SectionHeader } from '../ui/components/SectionHeader';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+
+import { faSquare } from '@fortawesome/free-regular-svg-icons';
 import {
   faArrowLeft,
   faCalendar,
+  faCheckSquare,
   faCircleInfo,
   faClock,
   faEnvelope,
@@ -24,68 +22,79 @@ import {
   faLocationDot,
   faPlus,
   faSearch,
-  faCheckSquare,
 } from '@fortawesome/free-solid-svg-icons';
-import { faSquare } from '@fortawesome/free-regular-svg-icons';
-import { GlobalStyles } from '../core/components/GlobalStyles';
-import { ListItem } from '../ui/components/ListItem';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 import { BottomBarSpacer } from '../core/components/BottomBarSpacer';
-import { IndentedDivider } from '../ui/components/IndentedDivider';
-import { EmptyState } from '../ui/components/EmptyState';
-import { useSafeAreaSpacing } from '../core/hooks/useSafeAreaSpacing';
-import { IconButton } from '../ui/components/IconButton';
-import { Text } from '../ui/components/Text';
-import { OverviewList } from '../ui/components/OverviewList';
-import { Icon } from '../ui/components/Icon';
-import { CtaButton } from '../ui/components/CtaButton';
-import { useTranslation } from 'react-i18next';
-import { useBottomModal } from '../core/hooks/useBottomModal';
 import { BottomModal } from '../core/components/BottomModal';
+import { GlobalStyles } from '../core/components/GlobalStyles';
+import { useCourses } from '../core/contexts/CoursesContext';
+import { useBottomModal } from '../core/hooks/useBottomModal';
+import { useSafeAreaSpacing } from '../core/hooks/useSafeAreaSpacing';
+import { CtaButton } from '../ui/components/CtaButton';
+import { EmptyState } from '../ui/components/EmptyState';
+import { Icon } from '../ui/components/Icon';
+import { IconButton } from '../ui/components/IconButton';
+import { IndentedDivider } from '../ui/components/IndentedDivider';
+import { ListItem } from '../ui/components/ListItem';
+import { OverviewList } from '../ui/components/OverviewList';
+import { Section } from '../ui/components/Section';
+import { SectionHeader } from '../ui/components/SectionHeader';
+import { Text } from '../ui/components/Text';
 import { AddStudentsToExamModalContent } from './Teaching/AddStudentsToExamModalContent';
+import { TeachingStackParamList } from './Teaching/TeachingNavigator';
 
 export const ExamScreen3 = () => {
   const { selectedExam } = useCourses();
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
   const { t } = useTranslation();
- const {
+  const {
     open: showBottomModal,
     modal: bottomModal,
     close: closeBottomModal,
   } = useBottomModal();
+  const { paddingHorizontal } = useSafeAreaSpacing();
 
-  
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [searchText, setSearchText] = useState('');
+  const [presentStudents, setPresentStudents] = useState<{
+    [id: string]: boolean;
+  }>({});
+
   useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+    const unsubscribe = navigation.addListener('beforeRemove', e => {
       e.preventDefault();
-      navigation.navigate('Course');
+      navigation.navigate('Course', { from: undefined });
     });
-  
-    return unsubscribe; 
+
+    return unsubscribe;
   }, [navigation]);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <IconButton icon={faArrowLeft} size={22} onPress={() => navigation.navigate('Course')} />
+        <IconButton
+          icon={faArrowLeft}
+          size={22}
+          onPress={() => navigation.navigate('Course', { from: undefined })}
+        />
       ),
       headerTitle: () => (
-        <Text variant="heading" style={{ textAlign: 'center', width: '100%', marginLeft: -25 }}>
+        <Text
+          variant="heading"
+          style={{ textAlign: 'center', width: '100%', marginLeft: -25 }}
+        >
           {selectedExam?.subject}
         </Text>
       ),
     });
   }, [navigation, selectedExam]);
 
-  
-
   if (!selectedExam) return null;
 
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const { paddingHorizontal } = useSafeAreaSpacing();
   const { students } = selectedExam;
-const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
-  const [searchText, setSearchText] = useState('');
-  const [presentStudents, setPresentStudents] = useState<{ [id: string]: boolean }>({});
 
   const today = new Date();
   const examDate = new Date(selectedExam.date);
@@ -96,7 +105,7 @@ const [selectedIds, setSelectedIds] = useState<string[]>([]);
       examDate.getMonth() === today.getMonth() &&
       examDate.getDate() === today.getDate());
 
-  const filteredStudents = students.filter((student) => {
+  const filteredStudents = students.filter(student => {
     const query = searchText.toLowerCase();
     return (
       student.id.toLowerCase().includes(query) ||
@@ -105,23 +114,23 @@ const [selectedIds, setSelectedIds] = useState<string[]>([]);
     );
   });
 
- const togglePresence = (studentId: string) => {
-  setPresentStudents((prev) => ({
-    ...prev,
-    [studentId]: !prev[studentId],
-  }));
+  const togglePresence = (studentId: string) => {
+    setPresentStudents(prev => ({
+      ...prev,
+      [studentId]: !prev[studentId],
+    }));
 
-  setSelectedIds((prev) =>
-    prev.includes(studentId)
-      ? prev.filter((id) => id !== studentId)
-      : [...prev, studentId]
-  );
-};
+    setSelectedIds(prev =>
+      prev.includes(studentId)
+        ? prev.filter(id => id !== studentId)
+        : [...prev, studentId],
+    );
+  };
 
   return (
     <>
-              <BottomModal dismissable {...bottomModal} />
-    
+      <BottomModal dismissable {...bottomModal} />
+
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <Section>
           <View style={{ marginTop: 20 }}>
@@ -151,10 +160,17 @@ const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
             <View style={{ marginTop: 10 }} />
 
-            <SectionHeader title={`${t('other.numberOfBooked')}: ${selectedExam.booked}`} />
+            <SectionHeader
+              title={`${t('other.numberOfBooked')}: ${selectedExam.booked}`}
+            />
 
             <View style={styles.searchContainer}>
-              <FontAwesomeIcon icon={faSearch} size={16} color="#888" style={styles.searchIcon} />
+              <FontAwesomeIcon
+                icon={faSearch}
+                size={16}
+                color="#888"
+                style={styles.searchIcon}
+              />
               <TextInput
                 placeholder={t('other.searchStudent')}
                 value={searchText}
@@ -172,7 +188,7 @@ const [selectedIds, setSelectedIds] = useState<string[]>([]);
                   style={GlobalStyles.grow}
                   contentContainerStyle={paddingHorizontal}
                   data={filteredStudents}
-                  keyExtractor={(item) => item.id.toString()}
+                  keyExtractor={item => item.id.toString()}
                   renderItem={({ item: student }) => (
                     <ListItem
                       title={student.id}
@@ -182,10 +198,19 @@ const [selectedIds, setSelectedIds] = useState<string[]>([]);
                           <TouchableOpacity
                             onPress={() => togglePresence(student.id)}
                             style={{ marginRight: 12 }}
-                            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                            hitSlop={{
+                              top: 10,
+                              bottom: 10,
+                              left: 10,
+                              right: 10,
+                            }}
                           >
                             <Icon
-                              icon={presentStudents[student.id] ? faCheckSquare : faSquare}
+                              icon={
+                                presentStudents[student.id]
+                                  ? faCheckSquare
+                                  : faSquare
+                              }
                             />
                           </TouchableOpacity>
                         ) : undefined
@@ -197,7 +222,10 @@ const [selectedIds, setSelectedIds] = useState<string[]>([]);
                   ItemSeparatorComponent={() => <IndentedDivider />}
                   ListEmptyComponent={() =>
                     filteredStudents.length === 0 ? (
-                      <EmptyState icon={faInbox} message={t('other.noStudentsFound')} />
+                      <EmptyState
+                        icon={faInbox}
+                        message={t('other.noStudentsFound')}
+                      />
                     ) : null
                   }
                 />
@@ -207,28 +235,29 @@ const [selectedIds, setSelectedIds] = useState<string[]>([]);
         </Section>
       </ScrollView>
 
-     <CtaButton
-             title={t('other.addStudent')}
-             action={() => {                
-                    showBottomModal(<AddStudentsToExamModalContent close={closeBottomModal} />);
-             }}
-             absolute={false}
-             variant="outlined"
-             icon={faPlus}
-             style={{marginBottom: -20} }
-           />
-             
-             <CtaButton
-               title={t('other.contactSelectedStudents')}
-               action={() => { Alert.alert("Info", t('other.renderingToMail')); }}
-               absolute={false}
-               variant="filled"
-               icon={faEnvelope}
-                 disabled={selectedIds.length === 0}
+      <CtaButton
+        title={t('other.addStudent')}
+        action={() => {
+          showBottomModal(
+            <AddStudentsToExamModalContent close={closeBottomModal} />,
+          );
+        }}
+        absolute={false}
+        variant="outlined"
+        icon={faPlus}
+        style={{ marginBottom: -20 }}
+      />
 
-             />
-           
-        
+      <CtaButton
+        title={t('other.contactSelectedStudents')}
+        action={() => {
+          Alert.alert('Info', t('other.renderingToMail'));
+        }}
+        absolute={false}
+        variant="filled"
+        icon={faEnvelope}
+        disabled={selectedIds.length === 0}
+      />
     </>
   );
 };

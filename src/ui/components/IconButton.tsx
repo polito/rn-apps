@@ -1,10 +1,10 @@
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { Props as FAProps } from '@fortawesome/react-native-fontawesome';
+
+import { useTheme } from '../../ui/hooks/useTheme';
 import { ActivityIndicator } from './ActivityIndicator';
 import { Icon } from './Icon';
-import { useTheme } from '../../ui/hooks/useTheme';
-import React from 'react';
 
 type Props = Omit<FAProps, 'style'> &
   TouchableOpacityProps & {
@@ -52,7 +52,7 @@ export const IconButton = ({
     transform,
     testID,
   };
-  const padding = iconPadding || (spacing[3] );
+  const padding = iconPadding || spacing[3];
   return (
     <TouchableOpacity
       hitSlop={{

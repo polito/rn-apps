@@ -10,6 +10,9 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { TextWithLinks } from '../../../src/core/components/TextWithLinks';
+import { useSafeBottomBarHeight } from '../../../src/core/hooks/useSafeBottomBarHeight';
+import { useFeedbackContext } from '../../core/contexts/FeedbackContext';
 import { ActivityIndicator } from '../../ui/components/ActivityIndicator';
 import { Icon } from '../../ui/components/Icon';
 import { Row } from '../../ui/components/Row';
@@ -18,10 +21,6 @@ import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
 import { Theme } from '../../ui/types/Theme';
 import { shadeColor } from '../../utils/colors';
-
-import { TextWithLinks } from '../../../src/core/components/TextWithLinks';
-import { useFeedbackContext } from '../../core/contexts/FeedbackContext';
-import { useSafeBottomBarHeight } from '../../../src/core/hooks/useSafeBottomBarHeight';
 
 interface Props extends TouchableHighlightProps {
   containerStyle?: ViewStyle;
@@ -58,7 +57,7 @@ export const CtaButton = ({
   textStyle,
   ...rest
 }: Props) => {
-  const {  palettes, colors, fontSizes, spacing, dark, fontWeights } =
+  const { palettes, colors, fontSizes, spacing, dark, fontWeights } =
     useTheme();
   const styles = useStylesheet(createStyles);
   const { left, right } = useSafeAreaInsets();
@@ -107,7 +106,7 @@ export const CtaButton = ({
           position: 'absolute',
           left: Platform.select({ ios: left }),
           right,
-          bottom: bottomBarHeight + (isFeedbackVisible ? spacing[20]  : 0),
+          bottom: bottomBarHeight + (isFeedbackVisible ? spacing[20] : 0),
         },
         !!hint && { paddingTop: spacing[3] },
         containerStyle,
@@ -167,7 +166,9 @@ export const CtaButton = ({
                 <Icon
                   icon={icon}
                   size={fontSizes.xl}
-                  color={variant === 'filled' ? colors.white as string : color}
+                  color={
+                    variant === 'filled' ? (colors.white as string) : color
+                  }
                   style={{ marginRight: spacing[2] }}
                 />
               )}
@@ -178,10 +179,15 @@ export const CtaButton = ({
                     borderColor: palettes.primary[400],
                   },
                   {
-                    color: variant === 'filled' ? colors.white as string : color,
+                    color:
+                      variant === 'filled' ? (colors.white as string) : color,
                   },
                   disabled
-                    ? { color: success ? color : colors.disableTitle as string }
+                    ? {
+                        color: success
+                          ? color
+                          : (colors.disableTitle as string),
+                      }
                     : undefined,
                   textStyle,
                 ]}
@@ -204,17 +210,17 @@ export const CtaButton = ({
  */
 export const CtaButtonSpacer = () => {
   const { spacing } = useTheme();
-  return <View style={{ height: spacing[20]  }} />;
+  return <View style={{ height: spacing[20] }} />;
 };
 
 const createStyles = ({ colors, shapes, spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     container: {
-      padding: spacing[4] ,
+      padding: spacing[4],
     },
     button: {
-      paddingHorizontal: spacing[5] ,
-      paddingVertical: spacing[4] ,
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[4],
       borderRadius: Platform.select({
         ios: shapes.lg,
         android: 60,
@@ -238,15 +244,15 @@ const createStyles = ({ colors, shapes, spacing, fontSizes }: Theme) =>
     },
     icon: {
       marginVertical: -2,
-      marginRight: spacing[2] ,
+      marginRight: spacing[2],
     },
     subtitle: {
-      marginTop: spacing[2] ,
+      marginTop: spacing[2],
     },
     hint: {
       color: colors.caption,
       fontSize: fontSizes.xs,
       textAlign: 'center',
-      paddingBottom: spacing[2] ,
+      paddingBottom: spacing[2],
     },
   });

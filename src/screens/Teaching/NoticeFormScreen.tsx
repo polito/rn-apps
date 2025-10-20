@@ -1,28 +1,28 @@
-import React, {useLayoutEffect, useState} from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+import React, { useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  View,
-  TextInput,
-  Platform,
-  StyleSheet,
   Alert,
+  Platform,
   ScrollView,
+  StyleSheet,
+  TextInput,
 } from 'react-native';
+
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
-import {Card} from '../../ui/components/Card';
-import {useNavigation} from '@react-navigation/native';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {IconButton} from '../../ui/components/IconButton';
-import {
-  faArrowLeft,
-} from '@fortawesome/free-solid-svg-icons';
-import {useCourses} from '../../core/contexts/CoursesContext';
-import {Text} from '../../ui/components/Text';
-import {CtaButton} from '../../ui/components/CtaButton';
-import {DateRow} from '../../ui/components/DateRow';
-import {useTranslation} from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
+
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { Card } from '../../ui/components/Card';
+import { CtaButton } from '../../ui/components/CtaButton';
+import { DateRow } from '../../ui/components/DateRow';
+import { IconButton } from '../../ui/components/IconButton';
+import { Text } from '../../ui/components/Text';
+import { useTheme } from '../../ui/hooks/useTheme';
 
 // Gestione sicura e compatibile dei date picker
 const handleDateChange = <T extends Date | null>(
@@ -44,9 +44,9 @@ const handleDateChange = <T extends Date | null>(
 
 export const NoticeFormScreen = () => {
   const navigation = useNavigation();
-  const {colors, spacing} = useTheme();
-  const {selectedCourse, addNoticeToCourse} = useCourses();
-  const {t} = useTranslation();
+  const { colors, spacing } = useTheme();
+  const { selectedCourse, addNoticeToCourse } = useCourses();
+  const { t } = useTranslation();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -63,41 +63,37 @@ export const NoticeFormScreen = () => {
   };
 
   const handlePublish = () => {
-    Alert.alert(
-      t('other.confirm'),
-      t('other.alertNotice'),
-      [
-        {text: t('common.cancel'), style: 'cancel'},
-        {
-          text: t('other.publish'),
-          style: 'default',
-          onPress: () => {
-            if (selectedCourse?.id != null) {
-              const lastId =
-                selectedCourse.notices.length > 0
-                  ? Math.max(...selectedCourse.notices.map(notice => notice.id))
-                  : 0;
-              const newId = lastId + 1;
+    Alert.alert(t('other.confirm'), t('other.alertNotice'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      {
+        text: t('other.publish'),
+        style: 'default',
+        onPress: () => {
+          if (selectedCourse?.id != null) {
+            const lastId =
+              selectedCourse.notices.length > 0
+                ? Math.max(...selectedCourse.notices.map(notice => notice.id))
+                : 0;
+            const newId = lastId + 1;
 
-              const formattedStartDate = formatDate(startDate);
-              const formattedEndDate = endDate ? formatDate(endDate) : null;
+            const formattedStartDate = formatDate(startDate);
+            const formattedEndDate = endDate ? formatDate(endDate) : null;
 
-              const newNotice = {
-                id: newId,
-                title,
-                content: description,
-                startDate: formattedStartDate,
-                ...(formattedEndDate && {endDate: formattedEndDate}),
-                visible: true,
-              };
+            const newNotice = {
+              id: newId,
+              title,
+              content: description,
+              startDate: formattedStartDate,
+              ...(formattedEndDate && { endDate: formattedEndDate }),
+              visible: true,
+            };
 
-              addNoticeToCourse(selectedCourse?.id, newNotice);
-              navigation.goBack();
-            }
-          },
+            addNoticeToCourse(selectedCourse?.id, newNotice);
+            navigation.goBack();
+          }
         },
-      ],
-    );
+      },
+    ]);
   };
 
   useLayoutEffect(() => {
@@ -105,7 +101,8 @@ export const NoticeFormScreen = () => {
       headerTitle: () => (
         <Text
           variant="heading"
-          style={{marginLeft: Platform.OS === 'android' ? 60 : 0}}>
+          style={{ marginLeft: Platform.OS === 'android' ? 60 : 0 }}
+        >
           {t('other.createNewNotice')}
         </Text>
       ),
@@ -120,7 +117,7 @@ export const NoticeFormScreen = () => {
   }, [navigation, colors]);
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
         <Card>
           <Text variant="heading" style={styles.label}>
@@ -130,7 +127,7 @@ export const NoticeFormScreen = () => {
             placeholder={t('other.insertTitle')}
             value={title}
             onChangeText={setTitle}
-            style={[styles.input, {color: colors.formPlaceHolder}]}
+            style={[styles.input, { color: colors.formPlaceHolder }]}
           />
         </Card>
 
@@ -143,11 +140,11 @@ export const NoticeFormScreen = () => {
             value={description}
             onChangeText={setDescription}
             multiline
-            style={[styles.input, {color: colors.formPlaceHolder}]}
+            style={[styles.input, { color: colors.formPlaceHolder }]}
           />
         </Card>
 
-        <Card style={{marginBottom: spacing[4]}}>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
             {t('other.setValidity')}
           </Text>

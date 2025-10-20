@@ -11,12 +11,10 @@ import BaseBottomSheet, {
   BottomSheetProps as BaseBottomSheetProps,
 } from '@gorhom/bottom-sheet';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
-import { useTheme } from '../../ui/hooks/useTheme';
 
 import { TranslucentView } from '../../../src/core/components/TranslucentView';
 import { IS_ANDROID } from '../../core/components/costant';
-import React from 'react';
-
+import { useTheme } from '../../ui/hooks/useTheme';
 
 export type BottomSheetProps = Omit<BaseBottomSheetProps, 'snapPoints'> & {
   snapPoints?: BaseBottomSheetProps['snapPoints'];
@@ -53,8 +51,7 @@ export const BottomSheet = forwardRef(
 
     return (
       <BaseBottomSheet
-            bottomInset={-80}
-
+        bottomInset={-80}
         ref={ref}
         index={1}
         snapPoints={[24, `${middleSnapPoint}%`, '100%']}

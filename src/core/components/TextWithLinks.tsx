@@ -4,7 +4,6 @@ import { MixedStyleDeclaration } from 'react-native-render-html';
 
 import { linkUrls, replaceImgWithAnchorTags } from '../../utils/html';
 import { HtmlView } from './HtmlView';
-import React from 'react';
 
 type Props = {
   baseStyle?: MixedStyleDeclaration;

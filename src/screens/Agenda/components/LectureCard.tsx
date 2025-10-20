@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { faVideo } from '@fortawesome/free-solid-svg-icons';
+
 import { AgendaCard } from '../../../ui/components/AgendaCard';
 import { Icon } from '../../../ui/components/Icon';
 import { Row } from '../../../ui/components/Row';
@@ -10,7 +11,6 @@ import { Text } from '../../../ui/components/Text';
 import { useStylesheet } from '../../../ui/hooks/useStylesheet';
 import { useTheme } from '../../../ui/hooks/useTheme';
 import { Theme } from '../../../ui/types/Theme';
-
 import { LectureItem } from '../types/AgendaItem';
 
 interface Props {
@@ -31,7 +31,9 @@ export const LectureCard = ({ item, compact = false, onPress }: Props) => {
     }
 
     if (item.place && item.place.name) {
-      return compact ? item.place.name : t('agendaScreen.room', { roomName: item.place.name });
+      return compact
+        ? item.place.name
+        : t('agendaScreen.room', { roomName: item.place.name });
     }
 
     return '-'; // fallback if `place` is undefined

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { TextStyle } from 'react-native';
 
 export interface Theme {
@@ -103,18 +104,18 @@ export interface Colors {
   yellow: string;
   black: string;
   readMore: string;
-  formTitle : string;
-  formPlaceHolder : string;
-  text : Palette;
-  primary: Palette,
-    secondary: Palette,
-    danger: Palette,
-    success: Palette,
-    error: Palette,
-    warning: Palette,
-    muted: Palette,
-    info: Palette,
-    tertiary: Palette,
+  formTitle: string;
+  formPlaceHolder: string;
+  text: Palette;
+  primary: Palette;
+  secondary: Palette;
+  danger: Palette;
+  success: Palette;
+  error: Palette;
+  warning: Palette;
+  muted: Palette;
+  info: Palette;
+  tertiary: Palette;
 }
 
 export interface Palettes {

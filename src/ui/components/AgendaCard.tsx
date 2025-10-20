@@ -1,19 +1,20 @@
-import { JSX, PropsWithChildren, useMemo } from 'react';
-import { StyleSheet, TouchableHighlight, View, ViewProps } from 'react-native';
-import { useTheme } from '../hooks/useTheme';
-import { Card, CardProps as CardProps } from './Card';
-import { LiveIndicator } from './LiveIndicator';
-import { Text } from './Text';
-import React from 'react';
+import { PropsWithChildren, useMemo } from 'react';
+import { StyleSheet, TouchableHighlight, ViewProps } from 'react-native';
 import { isTablet as isTabletHelper } from 'react-native-device-info';
-import { useStylesheet } from '../hooks/useStylesheet';
-import { Theme } from '../types/Theme';
+
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
+
+import { AgendaIcon } from '../../screens/Agenda/components/AgendaIcon';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
+import { Card } from './Card';
 import { Col } from './Col';
 import { Icon } from './Icon';
+import { LiveIndicator } from './LiveIndicator';
 import { Row } from './Row';
 import { Stack } from './Stack';
-import { AgendaIcon } from '../../screens/Agenda/components/AgendaIcon';
+import { Text } from './Text';
 
 export interface AgendaCardProps {
   /**
@@ -161,7 +162,7 @@ export const AgendaCard = ({
           >
             {showsIcon && <AgendaIcon icon={icon} color={iconColor!} />}
             <Text
-              variant='heading'
+              variant="heading"
               style={[
                 styles.title,
                 isCompact

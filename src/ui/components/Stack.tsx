@@ -3,7 +3,6 @@ import { FlexStyle, StyleProp, View, ViewStyle } from 'react-native';
 
 import { useTheme } from '../../ui/hooks/useTheme';
 import { Theme } from '../../ui/types/Theme';
-import React from 'react';
 
 interface SpacingShorthands {
   /** Shorthand for `margin` in {@link import('../types/Theme').Theme.spacing `Theme.spacing`} units */

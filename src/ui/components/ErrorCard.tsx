@@ -1,10 +1,9 @@
 import { JSX, PropsWithChildren } from 'react';
 import { Platform, TextStyle, ViewProps, ViewStyle } from 'react-native';
 
+import { useTheme } from '../../ui/hooks/useTheme';
 import { Card } from './Card';
 import { Text } from './Text';
-import { useTheme } from '../../ui/hooks/useTheme';
-import React from 'react';
 
 type Props = PropsWithChildren<
   ViewProps & {
@@ -38,7 +37,10 @@ export const ErrorCard = ({
         {
           borderStyle: 'solid',
           borderWidth: 1,
-          borderColor: typeof colors.errorCardBorder === 'string' ? colors.errorCardBorder : undefined,
+          borderColor:
+            typeof colors.errorCardBorder === 'string'
+              ? colors.errorCardBorder
+              : undefined,
         },
         style,
       ]}
@@ -48,8 +50,11 @@ export const ErrorCard = ({
         <Text
           style={[
             {
-              padding: spacing[5] ,
-              color: typeof colors.errorCardText === 'string' ? colors.errorCardText : undefined,
+              padding: spacing[5],
+              color:
+                typeof colors.errorCardText === 'string'
+                  ? colors.errorCardText
+                  : undefined,
               fontSize: fontSizes.sm,
             },
             testStyle,
@@ -63,4 +68,3 @@ export const ErrorCard = ({
     </Card>
   );
 };
-

@@ -1,58 +1,47 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Alert,
+  Button,
   Modal,
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   TextInput,
   View,
-  Button,
 } from 'react-native';
+
 import {
   faArrowLeft,
   faFilePdf,
   faPen,
 } from '@fortawesome/free-solid-svg-icons';
-import { useCourses } from '../../core/contexts/CoursesContext';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { Badge } from '../../ui/components/Badge';
+import { CtaButton } from '../../ui/components/CtaButton';
+import { IconButton } from '../../ui/components/IconButton';
+import { Row } from '../../ui/components/Row';
+import { Section } from '../../ui/components/Section';
+import { Text } from '../../ui/components/Text';
 import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
 import { Theme } from '../../ui/types/Theme';
-import { Text } from '../../ui/components/Text';
-import { IconButton } from '../../ui/components/IconButton';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { Section } from '../../ui/components/Section';
-import { Row } from '../../ui/components/Row';
-import { Badge } from '../../ui/components/Badge';
-import { useTranslation } from 'react-i18next';
+import { ProfileStackParamList } from './ServiceNavigator';
 
 export const SignatureScreen = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { selectedDoc, updateTbsDocStatus } = useCourses();
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const { spacing } = useTheme();
 
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otp, setOtp] = useState('');
   const [pin, setPin] = useState('');
-
-  if (!selectedDoc) return null;
-
-  const getBadgeColors = (signers: number) => {
-    switch (signers) {
-      case 1:
-        return { backgroundColor: '#D4EDDA', foregroundColor: '#155724' };
-      default:
-        return { backgroundColor: '#FFF3CD', foregroundColor: '#856404' };
-    }
-  };
-
-  const { backgroundColor, foregroundColor } = getBadgeColors(
-    selectedDoc.numberOfSignatures
-  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -78,49 +67,64 @@ export const SignatureScreen = () => {
     });
   }, [navigation]);
 
+  if (!selectedDoc) return null;
+
+  const getBadgeColors = (signers: number) => {
+    switch (signers) {
+      case 1:
+        return { backgroundColor: '#D4EDDA', foregroundColor: '#155724' };
+      default:
+        return { backgroundColor: '#FFF3CD', foregroundColor: '#856404' };
+    }
+  };
+
+  const { backgroundColor, foregroundColor } = getBadgeColors(
+    selectedDoc.numberOfSignatures,
+  );
+
   return (
     <>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-          <Section>
-            <Row style={{ alignItems: 'center' }}>
-              <View style={{ flex: 2 }}>
-                <Text
-                  variant="heading"
-                  style={styles.TitleText}
-                  numberOfLines={2}
-                >
-                  {selectedDoc?.title}
-                </Text>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: 'flex-end',
-                  paddingRight: spacing[4],
-                }}
+        <Section>
+          <Row style={{ alignItems: 'center' }}>
+            <View style={{ flex: 2 }}>
+              <Text
+                variant="heading"
+                style={styles.TitleText}
+                numberOfLines={2}
               >
-                {selectedDoc.status === 'firmato' ? (
-                  <Badge
-                    text={
-                      selectedDoc.numberOfSignatures === 1
-                        ? t('other.completedSigns')
-                        : t('other.waitingForSigns')
-                    }
-                    backgroundColor={backgroundColor}
-                    foregroundColor={foregroundColor}
-                  />
-                ) : (
-                  <View />
-                )}
-              </View>
-            </Row>
+                {selectedDoc?.title}
+              </Text>
+            </View>
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'flex-end',
+                paddingRight: spacing[4],
+              }}
+            >
+              {selectedDoc.status === 'firmato' ? (
+                <Badge
+                  text={
+                    selectedDoc.numberOfSignatures === 1
+                      ? t('other.completedSigns')
+                      : t('other.waitingForSigns')
+                  }
+                  backgroundColor={backgroundColor}
+                  foregroundColor={foregroundColor}
+                />
+              ) : (
+                <View />
+              )}
+            </View>
+          </Row>
 
-            <View style={{ marginBottom: spacing[4] }} />
+          <View style={{ marginBottom: spacing[4] }} />
 
-            <Text style={styles.dateText}>
-              {t('other.uploadedBy')} {selectedDoc?.uploadedBy}
-            </Text>
-          </Section>
+          <Text style={styles.dateText}>
+            {t('other.uploadedBy')} {selectedDoc?.uploadedBy}
+          </Text>
+        </Section>
       </ScrollView>
 
       <CtaButton
@@ -138,17 +142,13 @@ export const SignatureScreen = () => {
         <CtaButton
           title={t('other.sign')}
           action={() => {
-            Alert.alert(
-              t('other.confirm'),
-              t('other.alertSignature'),
-              [
-                { text: t('common.cancel'), style: 'cancel' },
-                {
-                  text: t('other.confirm'),
-                  onPress: () => setShowOtpModal(true),
-                },
-              ]
-            );
+            Alert.alert(t('other.confirm'), t('other.alertSignature'), [
+              { text: t('common.cancel'), style: 'cancel' },
+              {
+                text: t('other.confirm'),
+                onPress: () => setShowOtpModal(true),
+              },
+            ]);
           }}
           absolute={false}
           variant="filled"

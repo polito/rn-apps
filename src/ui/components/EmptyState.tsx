@@ -1,13 +1,13 @@
 import { StyleSheet } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { Col } from './Col';
-import { Icon } from './Icon';
-import { Text } from './Text';
+
 import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
 import { Theme } from '../../ui/types/Theme';
-import React from 'react';
+import { Col } from './Col';
+import { Icon } from './Icon';
+import { Text } from './Text';
 
 interface Props {
   icon?: IconDefinition;
@@ -36,7 +36,7 @@ export const EmptyState = ({
       accessibilityLabel={message}
       align="center"
       style={{
-        padding: _spacing[spacing as unknown as keyof Theme['spacing']] ,
+        padding: _spacing[spacing as unknown as keyof Theme['spacing']],
       }}
     >
       {icon && (
@@ -65,6 +65,6 @@ export const EmptyState = ({
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     icon: {
-      marginBottom: spacing[4] ,
+      marginBottom: spacing[4],
     },
   });

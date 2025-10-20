@@ -1,5 +1,4 @@
 import { useTheme } from '../../ui/hooks/useTheme';
-
 import { CourseIcon } from './CourseIcon';
 
 interface Props {
@@ -8,9 +7,9 @@ interface Props {
 
 export const CourseIndicator = ({ uniqueShortcode }: Props) => {
   const { colors } = useTheme();
-  //ATTENZIONE const coursePrefs = prefs.courses[uniqueShortcode];
-  
-  /*if (!coursePrefs) {
+  // ATTENZIONE const coursePrefs = prefs.courses[uniqueShortcode];
+
+  /* if (!coursePrefs) {
     return <CourseIcon color={colors.primary[500]} />;
   }
 
@@ -22,7 +21,5 @@ export const CourseIndicator = ({ uniqueShortcode }: Props) => {
     />
   ); */
 
-  return(
-        <CourseIcon color={colors.primary[500]} />
-  )
+  return <CourseIcon color={colors.primary[500]} />;
 };

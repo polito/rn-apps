@@ -1,8 +1,7 @@
+import { useTheme } from '../../ui/hooks/useTheme';
 import { ListItem, ListItemProps } from './ListItem';
 import { Switch } from './Switch';
 import { Text } from './Text';
-import { useTheme } from '../../ui/hooks/useTheme';
-import React from 'react';
 
 interface Props extends ListItemProps {
   title: string;

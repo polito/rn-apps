@@ -3,13 +3,13 @@ import { DimensionValue } from 'react-native';
 
 import { DateTime } from 'luxon';
 
+import { getRelativeTopInDay } from '../../../utils/calendar';
 import { useCalendarTouchableOpacityProps } from '../../hooks/calendar/useCalendarTouchableOpacityProps';
 import {
   EventCellStyle,
   EventRenderer,
   ICalendarEventBase,
 } from '../../types/Calendar';
-import { getRelativeTopInDay } from '../../../utils/calendar';
 import { DefaultCalendarEventRenderer } from './DefaultCalendarEventRenderer';
 
 interface CalendarEventProps<T extends ICalendarEventBase> {

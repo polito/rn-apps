@@ -7,11 +7,10 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { Text } from '../../../ui/components/Text';
-import { useTheme } from '../../../ui/hooks/useTheme';
-
 import { DateTime } from 'luxon';
 
+import { Text } from '../../../ui/components/Text';
+import { useTheme } from '../../../ui/hooks/useTheme';
 import { isToday } from '../../../utils/calendar';
 
 export interface CalendarHeaderProps {

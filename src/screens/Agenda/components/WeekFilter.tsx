@@ -6,12 +6,13 @@ import {
   faChevronLeft,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
+
+import { DateTime } from 'luxon';
+
 import { IconButton } from '../../../ui/components/IconButton';
 import { Row } from '../../../ui/components/Row';
 import { Text } from '../../../ui/components/Text';
 import { useTheme } from '../../../ui/hooks/useTheme';
-
-import { DateTime } from 'luxon';
 
 interface Props {
   current: DateTime;

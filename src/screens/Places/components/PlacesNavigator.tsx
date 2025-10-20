@@ -4,9 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { ImageURISource, StyleSheet, View } from 'react-native';
 import { PERMISSIONS, request } from 'react-native-permissions';
 
-import { Divider } from '../../../ui/components/Divider';
-import { useTheme } from '../../../ui/hooks/useTheme';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
   Images,
   RasterLayer,
@@ -14,10 +11,10 @@ import {
   UserLocation,
 } from '@rnmapbox/maps';
 
-import { HeaderCloseButton } from '../../../core/components/HeaderCloseButton';
-import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { useTitlesStyles } from '../../../core/hooks/useTitleStyles';
+import { Divider } from '../../../ui/components/Divider';
+import { useTheme } from '../../../ui/hooks/useTheme';
 import { notNullish } from '../../../utils/predicates';
 import { INTERIORS_MIN_ZOOM, MAX_ZOOM, RASTER_TILE_SIZE } from '../constants';
 import { PlacesContext } from '../contexts/PlacesContext';
@@ -28,13 +25,11 @@ import { FreeRoomsScreen } from '../screens/FreeRoomsScreen';
 import { PlaceScreen } from '../screens/PlaceScreen';
 import { PlacesScreen } from '../screens/PlacesScreen';
 import { createMapNavigator } from './MapNavigator';
-import { styles } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetScrollable/BottomSheetFlashList';
 
 export type ServiceStackParamList = {
   Places: undefined;
   MessagesModal: undefined;
 };
-const Stack = createNativeStackNavigator<ServiceStackParamList>();
 
 export type PlacesStackParamList = {
   Places1: {
@@ -67,7 +62,6 @@ const Map = createMapNavigator();
 
 const MapDefaultContent = () => {
   const theme = useTheme();
-  const {t} = useTranslation();
   const colorScheme = useMemo(() => (theme.dark ? 'dark' : 'light'), [theme]);
   const { floorId } = useContext(PlacesContext);
   const categories = usePlaceCategoriesMap();
@@ -151,7 +145,7 @@ export const PlacesNavigator = () => {
           headerTransparent: true,
           headerBackground: () => (
             <View style={StyleSheet.absoluteFill}>
-              <TranslucentView  fallbackOpacity={1}/>
+              <TranslucentView fallbackOpacity={1} />
               <Divider
                 style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}
               />
@@ -180,8 +174,8 @@ export const PlacesNavigator = () => {
         <Map.Screen
           name="Places1"
           component={PlacesScreen}
-          options={{ title: t('placesScreen.title')}}
-          getId={({ params }) =>
+          options={{ title: t('placesScreen.title') }}
+          getId={({ params }: { params: any }) =>
             [params?.categoryId, params?.subCategoryId].join()
           }
         />
@@ -206,7 +200,7 @@ export const PlacesNavigator = () => {
             title: t('common.building'),
           }}
         />
-        
+
         <Map.Screen
           name="FreeRooms"
           component={FreeRoomsScreen}

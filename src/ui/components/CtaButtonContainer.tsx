@@ -2,10 +2,9 @@ import { Children, PropsWithChildren } from 'react';
 import { Platform, View, ViewProps } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useTheme } from '../../ui/hooks/useTheme';
-
 import { useFeedbackContext } from '../../../src/core/contexts/FeedbackContext';
 import { useSafeBottomBarHeight } from '../../../src/core/hooks/useSafeBottomBarHeight';
+import { useTheme } from '../../ui/hooks/useTheme';
 
 interface Props {
   absolute: boolean;
@@ -31,7 +30,7 @@ export const CtaButtonContainer = ({
           display: 'flex',
           flexDirection: 'column',
           gap: spacing[5],
-          paddingVertical: spacing[5] ,
+          paddingVertical: spacing[5],
         },
         absolute && {
           position: 'absolute',
@@ -40,7 +39,7 @@ export const CtaButtonContainer = ({
           right,
           bottom:
             (modal ? 0 : bottomBarHeight) +
-            (isFeedbackVisible ? spacing[10]  * Children.count(children) : 0),
+            (isFeedbackVisible ? spacing[10] * Children.count(children) : 0),
         },
         style,
       ]}

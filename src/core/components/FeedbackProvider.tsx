@@ -2,7 +2,6 @@ import { PropsWithChildren, useState } from 'react';
 
 import { Snackbar } from '../../ui/components/Snackbar';
 import { Feedback } from '../../ui/types/Feedback';
-
 import { FeedbackContext } from '../contexts/FeedbackContext';
 
 export const FeedbackProvider = ({ children }: PropsWithChildren) => {

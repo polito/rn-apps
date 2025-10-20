@@ -1,67 +1,59 @@
-import {useEffect, useLayoutEffect, useMemo, useState} from 'react';
-import {useTranslation} from 'react-i18next';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  View,
-  Image,
+  FlatList,
   ScrollView,
   StyleSheet,
   TextInput,
-  FlatList,
-  TouchableOpacity,
+  View,
 } from 'react-native';
-import {ListItem} from '../../ui/components/ListItem';
-import {MetricCard} from '../../ui/components/MetricCard';
-import {Section} from '../../ui/components/Section';
-import {SectionHeader} from '../../ui/components/SectionHeader';
-import {SectionList} from '../../ui/components/SectionList';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {useCourses} from '../../core/contexts/CoursesContext';
-import React from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {useBottomBarAwareStyles} from '../../core/hooks/useBottomBarAwareStyles';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useStylesheet} from '../../ui/hooks/useStylesheet';
-import {Theme} from '../../ui/types/Theme';
-import {Text} from '../../ui/components/Text';
-import {Icon} from '../../ui/components/Icon';
-import {Logo} from '../../core/components/Logo';
-import {Row} from '../../ui/components/Row';
-import {IconButton} from '../../ui/components/IconButton';
+import { Platform } from 'react-native';
+
 import {
   faArrowLeft,
   faInbox,
   faPerson,
   faSearch,
 } from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {GlobalStyles} from '../../core/components/GlobalStyles';
-import {BottomBarSpacer} from '../../core/components/BottomBarSpacer';
-import {IndentedDivider} from '../../ui/components/IndentedDivider';
-import {EmptyState} from '../../ui/components/EmptyState';
-import {useSafeAreaSpacing} from '../../core/hooks/useSafeAreaSpacing';
-import {Platform} from 'react-native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
+import { GlobalStyles } from '../../core/components/GlobalStyles';
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
+import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
+import { EmptyState } from '../../ui/components/EmptyState';
+import { IconButton } from '../../ui/components/IconButton';
+import { IndentedDivider } from '../../ui/components/IndentedDivider';
+import { ListItem } from '../../ui/components/ListItem';
+import { SectionHeader } from '../../ui/components/SectionHeader';
+import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
+import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
+import { ProfileStackParamList } from './ServiceNavigator';
 
 export const PersoneScreen = () => {
-  const {t} = useTranslation();
-  const {spacing, colors} = useTheme();
-  const navigation = useNavigation();
+  const { t } = useTranslation();
+  const { spacing, colors } = useTheme();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
-  const {setOptions} = useNavigation();
-  const {fontSizes} = useTheme();
-  const {user, setSelectedProfile} = useCourses();
+  const { setSelectedProfile } = useCourses();
   const [searchText, setSearchText] = useState('');
-  const {fakeProfiles} = useCourses();
-  const {paddingHorizontal} = useSafeAreaSpacing();
+  const { fakeProfiles } = useCourses();
+  const { paddingHorizontal } = useSafeAreaSpacing();
 
-
-useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', e => {
       e.preventDefault();
       navigation.navigate('Servizi');
     });
-  
-    return unsubscribe; 
+
+    return unsubscribe;
   }, [navigation]);
 
   useLayoutEffect(() => {
@@ -80,7 +72,8 @@ useEffect(() => {
             textAlign: 'center',
             width: '100%',
             marginLeft: Platform.OS === 'android' ? -25 : -60,
-          }}>
+          }}
+        >
           Persone
         </Text>
       ),
@@ -89,41 +82,70 @@ useEffect(() => {
 
   return (
     <ScrollView
-      style={{flex: 1}}
+      style={{ flex: 1 }}
       contentContainerStyle={bottomBarAwareStyles}
       contentInsetAdjustmentBehavior="automatic"
-      bounces={false}>
-        <View style={styles.searchContainer}>
-          <FontAwesomeIcon
-            icon={faSearch}
-            size={16}
-            color="#888"
-            style={styles.searchIcon}
-          />
-          <TextInput
-            placeholder={t('other.lookForPersone')}
-            value={searchText}
-            onChangeText={setSearchText}
-            style={styles.searchInput}
-            placeholderTextColor="#888"
-          />
-        </View>
+      bounces={false}
+    >
+      <View style={styles.searchContainer}>
+        <FontAwesomeIcon
+          icon={faSearch}
+          size={16}
+          color="#888"
+          style={styles.searchIcon}
+        />
+        <TextInput
+          placeholder={t('other.lookForPersone')}
+          value={searchText}
+          onChangeText={setSearchText}
+          style={styles.searchInput}
+          placeholderTextColor="#888"
+        />
+      </View>
 
-        {searchText.trim() !== '' && (
+      {searchText.trim() !== '' && (
+        <FlatList
+          contentInsetAdjustmentBehavior="automatic"
+          initialNumToRender={8}
+          style={GlobalStyles.grow}
+          contentContainerStyle={paddingHorizontal}
+          data={fakeProfiles.filter(profile => {
+            const search = searchText.toLowerCase().trim();
+            return (
+              profile.name.toLowerCase().startsWith(search) ||
+              profile.surname.toLowerCase().startsWith(search)
+            );
+          })}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) => (
+            <ListItem
+              title={`${item.name} ${item.surname}`}
+              subtitle={item.role}
+              onPress={() => {
+                setSelectedProfile(item);
+                navigation.navigate('Contatto');
+              }}
+              leadingItem={<FontAwesomeIcon icon={faPerson} size={20} />}
+            />
+          )}
+          ListFooterComponent={<BottomBarSpacer />}
+          ItemSeparatorComponent={() => <IndentedDivider />}
+          ListEmptyComponent={() => (
+            <EmptyState icon={faInbox} message={t('other.noPersona')} />
+          )}
+        />
+      )}
+
+      {fakeProfiles.some(p => p.preferred) && (
+        <>
+          <View style={{ marginTop: spacing[4] }}></View>
+          <SectionHeader title={t('other.preferred')} />
           <FlatList
-            contentInsetAdjustmentBehavior="automatic"
-            initialNumToRender={8}
-            style={GlobalStyles.grow}
-            contentContainerStyle={paddingHorizontal}
-            data={fakeProfiles.filter(profile => {
-              const search = searchText.toLowerCase().trim();
-              return (
-                profile.name.toLowerCase().startsWith(search) ||
-                profile.surname.toLowerCase().startsWith(search)
-              );
-            })}
+            data={fakeProfiles.filter(p => p.preferred)}
             keyExtractor={item => item.id.toString()}
-            renderItem={({item}) => (
+            contentContainerStyle={paddingHorizontal}
+            ItemSeparatorComponent={() => <IndentedDivider />}
+            renderItem={({ item }) => (
               <ListItem
                 title={`${item.name} ${item.surname}`}
                 subtitle={item.role}
@@ -135,42 +157,14 @@ useEffect(() => {
               />
             )}
             ListFooterComponent={<BottomBarSpacer />}
-            ItemSeparatorComponent={() => <IndentedDivider />}
-            ListEmptyComponent={() => (
-              <EmptyState icon={faInbox} message={t('other.noPersona')} />
-            )}
           />
-        )}
-
-        {fakeProfiles.some(p => p.preferred) && (
-          <>
-            <View style={{marginTop: spacing[4]}}></View>
-            <SectionHeader title={t('other.preferred')} />
-            <FlatList
-              data={fakeProfiles.filter(p => p.preferred)}
-              keyExtractor={item => item.id.toString()}
-              contentContainerStyle={paddingHorizontal}
-              ItemSeparatorComponent={() => <IndentedDivider />}
-              renderItem={({item}) => (
-                <ListItem
-                  title={`${item.name} ${item.surname}`}
-                  subtitle={item.role}
-                  onPress={() => {
-                    setSelectedProfile(item);
-                    navigation.navigate('Contatto');
-                  }}
-                  leadingItem={<FontAwesomeIcon icon={faPerson} size={20} />}
-                />
-              )}
-              ListFooterComponent={<BottomBarSpacer />}
-            />
-          </>
-        )}
+        </>
+      )}
     </ScrollView>
   );
 };
 
-const createStyles = ({colors, spacing}: Theme) =>
+const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
     heading: {
       paddingTop: spacing[5],

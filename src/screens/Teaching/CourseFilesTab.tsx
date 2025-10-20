@@ -1,27 +1,31 @@
-import React, {useState} from 'react';
-import {FlatList, Button, View, StyleSheet, TouchableOpacity} from 'react-native';
-import {ListItem} from '../../ui/components/ListItem';
-import {useCourses} from '../../core/contexts/CoursesContext';
-import {CourseFileListItem} from './CourseFileListItem';
-import {GlobalStyles} from '../../core/components/GlobalStyles';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {BottomBarSpacer} from '../../core/components/BottomBarSpacer';
-import {IndentedDivider} from '../../ui/components/IndentedDivider';
-import {EmptyState} from '../../ui/components/EmptyState';
-import {faFile, faFolder, faInbox} from '@fortawesome/free-solid-svg-icons';
-import {CtaButton, CtaButtonSpacer} from '../../ui/components/CtaButton';
-import {useSafeAreaSpacing} from '../../core/hooks/useSafeAreaSpacing';
-import { Text } from '../../ui/components/Text';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Icon } from '../../ui/components/Icon';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FlatList, StyleSheet } from 'react-native';
+
+import { faFile, faFolder, faInbox } from '@fortawesome/free-solid-svg-icons';
+
+import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
+import { CtaButton, CtaButtonSpacer } from '../../ui/components/CtaButton';
+import { EmptyState } from '../../ui/components/EmptyState';
+import { Icon } from '../../ui/components/Icon';
+import { IndentedDivider } from '../../ui/components/IndentedDivider';
+import { ListItem } from '../../ui/components/ListItem';
+import { useTheme } from '../../ui/hooks/useTheme';
+import { CourseFileListItem } from './CourseFileListItem';
 
 export const CourseFilesTab = () => {
-  const {fakeCourses} = useCourses();
-  const {fontSizes, colors, spacing, palettes} = useTheme();
-  const {paddingHorizontal} = useSafeAreaSpacing();
-  const [scrollEnabled, setScrollEnabled] = useState(true);
-  const {selectedCourse} = useCourses();
+  const { palettes } = useTheme();
+  const { paddingHorizontal } = useSafeAreaSpacing();
+  const { selectedCourse } = useCourses();
+
+  const [scrollEnabled] = useState(true);
+  const [showFiles, setShowFiles] = useState(true); // Stato per mostrare/nascondere i file
+  const { t } = useTranslation();
+  const [showFilesInDirectory, setShowFilesInDirectory] = useState(false);
+  const [Id, setId] = useState(0);
+
   // Troviamo il corso corrispondente
   const course = selectedCourse;
 
@@ -30,11 +34,7 @@ export const CourseFilesTab = () => {
     return null;
   }
 
-  const [showFiles, setShowFiles] = useState(true); // Stato per mostrare/nascondere i file
-  const [showFilesInDirectory, setShowFilesInDirectory] = useState(false);
-  const [Id, setId] = useState(0);
-  const {directories} = course; // Otteniamo le directory del corso
-  const {t} = useTranslation();
+  const { directories } = course; // Otteniamo le directory del corso
   // Funzione per ottenere tutti i file da tutte le directory
   const getAllFiles = () => {
     return directories.flatMap(directory => directory.files);
@@ -60,11 +60,13 @@ export const CourseFilesTab = () => {
           initialNumToRender={15}
           maxToRenderPerBatch={15}
           windowSize={4}
-          data={showFilesInDirectory ? getFilesFromDirectory(Id) : getAllFiles()}
+          data={
+            showFilesInDirectory ? getFilesFromDirectory(Id) : getAllFiles()
+          }
           keyExtractor={item => item.id.toString()}
-          renderItem={({item: file, index}) => (
+          renderItem={({ item: file, index }) => (
             <CourseFileListItem
-              fileId = {file.id}
+              fileId={file.id}
               key={file.id}
               name={file.name}
               date={file.date}
@@ -95,17 +97,22 @@ export const CourseFilesTab = () => {
           windowSize={4}
           data={directories}
           keyExtractor={directory => directory.id.toString()}
-          renderItem={({item: directory}) => (
+          renderItem={({ item: directory }) => (
             <ListItem
               title={directory.name}
               subtitle={`${directory.files.length} files`}
               onPress={() => {
-                setId(directory.id)
-                setShowFilesInDirectory(true)
-                setShowFiles(true)
-              
+                setId(directory.id);
+                setShowFilesInDirectory(true);
+                setShowFiles(true);
               }} // Cambiamo stato per mostrare i file
-              leadingItem={<Icon icon={faFolder} size={24} color={palettes.secondary[500]} />}
+              leadingItem={
+                <Icon
+                  icon={faFolder}
+                  size={24}
+                  color={palettes.secondary[500]}
+                />
+              }
             />
           )}
           ListFooterComponent={
@@ -121,19 +128,15 @@ export const CourseFilesTab = () => {
         />
       )}
       <CtaButton
-       title={showFiles ? t('other.showFolders') : t('other.showFiles')}
-       action={() => {
-        setShowFiles(prev => !prev)
-        setShowFilesInDirectory(false)
-     
-       }}
-       absolute = {false}
-       variant="filled"
-       icon = {showFiles ? faFolder : faFile}
-     />
-        
-      
-      
+        title={showFiles ? t('other.showFolders') : t('other.showFiles')}
+        action={() => {
+          setShowFiles(prev => !prev);
+          setShowFilesInDirectory(false);
+        }}
+        absolute={false}
+        variant="filled"
+        icon={showFiles ? faFolder : faFile}
+      />
     </>
   );
 };

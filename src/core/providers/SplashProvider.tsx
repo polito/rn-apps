@@ -14,12 +14,12 @@ export function SplashProvider({ children }: PropsWithChildren) {
   const [isAppLoaded, setIsAppLoaded] = useState(false);
   const [isSplashLoaded, setIsSplashLoaded] = useState(false);
   useEffect(() => {
-  const timer = setTimeout(() => {
-    setIsAppLoaded(true); // Simula il termine del caricamento
-  }, 1000); // 1 secondo
+    const timer = setTimeout(() => {
+      setIsAppLoaded(true); // Simula il termine del caricamento
+    }, 1000); // 1 secondo
 
-  return () => clearTimeout(timer);
-}, []);
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <SplashContext.Provider
       value={{ isAppLoaded, setIsAppLoaded, isSplashLoaded }}

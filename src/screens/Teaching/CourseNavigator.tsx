@@ -1,31 +1,25 @@
-import {useEffect, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {Platform, SafeAreaView, useWindowDimensions, View} from 'react-native';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { View, useWindowDimensions } from 'react-native';
 
-import {faPlus, faSliders} from '@fortawesome/free-solid-svg-icons';
-import {IconButton} from '../../ui/components/IconButton';
-import {Row} from '../../ui/components/Row';
-import {Text} from '../../ui/components/Text';
-import {TopTabBar} from '../../ui/components/TopTapBar';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {TeachingStackParamList} from './TeachingNavigator';
-import {ParamListBase, useNavigation} from '@react-navigation/native';
-import {useTitlesStyles} from '../../core/hooks/useTitleStyles';
-import {useCourses} from '../../core/contexts/CoursesContext';
-import {CourseIndicator} from './CourseIndicator';
-import {CourseContext} from './CourseContext';
-import {CourseInfoTab} from './CourseInfoTab';
-import {CourseNoticesTab} from './CourseNoticesTab';
-import {CourseFileListItem} from './CourseFileListItem';
-import {CourseFilesTab} from './CourseFilesTab';
-import {CourseLecturesTab} from './CourseLecturesTab';
-import {CourseAssignmentsTab} from './CourseAssignmentsTab';
-import { EmptyScreen } from '../EmptyScreen';
+import { faPlus, faSliders } from '@fortawesome/free-solid-svg-icons';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { ParamListBase, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { IconButton } from '../../ui/components/IconButton';
+import { Row } from '../../ui/components/Row';
+import { Text } from '../../ui/components/Text';
+import { TopTabBar } from '../../ui/components/TopTapBar';
+import { useTheme } from '../../ui/hooks/useTheme';
+import { CourseAssignmentsTab } from './CourseAssignmentsTab';
+import { CourseFilesTab } from './CourseFilesTab';
+import { CourseInfoTab } from './CourseInfoTab';
+import { CourseLecturesTab } from './CourseLecturesTab';
+import { CourseNoticesTab } from './CourseNoticesTab';
 import { CourseStudentsTab } from './CourseStudentsTab';
-
-type Props = NativeStackScreenProps<TeachingStackParamList, 'Course'>;
+import { TeachingStackParamList } from './TeachingNavigator';
 
 export interface CourseTabsParamList
   extends ParamListBase,
@@ -39,16 +33,17 @@ export interface CourseTabsParamList
 
 const TopTabs = createMaterialTopTabNavigator<CourseTabsParamList>();
 
-export const CourseNavigator = ({ route }: Props) => {
+export const CourseNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { colors, fontSizes, spacing } = theme;
   const { width } = useWindowDimensions();
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
   const { selectedCourse } = useCourses();
 
   const [showPlusButton, setShowPlusButton] = useState<boolean>(false); // <--- Stato
-  const [formPage, setFormPage] = useState('')
+  const [formPage, setFormPage] = useState('');
 
   useEffect(() => {
     navigation.setOptions({
@@ -78,17 +73,16 @@ export const CourseNavigator = ({ route }: Props) => {
               size={fontSizes.lg}
               accessibilityLabel={t('common.add')}
               onPress={() => {
-                console.log(formPage)
                 if (formPage === 'Notice') {
                   navigation.navigate('NoticeForm');
                 }
-                if(formPage === 'Files'){
+                if (formPage === 'Files') {
                   navigation.navigate('FilesForm');
                 }
-                if(formPage === 'Lecture'){
+                if (formPage === 'Lecture') {
                   navigation.navigate('LectureForm');
                 }
-                if(formPage === 'Students'){
+                if (formPage === 'Students') {
                   navigation.navigate('StudentsForm');
                 }
               }}
@@ -128,8 +122,9 @@ export const CourseNavigator = ({ route }: Props) => {
         listeners={{
           tabPress: () => setShowPlusButton(false),
           focus: () => {
-            setShowPlusButton(false); setFormPage('');
-          }
+            setShowPlusButton(false);
+            setFormPage('');
+          },
         }}
       />
       <TopTabs.Screen
@@ -137,10 +132,14 @@ export const CourseNavigator = ({ route }: Props) => {
         component={CourseNoticesTab}
         options={{ title: t('common.notice_plural') }}
         listeners={{
-          tabPress: () => {setShowPlusButton(true); setFormPage('Notice')},
+          tabPress: () => {
+            setShowPlusButton(true);
+            setFormPage('Notice');
+          },
           focus: () => {
-            setShowPlusButton(true); setFormPage('Notice');
-          }
+            setShowPlusButton(true);
+            setFormPage('Notice');
+          },
         }}
       />
       <TopTabs.Screen
@@ -148,10 +147,14 @@ export const CourseNavigator = ({ route }: Props) => {
         component={CourseFilesTab}
         options={{ title: t('courseFilesTab.title') }}
         listeners={{
-          tabPress: () => {setShowPlusButton(true); setFormPage('Files')},
+          tabPress: () => {
+            setShowPlusButton(true);
+            setFormPage('Files');
+          },
           focus: () => {
-            setShowPlusButton(true); setFormPage('Files');
-          }
+            setShowPlusButton(true);
+            setFormPage('Files');
+          },
         }}
       />
       <TopTabs.Screen
@@ -159,10 +162,14 @@ export const CourseNavigator = ({ route }: Props) => {
         component={CourseLecturesTab}
         options={{ title: t('common.lecture_plural') }}
         listeners={{
-          tabPress: () => {setShowPlusButton(true); setFormPage('Lecture')},
+          tabPress: () => {
+            setShowPlusButton(true);
+            setFormPage('Lecture');
+          },
           focus: () => {
-            setShowPlusButton(true); setFormPage('Lecture');
-          }
+            setShowPlusButton(true);
+            setFormPage('Lecture');
+          },
         }}
       />
       <TopTabs.Screen
@@ -170,10 +177,14 @@ export const CourseNavigator = ({ route }: Props) => {
         component={CourseStudentsTab}
         options={{ title: t('other.students') }}
         listeners={{
-          tabPress: () => {setShowPlusButton(false); setFormPage('Students')},
+          tabPress: () => {
+            setShowPlusButton(false);
+            setFormPage('Students');
+          },
           focus: () => {
-            setShowPlusButton(false); setFormPage('Students');
-          }
+            setShowPlusButton(false);
+            setFormPage('Students');
+          },
         }}
       />
       <TopTabs.Screen
@@ -183,8 +194,9 @@ export const CourseNavigator = ({ route }: Props) => {
         listeners={{
           tabPress: () => setShowPlusButton(false),
           focus: () => {
-            setShowPlusButton(false); setFormPage('');
-          }
+            setShowPlusButton(false);
+            setFormPage('');
+          },
         }}
       />
     </TopTabs.Navigator>

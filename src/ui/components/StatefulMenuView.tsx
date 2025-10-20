@@ -4,7 +4,6 @@ import { MenuAction, MenuView } from '@react-native-menu/menu';
 import { MenuComponentProps } from '@react-native-menu/menu/src/types';
 
 import { IS_ANDROID } from '../../core/components/costant';
-import React from 'react';
 
 export const StatefulMenuView = ({
   actions,

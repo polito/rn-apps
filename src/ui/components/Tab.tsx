@@ -7,13 +7,11 @@ import {
   View,
 } from 'react-native';
 
-import { UnreadBadge } from './UnreadBadge';
-
 import color from 'color';
 
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
-import React from 'react';
+import { UnreadBadge } from './UnreadBadge';
 
 export interface Props {
   selected?: boolean;
@@ -32,7 +30,7 @@ export const Tab = ({
   badge,
   ...rest
 }: PropsWithChildren<TouchableHighlightProps & Props>) => {
-  const { dark, palettes, colors, spacing, fontWeights } = useTheme();
+  const { dark, palettes, spacing, fontWeights } = useTheme();
   const backgroundColor = useMemo(
     () =>
       selected
@@ -54,8 +52,8 @@ export const Tab = ({
         {
           backgroundColor,
           borderRadius: 10,
-          paddingHorizontal: spacing[2.5] ,
-          paddingVertical: spacing[1.5] ,
+          paddingHorizontal: spacing[2.5],
+          paddingVertical: spacing[1.5],
         },
         style,
       ]}
@@ -66,10 +64,10 @@ export const Tab = ({
           style={[
             {
               color: selected
-                ? palettes.text[50] 
+                ? palettes.text[50]
                 : dark
-                  ? palettes.primary[400] 
-                  : palettes.primary[500] ,
+                  ? palettes.primary[400]
+                  : palettes.primary[500],
               fontWeight: fontWeights.medium,
             },
             textStyle,

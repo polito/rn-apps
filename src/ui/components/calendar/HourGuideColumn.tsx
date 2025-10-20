@@ -1,11 +1,10 @@
 import { StyleSheet, View } from 'react-native';
 
+import { isNumber } from 'lodash';
+
 import { Text } from '../../../ui/components/Text';
 import { useStylesheet } from '../../../ui/hooks/useStylesheet';
 import { Theme } from '../../../ui/types/Theme';
-
-import { isNumber } from 'lodash';
-
 import { formatHour } from '../../../utils/calendar';
 
 interface HourGuideColumnProps {

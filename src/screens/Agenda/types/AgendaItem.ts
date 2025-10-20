@@ -48,11 +48,11 @@ export interface ExamItem extends BaseAgendaItem {
 
 export interface LectureItem extends BaseAgendaItem {
   id: number;
-  courseId ? : number;
+  courseId?: number;
   type: 'lecture';
   fromTime: string;
   toTime: string;
-  teacherId ?: number;
+  teacherId?: number;
   description: string | null;
   place: PlaceRef | null | string;
   virtualClassrooms?: RelatedVirtualClassroom[];

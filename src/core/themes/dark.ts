@@ -1,10 +1,8 @@
-
 // noinspection AllyPlainJsInspection
 //
 import { Platform } from 'react-native';
 
 import { Theme } from '../../ui/types/Theme';
-
 import { lightTheme } from './light';
 
 export const darkTheme: Theme = {

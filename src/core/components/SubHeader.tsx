@@ -3,14 +3,15 @@ import {
   Animated,
   Platform,
   StyleSheet,
-  useColorScheme,
   View,
+  useColorScheme,
 } from 'react-native';
-import { useTheme } from '../../ui/hooks/useTheme';
+
 import { useHeaderHeight } from '@react-navigation/elements';
 import { DarkTheme, DefaultTheme } from '@react-navigation/native';
+
+import { useTheme } from '../../ui/hooks/useTheme';
 import { TranslucentView } from './TranslucentView';
-import React from 'react';
 
 interface Props {
   scrollTop: Animated.Value;

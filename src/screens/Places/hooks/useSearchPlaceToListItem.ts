@@ -22,9 +22,9 @@ export const useSearchPlaceToListItem = () => {
                 : place.category.name
             } - ${place.floor.name}`
           : t('common.building'),
-      linkTo: isPlace(place)
-  ? { name: 'Place', params: { placeId: place.id } }
-  : { name: 'Building', params: { buildingId: place.id } },
+        linkTo: isPlace(place)
+          ? { name: 'Place', params: { placeId: place.id } }
+          : { name: 'Building', params: { buildingId: place.id } },
       };
     },
     [t],

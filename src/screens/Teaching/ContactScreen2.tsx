@@ -1,33 +1,33 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, Image, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+
+import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
+import {
+  faBookOpen,
+  faEnvelope,
+  faFileAlt,
+  faPhone,
+  faStar,
+  faUser,
+  faUserTie,
+} from '@fortawesome/free-solid-svg-icons';
+import { useNavigation } from '@react-navigation/native';
+
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
+import { Col } from '../../ui/components/Col';
+import { Icon } from '../../ui/components/Icon';
+import { IconButton } from '../../ui/components/IconButton';
 import { ListItem } from '../../ui/components/ListItem';
-import { MetricCard } from '../../ui/components/MetricCard';
-import { Section } from '../../ui/components/Section';
+import { RoleListItem } from '../../ui/components/RoleListItem';
+import { Row } from '../../ui/components/Row';
 import { SectionHeader } from '../../ui/components/SectionHeader';
 import { SectionList } from '../../ui/components/SectionList';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { useCourses } from '../../core/contexts/CoursesContext';
-import React from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
 import { Text } from '../../ui/components/Text';
-import { Icon } from '../../ui/components/Icon';
-import { faBank, faBookOpen, faEnvelope, faFileAlt, faHome, faPhone, faStar, faUser, faUserTie } from '@fortawesome/free-solid-svg-icons';
-import { Logo } from '../../core/components/Logo';
-import { Row } from '../../ui/components/Row';
-import { IconButton } from '../../ui/components/IconButton';
-import { faBell, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import { Col } from '../../ui/components/Col';
-import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
-import { RoleListItem } from '../../ui/components/RoleListItem';
-import { List } from '../../ui/components/List';
-
-
-
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
+import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
 
 export const ContactScreen2 = () => {
   const { t, i18n } = useTranslation();
@@ -37,9 +37,7 @@ export const ContactScreen2 = () => {
   const styles = useStylesheet(createStyles);
   const { selectedProfile, toggleFavoriteProfile } = useCourses();
 
-  if (!selectedProfile) return null;
-
-  const [isFavorite, setIsFavorite] = useState(selectedProfile.preferred);
+  const [isFavorite, setIsFavorite] = useState(selectedProfile?.preferred);
 
   useLayoutEffect(() => {
     const marginLeft = i18n.language === 'en' ? -80 : -25;
@@ -55,6 +53,8 @@ export const ContactScreen2 = () => {
       ),
     });
   }, [navigation, colors, i18n.language, t]);
+
+  if (!selectedProfile) return null;
 
   return (
     <ScrollView
@@ -78,7 +78,7 @@ export const ContactScreen2 = () => {
           icon={isFavorite ? faStar : faStarRegular}
           size={22}
           onPress={() => {
-            setIsFavorite((prev) => !prev);
+            setIsFavorite(prev => !prev);
             toggleFavoriteProfile();
           }}
         />
@@ -115,18 +115,18 @@ export const ContactScreen2 = () => {
             <RoleListItem
               title={t('other.otherInstitutionalRoles')}
               subtitle={selectedProfile.role2}
-              leadingItem={<Icon icon={faUserTie} size={fontSizes['xl']} />}
+              leadingItem={<Icon icon={faUserTie} size={fontSizes.xl} />}
             />
             {selectedProfile.role3 && (
               <RoleListItem
                 subtitle={selectedProfile.role3}
-                leadingItem={<Icon icon={faUserTie} size={fontSizes['xl']} />}
+                leadingItem={<Icon icon={faUserTie} size={fontSizes.xl} />}
               />
             )}
             <ListItem
               title={t('personScreen.sector')}
               subtitle={selectedProfile.sector}
-              leadingItem={<Icon icon={faUserTie} size={fontSizes['xl']} />}
+              leadingItem={<Icon icon={faUserTie} size={fontSizes.xl} />}
             />
           </SectionList>
         </>
@@ -139,12 +139,12 @@ export const ContactScreen2 = () => {
         <ListItem
           title={t('other.telephone')}
           subtitle={selectedProfile.phoneNumber.toString()}
-          leadingItem={<Icon icon={faPhone} size={fontSizes['xl']} />}
+          leadingItem={<Icon icon={faPhone} size={fontSizes.xl} />}
         />
         <ListItem
           title={t('common.email')}
           subtitle={selectedProfile.mail}
-          leadingItem={<Icon icon={faEnvelope} size={fontSizes['xl']} />}
+          leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
         />
       </SectionList>
 
@@ -156,7 +156,7 @@ export const ContactScreen2 = () => {
           <ListItem
             key={index}
             title={course}
-            leadingItem={<Icon icon={faBookOpen} size={fontSizes['xl']} />}
+            leadingItem={<Icon icon={faBookOpen} size={fontSizes.xl} />}
             multilineTitle={true}
           />
         ))}
@@ -164,7 +164,7 @@ export const ContactScreen2 = () => {
           <ListItem
             key={index}
             title={course}
-            leadingItem={<Icon icon={faBookOpen} size={fontSizes['xl']} />}
+            leadingItem={<Icon icon={faBookOpen} size={fontSizes.xl} />}
             multilineTitle={true}
           />
         ))}
@@ -180,7 +180,7 @@ export const ContactScreen2 = () => {
               <ListItem
                 key={index}
                 title={pub}
-                leadingItem={<Icon icon={faFileAlt} size={fontSizes['xl']} />}
+                leadingItem={<Icon icon={faFileAlt} size={fontSizes.xl} />}
                 multilineTitle={true}
               />
             ))}
@@ -191,14 +191,13 @@ export const ContactScreen2 = () => {
   );
 };
 
-
 const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
     heading: {
-      paddingTop: spacing[5] ,
-      paddingHorizontal: spacing[4] ,
-      alignItems : 'center',
-      justifyContent : 'space-between'
+      paddingTop: spacing[5],
+      paddingHorizontal: spacing[4],
+      alignItems: 'center',
+      justifyContent: 'space-between',
     },
     smartcardImage: {
       width: '100%',
@@ -207,24 +206,22 @@ const createStyles = ({ colors, spacing }: Theme) =>
       alignSelf: 'center',
     },
     avatarCircle: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-        backgroundColor: '#ccc',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginVertical: spacing[4],
-        marginLeft : spacing[4]
-      },
-      profileRow: {
-        marginHorizontal: spacing[4],
-        marginBottom: spacing[4],
-        alignItems: 'center',
-      },
-      
-      infoColumn: {
-        marginLeft: spacing[3],
-      },
+      width: 120,
+      height: 120,
+      borderRadius: 60,
+      backgroundColor: '#ccc',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginVertical: spacing[4],
+      marginLeft: spacing[4],
+    },
+    profileRow: {
+      marginHorizontal: spacing[4],
+      marginBottom: spacing[4],
+      alignItems: 'center',
+    },
+
+    infoColumn: {
+      marginLeft: spacing[3],
+    },
   });
-
-

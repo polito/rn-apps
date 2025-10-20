@@ -2,7 +2,6 @@ import { JSX, JSXElementConstructor } from 'react';
 import { View } from 'react-native';
 
 import { Stack, StackProps } from './Stack';
-import React from 'react';
 
 export type RowProps<
   T extends

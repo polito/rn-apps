@@ -1,8 +1,12 @@
-import { View } from 'react-native';
+import { View, ViewProps } from 'react-native';
 
 import { useTheme } from '../../ui/hooks/useTheme';
 
-import type { TranslucentViewProps } from './TranslucentView';
+declare interface TranslucentViewProps {
+  style?: ViewProps['style'];
+  blurAmount?: number;
+  fallbackOpacity?: number;
+}
 
 export const TranslucentView = ({
   style = undefined,

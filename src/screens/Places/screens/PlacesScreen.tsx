@@ -16,39 +16,20 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { faClock } from '@fortawesome/free-regular-svg-icons';
 import {
-  faBookOpen,
-  faBookReader,
-  faChalkboardTeacher,
   faChevronDown,
   faCrosshairs,
   faElevator,
-  faEllipsis,
   faExpand,
   faMagnifyingGlassLocation,
 } from '@fortawesome/free-solid-svg-icons';
-import { Divider } from '../../../ui/components/Divider';
-import { EmptyState } from '../../../ui/components/EmptyState';
-import { Icon } from '../../../ui/components/Icon';
-import { IconButton } from '../../../ui/components/IconButton';
-import { PillButton } from '../../../ui/components/PillButton';
-import { PillIconButton } from '../../../ui/components/PillIconButton';
-import { Row } from '../../../ui/components/Row';
-import { StatefulMenuView } from '../../../ui/components/StatefulMenuView';
-import { Tabs } from '../../../ui/components/Tabs';
-import { Text } from '../../../ui/components/Text';
-import { TranslucentCard } from '../../../ui/components/TranslucentCard';
-import { ThemeContext } from '../../../ui/contexts/ThemeContext';
-import { useStylesheet } from '../../../ui/hooks/useStylesheet';
-import { useTheme } from '../../../ui/hooks/useTheme';
-import { Theme } from '../../../ui/types/Theme';
 import { PlaceOverview } from '@polito/api-client';
 import { useHeaderHeight } from '@react-navigation/elements';
 import Mapbox, { CameraPadding } from '@rnmapbox/maps';
 
 import { debounce } from 'lodash';
 
+import { GlobalStyles } from '../../../core/components/GlobalStyles';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
@@ -56,12 +37,20 @@ import {
   useGetPlaceCategory,
   useGetPlaceSubCategory,
 } from '../../../core/queries/placesHooks';
-import { GlobalStyles } from '../../../core/components/GlobalStyles';
-import { darkTheme } from '../../../core/themes/dark';
+import { Divider } from '../../../ui/components/Divider';
+import { EmptyState } from '../../../ui/components/EmptyState';
+import { Icon } from '../../../ui/components/Icon';
+import { IconButton } from '../../../ui/components/IconButton';
+import { Row } from '../../../ui/components/Row';
+import { StatefulMenuView } from '../../../ui/components/StatefulMenuView';
+import { Text } from '../../../ui/components/Text';
+import { TranslucentCard } from '../../../ui/components/TranslucentCard';
+import { useStylesheet } from '../../../ui/hooks/useStylesheet';
+import { useTheme } from '../../../ui/hooks/useTheme';
+import { Theme } from '../../../ui/types/Theme';
 import { CampusSelector } from '../components/CampusSelector';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
-import { PlaceCategoriesBottomSheet } from '../components/PlaceCategoriesBottomSheet';
 import { PlacesBottomSheet } from '../components/PlacesBottomSheet';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
 import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
@@ -72,7 +61,7 @@ import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { SearchPlace, isPlace } from '../types';
 import { formatPlaceCategory } from '../utils/category';
 
-type Props = MapScreenProps<PlacesStackParamList, 'Places'>;
+type Props = MapScreenProps<PlacesStackParamList, 'Places1'>;
 
 export const PlacesScreen = ({ navigation, route }: Props) => {
   const { categoryId, subCategoryId } = route.params ?? {};
@@ -291,7 +280,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         },
       }) => setScreenHeight(height)}
     >
-     {/*
+      {/*
       {!categoryFilterActive && (
         <Tabs
           style={{
@@ -354,7 +343,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         </Tabs> 
       )}
       */}
-      
+
       <Animated.View style={[styles.controls, controlsAnimatedStyle]}>
         <Row gap={3} align="stretch" justify="space-between">
           <TranslucentCard>
@@ -419,7 +408,6 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       </Animated.View>
 
       <PlacesBottomSheet
-        
         index={0}
         animatedPosition={bottomSheetPosition}
         search={search}
@@ -449,7 +437,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         }}
       />
 
-      {/*<PlaceCategoriesBottomSheet
+      {/* <PlaceCategoriesBottomSheet
         index={categoriesPanelOpen ? 0 : -1}
         onClose={() => setCategoriesPanelOpen(false)}
       />*/}

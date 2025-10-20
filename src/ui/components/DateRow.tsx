@@ -1,12 +1,12 @@
-import { TouchableOpacity, View } from "react-native";
-import { useTheme } from "../hooks/useTheme";
-import { Card } from "./Card";
-import { Row } from "./Row";
-import { Text } from "./Text";
-import { faCalendar } from "@fortawesome/free-solid-svg-icons";
-import { IconButton } from "./IconButton";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
+import { TouchableOpacity, View } from 'react-native';
 
+import { faCalendar } from '@fortawesome/free-solid-svg-icons';
+
+import { Card } from './Card';
+import { IconButton } from './IconButton';
+import { Row } from './Row';
+import { Text } from './Text';
 
 export const DateRow = ({
   label,
@@ -19,22 +19,23 @@ export const DateRow = ({
   onPressCalendar: () => void;
   onClear?: () => void;
 }) => {
-  const { colors, spacing } = useTheme();
-  const {t} = useTranslation()
+  const { t } = useTranslation();
   return (
-    <Card style={{ marginHorizontal: 16, marginVertical: 8 , borderRadius : 12}}>
-  <Row justify="space-between" align="center">
-    <Text style = {{marginLeft : 10}}>{label}: {date || t('other.never')}</Text>
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      {date && onClear && (
-        <TouchableOpacity onPress={onClear} style={{ marginRight: 12 }}>
-          <Text style={{ color: 'red', fontWeight: 'bold' }}>✕</Text>
-        </TouchableOpacity>
-      )}
-      
-      <IconButton icon={faCalendar} size={20} onPress={onPressCalendar} />
-    </View>
-  </Row>
-</Card>
+    <Card style={{ marginHorizontal: 16, marginVertical: 8, borderRadius: 12 }}>
+      <Row justify="space-between" align="center">
+        <Text style={{ marginLeft: 10 }}>
+          {label}: {date || t('other.never')}
+        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {date && onClear && (
+            <TouchableOpacity onPress={onClear} style={{ marginRight: 12 }}>
+              <Text style={{ color: 'red', fontWeight: 'bold' }}>✕</Text>
+            </TouchableOpacity>
+          )}
+
+          <IconButton icon={faCalendar} size={20} onPress={onPressCalendar} />
+        </View>
+      </Row>
+    </Card>
   );
 };

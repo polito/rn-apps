@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { Animated } from 'react-native';
+
 import { useHeaderHeight } from '@react-navigation/elements';
+
 import { CollapsingHeaderContext } from '../contexts/CollapsingHeaderContext';
 
 export const useCollapsingHeader = () => {

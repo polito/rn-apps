@@ -1,27 +1,21 @@
-import React, {useLayoutEffect, useState} from 'react';
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
-import {Card} from '../../ui/components/Card';
-import {Select} from '../../ui/components/Select';
-import {useNavigation} from '@react-navigation/native';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {IconButton} from '../../ui/components/IconButton';
-import {
-  faArrowLeft,
-  faEnvelope,
-  faFileUpload,
-} from '@fortawesome/free-solid-svg-icons';
-import {useCourses} from '../../core/contexts/CoursesContext';
-import {Text} from '../../ui/components/Text';
-import {CtaButton} from '../../ui/components/CtaButton';
-import {Platform} from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+import { useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Alert, StyleSheet, TextInput, View } from 'react-native';
+import { Platform } from 'react-native';
+
+import { faArrowLeft, faFileUpload } from '@fortawesome/free-solid-svg-icons';
+import { useNavigation } from '@react-navigation/native';
+
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { Card } from '../../ui/components/Card';
+import { CtaButton } from '../../ui/components/CtaButton';
+import { IconButton } from '../../ui/components/IconButton';
+import { Select } from '../../ui/components/Select';
+import { Text } from '../../ui/components/Text';
+import { useTheme } from '../../ui/hooks/useTheme';
+
 const formatDate = (date: Date) => {
   const year = date.getFullYear();
   const day = String(date.getDate()).padStart(2, '0');
@@ -30,51 +24,45 @@ const formatDate = (date: Date) => {
 };
 export const FilesFormScreen = () => {
   const navigation = useNavigation();
-  const {colors, spacing} = useTheme();
+  const { colors, spacing } = useTheme();
   const [title, setTitle] = useState('');
   const [selectedDirectory, setSelectedDirectory] = useState<string>('');
-  const {selectedCourse, addMaterialToCourse} = useCourses();
-  const {t} = useTranslation()
+  const { selectedCourse, addMaterialToCourse } = useCourses();
+  const { t } = useTranslation();
   const handlePublish = () => {
     if (!title || !selectedDirectory || !selectedCourse?.id) return;
 
-    Alert.alert(
-      t('other.confirm'),
-      t('other.alertFile'),
-      [
-        {
-          text: t('common.cancel'),
-          style: 'cancel',
-        },
-        {
-          text: t('common.upload'),
-          onPress: () => {
-            const allFiles = selectedCourse.directories.flatMap(
-              dir => dir.files,
-            );
-            const lastFileId =
-              allFiles.length > 0 ? Math.max(...allFiles.map(f => f.id)) : 0;
-            const newFileId = lastFileId + 1;
+    Alert.alert(t('other.confirm'), t('other.alertFile'), [
+      {
+        text: t('common.cancel'),
+        style: 'cancel',
+      },
+      {
+        text: t('common.upload'),
+        onPress: () => {
+          const allFiles = selectedCourse.directories.flatMap(dir => dir.files);
+          const lastFileId =
+            allFiles.length > 0 ? Math.max(...allFiles.map(f => f.id)) : 0;
+          const newFileId = lastFileId + 1;
 
-            const newMaterial = {
-              id: newFileId,
-              name: title,
-              date: formatDate(new Date()),
-              size: 100,
-              mimeType: 'pdf',
-              dirId: Number(selectedDirectory),
-            };
+          const newMaterial = {
+            id: newFileId,
+            name: title,
+            date: formatDate(new Date()),
+            size: 100,
+            mimeType: 'pdf',
+            dirId: Number(selectedDirectory),
+          };
 
-            addMaterialToCourse(
-              selectedCourse.id,
-              Number(selectedDirectory),
-              newMaterial,
-            );
-            navigation.goBack();
-          },
+          addMaterialToCourse(
+            selectedCourse.id,
+            Number(selectedDirectory),
+            newMaterial,
+          );
+          navigation.goBack();
         },
-      ],
-    );
+      },
+    ]);
   };
 
   useLayoutEffect(() => {
@@ -82,7 +70,8 @@ export const FilesFormScreen = () => {
       headerTitle: () => (
         <Text
           variant="heading"
-          style={{marginLeft: Platform.OS === 'android' ? 75 : 0}}>
+          style={{ marginLeft: Platform.OS === 'android' ? 75 : 0 }}
+        >
           {t('other.uploadMaterial')}
         </Text>
       ),
@@ -97,7 +86,7 @@ export const FilesFormScreen = () => {
   }, [navigation, colors]);
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Card>
           <Text
@@ -106,7 +95,8 @@ export const FilesFormScreen = () => {
               marginLeft: 15,
               marginTop: 5,
               color: colors.formTitle,
-            }}>
+            }}
+          >
             {t('other.title')}
           </Text>
           <TextInput
@@ -123,14 +113,15 @@ export const FilesFormScreen = () => {
           />
         </Card>
 
-        <Card style={{marginBottom: spacing[4]}}>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Text
             variant="heading"
             style={{
               marginLeft: 15,
               marginTop: 5,
               color: colors.formTitle,
-            }}>
+            }}
+          >
             {t('other.folder')}
           </Text>
           <Select
@@ -153,10 +144,13 @@ export const FilesFormScreen = () => {
             justifyContent: 'center',
             alignItems: 'center',
             alignSelf: 'center',
-          }}>
+          }}
+        >
           <IconButton
             icon={faFileUpload}
-            onPress={() => console.log('Gestione upload PDF')}
+            onPress={() => {
+              /* Gestione upload PDF */
+            }}
             noPadding
             size={40}
           />

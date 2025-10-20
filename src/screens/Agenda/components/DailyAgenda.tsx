@@ -5,16 +5,10 @@ import { Row } from '../../../ui/components/Row';
 import { Text } from '../../../ui/components/Text';
 import { useStylesheet } from '../../../ui/hooks/useStylesheet';
 import { Theme } from '../../../ui/types/Theme';
-
 import { isCurrentMonth, isCurrentYear } from '../../../utils/dates';
-import { useProcessedLectures } from '../hooks/useProcessedLectures.ts';
 import { AgendaDay } from '../types/AgendaDay';
-import { BookingCard } from './BookingCard';
-import { DeadlineCard } from './DeadlineCard';
 import { EmptyDay } from './EmptyDay';
 import { EmptyWeek } from './EmptyWeek';
-import { ExamCard } from './ExamCard';
-import { LectureCard } from './LectureCard';
 
 interface Props {
   agendaDay: AgendaDay;
@@ -30,7 +24,7 @@ export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
     !isCurrentMonth(agendaDay.date) && agendaDay.date.toFormat('MMM');
   const year = !isCurrentYear(agendaDay.date) && agendaDay.date.toFormat('y');
 
-  const filteredAgendaDay = useProcessedLectures(agendaDay.items);
+  // const filteredAgendaDay = useProcessedLectures(agendaDay.items);
 
   return (
     <Row onLayout={onLayout}>
@@ -71,20 +65,21 @@ export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
             <EmptyDay />
           )
         ) : (
-          filteredAgendaDay.map(item => {
-            switch (item.type) {
-              case 'booking':
-                return <BookingCard key={item.key} item={item} />;
-              case 'deadline':
-                return <DeadlineCard key={item.key} item={item} />;
-              case 'exam':
-                return <ExamCard key={item.key} item={item} />;
-              case 'lecture':
-                return <LectureCard key={item.key} item={item} />;
-              default:
-                break;
-            }
-          })
+          <View></View>
+          // filteredAgendaDay.map(item => {
+          //   switch (item.type) {
+          //     case 'booking':
+          //       return <BookingCard key={item.key} item={item} />;
+          //     case 'deadline':
+          //       return <DeadlineCard key={item.key} item={item} />;
+          //     case 'exam':
+          //       return <ExamCard key={item.key} item={item} />;
+          //     case 'lecture':
+          //       return <LectureCard key={item.key} item={item} />;
+          //     default:
+          //       break;
+          //   }
+          // })
         )}
       </Col>
     </Row>

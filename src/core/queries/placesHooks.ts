@@ -140,7 +140,6 @@ export const useGetPlace = (placeId?: string) => {
     queryFn: () => placesClient.getPlace({ placeId: placeId! }).then(pluckData),
     enabled: placeId != null,
     staleTime: Infinity,
-    onError: noop,
   });
 };
 

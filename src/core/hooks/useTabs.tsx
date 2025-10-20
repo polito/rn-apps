@@ -1,9 +1,9 @@
 import { JSX, useEffect, useMemo, useState } from 'react';
+import { Platform, StyleSheet } from 'react-native';
+
 import { Tab } from '../../ui/components/Tab';
 import { Tabs } from '../../ui/components/Tabs';
-import React from 'react';
 import { useTheme } from '../../ui/hooks/useTheme';
-import { Platform, StyleSheet } from 'react-native';
 
 interface TabOptions {
   title: string;
@@ -42,7 +42,7 @@ export const useTabs = (options: TabOptions[]) => {
         ))}
       </Tabs>
     ),
-    [options, selectedTabIndex]
+    [options, selectedTabIndex],
   );
 
   const TabsContent = useMemo(
@@ -50,7 +50,7 @@ export const useTabs = (options: TabOptions[]) => {
       mountedTabs.includes(selectedTabIndex)
         ? options[selectedTabIndex].renderContent
         : () => null, // Evita di rimuovere il componente
-    [options, selectedTabIndex, mountedTabs]
+    [options, selectedTabIndex, mountedTabs],
   );
 
   return {
@@ -59,4 +59,3 @@ export const useTabs = (options: TabOptions[]) => {
     TabsContent,
   };
 };
-

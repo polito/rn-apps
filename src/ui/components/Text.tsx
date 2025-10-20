@@ -1,13 +1,13 @@
-import { StyleSheet, Text as RNText, TextProps } from 'react-native';
+import { Text as RNText, StyleSheet, TextProps } from 'react-native';
+import { Platform } from 'react-native';
+
 import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
-import { Theme } from '../types/theme';
-import React from 'react';
-import { Platform } from 'react-native';
+import { Theme } from '../types/Theme';
 
 const getFontFamily = (
   baseFontFamily: string,
-  weight: keyof Theme['fontWeights']
+  weight: keyof Theme['fontWeights'],
 ) => {
   if (Platform.OS === 'android') {
     switch (weight) {
@@ -27,8 +27,6 @@ const getFontFamily = (
 
   return baseFontFamily;
 };
-
-
 
 export interface Props extends TextProps {
   variant?:
@@ -72,10 +70,11 @@ export const Text = ({
   const styles = useStylesheet(createStyles);
   const fontFamilyName = getFontFamily(
     variant === 'heading' ? fontFamilies.heading : fontFamilies.body,
-    weight ?? defaultWeights[variant]
+    weight ?? defaultWeights[variant],
   );
   const textWeight = fontWeights[weight ?? defaultWeights[variant]];
-  const textColor = typeof colors[variant] === 'string' ? colors[variant] : undefined;
+  const textColor =
+    typeof colors[variant] === 'string' ? colors[variant] : undefined;
 
   return (
     <RNText
@@ -99,7 +98,6 @@ export const Text = ({
     </RNText>
   );
 };
-
 
 const createStyles = ({ fontSizes }: Theme) =>
   StyleSheet.create({
@@ -127,8 +125,6 @@ const createStyles = ({ fontSizes }: Theme) =>
       fontSize: fontSizes.md,
       lineHeight: fontSizes.md * 1.5,
     },
-    secondaryText: {
-      
-    },
+    secondaryText: {},
     link: {},
   });

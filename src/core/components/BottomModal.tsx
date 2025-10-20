@@ -1,10 +1,9 @@
 import { PropsWithChildren, useCallback } from 'react';
 import { View } from 'react-native';
+import { Dimensions } from 'react-native';
 import Modal from 'react-native-modal';
 
-import { Dimensions } from 'react-native';
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
-import React from 'react';
 
 export type BottomModalProps = PropsWithChildren<{
   visible: boolean;

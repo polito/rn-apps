@@ -1,10 +1,8 @@
-
-import React from 'react';
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, View } from 'react-native';
+
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
-
 
 const liveIndicatorSize = 8;
 

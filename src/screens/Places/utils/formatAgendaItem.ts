@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { DateTime } from 'luxon';
 
-import { AgendaItem } from '../../agenda/types/AgendaItem';
+import { AgendaItem } from '../../Agenda/types/AgendaItem';
 
 export const useFormatAgendaItem = () => {
   const { t } = useTranslation();

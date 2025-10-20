@@ -1,17 +1,24 @@
-import React, { useState, useMemo } from 'react';
-import { faUserPlus, faTimes, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { View, StyleSheet, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  FlatList,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-import { Icon } from '../../ui/components/Icon';
-import { Text } from '../../ui/components/Text';
+import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+
 import { ModalContent } from '../../core/components/ModalContent';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { Badge } from '../../ui/components/Badge';
 import { Col } from '../../ui/components/Col';
 import { CtaButton } from '../../ui/components/CtaButton';
-import { Badge } from '../../ui/components/Badge';
-import { useCourses } from '../../core/contexts/CoursesContext';
+import { Icon } from '../../ui/components/Icon';
+import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
+import { Theme } from '../../ui/types/Theme';
 
 type Props = {
   close: () => void;
@@ -28,39 +35,42 @@ const mockStaffList = [
 
 export const AddStaffModalContent = ({ close }: Props) => {
   const { t } = useTranslation();
-  const { fontSizes } = useStylesheet((theme) => theme);
+  const { fontSizes } = useStylesheet(theme => theme);
   const styles = useStylesheet(createStyles);
-  const {addStaffToCourse, selectedCourse} = useCourses();
+  const { addStaffToCourse, selectedCourse } = useCourses();
   const [searchText, setSearchText] = useState('');
   const [selectedStaff, setSelectedStaff] = useState<string[]>([]);
 
   const filteredStaff = useMemo(() => {
     return mockStaffList.filter(
-      (name) =>
+      name =>
         name.toLowerCase().includes(searchText.toLowerCase()) &&
-        !selectedStaff.includes(name)
+        !selectedStaff.includes(name),
     );
   }, [searchText, selectedStaff]);
 
   const handleAdd = (name: string) => {
-    setSelectedStaff((prev) => [...prev, name]);
+    setSelectedStaff(prev => [...prev, name]);
     setSearchText('');
   };
 
   const handleRemove = (name: string) => {
-    setSelectedStaff((prev) => prev.filter((n) => n !== name));
+    setSelectedStaff(prev => prev.filter(n => n !== name));
   };
 
   return (
     <ModalContent title={t('other.addCollaborator')} close={close}>
       <Col pt={4} pb={8} ph={4} gap={3}>
-        <Col align="center" gap={3}>
-         
-        </Col>
+        <Col align="center" gap={3}></Col>
 
         {/* Barra di ricerca */}
         <View style={styles.searchContainer}>
-          <Icon icon={faSearch} size={16} color="#888" style={styles.searchIcon} />
+          <Icon
+            icon={faSearch}
+            size={16}
+            color="#888"
+            style={styles.searchIcon}
+          />
           <TextInput
             placeholder={t('other.lookForPeople')}
             value={searchText}
@@ -74,9 +84,12 @@ export const AddStaffModalContent = ({ close }: Props) => {
         {searchText.length > 0 && (
           <FlatList
             data={filteredStaff}
-            keyExtractor={(item) => item}
+            keyExtractor={item => item}
             renderItem={({ item }) => (
-              <TouchableOpacity style={styles.resultItem} onPress={() => handleAdd(item)}>
+              <TouchableOpacity
+                style={styles.resultItem}
+                onPress={() => handleAdd(item)}
+              >
                 <Text>{item}</Text>
               </TouchableOpacity>
             )}
@@ -85,7 +98,7 @@ export const AddStaffModalContent = ({ close }: Props) => {
 
         {/* Persone selezionate */}
         <View style={styles.selectedContainer}>
-          {selectedStaff.map((name) => (
+          {selectedStaff.map(name => (
             <TouchableOpacity key={name} onPress={() => handleRemove(name)}>
               <Badge
                 text={name}
@@ -137,13 +150,13 @@ const createStyles = ({ colors, dark }: Theme) =>
       marginRight: 8,
     },
     searchInput: {
-        flex: 1,
-        fontSize: 16,
-        color: '#000',
-        paddingVertical: 8,
-        height: 50,
-        textAlignVertical: 'center',
-      },
+      flex: 1,
+      fontSize: 16,
+      color: '#000',
+      paddingVertical: 8,
+      height: 50,
+      textAlignVertical: 'center',
+    },
     resultItem: {
       padding: 10,
       backgroundColor: '#eee',
@@ -170,4 +183,3 @@ const createStyles = ({ colors, dark }: Theme) =>
       marginRight: 8,
     },
   });
-

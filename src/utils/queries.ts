@@ -1,5 +1,8 @@
 import { ResponseError } from '@polito/api-client/runtime';
-import { InfiniteQueryObserverResult } from '@tanstack/react-query';
+import {
+  InfiniteData,
+  InfiniteQueryObserverResult,
+} from '@tanstack/react-query';
 
 import { DateTime } from 'luxon';
 
@@ -17,25 +20,25 @@ export const pluckData = <T>(response: SuccessResponse<T>) => {
 /**
  * Take the last page of data currently persisted in store by the infinite query
  */
-export const popPage: {
-  <T>(infiniteQuery: InfiniteQueryObserverResult<T>): T;
-} = infiniteQuery => {
-  return [...infiniteQuery.data!.pages].pop()!;
+export const popPage = <TPage>(
+  data: InfiniteData<TPage> | undefined,
+): TPage => {
+  return [...data!.pages].pop()!;
 };
 
 /**
  * Take the first page of data currently persisted in store by the infinite query
  */
-export const shiftPage: {
-  <T>(infiniteQuery: InfiniteQueryObserverResult<T>): T;
-} = infiniteQuery => {
-  return [...infiniteQuery.data!.pages].shift()!;
+export const shiftPage = <TPage>(
+  data: InfiniteData<TPage> | undefined,
+): TPage => {
+  return [...data!.pages].shift()!;
 };
 
-export const getPageByPageParam = async <T>(
-  infiniteQuery: InfiniteQueryObserverResult<T[]>,
+export const getPageByPageParam = async <TItem>(
+  infiniteQuery: InfiniteQueryObserverResult<InfiniteData<TItem[]>>,
   pageParam: DateTime,
-): Promise<T[]> => {
+): Promise<TItem[]> => {
   const pageIndex = infiniteQuery.data?.pageParams.findIndex(
     item => item === pageParam,
   );
@@ -49,10 +52,12 @@ export const getPageByPageParam = async <T>(
     infiniteQuery.data?.pageParams[0] &&
     pageParam < infiniteQuery.data.pageParams[0]
   ) {
-    return await infiniteQuery.fetchPreviousPage({ pageParam }).then(shiftPage);
+    await infiniteQuery.fetchPreviousPage();
+    return shiftPage(infiniteQuery.data);
   }
 
-  return await infiniteQuery.fetchNextPage({ pageParam }).then(popPage);
+  await infiniteQuery.fetchNextPage();
+  return popPage(infiniteQuery.data);
 };
 
 /**

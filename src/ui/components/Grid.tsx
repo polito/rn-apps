@@ -1,9 +1,15 @@
-import { Children, Fragment, PropsWithChildren, ReactNode, useState } from 'react';
+import {
+  Children,
+  Fragment,
+  PropsWithChildren,
+  ReactNode,
+  useState,
+} from 'react';
 import { LayoutChangeEvent, View, ViewProps } from 'react-native';
-import React from 'react';
-import { Theme } from '../types/Theme';
-import { useTheme } from '../hooks/useTheme';
+
 import { GlobalStyles } from '../../core/components/GlobalStyles';
+import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
 
 interface Props extends PropsWithChildren<ViewProps> {
   /**

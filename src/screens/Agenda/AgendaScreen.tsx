@@ -1,5 +1,5 @@
-import React, {useLayoutEffect, useMemo, useRef, useState} from 'react';
-import {useTranslation} from 'react-i18next';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   FlatList,
   Platform,
@@ -7,32 +7,36 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {AgendaCard} from '../../ui/components/AgendaCard';
-import {Text} from '../../ui/components/Text';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {useBottomBarAwareStyles} from '../../core/hooks/useBottomBarAwareStyles';
-import {useNavigation} from '@react-navigation/native';
-import {Logo} from '../../core/components/Logo';
+import Popover from 'react-native-popover-view';
+
 import {
   faCalendarDay,
   faEllipsisVertical,
   faPlus,
 } from '@fortawesome/free-solid-svg-icons';
-import {Row} from '../../ui/components/Row';
-import {IconButton} from '../../ui/components/IconButton';
-import {Theme} from '../../ui/types/Theme';
-import {useStylesheet} from '../../ui/hooks/useStylesheet';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import DateTimePicker, {
   DateTimePickerAndroid,
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
-import {useSafeAreaSpacing} from '../../core/hooks/useSafeAreaSpacing';
-import {BottomBarSpacer} from '../../core/components/BottomBarSpacer';
-import {format, Locale} from 'date-fns';
-import {enUS, it} from 'date-fns/locale';
-import {useCourses} from '../../core/contexts/CoursesContext';
-import Popover from 'react-native-popover-view';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { Locale, format } from 'date-fns';
+import { enUS, it } from 'date-fns/locale';
+
+import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
+import { Logo } from '../../core/components/Logo';
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
+import { AgendaCard } from '../../ui/components/AgendaCard';
+import { IconButton } from '../../ui/components/IconButton';
+import { Row } from '../../ui/components/Row';
+import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
+import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
+import { AgendaStackParamList } from './AgendaNavigator';
 
 const localeMap: Record<string, Locale> = {
   it: it,
@@ -46,7 +50,6 @@ const handleDateChange = <T extends Date | null>(
   setDate: React.Dispatch<React.SetStateAction<T>>,
 ) => {
   if (event.type === 'set' && selectedDate) {
-    console.log('premuto')
     setShowPicker(false);
     setDate(selectedDate as T);
   } else if (event.type === 'dismissed') {
@@ -55,17 +58,18 @@ const handleDateChange = <T extends Date | null>(
 };
 
 export const AgendaScreen = () => {
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
   const locale = localeMap[i18n.language] || enUS;
 
-  const {colors, spacing, palettes, fontSizes} = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const navigation = useNavigation();
+  const { colors, spacing, fontSizes } = useTheme();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<AgendaStackParamList>>();
   const styles = useStylesheet(createStyles);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
-  const {marginHorizontal} = useSafeAreaSpacing();
-  const {agendaItems, selectCourseByName, setSelectedAgendaItem} = useCourses();
+  const { marginHorizontal } = useSafeAreaSpacing();
+  const { agendaItems, selectCourseByName, setSelectedAgendaItem } =
+    useCourses();
   const [isMenuVisible, setMenuVisible] = useState(false);
   const buttonRef = useRef(null);
 
@@ -77,42 +81,43 @@ export const AgendaScreen = () => {
           style={{
             marginLeft: Platform.OS === 'android' ? 85 : 130,
             width: 100,
-          }}>
+          }}
+        >
           Agenda
         </Text>
       ),
       headerLeft: () => <Logo />,
       headerRight: () => (
         <Row>
-          <View style={{width: fontSizes.lg + spacing[6]}} />
+          <View style={{ width: fontSizes.lg + spacing[6] }} />
 
           <IconButton
             icon={faCalendarDay}
             color={colors.primary[400]}
             size={fontSizes.lg}
             accessibilityLabel={t('common.preferences')}
-            hitSlop={{left: spacing[2], right: spacing[2]}}
+            hitSlop={{ left: spacing[2], right: spacing[2] }}
             onPress={() => {
-  if (Platform.OS === 'android') {
-    try {
-      DateTimePickerAndroid.open({
-        value: startDate,
-        mode: 'datetime',
-        is24Hour: true,
-        display: 'default',
-        onChange: (event, selectedDate) => {
-          if (event.type === 'set' && selectedDate) {
-            setStartDate(selectedDate);
-          }
-        },
-      });
-    } catch (e) {
-      console.error('Errore apertura DateTimePickerAndroid:', e);
-    }
-  } else {
-    setShowStartPicker(true);
-  }
-}}
+              if (Platform.OS === 'android') {
+                try {
+                  DateTimePickerAndroid.open({
+                    value: startDate,
+                    mode: 'date',
+                    is24Hour: true,
+                    display: 'default',
+                    onChange: (event, selectedDate) => {
+                      if (event.type === 'set' && selectedDate) {
+                        setStartDate(selectedDate);
+                      }
+                    },
+                  });
+                } catch (e) {
+                  console.error('Errore apertura DateTimePickerAndroid:', e);
+                }
+              } else {
+                setShowStartPicker(true);
+              }
+            }}
           />
 
           <IconButton
@@ -120,7 +125,7 @@ export const AgendaScreen = () => {
             color={colors.primary[400]}
             size={fontSizes.lg}
             accessibilityLabel={t('common.add')}
-            hitSlop={{left: spacing[2], right: spacing[2]}}
+            hitSlop={{ left: spacing[2], right: spacing[2] }}
             onPress={() => {
               navigation.navigate('Form');
             }}
@@ -128,7 +133,8 @@ export const AgendaScreen = () => {
 
           <TouchableOpacity
             ref={buttonRef}
-            onPress={() => setMenuVisible(true)}>
+            onPress={() => setMenuVisible(true)}
+          >
             <FontAwesomeIcon
               style={{
                 marginRight: spacing[2],
@@ -156,7 +162,7 @@ export const AgendaScreen = () => {
       item => normalizeDate(new Date(item.date)) >= normalizeDate(startDate),
     );
 
-    const grouped: {[date: string]: typeof agendaItems} = {};
+    const grouped: { [date: string]: typeof agendaItems } = {};
     filteredAgendaItems.forEach(item => {
       const dateKey = format(normalizeDate(new Date(item.date)), 'yyyy-MM-dd');
       if (!grouped[dateKey]) grouped[dateKey] = [];
@@ -182,7 +188,8 @@ export const AgendaScreen = () => {
       <Popover
         isVisible={isMenuVisible}
         from={buttonRef}
-        onRequestClose={() => setMenuVisible(false)}>
+        onRequestClose={() => setMenuVisible(false)}
+      >
         <TouchableOpacity>
           <Text style={styles.menuItem}>{t('other.refresh')}</Text>
         </TouchableOpacity>
@@ -190,24 +197,25 @@ export const AgendaScreen = () => {
           onPress={() => {
             navigation.navigate('AgendaWeek');
             setMenuVisible(false);
-          }}>
+          }}
+        >
           <Text style={styles.menuItem}>{t('other.weeklyLayout')}</Text>
         </TouchableOpacity>
       </Popover>
 
-   {Platform.OS === 'ios' && showStartPicker && (
-  <DateTimePicker
-    value={startDate}
-    mode="datetime"
-    display="spinner"
-    onChange={(event, selectedDate) => {
-      if (event.type === 'set' && selectedDate) {
-        setStartDate(selectedDate);
-      }
-      setShowStartPicker(false);
-    }}
-  />
-)}
+      {Platform.OS === 'ios' && showStartPicker && (
+        <DateTimePicker
+          value={startDate}
+          mode="datetime"
+          display="spinner"
+          onChange={(event, selectedDate) => {
+            if (event.type === 'set' && selectedDate) {
+              setStartDate(selectedDate);
+            }
+            setShowStartPicker(false);
+          }}
+        />
+      )}
 
       <FlatList
         data={groupedAgendaItems}
@@ -218,19 +226,20 @@ export const AgendaScreen = () => {
         scrollEventThrottle={100}
         onEndReachedThreshold={0.3}
         ListFooterComponent={<BottomBarSpacer />}
-        renderItem={({item: [date, items]}) => {
+        renderItem={({ item: [date, items] }) => {
           return (
             <>
               {items.map((item, idx) => (
-                <View key={idx} style={{flexDirection: 'row'}}>
-                  <View style={{width: '20%'}}>
+                <View key={idx} style={{ flexDirection: 'row' }}>
+                  <View style={{ width: '20%' }}>
                     {idx === 0 && (
                       <View
                         style={{
                           alignItems: 'center',
                           marginRight: 8,
                           marginTop: 8,
-                        }}>
+                        }}
+                      >
                         {(() => {
                           const isToday =
                             format(new Date(item.date), 'yyyy-MM-dd') ===
@@ -250,16 +259,19 @@ export const AgendaScreen = () => {
                                 paddingHorizontal: 6,
                                 paddingVertical: 4,
                                 alignItems: 'center',
-                              }}>
+                              }}
+                            >
                               <Text
                                 variant="title"
-                                style={{color: isToday ? 'white' : undefined}}>
+                                style={{ color: isToday ? 'white' : undefined }}
+                              >
                                 {dayLabel.charAt(0).toUpperCase() +
                                   dayLabel.slice(1)}
                               </Text>
                               <Text
                                 variant="title"
-                                style={{color: isToday ? 'white' : undefined}}>
+                                style={{ color: isToday ? 'white' : undefined }}
+                              >
                                 {dayNumber}
                               </Text>
                             </View>
@@ -269,10 +281,14 @@ export const AgendaScreen = () => {
                     )}
                   </View>
                   <AgendaCard
-                    style={{flex: 1}}
+                    style={{ flex: 1 }}
                     title={item.title}
                     color={colors.info[500]}
-                    type={item.type === 'lezione' ? t('common.lecture') : t('other.appointment')}
+                    type={
+                      item.type === 'lezione'
+                        ? t('common.lecture')
+                        : t('other.appointment')
+                    }
                     time={item.time}
                     location={item.location}
                     onPress={() => {
@@ -291,12 +307,12 @@ export const AgendaScreen = () => {
   );
 };
 
-const createStyles = ({spacing}: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     separator: {
       height: spacing[8],
     },
-    container: {flex: 1},
+    container: { flex: 1 },
     listContainer: {
       paddingLeft: spacing[1],
       paddingRight: spacing[3],

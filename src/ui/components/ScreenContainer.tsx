@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 
 import { BottomBarSpacer } from '../../../src/core/components/BottomBarSpacer';
-import React from 'react';
 
 export const ScreenContainer = ({ children }: PropsWithChildren) => {
   return (

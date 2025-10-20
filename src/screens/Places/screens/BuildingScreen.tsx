@@ -8,6 +8,21 @@ import {
   faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { ResponseError } from '@polito/api-client/runtime';
+import { useHeaderHeight } from '@react-navigation/elements';
+import {
+  CameraBounds,
+  CameraPadding,
+  FillLayer,
+  LineLayer,
+  ShapeSource,
+} from '@rnmapbox/maps';
+
+import { Polygon } from 'geojson';
+
+import { GlobalStyles } from '../../../core/components/GlobalStyles';
+import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
+import { useGetBuilding, useGetSite } from '../../../core/queries/placesHooks';
 import { ActivityIndicator } from '../../../ui/components/ActivityIndicator';
 import { BottomSheet } from '../../../ui/components/BottomSheet';
 import { Col } from '../../../ui/components/Col';
@@ -21,21 +36,6 @@ import { Text } from '../../../ui/components/Text';
 import { useStylesheet } from '../../../ui/hooks/useStylesheet';
 import { useTheme } from '../../../ui/hooks/useTheme';
 import { Theme } from '../../../ui/types/Theme';
-import { ResponseError } from '@polito/api-client/runtime';
-import { useHeaderHeight } from '@react-navigation/elements';
-import {
-  CameraBounds,
-  CameraPadding,
-  FillLayer,
-  LineLayer,
-  ShapeSource,
-} from '@rnmapbox/maps';
-
-import { Polygon } from 'geojson';
-
-import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
-import { useGetBuilding, useGetSite } from '../../../core/queries/placesHooks';
-import { GlobalStyles } from '../../../core/components/GlobalStyles';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
@@ -80,9 +80,7 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
       : t('placeScreen.placeDetail'),
   );
 
-  
   useLayoutEffect(() => {
-     
     if (building) {
       const { latitude, longitude } = building;
       const bounds: CameraPadding & Partial<CameraBounds> = {
@@ -102,8 +100,6 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
         }
       }
       navigation.setOptions({
-       
-                
         mapOptions: {
           camera: {
             centerCoordinate: bounds.sw ? undefined : [longitude, latitude],
@@ -156,7 +152,6 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
     return (
       <View style={GlobalStyles.grow} pointerEvents="box-none">
         <BottomSheet
-        
           middleSnapPoint={50}
           handleStyle={{ paddingVertical: undefined }}
         >

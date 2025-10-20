@@ -1,13 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { Col } from './Col';
-import { ListItem } from './ListItem';
-import { Text } from './Text';
 import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { Option } from '../../ui/types/Input';
 import { Theme } from '../../ui/types/Theme';
-import React from 'react';
+import { Col } from './Col';
+import { ListItem } from './ListItem';
+import { Text } from './Text';
 
 interface Props<T> {
   options: Option<T>[];

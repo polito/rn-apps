@@ -4,14 +4,13 @@ import { Linking, Platform, StatusBar, useColorScheme } from 'react-native';
 import overrideColorScheme from 'react-native-override-color-scheme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ThemeContext } from '../../ui/contexts/ThemeContext';
-
 import i18n from 'i18next';
 import { Settings } from 'luxon';
 
 import en from '../../../assets/translations/en.json';
 import it from '../../../assets/translations/it.json';
 import { setDeepLink } from '../../../src/utils/linking';
+import { ThemeContext } from '../../ui/contexts/ThemeContext';
 import { fromUiTheme } from '../../utils/navigation-theme';
 import { NavigationContainer } from '../components/NavigationContainer';
 import { usePreferencesContext } from '../contexts/PreferencesContext';

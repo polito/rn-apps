@@ -1,27 +1,30 @@
-import React, {useLayoutEffect, useState, useEffect} from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  View,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
   Platform,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
-import {Card} from '../../ui/components/Card';
-import {Select} from '../../ui/components/Select';
-import {useNavigation} from '@react-navigation/native';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {Row} from '../../ui/components/Row';
-import {IconButton} from '../../ui/components/IconButton';
-import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
-import {useCourses} from '../../core/contexts/CoursesContext';
-import {Text} from '../../ui/components/Text';
-import {CtaButton} from '../../ui/components/CtaButton';
-import {useTranslation} from 'react-i18next';
-import {DateRow} from '../../ui/components/DateRow';
+import { useNavigation } from '@react-navigation/native';
+
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { Card } from '../../ui/components/Card';
+import { CtaButton } from '../../ui/components/CtaButton';
+import { DateRow } from '../../ui/components/DateRow';
+import { IconButton } from '../../ui/components/IconButton';
+import { Row } from '../../ui/components/Row';
+import { Select } from '../../ui/components/Select';
+import { Text } from '../../ui/components/Text';
+import { useTheme } from '../../ui/hooks/useTheme';
 
 const availableSlots = [
   '08:30',
@@ -36,11 +39,11 @@ const availableSlots = [
 
 export const ModifyLectureScreen = () => {
   const navigation = useNavigation();
-  const {colors, spacing} = useTheme();
-  const {selectedCourse, updateCourseLecture, selectedLecture} = useCourses();
-  const {t} = useTranslation();
+  const { colors, spacing } = useTheme();
+  const { selectedCourse, updateCourseLecture, selectedLecture } = useCourses();
+  const { t } = useTranslation();
 
-  const [title, setTitle] = useState(selectedLecture?.title);
+  const [title] = useState(selectedLecture?.title);
   const [description, setDescription] = useState(selectedLecture?.content);
   const [startDate, setStartDate] = useState(
     new Date(selectedLecture?.date || new Date()),
@@ -58,35 +61,9 @@ export const ModifyLectureScreen = () => {
     selectedLecture?.language,
   );
 
-  if (selectedLecture?.staff == null) return null;
-
   const [selectedStaff, setSelectedStaff] = useState<number[]>(
-    selectedLecture?.staff.map(member => member.id) || [],
+    selectedLecture?.staff?.map(member => member.id) || [],
   );
-
-  const toggleStaffSelection = (id: number) => {
-    setSelectedStaff(prev =>
-      prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id],
-    );
-  };
-
-  const roomOptions = Array.from({length: 20}, (_, i) => ({
-    id: `Aula ${i + 1}`,
-    title: `Aula ${i + 1}`,
-  }));
-
-  const languageOptions = [
-    {id: 'Italiano', title: 'Italiano'},
-    {id: 'Inglese', title: 'Inglese'},
-  ];
-
-  const filteredStartSlots = availableSlots.filter(
-    slot => !selectedEndSlot || slot < selectedEndSlot,
-  );
-  const filteredEndSlots = availableSlots.filter(
-    slot => !selectedStartSlot || slot > selectedStartSlot,
-  );
-
   useEffect(() => {
     if (
       selectedStartSlot &&
@@ -106,6 +83,51 @@ export const ModifyLectureScreen = () => {
       setSelectedStartSlot('');
     }
   }, [selectedEndSlot]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => (
+        <Text
+          variant="heading"
+          style={{ marginLeft: Platform.OS === 'android' ? 70 : 0 }}
+        >
+          {t('other.modifyLecture')}
+        </Text>
+      ),
+      headerLeft: () => (
+        <IconButton
+          icon={faArrowLeft}
+          size={22}
+          onPress={() => navigation.goBack()}
+        />
+      ),
+    });
+  }, [navigation, colors]);
+
+  if (selectedLecture?.staff == null) return null;
+
+  const toggleStaffSelection = (id: number) => {
+    setSelectedStaff(prev =>
+      prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id],
+    );
+  };
+
+  const roomOptions = Array.from({ length: 20 }, (_, i) => ({
+    id: `Aula ${i + 1}`,
+    title: `Aula ${i + 1}`,
+  }));
+
+  const languageOptions = [
+    { id: 'Italiano', title: 'Italiano' },
+    { id: 'Inglese', title: 'Inglese' },
+  ];
+
+  const filteredStartSlots = availableSlots.filter(
+    slot => !selectedEndSlot || slot < selectedEndSlot,
+  );
+  const filteredEndSlots = availableSlots.filter(
+    slot => !selectedStartSlot || slot > selectedStartSlot,
+  );
 
   const handleDateChange = (
     event: DateTimePickerEvent | undefined,
@@ -148,29 +170,10 @@ export const ModifyLectureScreen = () => {
     navigation.goBack();
   };
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{marginLeft: Platform.OS === 'android' ? 70 : 0}}>
-          {t('other.modifyLecture')}
-        </Text>
-      ),
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-      ),
-    });
-  }, [navigation, colors]);
-
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <Card style={{marginBottom: spacing[4]}}>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
             {t('other.topic')}
           </Text>
@@ -192,8 +195,8 @@ export const ModifyLectureScreen = () => {
           <Text variant="heading" style={styles.label}>
             {t('other.roomAndLanguage')}
           </Text>
-          <Row style={{gap: spacing[2]}}>
-            <View style={{flex: 1}}>
+          <Row style={{ gap: spacing[2] }}>
+            <View style={{ flex: 1 }}>
               <Select
                 label={t('other.selectRoom')}
                 value={selectedRoom}
@@ -201,7 +204,7 @@ export const ModifyLectureScreen = () => {
                 options={roomOptions}
               />
             </View>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <Select
                 label={t('other.selectLanguage')}
                 value={selectedLanguage}
@@ -211,24 +214,23 @@ export const ModifyLectureScreen = () => {
             </View>
           </Row>
         </Card>
-       <Card style={{marginBottom: spacing[4]}}>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
             {t('other.date')}
-          </Text> 
-  <DateRow
+          </Text>
+          <DateRow
             label={t('other.date')}
             date={formatDate(startDate)}
             onPressCalendar={() => setShowDatePicker(true)}
           />
- </Card>
-        <Card style={{marginBottom: spacing[4]}}>
+        </Card>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
             {t('other.lessonTime')}
           </Text>
 
-        
           <Row justify="space-between">
-            <View style={{flex: 1, marginRight: spacing[2]}}>
+            <View style={{ flex: 1, marginRight: spacing[2] }}>
               <Select
                 label={t('other.startTime')}
                 value={selectedStartSlot}
@@ -239,7 +241,7 @@ export const ModifyLectureScreen = () => {
                 }))}
               />
             </View>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <Select
                 label={t('other.endTime')}
                 value={selectedEndSlot}
@@ -262,7 +264,8 @@ export const ModifyLectureScreen = () => {
               flexDirection: 'row',
               flexWrap: 'wrap',
               paddingHorizontal: 10,
-            }}>
+            }}
+          >
             {selectedCourse?.staff.map(member => {
               const isSelected = selectedStaff.includes(member.id);
               return (
@@ -275,8 +278,9 @@ export const ModifyLectureScreen = () => {
                     backgroundColor: isSelected ? '#007AFF' : '#eee',
                     borderRadius: 20,
                     margin: 4,
-                  }}>
-                  <Text style={{color: isSelected ? 'white' : '#333'}}>
+                  }}
+                >
+                  <Text style={{ color: isSelected ? 'white' : '#333' }}>
                     {member.name}
                   </Text>
                 </TouchableOpacity>

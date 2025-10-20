@@ -1,12 +1,10 @@
 import { StyleSheet, View } from 'react-native';
 
-import { Col, ColProps } from './Col';
-import { useStylesheet } from '../hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
-
 import { lightTheme } from '../../../src/core/themes/light';
+import { Theme } from '../../ui/types/Theme';
 import { ThemeContext } from '../contexts/ThemeContext';
-import React from 'react';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Col, ColProps } from './Col';
 
 export type CalloutProps = ColProps;
 
@@ -28,11 +26,11 @@ const createStyles = ({ colors, shapes }: Theme) =>
     container: {
       maxWidth: 300,
       maxHeight: 200,
-      //ATTENZIONE backgroundColor: colors.white,
+      // ATTENZIONE backgroundColor: colors.white,
       borderRadius: shapes.md,
       borderColor: colors.divider,
       borderWidth: 1,
-      //ATTENZIONE shadowColor: colors.black,
+      // ATTENZIONE shadowColor: colors.black,
       shadowOpacity: 0.3,
       shadowRadius: 8,
       shadowOffset: {
@@ -47,7 +45,7 @@ const createStyles = ({ colors, shapes }: Theme) =>
       bottom: -6,
       width: 10,
       height: 10,
-      //ATTENZIONE backgroundColor: colors.white,
+      // ATTENZIONE backgroundColor: colors.white,
       borderColor: colors.divider,
       borderRightWidth: 1,
       borderBottomWidth: 1,

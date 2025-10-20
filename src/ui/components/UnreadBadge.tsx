@@ -2,16 +2,14 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TextProps } from 'react-native';
 
-import { Row } from './Row';
-import { VisuallyHidden } from './VisuallyHidden';
+import { isNumber } from 'lodash';
+
 import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
 import { Theme } from '../../ui/types/Theme';
-
-import { isNumber } from 'lodash';
-
+import { Row } from './Row';
 import { Text } from './Text';
-import React from 'react';
+import { VisuallyHidden } from './VisuallyHidden';
 
 interface Props {
   text?: string | number;

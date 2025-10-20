@@ -2,14 +2,14 @@ import { Platform, StyleSheet, ViewStyle } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
+import { Theme } from '../../ui/types/Theme';
 import { ActivityIndicator } from './ActivityIndicator';
 import { Icon } from './Icon';
 import { IconButton } from './IconButton';
 import { Row } from './Row';
 import { TextField, TextFieldProps } from './TextField';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
-import React from 'react';
 
 export interface TranslucentTextFieldProps extends TextFieldProps {
   leadingIcon?: IconDefinition;

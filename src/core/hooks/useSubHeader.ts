@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { Animated, Platform } from 'react-native';
+
 import { useHeaderHeight } from '@react-navigation/elements';
 
 export const useSubHeader = () => {

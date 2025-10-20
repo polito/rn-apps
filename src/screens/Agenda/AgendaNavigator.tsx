@@ -1,26 +1,20 @@
-import {useTranslation} from 'react-i18next';
-import {
-  Animated,
-  Platform,
-  StyleProp,
-  TouchableOpacity,
-  ViewStyle,
-} from 'react-native';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React from 'react';
-import {AgendaScreen} from './AgendaScreen';
-import {LectureScreen} from './LectureScreen';
-import {titlesStyles} from '../../core/hooks/titlesStyles';
-import {Logo} from '../../core/components/Logo';
-import {AgendaWeekScreen} from './AgendaWeekScreen';
-import {useNavigation} from '@react-navigation/native';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
-import {useTitlesStyles} from '../../core/hooks/useTitleStyles';
-import {NoteForm} from './NoteFrom';
-import {SingleElementScreen} from './SingleElementScreen';
-import {Text} from '../../ui/components/Text';
+import { useTranslation } from 'react-i18next';
+import { Platform, TouchableOpacity } from 'react-native';
+
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import { Logo } from '../../core/components/Logo';
+import { useTitlesStyles } from '../../core/hooks/useTitleStyles';
+import { Text } from '../../ui/components/Text';
+import { useTheme } from '../../ui/hooks/useTheme';
+import { AgendaScreen } from './AgendaScreen';
+import { AgendaWeekScreen } from './AgendaWeekScreen';
+import { LectureScreen } from './LectureScreen';
+import { NoteForm } from './NoteFrom';
+import { SingleElementScreen } from './SingleElementScreen';
 
 export type AgendaStackParamList = {
   Agenda2: undefined;
@@ -38,7 +32,8 @@ const CustomBackButton2 = () => {
       onPress={() => {
         navigation.goBack(); // Altrimenti torna alla schermata "Courses"
       }}
-      style={{paddingHorizontal: 10}}>
+      style={{ paddingHorizontal: 10 }}
+    >
       <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
     </TouchableOpacity>
   );
@@ -47,11 +42,11 @@ const CustomBackButton2 = () => {
 const Stack = createNativeStackNavigator<AgendaStackParamList>();
 
 export const AgendaNavigator = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const theme = useTheme();
-  const {colors} = theme;
+  const { colors } = theme;
   const tabBarStyle: any = {
-    position: Platform.select({ios: 'absolute'}),
+    position: Platform.select({ ios: 'absolute' }),
   };
   if (Platform.OS === 'ios') {
     tabBarStyle.height = 84;
@@ -61,12 +56,13 @@ export const AgendaNavigator = () => {
     <Stack.Navigator
       screenOptions={{
         headerLargeTitle: false,
-        headerTransparent: Platform.select({ios: false}),
+        headerTransparent: Platform.select({ ios: false }),
         headerLargeStyle: {
           backgroundColor: colors.background,
         },
         ...useTitlesStyles(theme),
-      }}>
+      }}
+    >
       <Stack.Screen
         name="Agenda2"
         component={AgendaScreen}
@@ -108,7 +104,8 @@ export const AgendaNavigator = () => {
           headerTitle: () => (
             <Text
               variant="heading"
-              style={{textAlign: 'center', width: '100%', marginLeft: -20}}>
+              style={{ textAlign: 'center', width: '100%', marginLeft: -20 }}
+            >
               Lezione
             </Text>
           ),

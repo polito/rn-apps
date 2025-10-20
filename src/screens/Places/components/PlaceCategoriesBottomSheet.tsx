@@ -4,19 +4,17 @@ import { Image } from 'react-native';
 
 import { faMapLocation } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { useNavigation } from '@react-navigation/native';
+
+import { useGetPlaceCategories } from '../../../core/queries/placesHooks';
 import { EmptyState } from '../../../ui/components/EmptyState';
 import { Icon } from '../../../ui/components/Icon';
 import { useTheme } from '../../../ui/hooks/useTheme';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-
-import { useGetPlaceCategories } from '../../../core/queries/placesHooks';
 import { formatPlaceCategory } from '../utils/category';
 import { PlacesBottomSheet, PlacesBottomSheetProps } from './PlacesBottomSheet';
-import { PlacesStackParamList } from './PlacesNavigator';
 
 export const PlaceCategoriesBottomSheet = (props: PlacesBottomSheetProps) => {
-  const navigation =
-    useNavigation<NavigationProp<PlacesStackParamList, 'Places'>>();
+  const navigation = useNavigation<any>();
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
   const sheetRef = useRef<BottomSheetMethods>(null);
@@ -25,7 +23,6 @@ export const PlaceCategoriesBottomSheet = (props: PlacesBottomSheetProps) => {
 
   return (
     <PlacesBottomSheet
-    
       ref={sheetRef}
       enablePanDownToClose={true}
       snapPoints={['100%']}

@@ -1,8 +1,8 @@
+import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
+
 import { HeaderAccessory } from './HeaderAccessory';
 import { Tab } from './Tab';
 import { Tabs } from './Tabs';
-import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
-import React from 'react';
 
 export const TopTabBar = ({
   state,

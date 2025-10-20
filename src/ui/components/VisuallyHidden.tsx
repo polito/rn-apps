@@ -1,4 +1,3 @@
-import React from 'react';
 import { StyleSheet, Text, TextProps, View } from 'react-native';
 
 export const VisuallyHidden = ({ children, ...props }: TextProps) => {

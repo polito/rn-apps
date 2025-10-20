@@ -1,51 +1,36 @@
-import {useLayoutEffect, useMemo, useRef, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {
-  FlatList,
-  Platform,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {AgendaCard} from '../../ui/components/AgendaCard';
-import {Tab} from '../../ui/components/Tab';
-import {Tabs} from '../../ui/components/Tabs';
-import {Text} from '../../ui/components/Text';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {useBottomBarAwareStyles} from '../../core/hooks/useBottomBarAwareStyles';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {Logo} from '../../core/components/Logo';
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Popover from 'react-native-popover-view';
+
 import {
-  faCalendar,
   faCalendarDay,
   faEllipsisVertical,
   faPlus,
 } from '@fortawesome/free-solid-svg-icons';
-import {Row} from '../../ui/components/Row';
-import {IconButton} from '../../ui/components/IconButton';
-import {Theme} from '../../ui/types/Theme';
-import {useStylesheet} from '../../ui/hooks/useStylesheet';
-import {HeaderAccessory} from '../../ui/components/HeaderAccessory';
-import {AgendaFilters} from './components/AgendaFilters';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import DateTimePicker, {
-  DateTimePickerEvent,
   DateTimePickerAndroid,
+  DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
-import {useSafeAreaSpacing} from '../../core/hooks/useSafeAreaSpacing';
-import {ActivityIndicator} from '../../ui/components/ActivityIndicator';
-import {BottomBarSpacer} from '../../core/components/BottomBarSpacer';
-import {format} from 'date-fns';
-import {it} from 'date-fns/locale';
-import {useCourses} from '../../core/contexts/CoursesContext';
-import Popover from 'react-native-popover-view';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {Calendar} from '../../ui/components/calendar/Calendar';
-import {DateTime} from 'luxon';
-import {AgendaItem} from './AgendaItem';
-import {LectureCard} from './components/LectureCard';
-import {LectureItem} from './types/AgendaItem';
-import {CalendarHeader} from '../../ui/components/calendar/CalendarHeader';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { DateTime } from 'luxon';
+
+import { Logo } from '../../core/components/Logo';
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { IconButton } from '../../ui/components/IconButton';
+import { Row } from '../../ui/components/Row';
+import { Text } from '../../ui/components/Text';
+import { Calendar } from '../../ui/components/calendar/Calendar';
+import { CalendarHeader } from '../../ui/components/calendar/CalendarHeader';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
+import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
+import { AgendaStackParamList } from './AgendaNavigator';
+import { LectureCard } from './components/LectureCard';
+import { LectureItem } from './types/AgendaItem';
 
 const cellHeight = 25;
 const handleDateChange = <T extends Date | null>(
@@ -63,15 +48,14 @@ const handleDateChange = <T extends Date | null>(
 };
 
 export const AgendaWeekScreen = () => {
-  const {t} = useTranslation();
-  const {colors, spacing, palettes, fontSizes} = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const navigation = useNavigation();
+  const { colors, spacing, fontSizes } = useTheme();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<AgendaStackParamList>>();
   const styles = useStylesheet(createStyles);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
-  const {marginHorizontal} = useSafeAreaSpacing();
-  const {agendaItems, selectCourseByName, setSelectedAgendaItem} = useCourses();
+  const { agendaItems, selectCourseByName, setSelectedAgendaItem } =
+    useCourses();
   const [isMenuVisible, setMenuVisible] = useState(false);
   const buttonRef = useRef(null);
 
@@ -97,14 +81,15 @@ export const AgendaWeekScreen = () => {
           style={{
             marginLeft: Platform.OS === 'android' ? 85 : 120,
             width: 100,
-          }}>
+          }}
+        >
           Agenda
         </Text>
       ),
       headerLeft: () => <Logo />,
       headerRight: () => (
         <Row>
-          <View style={{width: fontSizes.lg + spacing[6]}} />
+          <View style={{ width: fontSizes.lg + spacing[6] }} />
 
           <IconButton
             icon={faCalendarDay}
@@ -130,9 +115,10 @@ export const AgendaWeekScreen = () => {
 
           <TouchableOpacity
             ref={buttonRef}
-            onPress={() => setMenuVisible(true)}>
+            onPress={() => setMenuVisible(true)}
+          >
             <FontAwesomeIcon
-              style={{marginTop: spacing[3], marginLeft: spacing[2]}}
+              style={{ marginTop: spacing[3], marginLeft: spacing[2] }}
               icon={faEllipsisVertical}
               size={fontSizes.lg}
               color={colors.primary[400]}
@@ -163,11 +149,19 @@ export const AgendaWeekScreen = () => {
       if (typeof item.time === 'string' && item.time.includes(' - ')) {
         const [startTime, endTime] = item.time.split(' - ');
         const startParts = startTime.split(':').map(Number);
-        if (startParts.length === 2 && !isNaN(startParts[0]) && !isNaN(startParts[1])) {
+        if (
+          startParts.length === 2 &&
+          !isNaN(startParts[0]) &&
+          !isNaN(startParts[1])
+        ) {
           [startHour, startMinute] = startParts;
         }
         const endParts = endTime.split(':').map(Number);
-        if (endParts.length === 2 && !isNaN(endParts[0]) && !isNaN(endParts[1])) {
+        if (
+          endParts.length === 2 &&
+          !isNaN(endParts[0]) &&
+          !isNaN(endParts[1])
+        ) {
           [endHour, endMinute] = endParts;
         }
       }
@@ -207,11 +201,12 @@ export const AgendaWeekScreen = () => {
   const calendarHeight = 600;
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+    <View style={{ flex: 1, backgroundColor: colors.white }}>
       <Popover
         isVisible={isMenuVisible}
         from={buttonRef}
-        onRequestClose={() => setMenuVisible(false)}>
+        onRequestClose={() => setMenuVisible(false)}
+      >
         <TouchableOpacity>
           <Text style={styles.menuItem}>Aggiorna</Text>
         </TouchableOpacity>
@@ -219,7 +214,8 @@ export const AgendaWeekScreen = () => {
           onPress={() => {
             navigation.navigate('Agenda2');
             setMenuVisible(false);
-          }}>
+          }}
+        >
           <Text style={styles.menuItem}>Formato Giornaliero</Text>
         </TouchableOpacity>
       </Popover>
@@ -229,8 +225,8 @@ export const AgendaWeekScreen = () => {
           value={startDate}
           mode="date"
           display="spinner"
-          onChange={(event, date) =>
-            handleDateChange(event, date, setShowStartPicker, setStartDate)
+          onChange={(event, d) =>
+            handleDateChange(event, d, setShowStartPicker, setStartDate)
           }
         />
       )}
@@ -261,7 +257,11 @@ export const AgendaWeekScreen = () => {
         renderHeader={props => <CalendarHeader {...props} cellHeight={-1} />}
         renderEvent={(item, touchableOpacityProps, key) => {
           const startPosition = (item.start.hour - 8) * 60 + item.start.minute;
-          const eventHeight = (((item.end.hour - item.start.hour) * 60 + (item.end.minute - item.start.minute)) / 30) * cellHeight;
+          const eventHeight =
+            (((item.end.hour - item.start.hour) * 60 +
+              (item.end.minute - item.start.minute)) /
+              30) *
+            cellHeight;
           const top = (startPosition / 30) * cellHeight;
 
           return (
@@ -276,7 +276,8 @@ export const AgendaWeekScreen = () => {
                   width: '100%',
                   zIndex: 10,
                 },
-              ]}>
+              ]}
+            >
               <LectureCard
                 item={item}
                 compact={true}
@@ -297,7 +298,7 @@ export const AgendaWeekScreen = () => {
   );
 };
 
-const createStyles = ({spacing, fontSizes}: Theme) =>
+const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
   StyleSheet.create({
     tabs: {
       alignItems: 'center',
@@ -323,7 +324,7 @@ const createStyles = ({spacing, fontSizes}: Theme) =>
     },
     eventText: {
       fontSize: fontSizes.md,
-      color: 'white',
+      color: colors.white,
     },
     event: {
       backgroundColor: undefined,

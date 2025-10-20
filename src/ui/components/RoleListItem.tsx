@@ -1,27 +1,24 @@
-import React, { JSX } from 'react';
+import { JSX } from 'react';
 import {
-  View,
-  TouchableHighlight,
-  Platform,
-  TouchableHighlightProps,
   StyleProp,
   TextProps,
-  ViewStyle,
   TextStyle,
+  TouchableHighlight,
+  TouchableHighlightProps,
+  View,
+  ViewStyle,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useTheme } from '../hooks/useTheme';
-import { Text } from './Text';
-import { Row } from './Row';
-import { UnreadBadge } from './UnreadBadge';
-import { GlobalStyles } from '../../core/components/GlobalStyles';
-import { Col } from './Col';
-import { IS_IOS } from '../../core/components/costant';
-import { DisclosureIndicator } from './DisclosureIndicator';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Staff, useCourses } from '../../core/contexts/CoursesContext';
 
+import { useNavigation } from '@react-navigation/native';
+
+import { GlobalStyles } from '../../core/components/GlobalStyles';
+import { IS_IOS } from '../../core/components/costant';
+import { useTheme } from '../hooks/useTheme';
+import { Col } from './Col';
+import { DisclosureIndicator } from './DisclosureIndicator';
+import { Row } from './Row';
+import { Text } from './Text';
+import { UnreadBadge } from './UnreadBadge';
 
 export interface ListItemProps extends TouchableHighlightProps {
   title?: string | JSX.Element;
@@ -65,130 +62,125 @@ export const RoleListItem = ({
   card,
   children,
   inverted = false,
-  multilineTitle = false,
   titleProps,
   unread = false,
   ...rest
 }: TouchableHighlightProps & ListItemProps) => {
-  const { fontSizes, colors, spacing , fontWeights} = useTheme();
-  const navigation = useNavigation();
-  
+  const { fontSizes, colors, spacing, fontWeights } = useTheme();
+  const navigation = useNavigation<any>();
+
   const titleElement =
     typeof title === 'string' ? (
-      <Row align="center" gap="2">
+      <Row align="center" gap={2}>
         {unread && <UnreadBadge />}
         <Text
-  variant="title"
-  style={[
-    GlobalStyles.grow,
-    {
-      fontSize: fontSizes.md,
-      lineHeight: fontSizes.md * 1.4,
-      flexWrap: 'wrap',
-      flexShrink: 1,
-    },
-    unread && {
-      fontWeight: fontWeights.semibold,
-    },
-    titleStyle,
-  ]}
-  weight="medium"
-  numberOfLines={undefined}
-  ellipsizeMode={undefined}
-  {...titleProps}
->
-  {title}
-</Text>
+          variant="title"
+          style={[
+            GlobalStyles.grow,
+            {
+              fontSize: fontSizes.md,
+              lineHeight: fontSizes.md * 1.4,
+              flexWrap: 'wrap',
+              flexShrink: 1,
+            },
+            unread && {
+              fontWeight: fontWeights.semibold,
+            },
+            titleStyle,
+          ]}
+          weight="medium"
+          numberOfLines={undefined}
+          ellipsizeMode={undefined}
+          {...titleProps}
+        >
+          {title}
+        </Text>
       </Row>
     ) : (
       title
     );
 
-    const subtitleElement = subtitle ? (
-      typeof subtitle === 'string' ? (
-        <Text
-  variant="secondaryText"
-  style={[
-    {
-      fontSize: fontSizes.sm,
-      lineHeight: fontSizes.sm * 1.4,
-      flexWrap: 'wrap',
-      flexShrink: 1,
-    },
-    subtitleStyle,
-  ]}
-  numberOfLines={undefined} // oppure rimuovi completamente
-  ellipsizeMode={undefined}
-  {...subtitleProps}
->
-  {subtitle}
-</Text>
-      ) : (
-        subtitle
-      )
-    ) : null;
-
-    return (
-      <TouchableHighlight
-        underlayColor={colors.touchableHighlight}
-        onPress={
-          linkTo
-            ? () => {
-                navigation.navigate(linkTo);
-              }
-            : onPress
-        }
+  const subtitleElement = subtitle ? (
+    typeof subtitle === 'string' ? (
+      <Text
+        variant="secondaryText"
         style={[
           {
-            opacity: disabled ? 0.5 : 1,
+            fontSize: fontSizes.sm,
+            lineHeight: fontSizes.sm * 1.4,
+            flexWrap: 'wrap',
+            flexShrink: 1,
           },
-          style,
+          subtitleStyle,
         ]}
-        disabled={disabled}
-        {...rest}
+        numberOfLines={undefined} // oppure rimuovi completamente
+        ellipsizeMode={undefined}
+        {...subtitleProps}
       >
-        <View
-          style={[
-            {
-              minHeight: 60,
-              flexDirection: card ? 'column' : 'row',
+        {subtitle}
+      </Text>
+    ) : (
+      subtitle
+    )
+  ) : null;
+
+  return (
+    <TouchableHighlight
+      underlayColor={colors.touchableHighlight}
+      onPress={
+        linkTo
+          ? () => {
+              navigation.navigate(linkTo);
+            }
+          : onPress
+      }
+      style={[
+        {
+          opacity: disabled ? 0.5 : 1,
+        },
+        style,
+      ]}
+      disabled={disabled}
+      {...rest}
+    >
+      <View
+        style={[
+          {
+            minHeight: 60,
+            flexDirection: card ? 'column' : 'row',
+            alignItems: 'center',
+            paddingHorizontal: spacing[5],
+            paddingVertical: spacing[2],
+          },
+          containerStyle,
+        ]}
+      >
+        {children}
+        {leadingItem && (
+          <View
+            style={{
+              width: 38,
+              height: 38,
               alignItems: 'center',
-              paddingHorizontal: spacing[5] ,
-              paddingVertical: spacing[2] ,
-            },
-            containerStyle,
-          ]}
-        >
-          {children}
-          {leadingItem && (
-            <View
-              style={{
-                width: 38,
-                height: 38,
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginLeft: card ? undefined : -7,
-                marginRight: card ? undefined : spacing[2] ,
-              }}
-            >
-              {leadingItem}
-            </View>
-          )}
-          <Col flex={1} style={inverted && { flexDirection: 'column-reverse' }}>
-            {titleElement}
-            {subtitleElement}
-          </Col>
-          {!card &&
+              justifyContent: 'center',
+              marginLeft: card ? undefined : -7,
+              marginRight: card ? undefined : spacing[2],
+            }}
+          >
+            {leadingItem}
+          </View>
+        )}
+        <Col flex={1} style={inverted && { flexDirection: 'column-reverse' }}>
+          {titleElement}
+          {subtitleElement}
+        </Col>
+        {!card &&
           (!trailingItem && (linkTo || isAction) && IS_IOS ? (
-            <DisclosureIndicator/>
+            <DisclosureIndicator />
           ) : (
             trailingItem
           ))}
-          
-          
-        </View>
-      </TouchableHighlight>
-    );
-    
+      </View>
+    </TouchableHighlight>
+  );
 };
-

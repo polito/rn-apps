@@ -9,7 +9,6 @@ import {
 import { UseQueryResult, onlineManager } from '@tanstack/react-query';
 
 import { usePrevious } from '../../../src/core/hooks/usePrevious';
-import React from 'react';
 
 type Props = Omit<RefreshControlProps, 'refreshing'> & {
   queries: UseQueryResult[];

@@ -2,7 +2,6 @@ import { PropsWithChildren } from 'react';
 import { Platform, ViewProps } from 'react-native';
 
 import { Col, ColProps } from './Col';
-import React from 'react';
 
 export const Section = ({
   style,
@@ -11,7 +10,7 @@ export const Section = ({
 }: PropsWithChildren<ViewProps & ColProps>) => {
   return (
     <Col
-      mb="5"
+      mb={5}
       style={style}
       accessible={Platform.select({
         android: true,

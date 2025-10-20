@@ -2,7 +2,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useTheme } from '../../../ui/hooks/useTheme';
 import { PlaceOverview } from '@polito/api-client';
 import { PlaceCategory } from '@polito/api-client/models';
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +9,7 @@ import { ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 
 import { capitalize } from 'lodash';
 
+import { useTheme } from '../../../ui/hooks/useTheme';
 import { notNullish } from '../../../utils/predicates';
 import { DEFAULT_CATEGORY_MARKER } from '../constants';
 import { usePlaceCategoriesMap } from '../hooks/usePlaceCategoriesMap';

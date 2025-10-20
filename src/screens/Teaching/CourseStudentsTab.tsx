@@ -1,64 +1,44 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  FlatList,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
   Alert,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { ListItem } from '../../ui/components/ListItem';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { useCourses } from '../../core/contexts/CoursesContext';
-import { GlobalStyles } from '../../core/components/GlobalStyles';
-import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
-import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
-import { IndentedDivider } from '../../ui/components/IndentedDivider';
-import { EmptyState } from '../../ui/components/EmptyState';
+import Popover from 'react-native-popover-view';
+
+import { faSquare, faSquareCheck } from '@fortawesome/free-regular-svg-icons';
 import {
-  faInbox,
-  faSearch,
-  faEnvelope,
-  faTimes,
-  faPlus,
-  faPen,
-  faTrash,
-  faUser,
-  faCircle,
   faEllipsisV,
-  faArrowRotateBack,
-  faCheck,
+  faEnvelope,
   faFilter,
+  faSearch,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { Col } from '../../ui/components/Col';
-import { Row } from '../../ui/components/Row';
-import { Select } from '../../ui/components/Select';
-import { faSquareCheck, faSquare } from '@fortawesome/free-regular-svg-icons';
-import { Text } from '../../ui/components/Text';
-import { IconButton } from '../../ui/components/IconButton';
-import { Section } from '../../ui/components/Section';
-import { SectionHeader } from '../../ui/components/SectionHeader';
-import { OverviewList } from '../../ui/components/OverviewList';
 import { useNavigation } from '@react-navigation/native';
-import Popover from 'react-native-popover-view';
-import { Card } from '../../ui/components/Card';
-import { useTranslation } from 'react-i18next';
-import { useBottomModal } from '../../core/hooks/useBottomModal';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 import { BottomModal } from '../../core/components/BottomModal';
+import { GlobalStyles } from '../../core/components/GlobalStyles';
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { useBottomModal } from '../../core/hooks/useBottomModal';
+import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
+import { CtaButton } from '../../ui/components/CtaButton';
+import { ListItem } from '../../ui/components/ListItem';
+import { OverviewList } from '../../ui/components/OverviewList';
+import { Row } from '../../ui/components/Row';
+import { SectionHeader } from '../../ui/components/SectionHeader';
+import { Text } from '../../ui/components/Text';
+import { useTheme } from '../../ui/hooks/useTheme';
 import { AddStudentsModalContent } from './AddStudentsModalContent';
+import { TeachingStackParamList } from './TeachingNavigator';
 
 export const CourseStudentsTab = () => {
-  const {
-    selectedCourse,
-    addGroupToCourse,
-    removeGroupFromCourse,
-    updateGroupInCourse,
-    selectedStudent,
-    setSelectedStudent
-  } = useCourses();
+  const { selectedCourse, addGroupToCourse, setSelectedStudent } = useCourses();
   const { paddingHorizontal } = useSafeAreaSpacing();
 
   const [searchText, setSearchText] = useState('');
@@ -73,31 +53,30 @@ export const CourseStudentsTab = () => {
   const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
   const [isMenuVisible, setMenuVisible] = useState(false);
   const [isMenuVisible2, setMenuVisible2] = useState(false);
-    const [isMenuVisible3, setMenuVisible3] = useState(false);
-  const {t} = useTranslation();
+  const [isMenuVisible3, setMenuVisible3] = useState(false);
+  const [filterType, setFilterType] = useState<
+    'all' | 'currentYear' | 'notExamined' | 'examined'
+  >('all'); // <-- nuovo stato filtro
+  const { t } = useTranslation();
   const [creatingGroupMode, setCreatingGroupMode] = useState(false);
   const [newGroupStudents, setNewGroupStudents] = useState<string[]>([]);
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
   const buttonRef = useRef(null);
   const buttonRef2 = useRef(null);
-    const buttonRef3 = useRef(null);
+  const buttonRef3 = useRef(null);
 
   const {
     open: showBottomModal,
     modal: bottomModal,
     close: closeBottomModal,
   } = useBottomModal();
-  
-  if (!selectedCourse) return null;
 
+  if (!selectedCourse) return null;
   const { students, groups } = selectedCourse;
   const query = searchText.toLowerCase();
 
-
-  
-  const [filterType, setFilterType] = useState<'all' | 'currentYear' | 'notExamined' | 'examined'>('all'); // <-- nuovo stato filtro
-
-    const studentPassesFilter = (student: typeof students[0]) => {
+  const studentPassesFilter = (student: (typeof students)[0]) => {
     if (filterType === 'all') return true;
     if (filterType === 'currentYear') return student.year === '2025'; // qui potresti mettere anno dinamico
     if (filterType === 'notExamined') return student.exam === 'no';
@@ -114,13 +93,15 @@ export const CourseStudentsTab = () => {
     return matchesSearch && studentPassesFilter(student);
   });
 
-    const filteredGroups = groups.filter(group => {
+  const filteredGroups = groups.filter(group => {
     const matchesSearch = group.title.toLowerCase().includes(query);
 
     if (!matchesSearch) return false;
 
     // Controlla se tutti gli studenti del gruppo passano il filtro
-    const allPass = group.students.every(student => studentPassesFilter(student));
+    const allPass = group.students.every(student =>
+      studentPassesFilter(student),
+    );
 
     return allPass;
   });
@@ -136,85 +117,110 @@ export const CourseStudentsTab = () => {
 
   const toggleSelection = (id: string) => {
     setSelectedIds(prev =>
-      prev.includes(id) ? prev.filter(sid => sid !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter(sid => sid !== id) : [...prev, id],
     );
   };
-const toggleSelectAll = () => {
-  if (creatingGroupMode) {
-    if (filteredStudents.every(s => newGroupStudents.includes(s.id))) {
-      setNewGroupStudents([]);
-    } else {
-      setNewGroupStudents(filteredStudents.map(s => s.id));
+  const toggleSelectAll = () => {
+    if (creatingGroupMode) {
+      if (filteredStudents.every(s => newGroupStudents.includes(s.id))) {
+        setNewGroupStudents([]);
+      } else {
+        setNewGroupStudents(filteredStudents.map(s => s.id));
+      }
+    } else if (selectionMode) {
+      if (filteredStudents.every(s => selectedIds.includes(s.id))) {
+        setSelectedIds([]);
+      } else {
+        setSelectedIds(filteredStudents.map(s => s.id));
+      }
     }
-  } else if (selectionMode) {
-    if (filteredStudents.every(s => selectedIds.includes(s.id))) {
-      setSelectedIds([]);
-    } else {
-      setSelectedIds(filteredStudents.map(s => s.id));
-    }
-  }
-};
+  };
 
-const allSelected = creatingGroupMode
-  ? filteredStudents.length > 0 && filteredStudents.every(s => newGroupStudents.includes(s.id))
-  : selectionMode
-  ? filteredStudents.length > 0 && filteredStudents.every(s => selectedIds.includes(s.id))
-  : false;
-  
+  const allSelected = creatingGroupMode
+    ? filteredStudents.length > 0 &&
+      filteredStudents.every(s => newGroupStudents.includes(s.id))
+    : selectionMode
+      ? filteredStudents.length > 0 &&
+        filteredStudents.every(s => selectedIds.includes(s.id))
+      : false;
+
   return (
     <>
-          <BottomModal dismissable {...bottomModal} />
-    
-    <View style={[GlobalStyles.grow, paddingHorizontal]}>
-      {/* Search bar */}
-     <View style={styles.searchContainer}>
-  <FontAwesomeIcon icon={faSearch} size={16} color="#888" style={styles.searchIcon} />
-  <TextInput
-    placeholder={t('other.searchForStudent')}
-    value={searchText}
-    onChangeText={setSearchText}
-    style={styles.searchInput}
-    placeholderTextColor="#888"
-  />
- <TouchableOpacity ref={buttonRef3} onPress={() => { setMenuVisible3(true) }} style={styles.filterIcon}>
-  <FontAwesomeIcon
-    icon={faFilter}
-    size={18}
-    // Cambia colore se un filtro è attivo
-    color={filterType !== 'all' ? colors.primary[600] : '#888'}
-  />
-</TouchableOpacity>
+      <BottomModal dismissable {...bottomModal} />
 
-<Popover isVisible={isMenuVisible3} from={buttonRef3} onRequestClose={() => setMenuVisible3(false)}>
-  <TouchableOpacity onPress={() => {
-    setFilterType('all');
-    setMenuVisible3(false);
-  }}>
-    <Text style={styles.menuItem}>{t('other.noFilters')}</Text>
-  </TouchableOpacity>
-  <TouchableOpacity onPress={() => {
-    setFilterType('currentYear');
-    setMenuVisible3(false);
-  }}>
-    <Text style={styles.menuItem}>{t('other.currentY')}</Text>
-  </TouchableOpacity>
-  <TouchableOpacity onPress={() => {
-    setFilterType('notExamined');
-    setMenuVisible3(false);
-  }}>
-    <Text style={styles.menuItem}>{t('other.notExaminated')}</Text>
-  </TouchableOpacity>
-  <TouchableOpacity onPress={() => {
-    setFilterType('examined');
-    setMenuVisible3(false);
-  }}>
-    <Text style={styles.menuItem}>{t('other.Examinated')}</Text>
-  </TouchableOpacity>
-</Popover>
-</View>
+      <View style={[GlobalStyles.grow, paddingHorizontal]}>
+        {/* Search bar */}
+        <View style={styles.searchContainer}>
+          <FontAwesomeIcon
+            icon={faSearch}
+            size={16}
+            color="#888"
+            style={styles.searchIcon}
+          />
+          <TextInput
+            placeholder={t('other.searchForStudent')}
+            value={searchText}
+            onChangeText={setSearchText}
+            style={styles.searchInput}
+            placeholderTextColor="#888"
+          />
+          <TouchableOpacity
+            ref={buttonRef3}
+            onPress={() => {
+              setMenuVisible3(true);
+            }}
+            style={styles.filterIcon}
+          >
+            <FontAwesomeIcon
+              icon={faFilter}
+              size={18}
+              // Cambia colore se un filtro è attivo
+              color={filterType !== 'all' ? colors.primary[600] : '#888'}
+            />
+          </TouchableOpacity>
 
-      <ScrollView style={{ flex: 1 }}>
-         {/*
+          <Popover
+            isVisible={isMenuVisible3}
+            from={buttonRef3}
+            onRequestClose={() => setMenuVisible3(false)}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                setFilterType('all');
+                setMenuVisible3(false);
+              }}
+            >
+              <Text style={styles.menuItem}>{t('other.noFilters')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setFilterType('currentYear');
+                setMenuVisible3(false);
+              }}
+            >
+              <Text style={styles.menuItem}>{t('other.currentY')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setFilterType('notExamined');
+                setMenuVisible3(false);
+              }}
+            >
+              <Text style={styles.menuItem}>{t('other.notExaminated')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setFilterType('examined');
+                setMenuVisible3(false);
+              }}
+            >
+              <Text style={styles.menuItem}>{t('other.Examinated')}</Text>
+            </TouchableOpacity>
+          </Popover>
+        </View>
+
+        <ScrollView style={{ flex: 1 }}>
+          {/*
         {!creatingGroupMode && !selectionMode && (
           <>
           
@@ -347,160 +353,210 @@ const allSelected = creatingGroupMode
           </>
         )}
          */}
-        {/* Sezione Studenti */}
-        <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-          <View style={{ flex: 1 }}>
-            <SectionHeader title={t('other.students')} />
-          </View>
-          {!creatingGroupMode && (
-            <View>
-              <TouchableOpacity ref={buttonRef2} onPress={() => setMenuVisible2(true)}>
-                <FontAwesomeIcon icon={faEllipsisV} size={20} style={{ marginRight: spacing[4] }} />
-              </TouchableOpacity>
-              <Popover isVisible={isMenuVisible2} from={buttonRef2} onRequestClose={() => setMenuVisible2(false)}>
-                <TouchableOpacity onPress={()=>{
-                      showBottomModal(<AddStudentsModalContent close={closeBottomModal} />);
-                  
-                }}>
-                  <Text style={styles.menuItem}>{t('other.addStudent')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => {
-              setSelectionMode(true);
-              setMenuVisible2(false); 
-            }}>
-              <Text style={styles.menuItem}>{t('other.selectStudents')}</Text>
-            </TouchableOpacity>
-              </Popover>
+          {/* Sezione Studenti */}
+          <Row
+            style={{ justifyContent: 'space-between', alignItems: 'center' }}
+          >
+            <View style={{ flex: 1 }}>
+              <SectionHeader title={t('other.students')} />
             </View>
-          )}
-        </Row>
-        <View style={{ marginBottom: spacing[2] }} />
-{(creatingGroupMode || selectionMode) && filteredStudents.length > 0 && (
-  <ListItem
-    title={t('other.selectAll')}
-    leadingItem={
-      <TouchableOpacity onPress={toggleSelectAll}>
-        <FontAwesomeIcon icon={allSelected ? faSquareCheck : faSquare} size={20} />
-      </TouchableOpacity>
-    }
-  />
-)}
-        <OverviewList indented emptyStateText="Nessuno studente trovato">
-          {filteredStudents.map(student => {
-            const selected = creatingGroupMode
-              ? newGroupStudents.includes(student.id)
-              : selectedIds.includes(student.id);
-            return (
+            {!creatingGroupMode && (
+              <View>
+                <TouchableOpacity
+                  ref={buttonRef2}
+                  onPress={() => setMenuVisible2(true)}
+                >
+                  <FontAwesomeIcon
+                    icon={faEllipsisV}
+                    size={20}
+                    style={{ marginRight: spacing[4] }}
+                  />
+                </TouchableOpacity>
+                <Popover
+                  isVisible={isMenuVisible2}
+                  from={buttonRef2}
+                  onRequestClose={() => setMenuVisible2(false)}
+                >
+                  <TouchableOpacity
+                    onPress={() => {
+                      showBottomModal(
+                        <AddStudentsModalContent close={closeBottomModal} />,
+                      );
+                    }}
+                  >
+                    <Text style={styles.menuItem}>{t('other.addStudent')}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSelectionMode(true);
+                      setMenuVisible2(false);
+                    }}
+                  >
+                    <Text style={styles.menuItem}>
+                      {t('other.selectStudents')}
+                    </Text>
+                  </TouchableOpacity>
+                </Popover>
+              </View>
+            )}
+          </Row>
+          <View style={{ marginBottom: spacing[2] }} />
+          {(creatingGroupMode || selectionMode) &&
+            filteredStudents.length > 0 && (
               <ListItem
-  onPress={() => {
-    setSelectedStudent(student);
-    navigation.navigate("StudentContact");
-  }}
-  key={student.id}
-  title={`${student.name} ${student.surname}`}
-  subtitle={student.id}
-  trailingItem={
-    <TouchableOpacity
-      onPress={(e) => {
-        e.stopPropagation(); // 🔒 evita che il tocco si propaghi al ListItem
-        Alert.alert("Info", t('other.renderingToMail'));
-      }}
-    >
-      <FontAwesomeIcon icon={faEnvelope} size={20} style={{ color: colors.primary[600] }} />
-    </TouchableOpacity>
-  }
-  leadingItem={
-    creatingGroupMode ? (
-      <TouchableOpacity
-        onPress={() => {
-          setNewGroupStudents(prev =>
-            prev.includes(student.id)
-              ? prev.filter(id => id !== student.id)
-              : [...prev, student.id]
-          );
-        }}
-      >
-        <FontAwesomeIcon icon={selected ? faSquareCheck : faSquare} size={20} />
-      </TouchableOpacity>
-    ) : selectionMode ? (
-      <TouchableOpacity onPress={() => toggleSelection(student.id)}>
-        <FontAwesomeIcon icon={selected ? faSquareCheck : faSquare} size={20} />
-      </TouchableOpacity>
-    ) : (
-      <FontAwesomeIcon icon={faUser} size={20} style={{ color: colors.primary[600] }} />
-    )
-  }
-/>
-            );
-          })}
-        </OverviewList>
-      </ScrollView>
+                title={t('other.selectAll')}
+                leadingItem={
+                  <TouchableOpacity onPress={toggleSelectAll}>
+                    <FontAwesomeIcon
+                      icon={allSelected ? faSquareCheck : faSquare}
+                      size={20}
+                    />
+                  </TouchableOpacity>
+                }
+              />
+            )}
+          <OverviewList indented emptyStateText="Nessuno studente trovato">
+            {filteredStudents.map(student => {
+              const selected = creatingGroupMode
+                ? newGroupStudents.includes(student.id)
+                : selectedIds.includes(student.id);
+              return (
+                <ListItem
+                  onPress={() => {
+                    setSelectedStudent(student);
+                    navigation.navigate('StudentContact');
+                  }}
+                  key={student.id}
+                  title={`${student.name} ${student.surname}`}
+                  subtitle={student.id}
+                  trailingItem={
+                    <TouchableOpacity
+                      onPress={e => {
+                        e.stopPropagation(); // 🔒 evita che il tocco si propaghi al ListItem
+                        Alert.alert('Info', t('other.renderingToMail'));
+                      }}
+                    >
+                      <FontAwesomeIcon
+                        icon={faEnvelope}
+                        size={20}
+                        style={{ color: colors.primary[600] }}
+                      />
+                    </TouchableOpacity>
+                  }
+                  leadingItem={
+                    creatingGroupMode ? (
+                      <TouchableOpacity
+                        onPress={() => {
+                          setNewGroupStudents(prev =>
+                            prev.includes(student.id)
+                              ? prev.filter(id => id !== student.id)
+                              : [...prev, student.id],
+                          );
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          icon={selected ? faSquareCheck : faSquare}
+                          size={20}
+                        />
+                      </TouchableOpacity>
+                    ) : selectionMode ? (
+                      <TouchableOpacity
+                        onPress={() => toggleSelection(student.id)}
+                      >
+                        <FontAwesomeIcon
+                          icon={selected ? faSquareCheck : faSquare}
+                          size={20}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <FontAwesomeIcon
+                        icon={faUser}
+                        size={20}
+                        style={{ color: colors.primary[600] }}
+                      />
+                    )
+                  }
+                />
+              );
+            })}
+          </OverviewList>
+        </ScrollView>
 
-      {creatingGroupMode && (
-        <>
-          {doesGroupExist() ? (
-            <CtaButton title="Gruppo già esistente" disabled action={() => {}}  absolute={false}/>
-          ) : (
+        {creatingGroupMode && (
+          <>
+            {doesGroupExist() ? (
+              <CtaButton
+                title="Gruppo già esistente"
+                disabled
+                action={() => {}}
+                absolute={false}
+              />
+            ) : (
+              <CtaButton
+                title="Salva gruppo"
+                action={() => {
+                  const selectedStudents = selectedCourse.students.filter(s =>
+                    newGroupStudents.includes(s.id),
+                  );
+                  addGroupToCourse(selectedCourse.id, {
+                    id: Math.floor(Math.random() * 1000000),
+                    title: newGroupTitle,
+                    students: selectedStudents,
+                  });
+                  setCreatingGroupMode(false);
+                  setNewGroupStudents([]);
+                  setNewGroupTitle('');
+                }}
+                variant="filled"
+                absolute={false}
+                style={{ marginBottom: -20 }}
+              />
+            )}
             <CtaButton
-              title="Salva gruppo"
+              title={t('common.cancel')}
+              variant="outlined"
               action={() => {
-                const selectedStudents = selectedCourse.students.filter(s =>
-                  newGroupStudents.includes(s.id)
-                );
-                addGroupToCourse(selectedCourse.id, {
-                id: Math.floor(Math.random() * 1000000),
-                title: newGroupTitle,
-                students: selectedStudents,
-              });
                 setCreatingGroupMode(false);
                 setNewGroupStudents([]);
                 setNewGroupTitle('');
               }}
+              absolute={false}
+            />
+          </>
+        )}
+
+        {editingGroupsMode && (
+          <CtaButton
+            title="Torna indietro"
+            action={() => setEditingGroupsMode(false)}
+            absolute={false}
+            variant="filled"
+          />
+        )}
+        {selectionMode && (
+          <>
+            <CtaButton
+              title={t('other.contactSelectedStudents')}
+              action={() => {
+                Alert.alert('Info', t('other.renderingToMail'));
+              }}
               variant="filled"
               absolute={false}
-              style={{marginBottom : -20}}
+              style={{ marginBottom: -20 }}
+              disabled={selectedIds.length === 0}
             />
-          )}
-          <CtaButton
-            title={t('common.cancel')}
-            variant='outlined'
-            action={() => {
-              setCreatingGroupMode(false);
-              setNewGroupStudents([]);
-              setNewGroupTitle('');
-            }}
-            absolute={false}
-          />
-        </>
-      )}
-
-      {editingGroupsMode && (
-        <CtaButton title="Torna indietro" action={() => setEditingGroupsMode(false)} absolute={false} variant="filled" />
-      )}
-      {selectionMode && (
-  <>
-   <CtaButton
-  title={t('other.contactSelectedStudents')}
-  action={() => {
-    Alert.alert("Info", t('other.renderingToMail'));
-  }}
-  variant="filled"
-  absolute={false}
-  style={{ marginBottom: -20 }}
-  disabled={selectedIds.length === 0}
-/>
-    <CtaButton
-      title={t('common.cancel')}
-      variant="outlined"
-      action={() => {
-        setSelectionMode(false);
-        setSelectedIds([]);
-      }}
-      absolute={false}
-    />
-  </>
-)}
-    </View>
+            <CtaButton
+              title={t('common.cancel')}
+              variant="outlined"
+              action={() => {
+                setSelectionMode(false);
+                setSelectedIds([]);
+              }}
+              absolute={false}
+            />
+          </>
+        )}
+      </View>
     </>
   );
 };
@@ -535,10 +591,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   filterIcon: {
-  marginLeft: 8,
-  padding: 4,
-},
+    marginLeft: 8,
+    padding: 4,
+  },
 });
-
-
-

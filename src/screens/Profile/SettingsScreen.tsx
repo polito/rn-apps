@@ -1,21 +1,24 @@
-import React, { useLayoutEffect, useMemo } from 'react';
-import { View, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
+
+import { useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
+
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { useNavigation } from '@react-navigation/native';
+
 import i18next from 'i18next';
 import { Settings } from 'luxon';
 
-import { IconButton } from '../../ui/components/IconButton';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { SectionHeader } from '../../ui/components/SectionHeader';
-import { SectionList } from '../../ui/components/SectionList';
-import { ListItem } from '../../ui/components/ListItem';
-import { Select } from '../../ui/components/Select';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Text } from '../../ui/components/Text';
 import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '../../core/hooks/useOfflineDisabled';
+import { IconButton } from '../../ui/components/IconButton';
+import { ListItem } from '../../ui/components/ListItem';
+import { SectionHeader } from '../../ui/components/SectionHeader';
+import { SectionList } from '../../ui/components/SectionList';
+import { Select } from '../../ui/components/Select';
+import { Text } from '../../ui/components/Text';
+import { useTheme } from '../../ui/hooks/useTheme';
 
 // Componente Select per la lingua (rimane uguale)
 const LanguageSelect = () => {
@@ -81,7 +84,11 @@ export const SettingsScreen = () => {
         </Text>
       ),
       headerLeft: () => (
-        <IconButton icon={faArrowLeft} size={22} onPress={() => navigation.goBack()} />
+        <IconButton
+          icon={faArrowLeft}
+          size={22}
+          onPress={() => navigation.goBack()}
+        />
       ),
     });
   }, [navigation, colors]);
@@ -93,7 +100,7 @@ export const SettingsScreen = () => {
         <SectionList>
           <Select
             label={t('common.theme')}
-            value={colorScheme}  // usa tema da context
+            value={colorScheme} // usa tema da context
             onSelectOption={handleThemeSelect}
             options={[
               { id: 'light', title: t('theme.light') },
@@ -112,7 +119,12 @@ export const SettingsScreen = () => {
 
         <SectionHeader title={t('common.cache')} />
         <SectionList>
-          <ListItem title={t('common.cleanCourseFiles')} onPress={() => { /* logica cache */ }} />
+          <ListItem
+            title={t('common.cleanCourseFiles')}
+            onPress={() => {
+              /* logica cache */
+            }}
+          />
         </SectionList>
         <View style={{ paddingBottom: spacing[5] }} />
       </View>

@@ -3,6 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 import { Icon } from '../../ui/components/Icon';
 import { Row } from '../../ui/components/Row';
 import { Text } from '../../ui/components/Text';
@@ -14,8 +17,6 @@ import { UnreadBadge } from '../../ui/components/UnreadBadge';
 import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
 import { Theme } from '../../ui/types/Theme';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 interface Props extends PropsWithChildren<TouchableCardProps> {
   name: string;

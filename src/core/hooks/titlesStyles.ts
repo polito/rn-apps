@@ -1,7 +1,8 @@
 import { Platform } from 'react-native';
 
-import { Theme } from '../../ui/types/theme';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
+
+import { Theme } from '../../ui/types/Theme';
 
 export const titlesStyles: (
   theme: Theme,

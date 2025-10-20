@@ -4,6 +4,15 @@ import { ViewStyle } from 'react-native';
 import { DateTime } from 'luxon';
 
 import {
+  getDatesInMonth,
+  getDatesInNextCustomDays,
+  getDatesInNextOneDay,
+  getDatesInNextThreeDays,
+  getDatesInWeek,
+  isAllDayEvent,
+  modeToDaysCount,
+} from '../../../utils/calendar';
+import {
   CalendarCellStyle,
   CalendarCellTextStyle,
   DateRangeHandler,
@@ -15,15 +24,6 @@ import {
   Mode,
   WeekNum,
 } from '../../types/Calendar';
-import {
-  getDatesInMonth,
-  getDatesInNextCustomDays,
-  getDatesInNextOneDay,
-  getDatesInNextThreeDays,
-  getDatesInWeek,
-  isAllDayEvent,
-  modeToDaysCount,
-} from '../../../utils/calendar';
 import { CalendarBody } from './CalendarBody';
 import { CalendarHeader } from './CalendarHeader';
 

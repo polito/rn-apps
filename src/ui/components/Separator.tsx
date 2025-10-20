@@ -1,6 +1,5 @@
-
-import React from 'react';
 import { View } from 'react-native';
+
 import { useTheme } from '../hooks/useTheme';
 
 /**
@@ -13,7 +12,7 @@ export const Separator = () => {
       style={{
         width: 32,
         height: 4,
-        marginBottom: spacing[2] ,
+        marginBottom: spacing[2],
         backgroundColor: palettes.secondary[600],
       }}
     />

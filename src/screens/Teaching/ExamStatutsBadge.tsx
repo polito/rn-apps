@@ -7,12 +7,12 @@ import {
   faCircleXmark,
   faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
-import { Badge } from '../../ui/components/Badge';
-import { useTheme } from '../../ui/hooks/useTheme';
 import { ExamStatusEnum } from '@polito/api-client';
 
 import { lightTheme } from '../../core/themes/light';
 import { Exam } from '../../core/types/api';
+import { Badge } from '../../ui/components/Badge';
+import { useTheme } from '../../ui/hooks/useTheme';
 
 interface Props {
   exam: Exam;

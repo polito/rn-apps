@@ -9,12 +9,11 @@ import {
 } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
 
 import { IS_IOS } from '../../core/components/costant';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
+import { Theme } from '../../ui/types/Theme';
 import { useTheme } from '../hooks/useTheme';
-import React from 'react';
 
 export interface TextFieldProps extends Omit<TextInputProps, 'placeholder'> {
   inputRef?: Ref<TextInput>;
@@ -91,7 +90,7 @@ export const TextField = ({
 const createStyles = ({ colors, fontSizes, spacing, fontFamilies }: Theme) =>
   StyleSheet.create({
     container: {
-      paddingVertical: spacing[2] ,
+      paddingVertical: spacing[2],
     },
     disabled: {
       opacity: 0.5,
@@ -102,7 +101,7 @@ const createStyles = ({ colors, fontSizes, spacing, fontFamilies }: Theme) =>
       borderBottomWidth: Platform.select({ android: 1 }),
       borderColor: colors.secondaryText,
       color: colors.prose,
-      paddingHorizontal: spacing[5] ,
-      paddingVertical: spacing[2] ,
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[2],
     },
   });

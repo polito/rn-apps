@@ -1,8 +1,6 @@
 import { Platform, View, ViewProps } from 'react-native';
 
-import { IS_IOS } from '../../core/components/costant';
 import { useTheme } from '../hooks/useTheme';
-import React from 'react';
 
 export type CardProps = ViewProps & {
   /**
@@ -39,7 +37,6 @@ export type CardProps = ViewProps & {
 export const Card = ({
   children,
   style,
-  translucent = false,
   spaced = Platform.select({ ios: true, android: false }),
   rounded = Platform.select({ ios: true, android: false }),
   gapped = false,
@@ -52,10 +49,13 @@ export const Card = ({
     <View
       style={[
         {
-          backgroundColor: typeof colors.surface === 'string' ? colors.surface : colors.surface[500],
+          backgroundColor:
+            typeof colors.surface === 'string'
+              ? colors.surface
+              : colors.surface[500],
           elevation: 2,
-          marginHorizontal: spaced ? spacing[4]  : undefined,
-          marginVertical: spacing[2] ,
+          marginHorizontal: spaced ? spacing[4] : undefined,
+          marginVertical: spacing[2],
           overflow: 'hidden',
           borderRadius: rounded ? shapes.lg : undefined,
         },

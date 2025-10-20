@@ -1,34 +1,33 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, { useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Alert,
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   TextInput,
   View,
 } from 'react-native';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {useNavigation} from '@react-navigation/native';
-import {useBottomBarAwareStyles} from '../../core/hooks/useBottomBarAwareStyles';
-import {useStylesheet} from '../../ui/hooks/useStylesheet';
-import {faArrowLeft, faEnvelope, faCalendarDay} from '@fortawesome/free-solid-svg-icons';
-import {IconButton} from '../../ui/components/IconButton';
-import {Text} from '../../ui/components/Text';
-import {Card} from '../../ui/components/Card';
-import {Row} from '../../ui/components/Row';
-import {CtaButton} from '../../ui/components/CtaButton';
-import {Select} from '../../ui/components/Select';
-import {Switch} from '../../ui/components/Switch';
-import {BottomBarSpacer} from '../../core/components/BottomBarSpacer';
-import {useCourses} from '../../core/contexts/CoursesContext';
+
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker, {
-  DateTimePickerEvent,
   DateTimePickerAndroid,
+  DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
-import {DateRow} from '../../ui/components/DateRow';
-import {useTranslation} from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { Card } from '../../ui/components/Card';
+import { CtaButton } from '../../ui/components/CtaButton';
+import { DateRow } from '../../ui/components/DateRow';
+import { IconButton } from '../../ui/components/IconButton';
+import { Row } from '../../ui/components/Row';
+import { Select } from '../../ui/components/Select';
+import { Switch } from '../../ui/components/Switch';
+import { Text } from '../../ui/components/Text';
+import { useTheme } from '../../ui/hooks/useTheme';
+import { ProfileStackParamList } from './ServiceNavigator';
 
 const availableSlots = [
   '08:30',
@@ -43,10 +42,10 @@ const availableSlots = [
 
 const places = ['Valentino', 'Centrale'];
 export const BookRoomForm = () => {
-  const {t} = useTranslation();
-  const {spacing, colors} = useTheme();
-  const navigation = useNavigation();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const { t } = useTranslation();
+  const { spacing, colors } = useTheme();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [selectedStartSlot, setSelectedStartSlot] = useState('');
@@ -55,7 +54,7 @@ export const BookRoomForm = () => {
   const [hasPowerPlugs, setHasPowerPlugs] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState('');
   const [description, setDescription] = useState('');
-  const {addBooking} = useCourses();
+  const { addBooking } = useCourses();
   const [selectedChairType, setSelectedChairType] = useState('');
   const chairTypes = [
     t('other.desk1'),
@@ -108,7 +107,7 @@ export const BookRoomForm = () => {
       date: formattedStartDate,
       time: selectedStartSlot + ' - ' + selectedEndSlot,
       details: description,
-      capacity: parseInt(capacity),
+      capacity: parseInt(capacity, 10),
       powerOutput: hasPowerPlugs,
       status: 'in attesa',
       chairType: selectedChairType,
@@ -137,7 +136,7 @@ export const BookRoomForm = () => {
         <IconButton
           icon={faArrowLeft}
           size={22}
-          onPress={() => navigation.navigate('Prenota_aula')}
+          onPress={() => navigation.navigate('PrenotaAula')}
         />
       ),
       headerTitle: () => (
@@ -147,7 +146,8 @@ export const BookRoomForm = () => {
             textAlign: 'center',
             width: '100%',
             marginLeft: Platform.OS === 'android' ? -25 : -55,
-          }}>
+          }}
+        >
           {t('other.requestRoom')}
         </Text>
       ),
@@ -183,12 +183,12 @@ export const BookRoomForm = () => {
             }
           />
         )}
-        <Card style={{marginBottom: spacing[4]}}>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
             {t('other.selectSlot')}
           </Text>
           <Row justify="space-between">
-            <View style={{flex: 1, marginRight: spacing[2]}}>
+            <View style={{ flex: 1, marginRight: spacing[2] }}>
               <Select
                 label={t('other.startTime')}
                 value={selectedStartSlot}
@@ -199,7 +199,7 @@ export const BookRoomForm = () => {
                 }))}
               />
             </View>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <Select
                 label={t('other.endTime')}
                 value={selectedEndSlot}
@@ -212,11 +212,11 @@ export const BookRoomForm = () => {
             </View>
           </Row>
         </Card>
-        <Card style={{marginBottom: spacing[4]}}>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
             {t('other.selectDeskType')}
           </Text>
-          <View style={{flex: 1, marginRight: spacing[2]}}>
+          <View style={{ flex: 1, marginRight: spacing[2] }}>
             <Select
               label={t('other.deskType')}
               value={selectedChairType}
@@ -228,7 +228,7 @@ export const BookRoomForm = () => {
             />
           </View>
         </Card>
-        <Card style={{marginBottom: spacing[4]}}>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
             {t('other.capacity')}
           </Text>
@@ -247,21 +247,22 @@ export const BookRoomForm = () => {
             placeholder={t('other.enterCapacity')}
           />
         </Card>
-        <Card style={{marginBottom: spacing[4]}}>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Row
             justify="space-between"
             style={{
               marginTop: spacing[2],
               alignItems: 'center',
               marginBottom: spacing[2],
-            }}>
+            }}
+          >
             <Text variant="heading" style={styles.label}>
               {t('other.powerSockets')}
             </Text>
             <Switch value={hasPowerPlugs} onValueChange={setHasPowerPlugs} />
           </Row>
         </Card>
-        <Card style={{marginBottom: spacing[4]}}>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
             {t('other.selectRoomSite')}
           </Text>
@@ -269,7 +270,7 @@ export const BookRoomForm = () => {
             label={t('other.noSelection')}
             value={selectedPlace}
             onSelectOption={setSelectedPlace}
-            options={places.map(slot => ({id: slot, title: slot}))}
+            options={places.map(slot => ({ id: slot, title: slot }))}
           />
         </Card>
         <Card>
@@ -279,7 +280,8 @@ export const BookRoomForm = () => {
               marginLeft: 17,
               marginTop: 5,
               color: colors.formTitle,
-            }}>
+            }}
+          >
             {t('other.requestReason')}
           </Text>
           <TextInput
@@ -299,13 +301,13 @@ export const BookRoomForm = () => {
             }}
           />
         </Card>
-        <View style={{marginBottom: spacing[10]}} />
+        <View style={{ marginBottom: spacing[10] }} />
       </ScrollView>
       <CtaButton
         title={t('other.sendRequest')}
         action={() => {
           Alert.alert(t('other.confirm'), t('other.alertBooking'), [
-            {text: t('common.cancel'), style: 'cancel'},
+            { text: t('common.cancel'), style: 'cancel' },
             {
               text: t('other.confirm'),
               onPress: () => {

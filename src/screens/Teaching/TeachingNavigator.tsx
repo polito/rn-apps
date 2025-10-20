@@ -1,97 +1,94 @@
-import {useTranslation} from 'react-i18next';
+import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Alert,
-  Animated,
   Platform,
-  StyleProp,
   StyleSheet,
   TouchableOpacity,
   View,
-  ViewStyle,
 } from 'react-native';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {CoursesScreen} from './CoursesScreen';
-import {ExamScreen} from '../ExamScreen';
-import {ExamsScreen} from '../ExamsScreen';
-import {GradesScreen} from '../GradesScreen';
-import {HomeScreen} from '../HomeScreen';
-import {EmptyScreen} from '../EmptyScreen';
-import React, { useRef, useState } from 'react';
-import {TeachingScreen} from './TeachingScreen';
-import TranslucentView from '../../core/components/TranslucentView';
-import {getHeaderTitle} from '@react-navigation/elements';
-import {Header} from '../../core/components/Header';
-import {CourseGuideScreen} from './CourseGuideScreen';
-import {Logo} from '../../core/components/Logo';
-import {titlesStyles} from '../../core/hooks/titlesStyles';
-import {useTitlesStyles} from '../../core/hooks/useTitleStyles';
-import {useNavigation} from '@react-navigation/native';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faArrowLeft, faEllipsisV} from '@fortawesome/free-solid-svg-icons';
-import {NoticeScreen} from './NoticeScreen';
-import {CourseNoticesTab} from './CourseNoticesTab';
-import {CourseInfoTab} from './CourseInfoTab';
-import {CourseNavigator} from './CourseNavigator';
-import { FormScreen } from './FormScreen';
 import Popover from 'react-native-popover-view';
-import { Text } from '../../ui/components/Text';
+
+import { faArrowLeft, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useNavigation } from '@react-navigation/native';
+import {
+  NativeStackNavigationProp,
+  createNativeStackNavigator,
+} from '@react-navigation/native-stack';
+
+import { Logo } from '../../core/components/Logo';
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { useTitlesStyles } from '../../core/hooks/useTitleStyles';
+import { Text } from '../../ui/components/Text';
+import { useTheme } from '../../ui/hooks/useTheme';
+import { AgendaStackParamList } from '../Agenda/AgendaNavigator';
+import { ExamScreen } from '../ExamScreen';
+import { ExamScreen2 } from '../ExamScreen2';
+import { ExamScreen3 } from '../ExamScreen3';
+import { ExamsScreen } from '../ExamsScreen';
+import { GradesScreen } from '../GradesScreen';
+import { ContactScreen2 } from './ContactScreen2';
+import { CourseGuideScreen } from './CourseGuideScreen';
+import { CourseNavigator } from './CourseNavigator';
+import { CoursesScreen } from './CoursesScreen';
+import { FilesFormScreen } from './FilesFormScreen';
+import { FormScreen } from './FormScreen';
+import { LectureFormScreen } from './LectureFormScreen';
 import { LessonScreen } from './LessonScreen';
-import { ModifyNoticeScreen } from './ModifyNoticeScreen';
+import { ManagedCoursesScreen } from './ManagedCoursesScreen';
 import { ModifyFileScreen } from './ModifyFileScreen';
 import { ModifyLectureScreen } from './ModifyLectureScreen';
-import { StaffScreen } from './StaffScreen';
-import { ManagedCoursesScreen } from './ManagedCoursesScreen';
+import { ModifyNoticeScreen } from './ModifyNoticeScreen';
 import { NoticeFormScreen } from './NoticeFormScreen';
-import { FilesFormScreen } from './FilesFormScreen';
-import { LectureFormScreen } from './LectureFormScreen';
-import { ContactScreen2 } from './ContactScreen2';
-import { ExamScreen3 } from '../ExamScreen3';
-import { ExamScreen2 } from '../ExamScreen2';
+import { NoticeScreen } from './NoticeScreen';
+import { StaffScreen } from './StaffScreen';
 import { StudentContact } from './StudentContact';
+import { TeachingScreen } from './TeachingScreen';
 
 export type TeachingStackParamList = {
-  Form : undefined;
+  Form: undefined;
   Incarichi: undefined;
-  I_miei_corsi: undefined;
-  Corsi_in_gestione : undefined;
+  IMieiCorsi: undefined;
+  CorsiInGestione: undefined;
   Avviso: undefined;
-  Lezione : undefined;
+  Lezione: undefined;
   Notices: undefined;
   Info: undefined;
-  Course: {from : string};
-  CourseGuide: {courseId: number};
-  CourseVideolecture: {courseId: number; lectureId: number};
-  CourseVirtualClassroom: {courseId: number; lectureId: number};
-  CourseAssignmentUpload: {courseId: number};
+  Course: { from?: string };
+  CourseGuide: { courseId: number };
+  CourseVideolecture: { courseId: number; lectureId: number };
+  CourseVirtualClassroom: { courseId: number; lectureId: number };
+  CourseAssignmentUpload: { courseId: number };
   Appelli: undefined;
-  Exam: {id: number};
+  Exam: { id: number };
   Grades: undefined;
   CourseDirectory: undefined;
   CourseDirectoryRoot: undefined;
-  ModifyNotice : undefined;
-  ModifyFile : undefined;
-  ModifyLecture : undefined;
-  Staff : undefined;
-  Exam3 : undefined; 
-    Exam2: undefined; 
-StudentContact : undefined;
-  NoticeForm : undefined;
+  ModifyNotice: undefined;
+  ModifyFile: undefined;
+  ModifyLecture: undefined;
+  Staff: undefined;
+  Exam3: undefined;
+  Exam2: undefined;
+  StudentContact: undefined;
+  NoticeForm: undefined;
   FilesForm: undefined;
   LectureForm: undefined;
   StudentsForm: undefined;
-  Contatto : undefined;
+  Contatto: undefined;
 };
 const CustomBackButton = () => {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
 
   return (
     <TouchableOpacity
       onPress={() => {
         navigation.navigate('Incarichi'); // Altrimenti torna alla schermata "Courses"
       }}
-      style={{paddingHorizontal: 10}}>
+      style={{ paddingHorizontal: 10 }}
+    >
       <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
     </TouchableOpacity>
   );
@@ -105,85 +102,92 @@ const CustomBackButton2 = () => {
       onPress={() => {
         navigation.goBack(); // Altrimenti torna alla schermata "Courses"
       }}
-      style={{paddingHorizontal: 10}}>
+      style={{ paddingHorizontal: 10 }}
+    >
       <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
     </TouchableOpacity>
   );
 };
 
 const CustomBackButton3 = () => {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
 
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('Course'); // Altrimenti torna alla schermata "Courses"
+        navigation.navigate('Course', { from: undefined }); // Altrimenti torna alla schermata "Courses"
       }}
-      style={{paddingHorizontal: 10}}>
+      style={{ paddingHorizontal: 10 }}
+    >
       <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
     </TouchableOpacity>
   );
 };
 
 const CustomBackButton4 = () => {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
 
   return (
     <TouchableOpacity
       onPress={() => {
         navigation.navigate('Appelli'); // Altrimenti torna alla schermata "Courses"
       }}
-      style={{paddingHorizontal: 10}}>
+      style={{ paddingHorizontal: 10 }}
+    >
       <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
     </TouchableOpacity>
   );
 };
 
 const CustomBackButton5 = () => {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
 
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('I_miei_corsi'); // Altrimenti torna alla schermata "Courses"
+        navigation.navigate('IMieiCorsi'); // Altrimenti torna alla schermata "Courses"
       }}
-      style={{paddingHorizontal: 10}}>
+      style={{ paddingHorizontal: 10 }}
+    >
       <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
     </TouchableOpacity>
   );
 };
-
 
 const CustomBackButton6 = () => {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
 
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('Corsi_in_gestione'); // Altrimenti torna alla schermata "Courses"
+        navigation.navigate('CorsiInGestione'); // Altrimenti torna alla schermata "Courses"
       }}
-      style={{paddingHorizontal: 10}}>
+      style={{ paddingHorizontal: 10 }}
+    >
       <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
     </TouchableOpacity>
   );
 };
-
 
 const CustomBackButton7 = () => {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<AgendaStackParamList>>();
 
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('Agenda', {screen : 'SingleElement'}); // Altrimenti torna alla schermata "Courses"
+        navigation.navigate('SingleElement'); // Altrimenti torna alla schermata "Courses"
       }}
-      style={{paddingHorizontal: 10}}>
+      style={{ paddingHorizontal: 10 }}
+    >
       <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
     </TouchableOpacity>
   );
 };
-
-
 
 const HeaderLeftWithLogoAndBack = () => {
   return (
@@ -194,7 +198,6 @@ const HeaderLeftWithLogoAndBack = () => {
   );
 };
 
-
 const HeaderLeftWithLogoAndBack2 = () => {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -204,50 +207,51 @@ const HeaderLeftWithLogoAndBack2 = () => {
   );
 };
 
-
-
-
-
 const Stack = createNativeStackNavigator<TeachingStackParamList>();
 
 export const TeachingNavigator = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const theme = useTheme();
-  const {colors} = theme;
-
-  
+  const { colors } = theme;
 
   return (
     <Stack.Navigator
       screenOptions={{
         headerLargeTitle: true,
-        headerTransparent: Platform.select({ios: false}),
+        headerTransparent: Platform.select({ ios: false }),
         headerLargeStyle: {
           backgroundColor: colors.background,
         },
         ...useTitlesStyles(theme),
-      }}>
-     <Stack.Screen
-  name="Incarichi"
-  component={TeachingScreen}
-  options={{
-    headerLeft: () => <Logo />,
-    headerTitle: () => (
-      <Text variant="heading" style={{ textAlign: 'center', width: '100%', marginLeft : -15 }}>
-        {t('teachingScreen.title')}
-      </Text>
-    ),
-    headerRight: () => <View style={{ width: 40 }} />, // bilancia lo spazio del logo
-  }}
-/>
+      }}
+    >
       <Stack.Screen
-        name="I_miei_corsi"
+        name="Incarichi"
+        component={TeachingScreen}
+        options={{
+          headerLeft: () => <Logo />,
+          headerTitle: () => (
+            <Text
+              variant="heading"
+              style={{ textAlign: 'center', width: '100%', marginLeft: -15 }}
+            >
+              {t('teachingScreen.title')}
+            </Text>
+          ),
+          headerRight: () => <View style={{ width: 40 }} />, // bilancia lo spazio del logo
+        }}
+      />
+      <Stack.Screen
+        name="IMieiCorsi"
         component={CoursesScreen}
         options={{
-        headerLeft: () => <HeaderLeftWithLogoAndBack />,
+          headerLeft: () => <HeaderLeftWithLogoAndBack />,
 
           headerTitle: () => (
-            <Text variant="heading" style={{ textAlign: 'center', width: '100%', marginLeft : -40 }}>
+            <Text
+              variant="heading"
+              style={{ textAlign: 'center', width: '100%', marginLeft: -40 }}
+            >
               {t('other.myCourses')}
             </Text>
           ),
@@ -256,60 +260,63 @@ export const TeachingNavigator = () => {
       />
 
       <Stack.Screen
-        name="Corsi_in_gestione"
+        name="CorsiInGestione"
         component={ManagedCoursesScreen}
         options={{
-        headerLeft: () => <HeaderLeftWithLogoAndBack />,
+          headerLeft: () => <HeaderLeftWithLogoAndBack />,
 
           headerTitle: () => (
-            <Text variant="heading" style={{ textAlign: 'center', width: '100%', marginLeft : -30 }}>
+            <Text
+              variant="heading"
+              style={{ textAlign: 'center', width: '100%', marginLeft: -30 }}
+            >
               {t('other.managedCourses')}
             </Text>
           ),
           headerRight: () => <View style={{ width: 40 }} />,
         }}
       />
-      
-      
+
       <Stack.Screen
-  name="Course"
-  component={CourseNavigator}
-  options={({ route }) => {
-    const from = route.params?.from;
+        name="Course"
+        component={CourseNavigator}
+        options={({ route }) => {
+          const from = route.params?.from;
 
-    let headerLeftButton;
-    if (from === 'I_miei_corsi') {
-      headerLeftButton = <CustomBackButton5 />;
-    } else if (from === 'Corsi_in_gestione') {
-      headerLeftButton = <CustomBackButton6 />;
-    }else if (from === 'Agenda'){
-      headerLeftButton = <CustomBackButton7 />;
+          let headerLeftButton: JSX.Element;
+          if (from === 'IMieiCorsi') {
+            headerLeftButton = <CustomBackButton5 />;
+          } else if (from === 'CorsiInGestione') {
+            headerLeftButton = <CustomBackButton6 />;
+          } else if (from === 'Agenda') {
+            headerLeftButton = <CustomBackButton7 />;
+          } else {
+            // Default or 'Incarichi'
+            headerLeftButton = <CustomBackButton />;
+          }
 
-    
-    } else {
-      // Default or 'Incarichi'
-      headerLeftButton = <CustomBackButton />;
-    }
+          return {
+            headerLeft: () => headerLeftButton,
+            headerShown: true,
+            headerLargeTitle: false,
+          };
+        }}
+      />
 
-    return {
-      headerLeft: () => headerLeftButton,
-      headerShown: true,
-      headerLargeTitle: false,
-    };
-  }}
-/>
-      
       <Stack.Screen
         name="Avviso"
         component={NoticeScreen}
         options={{
           headerLeft: () => <CustomBackButton2 />,
           headerTitle: () => (
-            <Text variant="heading" style={{ textAlign: 'center', width: '100%', marginLeft : -10 }}>
+            <Text
+              variant="heading"
+              style={{ textAlign: 'center', width: '100%', marginLeft: -10 }}
+            >
               {t('common.notice')}
             </Text>
           ),
-          headerRight : () => <NoticeMenu ></NoticeMenu>,
+          headerRight: () => <NoticeMenu></NoticeMenu>,
           headerShown: true,
         }}
       />
@@ -319,9 +326,12 @@ export const TeachingNavigator = () => {
         component={LessonScreen}
         options={{
           headerLeft: () => <CustomBackButton2 />,
-          headerRight : () => <LectureMenu ></LectureMenu>,
+          headerRight: () => <LectureMenu></LectureMenu>,
           headerTitle: () => (
-            <Text variant="heading" style={{ textAlign: 'center', width: '100%', marginLeft : -10 }}>
+            <Text
+              variant="heading"
+              style={{ textAlign: 'center', width: '100%', marginLeft: -10 }}
+            >
               {t('common.lecture')}
             </Text>
           ),
@@ -354,7 +364,7 @@ export const TeachingNavigator = () => {
         }}
       />
 
-        <Stack.Screen
+      <Stack.Screen
         name="LectureForm"
         component={LectureFormScreen}
         options={{
@@ -381,7 +391,6 @@ export const TeachingNavigator = () => {
         }}
       />
 
-
       <Stack.Screen
         name="ModifyLecture"
         component={ModifyLectureScreen}
@@ -391,19 +400,17 @@ export const TeachingNavigator = () => {
         }}
       />
 
-      <Stack.Screen
-        name="StudentContact"
-        component={StudentContact}
-        
-      />
-
+      <Stack.Screen name="StudentContact" component={StudentContact} />
 
       <Stack.Screen
         name="Staff"
         component={StaffScreen}
         options={{
           headerTitle: () => (
-            <Text variant="heading" style={{ textAlign: 'center', width: '100%', marginLeft : -20 }}>
+            <Text
+              variant="heading"
+              style={{ textAlign: 'center', width: '100%', marginLeft: -20 }}
+            >
               {t('other.managingAccesses')}
             </Text>
           ),
@@ -418,34 +425,24 @@ export const TeachingNavigator = () => {
         name="Appelli"
         component={ExamsScreen}
         options={{
-        headerLeft: () => <HeaderLeftWithLogoAndBack />,
+          headerLeft: () => <HeaderLeftWithLogoAndBack />,
 
           headerTitle: () => (
-            <Text variant="heading" style={{ textAlign: 'center', width: '100%', marginLeft : -35 }}>
+            <Text
+              variant="heading"
+              style={{ textAlign: 'center', width: '100%', marginLeft: -35 }}
+            >
               {t('other.appeals')}
             </Text>
           ),
           headerRight: () => <View style={{ width: 40 }} />,
         }}
       />
-      <Stack.Screen
-       name="Exam" 
-       component={ExamScreen} 
-       
-       />
+      <Stack.Screen name="Exam" component={ExamScreen} />
 
-        <Stack.Screen
-       name="Exam2" 
-       component={ExamScreen2} 
-       
-       />
+      <Stack.Screen name="Exam2" component={ExamScreen2} />
 
-      <Stack.Screen
-       name="Exam3" 
-       component={ExamScreen3} 
-       
-       />
-
+      <Stack.Screen name="Exam3" component={ExamScreen3} />
 
       <Stack.Screen
         name="Grades"
@@ -465,19 +462,21 @@ export const TeachingNavigator = () => {
   );
 };
 
-
 const NoticeMenu = () => {
   const [isMenuVisible, setMenuVisible] = useState(false);
   const buttonRef = useRef(null); // Riferimento ai tre puntini
-  const {selectedNotice, updateCourseNotice, deleteNoticeFromCourse, selectedCourse} = useCourses()
-  const navigation = useNavigation()
-  const  {t} = useTranslation()
-const handleDelete = () => {
-  if (selectedCourse && selectedNotice) {
-    Alert.alert(
-      t('other.confirm'),
-      t('other.alertNotice2'),
-      [
+  const {
+    selectedNotice,
+    updateCourseNotice,
+    deleteNoticeFromCourse,
+    selectedCourse,
+  } = useCourses();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
+  const { t } = useTranslation();
+  const handleDelete = () => {
+    if (selectedCourse && selectedNotice) {
+      Alert.alert(t('other.confirm'), t('other.alertNotice2'), [
         {
           text: t('common.cancel'),
           style: 'cancel',
@@ -491,17 +490,14 @@ const handleDelete = () => {
             setMenuVisible(false);
           },
         },
-      ]
-    );
-  }
-};
+      ]);
+    }
+  };
 
-  
   const handleUpdate = () => {
     if (selectedCourse && selectedNotice) {
-      console.log("updated")
-      navigation.navigate('ModifyNotice')
-      setMenuVisible(false); 
+      navigation.navigate('ModifyNotice');
+      setMenuVisible(false);
     }
   };
 
@@ -532,40 +528,41 @@ const handleDelete = () => {
 const LectureMenu = () => {
   const [isMenuVisible, setMenuVisible] = useState(false);
   const buttonRef = useRef(null); // Riferimento ai tre puntini
-  const {selectedLecture, deleteLessonFromCourse, selectedCourse} = useCourses()
-  const navigation = useNavigation()
+  const { selectedLecture, deleteLessonFromCourse, selectedCourse } =
+    useCourses();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
 
   const handleDelete = () => {
-  if (selectedCourse && selectedLecture) {
-    Alert.alert(
-      'Conferma eliminazione',
-      'Sei sicuro di voler eliminare questa lezione?',
-      [
-        {
-          text: 'Annulla',
-          style: 'cancel',
-        },
-        {
-          text: 'Conferma',
-          style: 'destructive',
-          onPress: () => {
-            deleteLessonFromCourse(selectedCourse.id, selectedLecture.id);
-            navigation.goBack();
-            setMenuVisible(false);
+    if (selectedCourse && selectedLecture) {
+      Alert.alert(
+        'Conferma eliminazione',
+        'Sei sicuro di voler eliminare questa lezione?',
+        [
+          {
+            text: 'Annulla',
+            style: 'cancel',
           },
-        },
-      ]
-    );
-  }
-};
-
-const handleUpdate = () => {
-    if(selectedCourse && selectedLecture){
-      navigation.navigate('ModifyLecture');
-    setMenuVisible(false);
+          {
+            text: 'Conferma',
+            style: 'destructive',
+            onPress: () => {
+              deleteLessonFromCourse(selectedCourse.id, selectedLecture.id);
+              navigation.goBack();
+              setMenuVisible(false);
+            },
+          },
+        ],
+      );
     }
-    
-  }
+  };
+
+  const handleUpdate = () => {
+    if (selectedCourse && selectedLecture) {
+      navigation.navigate('ModifyLecture');
+      setMenuVisible(false);
+    }
+  };
 
   return (
     <View>
@@ -597,4 +594,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-

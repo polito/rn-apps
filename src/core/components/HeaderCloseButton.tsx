@@ -2,10 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { Pressable } from 'react-native';
 
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Icon } from '../../ui/components/Icon';
-import { useTheme } from '../../ui/hooks/useTheme';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { Icon } from '../../ui/components/Icon';
+import { useTheme } from '../../ui/hooks/useTheme';
 
 export const HeaderCloseButton = () => {
   const { t } = useTranslation();

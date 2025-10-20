@@ -1,7 +1,6 @@
 import { Platform, Switch as RNSwitch, SwitchProps } from 'react-native';
 
 import { useTheme } from '../../ui/hooks/useTheme';
-import React from 'react';
 
 export const Switch = ({ children, ...rest }: SwitchProps) => {
   const { dark, palettes } = useTheme();

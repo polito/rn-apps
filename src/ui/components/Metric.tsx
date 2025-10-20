@@ -1,9 +1,9 @@
+import { JSX } from 'react';
 import { View, ViewProps } from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
 import { CardProps } from './Card';
 import { Text, Props as TextProps } from './Text';
-import React, { JSX } from 'react';
 
 type Props = ViewProps & {
   title?: string;
@@ -24,9 +24,8 @@ export const Metric = ({ title, value, color, ...rest }: CardProps & Props) => {
       {['string', 'number'].includes(typeof value) ? (
         <Text
           accessible={false}
-          variant='heading'
+          variant="heading"
           style={[
-            
             {
               color: color ?? palettes.secondary[dark ? 500 : 600],
               fontSize: fontSizes.lg,

@@ -1,11 +1,9 @@
 import { Platform, StyleSheet } from 'react-native';
 
-import { Row, RowProps } from './Row';
+import { useSafeAreaSpacing } from '../../../src/core/hooks/useSafeAreaSpacing';
 import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { Theme } from '../../ui/types/Theme';
-
-import { useSafeAreaSpacing } from '../../../src/core/hooks/useSafeAreaSpacing';
-import React from 'react';
+import { Row, RowProps } from './Row';
 
 export type HeaderAccessoryProps = RowProps;
 
@@ -24,21 +22,23 @@ export const HeaderAccessory = ({
   );
 };
 
-
 const createStyles = ({ colors }: Theme) =>
-    StyleSheet.create({
-      container: {
-        backgroundColor: Platform.select({
-          ios: typeof colors.headersBackground === 'string' ? colors.headersBackground : undefined,
-          android: typeof colors.surface === 'string' ? colors.surface : undefined,
-        }),
-        borderBottomWidth: Platform.select({
-          ios: StyleSheet.hairlineWidth,
-        }),
-        borderBottomColor:
-          typeof colors.divider === 'string' ? colors.divider : undefined,
-        elevation: 3,
-        zIndex: 1,
-      },
-    });
-  
+  StyleSheet.create({
+    container: {
+      backgroundColor: Platform.select({
+        ios:
+          typeof colors.headersBackground === 'string'
+            ? colors.headersBackground
+            : undefined,
+        android:
+          typeof colors.surface === 'string' ? colors.surface : undefined,
+      }),
+      borderBottomWidth: Platform.select({
+        ios: StyleSheet.hairlineWidth,
+      }),
+      borderBottomColor:
+        typeof colors.divider === 'string' ? colors.divider : undefined,
+      elevation: 3,
+      zIndex: 1,
+    },
+  });

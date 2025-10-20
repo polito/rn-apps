@@ -1,4 +1,3 @@
-
 import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';
@@ -10,6 +9,17 @@ import {
   faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { ResponseError } from '@polito/api-client/runtime';
+import { useHeaderHeight } from '@react-navigation/elements';
+import { CameraBounds, CameraPadding } from '@rnmapbox/maps';
+import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
+
+import { Polygon } from 'geojson';
+
+import { GlobalStyles } from '../../../core/components/GlobalStyles';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useGetPlace } from '../../../core/queries/placesHooks';
+import { MAX_RECENT_SEARCHES } from '../../../core/themes/constants';
 import { ActivityIndicator } from '../../../ui/components/ActivityIndicator';
 import { BottomSheet } from '../../../ui/components/BottomSheet';
 import { Col } from '../../../ui/components/Col';
@@ -23,18 +33,6 @@ import { Text } from '../../../ui/components/Text';
 import { useStylesheet } from '../../../ui/hooks/useStylesheet';
 import { useTheme } from '../../../ui/hooks/useTheme';
 import { Theme } from '../../../ui/types/Theme';
-import { ResponseError } from '@polito/api-client/runtime';
-import { useHeaderHeight } from '@react-navigation/elements';
-import { CameraBounds, CameraPadding } from '@rnmapbox/maps';
-import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
-
-import { Polygon } from 'geojson';
-
-import { MAX_RECENT_SEARCHES } from '../../../core/themes/constants';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
-import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
-import { useGetPlace } from '../../../core/queries/placesHooks';
-import { GlobalStyles } from '../../../core/components/GlobalStyles';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
@@ -67,7 +65,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     siteId: siteId,
     floorId: placeFloorId,
   });
-  console.log(placeId)
   useEffect(() => {
     if (!isLoadingPlace && placeFloorId !== floorId) {
       setFloorId(placeFloorId);
@@ -81,20 +78,22 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
     name ??
     t('common.untitled');
 
-useLayoutEffect(() => {
-  navigation.setOptions({
-    headerTitle: t('placeScreen.placeDetail'),
-    headerLeft: () => (
-      <IconButton
-        icon={faArrowLeft}
-        size={20}
-        accessibilityLabel={t('common.back')}
-        onPress={() => {navigation.goBack()}}
-        style={{ marginLeft: 10 }}
-      />
-    ),
-  });
-}, [navigation, t]);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: t('placeScreen.placeDetail'),
+      headerLeft: () => (
+        <IconButton
+          icon={faArrowLeft}
+          size={20}
+          accessibilityLabel={t('common.back')}
+          onPress={() => {
+            navigation.goBack();
+          }}
+          style={{ marginLeft: 10 }}
+        />
+      ),
+    });
+  }, [navigation, t]);
 
   useEffect(() => {
     if (place && !updatedRecentPlaces) {
@@ -238,7 +237,6 @@ useLayoutEffect(() => {
     return (
       <View style={GlobalStyles.grow} pointerEvents="box-none">
         <BottomSheet
-        
           middleSnapPoint={50}
           handleStyle={{ paddingVertical: undefined }}
         >

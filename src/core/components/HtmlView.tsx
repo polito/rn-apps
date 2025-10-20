@@ -1,14 +1,19 @@
-import { memo, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image, StyleSheet, useWindowDimensions } from 'react-native';
-import RenderHTML, { InternalRendererProps, RenderHTMLProps, useInternalRenderer } from 'react-native-render-html';
+import RenderHTML, {
+  InternalRendererProps,
+  RenderHTMLProps,
+  useInternalRenderer,
+} from 'react-native-render-html';
 
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { ImageLoader } from '../../ui/components/ImageLoader';
 import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
 import { Theme } from '../../ui/types/Theme';
-import React from 'react';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/native';
-import { ImageLoader } from '../../ui/components/ImageLoader';
+
 type ImageData = {
   width: number;
   height: number;
@@ -44,7 +49,6 @@ const CustomImageRenderer = (props: InternalRendererProps<any>) => {
     />
   );
 };
-
 
 const renderers = {
   img: CustomImageRenderer,

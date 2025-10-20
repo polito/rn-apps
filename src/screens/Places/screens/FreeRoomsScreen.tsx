@@ -1,4 +1,3 @@
-
 import {
   useCallback,
   useContext,
@@ -16,6 +15,16 @@ import {
   faMapPin,
 } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
+import { PlaceOverview } from '@polito/api-client';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useHeaderHeight } from '@react-navigation/elements';
+
+import { last } from 'lodash';
+import { DateTime } from 'luxon';
+
+import { GlobalStyles } from '../../../core/components/GlobalStyles';
+import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
+import { useGetFreeRooms } from '../../../core/queries/placesHooks';
 import { ActivityIndicator } from '../../../ui/components/ActivityIndicator';
 import { BottomSheet } from '../../../ui/components/BottomSheet';
 import { EmptyState } from '../../../ui/components/EmptyState';
@@ -26,16 +35,6 @@ import { ListItem, ListItemProps } from '../../../ui/components/ListItem';
 import { Row } from '../../../ui/components/Row';
 import { Text } from '../../../ui/components/Text';
 import { useTheme } from '../../../ui/hooks/useTheme';
-import { PlaceOverview } from '@polito/api-client';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { useHeaderHeight } from '@react-navigation/elements';
-
-import { last } from 'lodash';
-import { DateTime } from 'luxon';
-
-import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
-import { useGetFreeRooms } from '../../../core/queries/placesHooks';
-import { GlobalStyles } from '../../../core/components/GlobalStyles';
 import { dateFormatter } from '../../../utils/dates';
 import { notNullish } from '../../../utils/predicates';
 import { CampusSelector } from '../components/CampusSelector';
@@ -291,7 +290,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
               subtitle: `${t('common.free')} ${formatHHmm(
                 p.freeFrom,
               )} - ${formatHHmm(p.freeTo)}`,
-              linkTo: { screen: 'Place', params: { placeId: p.id } },
+              linkTo: { name: 'Place', params: { placeId: p.id } },
             })) ?? []
           }
           renderItem={({ item }: { item: ListItemProps }) => (

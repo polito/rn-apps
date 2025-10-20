@@ -1,43 +1,33 @@
-import React, {useLayoutEffect} from 'react';
-import {
-  Alert,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {SectionHeader} from '../../ui/components/SectionHeader';
-import {useStylesheet} from '../../ui/hooks/useStylesheet';
-import {Theme} from '../../ui/types/Theme';
-import {useCourses} from '../../core/contexts/CoursesContext';
-import {Text} from '../../ui/components/Text';
-import {Section} from '../../ui/components/Section';
-import {Card} from '../../ui/components/Card';
+import { useTranslation } from 'react-i18next';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Platform } from 'react-native';
+
 import {
   faArrowLeft,
-  faBook,
   faBookOpen,
-  faEllipsisVertical,
-  faLanguage,
   faLocationDot,
   faTrash,
-  faUser,
-  faVideo,
 } from '@fortawesome/free-solid-svg-icons';
-import {IconButton} from '../../ui/components/IconButton';
-import {BottomBarSpacer} from '../../core/components/BottomBarSpacer';
-import {OverviewList} from '../../ui/components/OverviewList';
-import {ListItem} from '../../ui/components/ListItem';
-import {Icon} from '../../ui/components/Icon';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {VerticalDashedLine} from '../../ui/components/VerticalDashedLine';
-import {useNavigation} from '@react-navigation/native';
-import {Row} from '../../ui/components/Row';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {CtaButton} from '../../ui/components/CtaButton';
-import {Platform} from 'react-native';
-import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { RootParamList } from '../../core/components/NavBar';
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { Card } from '../../ui/components/Card';
+import { CtaButton } from '../../ui/components/CtaButton';
+import { Icon } from '../../ui/components/Icon';
+import { ListItem } from '../../ui/components/ListItem';
+import { OverviewList } from '../../ui/components/OverviewList';
+import { Section } from '../../ui/components/Section';
+import { SectionHeader } from '../../ui/components/SectionHeader';
+import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
+import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
+import { AgendaStackParamList } from './AgendaNavigator';
+
 const CustomBackButton2 = () => {
   const navigation = useNavigation();
 
@@ -46,7 +36,8 @@ const CustomBackButton2 = () => {
       onPress={() => {
         navigation.goBack(); // Altrimenti torna alla schermata "Courses"
       }}
-      style={{paddingHorizontal: 10}}>
+      style={{ paddingHorizontal: 10 }}
+    >
       <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
     </TouchableOpacity>
   );
@@ -58,10 +49,14 @@ const capitalizeFirstLetter = (text: string) => {
 };
 export const SingleElementScreen = () => {
   const styles = useStylesheet(createStyles);
-  const {selectedCourse, selectedAgendaItem, removeAgendaItem} = useCourses(); // Recupero i corsi dal context
-  const {fontSizes, colors, spacing} = useTheme();
-  const navigation = useNavigation();
-  const {t} = useTranslation();
+  const { selectedCourse, selectedAgendaItem, removeAgendaItem } = useCourses(); // Recupero i corsi dal context
+  const { fontSizes } = useTheme();
+  const agendaNavigator =
+    useNavigation<NativeStackNavigationProp<AgendaStackParamList>>();
+  const bottomNavigation =
+    useNavigation<BottomTabNavigationProp<RootParamList>>();
+  const placesNavigation = useNavigation<any>();
+  const { t } = useTranslation();
   if (!selectedAgendaItem) return null;
 
   if (
@@ -69,29 +64,30 @@ export const SingleElementScreen = () => {
     selectedAgendaItem.type === 'Lezione' ||
     selectedAgendaItem.type === 'LEZIONE'
   ) {
-    console.log(selectedAgendaItem.location);
-    navigation.setOptions({
+    agendaNavigator.setOptions({
       headerTitle: () => (
         <Text
           variant="heading"
           style={{
             marginLeft: Platform.OS === 'android' ? 110 : 40,
             width: 100,
-          }}>
+          }}
+        >
           Lezione
         </Text>
       ),
       headerLeft: () => <CustomBackButton2 />,
     });
   } else {
-    navigation.setOptions({
+    agendaNavigator.setOptions({
       headerTitle: () => (
         <Text
           variant="heading"
           style={{
             marginLeft: Platform.OS === 'android' ? 75 : 10,
             width: Platform.OS === 'android' ? 200 : 120,
-          }}>
+          }}
+        >
           Appuntamento
         </Text>
       ),
@@ -102,84 +98,80 @@ export const SingleElementScreen = () => {
   return (
     <>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-          <Section>
-            <Text variant="heading" style={styles.TitleText}>
-              {selectedAgendaItem?.title}
+        <Section>
+          <Text variant="heading" style={styles.TitleText}>
+            {selectedAgendaItem?.title}
+          </Text>
+          <Text style={styles.dateText}>
+            {selectedAgendaItem?.date} - {selectedAgendaItem?.time}
+          </Text>
+        </Section>
+        <Section>
+          <SectionHeader title={t('other.description')} />
+          <Card>
+            <Text style={styles.ContentText}>
+              {selectedAgendaItem?.description}
             </Text>
-            <Text style={styles.dateText}>
-              {selectedAgendaItem?.date} - {selectedAgendaItem?.time}
-            </Text>
-          </Section>
+          </Card>
+        </Section>
+        {(selectedAgendaItem.type === 'Lezione' ||
+          selectedAgendaItem.type === 'lezione' ||
+          selectedAgendaItem.type === 'LEZIONE') && (
           <Section>
-            <SectionHeader title={t('other.description')} />
-            <Card>
-              <Text style={styles.ContentText}>
-                {selectedAgendaItem?.description}
-              </Text>
-            </Card>
-          </Section>
-          {(selectedAgendaItem.type === 'Lezione' ||
-            selectedAgendaItem.type === 'lezione' ||
-            selectedAgendaItem.type === 'LEZIONE') && (
-            <Section>
-              <SectionHeader title={t('other.otherInfo')} />
-              <OverviewList indented>
-                {selectedAgendaItem.type && (
-                  <ListItem
-                    leadingItem={
-                      <Icon icon={faLocationDot} size={fontSizes['2xl']} />
-                    }
-                    title={t('other.lessonRoom')}
-                    subtitle={selectedAgendaItem.location}
-                    onPress={()=>{
-                      navigation.navigate('Places', {
-                        screen: 'Place',
-                        params: {placeId: 'TO_CEN03-XPTE-E002'},
-                      });
-                    }}    
-                  />
-                )}
+            <SectionHeader title={t('other.otherInfo')} />
+            <OverviewList indented>
+              {selectedAgendaItem.type && (
+                <ListItem
+                  leadingItem={
+                    <Icon icon={faLocationDot} size={fontSizes['2xl']} />
+                  }
+                  title={t('other.lessonRoom')}
+                  subtitle={selectedAgendaItem.location}
+                  onPress={() => {
+                    placesNavigation.navigate('Places', {
+                      screen: 'Place',
+                      params: { placeId: 'TO_CEN03-XPTE-E002' },
+                    });
+                  }}
+                />
+              )}
 
-                {selectedCourse?.title && (
-                  <ListItem
-                    leadingItem={
-                      <Icon icon={faBookOpen} size={fontSizes['2xl']} />
-                    }
-                    title={t('common.course')}
-                    subtitle={selectedCourse.title}
-                    onPress={() => {
-                      navigation.navigate('Didattica', {
-                        screen: 'Course',
-                        params: {from: 'Agenda'},
-                      });
-                    }}
-                  />
-                )}
-              </OverviewList>
-            </Section>
-          )}
+              {selectedCourse?.title && (
+                <ListItem
+                  leadingItem={
+                    <Icon icon={faBookOpen} size={fontSizes['2xl']} />
+                  }
+                  title={t('common.course')}
+                  subtitle={selectedCourse.title}
+                  onPress={() => {
+                    bottomNavigation.navigate('Didattica', {
+                      screen: 'Course',
+                      params: { from: 'Agenda' },
+                    });
+                  }}
+                />
+              )}
+            </OverviewList>
+          </Section>
+        )}
       </ScrollView>
       <CtaButton
         title={t('other.deleteFromAgenda')}
         action={() => {
-          Alert.alert(
-            t('other.confirm'),
-            t('other.alertTextAgenda2'),
-            [
-              {
-                text: t('common.cancel'),
-                style: 'cancel',
+          Alert.alert(t('other.confirm'), t('other.alertTextAgenda2'), [
+            {
+              text: t('common.cancel'),
+              style: 'cancel',
+            },
+            {
+              text: t('other.delete'),
+              style: 'destructive',
+              onPress: () => {
+                removeAgendaItem(selectedAgendaItem.id);
+                agendaNavigator.goBack(); // Torna indietro dopo l’eliminazione
               },
-              {
-                text: t('other.delete'),
-                style: 'destructive',
-                onPress: () => {
-                  removeAgendaItem(selectedAgendaItem.id);
-                  navigation.goBack(); // Torna indietro dopo l’eliminazione
-                },
-              },
-            ],
-          );
+            },
+          ]);
         }}
         absolute={false}
         variant="filled"
@@ -190,7 +182,7 @@ export const SingleElementScreen = () => {
   );
 };
 
-const createStyles = ({spacing}: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     container: {
       marginBottom: spacing[5],

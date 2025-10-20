@@ -1,22 +1,31 @@
-import React, { useMemo } from 'react';
-import { LogBox, Platform, SafeAreaView, StatusBar, StyleSheet, useColorScheme } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';  // <-- import React Query
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+import { useMemo } from 'react';
+import {
+  LogBox,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  useColorScheme,
+} from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import Mapbox from '@rnmapbox/maps';
+import * as Sentry from '@sentry/react-native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+import { FeedbackProvider } from './src/core/components/FeedbackProvider';
+// <-- import React Query
 import { NavBar } from './src/core/components/NavBar';
+import { CoursesProvider } from './src/core/contexts/CoursesContext';
+import { PreferencesProvider } from './src/core/providers/PreferencesProvider';
+import { SplashProvider } from './src/core/providers/SplashProvider';
+import { UiProvider } from './src/core/providers/UiProvider';
 import { darkTheme } from './src/core/themes/dark';
 import { lightTheme } from './src/core/themes/light';
-import { fromUiTheme } from './src/utils/navigation-theme';
 import { ThemeContext } from './src/ui/contexts/ThemeContext';
-import { CoursesProvider } from './src/core/contexts/CoursesContext';
-import { FeedbackProvider } from './src/core/components/FeedbackProvider';
-import { PreferencesProvider } from './src/core/providers/PreferencesProvider';
-import Mapbox from '@rnmapbox/maps';
-import { UiProvider } from './src/core/providers/UiProvider';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import * as Sentry from '@sentry/react-native';
-import { SplashProvider } from './src/core/providers/SplashProvider';
+import { fromUiTheme } from './src/utils/navigation-theme';
 import { initSentry } from './src/utils/sentry';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 LogBox.ignoreLogs([
   'VirtualizedLists should never be nested inside plain ScrollViews',
@@ -25,7 +34,6 @@ LogBox.ignoreLogs([
 // Crea l'istanza di QueryClient
 const queryClient = new QueryClient();
 initSentry();
-
 
 Mapbox.setAccessToken(process.env.MAPBOX_TOKEN!);
 
@@ -36,37 +44,28 @@ export const App = () => {
 
   return (
     // Avvolgi tutto dentro QueryClientProvider e passa il client
-    
-       <Sentry.TouchEventBoundary>
-      <SafeAreaProvider>        
+
+    <Sentry.TouchEventBoundary>
+      <SafeAreaProvider>
         <SplashProvider>
-
-
-  <PreferencesProvider>
-                <UiProvider>
-
-    <QueryClientProvider client={queryClient}>
-      <CoursesProvider>
-        <ThemeContext.Provider value={uiTheme}>
-            <FeedbackProvider>
-              <GestureHandlerRootView style={{flex: 1}}>
-
-                <NavBar />
-                </GestureHandlerRootView>
-
-            </FeedbackProvider>
-              
-        </ThemeContext.Provider>
-      </CoursesProvider>
-    </QueryClientProvider>
-                </UiProvider>
-
-  </PreferencesProvider>
-          </SplashProvider>
-
-  </SafeAreaProvider>
-      </Sentry.TouchEventBoundary>
-
+          <PreferencesProvider>
+            <UiProvider>
+              <QueryClientProvider client={queryClient}>
+                <CoursesProvider>
+                  <ThemeContext.Provider value={uiTheme}>
+                    <FeedbackProvider>
+                      <GestureHandlerRootView style={{ flex: 1 }}>
+                        <NavBar />
+                      </GestureHandlerRootView>
+                    </FeedbackProvider>
+                  </ThemeContext.Provider>
+                </CoursesProvider>
+              </QueryClientProvider>
+            </UiProvider>
+          </PreferencesProvider>
+        </SplashProvider>
+      </SafeAreaProvider>
+    </Sentry.TouchEventBoundary>
   );
 };
 

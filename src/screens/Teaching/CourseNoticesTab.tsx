@@ -1,25 +1,25 @@
-import { Fragment, useEffect } from 'react';
-import { ActivityIndicator, FlatList, View } from 'react-native';
-import { List } from '../../ui/components/List';
-import { ListItem } from '../../ui/components/ListItem';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { useCourses } from '../../core/contexts/CoursesContext';
-import React from 'react';
-import { GlobalStyles } from '../../core/components/GlobalStyles';
-import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
-import { formatDate } from '../../utils/dates';
-import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
-import { IndentedDivider } from '../../ui/components/IndentedDivider';
-import { EmptyState } from '../../ui/components/EmptyState';
-import { faChevronCircleRight, faChevronRight, faInbox } from '@fortawesome/free-solid-svg-icons';
-import { useNavigation } from '@react-navigation/native';
+import { FlatList } from 'react-native';
+
+import { faChevronRight, faInbox } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
+import { GlobalStyles } from '../../core/components/GlobalStyles';
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
+import { EmptyState } from '../../ui/components/EmptyState';
+import { IndentedDivider } from '../../ui/components/IndentedDivider';
+import { ListItem } from '../../ui/components/ListItem';
+import { TeachingStackParamList } from './TeachingNavigator';
 
 export const CourseNoticesTab = () => {
-  const { selectedCourse, selectedNotice, setSelectedNotice } = useCourses();
-  const { fontSizes, colors, spacing } = useTheme();
-    const navigation = useNavigation();
-  
+  const { selectedCourse, setSelectedNotice } = useCourses();
+  const { paddingHorizontal } = useSafeAreaSpacing();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
+
   // Troviamo il corso corrispondente
   const course = selectedCourse;
 
@@ -27,10 +27,9 @@ export const CourseNoticesTab = () => {
   if (!course) {
     return null;
   }
-  const { paddingHorizontal } = useSafeAreaSpacing();
 
   const { notices } = course; // Otteniamo le notifiche del corso
-  
+
   return (
     <FlatList
       contentInsetAdjustmentBehavior="automatic"
@@ -39,30 +38,24 @@ export const CourseNoticesTab = () => {
       contentContainerStyle={paddingHorizontal}
       data={notices}
       keyExtractor={item => item.id.toString()}
-      renderItem={({ item: notice, index }) => (
+      renderItem={({ item: notice }) => (
         <ListItem
           title={notice.content}
           subtitle={notice.startDate}
-          onPress={() =>{
-            console.log(selectedCourse.notices)
-            setSelectedNotice(notice)
-            navigation.navigate("Avviso") 
-          } }
-          trailingItem={<FontAwesomeIcon icon={faChevronRight}  size = {24}/>}
+          onPress={() => {
+            setSelectedNotice(notice);
+            navigation.navigate('Avviso');
+          }}
+          trailingItem={<FontAwesomeIcon icon={faChevronRight} size={24} />}
         />
       )}
       ListFooterComponent={<BottomBarSpacer />}
-      ItemSeparatorComponent={() => <IndentedDivider  />}
+      ItemSeparatorComponent={() => <IndentedDivider />}
       ListEmptyComponent={() => {
-        if (notices.length == 0) {
-          return (
-            <EmptyState
-              icon={faInbox}
-              message={'Notices empty'}
-            />
-          );
+        if (notices.length === 0) {
+          return <EmptyState icon={faInbox} message="Notices empty" />;
         }
-    
+        return null;
       }}
     />
   );

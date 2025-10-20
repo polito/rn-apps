@@ -3,17 +3,18 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ActivityIndicator } from '../../../ui/components/ActivityIndicator';
-import { BottomSheet } from '../../../ui/components/BottomSheet';
-import { EmptyState } from '../../../ui/components/EmptyState';
-import { useTheme } from '../../../ui/hooks/useTheme';
+import { faSignsPost } from '@fortawesome/free-solid-svg-icons';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
 
+import { GlobalStyles } from '../../../core/components/GlobalStyles';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetMultiplePlaces } from '../../../core/queries/placesHooks';
-import { GlobalStyles } from '../../../core/components/GlobalStyles';
+import { ActivityIndicator } from '../../../ui/components/ActivityIndicator';
+import { BottomSheet } from '../../../ui/components/BottomSheet';
+import { EmptyState } from '../../../ui/components/EmptyState';
+import { useTheme } from '../../../ui/hooks/useTheme';
 import { notNullish } from '../../../utils/predicates';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
@@ -167,10 +168,13 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
             places.map(place => ({
               title: place.room.name ?? place.category.subCategory?.name,
               subtitle: `${place.category.name} - ${place.floor.name}`,
-              linkTo: { screen: 'Place', params: { placeId: place.id } },
+              linkTo: { name: 'Place', params: { placeId: place.id } },
             })) ?? [],
           ListEmptyComponent: (
-            <EmptyState message={t('placesScreen.noPlacesFound')} />
+            <EmptyState
+              message={t('placesScreen.noPlacesFound')}
+              icon={faSignsPost}
+            />
           ),
         }}
       />

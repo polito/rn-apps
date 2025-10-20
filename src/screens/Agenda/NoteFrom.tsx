@@ -1,29 +1,35 @@
-import React, {useLayoutEffect, useState} from 'react';
 import {
-  View,
-  TextInput,
+  GestureHandlerRootView,
+  ScrollView,
+} from 'react-native-gesture-handler';
+
+import React, { useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  Alert,
   Platform,
   StyleSheet,
+  TextInput,
   TouchableOpacity,
-  Alert,
+  View,
 } from 'react-native';
+
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker, {
-  DateTimePickerEvent,
   DateTimePickerAndroid,
+  DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
-import {Card} from '../../ui/components/Card';
-import {useNavigation} from '@react-navigation/native';
-import {useTheme} from '../../ui/hooks/useTheme';
-import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
-import {Row} from '../../ui/components/Row';
-import {IconButton} from '../../ui/components/IconButton';
-import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
-import {useCourses} from '../../core/contexts/CoursesContext';
-import {Text} from '../../ui/components/Text';
-import {CtaButton} from '../../ui/components/CtaButton';
-import {Select} from '../../ui/components/Select';
-import {DateRow} from '../../ui/components/DateRow';
-import {useTranslation} from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
+
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { Card } from '../../ui/components/Card';
+import { CtaButton } from '../../ui/components/CtaButton';
+import { DateRow } from '../../ui/components/DateRow';
+import { IconButton } from '../../ui/components/IconButton';
+import { Row } from '../../ui/components/Row';
+import { Select } from '../../ui/components/Select';
+import { Text } from '../../ui/components/Text';
+import { useTheme } from '../../ui/hooks/useTheme';
 
 const generateTimeSlots = () => {
   const slots: string[] = [];
@@ -58,19 +64,21 @@ const handleDateChange = <T extends Date | null>(
 
 export const NoteForm = () => {
   const navigation = useNavigation();
-  const {colors, spacing} = useTheme();
+  const { colors, spacing } = useTheme();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
-  const {selectedCourse, addAgendaItem, agendaItems} = useCourses();
+  const { selectedCourse, addAgendaItem, agendaItems } = useCourses();
   const [selectedStartSlot, setSelectedStartSlot] = useState('');
   const [selectedEndSlot, setSelectedEndSlot] = useState('');
-  const [eventType, setEventType] = useState<'APPUNTAMENTO' | 'LEZIONE'>('APPUNTAMENTO');
+  const [eventType, setEventType] = useState<'APPUNTAMENTO' | 'LEZIONE'>(
+    'APPUNTAMENTO',
+  );
   const [selectedPlace, setSelectedPlace] = useState('');
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -88,7 +96,8 @@ export const NoteForm = () => {
             textAlign: 'center',
             width: '100%',
             marginLeft: Platform.OS === 'android' ? -25 : -55,
-          }}>
+          }}
+        >
           {t('other.createEvent')}
         </Text>
       ),
@@ -171,7 +180,7 @@ export const NoteForm = () => {
   const openStartDatePickerAndroid = () => {
     DateTimePickerAndroid.open({
       value: startDate,
-      mode: 'datetime',
+      mode: 'date',
       is24Hour: true,
       display: 'default',
       onChange: (event, selectedDate) => {
@@ -186,7 +195,7 @@ export const NoteForm = () => {
   const openEndDatePickerAndroid = () => {
     DateTimePickerAndroid.open({
       value: endDate ?? new Date(),
-      mode: 'datetime',
+      mode: 'date',
       is24Hour: true,
       display: 'default',
       onChange: (event, selectedDate) => {
@@ -199,25 +208,27 @@ export const NoteForm = () => {
   };
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
-        <Card style={{marginBottom: spacing[4]}}>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
             {t('other.eventType')}
           </Text>
           <Select
             label="Tipo"
             value={eventType}
-            onSelectOption={id => setEventType(id as 'APPUNTAMENTO' | 'LEZIONE')}
+            onSelectOption={id =>
+              setEventType(id as 'APPUNTAMENTO' | 'LEZIONE')
+            }
             options={[
-              {id: 'APPUNTAMENTO', title: t('other.appointment')},
-              {id: 'LEZIONE', title: t('common.lecture')},
+              { id: 'APPUNTAMENTO', title: t('other.appointment') },
+              { id: 'LEZIONE', title: t('common.lecture') },
             ]}
           />
         </Card>
 
         {eventType === 'LEZIONE' && (
-          <Card style={{marginBottom: spacing[4]}}>
+          <Card style={{ marginBottom: spacing[4] }}>
             <Text variant="heading" style={styles.label}>
               {t('other.selectRoom')}
             </Text>
@@ -225,7 +236,7 @@ export const NoteForm = () => {
               label="Aula"
               value={selectedPlace}
               onSelectOption={setSelectedPlace}
-              options={Array.from({length: 10}, (_, i) => ({
+              options={Array.from({ length: 10 }, (_, i) => ({
                 id: `Aula ${i + 1}`,
                 title: `Aula ${i + 1}`,
               }))}
@@ -236,7 +247,8 @@ export const NoteForm = () => {
         <Card>
           <Text
             variant="heading"
-            style={{marginLeft: 15, marginTop: 5, color: colors.formTitle}}>
+            style={{ marginLeft: 15, marginTop: 5, color: colors.formTitle }}
+          >
             {eventType === 'LEZIONE' ? t('other.subject') : t('other.title')}
           </Text>
 
@@ -246,10 +258,10 @@ export const NoteForm = () => {
               value={title}
               onSelectOption={setTitle}
               options={[
-                {id: 'Matematica', title: 'Matematica'},
-                {id: 'Fisica', title: 'Fisica'},
-                {id: 'Programmazione', title: 'Programmazione'},
-                {id: 'Chimica', title: 'Chimica'},
+                { id: 'Matematica', title: 'Matematica' },
+                { id: 'Fisica', title: 'Fisica' },
+                { id: 'Programmazione', title: 'Programmazione' },
+                { id: 'Chimica', title: 'Chimica' },
               ]}
             />
           ) : (
@@ -271,7 +283,8 @@ export const NoteForm = () => {
         <Card>
           <Text
             variant="heading"
-            style={{marginLeft: 17, marginTop: 5, color: colors.formTitle}}>
+            style={{ marginLeft: 17, marginTop: 5, color: colors.formTitle }}
+          >
             {t('other.description')}
           </Text>
           <TextInput
@@ -288,10 +301,11 @@ export const NoteForm = () => {
           />
         </Card>
 
-        <Card style={{marginBottom: spacing[4]}}>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Text
             variant="heading"
-            style={{marginLeft: 15, marginTop: 5, color: colors.formTitle}}>
+            style={{ marginLeft: 15, marginTop: 5, color: colors.formTitle }}
+          >
             {t('other.setDate')}
           </Text>
 
@@ -314,7 +328,8 @@ export const NoteForm = () => {
               marginLeft: 20,
               marginBottom: 15,
               marginTop: 10,
-            }}>
+            }}
+          >
             {endDate && (
               <TouchableOpacity
                 onPress={() => setEndDate(null)}
@@ -326,9 +341,11 @@ export const NoteForm = () => {
                   height: 24,
                   justifyContent: 'center',
                   alignItems: 'center',
-                }}>
+                }}
+              >
                 <Text
-                  style={{color: 'white', fontWeight: 'bold', marginTop: -2}}>
+                  style={{ color: 'white', fontWeight: 'bold', marginTop: -2 }}
+                >
                   x
                 </Text>
               </TouchableOpacity>
@@ -345,12 +362,12 @@ export const NoteForm = () => {
             }}
             style={{
               padding: 10,
-              backgroundColor: colors.primary,
               borderRadius: 5,
               alignSelf: 'flex-start',
               marginLeft: 15,
-            }}>
-            <Text style={{color: 'white'}}>
+            }}
+          >
+            <Text style={{ color: colors.white }}>
               {endDate ? formatDate(endDate) : t('other.selectEndDate')}
             </Text>
           </TouchableOpacity>
@@ -379,12 +396,12 @@ export const NoteForm = () => {
           />
         )}
 
-        <Card style={{marginBottom: spacing[4]}}>
+        <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
             {t('other.selectSlot')}
           </Text>
           <Row justify="space-between">
-            <View style={{flex: 1, marginRight: spacing[2]}}>
+            <View style={{ flex: 1, marginRight: spacing[2] }}>
               <Select
                 label={t('other.startTime')}
                 value={selectedStartSlot}
@@ -395,7 +412,7 @@ export const NoteForm = () => {
                 }))}
               />
             </View>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <Select
                 label={t('other.endTime')}
                 value={selectedEndSlot}

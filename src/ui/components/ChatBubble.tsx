@@ -1,11 +1,9 @@
 import { PropsWithChildren } from 'react';
 import { StyleSheet, View, ViewProps } from 'react-native';
 
+import { MessageTime } from '../../screens/MessageTime';
 import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { Theme } from '../../ui/types/Theme';
-
-import { MessageTime } from '../../screens/MessageTime';
-import React from 'react';
 
 interface Props extends PropsWithChildren<ViewProps> {
   direction?: 'incoming' | 'outgoing';
@@ -56,10 +54,10 @@ export const ChatBubble = ({
 const createStyles = ({ colors, shapes, spacing }: Theme) =>
   StyleSheet.create({
     bubble: {
-      padding: spacing[2.5] ,
+      padding: spacing[2.5],
       borderRadius: shapes.lg,
       width: '70%',
-      marginTop: spacing[1] ,
+      marginTop: spacing[1],
     },
     rightBubble: {
       alignSelf: 'flex-end',
@@ -71,7 +69,7 @@ const createStyles = ({ colors, shapes, spacing }: Theme) =>
     },
     arrow: {
       position: 'absolute',
-      width: spacing[5] ,
+      width: spacing[5],
       height: +spacing[6],
       bottom: 0,
     },
@@ -88,7 +86,7 @@ const createStyles = ({ colors, shapes, spacing }: Theme) =>
     arrowOverlap: {
       position: 'absolute',
       backgroundColor: colors.background,
-      width: spacing[5] ,
+      width: spacing[5],
       height: 35,
       bottom: -spacing[2],
     },

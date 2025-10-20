@@ -1,11 +1,9 @@
 import { StyleSheet } from 'react-native';
 
-import { Row, RowProps } from './Row';
+import { TranslucentView } from '../../../src/core/components/TranslucentView';
 import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { Theme } from '../../ui/types/Theme';
-
-import { TranslucentView } from '../../../src/core/components/TranslucentView';
-import React from 'react';
+import { Row, RowProps } from './Row';
 
 export const TranslucentCard = ({ children, ...props }: RowProps) => {
   const styles = useStylesheet(createStyles);

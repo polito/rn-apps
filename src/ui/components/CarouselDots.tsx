@@ -3,7 +3,6 @@ import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 
 import { useStylesheet } from '../hooks/useStylesheet';
 import { Theme } from '../types/Theme';
-import React from 'react';
 
 type Props = {
   carouselLength: number;

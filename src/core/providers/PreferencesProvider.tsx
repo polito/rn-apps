@@ -36,12 +36,9 @@ export const PreferencesProvider = ({ children }: PropsWithChildren) => {
       filesScreen: 'filesView',
     });
 
-
   const preferencesInitialized = useRef<boolean>(false);
 
   const updatePreference = (key: PreferenceKey, value: unknown) => {
-      console.log('updatePreference called:', key, value);
-
     const stringKey = key.toString();
     if (value === null) {
       AsyncStorage.removeItem(stringKey).then(() =>

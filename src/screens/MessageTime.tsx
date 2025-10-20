@@ -1,13 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
+import { format, isToday, isTomorrow } from 'date-fns';
+// Importa da date-fns
+import { it } from 'date-fns/locale';
+
 import { Text } from '../ui/components/Text';
 import { useStylesheet } from '../ui/hooks/useStylesheet';
 import { Theme } from '../ui/types/Theme';
 
-import { format, isToday, isTomorrow } from 'date-fns'; // Importa da date-fns
-import { it } from 'date-fns/locale'; // Locale per l'italiano
-import React from 'react';
+// Locale per l'italiano
 
 interface TimeWidgetProps {
   right?: boolean;
@@ -45,8 +47,8 @@ const createStyles = ({ spacing, fontSizes, fontWeights }: Theme) =>
     hour: {
       flex: 1,
       width: '70%',
-      paddingVertical: spacing[1] ,
-      marginLeft: spacing[4] ,
+      paddingVertical: spacing[1],
+      marginLeft: spacing[4],
       justifyContent: 'center',
       alignItems: 'center',
       textTransform: 'capitalize',
@@ -56,6 +58,6 @@ const createStyles = ({ spacing, fontSizes, fontWeights }: Theme) =>
     },
     hourRight: {
       alignSelf: 'flex-end',
-      marginRight: spacing[4] ,
+      marginRight: spacing[4],
     },
   });

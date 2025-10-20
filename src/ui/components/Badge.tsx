@@ -1,9 +1,9 @@
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+
+import { useTheme } from '../../ui/hooks/useTheme';
 import { Icon } from './Icon';
 import { Row } from './Row';
 import { Text } from './Text';
-import { useTheme } from '../../ui/hooks/useTheme';
-import React from 'react';
 
 type Props = {
   text: string;
@@ -26,13 +26,13 @@ export const Badge = ({
       style={[
         {
           backgroundColor: backgroundColor,
-          paddingLeft: spacing[1.5] , 
-          paddingRight: spacing[2]  ,
-          paddingVertical: spacing[1]  ,
+          paddingLeft: spacing[1.5],
+          paddingRight: spacing[2],
+          paddingVertical: spacing[1],
           borderRadius: shapes.lg,
         },
         !icon && {
-          paddingRight: spacing[1.5]  ,
+          paddingRight: spacing[1.5],
         },
       ]}
     >

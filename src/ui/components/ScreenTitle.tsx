@@ -3,7 +3,6 @@ import { TextProps, View, ViewStyle } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
 import { Separator } from './Separator';
 import { Text } from './Text';
-import React from 'react';
 
 interface Props {
   title?: string;
@@ -30,7 +29,7 @@ export const ScreenTitle = ({
     : {};
 
   return (
-    <View style={[padded ? { paddingHorizontal: spacing[5]  } : {}, style]}>
+    <View style={[padded ? { paddingHorizontal: spacing[5] } : {}, style]}>
       <Separator />
       <Text variant="title" role="heading" {...ellipsis}>
         {title ?? ''}

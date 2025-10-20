@@ -1,5 +1,6 @@
-import React, { JSX } from 'react';
-import { Text, View, StyleSheet, ViewStyle } from 'react-native';
+import { JSX } from 'react';
+import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+
 import { useTheme } from '../hooks/useTheme';
 import { Card, CardProps } from './Card';
 
@@ -9,9 +10,9 @@ interface Metric {
 }
 
 interface Props {
-  metrics: Metric[];       // Array di coppie name-value (prima riga)
-  metrics2?: Metric[];     // Seconda riga opzionale
-  style?: ViewStyle;       // Stile opzionale
+  metrics: Metric[]; // Array di coppie name-value (prima riga)
+  metrics2?: Metric[]; // Seconda riga opzionale
+  style?: ViewStyle; // Stile opzionale
 }
 
 /**
@@ -29,7 +30,9 @@ export const MetricCard = ({
     <View key={rowIndex} style={styles.metricRow}>
       {data.map((metric, index) => (
         <View key={index} style={styles.metricColumn}>
-          <Text style={{ color: colors.secondaryText, marginBottom: spacing[1]  }}>
+          <Text
+            style={{ color: colors.secondaryText, marginBottom: spacing[1] }}
+          >
             {metric.name}
           </Text>
           {['string', 'number'].includes(typeof metric.value) ? (
@@ -55,7 +58,7 @@ export const MetricCard = ({
       style={[
         {
           flex: 1,
-          padding: spacing[5] ,
+          padding: spacing[5],
         },
         style,
       ]}

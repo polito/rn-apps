@@ -2,14 +2,12 @@ import { Children, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, ViewProps } from 'react-native';
 
-import { ActivityIndicator } from './ActivityIndicator';
-import { EmptyState } from './EmptyState';
-import { List } from './List';
-
 import { useScreenReader } from '../../../src/core/hooks/useScreenReader';
 import { useTheme } from '../hooks/useTheme';
+import { ActivityIndicator } from './ActivityIndicator';
 import { Card } from './Card';
-import React from 'react';
+import { EmptyState } from './EmptyState';
+import { List } from './List';
 
 type Props = PropsWithChildren<
   ViewProps & {
@@ -48,8 +46,8 @@ export const OverviewList = ({
       translucent={translucent}
       style={[
         {
-          marginVertical: spacing[2] ,
-          marginHorizontal: Platform.select({ ios: spacing[4]  }),
+          marginVertical: spacing[2],
+          marginHorizontal: Platform.select({ ios: spacing[4] }),
         },
         style,
       ]}
@@ -63,7 +61,7 @@ export const OverviewList = ({
       {loading ? (
         <ActivityIndicator
           style={{
-            marginVertical: spacing[8] ,
+            marginVertical: spacing[8],
           }}
         />
       ) : Children.count(children) > 0 ? (

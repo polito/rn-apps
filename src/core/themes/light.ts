@@ -2,7 +2,6 @@
 // noinspection AllyPlainJsInspection
 //
 import { Theme } from '../../ui/types/Theme';
-
 import { IS_ANDROID } from './constants';
 
 const navy = {
@@ -168,9 +167,9 @@ export const lightTheme: Theme = {
     black: '#000000',
     yellow: '#FFD700',
     readMore: navy[400],
-    formTitle : gray[800],
-    formPlaceHolder : gray[600],
-    
+    formTitle: gray[800],
+    formPlaceHolder: gray[600],
+
     // Aggiungi qui i ColorPalette mancanti
     text: gray,
     primary: navy,

@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { useTheme } from '../../../ui/hooks/useTheme';
 import { RasterLayer, RasterSource } from '@rnmapbox/maps';
 
+import { useTheme } from '../../../ui/hooks/useTheme';
 import { INTERIORS_MIN_ZOOM, MAX_ZOOM } from '../constants';
 
 export interface IndoorMapLayerProps {
