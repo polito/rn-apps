@@ -79,7 +79,7 @@ export const ProfileScreen = () => {
         </Row>
       ),
     });
-  }, [navigation, colors]);
+  }, [navigation, t, colors, fontSizes, spacing]);
 
   return (
     <ScrollView
@@ -194,7 +194,7 @@ export const ProfileScreen = () => {
   );
 };
 
-const createStyles = ({ colors, spacing }: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     heading: {
       paddingTop: spacing[5],

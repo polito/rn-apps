@@ -26,7 +26,9 @@ import { Row } from '../../ui/components/Row';
 import { Select } from '../../ui/components/Select';
 import { Switch } from '../../ui/components/Switch';
 import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
 import { ProfileStackParamList } from './ServiceNavigator';
 
 const availableSlots = [
@@ -43,7 +45,8 @@ const availableSlots = [
 const places = ['Valentino', 'Centrale'];
 export const BookRoomForm = () => {
   const { t } = useTranslation();
-  const { spacing, colors } = useTheme();
+  const styles = useStylesheet(createStyles);
+  const { spacing, colors, palettes } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const [showStartPicker, setShowStartPicker] = useState(false);
@@ -85,9 +88,6 @@ export const BookRoomForm = () => {
     return `${year}-${day}-${month}`;
   };
 
-  const filteredStartSlots = availableSlots.filter(
-    slot => !selectedEndSlot || slot < selectedEndSlot,
-  );
   const filteredEndSlots = availableSlots.filter(
     slot => !selectedStartSlot || slot > selectedStartSlot,
   );
@@ -152,7 +152,7 @@ export const BookRoomForm = () => {
         </Text>
       ),
     });
-  }, [navigation, colors]);
+  }, [navigation, t]);
 
   return (
     <>
@@ -237,7 +237,7 @@ export const BookRoomForm = () => {
               styles.input,
               {
                 borderBottomWidth: 1,
-                borderColor: '#ccc',
+                borderColor: palettes.gray[300],
                 marginHorizontal: spacing[2],
               },
             ]}
@@ -326,21 +326,22 @@ export const BookRoomForm = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom: 20,
-    paddingTop: 10,
-  },
-  label: {
-    marginLeft: 17,
-    marginTop: 5,
-    color: '#333',
-  },
-  input: {
-    borderBottomWidth: 0,
-    padding: 10,
-    marginLeft: 10,
-    fontSize: 16,
-  },
-});
+const createStyles = ({ palettes }: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingBottom: 20,
+      paddingTop: 10,
+    },
+    label: {
+      marginLeft: 17,
+      marginTop: 5,
+      color: palettes.gray[700],
+    },
+    input: {
+      borderBottomWidth: 0,
+      padding: 10,
+      marginLeft: 10,
+      fontSize: 16,
+    },
+  });

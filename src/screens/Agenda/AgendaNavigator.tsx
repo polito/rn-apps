@@ -13,7 +13,7 @@ import { useTheme } from '../../ui/hooks/useTheme';
 import { AgendaScreen } from './AgendaScreen';
 import { AgendaWeekScreen } from './AgendaWeekScreen';
 import { LectureScreen } from './LectureScreen';
-import { NoteForm } from './NoteFrom';
+import { NoteForm } from './NoteForm';
 import { SingleElementScreen } from './SingleElementScreen';
 
 export type AgendaStackParamList = {

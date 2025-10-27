@@ -25,7 +25,9 @@ import { IconButton } from '../../ui/components/IconButton';
 import { Row } from '../../ui/components/Row';
 import { Select } from '../../ui/components/Select';
 import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
 
 const availableSlots = [
   '08:30',
@@ -40,7 +42,7 @@ const availableSlots = [
 
 export const LectureFormScreen = () => {
   const navigation = useNavigation();
-  const { colors, spacing } = useTheme();
+  const { colors, palettes, spacing } = useTheme();
   const { selectedCourse, addLesson } = useCourses();
 
   const [selectedType, setSelectedType] = useState('');
@@ -53,11 +55,7 @@ export const LectureFormScreen = () => {
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState<number[]>([]);
   const { t } = useTranslation();
-  const staffOptions =
-    selectedCourse?.staff.map(member => ({
-      id: member.id.toString(),
-      title: member.name,
-    })) || [];
+  const styles = useStylesheet(createStyles);
 
   const toggleStaffSelection = (id: number) => {
     setSelectedStaff(prev =>
@@ -162,11 +160,8 @@ export const LectureFormScreen = () => {
         />
       ),
     });
-  }, [navigation, colors]);
+  }, [navigation, t]);
 
-  const filteredStartSlots = availableSlots.filter(
-    slot => !selectedEndSlot || slot < selectedEndSlot,
-  );
   const filteredEndSlots = availableSlots.filter(
     slot => !selectedStartSlot || slot > selectedStartSlot,
   );
@@ -179,7 +174,7 @@ export const LectureFormScreen = () => {
     ) {
       setSelectedEndSlot('');
     }
-  }, [selectedStartSlot]);
+  }, [selectedStartSlot, selectedEndSlot]);
 
   useEffect(() => {
     if (
@@ -189,7 +184,7 @@ export const LectureFormScreen = () => {
     ) {
       setSelectedStartSlot('');
     }
-  }, [selectedEndSlot]);
+  }, [selectedEndSlot, selectedStartSlot]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -320,12 +315,18 @@ export const LectureFormScreen = () => {
                   style={{
                     paddingVertical: 6,
                     paddingHorizontal: 12,
-                    backgroundColor: isSelected ? '#007AFF' : '#eee',
+                    backgroundColor: isSelected
+                      ? palettes.lightBlue[500]
+                      : palettes.gray[200],
                     borderRadius: 20,
                     margin: 4,
                   }}
                 >
-                  <Text style={{ color: isSelected ? 'white' : '#333' }}>
+                  <Text
+                    style={{
+                      color: isSelected ? colors.white : palettes.gray[800],
+                    }}
+                  >
                     {member.name}
                   </Text>
                 </TouchableOpacity>
@@ -354,21 +355,22 @@ export const LectureFormScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom: 20,
-    paddingTop: 10,
-  },
-  label: {
-    marginLeft: 17,
-    marginTop: 5,
-    color: '#333',
-  },
-  input: {
-    borderBottomWidth: 0,
-    padding: 10,
-    marginLeft: 10,
-    fontSize: 16,
-  },
-});
+const createStyles = ({ palettes }: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingBottom: 20,
+      paddingTop: 10,
+    },
+    label: {
+      marginLeft: 17,
+      marginTop: 5,
+      color: palettes.gray[700],
+    },
+    input: {
+      borderBottomWidth: 0,
+      padding: 10,
+      marginLeft: 10,
+      fontSize: 16,
+    },
+  });

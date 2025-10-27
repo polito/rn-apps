@@ -21,7 +21,7 @@ import { Theme } from '../../ui/types/Theme';
 
 export const LessonScreen = () => {
   const styles = useStylesheet(createStyles);
-  const { selectedLecture, setSelectedLecture } = useCourses(); // Recupero i corsi dal context
+  const { selectedLecture } = useCourses(); // Recupero i corsi dal context
   const { fontSizes } = useTheme();
   const { t } = useTranslation();
 
@@ -32,7 +32,7 @@ export const LessonScreen = () => {
           {selectedLecture?.title}
         </Text>
         <Text style={styles.dateText}>
-          {selectedLecture?.date} - {selectedLecture?.time}
+          {selectedLecture?.date} {selectedLecture?.time}
         </Text>
       </Section>
       <Section>
@@ -89,7 +89,7 @@ export const LessonScreen = () => {
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ palettes, spacing }: Theme) =>
   StyleSheet.create({
     container: {
       marginBottom: spacing[5],
@@ -111,11 +111,11 @@ const createStyles = ({ spacing }: Theme) =>
     },
     paddingView: {
       height: 200, // Aggiungi uno spazio extra, modifica a piacere
-      backgroundColor: 'transparent', // Componente trasparente
+      backgroundColor: undefined, // Componente trasparente
     },
     dateText: {
       fontSize: 16,
-      color: 'gray', // Colore più soft per la data
+      color: palettes.gray[200], // Colore più soft per la data
       marginTop: spacing[1],
       marginLeft: spacing[4],
     },

@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, ScrollView, StyleSheet } from 'react-native';
+import { FlatList, ScrollView } from 'react-native';
 import { Platform } from 'react-native';
 
 import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -17,13 +17,10 @@ import { IconButton } from '../../ui/components/IconButton';
 import { IndentedDivider } from '../../ui/components/IndentedDivider';
 import { ListItem } from '../../ui/components/ListItem';
 import { Text } from '../../ui/components/Text';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 import { ProfileStackParamList } from './ServiceNavigator';
 
 export const BookRoomScreen = () => {
   const { t } = useTranslation();
-  const { colors } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
@@ -59,7 +56,7 @@ export const BookRoomScreen = () => {
         </Text>
       ),
     });
-  }, [navigation, colors]);
+  }, [navigation, t]);
 
   return (
     <>
@@ -148,17 +145,3 @@ export const BookRoomScreen = () => {
     </>
   );
 };
-
-const createStyles = ({ colors, spacing }: Theme) =>
-  StyleSheet.create({
-    centeredContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingVertical: 40,
-    },
-
-    buttonSpacing: {
-      width: '100%',
-    },
-  });

@@ -22,7 +22,9 @@ import { CtaButton } from '../../ui/components/CtaButton';
 import { DateRow } from '../../ui/components/DateRow';
 import { IconButton } from '../../ui/components/IconButton';
 import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
 
 // Gestione sicura e compatibile dei date picker
 const handleDateChange = <T extends Date | null>(
@@ -45,6 +47,7 @@ const handleDateChange = <T extends Date | null>(
 export const NoticeFormScreen = () => {
   const navigation = useNavigation();
   const { colors, spacing } = useTheme();
+  const styles = useStylesheet(createStyles);
   const { selectedCourse, addNoticeToCourse } = useCourses();
   const { t } = useTranslation();
 
@@ -114,7 +117,7 @@ export const NoticeFormScreen = () => {
         />
       ),
     });
-  }, [navigation, colors]);
+  }, [navigation, colors, t]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -197,21 +200,22 @@ export const NoticeFormScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom: 20,
-    paddingTop: 10,
-  },
-  label: {
-    marginLeft: 15,
-    marginTop: 5,
-    color: '#333',
-  },
-  input: {
-    borderBottomWidth: 0,
-    padding: 12,
-    marginLeft: 10,
-    fontSize: 16,
-  },
-});
+const createStyles = ({ colors }: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingBottom: 20,
+      paddingTop: 10,
+    },
+    label: {
+      marginLeft: 15,
+      marginTop: 5,
+      color: colors.primary[700],
+    },
+    input: {
+      borderBottomWidth: 0,
+      padding: 12,
+      marginLeft: 10,
+      fontSize: 16,
+    },
+  });

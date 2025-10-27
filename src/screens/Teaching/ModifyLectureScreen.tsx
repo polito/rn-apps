@@ -24,7 +24,9 @@ import { IconButton } from '../../ui/components/IconButton';
 import { Row } from '../../ui/components/Row';
 import { Select } from '../../ui/components/Select';
 import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
 
 const availableSlots = [
   '08:30',
@@ -39,10 +41,10 @@ const availableSlots = [
 
 export const ModifyLectureScreen = () => {
   const navigation = useNavigation();
-  const { colors, spacing } = useTheme();
+  const { colors, palettes, spacing } = useTheme();
   const { selectedCourse, updateCourseLecture, selectedLecture } = useCourses();
   const { t } = useTranslation();
-
+  const styles = useStylesheet(createStyles);
   const [title] = useState(selectedLecture?.title);
   const [description, setDescription] = useState(selectedLecture?.content);
   const [startDate, setStartDate] = useState(
@@ -72,7 +74,7 @@ export const ModifyLectureScreen = () => {
     ) {
       setSelectedEndSlot('');
     }
-  }, [selectedStartSlot]);
+  }, [selectedStartSlot, selectedEndSlot]);
 
   useEffect(() => {
     if (
@@ -82,7 +84,7 @@ export const ModifyLectureScreen = () => {
     ) {
       setSelectedStartSlot('');
     }
-  }, [selectedEndSlot]);
+  }, [selectedEndSlot, selectedStartSlot]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -102,7 +104,7 @@ export const ModifyLectureScreen = () => {
         />
       ),
     });
-  }, [navigation, colors]);
+  }, [navigation, t]);
 
   if (selectedLecture?.staff == null) return null;
 
@@ -122,9 +124,6 @@ export const ModifyLectureScreen = () => {
     { id: 'Inglese', title: 'Inglese' },
   ];
 
-  const filteredStartSlots = availableSlots.filter(
-    slot => !selectedEndSlot || slot < selectedEndSlot,
-  );
   const filteredEndSlots = availableSlots.filter(
     slot => !selectedStartSlot || slot > selectedStartSlot,
   );
@@ -275,12 +274,18 @@ export const ModifyLectureScreen = () => {
                   style={{
                     paddingVertical: 6,
                     paddingHorizontal: 12,
-                    backgroundColor: isSelected ? '#007AFF' : '#eee',
+                    backgroundColor: isSelected
+                      ? palettes.lightBlue[500]
+                      : palettes.gray[200],
                     borderRadius: 20,
                     margin: 4,
                   }}
                 >
-                  <Text style={{ color: isSelected ? 'white' : '#333' }}>
+                  <Text
+                    style={{
+                      color: isSelected ? colors.white : colors.text[700],
+                    }}
+                  >
                     {member.name}
                   </Text>
                 </TouchableOpacity>
@@ -318,14 +323,15 @@ export const ModifyLectureScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom: 20,
-  },
-  label: {
-    marginLeft: 17,
-    marginTop: 5,
-    color: '#333',
-  },
-});
+const createStyles = ({ colors }: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingBottom: 20,
+    },
+    label: {
+      marginLeft: 17,
+      marginTop: 5,
+      color: colors.primary[700],
+    },
+  });

@@ -18,6 +18,7 @@ import { CtaButton } from '../../ui/components/CtaButton';
 import { Icon } from '../../ui/components/Icon';
 import { Text } from '../../ui/components/Text';
 import { useStylesheet } from '../../ui/hooks/useStylesheet';
+import { useTheme } from '../../ui/hooks/useTheme';
 import { Theme } from '../../ui/types/Theme';
 
 type Props = {
@@ -44,6 +45,7 @@ const generateStudentId = (): string => {
 
 export const AddStudentsToExamModalContent = ({ close }: Props) => {
   const { t } = useTranslation();
+  const { palettes, colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { addStudentsToExam, selectedExam } = useCourses();
   const [searchText, setSearchText] = useState('');
@@ -76,7 +78,7 @@ export const AddStudentsToExamModalContent = ({ close }: Props) => {
           <Icon
             icon={faSearch}
             size={16}
-            color="#888"
+            color={palettes.gray[500]}
             style={styles.searchIcon}
           />
           <TextInput
@@ -84,7 +86,7 @@ export const AddStudentsToExamModalContent = ({ close }: Props) => {
             value={searchText}
             onChangeText={setSearchText}
             style={styles.searchInput}
-            placeholderTextColor="#888"
+            placeholderTextColor={palettes.gray[800]}
           />
         </View>
 
@@ -111,8 +113,8 @@ export const AddStudentsToExamModalContent = ({ close }: Props) => {
               <Badge
                 text={name}
                 icon={faTimes}
-                backgroundColor="#007AFF"
-                foregroundColor="#ffffff"
+                backgroundColor={palettes.lightBlue[500]}
+                foregroundColor={colors.white}
               />
             </TouchableOpacity>
           ))}
@@ -150,7 +152,7 @@ export const AddStudentsToExamModalContent = ({ close }: Props) => {
   );
 };
 
-const createStyles = ({ colors, dark }: Theme) =>
+const createStyles = ({ palettes, colors, dark }: Theme) =>
   StyleSheet.create({
     message: {
       color: dark ? colors.prose : colors.prose,
@@ -158,10 +160,10 @@ const createStyles = ({ colors, dark }: Theme) =>
     searchContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#fff',
+      backgroundColor: palettes.gray[200],
       borderRadius: 12,
       borderWidth: 1,
-      borderColor: '#ccc',
+      borderColor: palettes.gray[300],
       paddingHorizontal: 12,
       height: 40,
     },
@@ -171,34 +173,21 @@ const createStyles = ({ colors, dark }: Theme) =>
     searchInput: {
       flex: 1,
       fontSize: 16,
-      color: '#000',
+      color: palettes.gray[800],
       paddingVertical: 8,
       height: 50,
       textAlignVertical: 'center',
     },
     resultItem: {
       padding: 10,
-      backgroundColor: '#eee',
+      backgroundColor: palettes.gray[200],
       borderBottomWidth: 1,
-      borderBottomColor: '#ccc',
+      borderBottomColor: palettes.gray[300],
     },
     selectedContainer: {
       flexDirection: 'row',
       flexWrap: 'wrap',
       marginTop: 10,
       gap: 8,
-    },
-    selectedItem: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: '#007AFF',
-      paddingHorizontal: 10,
-      paddingVertical: 6,
-      borderRadius: 20,
-      margin: 4,
-    },
-    selectedText: {
-      color: '#fff',
-      marginRight: 8,
     },
   });

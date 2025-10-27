@@ -4,6 +4,7 @@ import {
 } from 'react-native-gesture-handler';
 
 import React, { useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, TextInput, View } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -18,7 +19,9 @@ import { CtaButton } from '../../ui/components/CtaButton';
 import { DateRow } from '../../ui/components/DateRow';
 import { IconButton } from '../../ui/components/IconButton';
 import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
 
 // Gestione compatibile del cambio data
 const handleDateChange = (
@@ -69,10 +72,10 @@ export const ModifyNoticeScreen = () => {
 
   const navigation = useNavigation();
   const { colors, spacing } = useTheme();
-
+  const { t } = useTranslation();
   const [title, setTitle] = useState(selectedNotice?.title || '');
   const [description, setDescription] = useState(selectedNotice?.content || '');
-
+  const styles = useStylesheet(createStyles);
   const [startDate, setStartDate] = useState<Date>(
     selectedNotice?.startDate
       ? (parseDateString(selectedNotice.startDate) ?? new Date())
@@ -131,7 +134,7 @@ export const ModifyNoticeScreen = () => {
       <ScrollView style={styles.container}>
         <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
-            Titolo
+            {t('other.title')}
           </Text>
           <TextInput
             placeholder="Inserisci il titolo"
@@ -143,7 +146,7 @@ export const ModifyNoticeScreen = () => {
 
         <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
-            Descrizione
+            {t('other.description')}
           </Text>
           <TextInput
             placeholder="Descrizione"
@@ -156,7 +159,7 @@ export const ModifyNoticeScreen = () => {
 
         <Card style={{ marginBottom: spacing[4] }}>
           <Text variant="heading" style={styles.label}>
-            Imposta validità
+            {t('other.setValidity')}
           </Text>
 
           <DateRow
@@ -213,21 +216,22 @@ export const ModifyNoticeScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom: 20,
-  },
-  label: {
-    marginLeft: 15,
-    marginTop: 5,
-    color: '#333',
-  },
-  input: {
-    borderBottomWidth: 0,
-    padding: 12,
-    marginLeft: 10,
-    fontSize: 16,
-    color: '#444',
-  },
-});
+const createStyles = ({ colors, palettes }: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingBottom: 20,
+    },
+    label: {
+      marginLeft: 15,
+      marginTop: 5,
+      color: colors.primary[700],
+    },
+    input: {
+      borderBottomWidth: 0,
+      padding: 12,
+      marginLeft: 10,
+      fontSize: 16,
+      color: palettes.gray[800],
+    },
+  });

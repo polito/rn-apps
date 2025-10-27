@@ -71,6 +71,6 @@ const createStyles = ({ spacing }: Theme) =>
     },
     paddingView: {
       height: 50,
-      backgroundColor: 'transparent',
+      backgroundColor: undefined,
     },
   });

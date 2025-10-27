@@ -1,5 +1,4 @@
-import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
+import { Platform, TouchableOpacity } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -37,10 +36,8 @@ const CustomBackButton2 = () => {
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
 
 export const ProfileNavigator = () => {
-  const { t } = useTranslation();
   const theme = useTheme();
-  const { colors, fontSizes, spacing } = theme;
-  const navigation = useNavigation();
+  const { colors } = theme;
 
   return (
     <Stack.Navigator
@@ -73,10 +70,3 @@ export const ProfileNavigator = () => {
     </Stack.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  menuItem: {
-    padding: 10,
-    fontSize: 16,
-  },
-});

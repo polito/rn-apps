@@ -23,7 +23,7 @@ export const useCollapsingHeader = () => {
       setCollapsedHeaderHeight(headerHeight);
       setCount(c => c + 1);
     }
-  }, [headerHeight]);
+  }, [headerHeight, count]);
 
   return {
     scrollTop,

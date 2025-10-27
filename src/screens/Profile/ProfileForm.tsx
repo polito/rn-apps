@@ -12,16 +12,19 @@ import { Card } from '../../ui/components/Card';
 import { CtaButton } from '../../ui/components/CtaButton';
 import { IconButton } from '../../ui/components/IconButton';
 import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
 
 export const ProfileForm = () => {
   const { t, i18n } = useTranslation();
+  const styles = useStylesheet(createStyles);
   const navigation = useNavigation();
   const { colors, spacing } = useTheme();
   const { user, setUser } = useCourses();
   const [domicilie, setDomicilie] = useState(user.domicilie);
   const [tdomicilie, setTdomicilie] = useState(user.taxDomicilie);
-  const [iban, setIban] = useState(user.IBAN);
+  const [iban] = useState(user.IBAN);
   const [phone, setPhone] = useState(user.phone);
   const [mail, setMail] = useState(user.email);
   const [pmail, setPmail] = useState(user.privateMail);
@@ -204,36 +207,37 @@ export const ProfileForm = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom: 20,
-    paddingTop: 10,
-  },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    marginBottom: 16,
-  },
-  blueButtonContainer: {
-    backgroundColor: '#007AFF',
-    marginHorizontal: 20,
-    borderRadius: 8,
-    padding: 0,
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
+const createStyles = ({ colors, palettes }: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingBottom: 20,
+      paddingTop: 10,
+    },
+    buttonContainer: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      paddingHorizontal: 20,
+      paddingVertical: 8,
+      marginBottom: 16,
+    },
+    blueButtonContainer: {
+      backgroundColor: palettes.lightBlue[500],
+      marginHorizontal: 20,
+      borderRadius: 8,
+      padding: 0,
+    },
+    button: {
+      backgroundColor: palettes.lightBlue[500],
+      paddingVertical: 12,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    buttonText: {
+      color: colors.white,
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+  });

@@ -19,7 +19,7 @@ export const useTabs = (options: TabOptions[]) => {
     if (!mountedTabs.includes(selectedTabIndex)) {
       setMountedTabs([...mountedTabs, selectedTabIndex]);
     }
-  }, [selectedTabIndex]);
+  }, [selectedTabIndex, mountedTabs]);
 
   const TabsComponent = useMemo(
     () => () => (
@@ -42,7 +42,7 @@ export const useTabs = (options: TabOptions[]) => {
         ))}
       </Tabs>
     ),
-    [options, selectedTabIndex],
+    [options, selectedTabIndex, colors.divider, colors.surface],
   );
 
   const TabsContent = useMemo(

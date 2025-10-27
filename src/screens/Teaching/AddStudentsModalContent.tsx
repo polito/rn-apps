@@ -44,7 +44,6 @@ const generateStudentId = (): string => {
 
 export const AddStudentsModalContent = ({ close }: Props) => {
   const { t } = useTranslation();
-  const { fontSizes } = useStylesheet(theme => theme);
   const styles = useStylesheet(createStyles);
   const { addStudentsToCourse, selectedCourse } = useCourses();
   const [searchText, setSearchText] = useState('');
@@ -150,7 +149,7 @@ export const AddStudentsModalContent = ({ close }: Props) => {
   );
 };
 
-const createStyles = ({ colors, dark }: Theme) =>
+const createStyles = ({ colors, palettes, dark }: Theme) =>
   StyleSheet.create({
     message: {
       color: dark ? colors.prose : colors.prose,
@@ -158,10 +157,10 @@ const createStyles = ({ colors, dark }: Theme) =>
     searchContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#fff',
+      backgroundColor: palettes.gray[200],
       borderRadius: 12,
       borderWidth: 1,
-      borderColor: '#ccc',
+      borderColor: palettes.gray[300],
       paddingHorizontal: 12,
       height: 40,
     },
@@ -171,34 +170,21 @@ const createStyles = ({ colors, dark }: Theme) =>
     searchInput: {
       flex: 1,
       fontSize: 16,
-      color: '#000',
+      color: palettes.gray[800],
       paddingVertical: 8,
       height: 50,
       textAlignVertical: 'center',
     },
     resultItem: {
       padding: 10,
-      backgroundColor: '#eee',
+      backgroundColor: palettes.gray[200],
       borderBottomWidth: 1,
-      borderBottomColor: '#ccc',
+      borderBottomColor: palettes.gray[300],
     },
     selectedContainer: {
       flexDirection: 'row',
       flexWrap: 'wrap',
       marginTop: 10,
       gap: 8,
-    },
-    selectedItem: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: '#007AFF',
-      paddingHorizontal: 10,
-      paddingVertical: 6,
-      borderRadius: 20,
-      margin: 4,
-    },
-    selectedText: {
-      color: '#fff',
-      marginRight: 8,
     },
   });

@@ -17,26 +17,16 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
 import { Card } from '../../ui/components/Card';
 import { CtaButton } from '../../ui/components/CtaButton';
 import { DateRow } from '../../ui/components/DateRow';
 import { IconButton } from '../../ui/components/IconButton';
 import { Select } from '../../ui/components/Select';
 import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
 import { ProfileStackParamList } from './ServiceNavigator';
-
-const availableSlots = [
-  '08:30',
-  '10:00',
-  '11:30',
-  '13:00',
-  '14:30',
-  '16:00',
-  '17:30',
-  '19:00',
-];
 
 const places = [
   'Aula 1',
@@ -52,15 +42,11 @@ const places = [
 export const IssueReportForm = () => {
   const { t } = useTranslation();
   const { spacing, colors } = useTheme();
+  const styles = useStylesheet(createStyles);
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
-  const [selectedStartSlot, setSelectedStartSlot] = useState('');
-  const [selectedEndSlot, setSelectedEndSlot] = useState('');
-  const [capacity, setCapacity] = useState('');
-  const [hasPowerPlugs, setHasPowerPlugs] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState('');
   const [description, setDescription] = useState('');
   const { addIssue } = useCourses();
@@ -85,13 +71,6 @@ export const IssueReportForm = () => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     return `${year}-${day}-${month}`;
   };
-
-  const filteredStartSlots = availableSlots.filter(
-    slot => !selectedEndSlot || slot < selectedEndSlot,
-  );
-  const filteredEndSlots = availableSlots.filter(
-    slot => !selectedStartSlot || slot > selectedStartSlot,
-  );
 
   const generateRandomId = () => {
     return Date.now() + Math.floor(Math.random() * 1000);
@@ -148,7 +127,7 @@ export const IssueReportForm = () => {
         </Text>
       ),
     });
-  }, [navigation, colors]);
+  }, [navigation, t]);
 
   return (
     <>
@@ -228,21 +207,22 @@ export const IssueReportForm = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom: 20,
-    paddingTop: 10,
-  },
-  label: {
-    marginLeft: 17,
-    marginTop: 5,
-    color: '#333',
-  },
-  input: {
-    borderBottomWidth: 0,
-    padding: 10,
-    marginLeft: 10,
-    fontSize: 16,
-  },
-});
+const createStyles = ({ palettes }: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingBottom: 20,
+      paddingTop: 10,
+    },
+    label: {
+      marginLeft: 17,
+      marginTop: 5,
+      color: palettes.gray[500],
+    },
+    input: {
+      borderBottomWidth: 0,
+      padding: 10,
+      marginLeft: 10,
+      fontSize: 16,
+    },
+  });

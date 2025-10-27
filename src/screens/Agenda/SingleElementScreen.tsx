@@ -43,10 +43,6 @@ const CustomBackButton2 = () => {
   );
 };
 
-const capitalizeFirstLetter = (text: string) => {
-  if (!text) return '';
-  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
-};
 export const SingleElementScreen = () => {
   const styles = useStylesheet(createStyles);
   const { selectedCourse, selectedAgendaItem, removeAgendaItem } = useCourses(); // Recupero i corsi dal context
@@ -182,7 +178,7 @@ export const SingleElementScreen = () => {
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ spacing, palettes }: Theme) =>
   StyleSheet.create({
     container: {
       marginBottom: spacing[5],
@@ -204,11 +200,11 @@ const createStyles = ({ spacing }: Theme) =>
     },
     paddingView: {
       height: 200, // Aggiungi uno spazio extra, modifica a piacere
-      backgroundColor: 'transparent', // Componente trasparente
+      backgroundColor: undefined, // Componente trasparente
     },
     dateText: {
       fontSize: 16,
-      color: 'gray', // Colore più soft per la data
+      color: palettes.gray[700], // Colore più soft per la data
       marginTop: spacing[1],
       marginLeft: spacing[4],
     },

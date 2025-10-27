@@ -14,10 +14,12 @@ import { CtaButton } from '../../ui/components/CtaButton';
 import { IconButton } from '../../ui/components/IconButton';
 import { Select } from '../../ui/components/Select';
 import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
 
 // Funzione per gestire il cambio della data (gestione robusta per Android)
-const handleDateChange = (
+const _handleDateChange = (
   event: DateTimePickerEvent | undefined,
   selectedDate: Date | undefined,
   setShowPicker: React.Dispatch<React.SetStateAction<boolean>>,
@@ -37,34 +39,15 @@ const handleDateChange = (
   }
 };
 
-const availableSlots = [
-  '08:30',
-  '10:00',
-  '11:30',
-  '13:00',
-  '14:30',
-  '16:00',
-  '17:30',
-  '19:00',
-];
-
 export const ModifyFileScreen = () => {
   const navigation = useNavigation();
   const { selectedCourse, updateCourseFile, selectedFile } = useCourses();
   const { colors, spacing } = useTheme();
-
+  const styles = useStylesheet(createStyles);
   const [title, setTitle] = useState(selectedFile?.name ?? '');
   const [selectedDirectory, setSelectedDirectory] = useState(
     selectedFile?.dirId.toString() ?? '',
   );
-
-  const formatDate = (date: Date) => {
-    const year = date.getFullYear();
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-
-    return `${year}-${day}-${month}`;
-  };
 
   const handlePublish = () => {
     if (!selectedCourse) return;
@@ -106,7 +89,7 @@ export const ModifyFileScreen = () => {
         />
       ),
     });
-  }, [navigation, colors]);
+  }, [navigation]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -189,35 +172,36 @@ export const ModifyFileScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom: 20, // Distanza tra il contenuto e il fondo per il bottone
-  },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    marginBottom: 16, // Distanza dal bordo inferiore
-  },
-  blueButtonContainer: {
-    backgroundColor: '#007AFF',
-    marginHorizontal: 20,
-    borderRadius: 8,
-    padding: 0,
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
+const createStyles = ({ colors }: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingBottom: 20, // Distanza tra il contenuto e il fondo per il bottone
+    },
+    buttonContainer: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      paddingHorizontal: 20,
+      paddingVertical: 8,
+      marginBottom: 16, // Distanza dal bordo inferiore
+    },
+    blueButtonContainer: {
+      backgroundColor: colors.primary[500],
+      marginHorizontal: 20,
+      borderRadius: 8,
+      padding: 0,
+    },
+    button: {
+      backgroundColor: colors.primary[500],
+      paddingVertical: 12,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    buttonText: {
+      color: colors.white,
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+  });

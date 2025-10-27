@@ -3,6 +3,7 @@ import { TouchableOpacity, View } from 'react-native';
 
 import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 
+import { useTheme } from '../hooks/useTheme';
 import { Card } from './Card';
 import { IconButton } from './IconButton';
 import { Row } from './Row';
@@ -20,6 +21,7 @@ export const DateRow = ({
   onClear?: () => void;
 }) => {
   const { t } = useTranslation();
+  const { palettes } = useTheme();
   return (
     <Card style={{ marginHorizontal: 16, marginVertical: 8, borderRadius: 12 }}>
       <Row justify="space-between" align="center">
@@ -29,7 +31,9 @@ export const DateRow = ({
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           {date && onClear && (
             <TouchableOpacity onPress={onClear} style={{ marginRight: 12 }}>
-              <Text style={{ color: 'red', fontWeight: 'bold' }}>✕</Text>
+              <Text style={{ color: palettes.red[100], fontWeight: 'bold' }}>
+                ✕
+              </Text>
             </TouchableOpacity>
           )}
 

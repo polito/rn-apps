@@ -130,7 +130,7 @@ export const NoticeScreen = () => {
     </ScrollView>
   );
 };
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ palettes, spacing }: Theme) =>
   StyleSheet.create({
     container: {
       marginVertical: spacing[5],
@@ -142,7 +142,7 @@ const createStyles = ({ spacing }: Theme) =>
     },
     dateText: {
       fontSize: 16,
-      color: 'gray',
+      color: palettes.gray[500],
       marginTop: spacing[1],
       marginLeft: spacing[4],
     },
@@ -160,11 +160,11 @@ const createStyles = ({ spacing }: Theme) =>
       marginLeft: spacing[4],
       marginBottom: spacing[4],
       marginTop: 8,
-      color: '#007AFF', // blu tipo link
+      color: palettes.lightBlue[500], // blu tipo link
       fontWeight: '500',
     },
     inlineShowMore: {
-      color: '#007AFF',
+      color: palettes.lightBlue[500],
       fontWeight: '500',
     },
   });

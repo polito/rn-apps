@@ -63,7 +63,7 @@ const LanguageSelect = () => {
 export const SettingsScreen = () => {
   const navigation = useNavigation();
   const { t } = useTranslation();
-  const { colors, spacing } = useTheme();
+  const { spacing } = useTheme();
 
   // Prendo tema e updater dal context (NON locale)
   const { colorScheme, updatePreference } = usePreferencesContext();
@@ -91,7 +91,7 @@ export const SettingsScreen = () => {
         />
       ),
     });
-  }, [navigation, colors]);
+  }, [navigation, t]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
@@ -17,7 +17,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import DateTimePicker, {
   DateTimePickerAndroid,
-  DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -41,20 +40,6 @@ import { AgendaStackParamList } from './AgendaNavigator';
 const localeMap: Record<string, Locale> = {
   it: it,
   en: enUS,
-};
-
-const handleDateChange = <T extends Date | null>(
-  event: DateTimePickerEvent,
-  selectedDate: Date | undefined,
-  setShowPicker: React.Dispatch<React.SetStateAction<boolean>>,
-  setDate: React.Dispatch<React.SetStateAction<T>>,
-) => {
-  if (event.type === 'set' && selectedDate) {
-    setShowPicker(false);
-    setDate(selectedDate as T);
-  } else if (event.type === 'dismissed') {
-    setShowPicker(false);
-  }
 };
 
 export const AgendaScreen = () => {
@@ -149,7 +134,7 @@ export const AgendaScreen = () => {
         </Row>
       ),
     });
-  }, []);
+  }, [navigation, startDate, spacing, fontSizes.lg, colors.primary, t]);
 
   const normalizeDate = (date: Date) => {
     const newDate = new Date(date);
@@ -226,7 +211,7 @@ export const AgendaScreen = () => {
         scrollEventThrottle={100}
         onEndReachedThreshold={0.3}
         ListFooterComponent={<BottomBarSpacer />}
-        renderItem={({ item: [date, items] }) => {
+        renderItem={({ item: [_date, items] }) => {
           return (
             <>
               {items.map((item, idx) => (
@@ -253,8 +238,8 @@ export const AgendaScreen = () => {
                             <View
                               style={{
                                 backgroundColor: isToday
-                                  ? colors.heading
-                                  : 'transparent',
+                                  ? colors.primary[700]
+                                  : undefined,
                                 borderRadius: 8,
                                 paddingHorizontal: 6,
                                 paddingVertical: 4,
@@ -263,14 +248,18 @@ export const AgendaScreen = () => {
                             >
                               <Text
                                 variant="title"
-                                style={{ color: isToday ? 'white' : undefined }}
+                                style={{
+                                  color: isToday ? colors.white : undefined,
+                                }}
                               >
                                 {dayLabel.charAt(0).toUpperCase() +
                                   dayLabel.slice(1)}
                               </Text>
                               <Text
                                 variant="title"
-                                style={{ color: isToday ? 'white' : undefined }}
+                                style={{
+                                  color: isToday ? colors.white : undefined,
+                                }}
                               >
                                 {dayNumber}
                               </Text>

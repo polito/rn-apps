@@ -6089,7 +6089,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     setAgendaItems(prevItems => prevItems.filter(item => item.id !== itemId));
   };
 
-  const [emergencies, setEmergencies] = useState<Emergency[]>([
+  const [emergencies] = useState<Emergency[]>([
     {
       id: '1',
       name: 'Incendio',
@@ -6613,12 +6613,6 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
 
   const addManagedCourse = (course: Course) => {
     setManagedCourses(prevCourses => [...prevCourses, course]);
-  };
-
-  const removeManagedCourse = (courseId: number) => {
-    setManagedCourses(prevCourses =>
-      prevCourses.filter(course => course.id !== courseId),
-    );
   };
 
   const addExam = (exam: Exam) => {

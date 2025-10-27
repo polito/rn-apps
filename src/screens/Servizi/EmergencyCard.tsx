@@ -1,5 +1,4 @@
 import { PropsWithChildren } from 'react';
-import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
@@ -42,8 +41,7 @@ export const EmergencyCard = ({
 }: Props) => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const styles = useStylesheet(createStyles);
-  const { dark, colors, palettes } = useTheme();
-  const { t } = useTranslation();
+  const { dark, palettes } = useTheme();
 
   return (
     <TouchableCard

@@ -29,7 +29,9 @@ import { IconButton } from '../../ui/components/IconButton';
 import { Row } from '../../ui/components/Row';
 import { Select } from '../../ui/components/Select';
 import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
 
 const generateTimeSlots = () => {
   const slots: string[] = [];
@@ -71,7 +73,7 @@ export const NoteForm = () => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
-  const { selectedCourse, addAgendaItem, agendaItems } = useCourses();
+  const { addAgendaItem, agendaItems } = useCourses();
   const [selectedStartSlot, setSelectedStartSlot] = useState('');
   const [selectedEndSlot, setSelectedEndSlot] = useState('');
   const [eventType, setEventType] = useState<'APPUNTAMENTO' | 'LEZIONE'>(
@@ -79,6 +81,7 @@ export const NoteForm = () => {
   );
   const [selectedPlace, setSelectedPlace] = useState('');
   const { t } = useTranslation();
+  const styles = useStylesheet(createStyles);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -335,7 +338,7 @@ export const NoteForm = () => {
                 onPress={() => setEndDate(null)}
                 style={{
                   marginLeft: 10,
-                  backgroundColor: 'red',
+                  backgroundColor: colors.danger[600],
                   borderRadius: 12,
                   width: 24,
                   height: 24,
@@ -344,7 +347,11 @@ export const NoteForm = () => {
                 }}
               >
                 <Text
-                  style={{ color: 'white', fontWeight: 'bold', marginTop: -2 }}
+                  style={{
+                    color: colors.white,
+                    fontWeight: 'bold',
+                    marginTop: -2,
+                  }}
                 >
                   x
                 </Text>
@@ -444,19 +451,20 @@ export const NoteForm = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom: 20,
-    paddingTop: 10,
-  },
-  blueButtonContainer: {
-    marginHorizontal: 20,
-    padding: 0,
-  },
-  label: {
-    marginLeft: 17,
-    marginTop: 5,
-    color: '#333',
-  },
-});
+const createStyles = ({ colors }: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingBottom: 20,
+      paddingTop: 10,
+    },
+    blueButtonContainer: {
+      marginHorizontal: 20,
+      padding: 0,
+    },
+    label: {
+      marginLeft: 17,
+      marginTop: 5,
+      color: colors.text[800],
+    },
+  });

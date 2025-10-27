@@ -15,7 +15,6 @@ interface Props {
 export const CourseDirectoryListItem = ({
   name,
   length,
-  showDirFiles,
   setShowDirFiles,
   dirId,
   setDirId,

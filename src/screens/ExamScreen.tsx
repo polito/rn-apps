@@ -43,13 +43,17 @@ import { OverviewList } from '../ui/components/OverviewList';
 import { Section } from '../ui/components/Section';
 import { SectionHeader } from '../ui/components/SectionHeader';
 import { Text } from '../ui/components/Text';
+import { useStylesheet } from '../ui/hooks/useStylesheet';
+import { useTheme } from '../ui/hooks/useTheme';
+import { Theme } from '../ui/types/Theme';
 import { AddStudentsToExamModalContent } from './Teaching/AddStudentsToExamModalContent';
 import { TeachingStackParamList } from './Teaching/TeachingNavigator';
 
 export const ExamScreen = () => {
   const { selectedExam, setSelectedStudent } = useCourses();
   const { paddingHorizontal } = useSafeAreaSpacing();
-
+  const styles = useStylesheet(createStyles);
+  const { palettes } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
   const { t } = useTranslation();
@@ -183,7 +187,7 @@ export const ExamScreen = () => {
                 value={searchText}
                 onChangeText={setSearchText}
                 style={styles.searchInput}
-                placeholderTextColor="#888"
+                placeholderTextColor={palettes.gray[500]}
               />
             </View>
 
@@ -265,29 +269,30 @@ export const ExamScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    paddingHorizontal: 12,
-    marginBottom: 12,
-    marginTop: 12,
-    marginHorizontal: 12,
-    height: 40,
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    color: '#000',
-    paddingVertical: 8,
-    height: 50,
-    textAlignVertical: 'center',
-  },
-});
+const createStyles = ({ palettes }: Theme) =>
+  StyleSheet.create({
+    searchContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: palettes.gray[200],
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: palettes.gray[300],
+      paddingHorizontal: 12,
+      marginBottom: 12,
+      marginTop: 12,
+      marginHorizontal: 12,
+      height: 40,
+    },
+    searchIcon: {
+      marginRight: 8,
+    },
+    searchInput: {
+      flex: 1,
+      fontSize: 16,
+      color: palettes.gray[500],
+      paddingVertical: 8,
+      height: 50,
+      textAlignVertical: 'center',
+    },
+  });

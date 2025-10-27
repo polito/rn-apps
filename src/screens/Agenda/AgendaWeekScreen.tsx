@@ -1,5 +1,6 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Popover from 'react-native-popover-view';
 
@@ -58,8 +59,8 @@ export const AgendaWeekScreen = () => {
     useCourses();
   const [isMenuVisible, setMenuVisible] = useState(false);
   const buttonRef = useRef(null);
-
-  const openAndroidDatePicker = () => {
+  const { t } = useTranslation();
+  const openAndroidDatePicker = useCallback(() => {
     DateTimePickerAndroid.open({
       value: startDate,
       mode: 'date',
@@ -71,7 +72,7 @@ export const AgendaWeekScreen = () => {
         setShowStartPicker(false);
       },
     });
-  };
+  }, [startDate]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -127,13 +128,13 @@ export const AgendaWeekScreen = () => {
         </Row>
       ),
     });
-  }, []);
-
-  const date = DateTime.now();
-
-  const [currentWeek, setCurrentWeek] = useState<DateTime>(
-    date ? date.startOf('week') : DateTime.now().startOf('week'),
-  );
+  }, [
+    colors.primary,
+    fontSizes.lg,
+    navigation,
+    spacing,
+    openAndroidDatePicker,
+  ]);
 
   const calendarEvents = useMemo(() => {
     const mapped = agendaItems.map(item => {
@@ -208,7 +209,7 @@ export const AgendaWeekScreen = () => {
         onRequestClose={() => setMenuVisible(false)}
       >
         <TouchableOpacity>
-          <Text style={styles.menuItem}>Aggiorna</Text>
+          <Text style={styles.menuItem}>{t('agendaScreen.refresh')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
@@ -216,7 +217,7 @@ export const AgendaWeekScreen = () => {
             setMenuVisible(false);
           }}
         >
-          <Text style={styles.menuItem}>Formato Giornaliero</Text>
+          <Text style={styles.menuItem}>{t('agendaScreen.dailyLayout')}</Text>
         </TouchableOpacity>
       </Popover>
 

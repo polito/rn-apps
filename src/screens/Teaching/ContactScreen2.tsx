@@ -191,7 +191,7 @@ export const ContactScreen2 = () => {
   );
 };
 
-const createStyles = ({ colors, spacing }: Theme) =>
+const createStyles = ({ palettes, spacing }: Theme) =>
   StyleSheet.create({
     heading: {
       paddingTop: spacing[5],
@@ -209,7 +209,7 @@ const createStyles = ({ colors, spacing }: Theme) =>
       width: 120,
       height: 120,
       borderRadius: 60,
-      backgroundColor: '#ccc',
+      backgroundColor: palettes.gray[400],
       justifyContent: 'center',
       alignItems: 'center',
       marginVertical: spacing[4],

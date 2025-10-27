@@ -65,7 +65,7 @@ export const SignatureScreen = () => {
         </Text>
       ),
     });
-  }, [navigation]);
+  }, [navigation, t]);
 
   if (!selectedDoc) return null;
 
@@ -206,7 +206,7 @@ export const SignatureScreen = () => {
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ colors, palettes, spacing }: Theme) =>
   StyleSheet.create({
     TitleText: {
       fontSize: 20,
@@ -215,13 +215,13 @@ const createStyles = ({ spacing }: Theme) =>
     },
     dateText: {
       fontSize: 16,
-      color: 'gray',
+      color: palettes.gray[500],
       marginTop: spacing[1],
       marginLeft: spacing[4],
     },
     input: {
       borderWidth: 1,
-      borderColor: '#ccc',
+      borderColor: palettes.gray[300],
       borderRadius: 8,
       padding: 10,
       marginTop: 12,
@@ -229,12 +229,12 @@ const createStyles = ({ spacing }: Theme) =>
     },
     modalOverlay: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.5)',
+      backgroundColor: undefined,
       justifyContent: 'center',
       alignItems: 'center',
     },
     modalContainer: {
-      backgroundColor: 'white',
+      backgroundColor: colors.white,
       padding: 20,
       borderRadius: 10,
       width: '80%',

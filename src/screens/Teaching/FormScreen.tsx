@@ -22,7 +22,9 @@ import { Card } from '../../ui/components/Card';
 import { IconButton } from '../../ui/components/IconButton';
 import { Row } from '../../ui/components/Row';
 import { Select } from '../../ui/components/Select';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
 
 // Funzione per gestire il cambio della data
 const handleDateChange = (
@@ -56,6 +58,7 @@ const availableSlots = [
 export const FormScreen = () => {
   const navigation = useNavigation();
   const { colors, spacing } = useTheme();
+  const styles = useStylesheet(createStyles);
   const [formType, setFormType] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -147,11 +150,6 @@ export const FormScreen = () => {
 
       const formattedDate = startDate.toISOString().slice(0, 10); // Formattazione della data YYYY-MM-DD
 
-      const formatTime = (date: Date) => {
-        const hours = date.getHours();
-        const minutes = date.getMinutes();
-        return `${hours}:${minutes.toString().padStart(2, '0')}`;
-      };
       const formattedTime = `${selectedStartSlot} - ${selectedEndSlot}`;
 
       const newLesson = {
@@ -422,35 +420,36 @@ export const FormScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom: 20, // Distanza tra il contenuto e il fondo per il bottone
-  },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    marginBottom: 16, // Distanza dal bordo inferiore
-  },
-  blueButtonContainer: {
-    backgroundColor: '#007AFF',
-    marginHorizontal: 20,
-    borderRadius: 8,
-    padding: 0,
-  },
-  button: {
-    backgroundColor: '#007AFF', // Colore del background del bottone
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white', // Colore del testo del bottone
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
+const createStyles = ({ colors, palettes }: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingBottom: 20, // Distanza tra il contenuto e il fondo per il bottone
+    },
+    buttonContainer: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      paddingHorizontal: 20,
+      paddingVertical: 8,
+      marginBottom: 16, // Distanza dal bordo inferiore
+    },
+    blueButtonContainer: {
+      backgroundColor: palettes.lightBlue[500],
+      marginHorizontal: 20,
+      borderRadius: 8,
+      padding: 0,
+    },
+    button: {
+      backgroundColor: palettes.lightBlue[500],
+      paddingVertical: 12,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    buttonText: {
+      color: colors.white, // Colore del testo del bottone
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+  });

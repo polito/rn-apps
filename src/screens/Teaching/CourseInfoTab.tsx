@@ -26,6 +26,7 @@ import { TeachingStackParamList } from './TeachingNavigator';
 
 export const CourseInfoTab = () => {
   const { t } = useTranslation();
+  const { palettes } = useTheme();
   const { spacing } = useTheme();
   const {
     selectedCourse,
@@ -48,7 +49,7 @@ export const CourseInfoTab = () => {
       headerTitle,
       headerBackTitleVisible: headerTitle.length <= 20,
     });
-  }, [selectedCourse?.title, selectedCourse]);
+  }, [selectedCourse?.title, setOptions]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
@@ -59,17 +60,17 @@ export const CourseInfoTab = () => {
     return unsubscribe;
   }, [navigation]);
 
-  const pictureStyle = {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 20,
-  };
   // Se nessun corso è selezionato, mostra un messaggio di errore
   if (!selectedCourse) {
     return (
       <View style={{ padding: spacing[5] }}>
-        <Text style={{ textAlign: 'center', fontSize: 16, color: 'red' }}>
+        <Text
+          style={{
+            textAlign: 'center',
+            fontSize: 16,
+            color: palettes.red[600],
+          }}
+        >
           No course selected
         </Text>
       </View>

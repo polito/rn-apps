@@ -125,22 +125,6 @@ const CustomBackButton3 = () => {
   );
 };
 
-const CustomBackButton4 = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('Appelli'); // Altrimenti torna alla schermata "Courses"
-      }}
-      style={{ paddingHorizontal: 10 }}
-    >
-      <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
-    </TouchableOpacity>
-  );
-};
-
 const CustomBackButton5 = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
@@ -193,15 +177,6 @@ const HeaderLeftWithLogoAndBack = () => {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <CustomBackButton />
-      <Logo />
-    </View>
-  );
-};
-
-const HeaderLeftWithLogoAndBack2 = () => {
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      <CustomBackButton4 />
       <Logo />
     </View>
   );
@@ -465,12 +440,8 @@ export const TeachingNavigator = () => {
 const NoticeMenu = () => {
   const [isMenuVisible, setMenuVisible] = useState(false);
   const buttonRef = useRef(null); // Riferimento ai tre puntini
-  const {
-    selectedNotice,
-    updateCourseNotice,
-    deleteNoticeFromCourse,
-    selectedCourse,
-  } = useCourses();
+  const { selectedNotice, deleteNoticeFromCourse, selectedCourse } =
+    useCourses();
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
   const { t } = useTranslation();
@@ -528,6 +499,7 @@ const NoticeMenu = () => {
 const LectureMenu = () => {
   const [isMenuVisible, setMenuVisible] = useState(false);
   const buttonRef = useRef(null); // Riferimento ai tre puntini
+  const { t } = useTranslation();
   const { selectedLecture, deleteLessonFromCourse, selectedCourse } =
     useCourses();
   const navigation =
@@ -578,10 +550,10 @@ const LectureMenu = () => {
         onRequestClose={() => setMenuVisible(false)}
       >
         <TouchableOpacity onPress={handleUpdate}>
-          <Text style={styles.menuItem}>Modifica</Text>
+          <Text style={styles.menuItem}>{t('other.modify')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleDelete}>
-          <Text style={styles.menuItem}>Elimina</Text>
+          <Text style={styles.menuItem}>{t('other.delete')}</Text>
         </TouchableOpacity>
       </Popover>
     </View>

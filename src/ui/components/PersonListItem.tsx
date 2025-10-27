@@ -14,6 +14,8 @@ import { ModifyStaffAccessModalContent } from '../../screens/Teaching/ModifyStaf
 import { Icon } from '../../ui/components/Icon';
 import { ListItem } from '../../ui/components/ListItem';
 import { useTheme } from '../../ui/hooks/useTheme';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
 
 interface Props {
   person: Person | string | undefined;
@@ -33,6 +35,7 @@ export const PersonListItem = ({
 }: TouchableHighlightProps & Props) => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
+  const styles = useStylesheet(createStyles);
   const {
     selectedStaff,
     setSelectedStaff,
@@ -79,7 +82,16 @@ export const PersonListItem = ({
         closeBottomModal();
       }
     }
-  }, [accessLevel]);
+  }, [
+    accessLevel,
+    firstTime,
+    closeBottomModal,
+    selectedCourse,
+    selectedStaff,
+    showBottomModal,
+    updateStaffAccess,
+    removeStaffFromCourse,
+  ]);
   // Se person è un `Person`, restituisce il `ListItem` con i suoi dati
   if (!staff || !selectedCourse) return null;
   if (isPerson(person)) {
@@ -120,7 +132,7 @@ export const PersonListItem = ({
           )
         }
         onPress={() => {
-          if (subtitle !== 'Titolare' && subtitle !== 'Owner' && accessLevel) {
+          if (subtitle !== 'Titolare' && subtitle !== 'owner' && accessLevel) {
             setSelectedStaff(staff);
             showBottomModal(
               <ModifyStaffAccessModalContent
@@ -140,68 +152,65 @@ export const PersonListItem = ({
   );
 };
 
-const styles = StyleSheet.create({
-  picture: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 20,
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Sfondo semitrasparente
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  menuContainer: {
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 5,
-    width: 320,
-    minHeight: 180,
-    elevation: 5,
-  },
-  menuItem: {
-    padding: 10,
-    fontSize: 16,
-  },
-  menuItemText: {
-    fontSize: 16,
-    color: '#000',
-  },
-  radioOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  radioCircle: {
-    height: 20,
-    width: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#007AFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 10,
-  },
-  radioDot: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: '#007AFF',
-  },
-  removeButton: {
-    backgroundColor: '#e53935',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10,
-  },
+const createStyles = ({ colors, palettes }: Theme) =>
+  StyleSheet.create({
+    picture: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 20,
+    },
+    overlay: {
+      flex: 1,
+      backgroundColor: undefined, // Sfondo semitrasparente
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    menuContainer: {
+      backgroundColor: colors.white,
+      padding: 10,
+      borderRadius: 5,
+      width: 320,
+      minHeight: 180,
+      elevation: 5,
+    },
+    menuItem: {
+      padding: 10,
+      fontSize: 16,
+    },
+    radioOption: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+    radioCircle: {
+      height: 20,
+      width: 20,
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: colors.white,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 10,
+    },
+    radioDot: {
+      height: 10,
+      width: 10,
+      borderRadius: 5,
+      backgroundColor: palettes.lightBlue[500],
+    },
+    removeButton: {
+      backgroundColor: palettes.red[500],
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 10,
+    },
 
-  removeButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-});
+    removeButtonText: {
+      color: colors.white,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+  });

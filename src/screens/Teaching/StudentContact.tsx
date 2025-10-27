@@ -111,7 +111,7 @@ export const StudentContact = () => {
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
     heading: {
       paddingTop: spacing[5],
@@ -129,7 +129,7 @@ const createStyles = ({ spacing }: Theme) =>
       width: 120,
       height: 120,
       borderRadius: 60,
-      backgroundColor: '#ccc',
+      backgroundColor: colors.surface,
       justifyContent: 'center',
       alignItems: 'center',
       marginVertical: spacing[4],

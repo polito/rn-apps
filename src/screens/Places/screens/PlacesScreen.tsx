@@ -70,9 +70,8 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const placeCategory = useGetPlaceCategory(categoryId);
   const placeSubCategory = useGetPlaceSubCategory(subCategoryId);
-  const [categoriesPanelOpen, setCategoriesPanelOpen] = useState(false);
   const headerHeight = useHeaderHeight();
-  const [tabsHeight, setTabsHeight] = useState(46);
+  const [tabsHeight] = useState(46);
   const campus = useGetCurrentCampus();
   const { placesSearched } = usePreferencesContext();
   const safeAreaInsets = useSafeAreaInsets();

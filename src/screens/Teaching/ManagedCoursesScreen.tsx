@@ -20,15 +20,6 @@ export const ManagedCoursesScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
 
-  // 📌 Raggruppa i corsi per periodo
-  const coursesByPeriod = managedCourses.reduce(
-    (acc, course) => {
-      (acc[course.period] = acc[course.period] || []).push(course);
-      return acc;
-    },
-    {} as Record<string, typeof managedCourses>,
-  );
-
   return (
     <ScrollView>
       <View style={styles.sectionsContainer}>
@@ -87,7 +78,7 @@ export const ManagedCoursesScreen = () => {
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ spacing, colors }: Theme) =>
   StyleSheet.create({
     loader: {
       marginVertical: spacing[8],
@@ -97,10 +88,10 @@ const createStyles = ({ spacing }: Theme) =>
     },
     paddingView: {
       height: 200, // Aggiungi uno spazio extra, modifica a piacere
-      backgroundColor: 'transparent', // Componente trasparente
+      backgroundColor: undefined, // Componente trasparente
     },
     button: {
-      backgroundColor: '#FFFFFF', // Colore del background del bottone
+      backgroundColor: colors.white, // Colore del background del bottone
       paddingVertical: 12,
       marginLeft: spacing[4],
       marginBottom: spacing[4],
@@ -109,7 +100,7 @@ const createStyles = ({ spacing }: Theme) =>
       alignItems: 'center',
     },
     buttonText: {
-      color: 'black', // Colore del testo del bottone
+      color: colors.black, // Colore del testo del bottone
       fontSize: 16,
       fontWeight: 'light',
     },

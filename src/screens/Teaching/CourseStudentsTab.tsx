@@ -33,25 +33,22 @@ import { OverviewList } from '../../ui/components/OverviewList';
 import { Row } from '../../ui/components/Row';
 import { SectionHeader } from '../../ui/components/SectionHeader';
 import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
+import { Theme } from '../../ui/types/Theme';
 import { AddStudentsModalContent } from './AddStudentsModalContent';
 import { TeachingStackParamList } from './TeachingNavigator';
 
 export const CourseStudentsTab = () => {
   const { selectedCourse, addGroupToCourse, setSelectedStudent } = useCourses();
   const { paddingHorizontal } = useSafeAreaSpacing();
-
   const [searchText, setSearchText] = useState('');
+  const styles = useStylesheet(createStyles);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [groupSelectVisible, setGroupSelectVisible] = useState(false);
-  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [newGroupTitle, setNewGroupTitle] = useState('');
-  const [creatingGroup, setCreatingGroup] = useState(false);
   const { colors, spacing } = useTheme();
   const [editingGroupsMode, setEditingGroupsMode] = useState(false);
-  const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
-  const [isMenuVisible, setMenuVisible] = useState(false);
   const [isMenuVisible2, setMenuVisible2] = useState(false);
   const [isMenuVisible3, setMenuVisible3] = useState(false);
   const [filterType, setFilterType] = useState<
@@ -62,7 +59,6 @@ export const CourseStudentsTab = () => {
   const [newGroupStudents, setNewGroupStudents] = useState<string[]>([]);
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-  const buttonRef = useRef(null);
   const buttonRef2 = useRef(null);
   const buttonRef3 = useRef(null);
 
@@ -91,19 +87,6 @@ export const CourseStudentsTab = () => {
       student.surname.toLowerCase().includes(query);
 
     return matchesSearch && studentPassesFilter(student);
-  });
-
-  const filteredGroups = groups.filter(group => {
-    const matchesSearch = group.title.toLowerCase().includes(query);
-
-    if (!matchesSearch) return false;
-
-    // Controlla se tutti gli studenti del gruppo passano il filtro
-    const allPass = group.students.every(student =>
-      studentPassesFilter(student),
-    );
-
-    return allPass;
   });
 
   const doesGroupExist = () => {
@@ -561,37 +544,38 @@ export const CourseStudentsTab = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    paddingHorizontal: 12,
-    marginBottom: 12,
-    marginTop: 12,
-    marginHorizontal: 12,
-    height: 40,
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    color: '#000',
-    paddingVertical: 8,
-    height: 50,
-    textAlignVertical: 'center',
-  },
-  menuItem: {
-    padding: 10,
-    fontSize: 16,
-  },
-  filterIcon: {
-    marginLeft: 8,
-    padding: 4,
-  },
-});
+const createStyles = ({ palettes }: Theme) =>
+  StyleSheet.create({
+    searchContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: palettes.gray[200],
+      borderRadius: 6,
+      borderWidth: 1,
+      borderColor: palettes.gray[300],
+      paddingHorizontal: 12,
+      marginBottom: 19,
+      marginTop: 28,
+      marginHorizontal: 19,
+      height: 32,
+    },
+    searchIcon: {
+      marginRight: 6,
+    },
+    searchInput: {
+      flex: 1,
+      fontSize: 16,
+      color: palettes.gray[500],
+      paddingVertical: 8,
+      height: 50,
+      textAlignVertical: 'center',
+    },
+    menuItem: {
+      padding: 10,
+      fontSize: 16,
+    },
+    filterIcon: {
+      marginLeft: 6,
+      padding: 1,
+    },
+  });

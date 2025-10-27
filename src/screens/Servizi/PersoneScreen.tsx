@@ -164,7 +164,7 @@ export const PersoneScreen = () => {
   );
 };
 
-const createStyles = ({ colors, spacing }: Theme) =>
+const createStyles = ({ palettes, spacing }: Theme) =>
   StyleSheet.create({
     heading: {
       paddingTop: spacing[5],
@@ -182,10 +182,10 @@ const createStyles = ({ colors, spacing }: Theme) =>
     searchContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#fff',
+      backgroundColor: palettes.gray[200],
       borderRadius: 12,
       borderWidth: 1,
-      borderColor: '#ccc',
+      borderColor: palettes.gray[300],
       paddingHorizontal: 12,
       marginBottom: 12,
       marginTop: 12,
@@ -202,7 +202,7 @@ const createStyles = ({ colors, spacing }: Theme) =>
     searchInput: {
       flex: 1,
       fontSize: 16,
-      color: '#000',
+      color: palettes.gray[800],
       paddingVertical: 8,
       height: 50,
       textAlignVertical: 'center',

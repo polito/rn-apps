@@ -1,6 +1,5 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { useMemo } from 'react';
 import {
   LogBox,
   Platform,
@@ -24,7 +23,6 @@ import { UiProvider } from './src/core/providers/UiProvider';
 import { darkTheme } from './src/core/themes/dark';
 import { lightTheme } from './src/core/themes/light';
 import { ThemeContext } from './src/ui/contexts/ThemeContext';
-import { fromUiTheme } from './src/utils/navigation-theme';
 import { initSentry } from './src/utils/sentry';
 
 LogBox.ignoreLogs([
@@ -40,7 +38,6 @@ Mapbox.setAccessToken(process.env.MAPBOX_TOKEN!);
 export const App = () => {
   const colorScheme = useColorScheme();
   const uiTheme = colorScheme === 'light' ? lightTheme : darkTheme;
-  const navigationTheme = useMemo(() => fromUiTheme(uiTheme), [uiTheme]);
 
   return (
     // Avvolgi tutto dentro QueryClientProvider e passa il client
@@ -69,7 +66,7 @@ export const App = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,

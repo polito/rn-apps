@@ -92,9 +92,9 @@ export const CtaButton = ({
   }, [
     dark,
     destructive,
-    colors.danger,
-    colors.primary,
-    colors.success,
+    palettes.danger,
+    palettes.primary,
+    palettes.success,
     success,
   ]);
 

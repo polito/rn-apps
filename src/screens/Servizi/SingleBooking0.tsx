@@ -34,7 +34,7 @@ export const SingleBooking0 = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { selectedBooking, removeBooking } = useCourses(); // Recupero i corsi dal context
-  const { fontSizes, colors, spacing } = useTheme();
+  const { fontSizes, spacing } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   useLayoutEffect(() => {
@@ -59,7 +59,7 @@ export const SingleBooking0 = () => {
         </Text>
       ),
     });
-  }, [navigation, colors]);
+  }, [navigation, t]);
 
   if (!selectedBooking) return null;
   const getBadgeColors = (status: string) => {
@@ -214,7 +214,7 @@ export const SingleBooking0 = () => {
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ palettes, spacing }: Theme) =>
   StyleSheet.create({
     container: {
       marginBottom: spacing[5],
@@ -236,11 +236,11 @@ const createStyles = ({ spacing }: Theme) =>
     },
     paddingView: {
       height: 200, // Aggiungi uno spazio extra, modifica a piacere
-      backgroundColor: 'transparent', // Componente trasparente
+      backgroundColor: undefined, // Componente trasparente
     },
     dateText: {
       fontSize: 16,
-      color: 'gray', // Colore più soft per la data
+      color: palettes.gray[500], // Colore più soft per la data
       marginTop: spacing[1],
       marginLeft: spacing[4],
     },

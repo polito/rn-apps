@@ -13,10 +13,13 @@ import { CtaButton } from '../../ui/components/CtaButton';
 import { EmptyState } from '../../ui/components/EmptyState';
 import { IndentedDivider } from '../../ui/components/IndentedDivider';
 import { PersonListItem } from '../../ui/components/PersonListItem';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
+import { Theme } from '../../ui/types/Theme';
 import { AddStaffModalContent } from './AddStaffModalContent';
 
 export const StaffScreen = () => {
   const { selectedCourse } = useCourses();
+  const _styles = useStylesheet(createStyles);
   // Troviamo il corso corrispondente
   const course = selectedCourse;
 
@@ -80,34 +83,35 @@ export const StaffScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom: 20, // Distanza tra il contenuto e il fondo per il bottone
-  },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    marginBottom: 16, // Distanza dal bordo inferiore
-  },
-  blueButtonContainer: {
-    backgroundColor: '#007AFF',
-    marginHorizontal: 20,
-    borderRadius: 8,
-    padding: 0,
-  },
-  button: {
-    backgroundColor: '#007AFF', // Colore del background del bottone
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white', // Colore del testo del bottone
-    fontSize: 16,
-  },
-});
+const createStyles = ({ colors, palettes }: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingBottom: 20, // Distanza tra il contenuto e il fondo per il bottone
+    },
+    buttonContainer: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      paddingHorizontal: 20,
+      paddingVertical: 8,
+      marginBottom: 16, // Distanza dal bordo inferiore
+    },
+    blueButtonContainer: {
+      backgroundColor: palettes.lightBlue[500],
+      marginHorizontal: 20,
+      borderRadius: 8,
+      padding: 0,
+    },
+    button: {
+      backgroundColor: palettes.lightBlue[500], // Colore del background del bottone
+      paddingVertical: 12,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    buttonText: {
+      color: colors.white, // Colore del testo del bottone
+      fontSize: 16,
+    },
+  });

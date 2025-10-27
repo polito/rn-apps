@@ -36,13 +36,9 @@ interface Props {
 
 export const AssignmentListItem = ({
   title,
-  subtitle,
   date,
   student,
-  mimeType,
-  isCorrupted = false,
   assignmentId,
-  ...rest
 }: TouchableHighlightProps & Props) => {
   const styles = useStylesheet(createItemStyles);
   const { selectedCourse, removeAssignmentFromCourse } = useCourses();

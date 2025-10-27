@@ -1,8 +1,6 @@
 import { TouchableHighlightProps } from 'react-native';
-import { StyleSheet } from 'react-native';
 
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
-import { Person } from '@polito/api-client/models/Person';
 
 import { Icon } from '../../ui/components/Icon';
 import { ListItem } from '../../ui/components/ListItem';
@@ -13,10 +11,6 @@ interface Props {
   subtitle?: string | JSX.Element;
   navigateEnabled?: boolean;
 }
-
-// Funzione per verificare se `person` è un oggetto `Person`
-const isPerson = (p: any): p is Person =>
-  typeof p === 'object' && p !== null && 'firstName' in p && 'lastName' in p;
 
 export const ExamListItem = ({
   exam,
@@ -32,10 +26,3 @@ export const ExamListItem = ({
     />
   );
 };
-const styles = StyleSheet.create({
-  picture: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 20,
-  },
-});

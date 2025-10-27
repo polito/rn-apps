@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo } from 'react';
+import { useCallback, useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Platform } from 'react-native';
@@ -22,34 +22,35 @@ import { Theme } from '../../ui/types/Theme';
 import { ProfileStackParamList } from './ServiceNavigator';
 
 export const EmergencyDetails = () => {
-  const { t } = useTranslation();
-  const { spacing, colors } = useTheme();
+  const { t, i18n } = useTranslation();
+  const { spacing } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
   const { selectedEmergency } = useCourses();
 
-  const getTranslatedEmergencyName = (name: string) => {
-    switch (name.toLowerCase()) {
-      case 'incendio':
-        return t('other.fire');
-      case 'evacuazione':
-        return t('other.evacuation');
-      case 'terremoto':
-        return t('other.earthquake');
-      case 'rapina/aggressione':
-        return t('other.robbery/assault');
-      case 'sostanze pericolose':
-        return t('other.dangerousSubstances');
-      case 'infortunio':
-        return t('other.injury');
-      default:
-        return name;
-    }
-  };
-
-  const { i18n } = useTranslation();
+  const getTranslatedEmergencyName = useCallback(
+    (name: string) => {
+      switch (name.toLowerCase()) {
+        case 'incendio':
+          return t('other.fire');
+        case 'evacuazione':
+          return t('other.evacuation');
+        case 'terremoto':
+          return t('other.earthquake');
+        case 'rapina/aggressione':
+          return t('other.robbery/assault');
+        case 'sostanze pericolose':
+          return t('other.dangerousSubstances');
+        case 'infortunio':
+          return t('other.injury');
+        default:
+          return name;
+      }
+    },
+    [t],
+  );
 
   const visibleRules = useMemo(() => {
     if (!selectedEmergency?.rules) return [];
@@ -80,7 +81,7 @@ export const EmergencyDetails = () => {
         </Text>
       ),
     });
-  }, [navigation, colors]);
+  }, [navigation, getTranslatedEmergencyName, selectedEmergency]);
 
   return (
     <>
@@ -128,7 +129,7 @@ export const EmergencyDetails = () => {
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
     centeredContainer: {
       flex: 1,
@@ -144,7 +145,7 @@ const createStyles = ({ spacing }: Theme) =>
       margin: spacing[5],
     },
     rulesContainer: {
-      backgroundColor: 'white',
+      backgroundColor: colors.white,
       borderRadius: 12,
       padding: spacing[4],
       margin: spacing[4],

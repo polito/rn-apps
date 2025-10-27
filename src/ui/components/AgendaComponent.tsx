@@ -42,7 +42,7 @@ export const AgendaCard = ({
   children,
   ...rest
 }: PropsWithChildren<CardProps & Props>) => {
-  const { colors, spacing, fontSizes, fontWeights } = useTheme();
+  const { colors, spacing, fontSizes } = useTheme();
   const borderColor = color ?? colors.primary[500];
 
   return (

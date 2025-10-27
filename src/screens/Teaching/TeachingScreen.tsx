@@ -89,15 +89,6 @@ export const TeachingScreen = () => {
         <SectionHeader title={t('other.appeals')} linkTo="Appelli" />
         <SectionList>
           {fakeExams.slice(0, 3).map(exam => {
-            const examDate = new Date(exam.date);
-            const today = new Date();
-
-            // Confrontiamo solo anno, mese e giorno (ignora ora)
-            const isToday =
-              examDate.getFullYear() === today.getFullYear() &&
-              examDate.getMonth() === today.getMonth() &&
-              examDate.getDate() === today.getDate();
-
             return (
               <ListItem
                 key={exam.id}
@@ -120,7 +111,7 @@ export const TeachingScreen = () => {
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const _createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     container: {
       marginVertical: spacing[5],
@@ -142,6 +133,6 @@ const createStyles = ({ spacing }: Theme) =>
     },
     paddingView: {
       height: 200, // Aggiungi uno spazio extra, modifica a piacere
-      backgroundColor: 'transparent', // Componente trasparente
+      backgroundColor: undefined, // Componente trasparente
     },
   });

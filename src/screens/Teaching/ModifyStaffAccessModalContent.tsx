@@ -5,6 +5,8 @@ import { ModalContent } from '../../core/components/ModalContent';
 import { Staff } from '../../core/contexts/CoursesContext';
 import { CtaButton } from '../../ui/components/CtaButton';
 import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
+import { Theme } from '../../ui/types/Theme';
 
 type Props = {
   close: () => void;
@@ -26,6 +28,8 @@ export const ModifyStaffAccessModalContent = ({
   removeStaffFromCourse,
 }: Props) => {
   const { t } = useTranslation();
+  const styles = useStylesheet(createStyles);
+
   const handleConfirmUpdate = () => {
     if (selectedStaff && selectedCourse) {
       Alert.alert(
@@ -112,42 +116,43 @@ export const ModifyStaffAccessModalContent = ({
   );
 };
 
-const styles = StyleSheet.create({
-  content: {
-    paddingHorizontal: 16,
-    paddingBottom: 32,
-    paddingTop: 32,
-    gap: 16,
-  },
-  radioOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  radioCircle: {
-    height: 20,
-    width: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#007AFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  radioDot: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: '#007AFF',
-  },
-  menuItemText: {
-    fontSize: 16,
-  },
-  menuItemText2: {
-    fontSize: 16,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 16,
-  },
-});
+const createStyles = ({ colors }: Theme) =>
+  StyleSheet.create({
+    content: {
+      paddingHorizontal: 16,
+      paddingBottom: 32,
+      paddingTop: 32,
+      gap: 16,
+    },
+    radioOption: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    radioCircle: {
+      height: 20,
+      width: 20,
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: colors.primary[700],
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 12,
+    },
+    radioDot: {
+      height: 10,
+      width: 10,
+      borderRadius: 5,
+      backgroundColor: colors.primary[500],
+    },
+    menuItemText: {
+      fontSize: 16,
+    },
+    menuItemText2: {
+      fontSize: 16,
+    },
+    buttonRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginTop: 16,
+    },
+  });
