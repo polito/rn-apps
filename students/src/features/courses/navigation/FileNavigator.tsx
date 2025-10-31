@@ -1,0 +1,57 @@
+import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
+import { useTheme } from '@lib/ui/hooks/useTheme';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import { AppPreferences } from '~/core/types/preferences';
+
+import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { useCourseContext } from '../contexts/CourseContext';
+import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
+import { CourseFilesScreen } from '../screens/CourseFilesScreen';
+
+export type FileStackParamList = {
+  RecentFiles: {
+    courseId: number;
+  };
+  DirectoryFiles: {
+    courseId: number;
+    directoryId?: string;
+    directoryName?: string;
+  };
+};
+
+export const FileNavigatorID = 'FileTabNavigator';
+
+const Stack = createNativeStackNavigator<
+  FileStackParamList,
+  typeof FileNavigatorID
+>();
+export const FileNavigator = () => {
+  const theme = useTheme();
+  const { filesScreen } = usePreferencesContext<AppPreferences>();
+  const courseId = useCourseContext();
+
+  return (
+    <Stack.Navigator
+      id={FileNavigatorID}
+      screenOptions={{
+        headerShown: false,
+        ...useTitlesStyles(theme),
+      }}
+      initialRouteName={
+        filesScreen === 'filesView' ? 'RecentFiles' : 'DirectoryFiles'
+      }
+    >
+      <Stack.Screen
+        name="RecentFiles"
+        component={CourseFilesScreen}
+        initialParams={{ courseId: courseId }}
+      />
+      <Stack.Screen
+        name="DirectoryFiles"
+        component={CourseDirectoryScreen}
+        initialParams={{ courseId: courseId }}
+      />
+    </Stack.Navigator>
+  );
+};

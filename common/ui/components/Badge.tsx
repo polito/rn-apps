@@ -1,0 +1,56 @@
+import { ViewProps } from 'react-native';
+
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
+import { Icon } from '@lib/ui/components/Icon';
+import { Row } from '@lib/ui/components/Row';
+import { Text } from '@lib/ui/components/Text';
+import { useTheme } from '@lib/ui/hooks/useTheme';
+
+type Props = ViewProps & {
+  text: string;
+  icon?: IconDefinition;
+  backgroundColor: string;
+  foregroundColor: string;
+};
+
+export const Badge = ({
+  text,
+  icon,
+  backgroundColor,
+  foregroundColor,
+  style,
+}: Props) => {
+  const { spacing, shapes, fontSizes } = useTheme();
+  const { accessibility } = usePreferencesContext();
+  return (
+    <Row
+      gap={2}
+      style={[
+        {
+          backgroundColor: backgroundColor,
+          paddingLeft: spacing[1.5],
+          paddingRight: spacing[2],
+          paddingVertical: spacing[1],
+          borderRadius: shapes.xl,
+        },
+        accessibility?.fontSize &&
+          accessibility.fontSize >= 150 && {
+            alignSelf: 'flex-start',
+          },
+        !icon && {
+          paddingRight: spacing[1.5],
+        },
+        style,
+      ]}
+    >
+      {icon && <Icon icon={icon} size={fontSizes.md} color={foregroundColor} />}
+      <Text
+        style={{ color: foregroundColor, fontSize: fontSizes.xs }}
+        weight="medium"
+      >
+        {text}
+      </Text>
+    </Row>
+  );
+};

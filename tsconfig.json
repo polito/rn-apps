@@ -3,17 +3,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@lib/*": [
-        "./lib/*",
-      ],
-      "~/*": [
-        "./src/*",
-      ]
+      "@lib/*": ["./common/*"]
     },
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "skipLibCheck": true,
-    "strictNullChecks": true,
+    "strictNullChecks": true
   }
 }
