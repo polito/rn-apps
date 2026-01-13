@@ -260,12 +260,27 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
 
   const listItems = useMemo(
     () =>
-      listPlaces?.map(p =>
-        searchPlaceToListItem(
+      listPlaces?.map(p => {
+        const item = searchPlaceToListItem(
           p,
           placesSearched.some(ps => ps.id === p.id),
-        ),
-      ) ?? [],
+        );
+        // Normalize link shape returned by searchPlaceToListItem:
+        // some callers return { name, params } but our To<> expects { screen, params }.
+        if (
+          item &&
+          typeof item === 'object' &&
+          'linkTo' in item &&
+          item.linkTo
+        ) {
+          const link = item.linkTo as any;
+          if (link && typeof link === 'object' && 'name' in link) {
+            const { name, params } = link;
+            return { ...item, linkTo: { screen: name, params } };
+          }
+        }
+        return item;
+      }) ?? [],
     [listPlaces, placesSearched, searchPlaceToListItem],
   );
 
@@ -426,7 +441,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           .join(' ')}
         isLoading={isLoadingPlaces}
         listProps={{
-          data: listItems,
+          data: listItems as any,
           ListEmptyComponent: (
             <EmptyState
               message={t('placesScreen.noPlacesFound')}

@@ -168,7 +168,7 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
             places.map(place => ({
               title: place.room.name ?? place.category.subCategory?.name,
               subtitle: `${place.category.name} - ${place.floor.name}`,
-              linkTo: { name: 'Place', params: { placeId: place.id } },
+              linkTo: { screen: 'Place', params: { placeId: place.id } },
             })) ?? [],
           ListEmptyComponent: (
             <EmptyState

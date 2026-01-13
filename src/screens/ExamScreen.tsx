@@ -76,7 +76,7 @@ export const ExamScreen = () => {
       e.preventDefault();
 
       // fai una navigazione manuale (senza crash)
-      navigation.navigate('Incarichi');
+      navigation.navigate('Roles');
     });
 
     return unsubscribe;
@@ -87,7 +87,7 @@ export const ExamScreen = () => {
         <IconButton
           icon={faArrowLeft}
           size={22}
-          onPress={() => navigation.navigate('Incarichi')}
+          onPress={() => navigation.navigate('Roles')}
         />
       ),
       headerTitle: () => (

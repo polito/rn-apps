@@ -73,7 +73,7 @@ export const NavBar = () => {
               <TouchableWithoutFeedback
                 onPress={() => {
                   setIsDID(true);
-                  teachingNavigation.navigate('Incarichi');
+                  teachingNavigation.navigate('Roles');
                   // You can navigate to a specific screen or perform any action here
                 }}
               >
@@ -101,7 +101,7 @@ export const NavBar = () => {
                   // Poi procedi con la navigazione
                   bottomNavigation.navigate({
                     name: 'Didattica',
-                    params: { screen: 'Incarichi' },
+                    params: { screen: 'Roles' },
                     merge: true,
                   }); // Se desideri navigare in modo esplicito
                 }}

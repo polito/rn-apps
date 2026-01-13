@@ -54,7 +54,7 @@ export const CourseInfoTab = () => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
       e.preventDefault();
-      navigation.navigate('Incarichi');
+      navigation.navigate('Roles');
     });
 
     return unsubscribe;
@@ -116,7 +116,7 @@ export const CourseInfoTab = () => {
           <SectionHeader
             title={t('other.managingAccesses')}
             linkTo="Staff"
-            linkname={t('other.modify')}
+            // linkname={t('other.modify')}
           />
         ) : (
           <SectionHeader title="Staff" />

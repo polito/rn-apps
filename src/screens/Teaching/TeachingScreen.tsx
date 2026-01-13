@@ -29,9 +29,8 @@ export const TeachingScreen = () => {
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={{ paddingTop: 10 }}></View>
 
-      {/* 📌 CORSI */}
       <Section>
-        <SectionHeader title={t('other.myCourses')} linkTo="IMieiCorsi" />
+        <SectionHeader title={t('other.myCourses')} linkTo="MyCourses" />
         <SectionList>
           {fakeCourses.map(course => (
             <ListItem
@@ -55,7 +54,6 @@ export const TeachingScreen = () => {
         </SectionList>
       </Section>
 
-      {/* 📌 CORSI IN GESTIONE */}
       <Section>
         <SectionHeader
           title={t('other.managedCourses')}
@@ -84,7 +82,6 @@ export const TeachingScreen = () => {
         </SectionList>
       </Section>
 
-      {/* 📌 APPELLI */}
       <Section>
         <SectionHeader title={t('other.appeals')} linkTo="Appelli" />
         <SectionList>

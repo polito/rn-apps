@@ -17,12 +17,11 @@ import {
   createNativeStackNavigator,
 } from '@react-navigation/native-stack';
 
-import { Logo } from '../../core/components/Logo';
+import { HeaderLogoNoProps } from '../../core/components/HeaderLogo';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useTitlesStyles } from '../../core/hooks/useTitleStyles';
 import { Text } from '../../ui/components/Text';
 import { useTheme } from '../../ui/hooks/useTheme';
-import { AgendaStackParamList } from '../Agenda/AgendaNavigator';
 import { ExamScreen } from '../ExamScreen';
 import { ExamScreen2 } from '../ExamScreen2';
 import { ExamScreen3 } from '../ExamScreen3';
@@ -30,13 +29,12 @@ import { ExamsScreen } from '../ExamsScreen';
 import { GradesScreen } from '../GradesScreen';
 import { ContactScreen2 } from './ContactScreen2';
 import { CourseGuideScreen } from './CourseGuideScreen';
-import { CourseNavigator } from './CourseNavigator';
+import { CourseSharedScreens } from './CourseSharedScreens';
 import { CoursesScreen } from './CoursesScreen';
 import { FilesFormScreen } from './FilesFormScreen';
 import { FormScreen } from './FormScreen';
 import { LectureFormScreen } from './LectureFormScreen';
 import { LessonScreen } from './LessonScreen';
-import { ManagedCoursesScreen } from './ManagedCoursesScreen';
 import { ModifyFileScreen } from './ModifyFileScreen';
 import { ModifyLectureScreen } from './ModifyLectureScreen';
 import { ModifyNoticeScreen } from './ModifyNoticeScreen';
@@ -47,12 +45,15 @@ import { StudentContact } from './StudentContact';
 import { TeachingScreen } from './TeachingScreen';
 
 export type TeachingStackParamList = {
+  Home: undefined;
+  MyCourses: undefined;
+  ExamsCalls: undefined;
+  Exam: { id: number };
+
   Form: undefined;
-  Incarichi: undefined;
-  IMieiCorsi: undefined;
-  CorsiInGestione: undefined;
-  Avviso: undefined;
-  Lezione: undefined;
+  Roles: undefined;
+  Notice: undefined;
+  Lecture: undefined;
   Notices: undefined;
   Info: undefined;
   Course: { from?: string };
@@ -60,8 +61,7 @@ export type TeachingStackParamList = {
   CourseVideolecture: { courseId: number; lectureId: number };
   CourseVirtualClassroom: { courseId: number; lectureId: number };
   CourseAssignmentUpload: { courseId: number };
-  Appelli: undefined;
-  Exam: { id: number };
+
   Grades: undefined;
   CourseDirectory: undefined;
   CourseDirectoryRoot: undefined;
@@ -78,14 +78,15 @@ export type TeachingStackParamList = {
   StudentsForm: undefined;
   Contatto: undefined;
 };
-const CustomBackButton = () => {
+
+export const CustomBackButton = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
 
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('Incarichi'); // Altrimenti torna alla schermata "Courses"
+        navigation.navigate('Home');
       }}
       style={{ paddingHorizontal: 10 }}
     >
@@ -94,95 +95,12 @@ const CustomBackButton = () => {
   );
 };
 
-const CustomBackButton2 = () => {
-  const navigation = useNavigation();
+export const TeachingNavigatorID = 'TeachingTabNavigator';
 
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.goBack(); // Altrimenti torna alla schermata "Courses"
-      }}
-      style={{ paddingHorizontal: 10 }}
-    >
-      <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
-    </TouchableOpacity>
-  );
-};
-
-const CustomBackButton3 = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('Course', { from: undefined }); // Altrimenti torna alla schermata "Courses"
-      }}
-      style={{ paddingHorizontal: 10 }}
-    >
-      <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
-    </TouchableOpacity>
-  );
-};
-
-const CustomBackButton5 = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('IMieiCorsi'); // Altrimenti torna alla schermata "Courses"
-      }}
-      style={{ paddingHorizontal: 10 }}
-    >
-      <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
-    </TouchableOpacity>
-  );
-};
-
-const CustomBackButton6 = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('CorsiInGestione'); // Altrimenti torna alla schermata "Courses"
-      }}
-      style={{ paddingHorizontal: 10 }}
-    >
-      <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
-    </TouchableOpacity>
-  );
-};
-
-const CustomBackButton7 = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<AgendaStackParamList>>();
-
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('SingleElement'); // Altrimenti torna alla schermata "Courses"
-      }}
-      style={{ paddingHorizontal: 10 }}
-    >
-      <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
-    </TouchableOpacity>
-  );
-};
-
-const HeaderLeftWithLogoAndBack = () => {
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      <CustomBackButton />
-      <Logo />
-    </View>
-  );
-};
-
-const Stack = createNativeStackNavigator<TeachingStackParamList>();
+const Stack = createNativeStackNavigator<
+  TeachingStackParamList,
+  typeof TeachingNavigatorID
+>();
 
 export const TeachingNavigator = () => {
   const { t } = useTranslation();
@@ -191,9 +109,10 @@ export const TeachingNavigator = () => {
 
   return (
     <Stack.Navigator
+      id={TeachingNavigatorID}
       screenOptions={{
         headerLargeTitle: true,
-        headerTransparent: Platform.select({ ios: false }),
+        headerTransparent: Platform.select({ ios: true }),
         headerLargeStyle: {
           backgroundColor: colors.background,
         },
@@ -201,88 +120,32 @@ export const TeachingNavigator = () => {
       }}
     >
       <Stack.Screen
-        name="Incarichi"
+        name="Home"
         component={TeachingScreen}
         options={{
-          headerLeft: () => <Logo />,
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{ textAlign: 'center', width: '100%', marginLeft: -15 }}
-            >
-              {t('teachingScreen.title')}
-            </Text>
-          ),
-          headerRight: () => <View style={{ width: 40 }} />, // bilancia lo spazio del logo
+          headerLeft: HeaderLogoNoProps,
+          headerTitle: t('teachingScreen.title'),
         }}
       />
       <Stack.Screen
-        name="IMieiCorsi"
+        name="MyCourses"
         component={CoursesScreen}
         options={{
-          headerLeft: () => <HeaderLeftWithLogoAndBack />,
-
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{ textAlign: 'center', width: '100%', marginLeft: -40 }}
-            >
-              {t('other.myCourses')}
-            </Text>
-          ),
-          headerRight: () => <View style={{ width: 40 }} />,
+          headerLeft: () => {
+            return (
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <CustomBackButton />
+              </View>
+            );
+          },
+          headerTitle: t('other.myCourses'),
         }}
       />
 
       <Stack.Screen
-        name="CorsiInGestione"
-        component={ManagedCoursesScreen}
-        options={{
-          headerLeft: () => <HeaderLeftWithLogoAndBack />,
-
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{ textAlign: 'center', width: '100%', marginLeft: -30 }}
-            >
-              {t('other.managedCourses')}
-            </Text>
-          ),
-          headerRight: () => <View style={{ width: 40 }} />,
-        }}
-      />
-
-      <Stack.Screen
-        name="Course"
-        component={CourseNavigator}
-        options={({ route }) => {
-          const from = route.params?.from;
-
-          let headerLeftButton: JSX.Element;
-          if (from === 'IMieiCorsi') {
-            headerLeftButton = <CustomBackButton5 />;
-          } else if (from === 'CorsiInGestione') {
-            headerLeftButton = <CustomBackButton6 />;
-          } else if (from === 'Agenda') {
-            headerLeftButton = <CustomBackButton7 />;
-          } else {
-            // Default or 'Incarichi'
-            headerLeftButton = <CustomBackButton />;
-          }
-
-          return {
-            headerLeft: () => headerLeftButton,
-            headerShown: true,
-            headerLargeTitle: false,
-          };
-        }}
-      />
-
-      <Stack.Screen
-        name="Avviso"
+        name="Notice"
         component={NoticeScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerTitle: () => (
             <Text
               variant="heading"
@@ -297,10 +160,9 @@ export const TeachingNavigator = () => {
       />
 
       <Stack.Screen
-        name="Lezione"
+        name="Lecture"
         component={LessonScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerRight: () => <LectureMenu></LectureMenu>,
           headerTitle: () => (
             <Text
@@ -317,7 +179,6 @@ export const TeachingNavigator = () => {
         name="Form"
         component={FormScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -325,7 +186,6 @@ export const TeachingNavigator = () => {
         name="NoticeForm"
         component={NoticeFormScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -334,7 +194,6 @@ export const TeachingNavigator = () => {
         name="FilesForm"
         component={FilesFormScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -343,7 +202,6 @@ export const TeachingNavigator = () => {
         name="LectureForm"
         component={LectureFormScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -352,7 +210,6 @@ export const TeachingNavigator = () => {
         name="ModifyNotice"
         component={ModifyNoticeScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -361,7 +218,6 @@ export const TeachingNavigator = () => {
         name="ModifyFile"
         component={ModifyFileScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -370,7 +226,6 @@ export const TeachingNavigator = () => {
         name="ModifyLecture"
         component={ModifyLectureScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -389,7 +244,6 @@ export const TeachingNavigator = () => {
               {t('other.managingAccesses')}
             </Text>
           ),
-          headerLeft: () => <CustomBackButton3 />,
           headerShown: true,
         }}
       />
@@ -397,23 +251,21 @@ export const TeachingNavigator = () => {
       <Stack.Screen name="CourseGuide" component={CourseGuideScreen} />
 
       <Stack.Screen
-        name="Appelli"
+        name="ExamsCalls"
         component={ExamsScreen}
         options={{
-          headerLeft: () => <HeaderLeftWithLogoAndBack />,
-
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{ textAlign: 'center', width: '100%', marginLeft: -35 }}
-            >
-              {t('other.appeals')}
-            </Text>
-          ),
-          headerRight: () => <View style={{ width: 40 }} />,
+          headerTitle: t('other.appeals'),
         }}
       />
-      <Stack.Screen name="Exam" component={ExamScreen} />
+      <Stack.Screen
+        name="Exam"
+        component={ExamScreen}
+        getId={({ params }) => `${params.id}`}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('common.examCall'),
+        }}
+      />
 
       <Stack.Screen name="Exam2" component={ExamScreen2} />
 
@@ -433,6 +285,8 @@ export const TeachingNavigator = () => {
           headerTitle: t('Transcript'),
         }}
       />
+
+      {CourseSharedScreens()}
     </Stack.Navigator>
   );
 };

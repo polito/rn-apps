@@ -290,7 +290,7 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
               subtitle: `${t('common.free')} ${formatHHmm(
                 p.freeFrom,
               )} - ${formatHHmm(p.freeTo)}`,
-              linkTo: { name: 'Place', params: { placeId: p.id } },
+              linkTo: { screen: 'Place', params: { placeId: p.id } },
             })) ?? []
           }
           renderItem={({ item }: { item: ListItemProps }) => (

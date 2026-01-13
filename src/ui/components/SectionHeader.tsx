@@ -1,4 +1,4 @@
-import React, { JSX } from 'react';
+import { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   StyleProp,
@@ -14,17 +14,16 @@ import { Props as FAProps } from '@fortawesome/react-native-fontawesome';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { To } from '../../utils/resolveLinkTo';
+import { usePreferencesContext } from '../../../src/core/contexts/PreferencesContext';
+import { To } from '../../../src/utils/resolveLinkTo';
 import { useStylesheet } from '../hooks/useStylesheet';
 import { Theme } from '../types/Theme';
 import { IconButton } from './IconButton';
-// import { colors } from '../../core/constants/colors';
 import { Separator } from './Separator';
 import { Text } from './Text';
 
-type SectionHeaderProps = {
+interface Props {
   title: string;
-  linkTo?: To<any>; // Nome della schermata di destinazione
   titleStyle?: StyleProp<TextStyle>;
   subtitle?: string;
   subtitleStyle?: StyleProp<TextStyle>;
@@ -33,37 +32,41 @@ type SectionHeaderProps = {
   separator?: boolean;
   accessible?: boolean;
   accessibilityLabel?: string | undefined;
-  trailingItem?: JSX.Element;
+  linkTo?: To<any>;
+  trailingItem?: ReactElement;
   trailingIcon?: Pick<FAProps, 'size' | 'icon' | 'color'> &
     TouchableOpacityProps & {
       iconStyle?: FAProps['style'];
     };
-  linkname?: string;
-};
+}
 
-export const SectionHeader: React.FC<SectionHeaderProps> = ({
+/**
+ * A section title with an optional link to a related screen
+ */
+export const SectionHeader = ({
   title,
-  linkTo,
   titleStyle,
   subtitle,
   subtitleStyle,
   ellipsizeTitle = true,
   accessibilityLabel = undefined,
+  linkTo,
   accessible = true,
+  linkToMoreCount,
   separator = true,
   trailingItem,
   trailingIcon,
-  linkname,
-}) => {
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+}: Props) => {
   const styles = useStylesheet(createStyles);
+  const { t } = useTranslation();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const { accessibility } = usePreferencesContext();
   const ellipsis: Partial<TextProps> = ellipsizeTitle
     ? {
         numberOfLines: 1,
         ellipsizeMode: 'tail',
       }
     : {};
-  const { t } = useTranslation();
 
   const Header = () => {
     return (
@@ -82,7 +85,16 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
               {title}
             </Text>
             {trailingIcon && (
-              <IconButton {...{ size: 16, ...trailingIcon, noPadding: true }} />
+              <IconButton
+                {...{
+                  size:
+                    accessibility?.fontSize && accessibility.fontSize >= 150
+                      ? 40
+                      : 16,
+                  ...trailingIcon,
+                  noPadding: true,
+                }}
+              />
             )}
           </View>
 
@@ -99,15 +111,25 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
           )}
         </View>
         {trailingItem && trailingItem}
-
         {linkTo && (
           <TouchableOpacity
-            onPress={() => navigation.navigate(linkTo as any)}
             accessible={true}
             accessibilityRole="button"
+            onPress={() => {
+              if (typeof linkTo === 'string') {
+                navigation.navigate(linkTo as any);
+              } else {
+                navigation.navigate(linkTo.screen as any, linkTo.params);
+              }
+            }}
           >
             <Text variant="link">
-              {linkname ? linkname : t('other.showMore')}
+              {t('sectionHeader.cta')}
+              {(linkToMoreCount ?? 0) > 0 &&
+                ' ' +
+                  t('sectionHeader.ctaMoreSuffix', {
+                    count: linkToMoreCount,
+                  })}
             </Text>
           </TouchableOpacity>
         )}

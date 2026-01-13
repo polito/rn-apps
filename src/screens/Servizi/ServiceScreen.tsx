@@ -29,7 +29,7 @@ export const ServiceScreen = () => {
       e.preventDefault();
       navigation.navigate({
         name: 'Didattica',
-        params: { screen: 'Incarichi' },
+        params: { screen: 'Roles' },
         merge: true,
       });
     });

@@ -1,10 +1,12 @@
-import { useTheme } from '../hooks/useTheme';
-import { Divider } from './Divider';
+import { Divider, DividerProps } from './Divider';
+
+interface IndentedDividerProps extends DividerProps {
+  indent?: number;
+}
 
 /**
  * A divider element to separate list items with indentation
  */
-export const IndentedDivider = () => {
-  const { spacing } = useTheme();
-  return <Divider style={{ marginStart: spacing[5] }} />;
+export const IndentedDivider = ({ style, ...props }: IndentedDividerProps) => {
+  return <Divider {...props} style={style} />;
 };

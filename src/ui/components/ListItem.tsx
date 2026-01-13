@@ -1,4 +1,4 @@
-import { JSX } from 'react';
+import { ReactElement } from 'react';
 import {
   StyleProp,
   TextProps,
@@ -10,9 +10,13 @@ import {
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { To } from '../../../src/utils/resolveLinkTo';
+import { resolveLinkTo } from '../../../src/utils/resolveLinkTo';
 import { GlobalStyles } from '../../core/components/GlobalStyles';
-import { IS_IOS } from '../../core/components/costant';
+import { IS_IOS } from '../../core/components/costant.ts';
+import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
 import { useTheme } from '../hooks/useTheme';
 import { Col } from './Col';
 import { DisclosureIndicator } from './DisclosureIndicator';
@@ -21,12 +25,12 @@ import { Text } from './Text';
 import { UnreadBadge } from './UnreadBadge';
 
 export interface ListItemProps extends TouchableHighlightProps {
-  title: string | JSX.Element;
-  subtitle?: string | JSX.Element;
+  title: string | ReactElement;
+  subtitle?: string | ReactElement;
   subtitleProps?: TextProps;
-  leadingItem?: JSX.Element;
-  trailingItem?: JSX.Element;
-  linkTo?: string | { name: string; params?: Record<string, any> };
+  leadingItem?: ReactElement;
+  trailingItem?: ReactElement;
+  linkTo?: To<any>;
   children?: any;
   containerStyle?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
@@ -48,9 +52,9 @@ export interface ListItemProps extends TouchableHighlightProps {
 export const ListItem = ({
   title,
   titleStyle,
+  subtitle,
   subtitleStyle,
   subtitleProps,
-  subtitle,
   leadingItem,
   trailingItem,
   linkTo,
@@ -66,10 +70,10 @@ export const ListItem = ({
   titleProps,
   unread = false,
   ...rest
-}: TouchableHighlightProps & ListItemProps) => {
-  const { fontSizes, colors, spacing, fontWeights } = useTheme();
-  const navigation = useNavigation<any>();
-
+}: ListItemProps) => {
+  const { fontSizes, fontWeights, colors, spacing } = useTheme();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const { accessibility } = usePreferencesContext();
   const titleElement =
     typeof title === 'string' ? (
       <Row align="center" gap={2}>
@@ -80,7 +84,10 @@ export const ListItem = ({
             GlobalStyles.grow,
             {
               fontSize: fontSizes.md,
-              lineHeight: fontSizes.md * 1.4,
+              lineHeight:
+                accessibility?.fontSize && accessibility.fontSize <= 125
+                  ? fontSizes.sm * 1.4
+                  : fontSizes.sm * 2,
             },
             unread && {
               fontWeight: fontWeights.semibold,
@@ -110,11 +117,14 @@ export const ListItem = ({
         style={[
           {
             fontSize: fontSizes.sm,
-            lineHeight: fontSizes.sm * 1.4,
+            lineHeight:
+              accessibility?.fontSize && accessibility.fontSize <= 125
+                ? fontSizes.sm * 1.4
+                : fontSizes.sm * 2.5,
           },
           subtitleStyle,
         ]}
-        numberOfLines={1}
+        numberOfLines={2}
         ellipsizeMode="tail"
         {...subtitleProps}
       >
@@ -131,11 +141,8 @@ export const ListItem = ({
       onPress={
         linkTo
           ? () => {
-              if (typeof linkTo === 'string') {
-                navigation.navigate(linkTo);
-              } else if (typeof linkTo === 'object' && 'name' in linkTo) {
-                navigation.navigate(linkTo.name, linkTo.params);
-              }
+              const resolved = resolveLinkTo(linkTo);
+              navigation.navigate(resolved.name as any, resolved.params);
             }
           : onPress
       }
