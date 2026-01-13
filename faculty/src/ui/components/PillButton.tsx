@@ -1,0 +1,72 @@
+import {
+  StyleSheet,
+  TouchableOpacity,
+  TouchableOpacityProps,
+} from 'react-native';
+
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
+import { Theme } from '../../ui/types/Theme';
+import { Text } from './Text';
+
+export type PillButtonProps = TouchableOpacityProps & {
+  variant?: 'primary' | 'neutral';
+};
+
+export const PillButton = ({
+  children,
+  style,
+  variant = 'primary',
+  ...props
+}: PillButtonProps) => {
+  const styles = useStylesheet(createStyles);
+
+  return (
+    <TouchableOpacity
+      style={[
+        styles.container,
+        variant === 'neutral'
+          ? styles.containerNeutral
+          : styles.containerPrimary,
+        style,
+      ]}
+      activeOpacity={0.7}
+      {...props}
+    >
+      {typeof children === 'string' ? (
+        <Text
+          style={[
+            styles.text,
+            variant === 'neutral' ? styles.textNeutral : styles.textPrimary,
+          ]}
+        >
+          {children}
+        </Text>
+      ) : (
+        children
+      )}
+    </TouchableOpacity>
+  );
+};
+
+const createStyles = ({ palettes, spacing, fontWeights, colors }: Theme) =>
+  StyleSheet.create({
+    container: {
+      borderRadius: 10,
+      paddingHorizontal: spacing[2.5],
+      paddingVertical: spacing[1.5],
+    },
+    containerNeutral: {
+      borderColor: palettes.gray[500],
+      borderWidth: 1,
+    },
+    containerPrimary: {
+      backgroundColor: palettes.primary[500],
+    },
+    text: {
+      fontWeight: fontWeights.medium,
+    },
+    textNeutral: {},
+    textPrimary: {
+      color: colors.white,
+    },
+  });
