@@ -1,7 +1,7 @@
 import { JSX, PropsWithChildren } from 'react';
 import { Platform, TextStyle, ViewProps, ViewStyle } from 'react-native';
 
-import { useTheme } from '../../ui/hooks/useTheme';
+import { useTheme } from '../hooks/useTheme';
 import { Card } from './Card';
 import { Text } from './Text';
 

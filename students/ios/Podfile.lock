@@ -1721,7 +1721,7 @@ PODS:
     - React-Core
   - react-native-render-html (6.3.4):
     - React-Core
-  - react-native-safe-area-context (5.6.1):
+  - react-native-safe-area-context (5.6.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1736,8 +1736,8 @@ PODS:
     - React-hermes
     - React-ImageManager
     - React-jsi
-    - react-native-safe-area-context/common (= 5.6.1)
-    - react-native-safe-area-context/fabric (= 5.6.1)
+    - react-native-safe-area-context/common (= 5.6.2)
+    - react-native-safe-area-context/fabric (= 5.6.2)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-renderercss
@@ -1747,7 +1747,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-safe-area-context/common (5.6.1):
+  - react-native-safe-area-context/common (5.6.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1771,7 +1771,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-safe-area-context/fabric (5.6.1):
+  - react-native-safe-area-context/fabric (5.6.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2266,7 +2266,7 @@ PODS:
     - Yoga
   - RNDeviceInfo (14.1.1):
     - React-Core
-  - RNFastImage (8.12.0):
+  - RNFastImage (8.13.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2293,12 +2293,13 @@ PODS:
     - ReactCommon/turbomodule/core
     - SDWebImage (>= 5.19.1)
     - SDWebImageAVIFCoder (~> 0.11.0)
+    - SDWebImageSVGCoder (~> 1.7.0)
     - SDWebImageWebPCoder (~> 0.14)
     - Yoga
-  - RNFBApp (23.4.1):
+  - RNFBApp (23.5.0):
     - Firebase/CoreOnly (= 12.4.0)
     - React-Core
-  - RNFBMessaging (23.4.1):
+  - RNFBMessaging (23.5.0):
     - Firebase/Messaging (= 12.4.0)
     - FirebaseCoreExtension
     - React-Core
@@ -2307,7 +2308,7 @@ PODS:
     - React-Core
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.29.0):
+  - RNGestureHandler (2.29.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2408,7 +2409,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNLocalize (3.5.4):
+  - RNLocalize (3.6.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2460,7 +2461,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - Turf
     - Yoga
-  - RNPermissions (5.4.2):
+  - RNPermissions (5.4.4):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2608,7 +2609,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (4.17.1):
+  - RNScreens (4.18.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2632,9 +2633,9 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNScreens/common (= 4.17.1)
+    - RNScreens/common (= 4.18.0)
     - Yoga
-  - RNScreens/common (4.17.1):
+  - RNScreens/common (4.18.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2659,7 +2660,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNSentry (7.4.0):
+  - RNSentry (7.5.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2682,7 +2683,7 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - Sentry/HybridSDK (= 8.57.0)
+    - Sentry/HybridSDK (= 8.57.1)
     - Yoga
   - RNSVG (15.14.0):
     - DoubleConversion
@@ -2733,16 +2734,18 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - SDWebImage (5.21.3):
-    - SDWebImage/Core (= 5.21.3)
-  - SDWebImage/Core (5.21.3)
+  - SDWebImage (5.21.4):
+    - SDWebImage/Core (= 5.21.4)
+  - SDWebImage/Core (5.21.4)
   - SDWebImageAVIFCoder (0.11.1):
     - libavif/core (>= 0.11.0)
     - SDWebImage (~> 5.10)
-  - SDWebImageWebPCoder (0.14.6):
+  - SDWebImageSVGCoder (1.7.0):
+    - SDWebImage/Core (~> 5.6)
+  - SDWebImageWebPCoder (0.15.0):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.17)
-  - Sentry/HybridSDK (8.57.0)
+  - Sentry/HybridSDK (8.57.1)
   - SocketRocket (0.7.1)
   - TOCropViewController (2.8.0)
   - Turf (4.0.0)
@@ -2888,6 +2891,7 @@ SPEC REPOS:
     - PromisesObjC
     - SDWebImage
     - SDWebImageAVIFCoder
+    - SDWebImageSVGCoder
     - SDWebImageWebPCoder
     - Sentry
     - SocketRocket
@@ -3191,7 +3195,7 @@ SPEC CHECKSUMS:
   react-native-pager-view: f79b095ad2f207028f17626dd7aaf8411c42accc
   react-native-pdf-light: 53139b084304650c3495dd8765e43d363d30bfce
   react-native-render-html: 5afc4751f1a98621b3009432ef84c47019dcb2bd
-  react-native-safe-area-context: 895c49ee2613865f90318789be89a8e286fe7b69
+  react-native-safe-area-context: 0b8555c40461feb7198e999912a3446602e7c601
   react-native-video: fccfd55807cbe814c2b9e505c1bc3fc0b9fd9e25
   React-NativeModulesApple: d94850b316446b0c39a82eb278d6efaa1a634055
   React-oscompat: 56b4766e96b06843a3af49a6763ef40992e720aa
@@ -3228,30 +3232,31 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: a1c8cc8a99c32de1244a9cf707bf9d83d0de0f71
   RNCClipboard: ea6045252d5c0753cf17f62290f647dc0096f6ac
   RNDeviceInfo: bcce8752b5043a623fe3c26789679b473f705d3c
-  RNFastImage: 273cc1846c1b8fb5fb479d355fa363487ffca022
-  RNFBApp: d1f587866b6e188d95c5f541abedd8e4ce167bbe
-  RNFBMessaging: 81842deb236bfd87d8e49f22ce7acf05d1eea04b
+  RNFastImage: 7877d2558f57c2628e51e641065121585e16644c
+  RNFBApp: 255fa19a91d6c1309e021ee75d5d209754e5961b
+  RNFBMessaging: c304c1d8949f996d3eed1cf4eeba33148d13b4ea
   RNFileViewer: 4b5d83358214347e4ab2d4ca8d5c1c90d869e251
   RNFS: 89de7d7f4c0f6bafa05343c578f61118c8282ed8
-  RNGestureHandler: dcafa28ad8e981d332a95fff4f9ba9a96b09f5a3
+  RNGestureHandler: 6b39f4e43e4b3a0fb86de9531d090ff205a011d5
   RNImageCropPicker: 367a8e3788651dad88540d9fa8888fcb07ffd1d1
   RNKeychain: 943b4dbceef4b3a310c9122c99d1e5b0bd66b9f3
-  RNLocalize: 4197cf76576aa4f8471f2e11d574322efee92a73
+  RNLocalize: 29008c87d158bb1fe13bab3cf9dd8cdcc2761207
   rnmapbox-maps: f7eeb3af74b6bf5ba93955ebfc89e296e1798fdb
-  RNPermissions: 80777ea1b89df81be475044e2d7effad5fc788ea
+  RNPermissions: 4a89efc466a965c2f6db34a55cabc2b67eb01599
   RNReanimated: 939b0b9bdb4ea2becf13b6734fd57acd8732500d
-  RNScreens: 3f6e41f9f89cb888a6b4b27566bdfdf7a3bf51ad
-  RNSentry: 0f61ae3c111d9129a978aeedd1fa05d0cd2307a9
+  RNScreens: f38464ec1e83bda5820c3b05ccf4908e3841c5cc
+  RNSentry: 42fdbb9d8576a23cbb3f4533a7d6f1bee75c2c46
   RNSVG: 681f8ef5ca50e13cb3c6c88a907ea89b68fee74f
-  SDWebImage: 16309af6d214ba3f77a7c6f6fdda888cb313a50a
+  SDWebImage: d0184764be51240d49c761c37f53dd017e1ccaaf
   SDWebImageAVIFCoder: afe194a084e851f70228e4be35ef651df0fc5c57
-  SDWebImageWebPCoder: e38c0a70396191361d60c092933e22c20d5b1380
-  Sentry: e1b49e5f49367ff211b25c431a60e2bd83b792aa
+  SDWebImageSVGCoder: 15a300a97ec1c8ac958f009c02220ac0402e936c
+  SDWebImageWebPCoder: 0e06e365080397465cc73a7a9b472d8a3bd0f377
+  Sentry: ea4ca7cd1a46c77dcc8123804ce36d8f5603a841
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   TOCropViewController: 797deaf39c90e6e9ddd848d88817f6b9a8a09888
   Turf: c9eb11a65d96af58cac523460fd40fec5061b081
   Yoga: dc7c21200195acacb62fa920c588e7c2106de45e
 
-PODFILE CHECKSUM: 73c72c5b61391a9d2225dc09d765858c1f68f9b9
+PODFILE CHECKSUM: 01dbff003667f3b52e50adec3a75427e8a079f34
 
 COCOAPODS: 1.15.2

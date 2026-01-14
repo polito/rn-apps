@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Option } from '../../ui/types/Input';
-import { Theme } from '../../ui/types/Theme';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Option } from '../types/Input';
+import { Theme } from '../types/Theme';
 import { Col } from './Col';
 import { ListItem } from './ListItem';
 import { Text } from './Text';

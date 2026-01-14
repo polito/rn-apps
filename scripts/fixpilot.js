@@ -92,34 +92,57 @@ try {
     run('sudo rm -rf ~/Library/Developer/Xcode/DerivedData/*');
   }
 
-  // Clean Pods and build files
-  console.log('🎵 cleaning Pods and build files');
-  run('rm -rf ios/Pods ios/build ios/.xcode.env.local');
+  // read workspaces form package.json
+  const packageJson = JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, '../package.json'), 'utf-8'),
+  );
+  const workspaces = packageJson.workspaces || [];
+  console.log('🔍 found workspaces:', workspaces.join(', '));
 
-  if (!process.argv.includes('--skip-modules')) {
-    console.log('🪢 cleaning node_modules');
-    run('rm -rf node_modules');
-
-    console.log('Installing node modules');
-    run('npm install', {
-      env: { ...process.env, IS_CONVERGING_NOW: 'true' },
-    });
+  const skipModules = process.argv.includes('--skip-modules');
+  for (const workspace of workspaces) {
+    console.log(`\n🔧 Processing workspace: ${workspace}`);
+    const workspacePath = path.resolve(__dirname, '..', workspace);
+    process.chdir(workspacePath);
+    console.log('🎵 cleaning Pods and build files');
+    run('rm -rf ios/Pods ios/build ios/.xcode.env.local');
+    if (!skipModules) {
+      console.log('🪢 cleaning node_modules');
+      run('rm -rf node_modules');
+    }
   }
+
+  process.chdir(path.resolve(__dirname, '..'));
+  if (!skipModules) {
+    console.log('\n🧼 cleaning root node_modules');
+    run('rm -rf node_modules');
+  }
+
+  console.log('\nInstalling node modules');
+  run('npm install', {
+    env: { ...process.env, IS_CONVERGING_NOW: 'true' },
+  });
 
   console.log('💎 running bundle install');
   run('bundle install');
 
-  console.log('📦 Running pod install');
-  try {
-    run('npm run pod-install');
-  } catch (error) {
-    console.log(
-      '🛁 Pod install failed, trying to remove Podfile.lock and retry',
-    );
-    run('rm -f ios/Podfile.lock');
-    run('npm run pod-install');
+  for (const workspace of workspaces) {
+    const workspacePath = path.resolve(__dirname, '..', workspace);
+    const iosPath = path.join(workspacePath, 'ios');
+    if (fs.existsSync(iosPath)) {
+      process.chdir(iosPath);
+      console.log(`📦 Installing pods for workspace: ${workspace}`);
+      try {
+        run('bundle exec pod install');
+      } catch (error) {
+        console.log(
+          '🛁 Pod install failed, trying to remove Podfile.lock and retry',
+        );
+        run('rm -f Podfile.lock');
+        run('bundle exec pod install');
+      }
+    }
   }
-
   console.log('✅ Done');
 } catch (error) {
   console.error('❌ An error occurred:', error.message);

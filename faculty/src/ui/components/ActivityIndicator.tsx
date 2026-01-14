@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 
 import { IS_ANDROID } from '../../core/components/costant';
-import { useTheme } from '../../ui/hooks/useTheme';
+import { useTheme } from '../hooks/useTheme';
 
 export const ActivityIndicator = (props: ActivityIndicatorProps) => {
   const { palettes } = useTheme();

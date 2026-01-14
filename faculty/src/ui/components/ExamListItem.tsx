@@ -2,9 +2,9 @@ import { TouchableHighlightProps } from 'react-native';
 
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 
-import { Icon } from '../../ui/components/Icon';
-import { ListItem } from '../../ui/components/ListItem';
-import { useTheme } from '../../ui/hooks/useTheme';
+import { useTheme } from '../hooks/useTheme';
+import { Icon } from './Icon';
+import { ListItem } from './ListItem';
 
 interface Props {
   exam: string;

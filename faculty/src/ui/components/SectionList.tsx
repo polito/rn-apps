@@ -1,9 +1,9 @@
 import { PropsWithChildren } from 'react';
 import { ActivityIndicator, Platform } from 'react-native';
 
-import { List } from '../../ui/components/List';
 import { useTheme } from '../hooks/useTheme';
 import { Card } from './Card';
+import { List } from './List';
 
 type Props = PropsWithChildren<{
   dividers?: boolean;

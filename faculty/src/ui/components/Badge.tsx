@@ -1,6 +1,6 @@
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
-import { useTheme } from '../../ui/hooks/useTheme';
+import { useTheme } from '../hooks/useTheme';
 import { Icon } from './Icon';
 import { Row } from './Row';
 import { Text } from './Text';

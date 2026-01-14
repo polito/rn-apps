@@ -12,8 +12,6 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { DateTime } from 'luxon';
 
-import { useStylesheet } from '../../../ui/hooks/useStylesheet';
-import { Theme } from '../../../ui/types/Theme';
 import {
   HOURS,
   getRelativeTopInDay,
@@ -22,6 +20,7 @@ import {
 } from '../../../utils/calendar';
 import { useNow } from '../../hooks/calendar/useNow';
 import { usePanResponder } from '../../hooks/calendar/usePanResponder';
+import { useStylesheet } from '../../hooks/useStylesheet';
 import {
   CalendarCellStyle,
   EventCellStyle,
@@ -29,6 +28,7 @@ import {
   HorizontalDirection,
   ICalendarEventBase,
 } from '../../types/Calendar';
+import { Theme } from '../../types/Theme';
 import { CalendarEvent } from './CalendarEvent';
 import { HourGuideCell } from './HourGuideCell';
 import { HourGuideColumn } from './HourGuideColumn';

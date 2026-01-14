@@ -3,8 +3,8 @@ import { Platform, StyleSheet, ViewStyle } from 'react-native';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
 import { ActivityIndicator } from './ActivityIndicator';
 import { Icon } from './Icon';
 import { IconButton } from './IconButton';

@@ -9,8 +9,8 @@ import { Settings } from 'luxon';
 
 import en from '../../../assets/translations/en.json';
 import it from '../../../assets/translations/it.json';
-import { setDeepLink } from '../../../src/utils/linking';
 import { ThemeContext } from '../../ui/contexts/ThemeContext';
+import { setDeepLink } from '../../utils/linking';
 import { fromUiTheme } from '../../utils/navigation-theme';
 import { NavigationContainer } from '../components/NavigationContainer';
 import { usePreferencesContext } from '../contexts/PreferencesContext';

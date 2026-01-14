@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity } from 'react-native';
 
-import { useTheme } from '../../../ui/hooks/useTheme';
 import { formatStartEnd } from '../../../utils/calendar';
+import { useTheme } from '../../hooks/useTheme';
 import {
   CalendarTouchableOpacityProps,
   ICalendarEventBase,

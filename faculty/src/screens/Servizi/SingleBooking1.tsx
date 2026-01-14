@@ -135,9 +135,9 @@ export const SingleBooking1 = () => {
                 subtitle={selectedBooking.capacity.toString()}
               />
             ) : (
-              <View></View>
+              <View />
             )}{' '}
-            : <View></View>
+            : <View />
             {selectedBooking?.where ? (
               <ListItem
                 leadingItem={
@@ -147,7 +147,7 @@ export const SingleBooking1 = () => {
                 subtitle={selectedBooking.where}
               />
             ) : (
-              <View></View>
+              <View />
             )}
           </OverviewList>
         </Section>
@@ -181,7 +181,7 @@ export const SingleBooking1 = () => {
           destructive
         />
       ) : (
-        <View></View>
+        <View />
       )}
     </>
   );

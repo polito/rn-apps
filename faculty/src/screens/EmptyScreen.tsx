@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 export const EmptyScreen = () => {
   return (
     <View>
-      <View style={styles.sectionsContainer}></View>
+      <View style={styles.sectionsContainer} />
     </View>
   );
 };

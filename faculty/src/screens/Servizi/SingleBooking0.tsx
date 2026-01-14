@@ -136,7 +136,7 @@ export const SingleBooking0 = () => {
                 subtitle={selectedBooking.capacity.toString()}
               />
             ) : (
-              <View></View>
+              <View />
             )}
             <ListItem
               leadingItem={<Icon icon={faPlug} size={fontSizes['2xl']} />}
@@ -145,7 +145,7 @@ export const SingleBooking0 = () => {
                 selectedBooking.powerOutput ? 'Disponibili' : 'Non necessarie'
               }
             />{' '}
-            : <View></View>
+            : <View />
             {selectedBooking?.where ? (
               <ListItem
                 leadingItem={
@@ -163,7 +163,7 @@ export const SingleBooking0 = () => {
                 }
               />
             ) : (
-              <View></View>
+              <View />
             )}
             {selectedBooking?.chairType !== 'Indifferente' ? (
               <ListItem
@@ -174,7 +174,7 @@ export const SingleBooking0 = () => {
                 subtitle={selectedBooking.chairType}
               />
             ) : (
-              <View></View>
+              <View />
             )}
           </OverviewList>
         </Section>
@@ -208,7 +208,7 @@ export const SingleBooking0 = () => {
           destructive
         />
       ) : (
-        <View></View>
+        <View />
       )}
     </>
   );

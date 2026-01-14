@@ -4,8 +4,8 @@ import {
   TouchableOpacityProps,
 } from 'react-native';
 
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
 import { Text } from './Text';
 
 export type PillButtonProps = TouchableOpacityProps & {

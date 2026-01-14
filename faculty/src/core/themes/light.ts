@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 // noinspection AllyPlainJsInspection
 //
 import { Theme } from '../../ui/types/Theme';

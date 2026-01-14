@@ -291,7 +291,7 @@ export const TeachingNavigator = () => {
               {t('common.notice')}
             </Text>
           ),
-          headerRight: () => <NoticeMenu></NoticeMenu>,
+          headerRight: () => <NoticeMenu />,
           headerShown: true,
         }}
       />
@@ -301,7 +301,7 @@ export const TeachingNavigator = () => {
         component={LessonScreen}
         options={{
           headerLeft: () => <CustomBackButton2 />,
-          headerRight: () => <LectureMenu></LectureMenu>,
+          headerRight: () => <LectureMenu />,
           headerTitle: () => (
             <Text
               variant="heading"

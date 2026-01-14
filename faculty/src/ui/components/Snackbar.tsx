@@ -11,11 +11,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import useLatestCallback from 'use-latest-callback';
 
-import { useScreenReader } from '../../../src/core/hooks/useScreenReader';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Feedback } from '../../ui/types/Feedback';
-import { Theme } from '../../ui/types/Theme';
+import { useScreenReader } from '../../core/hooks/useScreenReader';
+import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
+import { Feedback } from '../types/Feedback';
+import { Theme } from '../types/Theme';
 import { Text } from './Text';
 
 export type Props = Feedback & {

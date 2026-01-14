@@ -140,7 +140,7 @@ export const IssueDetails = () => {
                 }
               />
             ) : (
-              <View></View>
+              <View />
             )}
           </OverviewList>
         </Section>
@@ -176,7 +176,7 @@ export const IssueDetails = () => {
           destructive
         />
       ) : (
-        <View></View>
+        <View />
       )}
     </>
   );

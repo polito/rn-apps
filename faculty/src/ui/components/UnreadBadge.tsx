@@ -4,9 +4,9 @@ import { StyleSheet, TextProps } from 'react-native';
 
 import { isNumber } from 'lodash';
 
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
 import { Row } from './Row';
 import { Text } from './Text';
 import { VisuallyHidden } from './VisuallyHidden';

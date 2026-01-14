@@ -2,10 +2,10 @@ import { StyleSheet } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
-import { EmptyState } from '../../..//ui/components/EmptyState';
-import { useStylesheet } from '../../..//ui/hooks/useStylesheet';
-import { Theme } from '../../..//ui/types/Theme';
 import { Card } from '../../../ui/components/Card';
+import { EmptyState } from '../../../ui/components/EmptyState';
+import { useStylesheet } from '../../../ui/hooks/useStylesheet';
+import { Theme } from '../../../ui/types/Theme';
 
 interface Props {
   icon: IconDefinition;

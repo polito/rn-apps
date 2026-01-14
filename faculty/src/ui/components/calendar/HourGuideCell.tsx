@@ -3,7 +3,7 @@ import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 
 import { DateTime } from 'luxon';
 
-import { useTheme } from '../../../ui/hooks/useTheme';
+import { useTheme } from '../../hooks/useTheme';
 import { CalendarCellStyle } from '../../types/Calendar';
 
 interface HourGuideCellProps {

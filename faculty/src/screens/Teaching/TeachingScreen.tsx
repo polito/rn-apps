@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -10,7 +10,6 @@ import { ListItem } from '../../ui/components/ListItem';
 import { Section } from '../../ui/components/Section';
 import { SectionHeader } from '../../ui/components/SectionHeader';
 import { SectionList } from '../../ui/components/SectionList';
-import { Theme } from '../../ui/types/Theme';
 import { TeachingStackParamList } from './TeachingNavigator';
 
 export const TeachingScreen = () => {
@@ -27,7 +26,7 @@ export const TeachingScreen = () => {
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <View style={{ paddingTop: 10 }}></View>
+      <View style={{ paddingTop: 10 }} />
 
       {/* 📌 CORSI */}
       <Section>
@@ -106,33 +105,33 @@ export const TeachingScreen = () => {
         </SectionList>
       </Section>
 
-      <BottomBarSpacer></BottomBarSpacer>
+      <BottomBarSpacer />
     </ScrollView>
   );
 };
 
-const _createStyles = ({ spacing }: Theme) =>
-  StyleSheet.create({
-    container: {
-      marginVertical: spacing[5],
-    },
-    sectionsContainer: {
-      paddingVertical: spacing[5],
-      minHeight: '100%',
-    },
-    section: {
-      marginBottom: spacing[5],
-    },
-    cardContainer: {
-      flexDirection: 'column',
-      gap: spacing[3],
-      paddingHorizontal: spacing[4],
-    },
-    card: {
-      padding: spacing[3],
-    },
-    paddingView: {
-      height: 200, // Aggiungi uno spazio extra, modifica a piacere
-      backgroundColor: undefined, // Componente trasparente
-    },
-  });
+// const _createStyles = ({ spacing }: Theme) =>
+//   StyleSheet.create({
+//     container: {
+//       marginVertical: spacing[5],
+//     },
+//     sectionsContainer: {
+//       paddingVertical: spacing[5],
+//       minHeight: '100%',
+//     },
+//     section: {
+//       marginBottom: spacing[5],
+//     },
+//     cardContainer: {
+//       flexDirection: 'column',
+//       gap: spacing[3],
+//       paddingHorizontal: spacing[4],
+//     },
+//     card: {
+//       padding: spacing[3],
+//     },
+//     paddingView: {
+//       height: 200, // Aggiungi uno spazio extra, modifica a piacere
+//       backgroundColor: undefined, // Componente trasparente
+//     },
+//   });

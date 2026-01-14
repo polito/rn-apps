@@ -82,7 +82,7 @@ export const ContactScreen = () => {
           }}
         />
       </Row>
-      <View style={{ paddingBottom: spacing[5] }}></View>
+      <View style={{ paddingBottom: spacing[5] }} />
       <Row style={styles.profileRow}>
         <View style={styles.avatarCircle}>
           <Icon icon={faUser} size={48} color="#fff" />
@@ -105,7 +105,7 @@ export const ContactScreen = () => {
           </Text>
         </Col>
       </Row>
-      <View style={{ paddingBottom: spacing[5] }}></View>
+      <View style={{ paddingBottom: spacing[5] }} />
       {selectedProfile.role2 ? (
         <>
           <SectionHeader title={t('other.otherInfo')} />
@@ -125,26 +125,26 @@ export const ContactScreen = () => {
               title="Settore scientifico disciplinare"
               subtitle={selectedProfile.sector}
               leadingItem={<Icon icon={faUserTie} size={fontSizes.xl} />}
-            ></ListItem>
+            />
           </SectionList>
         </>
       ) : null}
-      <View style={{ paddingBottom: spacing[5] }}></View>
+      <View style={{ paddingBottom: spacing[5] }} />
 
-      <SectionHeader title={t('contactsScreen.title')}></SectionHeader>
+      <SectionHeader title={t('contactsScreen.title')} />
       <SectionList>
         <ListItem
           title={t('other.telephone')}
           subtitle={selectedProfile.phoneNumber.toString()}
           leadingItem={<Icon icon={faPhone} size={fontSizes.xl} />}
-        ></ListItem>
+        />
         <ListItem
           title="Email"
           subtitle={selectedProfile.mail}
           leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
-        ></ListItem>
+        />
       </SectionList>
-      <View style={{ paddingBottom: spacing[5] }}></View>
+      <View style={{ paddingBottom: spacing[5] }} />
 
       <SectionHeader title={t('other.currentYearCourses')} />
       <SectionList>

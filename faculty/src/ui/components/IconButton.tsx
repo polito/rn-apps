@@ -2,7 +2,7 @@ import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { Props as FAProps } from '@fortawesome/react-native-fontawesome';
 
-import { useTheme } from '../../ui/hooks/useTheme';
+import { useTheme } from '../hooks/useTheme';
 import { ActivityIndicator } from './ActivityIndicator';
 import { Icon } from './Icon';
 

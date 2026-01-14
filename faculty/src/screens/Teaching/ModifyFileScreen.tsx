@@ -1,11 +1,10 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import React, { useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
-import { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
@@ -19,25 +18,25 @@ import { useTheme } from '../../ui/hooks/useTheme';
 import { Theme } from '../../ui/types/Theme';
 
 // Funzione per gestire il cambio della data (gestione robusta per Android)
-const _handleDateChange = (
-  event: DateTimePickerEvent | undefined,
-  selectedDate: Date | undefined,
-  setShowPicker: React.Dispatch<React.SetStateAction<boolean>>,
-  setDate: React.Dispatch<React.SetStateAction<Date>>,
-) => {
-  if (!event) {
-    // Evento undefined/null (es. Android chiusura picker senza selezionare)
-    setShowPicker(false);
-    return;
-  }
+// const _handleDateChange = (
+//   event: DateTimePickerEvent | undefined,
+//   selectedDate: Date | undefined,
+//   setShowPicker: React.Dispatch<React.SetStateAction<boolean>>,
+//   setDate: React.Dispatch<React.SetStateAction<Date>>,
+// ) => {
+//   if (!event) {
+//     // Evento undefined/null (es. Android chiusura picker senza selezionare)
+//     setShowPicker(false);
+//     return;
+//   }
 
-  if (event.type === 'set' && selectedDate) {
-    setShowPicker(false);
-    setDate(selectedDate);
-  } else if (event.type === 'dismissed') {
-    setShowPicker(false);
-  }
-};
+//   if (event.type === 'set' && selectedDate) {
+//     setShowPicker(false);
+//     setDate(selectedDate);
+//   } else if (event.type === 'dismissed') {
+//     setShowPicker(false);
+//   }
+// };
 
 export const ModifyFileScreen = () => {
   const navigation = useNavigation();

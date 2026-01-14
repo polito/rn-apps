@@ -138,7 +138,7 @@ export const PersoneScreen = () => {
 
       {fakeProfiles.some(p => p.preferred) && (
         <>
-          <View style={{ marginTop: spacing[4] }}></View>
+          <View style={{ marginTop: spacing[4] }} />
           <SectionHeader title={t('other.preferred')} />
           <FlatList
             data={fakeProfiles.filter(p => p.preferred)}

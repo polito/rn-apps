@@ -2,8 +2,8 @@ import { PropsWithChildren } from 'react';
 import { StyleSheet, View, ViewProps } from 'react-native';
 
 import { MessageTime } from '../../screens/MessageTime';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
 
 interface Props extends PropsWithChildren<ViewProps> {
   direction?: 'incoming' | 'outgoing';

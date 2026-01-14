@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import { Feedback } from '../../ui/types/Feedback';
+import { Feedback } from '../types/Feedback';
 
 type FeedbackContextProps = {
   feedback: Feedback | null;

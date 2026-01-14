@@ -2,7 +2,7 @@ import { Children, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, ViewProps } from 'react-native';
 
-import { useScreenReader } from '../../../src/core/hooks/useScreenReader';
+import { useScreenReader } from '../../core/hooks/useScreenReader';
 import { useTheme } from '../hooks/useTheme';
 import { ActivityIndicator } from './ActivityIndicator';
 import { Card } from './Card';

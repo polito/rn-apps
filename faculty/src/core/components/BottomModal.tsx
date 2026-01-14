@@ -1,9 +1,9 @@
 import { PropsWithChildren, useCallback } from 'react';
 import { View } from 'react-native';
-import { Dimensions } from 'react-native';
 import Modal from 'react-native-modal';
 
-const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
+// TODO: remove and use common
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '@gorhom/bottom-sheet';
 
 export type BottomModalProps = PropsWithChildren<{
   visible: boolean;

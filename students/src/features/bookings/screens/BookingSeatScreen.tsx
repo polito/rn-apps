@@ -3,9 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, View } from 'react-native';
 
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
-import { SCREEN_WIDTH } from '@gorhom/bottom-sheet';
+import { SCREEN_WIDTH } from '@lib/core/constants';
 import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
 import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
 import { APP_TIMEZONE } from '@lib/core/utils/dates';
 import { Col } from '@lib/ui/components/Col';
@@ -20,8 +19,6 @@ import { Booking } from '@polito/api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-
-import { AppPreferences } from '~/core/types/preferences';
 
 import { isEmpty } from 'lodash';
 import { DateTime } from 'luxon';
@@ -43,7 +40,6 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'BookingSeat'>;
 
 export const BookingSeatScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
-  const { accessibility } = usePreferencesContext<AppPreferences>();
   const { topicId, slotId, seatId, bookingId } = route.params;
   const bookingSeatsQuery = useGetBookingSeats(topicId, slotId);
   const styles = useStylesheet(createStyles);
@@ -174,7 +170,6 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
         </Row>
         {cancelEnabled && (
           <CtaButton
-            accessibility={accessibility}
             title={t('bookingScreen.cancelBooking')}
             action={onPressDelete}
             loading={deleteBookingMutation.isPending}

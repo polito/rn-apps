@@ -84,7 +84,7 @@ export const SingleBooking2 = () => {
                 alignItems: 'flex-end',
                 paddingRight: spacing[4],
               }}
-            ></View>
+            />
           </Row>
 
           <Text style={styles.dateText}>
@@ -104,7 +104,7 @@ export const SingleBooking2 = () => {
                 subtitle={selectedBooking.where}
               />
             ) : (
-              <View></View>
+              <View />
             )}
           </OverviewList>
         </Section>
@@ -138,7 +138,7 @@ export const SingleBooking2 = () => {
           destructive
         />
       ) : (
-        <View></View>
+        <View />
       )}
     </>
   );

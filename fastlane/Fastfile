@@ -1,0 +1,91 @@
+
+def android_build_props(app)
+    KEYSTORE_PATH = Dir.pwd+'/../'+ENV['KEYSTORE_PATH']
+    buildProps = {
+    "android.injected.signing.store.file" => KEYSTORE_PATH,
+    "android.injected.signing.store.password" => ENV['KEYSTORE_PW'],
+    "android.injected.signing.key.alias" => "key0",
+    "android.injected.signing.key.password" => ENV['KEYSTORE_PW'],
+    }
+end
+
+before_all do
+    setup_ci if ENV['CI']
+end
+
+lane :build do |options|
+    app = options[:app]
+    platform = options[:platform]
+
+    case platform
+    when "ios"
+        Dir.chdir("../#{app}/ios") do
+            sync_code_signing(type: "appstore", readonly: true)
+            cocoapods(use_bundle_exec: true)
+            build_app(
+            scheme: "#{app}",
+            export_method: "app-store",
+            workspace: "#{app}.xcworkspace",
+            output_directory: "./build",
+            silent: true,
+            )
+        end
+    when "android"
+        Dir.chdir("../#{app}/android") do
+            gradle(
+            task: "bundleRelease",
+            properties: buildProps,
+            )
+        end
+    else
+        UI.user_error!("Unsupported platform: #{platform}")
+    end    
+end
+
+lane :release do |options|
+    app = options[:app]
+    platform = options[:platform]
+
+    build(app: app, platform: platform)
+    case platform
+    when "ios"
+        Dir.chdir("../#{app}/ios") do
+            increment_build_number(xcodeproj: "#{app}.xcodeproj", build_number: ENV['BUILD_NO'])
+            increment_version_number(xcodeproj: "#{app}.xcodeproj", version_number: ENV['APP_VERSION'])
+            upload_to_testflight(
+                skip_submission: true,
+                skip_waiting_for_build_processing: true,
+                submit_beta_review: false,
+                apple_id: "6443913305",
+            )
+        end
+    when "android"
+        Dir.chdir("../#{app}/android") do
+            android_set_version_name(version_name: ENV['APP_VERSION'])
+            android_set_version_code(version_code: ENV['BUILD_NO'])
+            gradle(
+                task: "bundleRelease",
+                properties: buildProps,
+            )
+            upload_to_play_store(
+                track: ENV['STORE_TRACK'],
+                release_status: "draft",
+            )
+            upload_to_play_store(
+                track: ENV['STORE_TRACK'],
+                release_status: "draft",
+            )
+        end
+    else
+        UI.user_error!("Unsupported platform: #{platform}")
+    end    
+end
+
+lane :apk do
+    android_set_version_name(version_name: ENV['APP_VERSION'])
+    android_set_version_code(version_code: ENV['BUILD_NO'])
+    gradle(
+        task: "assembleRelease",
+        properties: buildProps,
+    )
+end

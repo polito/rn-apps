@@ -9,9 +9,9 @@ import {
 
 import { DateTime } from 'luxon';
 
-import { Text } from '../../../ui/components/Text';
-import { useTheme } from '../../../ui/hooks/useTheme';
 import { isToday } from '../../../utils/calendar';
+import { useTheme } from '../../hooks/useTheme';
+import { Text } from '../Text';
 
 export interface CalendarHeaderProps {
   dateRange: DateTime[];

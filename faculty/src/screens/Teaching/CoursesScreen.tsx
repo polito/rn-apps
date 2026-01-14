@@ -72,7 +72,7 @@ export const CoursesScreen = () => {
             ))}
           </SectionList>
         </Section>
-        <View style={styles.paddingView}></View>
+        <View style={styles.paddingView} />
       </View>
     </ScrollView>
   );

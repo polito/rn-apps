@@ -68,9 +68,9 @@ export const DigitalSignatureScreen = () => {
       contentInsetAdjustmentBehavior="automatic"
       bounces={false}
     >
-      <View style={{ marginTop: spacing[4] }}></View>
-      <SectionHeader title={t('other.toBeSigned')}></SectionHeader>
-      <View style={{ marginBottom: spacing[4] }}></View>
+      <View style={{ marginTop: spacing[4] }} />
+      <SectionHeader title={t('other.toBeSigned')} />
+      <View style={{ marginBottom: spacing[4] }} />
       <OverviewList>
         <FlatList
           data={tbsDocs.filter(b => b.status === 'da firmare')}
@@ -92,9 +92,9 @@ export const DigitalSignatureScreen = () => {
         />
       </OverviewList>
 
-      <View style={{ marginTop: spacing[4] }}></View>
-      <SectionHeader title={t('other.signedByYou')}></SectionHeader>
-      <View style={{ marginBottom: spacing[4] }}></View>
+      <View style={{ marginTop: spacing[4] }} />
+      <SectionHeader title={t('other.signedByYou')} />
+      <View style={{ marginBottom: spacing[4] }} />
       <OverviewList>
         <FlatList
           data={tbsDocs.filter(b => b.status === 'firmato')}

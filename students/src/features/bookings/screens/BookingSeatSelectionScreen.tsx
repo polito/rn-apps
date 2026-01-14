@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, View } from 'react-native';
 
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
-import { SCREEN_WIDTH } from '@gorhom/bottom-sheet';
+import { SCREEN_WIDTH } from '@lib/core/constants';
 import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
 import { useScreenReader } from '@lib/core/hooks/useScreenReader';
 import { Row } from '@lib/ui/components/Row';

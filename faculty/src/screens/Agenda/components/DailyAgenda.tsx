@@ -65,7 +65,7 @@ export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
             <EmptyDay />
           )
         ) : (
-          <View></View>
+          <View />
           // filteredAgendaDay.map(item => {
           //   switch (item.type) {
           //     case 'booking':

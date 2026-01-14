@@ -10,17 +10,17 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { TextWithLinks } from '../../../src/core/components/TextWithLinks';
-import { useSafeBottomBarHeight } from '../../../src/core/hooks/useSafeBottomBarHeight';
+import { TextWithLinks } from '../../core/components/TextWithLinks';
 import { useFeedbackContext } from '../../core/contexts/FeedbackContext';
-import { ActivityIndicator } from '../../ui/components/ActivityIndicator';
-import { Icon } from '../../ui/components/Icon';
-import { Row } from '../../ui/components/Row';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
+import { useSafeBottomBarHeight } from '../../core/hooks/useSafeBottomBarHeight';
 import { shadeColor } from '../../utils/colors';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
+import { ActivityIndicator } from './ActivityIndicator';
+import { Icon } from './Icon';
+import { Row } from './Row';
+import { Text } from './Text';
 
 interface Props extends TouchableHighlightProps {
   containerStyle?: ViewStyle;

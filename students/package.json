@@ -7,15 +7,15 @@
     "ios": "react-native run-ios --scheme='students dev' || echo 'If iOS startup fails, try running: npm run fixpilot'",
     "start": "react-native start --reset-cache",
     "test": "jest",
-    "prepare": "husky",
     "commit": "commit",
-    "lint:check": "eslint --max-warnings=0 '**/*.{ts,tsx}'",
+    "lint:check": "eslint --max-warnings=0 './**/*.{ts,tsx}'",
     "lint": "npm run lint:check -- --fix",
-    "format:check": "prettier --check '**/*.{ts,tsx,md}'",
-    "format": "prettier --write '**/*.{ts,tsx,md}'",
+    "format:check": "prettier --check './**/*.{ts,tsx,md}' --ignore-path ../.prettierignore",
+    "format": "prettier --write './**/*.{ts,tsx,md}' --ignore-path ../.prettierignore",
     "types:check": "tsc --noEmit",
     "check": "npm run lint:check && npm run format:check && npm run types:check",
-    "pod-install": "cd ios && bundle exec pod install"
+    "pod-install": "cd ios && bundle exec pod install",
+    "fixpilot": "node ../scripts/fixpilot.js"
   },
   "dependencies": {
     "@d11/react-native-fast-image": "^8.11.1",
@@ -88,7 +88,8 @@
     "react-native-screens": "^4.16.0",
     "react-native-svg": "^15.12.0",
     "react-native-uuid": "^2.0.3",
-    "react-native-video": "^6.16.1"
+    "react-native-video": "^6.16.1",
+    "reanimated-color-picker": "^4.1.1"
   },
   "devDependencies": {
     "@react-native-community/cli": "18.0.0",

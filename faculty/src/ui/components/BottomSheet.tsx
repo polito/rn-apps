@@ -12,9 +12,9 @@ import BaseBottomSheet, {
 } from '@gorhom/bottom-sheet';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
-import { TranslucentView } from '../../../src/core/components/TranslucentView';
+import { TranslucentView } from '../../core/components/TranslucentView';
 import { IS_ANDROID } from '../../core/components/costant';
-import { useTheme } from '../../ui/hooks/useTheme';
+import { useTheme } from '../hooks/useTheme';
 
 export type BottomSheetProps = Omit<BaseBottomSheetProps, 'snapPoints'> & {
   snapPoints?: BaseBottomSheetProps['snapPoints'];

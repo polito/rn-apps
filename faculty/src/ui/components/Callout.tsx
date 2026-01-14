@@ -1,9 +1,9 @@
 import { StyleSheet, View } from 'react-native';
 
-import { lightTheme } from '../../../src/core/themes/light';
-import { Theme } from '../../ui/types/Theme';
+import { lightTheme } from '../../core/themes/light';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
 import { Col, ColProps } from './Col';
 
 export type CalloutProps = ColProps;

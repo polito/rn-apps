@@ -70,7 +70,7 @@ export const LessonScreen = () => {
               subtitle={selectedLecture.room}
             />
           ) : (
-            <View></View>
+            <View />
           )}
           {selectedLecture?.language ? (
             <ListItem
@@ -81,7 +81,7 @@ export const LessonScreen = () => {
               subtitle={selectedLecture.language}
             />
           ) : (
-            <View></View>
+            <View />
           )}
         </OverviewList>
       </Section>

@@ -1,7 +1,6 @@
 const path = require('node:path');
 const { mergeConfig, getDefaultConfig } = require('@react-native/metro-config');
 const { getSentryExpoConfig } = require('@sentry/react-native/metro');
-
 /**
  * Metro configuration
  * https://reactnative.dev/docs/metro
@@ -15,15 +14,13 @@ config.watchFolders = [
   __dirname,
   path.join(monorepoRoot, 'node_modules'), // to resolve hoisted dependencies of the monorepo
   path.join(monorepoRoot, 'common'), // to include common package,
-  path.join(monorepoRoot, 'assets'), // to include shared assets
 ];
 
 config.resolver = {
   ...config.resolver,
   extraNodeModules: {
-    assets: path.join(monorepoRoot, 'assets'),
+    assets: path.join(__dirname, 'assets'),
   },
-  assetExts: [...(config.resolver.assetExts || []), 'json', 'png'], // to load json assets for boot splash
 };
 
 // Disable Babel's RC lookup, reducing the config loading in Babel - resulting in faster bootup transformations

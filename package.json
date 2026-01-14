@@ -2,13 +2,25 @@
   "name": "polito-apps",
   "private": true,
   "workspaces": [
-    "students"
+    "students",
+    "faculty"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "fixpilot": "node ./scripts/fixpilot.js",
-    "start:students": "APP=students npm start --workspace=students",
-    "students:ios": "npm --workspace=students run ios"
+    "lint:check": "eslint --max-warnings=0 '**/*.{ts,tsx}'",
+    "lint": "npm run lint:check -- --fix",
+    "format:check": "prettier --check '**/*.{ts,tsx,md}'",
+    "format": "prettier --write '**/*.{ts,tsx,md}'",
+    "types:check": "tsc --noEmit",
+    "check": "npm run lint:check && npm run format:check && npm run types:check",
+    "start:students": "npm start --workspace=students",
+    "students:ios": "npm --workspace=students run ios",
+    "students:android": "npm --workspace=students run android",
+    "start:faculty": "npm start --workspace=faculty",
+    "faculty:ios": "npm --workspace=faculty run ios",
+    "faculty:android": "npm --workspace=faculty run android",
+    "postinstall": "npm run fixpilot -- --skip-modules --skip-derived"
   },
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
@@ -29,7 +41,6 @@
     "react-i18next": "^15.0.2",
     "react-string-replace": "^1.1.1",
     "react-usestateref": "^1.0.9",
-    "reanimated-color-picker": "^4.0.1",
     "semver": "^7.6.3",
     "superjson": "^2.2.1",
     "use-latest-callback": "^0.2.4"
@@ -47,7 +58,6 @@
     "@react-native/typescript-config": "0.79.6",
     "@total-typescript/ts-reset": "^0.5.1",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-    "@types/react-native-html-to-pdf": "^0.8.3",
     "@types/color": "^3.0.6",
     "@types/geojson": "^7946.0.16",
     "@types/geopoint": "^1.0.3",
@@ -56,6 +66,7 @@
     "@types/luxon": "^3.4.2",
     "@types/node": "^16.11.65",
     "@types/react": "^19.0.0",
+    "@types/react-native-html-to-pdf": "^0.8.3",
     "@types/react-test-renderer": "^18.0.0",
     "@types/uuid": "^10.0.0",
     "babel-plugin-module-resolver": "^5.0.2",
@@ -67,5 +78,9 @@
     "prettier": "^3.5.0",
     "react-test-renderer": "19.0.0",
     "typescript": "5.0.4"
+  },
+  "overrides": {
+    "react-native": "0.79.6",
+    "react": "19.0.0"
   }
 }

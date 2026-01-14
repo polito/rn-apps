@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
 
-import { TranslucentView } from '../../../src/core/components/TranslucentView';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
+import { TranslucentView } from '../../core/components/TranslucentView';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
 import { Row, RowProps } from './Row';
 
 export const TranslucentCard = ({ children, ...props }: RowProps) => {

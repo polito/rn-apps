@@ -1,7 +1,7 @@
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
-import { Icon } from '../../ui/components/Icon';
-import { useTheme } from '../../ui/hooks/useTheme';
+import { useTheme } from '../hooks/useTheme';
+import { Icon } from './Icon';
 
 export const DisclosureIndicator = () => {
   const { colors, spacing } = useTheme();

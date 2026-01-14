@@ -1,8 +1,8 @@
 import { Platform, StyleSheet } from 'react-native';
 
-import { useSafeAreaSpacing } from '../../../src/core/hooks/useSafeAreaSpacing';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
+import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
 import { Row, RowProps } from './Row';
 
 export type HeaderAccessoryProps = RowProps;

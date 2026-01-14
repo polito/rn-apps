@@ -11,11 +11,11 @@ import { BottomModal } from '../../core/components/BottomModal';
 import { Staff, useCourses } from '../../core/contexts/CoursesContext';
 import { useBottomModal } from '../../core/hooks/useBottomModal';
 import { ModifyStaffAccessModalContent } from '../../screens/Teaching/ModifyStaffAccessModalContent';
-import { Icon } from '../../ui/components/Icon';
-import { ListItem } from '../../ui/components/ListItem';
-import { useTheme } from '../../ui/hooks/useTheme';
 import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
 import { Theme } from '../types/Theme';
+import { Icon } from './Icon';
+import { ListItem } from './ListItem';
 
 interface Props {
   person: Person | string | undefined;
@@ -45,11 +45,11 @@ export const PersonListItem = ({
   } = useCourses();
   const accessTranslationMap = {
     // TODO: find a better way to manage translations here
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+
     'Può leggere': t('other.canRead'),
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+
     'Può eliminare': t('other.canDelete'),
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+
     'Può modificare': t('other.canEdit'),
   };
 

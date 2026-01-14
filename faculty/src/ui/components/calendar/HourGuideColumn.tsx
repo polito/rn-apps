@@ -2,10 +2,10 @@ import { StyleSheet, View } from 'react-native';
 
 import { isNumber } from 'lodash';
 
-import { Text } from '../../../ui/components/Text';
-import { useStylesheet } from '../../../ui/hooks/useStylesheet';
-import { Theme } from '../../../ui/types/Theme';
 import { formatHour } from '../../../utils/calendar';
+import { useStylesheet } from '../../hooks/useStylesheet';
+import { Theme } from '../../types/Theme';
+import { Text } from '../Text';
 
 interface HourGuideColumnProps {
   cellHeight: number;

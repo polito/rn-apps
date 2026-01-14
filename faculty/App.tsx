@@ -1,12 +1,6 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import {
-  LogBox,
-  Platform,
-  StatusBar,
-  StyleSheet,
-  useColorScheme,
-} from 'react-native';
+import { LogBox, useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import Mapbox from '@rnmapbox/maps';
@@ -65,12 +59,5 @@ export const App = () => {
     </Sentry.TouchEventBoundary>
   );
 };
-
-const _styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-  },
-});
 
 export default App;

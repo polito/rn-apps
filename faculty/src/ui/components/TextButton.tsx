@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
-import { useTheme } from '../../ui/hooks/useTheme';
+import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
 
 export const TextButton = ({

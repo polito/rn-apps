@@ -92,54 +92,54 @@ export const ProfileScreen = () => {
         {' '}
         {user.name}{' '}
       </Text>
-      <View style={{ paddingBottom: spacing[5] }}></View>
-      <SectionHeader title="Smartcard"></SectionHeader>
+      <View style={{ paddingBottom: spacing[5] }} />
+      <SectionHeader title="Smartcard" />
       <Image
         source={require('../../core/contexts/smartcard.png')}
         style={styles.smartcardImage}
         resizeMode="contain"
-      ></Image>
-      <View style={{ paddingBottom: spacing[5] }}></View>
-      <SectionHeader title={t('other.personalInfo')}></SectionHeader>
+      />
+      <View style={{ paddingBottom: spacing[5] }} />
+      <SectionHeader title={t('other.personalInfo')} />
       <SectionList>
         <ListItem
           title={t('other.residence')}
           subtitle={user.domicilie}
           leadingItem={<Icon icon={faHome} size={fontSizes.xl} />}
-        ></ListItem>
+        />
         <ListItem
           title={t('other.fiscalResidence')}
           subtitle={user.taxDomicilie}
           leadingItem={<Icon icon={faHome} size={fontSizes.xl} />}
-        ></ListItem>
+        />
         <ListItem
           title={t('IBAN')}
           subtitle={user.IBAN}
           leadingItem={<Icon icon={faBank} size={fontSizes.xl} />}
-        ></ListItem>
+        />
       </SectionList>
-      <View style={{ paddingBottom: spacing[5] }}></View>
+      <View style={{ paddingBottom: spacing[5] }} />
 
-      <SectionHeader title={t('contactsScreen.title')}></SectionHeader>
+      <SectionHeader title={t('contactsScreen.title')} />
       <SectionList>
         <ListItem
           title={t('other.telephone')}
           subtitle={user.phone}
           leadingItem={<Icon icon={faPhone} size={fontSizes.xl} />}
-        ></ListItem>
+        />
         <ListItem
           title="Email"
           subtitle={user.email}
           leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
-        ></ListItem>
+        />
         <ListItem
           title={t('other.privateMail')}
           subtitle={user.privateMail}
           leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
-        ></ListItem>
+        />
       </SectionList>
 
-      <View style={{ paddingBottom: spacing[5] }}></View>
+      <View style={{ paddingBottom: spacing[5] }} />
 
       <SectionHeader title={t('other.currentCourses')} />
       <SectionList>
@@ -160,7 +160,7 @@ export const ProfileScreen = () => {
           />
         ))}
       </SectionList>
-      <View style={{ paddingBottom: spacing[5] }}></View>
+      <View style={{ paddingBottom: spacing[5] }} />
 
       {user.publications && user.publications.length > 0 && (
         <>
@@ -177,9 +177,9 @@ export const ProfileScreen = () => {
           </SectionList>
         </>
       )}
-      <View style={{ paddingBottom: spacing[5] }}></View>
+      <View style={{ paddingBottom: spacing[5] }} />
 
-      <SectionHeader title={t('other.other')}></SectionHeader>
+      <SectionHeader title={t('other.other')} />
       <SectionList>
         <ListItem
           title={t('other.settings')}
@@ -189,7 +189,7 @@ export const ProfileScreen = () => {
           }}
         />
       </SectionList>
-      <View style={{ paddingBottom: spacing[5] }}></View>
+      <View style={{ paddingBottom: spacing[5] }} />
     </ScrollView>
   );
 };

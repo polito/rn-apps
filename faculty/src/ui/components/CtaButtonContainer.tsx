@@ -2,9 +2,9 @@ import { Children, PropsWithChildren } from 'react';
 import { Platform, View, ViewProps } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useFeedbackContext } from '../../../src/core/contexts/FeedbackContext';
-import { useSafeBottomBarHeight } from '../../../src/core/hooks/useSafeBottomBarHeight';
-import { useTheme } from '../../ui/hooks/useTheme';
+import { useFeedbackContext } from '../../core/contexts/FeedbackContext';
+import { useSafeBottomBarHeight } from '../../core/hooks/useSafeBottomBarHeight';
+import { useTheme } from '../hooks/useTheme';
 
 interface Props {
   absolute: boolean;

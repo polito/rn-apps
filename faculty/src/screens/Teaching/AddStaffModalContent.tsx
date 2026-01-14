@@ -61,7 +61,7 @@ export const AddStaffModalContent = ({ close }: Props) => {
   return (
     <ModalContent title={t('other.addCollaborator')} close={close}>
       <Col pt={4} pb={8} ph={4} gap={3}>
-        <Col align="center" gap={3}></Col>
+        <Col align="center" gap={3} />
 
         {/* Barra di ricerca */}
         <View style={styles.searchContainer}>

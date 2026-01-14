@@ -7,7 +7,7 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { useTheme } from '../../ui/hooks/useTheme';
+import { useTheme } from '../hooks/useTheme';
 import { Card } from './Card';
 
 export type TouchableCardProps = PropsWithChildren<

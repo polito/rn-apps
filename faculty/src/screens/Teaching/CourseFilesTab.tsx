@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList } from 'react-native';
 
 import { faFile, faFolder, faInbox } from '@fortawesome/free-solid-svg-icons';
 
@@ -12,14 +12,12 @@ import { EmptyState } from '../../ui/components/EmptyState';
 import { Icon } from '../../ui/components/Icon';
 import { IndentedDivider } from '../../ui/components/IndentedDivider';
 import { ListItem } from '../../ui/components/ListItem';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 import { CourseFileListItem } from './CourseFileListItem';
 
 export const CourseFilesTab = () => {
   const { palettes } = useTheme();
-  const _styles = useStylesheet(createStyles);
+  // const _styles = useStylesheet(createStyles);
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { selectedCourse } = useCourses();
 
@@ -144,36 +142,36 @@ export const CourseFilesTab = () => {
   );
 };
 
-const createStyles = ({ colors, palettes }: Theme) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      paddingBottom: 20, // Distanza tra il contenuto e il fondo per il bottone
-    },
-    buttonContainer: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      paddingHorizontal: 20,
-      paddingVertical: 8,
-      marginBottom: 16, // Distanza dal bordo inferiore
-    },
-    blueButtonContainer: {
-      backgroundColor: palettes.lightBlue[500],
-      marginHorizontal: 20,
-      borderRadius: 8,
-      padding: 0,
-    },
-    button: {
-      backgroundColor: palettes.lightBlue[500], // Colore del background del bottone
-      paddingVertical: 12,
-      borderRadius: 8,
-      alignItems: 'center',
-    },
-    buttonText: {
-      color: colors.white, // Colore del testo del bottone
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-  });
+// const createStyles = ({ colors, palettes }: Theme) =>
+//   StyleSheet.create({
+//     container: {
+//       flex: 1,
+//       paddingBottom: 20, // Distanza tra il contenuto e il fondo per il bottone
+//     },
+//     buttonContainer: {
+//       position: 'absolute',
+//       bottom: 0,
+//       left: 0,
+//       right: 0,
+//       paddingHorizontal: 20,
+//       paddingVertical: 8,
+//       marginBottom: 16, // Distanza dal bordo inferiore
+//     },
+//     blueButtonContainer: {
+//       backgroundColor: palettes.lightBlue[500],
+//       marginHorizontal: 20,
+//       borderRadius: 8,
+//       padding: 0,
+//     },
+//     button: {
+//       backgroundColor: palettes.lightBlue[500], // Colore del background del bottone
+//       paddingVertical: 12,
+//       borderRadius: 8,
+//       alignItems: 'center',
+//     },
+//     buttonText: {
+//       color: colors.white, // Colore del testo del bottone
+//       fontSize: 16,
+//       fontWeight: 'bold',
+//     },
+//   });

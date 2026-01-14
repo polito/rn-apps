@@ -63,7 +63,7 @@ export const StudentContact = () => {
           {selectedStudent.name + ' ' + selectedStudent.surname}
         </Text>
       </Row>
-      <View style={{ paddingBottom: spacing[5] }}></View>
+      <View style={{ paddingBottom: spacing[5] }} />
       <Row style={styles.profileRow}>
         <View style={styles.avatarCircle}>
           <Icon icon={faUser} size={48} color="#fff" />
@@ -78,22 +78,22 @@ export const StudentContact = () => {
           </Text>
         </Col>
       </Row>
-      <View style={{ paddingBottom: spacing[5] }}></View>
+      <View style={{ paddingBottom: spacing[5] }} />
 
-      <SectionHeader title="Contatti"></SectionHeader>
+      <SectionHeader title="Contatti" />
       <SectionList>
         <ListItem
           title="Telefono"
           subtitle="3667890543"
           leadingItem={<Icon icon={faPhone} size={fontSizes.xl} />}
-        ></ListItem>
+        />
         <ListItem
           title="Email"
           subtitle={selectedStudent.id + '@studenti.polito.it'}
           leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
-        ></ListItem>
+        />
       </SectionList>
-      <View style={{ paddingBottom: spacing[5] }}></View>
+      <View style={{ paddingBottom: spacing[5] }} />
 
       <SectionHeader title="Esami superati" />
       <SectionList>

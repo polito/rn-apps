@@ -1,7 +1,7 @@
 import { Children, PropsWithChildren, isValidElement } from 'react';
 import { Platform } from 'react-native';
 
-import { useTheme } from '../../ui/hooks/useTheme';
+import { useTheme } from '../hooks/useTheme';
 import { Divider } from './Divider';
 import { IndentedDivider } from './IndentedDivider';
 
