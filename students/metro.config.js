@@ -13,7 +13,7 @@ const monorepoRoot = path.join(__dirname, '..');
 config.watchFolders = [
   __dirname,
   path.join(monorepoRoot, 'node_modules'), // to resolve hoisted dependencies of the monorepo
-  path.join(monorepoRoot, 'common'), // to include common package,
+  path.join(monorepoRoot, 'lib'), // to include lib package,
 ];
 
 config.resolver = {

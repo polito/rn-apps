@@ -8,7 +8,7 @@ module.exports = function (api) {
         'module-resolver',
         {
           alias: {
-            '@lib': '../common',
+            '@lib': '../lib',
             '~': './src',
           },
         },

@@ -1,13 +1,13 @@
 
-def android_build_props(app)
-    KEYSTORE_PATH = Dir.pwd+'/../'+ENV['KEYSTORE_PATH']
-    buildProps = {
-    "android.injected.signing.store.file" => KEYSTORE_PATH,
-    "android.injected.signing.store.password" => ENV['KEYSTORE_PW'],
-    "android.injected.signing.key.alias" => "key0",
-    "android.injected.signing.key.password" => ENV['KEYSTORE_PW'],
-    }
-end
+# def android_build_props(app)
+#     KEYSTORE_PATH = Dir.pwd+'/../'+ENV['KEYSTORE_PATH']
+#     buildProps = {
+#     "android.injected.signing.store.file" => KEYSTORE_PATH,
+#     "android.injected.signing.store.password" => ENV['KEYSTORE_PW'],
+#     "android.injected.signing.key.alias" => "key0",
+#     "android.injected.signing.key.password" => ENV['KEYSTORE_PW'],
+#     }
+# end
 
 before_all do
     setup_ci if ENV['CI']

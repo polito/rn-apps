@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "fixpilot": "node ./scripts/fixpilot.js",
+    "fixpilot": "node ./tools/fixpilot.js",
     "lint:check": "eslint --max-warnings=0 '**/*.{ts,tsx}'",
     "lint": "npm run lint:check -- --fix",
     "format:check": "prettier --check '**/*.{ts,tsx,md}'",
@@ -20,7 +20,8 @@
     "start:faculty": "npm start --workspace=faculty",
     "faculty:ios": "npm --workspace=faculty run ios",
     "faculty:android": "npm --workspace=faculty run android",
-    "postinstall": "npm run fixpilot -- --skip-modules --skip-derived"
+    "postinstall": "npm run fixpilot -- --skip-modules --skip-derived",
+    "prepare": "husky tools/.husky"
   },
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
