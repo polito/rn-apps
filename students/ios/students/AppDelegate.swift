@@ -18,9 +18,9 @@ class AppDelegate: ExpoAppDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
-    if !(Bundle.main.bundleIdentifier?.hasSuffix("dev") ?? false) {
+    #if !DEBUG
       FirebaseApp.configure()
-    }
+    #endif
 
     let delegate = ReactNativeDelegate()
     let factory = ExpoReactNativeFactory(delegate: delegate)

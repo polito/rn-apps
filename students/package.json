@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android --active-arch-only --appIdSuffix=dev ./students",
-    "ios": "react-native run-ios --scheme='students dev' || echo 'If iOS startup fails, try running: npm run fixpilot'",
+    "ios": "react-native run-ios || echo 'If iOS startup fails, try running: npm run fixpilot'",
     "start": "react-native start --reset-cache",
     "test": "jest",
     "commit": "commit",

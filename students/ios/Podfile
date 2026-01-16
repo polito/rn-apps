@@ -75,9 +75,6 @@ target 'students' do
     $RNMapboxMaps.post_install(installer)
   end
 
-  target 'students dev' do
-    inherit! :complete
-  end
 end
 
 pre_install do |installer|
