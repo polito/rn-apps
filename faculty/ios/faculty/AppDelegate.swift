@@ -25,7 +25,7 @@ class AppDelegate: ExpoAppDelegate {
     window = UIWindow(frame: UIScreen.main.bounds)
 
     factory.startReactNative(
-      withModuleName: "staff",
+      withModuleName: "faculty",
       in: window,
       launchOptions: launchOptions
     )

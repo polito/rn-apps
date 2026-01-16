@@ -1,4 +1,4 @@
-package com.staff
+package it.polito.faculty
 import android.content.res.Configuration
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ReactNativeHostWrapper
