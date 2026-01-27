@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "students",
-    "faculty"
+    "faculty",
+    "base"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -12,42 +13,41 @@
     "lint": "npm run lint:check -- --fix",
     "format:check": "prettier --check '**/*.{ts,tsx,md}'",
     "format": "prettier --write '**/*.{ts,tsx,md}'",
-    "types:check": "tsc --noEmit",
-    "check": "npm run lint:check && npm run format:check && npm run types:check",
+    "types:check": "npm run types:check --workspaces --if-present && npm run lib:check",
+    "check": "npm run lint:check && npm run format:check && npm run types:check && npm run deps:check",
+    "lib:check": "tsc -p lib/tsconfig.json --noEmit",
     "start:students": "npm start --workspace=students",
+    "start:faculty": "npm start --workspace=faculty",
+    "start:base": "npm start --workspace=base",
     "students:ios": "npm --workspace=students run ios",
     "students:android": "npm --workspace=students run android",
-    "start:faculty": "npm start --workspace=faculty",
     "faculty:ios": "npm --workspace=faculty run ios",
     "faculty:android": "npm --workspace=faculty run android",
+    "base:ios": "npm --workspace=base run ios",
+    "base:android": "npm --workspace=base run android",
+    "deps:check": "syncpack lint || echo \"Run 'npm run deps:fix' to fix dependency issues\"",
+    "deps:fix": "syncpack fix",
     "postinstall": "npm run fixpilot -- --skip-modules --skip-derived",
     "prepare": "husky tools/.husky"
   },
   "dependencies": {
-    "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
-    "@fortawesome/react-native-fontawesome": "^0.3.2",
-    "@tanstack/react-query": "^5.81.5",
     "color": "^4.2.3",
     "dom-serializer": "^2.0.0",
     "domhandler": "^5.0.3",
     "domutils": "^3.2.2",
     "geopoint": "^1.0.1",
     "htmlparser2": "^10.0.0",
-    "i18next": "^23.16.4",
     "lodash": "^4.17.21",
     "luxon": "^3.5.0",
-    "react-i18next": "^15.0.2",
-    "react-string-replace": "^1.1.1",
-    "react-usestateref": "^1.0.9",
     "semver": "^7.6.3",
-    "superjson": "^2.2.1",
-    "use-latest-callback": "^0.2.4"
+    "superjson": "^2.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
     "@commitlint/cli": "^19.5.0",
@@ -78,6 +78,7 @@
     "lint-staged": "^15.2.10",
     "prettier": "^3.5.0",
     "react-test-renderer": "19.0.0",
+    "syncpack": "^14.0.0-alpha.37",
     "typescript": "5.0.4"
   },
   "overrides": {

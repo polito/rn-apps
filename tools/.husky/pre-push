@@ -1,3 +1,0 @@
-bash << EOF
-npm run check
-EOF

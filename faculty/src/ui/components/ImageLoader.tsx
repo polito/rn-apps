@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+
 import FastImage, {
   FastImageProps,
   FastImageStaticProperties,

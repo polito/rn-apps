@@ -1,0 +1,19 @@
+{
+  "strict": false,
+  "versionGroups": [
+    {
+      "label": "Sync with Base App",
+      "snapTo": [
+        "@polito/base-app"
+      ],
+      "packages": [
+        "@polito/base-app",
+        "@polito/students-app",
+        "@polito/faculty-app"
+      ],
+      "dependencies": [
+        "**"
+      ]
+    }
+  ]
+}
