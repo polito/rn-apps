@@ -10,7 +10,7 @@ import { Buffer } from 'buffer';
 
 import { AuthenticatorPrivKey } from './keychain';
 
-export const generateSecp256k1PrivKey = () => secp256k1.utils.randomSecretKey();
+const generateSecp256k1PrivKey = () => secp256k1.utils.randomSecretKey();
 
 export const generateSecp256k1KeyPair = () => {
   const pemOUT = (key: any) => Buffer.from(key.toBER(false)).toString('base64');

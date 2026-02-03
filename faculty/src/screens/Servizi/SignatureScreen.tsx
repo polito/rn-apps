@@ -16,19 +16,21 @@ import {
   faFilePdf,
   faPen,
 } from '@fortawesome/free-solid-svg-icons';
+import {
+  Badge,
+  CtaButton,
+  IconButton,
+  Row,
+  Section,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { Badge } from '../../ui/components/Badge';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { IconButton } from '../../ui/components/IconButton';
-import { Row } from '../../ui/components/Row';
-import { Section } from '../../ui/components/Section';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 import { ProfileStackParamList } from './ServiceNavigator';
 
 export const SignatureScreen = () => {

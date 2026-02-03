@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
-import { setTimeoutAccessibilityInfoHelper } from '@lib/core/utils/setTimeoutAccessibilityInfo';
 import { BookingsApi } from '@polito/api-client';
+import { setTimeoutAccessibilityInfoHelper } from '@polito/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { DateTime } from 'luxon';
@@ -9,9 +9,9 @@ import { DateTime } from 'luxon';
 import { pluckData } from '../../utils/queries';
 
 export const BOOKINGS_QUERY_KEY = ['bookings'];
-export const BOOKINGS_TOPICS_QUERY_KEY = ['booking', 'topics'];
-export const BOOKINGS_SLOTS_QUERY_KEY = ['booking', 'slots'];
-export const BOOKINGS_SEATS_QUERY_KEY = ['booking', 'seats'];
+const BOOKINGS_TOPICS_QUERY_KEY = ['booking', 'topics'];
+const BOOKINGS_SLOTS_QUERY_KEY = ['booking', 'slots'];
+const BOOKINGS_SEATS_QUERY_KEY = ['booking', 'seats'];
 
 const useBookingClient = (): BookingsApi => {
   return new BookingsApi();

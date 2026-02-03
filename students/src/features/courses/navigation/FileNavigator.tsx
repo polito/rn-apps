@@ -1,5 +1,5 @@
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { usePreferencesContext } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';

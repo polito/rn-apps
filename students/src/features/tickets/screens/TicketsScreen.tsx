@@ -9,16 +9,16 @@ import {
 } from 'react-native';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { getHtmlTextContent } from '@lib/core/utils/html';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { CtaButton } from '@lib/ui/components/CtaButton';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
+import { getHtmlTextContent } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { CtaButton } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { SectionHeader } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onlineManager } from '@tanstack/react-query';

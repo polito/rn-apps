@@ -1,9 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { courseColors } from '@lib/core/constants';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { notNullish } from '@lib/core/utils/predicates';
 import {
   CourseOverview as ApiCourseOverview,
   CourseDirectory,
@@ -15,6 +12,9 @@ import {
   CoursesApi,
   UploadCourseAssignmentRequest,
 } from '@polito/api-client';
+import { courseColors } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib';
+import { notNullish } from '@polito/lib';
 import {
   useMutation,
   useQueries,
@@ -33,7 +33,7 @@ import {
 import { AppPreferences, CoursesPreferences } from '../types/preferences';
 import { useGetExams } from './examHooks';
 
-export const COURSES_QUERY_KEY = ['courses'];
+const COURSES_QUERY_KEY = ['courses'];
 export const COURSE_QUERY_PREFIX = 'course';
 
 export const useCoursesClient = (): CoursesApi => {
@@ -115,7 +115,7 @@ export const CourseSectionEnum = {
   Files: 'files',
   Assignments: 'assignments',
 } as const;
-export type CourseQueryEnum =
+type CourseQueryEnum =
   (typeof CourseSectionEnum)[keyof typeof CourseSectionEnum];
 
 export const getCourseKey = (
@@ -178,7 +178,7 @@ export const useGetCourseEditions = (courseId: number) => {
 
 const courseFilesStaleTime = 60000; // 1 minute
 
-export const useGetCourseFiles = (courseId: number) => {
+const useGetCourseFiles = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
   return useQuery({
@@ -414,7 +414,7 @@ export const useGetCourseVirtualClassrooms = (courseId: number) => {
   });
 };
 
-export const useGetCourseRelatedVirtualClassrooms = (
+const useGetCourseRelatedVirtualClassrooms = (
   relatedVCs: (
     | CourseOverviewPreviousEditionsInner
     | CourseVcOtherCoursesInner

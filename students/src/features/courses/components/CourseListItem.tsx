@@ -4,14 +4,14 @@ import { Alert, Platform, View } from 'react-native';
 import ContextMenu from 'react-native-context-menu-view';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
-import { IS_ANDROID } from '@lib/core/constants';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { IS_ANDROID } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib';
+import { useOfflineDisabled } from '@polito/lib';
+import { DisclosureIndicator } from '@polito/lib';
+import { IconButton } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { UnreadBadge } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { AppPreferences } from '~/core/types/preferences';

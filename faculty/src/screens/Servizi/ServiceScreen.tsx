@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 import { Platform } from 'react-native';
 
+import { Grid, Text, Theme, useStylesheet, useTheme } from '@polito/lib';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 
@@ -10,11 +11,6 @@ import { Logo } from '../../core/components/Logo';
 import { RootParamList } from '../../core/components/NavBar';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
-import { Grid } from '../../ui/components/Grid';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 import { ServiceCard } from './ServiceCard';
 
 export const ServiceScreen = () => {

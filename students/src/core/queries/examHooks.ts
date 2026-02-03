@@ -1,6 +1,6 @@
-import { isValidDate } from '@lib/core/utils/dates';
 import { Exam as ApiExam, BookExamRequest, ExamsApi } from '@polito/api-client';
 import type { RescheduleExamRequest } from '@polito/api-client/models';
+import { isValidDate } from '@polito/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';

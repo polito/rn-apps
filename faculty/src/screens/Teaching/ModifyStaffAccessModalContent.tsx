@@ -1,12 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { CtaButton, Text, Theme, useStylesheet } from '@polito/lib';
+
 import { ModalContent } from '../../core/components/ModalContent';
 import { Staff } from '../../core/contexts/CoursesContext';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
 
 type Props = {
   close: () => void;
@@ -116,7 +114,7 @@ export const ModifyStaffAccessModalContent = ({
   );
 };
 
-const createStyles = ({ colors }: Theme) =>
+const createStyles = ({ palettes }: Theme) =>
   StyleSheet.create({
     content: {
       paddingHorizontal: 16,
@@ -133,7 +131,7 @@ const createStyles = ({ colors }: Theme) =>
       width: 20,
       borderRadius: 10,
       borderWidth: 2,
-      borderColor: colors.primary[700],
+      borderColor: palettes.primary[700],
       alignItems: 'center',
       justifyContent: 'center',
       marginRight: 12,
@@ -142,7 +140,7 @@ const createStyles = ({ colors }: Theme) =>
       height: 10,
       width: 10,
       borderRadius: 5,
-      backgroundColor: colors.primary[500],
+      backgroundColor: palettes.primary[500],
     },
     menuItemText: {
       fontSize: 16,

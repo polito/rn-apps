@@ -16,23 +16,25 @@ import {
   faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
+  BottomBarSpacer,
+  EmptyState,
+  GlobalStyles,
+  IconButton,
+  IndentedDivider,
+  ListItem,
+  SectionHeader,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
-import { GlobalStyles } from '../../core/components/GlobalStyles';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
 import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
-import { EmptyState } from '../../ui/components/EmptyState';
-import { IconButton } from '../../ui/components/IconButton';
-import { IndentedDivider } from '../../ui/components/IndentedDivider';
-import { ListItem } from '../../ui/components/ListItem';
-import { SectionHeader } from '../../ui/components/SectionHeader';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 import { ProfileStackParamList } from './ServiceNavigator';
 
 export const PersoneScreen = () => {

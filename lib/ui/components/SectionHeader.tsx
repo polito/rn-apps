@@ -11,15 +11,15 @@ import {
 } from 'react-native';
 
 import { Props as FAProps } from '@fortawesome/react-native-fontawesome';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { To } from '@lib/core/utils/resolveLinkTo';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { Separator } from '@lib/ui/components/Separator';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { To } from '../../core/utils/resolveLinkTo';
 import { useStylesheet } from '../hooks/useStylesheet';
 import { Theme } from '../types/Theme';
+import { IconButton } from './IconButton';
+import { Separator } from './Separator';
 import { Text } from './Text';
 
 interface Props {

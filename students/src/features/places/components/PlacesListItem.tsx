@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import { notNullish } from '@lib/core/utils/predicates';
-import { Icon } from '@lib/ui/components/Icon';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { PlaceRef } from '@polito/api-client';
+import { notNullish } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

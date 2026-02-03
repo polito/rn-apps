@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { Linking, StyleSheet, View } from 'react-native';
 
-import { CtaButton } from '@lib/ui/components/CtaButton';
-import { ModalContent } from '@lib/ui/components/ModalContent';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+import { CtaButton } from '@polito/lib';
+import { ModalContent } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 type Props = {
   close: () => void;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { checkVersion } from 'react-native-check-version';
 
-import { useSplashContext } from '@lib/core/contexts/SplashContext';
+import { useSplashContext } from '@polito/lib';
 
 import { GITHUB_URL } from '../constants.ts';
 import { getFcmToken, useUpdateAppInfo } from '../queries/authHooks.ts';

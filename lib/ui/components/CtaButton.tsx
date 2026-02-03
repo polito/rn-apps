@@ -10,17 +10,16 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { useSafeBottomBarHeight } from '@lib/core/hooks/useSafeBottomBarHeight';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { Icon } from '@lib/ui/components/Icon';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
-import { shadeColor } from '@lib/ui/utils/colors';
-
+import { useFeedbackContext } from '../../core/contexts/FeedbackContext';
+import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { useSafeBottomBarHeight } from '../hooks/useSafeBottomBarHeight';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
+import { shadeColor } from '../utils/colors';
+import { ActivityIndicator } from './ActivityIndicator';
+import { Icon } from './Icon';
+import { Text } from './Text';
 import { TextWithLinks } from './TextWithLinks';
 
 interface Props extends TouchableHighlightProps {

@@ -1,4 +1,4 @@
-import { Tabs } from '../../../ui/components/Tabs';
+import { Tabs } from '@polito/lib';
 
 export const AgendaFilters = () => {
   return <Tabs>{/* <AgendaTypeFilter /> */}</Tabs>;

@@ -10,14 +10,14 @@ import {
 } from 'react-native';
 
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
-import { useBottomModal } from '@lib/core/hooks/useBottomModal';
-import { BottomModal } from '@lib/ui/components/BottomModal';
-import { Card } from '@lib/ui/components/Card.tsx';
-import { LoadingContainer } from '@lib/ui/components/LoadingContainer.tsx';
-import { SectionHeader } from '@lib/ui/components/SectionHeader.tsx';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet.ts';
-import { useTheme } from '@lib/ui/hooks/useTheme.ts';
-import { Theme } from '@lib/ui/types/Theme.tsx';
+import { useBottomModal } from '@polito/lib';
+import { BottomModal } from '@polito/lib';
+import { Card } from '@polito/lib';
+import { LoadingContainer } from '@polito/lib';
+import { SectionHeader } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetCourseStatistics } from '../../../core/queries/offeringHooks';

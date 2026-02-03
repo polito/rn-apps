@@ -2,16 +2,16 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList } from 'react-native';
 
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { APP_TIMEZONE, formatDate } from '@lib/core/utils/dates';
-import { getHtmlTextContent } from '@lib/core/utils/html';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { GlobalStyles } from '@lib/ui/styles/GlobalStyles';
+import { useOfflineDisabled } from '@polito/lib';
+import { APP_TIMEZONE, formatDate } from '@polito/lib';
+import { getHtmlTextContent } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { IndentedDivider } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { GlobalStyles } from '@polito/lib';
 
 import { DateTime } from 'luxon';
 

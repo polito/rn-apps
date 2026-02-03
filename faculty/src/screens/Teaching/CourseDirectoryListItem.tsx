@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableHighlightProps } from 'react-native';
 
-import { DirectoryListItem } from '../../ui/components/DirectoryListItem';
+import { DirectoryListItem } from '@polito/lib';
 
 interface Props {
   name: string;

@@ -6,18 +6,20 @@ import {
   faLocationDot,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import {
+  Card,
+  Icon,
+  ListItem,
+  OverviewList,
+  Section,
+  SectionHeader,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { Card } from '../../ui/components/Card';
-import { Icon } from '../../ui/components/Icon';
-import { ListItem } from '../../ui/components/ListItem';
-import { OverviewList } from '../../ui/components/OverviewList';
-import { Section } from '../../ui/components/Section';
-import { SectionHeader } from '../../ui/components/SectionHeader';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 
 export const LessonScreen = () => {
   const styles = useStylesheet(createStyles);

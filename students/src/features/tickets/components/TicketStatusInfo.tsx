@@ -2,19 +2,19 @@ import { useTranslation } from 'react-i18next';
 import { Platform, Pressable, StyleSheet } from 'react-native';
 
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { formatDate, formatDateTime } from '@lib/core/utils/dates';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { Card } from '@lib/ui/components/Card';
-import { Col } from '@lib/ui/components/Col';
-import { Icon } from '@lib/ui/components/Icon';
-import { Metric } from '@lib/ui/components/Metric';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { GlobalStyles } from '@lib/ui/styles/GlobalStyles';
-import { Theme } from '@lib/ui/types/Theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
+import { formatDate, formatDateTime } from '@polito/lib';
+import { ActivityIndicator } from '@polito/lib';
+import { Card } from '@polito/lib';
+import { Col } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { Metric } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { GlobalStyles } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 interface TicketStatusProps {
   ticket: TicketOverview;

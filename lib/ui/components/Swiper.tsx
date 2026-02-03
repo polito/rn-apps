@@ -7,10 +7,10 @@ import {
   View,
 } from 'react-native';
 
-import { useDeviceRotation } from '@lib/core/hooks/useDeviceRotation';
-import { CarouselDots } from '@lib/ui/components/CarouselDots.tsx';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet.ts';
-import { Theme } from '@lib/ui/types/Theme.tsx';
+import { useDeviceRotation } from '../../core/hooks/useDeviceRotation';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
+import { CarouselDots } from './CarouselDots';
 
 // isFullScreen property is necessary on Android to enable full-screen
 // functionality for multiple lectures, allowing proper adjustment of the Swiper's height.

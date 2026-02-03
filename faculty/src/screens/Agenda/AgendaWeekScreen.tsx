@@ -10,6 +10,16 @@ import {
   faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
+  Calendar,
+  CalendarHeader,
+  IconButton,
+  Row,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import DateTimePicker, {
   DateTimePickerAndroid,
   DateTimePickerEvent,
@@ -21,14 +31,6 @@ import { DateTime } from 'luxon';
 
 import { Logo } from '../../core/components/Logo';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { IconButton } from '../../ui/components/IconButton';
-import { Row } from '../../ui/components/Row';
-import { Text } from '../../ui/components/Text';
-import { Calendar } from '../../ui/components/calendar/Calendar';
-import { CalendarHeader } from '../../ui/components/calendar/CalendarHeader';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 import { AgendaStackParamList } from './AgendaNavigator';
 import { LectureCard } from './components/LectureCard';
 import { LectureItem } from './types/AgendaItem';
@@ -49,7 +51,7 @@ const handleDateChange = <T extends Date | null>(
 };
 
 export const AgendaWeekScreen = () => {
-  const { colors, spacing, fontSizes } = useTheme();
+  const { colors, spacing, fontSizes, palettes } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<AgendaStackParamList>>();
   const styles = useStylesheet(createStyles);
@@ -94,7 +96,7 @@ export const AgendaWeekScreen = () => {
 
           <IconButton
             icon={faCalendarDay}
-            color={colors.primary[400]}
+            color={palettes.primary[400]}
             size={fontSizes.lg}
             onPress={() => {
               if (Platform.OS === 'android') {
@@ -107,7 +109,7 @@ export const AgendaWeekScreen = () => {
 
           <IconButton
             icon={faPlus}
-            color={colors.primary[400]}
+            color={palettes.primary[400]}
             size={fontSizes.lg}
             onPress={() => {
               navigation.navigate('Form');
@@ -122,14 +124,14 @@ export const AgendaWeekScreen = () => {
               style={{ marginTop: spacing[3], marginLeft: spacing[2] }}
               icon={faEllipsisVertical}
               size={fontSizes.lg}
-              color={colors.primary[400]}
+              color={palettes.primary[400]}
             />
           </TouchableOpacity>
         </Row>
       ),
     });
   }, [
-    colors.primary,
+    palettes.primary,
     fontSizes.lg,
     navigation,
     spacing,
@@ -205,7 +207,7 @@ export const AgendaWeekScreen = () => {
     <View style={{ flex: 1, backgroundColor: colors.white }}>
       <Popover
         isVisible={isMenuVisible}
-        from={buttonRef}
+        from={buttonRef.current}
         onRequestClose={() => setMenuVisible(false)}
       >
         <TouchableOpacity>

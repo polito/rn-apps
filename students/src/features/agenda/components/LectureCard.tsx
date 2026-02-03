@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { faVideo } from '@fortawesome/free-solid-svg-icons';
-import { AgendaCard } from '@lib/ui/components/AgendaCard';
-import { Icon } from '@lib/ui/components/Icon';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
+import { AgendaCard } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp as NavigationProp } from '@react-navigation/native-stack';
 

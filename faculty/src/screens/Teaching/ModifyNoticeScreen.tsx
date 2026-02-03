@@ -8,20 +8,22 @@ import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, TextInput, View } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import {
+  Card,
+  CtaButton,
+  IconButton,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 
+import { DateRow } from '../../core/components/DateRow';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { Card } from '../../ui/components/Card';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { DateRow } from '../../ui/components/DateRow';
-import { IconButton } from '../../ui/components/IconButton';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 
 // Gestione compatibile del cambio data
 const handleDateChange = (
@@ -216,7 +218,7 @@ export const ModifyNoticeScreen = () => {
   );
 };
 
-const createStyles = ({ colors, palettes }: Theme) =>
+const createStyles = ({ palettes }: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -225,7 +227,7 @@ const createStyles = ({ colors, palettes }: Theme) =>
     label: {
       marginLeft: 15,
       marginTop: 5,
-      color: colors.primary[700],
+      color: palettes.primary[700],
     },
     input: {
       borderBottomWidth: 0,

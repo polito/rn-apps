@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, View } from 'react-native';
 
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { Icon } from '@lib/ui/components/Icon';
-import { PillDropdownActivator } from '@lib/ui/components/PillDropdownActivator';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
+import { usePreferencesContext } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { PillDropdownActivator } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { MenuAction, MenuView } from '@react-native-menu/menu';
 
 import { AppPreferences } from '~/core/types/preferences';

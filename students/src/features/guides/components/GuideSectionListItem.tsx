@@ -1,6 +1,6 @@
-import { HtmlView } from '@lib/ui/components/HtmlView';
-import { Text } from '@lib/ui/components/Text';
 import { GuideSection } from '@polito/api-client';
+import { HtmlView } from '@polito/lib';
+import { Text } from '@polito/lib';
 
 type Props = {
   section: GuideSection;

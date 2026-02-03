@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
+import { usePreferencesContext } from '@polito/lib';
 
 import { AppPreferences } from '~/core/types/preferences';
 

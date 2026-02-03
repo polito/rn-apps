@@ -2,14 +2,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
-import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
-import { RadioGroup } from '@lib/ui/components/RadioGroup';
-import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Option } from '@lib/ui/types/Input';
-import { Theme } from '@lib/ui/types/Theme';
+import { useFeedbackContext } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { CtaButton, CtaButtonSpacer } from '@polito/lib';
+import { RadioGroup } from '@polito/lib';
+import { ScreenTitle } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Option } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useBookExam, useGetExams } from '../../../core/queries/examHooks';

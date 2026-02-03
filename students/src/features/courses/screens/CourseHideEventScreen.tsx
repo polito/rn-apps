@@ -2,15 +2,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { faSquareMinus } from '@fortawesome/free-regular-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext.ts';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator.tsx';
-import { Col } from '@lib/ui/components/Col.tsx';
-import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton.tsx';
-import { OverviewList } from '@lib/ui/components/OverviewList.tsx';
-import { Row } from '@lib/ui/components/Row.tsx';
-import { Text } from '@lib/ui/components/Text.tsx';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet.ts';
-import { Theme } from '@lib/ui/types/Theme.tsx';
+import { usePreferencesContext } from '@polito/lib';
+import { ActivityIndicator } from '@polito/lib';
+import { Col } from '@polito/lib';
+import { CtaButton, CtaButtonSpacer } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences.ts';

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useWindowDimensions } from 'react-native';
 
-export enum Orientation {
+enum Orientation {
   LANDSCAPE = 'landscape',
   PORTRAIT = 'portrait',
 }

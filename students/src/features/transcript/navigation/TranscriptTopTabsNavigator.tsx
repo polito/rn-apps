@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { TopTabBar } from '@lib/ui/components/TopTabBar';
+import { TopTabBar } from '@polito/lib';
 import {
   MaterialTopTabBarProps,
   createMaterialTopTabNavigator,
@@ -11,7 +11,7 @@ import { ParamListBase } from '@react-navigation/native';
 import { CareerScreen } from '../screens/CareerScreen';
 import { GradesScreen } from '../screens/GradesScreen';
 
-export interface TranscriptTabs extends ParamListBase {
+interface TranscriptTabs extends ParamListBase {
   OfferingBachelorScreen: undefined;
   OfferingMasterScreen: undefined;
 }

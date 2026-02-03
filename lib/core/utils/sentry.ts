@@ -1,6 +1,7 @@
 import { APP_VERSION, BUILD_NO } from '@env';
-import { isEnvProduction } from '@lib/core/utils/env';
 import * as S from '@sentry/react-native';
+
+import { isEnvProduction } from '../../core/utils/env';
 
 export const navigationIntegration = S.reactNavigationIntegration({
   enableTimeToInitialDisplay: true,

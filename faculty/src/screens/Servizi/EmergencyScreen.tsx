@@ -4,18 +4,20 @@ import { ScrollView, StyleSheet } from 'react-native';
 import { Platform } from 'react-native';
 
 import { faArrowLeft, faPhone } from '@fortawesome/free-solid-svg-icons';
+import {
+  CtaButton,
+  Grid,
+  IconButton,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { Grid } from '../../ui/components/Grid';
-import { IconButton } from '../../ui/components/IconButton';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 import { EmergencyCard } from './EmergencyCard';
 import { ServiceCard } from './ServiceCard';
 import { ProfileStackParamList } from './ServiceNavigator';

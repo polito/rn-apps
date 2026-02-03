@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { CtaButton } from '@lib/ui/components/CtaButton';
-import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
+import { CtaButton } from '@polito/lib';
+import { CtaButtonContainer } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 

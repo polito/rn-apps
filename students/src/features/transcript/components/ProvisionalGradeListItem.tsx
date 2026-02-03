@@ -1,19 +1,19 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { IS_IOS } from '@lib/core/constants';
-import { dateFormatter, formatDate } from '@lib/core/utils/dates';
-import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
 import {
   ProvisionalGrade,
   ProvisionalGradeStateEnum,
 } from '@polito/api-client/models/ProvisionalGrade';
+import { IS_IOS } from '@polito/lib';
+import { dateFormatter, formatDate } from '@polito/lib';
+import { DisclosureIndicator } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { useGetRejectionTime } from '../hooks/useGetRejectionTime';
 import { ProvisionalGradeStatusBadge } from './ProvisionalGradeStatusBadge';

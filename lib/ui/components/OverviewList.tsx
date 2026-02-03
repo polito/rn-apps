@@ -2,13 +2,12 @@ import { Children, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, ViewProps } from 'react-native';
 
-import { useScreenReader } from '@lib/core/hooks/useScreenReader';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { EmptyState } from '@lib/ui/components/EmptyState';
-import { List } from '@lib/ui/components/List';
-
+import { useScreenReader } from '../../core/hooks/useScreenReader';
 import { useTheme } from '../hooks/useTheme';
+import { ActivityIndicator } from './ActivityIndicator';
 import { Card } from './Card';
+import { EmptyState } from './EmptyState';
+import { List } from './List';
 
 type Props = PropsWithChildren<
   ViewProps & {

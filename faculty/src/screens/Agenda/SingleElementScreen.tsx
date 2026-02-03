@@ -9,23 +9,25 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
+  Card,
+  CtaButton,
+  Icon,
+  ListItem,
+  OverviewList,
+  Section,
+  SectionHeader,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { RootParamList } from '../../core/components/NavBar';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { Card } from '../../ui/components/Card';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { Icon } from '../../ui/components/Icon';
-import { ListItem } from '../../ui/components/ListItem';
-import { OverviewList } from '../../ui/components/OverviewList';
-import { Section } from '../../ui/components/Section';
-import { SectionHeader } from '../../ui/components/SectionHeader';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 import { AgendaStackParamList } from './AgendaNavigator';
 
 const CustomBackButton2 = () => {

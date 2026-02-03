@@ -4,9 +4,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { pluckData } from '../../utils/queries.ts';
 import { STUDENT_QUERY_KEY } from './studentHooks.ts';
 
-export const ESC_QUERY_KEY = ['esc'];
+const ESC_QUERY_KEY = ['esc'];
 
-export const useEscClient = (): EscApi => {
+const useEscClient = (): EscApi => {
   return new EscApi();
 };
 

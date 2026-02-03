@@ -1,8 +1,7 @@
 import { Platform } from 'react-native';
 
+import { useTheme } from '@polito/lib';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-
-import { useTheme } from '../../ui/hooks/useTheme';
 
 export const useBottomBarAwareStyles = () => {
   const bottomBarHeight = useBottomTabBarHeight();

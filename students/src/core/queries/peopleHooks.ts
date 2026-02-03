@@ -5,8 +5,8 @@ import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { ignoreNotFound, pluckData } from '../../utils/queries';
 
-export const PEOPLE_QUERY_PREFIX = 'people';
-export const PERSON_QUERY_PREFIX = 'person';
+const PEOPLE_QUERY_PREFIX = 'people';
+const PERSON_QUERY_PREFIX = 'person';
 
 const usePeopleClient = (): PeopleApi => {
   return new PeopleApi();

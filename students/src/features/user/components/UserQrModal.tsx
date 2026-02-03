@@ -2,16 +2,16 @@ import { useCallback, useEffect } from 'react';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import Modal from 'react-native-modal';
 
-import { useDeviceOrientation } from '@lib/core/hooks/useDeviceOrientation';
-import { Col } from '@lib/ui/components/Col.tsx';
-import { Row } from '@lib/ui/components/Row.tsx';
-import { Text } from '@lib/ui/components/Text.tsx';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet.ts';
-import { Theme } from '@lib/ui/types/Theme.tsx';
+import { useDeviceOrientation } from '@polito/lib';
+import { Col } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { QrEsc } from '../../../core/components/QrEsc.tsx';
 
-export type AgendaEventVisibilityModalProps = {
+type AgendaEventVisibilityModalProps = {
   visible: boolean;
   onClose?: () => void;
   dismissable?: boolean;

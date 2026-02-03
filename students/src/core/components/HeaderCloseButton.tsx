@@ -2,11 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { Pressable } from 'react-native';
 
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Icon } from '@lib/ui/components/Icon';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { Icon } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-export const HeaderCloseButton = ({
+const HeaderCloseButton = ({
   navigation,
 }: {
   navigation: NativeStackNavigationProp<any>;

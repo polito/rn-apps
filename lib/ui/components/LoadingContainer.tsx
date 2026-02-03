@@ -2,9 +2,9 @@ import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import { useScreenReader } from '@lib/core/hooks/useScreenReader';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useScreenReader } from '../../core/hooks/useScreenReader';
+import { useTheme } from '../hooks/useTheme';
+import { ActivityIndicator } from './ActivityIndicator';
 
 type Props = PropsWithChildren<{
   loading: boolean;

@@ -1,16 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { LoadingContainer } from '@lib/ui/components/LoadingContainer';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { Section } from '@lib/ui/components/Section';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+import { useOfflineDisabled } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { LoadingContainer } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { useGetOffering } from '../../../core/queries/offeringHooks';
 

@@ -3,14 +3,14 @@ import { Alert, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import uuid from 'react-native-uuid';
 
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { isEnvProduction } from '@lib/core/utils/env';
 import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
 import type {
   AppInfoRequest,
   EnrolMfaRequest,
   ValidateMfaRequest,
 } from '@polito/api-client/models';
+import { usePreferencesContext } from '@polito/lib';
+import { isEnvProduction } from '@polito/lib';
 import { getApp } from '@react-native-firebase/app';
 import { useNavigation } from '@react-navigation/core';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -35,7 +35,7 @@ import { RootParamList } from '../types/navigation.ts';
 import { AppPreferences } from '../types/preferences.ts';
 
 export const WEBMAIL_LINK_QUERY_KEY = ['webmailLink'];
-export const MFA_CHALLENGE_QUERY_KEY = ['mfaChallenge'];
+const MFA_CHALLENGE_QUERY_KEY = ['mfaChallenge'];
 export const MFA_STATUS_QUERY_KEY = ['mfaStatus'];
 
 const useAuthClient = (): AuthApi => {
@@ -60,7 +60,7 @@ export async function getFcmToken(
   return undefined;
 }
 
-export const getClientId = async (): Promise<string> => {
+const getClientId = async (): Promise<string> => {
   try {
     const credentials = await getCredentials();
     if (credentials && credentials.username) {

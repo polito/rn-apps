@@ -3,17 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { Row } from '@lib/ui/components/Row';
-import { Section } from '@lib/ui/components/Section';
-import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { GlobalStyles } from '@lib/ui/styles/GlobalStyles';
-import { Theme } from '@lib/ui/types/Theme';
+import { usePreferencesContext } from '@polito/lib';
+import { useOfflineDisabled } from '@polito/lib';
+import { HeaderAccessory } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { TranslucentTextField } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { GlobalStyles } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { AppPreferences } from '~/core/types/preferences';
 

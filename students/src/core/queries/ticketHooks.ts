@@ -16,9 +16,9 @@ import { useApiContext } from '../contexts/ApiContext';
 export const TICKETS_QUERY_KEY = ['tickets'];
 export const TICKET_QUERY_PREFIX = 'ticket';
 
-export const TICKETS_ATTACHMENTS_PREFIX = 'attachments';
-export const TOPICS_QUERY_KEY = ['topics'];
-export const FAQS_QUERY_KEY = ['faqs'];
+const TICKETS_ATTACHMENTS_PREFIX = 'attachments';
+const TOPICS_QUERY_KEY = ['topics'];
+const FAQS_QUERY_KEY = ['faqs'];
 
 const useTicketsClient = (): TicketsApi => {
   return new TicketsApi();

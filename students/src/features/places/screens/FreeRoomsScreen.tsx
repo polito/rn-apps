@@ -16,21 +16,21 @@ import {
   faMapPin,
 } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
-import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
-import { dateFormatter } from '@lib/core/utils/dates';
-import { notNullish } from '@lib/core/utils/predicates';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { BottomSheet } from '@lib/ui/components/BottomSheet';
-import { EmptyState } from '@lib/ui/components/EmptyState';
-import { Icon } from '@lib/ui/components/Icon';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
-import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { GlobalStyles } from '@lib/ui/styles/GlobalStyles';
 import { PlaceOverview } from '@polito/api-client';
+import { useFeedbackContext } from '@polito/lib';
+import { dateFormatter } from '@polito/lib';
+import { notNullish } from '@polito/lib';
+import { ActivityIndicator } from '@polito/lib';
+import { BottomSheet } from '@polito/lib';
+import { EmptyState } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { IconButton } from '@polito/lib';
+import { IndentedDivider } from '@polito/lib';
+import { ListItem, ListItemProps } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { GlobalStyles } from '@polito/lib';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 

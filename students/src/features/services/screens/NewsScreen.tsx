@@ -1,9 +1,9 @@
 import { SafeAreaView, ScrollView } from 'react-native';
 
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { Section } from '@lib/ui/components/Section';
+import { BottomBarSpacer } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { Section } from '@polito/lib';
 
 import { useGetNews } from '../../../core/queries/newsHooks';
 import { NewsListItem } from '../components/NewsListItem';

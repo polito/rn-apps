@@ -1,8 +1,8 @@
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
-import { Switch } from '@lib/ui/components/Switch';
-import { Text } from '@lib/ui/components/Text';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { useTheme } from '../hooks/useTheme';
+import { ListItem, ListItemProps } from './ListItem';
+import { Switch } from './Switch';
+import { Text } from './Text';
 
 interface Props extends ListItemProps {
   title: string;

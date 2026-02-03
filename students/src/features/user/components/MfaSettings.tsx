@@ -3,15 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { CtaButton } from '@lib/ui/components/CtaButton';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
+import { usePreferencesContext } from '@polito/lib';
+import { CtaButton } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { SectionHeader } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

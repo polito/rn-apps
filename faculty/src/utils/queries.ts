@@ -20,18 +20,14 @@ export const pluckData = <T>(response: SuccessResponse<T>) => {
 /**
  * Take the last page of data currently persisted in store by the infinite query
  */
-export const popPage = <TPage>(
-  data: InfiniteData<TPage> | undefined,
-): TPage => {
+const popPage = <TPage>(data: InfiniteData<TPage> | undefined): TPage => {
   return [...data!.pages].pop()!;
 };
 
 /**
  * Take the first page of data currently persisted in store by the infinite query
  */
-export const shiftPage = <TPage>(
-  data: InfiniteData<TPage> | undefined,
-): TPage => {
+const shiftPage = <TPage>(data: InfiniteData<TPage> | undefined): TPage => {
   return [...data!.pages].shift()!;
 };
 

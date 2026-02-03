@@ -1,8 +1,7 @@
 import { Platform } from 'react-native';
 
+import { Theme } from '@polito/lib';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
-
-import { Theme } from '../../ui/types/Theme';
 
 export const useTitlesStyles: (
   theme: Theme,

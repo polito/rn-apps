@@ -1,15 +1,15 @@
 import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { sanitizeHtml } from '@lib/core/utils/html';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { Card } from '@lib/ui/components/Card';
-import { Col } from '@lib/ui/components/Col';
-import { HtmlView } from '@lib/ui/components/HtmlView';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { Section } from '@lib/ui/components/Section';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+import { sanitizeHtml } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { Card } from '@polito/lib';
+import { Col } from '@polito/lib';
+import { HtmlView } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetOfferingCourse } from '../../../core/queries/offeringHooks';

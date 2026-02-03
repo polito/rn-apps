@@ -15,14 +15,14 @@ import {
   faPersonCirclePlus,
   faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext.ts';
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { split } from '@lib/core/utils/reducers';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { Grid, auto } from '@lib/ui/components/Grid';
-import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+import { usePreferencesContext } from '@polito/lib';
+import { useOfflineDisabled } from '@polito/lib';
+import { split } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { Grid, auto } from '@polito/lib';
+import { UnreadBadge } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { AppPreferences } from '~/core/types/preferences.ts';

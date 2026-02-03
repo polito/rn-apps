@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
-import { APP_TIMEZONE } from '@lib/core/utils/dates';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
-
 import i18n from 'i18next';
 import { DateTime } from 'luxon';
+
+import { APP_TIMEZONE } from '../../core/utils/dates';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
+import { Text } from './Text';
 
 interface TimeWidgetProps {
   right?: boolean;

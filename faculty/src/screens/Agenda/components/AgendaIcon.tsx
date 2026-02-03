@@ -1,8 +1,7 @@
 import { View } from 'react-native';
 
-import { Icon } from '../../../ui/components/Icon';
-import { useTheme } from '../../../ui/hooks/useTheme';
-import { courseIcons } from '../../Teaching/constants';
+import { Icon, useTheme } from '@polito/lib';
+import { courseIcons } from '@polito/lib';
 
 interface Props {
   color: string;

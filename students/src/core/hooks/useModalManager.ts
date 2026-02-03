@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { useSplashContext } from '@lib/core/contexts/SplashContext';
+import { usePreferencesContext } from '@polito/lib';
+import { useSplashContext } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

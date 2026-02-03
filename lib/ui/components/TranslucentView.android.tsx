@@ -1,7 +1,6 @@
 import { View } from 'react-native';
 
-import { useTheme } from '@lib/ui/hooks/useTheme';
-
+import { useTheme } from '../hooks/useTheme';
 import type { TranslucentViewProps } from './TranslucentView';
 
 export const TranslucentView = ({

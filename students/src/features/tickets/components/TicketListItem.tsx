@@ -9,20 +9,20 @@ import {
   faEllipsisVertical,
   faPaperclip,
 } from '@fortawesome/free-solid-svg-icons';
-import { IS_IOS } from '@lib/core/constants';
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { formatDateTime } from '@lib/core/utils/dates';
-import { getHtmlTextContent } from '@lib/core/utils/html';
-import { Col } from '@lib/ui/components/Col';
-import { Icon } from '@lib/ui/components/Icon';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
+import { IS_IOS } from '@polito/lib';
+import { useOfflineDisabled } from '@polito/lib';
+import { formatDateTime } from '@polito/lib';
+import { getHtmlTextContent } from '@polito/lib';
+import { Col } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { IconButton } from '@polito/lib';
+import { ListItem, ListItemProps } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';

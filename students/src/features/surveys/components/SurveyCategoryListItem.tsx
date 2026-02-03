@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 
-import { IS_IOS } from '@lib/core/constants';
-import { Badge } from '@lib/ui/components/Badge';
-import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
-import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
-import { Row } from '@lib/ui/components/Row';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+import { IS_IOS } from '@polito/lib';
+import { Badge } from '@polito/lib';
+import { DisclosureIndicator } from '@polito/lib';
+import { ListItem, ListItemProps } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { SurveyType } from '../types/SurveyType';
 

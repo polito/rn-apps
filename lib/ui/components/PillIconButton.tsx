@@ -1,13 +1,14 @@
 import { StyleSheet } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { Icon } from '@lib/ui/components/Icon';
-import { PillButton, PillButtonProps } from '@lib/ui/components/PillButton';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+
+import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
+import { Icon } from './Icon';
+import { PillButton, PillButtonProps } from './PillButton';
+import { Row } from './Row';
+import { Text } from './Text';
 
 export interface PillIconButtonProps extends PillButtonProps {
   icon?: IconDefinition;

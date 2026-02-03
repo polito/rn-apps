@@ -2,10 +2,10 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, PressableProps, StyleSheet } from 'react-native';
 
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BookingSeatCell as BookingSeatCellType } from '@polito/api-client';
+import { useTheme } from '@polito/lib';
 
-export type BookingSeatProps = PressableProps & {
+type BookingSeatProps = PressableProps & {
   seat: BookingSeatCellType;
   size: number;
   isSelected: boolean;

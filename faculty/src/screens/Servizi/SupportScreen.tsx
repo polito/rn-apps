@@ -4,16 +4,18 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { Platform } from 'react-native';
 
 import { faArrowLeft, faPhone } from '@fortawesome/free-solid-svg-icons';
+import {
+  CtaButton,
+  IconButton,
+  Text,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
 import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { IconButton } from '../../ui/components/IconButton';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
 import { ProfileStackParamList } from './ServiceNavigator';
 
 export const SupportScreen = () => {

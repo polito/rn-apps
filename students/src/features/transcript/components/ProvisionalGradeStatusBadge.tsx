@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 
-import { Badge } from '@lib/ui/components/Badge';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { lightTheme } from '@lib/ui/themes/light';
 import {
   ProvisionalGrade,
   ProvisionalGradeStateEnum,
 } from '@polito/api-client/models/ProvisionalGrade';
+import { Badge } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { lightTheme } from '@polito/lib';
 
 type Props = {
   grade: ProvisionalGrade;

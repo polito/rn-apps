@@ -1,13 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
+import { Text, Theme, useStylesheet } from '@polito/lib';
+
 import { format, isToday, isTomorrow } from 'date-fns';
 // Importa da date-fns
 import { it } from 'date-fns/locale';
-
-import { Text } from '../ui/components/Text';
-import { useStylesheet } from '../ui/hooks/useStylesheet';
-import { Theme } from '../ui/types/Theme';
 
 // Locale per l'italiano
 

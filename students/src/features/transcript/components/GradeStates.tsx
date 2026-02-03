@@ -1,14 +1,14 @@
 import { StyleSheet, View } from 'react-native';
 
-import { Card } from '@lib/ui/components/Card';
-import { Col } from '@lib/ui/components/Col';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import { VerticalDashedLine } from '@lib/ui/components/VerticalDashedLine';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
 import { ProvisionalGradeStateEnum } from '@polito/api-client/models/ProvisionalGrade';
 import { ProvisionalGradeState } from '@polito/api-client/models/ProvisionalGradeState';
+import { Card } from '@polito/lib';
+import { Col } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { VerticalDashedLine } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { useGetProvisionalGradeStates } from '../../../core/queries/studentHooks';
 

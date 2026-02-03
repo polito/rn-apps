@@ -12,6 +12,8 @@ import {
 import { Image, SafeAreaView, StyleSheet, View } from 'react-native';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { ActivityIndicator, GlobalStyles, useTheme } from '@polito/lib';
+import { IS_ANDROID, IS_IOS } from '@polito/lib';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import {
   Header,
@@ -39,12 +41,8 @@ import {
 } from '@react-navigation/native-stack';
 import { BackgroundLayer, Camera, MapView } from '@rnmapbox/maps';
 
-import { GlobalStyles } from '../../../core/components/GlobalStyles';
 import { useDeviceOrientation } from '../../../core/hooks/useDeviceOrientation';
 import { useKeyboardVisibile } from '../../../core/hooks/useKeyBoardVisibile';
-import { IS_ANDROID, IS_IOS } from '../../../core/themes/constants';
-import { ActivityIndicator } from '../../../ui/components/ActivityIndicator';
-import { useTheme } from '../../../ui/hooks/useTheme';
 import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 
 interface Insets {
@@ -78,7 +76,7 @@ const Route = ({ renderRoute }: RouteProps) => {
   );
 };
 
-export const MapNavigator = ({
+const MapNavigator = ({
   initialRouteName,
   children,
   screenOptions,

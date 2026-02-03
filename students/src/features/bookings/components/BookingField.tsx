@@ -2,15 +2,15 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { Col } from '@lib/ui/components/Col';
-import { Icon } from '@lib/ui/components/Icon';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
+import { Col } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
-export type BookingDetailProps = {
+type BookingDetailProps = {
   icon: IconProp;
   label: string;
   value?: string;

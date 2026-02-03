@@ -2,12 +2,12 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+import { useOfflineDisabled } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import {
   getTracksCoursesGrouped,

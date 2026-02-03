@@ -13,27 +13,29 @@ import {
   faPhone,
 } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import {
+  Icon,
+  IconButton,
+  ListItem,
+  Row,
+  SectionHeader,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Logo } from '../../core/components/Logo';
+import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
-import { Icon } from '../../ui/components/Icon';
-import { IconButton } from '../../ui/components/IconButton';
-import { ListItem } from '../../ui/components/ListItem';
-import { Row } from '../../ui/components/Row';
-import { SectionHeader } from '../../ui/components/SectionHeader';
-import { SectionList } from '../../ui/components/SectionList';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 import { ProfileStackParamList } from './ProfileNavigator';
 
 export const ProfileScreen = () => {
   const { t } = useTranslation();
-  const { spacing, colors } = useTheme();
+  const { spacing, palettes } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
@@ -62,7 +64,7 @@ export const ProfileScreen = () => {
 
           <IconButton
             icon={faPenToSquare}
-            color={colors.primary[400]}
+            color={palettes.primary[400]}
             size={fontSizes.lg}
             accessibilityLabel={t('common.preferences')}
             hitSlop={{ left: spacing[3], right: spacing[3] }}
@@ -71,7 +73,7 @@ export const ProfileScreen = () => {
 
           <IconButton
             icon={faBell}
-            color={colors.primary[400]}
+            color={palettes.primary[400]}
             size={fontSizes.lg}
             accessibilityLabel={t('common.preferences')}
             hitSlop={{ left: spacing[3], right: spacing[3] }}
@@ -79,7 +81,7 @@ export const ProfileScreen = () => {
         </Row>
       ),
     });
-  }, [navigation, t, colors, fontSizes, spacing]);
+  }, [navigation, t, palettes, fontSizes, spacing]);
 
   return (
     <ScrollView

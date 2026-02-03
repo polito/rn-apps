@@ -6,8 +6,9 @@ import {
   RefreshControlProps,
 } from 'react-native';
 
-import { usePrevious } from '@lib/core/hooks/usePrevious';
 import { UseQueryResult, onlineManager } from '@tanstack/react-query';
+
+import { usePrevious } from '../../core/hooks/usePrevious';
 
 type Props = Omit<RefreshControlProps, 'refreshing'> & {
   queries: UseQueryResult[];

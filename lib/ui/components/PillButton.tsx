@@ -4,9 +4,9 @@ import {
   TouchableOpacityProps,
 } from 'react-native';
 
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
+import { Text } from './Text';
 
 export type PillButtonProps = TouchableOpacityProps & {
   variant?: 'primary' | 'neutral';

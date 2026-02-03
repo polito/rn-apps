@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { APP_TIMEZONE } from '@lib/core/utils/dates';
-import { Col } from '@lib/ui/components/Col';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+import { usePreferencesContext } from '@polito/lib';
+import { APP_TIMEZONE } from '@polito/lib';
+import { Col } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { AppPreferences } from '~/core/types/preferences';
 

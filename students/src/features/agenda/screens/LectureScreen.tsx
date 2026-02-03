@@ -10,20 +10,20 @@ import {
 } from 'react-native';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { convertMachineDateToFormatDate } from '@lib/core/utils/dates';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton.tsx';
-import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer.tsx';
-import { Icon } from '@lib/ui/components/Icon.tsx';
-import { ListItem } from '@lib/ui/components/ListItem.tsx';
-import { OverviewList } from '@lib/ui/components/OverviewList.tsx';
-import { PersonListItem } from '@lib/ui/components/PersonListItem.tsx';
-import { Row } from '@lib/ui/components/Row.tsx';
-import { Swiper } from '@lib/ui/components/Swiper.tsx';
-import { useTheme } from '@lib/ui/hooks/useTheme.ts';
-import { GlobalStyles } from '@lib/ui/styles/GlobalStyles';
 import { VirtualClassroom } from '@polito/api-client/models/VirtualClassroom';
+import { usePreferencesContext } from '@polito/lib';
+import { convertMachineDateToFormatDate } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { CtaButton, CtaButtonSpacer } from '@polito/lib';
+import { CtaButtonContainer } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { PersonListItem } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Swiper } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { GlobalStyles } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences.ts';

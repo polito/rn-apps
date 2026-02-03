@@ -2,15 +2,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, TouchableOpacity } from 'react-native';
 
-import {
-  PreferencesContextBase,
-  usePreferencesContext,
-} from '@lib/core/contexts/PreferencesContext';
-import { courseIcons } from '@lib/features/courses/constants';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
-import { Icon } from '@lib/ui/components/Icon';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { PreferencesContextBase, usePreferencesContext } from '@polito/lib';
+import { courseIcons } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { CtaButton, CtaButtonSpacer } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';

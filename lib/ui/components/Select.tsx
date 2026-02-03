@@ -2,10 +2,11 @@ import { useMemo } from 'react';
 import { Pressable, View } from 'react-native';
 
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { IS_ANDROID } from '@lib/core/constants';
-import { Icon } from '@lib/ui/components/Icon';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
+
+import { IS_ANDROID } from '../../core/constants';
+import { Icon } from './Icon';
+import { ListItem } from './ListItem';
+import { StatefulMenuView } from './StatefulMenuView';
 
 interface DropdownOption {
   id: string;

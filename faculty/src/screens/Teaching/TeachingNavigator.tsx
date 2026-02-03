@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { JSX, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -11,6 +11,8 @@ import Popover from 'react-native-popover-view';
 
 import { faArrowLeft, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { Text } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import {
   NativeStackNavigationProp,
@@ -20,8 +22,6 @@ import {
 import { Logo } from '../../core/components/Logo';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useTitlesStyles } from '../../core/hooks/useTitleStyles';
-import { Text } from '../../ui/components/Text';
-import { useTheme } from '../../ui/hooks/useTheme';
 import { AgendaStackParamList } from '../Agenda/AgendaNavigator';
 import { ExamScreen } from '../ExamScreen';
 import { ExamScreen2 } from '../ExamScreen2';
@@ -482,7 +482,7 @@ const NoticeMenu = () => {
       {/* Popover che si apre sotto i tre puntini */}
       <Popover
         isVisible={isMenuVisible}
-        from={buttonRef}
+        from={buttonRef.current}
         onRequestClose={() => setMenuVisible(false)}
       >
         <TouchableOpacity onPress={handleUpdate}>
@@ -546,7 +546,7 @@ const LectureMenu = () => {
       {/* Popover che si apre sotto i tre puntini */}
       <Popover
         isVisible={isMenuVisible}
-        from={buttonRef}
+        from={buttonRef.current}
         onRequestClose={() => setMenuVisible(false)}
       >
         <TouchableOpacity onPress={handleUpdate}>

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useTheme } from '@polito/lib';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HeaderLogoNoProps } from '../../../core/components/HeaderLogo';
@@ -32,7 +32,7 @@ export type UserStackParamList = OfferingStackParamList & {
   Person: { id: number };
 };
 
-export const UserNavigatorID = 'UserTabNavigator';
+const UserNavigatorID = 'UserTabNavigator';
 const Stack = createNativeStackNavigator<
   UserStackParamList,
   typeof UserNavigatorID

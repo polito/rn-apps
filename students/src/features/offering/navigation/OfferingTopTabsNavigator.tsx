@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 
-import { TopTabBar } from '@lib/ui/components/TopTabBar';
+import { TopTabBar } from '@polito/lib';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ParamListBase } from '@react-navigation/native';
 
 import { Offerings } from '../screens/Offerings';
 
-export interface OfferingTabsParamList extends ParamListBase {
+interface OfferingTabsParamList extends ParamListBase {
   OfferingBachelorScreen: undefined;
   OfferingMasterScreen: undefined;
 }

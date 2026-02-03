@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 
 import { faChevronDown, faSchool } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { Icon } from '@lib/ui/components/Icon';
-import { Row } from '@lib/ui/components/Row';
-import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
-import { Text } from '@lib/ui/components/Text';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { usePreferencesContext } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { StatefulMenuView } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 
 import { AppPreferences } from '~/core/types/preferences';
 

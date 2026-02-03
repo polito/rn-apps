@@ -6,7 +6,7 @@ import {
   ScrollView,
 } from 'react-native';
 
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
+import { BottomBarSpacer } from './BottomBarSpacer';
 
 export const ScreenContainer = ({ children }: PropsWithChildren) => {
   return (

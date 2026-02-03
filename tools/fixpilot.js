@@ -89,14 +89,14 @@ try {
     }
 
     console.log('♻️  cleaning DerivedData');
-    run('sudo rm -rf ~/Library/Developer/Xcode/DerivedData/*');
+    run('sudo rm -rf ~/Library/Developer/Xcode/DerivedData');
   }
 
   // read workspaces form package.json
   const packageJson = JSON.parse(
     fs.readFileSync(path.resolve(__dirname, '../package.json'), 'utf-8'),
   );
-  const workspaces = packageJson.workspaces || [];
+  const workspaces = (packageJson.workspaces || []).filter(w => w !== 'lib');
   console.log('🔍 found workspaces:', workspaces.join(', '));
 
   const skipModules = process.argv.includes('--skip-modules');

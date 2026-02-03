@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { faSignsPost } from '@fortawesome/free-solid-svg-icons';
-import { notNullish } from '@lib/core/utils/predicates';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { BottomSheet } from '@lib/ui/components/BottomSheet';
-import { EmptyState } from '@lib/ui/components/EmptyState';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { GlobalStyles } from '@lib/ui/styles/GlobalStyles';
+import { notNullish } from '@polito/lib';
+import { ActivityIndicator } from '@polito/lib';
+import { BottomSheet } from '@polito/lib';
+import { EmptyState } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { GlobalStyles } from '@polito/lib';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';

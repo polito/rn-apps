@@ -8,14 +8,14 @@ import {
 } from 'react-native';
 
 import { faUser } from '@fortawesome/free-regular-svg-icons';
-import { MAX_RECENT_SEARCHES } from '@lib/core/constants';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { Icon } from '@lib/ui/components/Icon';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { PersonOverview } from '@polito/api-client/models';
+import { MAX_RECENT_SEARCHES } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib';
+import { useOfflineDisabled } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';

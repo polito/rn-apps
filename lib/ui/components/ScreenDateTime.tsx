@@ -1,11 +1,12 @@
 import { useMemo } from 'react';
 
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { Icon } from '@lib/ui/components/Icon';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+
+import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { useTheme } from '../hooks/useTheme';
+import { Icon } from './Icon';
+import { Row } from './Row';
+import { Text } from './Text';
 
 interface Props {
   accessible?: boolean;

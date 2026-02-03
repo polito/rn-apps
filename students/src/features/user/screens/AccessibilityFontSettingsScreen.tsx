@@ -2,15 +2,15 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { Col } from '@lib/ui/components/Col';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
-import { Text } from '@lib/ui/components/Text';
+import { usePreferencesContext } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { Col } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { SectionHeader } from '@polito/lib';
+import { SwitchListItem } from '@polito/lib';
+import { Text } from '@polito/lib';
 import { MenuAction, MenuView } from '@react-native-menu/menu';
 
 import { AppPreferences } from '~/core/types/preferences';

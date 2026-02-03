@@ -4,10 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import { SurveyType } from '../../features/surveys/types/SurveyType';
 import { pluckData } from '../../utils/queries';
 
-export const SURVEYS_QUERY_KEY = ['surveys'];
-export const CPD_QUERY_KEY = ['cpd'];
-export const CPD_ALL_QUERY_KEY = ['cpdall'];
-export const CPD_CATEGORIES_QUERY_KEY = ['cpdCategories'];
+const SURVEYS_QUERY_KEY = ['surveys'];
+const CPD_QUERY_KEY = ['cpd'];
+const CPD_ALL_QUERY_KEY = ['cpdall'];
+const CPD_CATEGORIES_QUERY_KEY = ['cpdCategories'];
 
 const useSurveysClient = (): SurveysApi => {
   return new SurveysApi();

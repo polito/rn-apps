@@ -7,18 +7,18 @@ import {
   faLocationDot,
   faVideo,
 } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { Col } from '@lib/ui/components/Col';
-import { Icon } from '@lib/ui/components/Icon';
-import { Row } from '@lib/ui/components/Row';
-import { Stack } from '@lib/ui/components/Stack';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
 
+import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
 import { AgendaIcon } from './AgendaIcon';
 import { Card } from './Card';
+import { Col } from './Col';
+import { Icon } from './Icon';
 import { LiveIndicator } from './LiveIndicator';
+import { Row } from './Row';
+import { Stack } from './Stack';
 import { Text } from './Text';
 
 export interface AgendaCardProps {

@@ -1,4 +1,4 @@
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useTheme } from '@polito/lib';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 export const useBottomBarAwareStyles = (addSpacing: boolean = true) => {

@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 
-import { formatDateWithTimeIfNotNull } from '@lib/core/utils/dates';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { PersonListItem } from '@lib/ui/components/PersonListItem';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { GlobalStyles } from '@lib/ui/styles/GlobalStyles';
+import { formatDateWithTimeIfNotNull } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { PersonListItem } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { GlobalStyles } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';

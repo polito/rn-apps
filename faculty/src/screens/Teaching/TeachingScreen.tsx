@@ -1,15 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 
+import { BottomBarSpacer, ListItem, Section, SectionHeader } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
+import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { ListItem } from '../../ui/components/ListItem';
-import { Section } from '../../ui/components/Section';
-import { SectionHeader } from '../../ui/components/SectionHeader';
-import { SectionList } from '../../ui/components/SectionList';
 import { TeachingStackParamList } from './TeachingNavigator';
 
 export const TeachingScreen = () => {

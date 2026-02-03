@@ -2,7 +2,7 @@ import { LinkingOptions } from '@react-navigation/native';
 
 export const setDeepLink = () => {
   const linking: LinkingOptions<any> = {
-    prefixes: ['polito://students'],
+    prefixes: ['polito://faculty'],
     config: {
       screens: {
         Login: {

@@ -4,14 +4,14 @@ import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { Pdf } from 'react-native-pdf-light';
 
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
-import { FullWidthPicture } from '@lib/ui/components/FullWidthPicture';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { TextButton } from '@lib/ui/components/TextButton';
-import { TranslucentTextField } from '@lib/ui/components/TranslucentTextField';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
+import { useFeedbackContext } from '@polito/lib';
+import { FullWidthPicture } from '@polito/lib';
+import { IconButton } from '@polito/lib';
+import { TextButton } from '@polito/lib';
+import { TranslucentTextField } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useUploadAssignment } from '../../../core/queries/courseHooks';

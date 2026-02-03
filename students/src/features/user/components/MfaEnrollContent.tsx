@@ -7,14 +7,14 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 
-import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { resetNavigationStatusTo } from '@lib/core/utils/navigation';
-import { CtaButton } from '@lib/ui/components/CtaButton';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { TextField } from '@lib/ui/components/TextField';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+import { useFeedbackContext } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib';
+import { resetNavigationStatusTo } from '@polito/lib';
+import { CtaButton } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { TextField } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';

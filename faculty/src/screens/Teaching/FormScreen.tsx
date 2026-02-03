@@ -12,19 +12,21 @@ import {
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { faFileUpload, faVideo } from '@fortawesome/free-solid-svg-icons';
+import {
+  Card,
+  IconButton,
+  Row,
+  Select,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { Card } from '../../ui/components/Card';
-import { IconButton } from '../../ui/components/IconButton';
-import { Row } from '../../ui/components/Row';
-import { Select } from '../../ui/components/Select';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 
 // Funzione per gestire il cambio della data
 const handleDateChange = (

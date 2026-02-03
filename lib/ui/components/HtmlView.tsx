@@ -7,20 +7,26 @@ import RenderHTML, {
   useInternalRenderer,
 } from 'react-native-render-html';
 
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { ImageLoader } from '@lib/ui/components/ImageLoader';
-import { Text, calculateValueOfPercentage } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { render as domToHtml } from 'dom-serializer';
-import { ChildNode, Document, Element, hasChildren } from 'domhandler';
-import { Text as domText } from 'domhandler';
+import {
+  ChildNode,
+  Document,
+  Element,
+  Text as domText,
+  hasChildren,
+} from 'domhandler';
 import { replaceElement } from 'domutils';
 import { parseDocument } from 'htmlparser2';
+
+import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
+import { ImageLoader } from './ImageLoader';
+import { Text, calculateValueOfPercentage } from './Text';
 
 type ImageData = {
   width: number;

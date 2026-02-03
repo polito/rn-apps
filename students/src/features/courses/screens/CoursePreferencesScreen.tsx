@@ -14,19 +14,19 @@ import {
   faIcons,
   faVideoCamera,
 } from '@fortawesome/free-solid-svg-icons';
-import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { formatFileSize } from '@lib/core/utils/files';
-import { courseIcons } from '@lib/features/courses/constants';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { Icon } from '@lib/ui/components/Icon';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useFeedbackContext } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib';
+import { formatFileSize } from '@polito/lib';
+import { courseIcons } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { SectionHeader } from '@polito/lib';
+import { SwitchListItem } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';

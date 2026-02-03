@@ -1,5 +1,5 @@
-import { IS_ANDROID } from '@lib/core/constants';
-import { Theme } from '@lib/ui/types/Theme';
+import { IS_ANDROID } from '../../core/constants';
+import { Theme } from '../types/Theme';
 
 const navy = {
   50: '#B7E1FF',

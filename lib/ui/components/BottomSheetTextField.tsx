@@ -2,10 +2,11 @@ import { memo, useCallback } from 'react';
 import { NativeSyntheticEvent, TextInputFocusEventData } from 'react-native';
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+
 import {
   TranslucentTextField,
   TranslucentTextFieldProps,
-} from '@lib/ui/components/TranslucentTextField';
+} from './TranslucentTextField';
 
 const BottomSheetTextFieldComponent = ({
   onFocus,

@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Platform } from 'react-native';
 
 import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
-import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
+import { usePreferencesContext } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { CtaButton, CtaButtonSpacer } from '@polito/lib';
+import { IndentedDivider } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 

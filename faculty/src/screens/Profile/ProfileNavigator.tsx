@@ -2,11 +2,11 @@ import { Platform, TouchableOpacity } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useTheme } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { useTitlesStyles } from '../../core/hooks/useTitleStyles';
-import { useTheme } from '../../ui/hooks/useTheme';
 import { ProfileForm } from './ProfileForm';
 import { ProfileScreen } from './ProfileScreen';
 import { SettingsScreen } from './SettingsScreen';

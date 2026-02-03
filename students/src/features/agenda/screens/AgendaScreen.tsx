@@ -15,17 +15,17 @@ import {
   faCalendarDay,
   faEllipsisVertical,
 } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { APP_TIMEZONE } from '@lib/core/utils/dates';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
+import { usePreferencesContext } from '@polito/lib';
+import { useOfflineDisabled } from '@polito/lib';
+import { APP_TIMEZONE } from '@polito/lib';
+import { ActivityIndicator } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { HeaderAccessory } from '@polito/lib';
+import { IconButton } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';

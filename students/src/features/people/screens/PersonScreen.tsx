@@ -15,23 +15,23 @@ import {
   faPhone,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { notNullish } from '@lib/core/utils/predicates';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { Col } from '@lib/ui/components/Col';
-import { Icon } from '@lib/ui/components/Icon';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { Metric } from '@lib/ui/components/Metric';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { Row } from '@lib/ui/components/Row';
-import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
 import { PersonCourse, PhoneNumber } from '@polito/api-client';
+import { useOfflineDisabled } from '@polito/lib';
+import { notNullish } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { Col } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { Metric } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { SectionHeader } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';

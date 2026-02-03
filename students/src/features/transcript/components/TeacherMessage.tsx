@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { Card } from '@lib/ui/components/Card.tsx';
-import { Text } from '@lib/ui/components/Text.tsx';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet.ts';
-import { Theme } from '@lib/ui/types/Theme.tsx';
+import { Card } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { ReadMoreText } from '../../../core/components/ReadMoreText.tsx';
 
-export type Props = {
+type Props = {
   message: string;
 };
 

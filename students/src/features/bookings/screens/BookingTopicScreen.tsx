@@ -14,16 +14,16 @@ import {
   faChevronRight,
   faChevronUp,
 } from '@fortawesome/free-solid-svg-icons';
-import { sanitizeHtml } from '@lib/core/utils/html';
-import { Icon } from '@lib/ui/components/Icon';
-import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { Row } from '@lib/ui/components/Row';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { Text } from '@lib/ui/components/Text';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BookingSubtopic } from '@polito/api-client/models';
+import { sanitizeHtml } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { IndentedDivider } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { SectionHeader } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetBookingTopics } from '../../../core/queries/bookingHooks';

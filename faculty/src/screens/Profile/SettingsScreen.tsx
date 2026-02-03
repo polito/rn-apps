@@ -5,20 +5,22 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import {
+  IconButton,
+  ListItem,
+  SectionHeader,
+  Select,
+  Text,
+  usePreferencesContext,
+  useTheme,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 
 import i18next from 'i18next';
 import { Settings } from 'luxon';
 
-import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { SectionList } from '../../core/components/SectionList';
 import { useOfflineDisabled } from '../../core/hooks/useOfflineDisabled';
-import { IconButton } from '../../ui/components/IconButton';
-import { ListItem } from '../../ui/components/ListItem';
-import { SectionHeader } from '../../ui/components/SectionHeader';
-import { SectionList } from '../../ui/components/SectionList';
-import { Select } from '../../ui/components/Select';
-import { Text } from '../../ui/components/Text';
-import { useTheme } from '../../ui/hooks/useTheme';
 
 // Componente Select per la lingua (rimane uguale)
 const LanguageSelect = () => {

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ImageURISource, StyleSheet, View } from 'react-native';
 import { PERMISSIONS, request } from 'react-native-permissions';
 
+import { Divider, notNullish, useTheme } from '@polito/lib';
 import {
   Images,
   RasterLayer,
@@ -12,9 +13,6 @@ import {
 
 import { TranslucentView } from '../../../core/components/TranslucentView';
 import { useTitlesStyles } from '../../../core/hooks/useTitleStyles';
-import { Divider } from '../../../ui/components/Divider';
-import { useTheme } from '../../../ui/hooks/useTheme';
-import { notNullish } from '../../../utils/predicates';
 import { INTERIORS_MIN_ZOOM, MAX_ZOOM, RASTER_TILE_SIZE } from '../constants';
 import { PlacesContext } from '../contexts/PlacesContext';
 import { usePlaceCategoriesMap } from '../hooks/usePlaceCategoriesMap';
@@ -24,11 +22,6 @@ import { FreeRoomsScreen } from '../screens/FreeRoomsScreen';
 import { PlaceScreen } from '../screens/PlaceScreen';
 import { PlacesScreen } from '../screens/PlacesScreen';
 import { createMapNavigator } from './MapNavigator';
-
-export type ServiceStackParamList = {
-  Places: undefined;
-  MessagesModal: undefined;
-};
 
 export type PlacesStackParamList = {
   Places1: {

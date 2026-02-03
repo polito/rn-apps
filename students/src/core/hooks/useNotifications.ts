@@ -25,17 +25,17 @@ import {
   UnreadNotificationsByScope,
 } from '../types/notifications';
 
-export const CourseTransactionId = {
+const CourseTransactionId = {
   avvisidoc: 'avvisidoc',
   videolezioni: 'videolezioni',
   virtualclassroom: 'virtualclassroom',
   matdid: 'matdid',
 } as const;
 
-export type CourseTransactionId =
+type CourseTransactionId =
   (typeof CourseTransactionId)[keyof typeof CourseTransactionId];
 
-export const TransactionId = {
+const TransactionId = {
   ...MessageType,
   ...CourseTransactionId,
   ticket: 'ticket',
@@ -43,7 +43,7 @@ export const TransactionId = {
   avvisi: 'avvisi',
 } as const;
 
-export type TransactionId = (typeof TransactionId)[keyof typeof TransactionId];
+type TransactionId = (typeof TransactionId)[keyof typeof TransactionId];
 
 const courseTransactionsMapping: Record<
   CourseTransactionId,

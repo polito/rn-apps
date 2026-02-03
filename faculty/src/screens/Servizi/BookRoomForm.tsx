@@ -10,6 +10,18 @@ import {
 } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import {
+  Card,
+  CtaButton,
+  IconButton,
+  Row,
+  Select,
+  Switch,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import DateTimePicker, {
   DateTimePickerAndroid,
   DateTimePickerEvent,
@@ -17,18 +29,8 @@ import DateTimePicker, {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { DateRow } from '../../core/components/DateRow';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { Card } from '../../ui/components/Card';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { DateRow } from '../../ui/components/DateRow';
-import { IconButton } from '../../ui/components/IconButton';
-import { Row } from '../../ui/components/Row';
-import { Select } from '../../ui/components/Select';
-import { Switch } from '../../ui/components/Switch';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 import { ProfileStackParamList } from './ServiceNavigator';
 
 const availableSlots = [
@@ -46,7 +48,7 @@ const places = ['Valentino', 'Centrale'];
 export const BookRoomForm = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { spacing, colors, palettes } = useTheme();
+  const { spacing, palettes } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const [showStartPicker, setShowStartPicker] = useState(false);
@@ -279,7 +281,7 @@ export const BookRoomForm = () => {
             style={{
               marginLeft: 17,
               marginTop: 5,
-              color: colors.formTitle,
+              color: palettes.gray[800],
             }}
           >
             {t('other.requestReason')}
@@ -296,7 +298,7 @@ export const BookRoomForm = () => {
               padding: spacing[2],
               marginLeft: 10,
               fontSize: 16,
-              color: colors.formPlaceHolder,
+              color: palettes.gray[600],
               minHeight: 50,
             }}
           />

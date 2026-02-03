@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
+import { HeaderAccessory } from './HeaderAccessory';
+import { IconButton } from './IconButton';
+import { Text } from './Text';
 
 type Props = {
   title: string;

@@ -2,12 +2,12 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { BarChart, barDataItem } from 'react-native-gifted-charts';
 
-import { Col } from '@lib/ui/components/Col.tsx';
-import { Text } from '@lib/ui/components/Text.tsx';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet.ts';
-import { useTheme } from '@lib/ui/hooks/useTheme.ts';
-import type { Theme } from '@lib/ui/types/Theme.tsx';
 import type { CourseStatistics } from '@polito/api-client';
+import { Col } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import type { Theme } from '@polito/lib';
 
 import { emptyChartData, kChartAnimationDuration } from '../chartConstant.ts';
 import { LegendItem } from './LegendItem.tsx';

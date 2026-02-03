@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react';
 import { SafeAreaView, ScrollView } from 'react-native';
 
-import { linkUrls, sanitizeHtml } from '@lib/core/utils/html';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { linkUrls, sanitizeHtml } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 

@@ -5,21 +5,23 @@ import { faMapPin } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { BottomSheetFlatListProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetScrollable/types';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
-
-import { ActivityIndicator } from '../../../ui/components/ActivityIndicator';
 import {
+  ActivityIndicator,
   BottomSheet,
   BottomSheetProps,
-} from '../../../ui/components/BottomSheet';
-import { BottomSheetTextField } from '../../../ui/components/BottomSheetTextField';
-import { Icon } from '../../../ui/components/Icon';
-import { IndentedDivider } from '../../../ui/components/IndentedDivider';
-import { ListItem, ListItemProps } from '../../../ui/components/ListItem';
-import { TranslucentTextFieldProps } from '../../../ui/components/TranslucentTextField';
-import { useTheme } from '../../../ui/hooks/useTheme';
+  BottomSheetTextField,
+  Icon,
+  IndentedDivider,
+  ListItem,
+  ListItemProps,
+  TranslucentTextFieldProps,
+  useTheme,
+} from '@polito/lib';
 
-export interface PlacesBottomSheetProps
-  extends Omit<BottomSheetProps, 'children'> {
+export interface PlacesBottomSheetProps extends Omit<
+  BottomSheetProps,
+  'children'
+> {
   textFieldProps?: Partial<TranslucentTextFieldProps>;
   searchFieldLabel?: string;
   listProps?: Partial<BottomSheetFlatListProps<ListItemProps>>;

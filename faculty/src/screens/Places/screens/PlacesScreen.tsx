@@ -24,30 +24,32 @@ import {
   faMagnifyingGlassLocation,
 } from '@fortawesome/free-solid-svg-icons';
 import { PlaceOverview } from '@polito/api-client';
+import {
+  Divider,
+  EmptyState,
+  GlobalStyles,
+  Icon,
+  IconButton,
+  Row,
+  StatefulMenuView,
+  Text,
+  Theme,
+  TranslucentCard,
+  usePreferencesContext,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import { useHeaderHeight } from '@react-navigation/elements';
 import Mapbox, { CameraPadding } from '@rnmapbox/maps';
 
 import { debounce } from 'lodash';
 
-import { GlobalStyles } from '../../../core/components/GlobalStyles';
 import { HeaderLogo } from '../../../core/components/HeaderLogo';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import {
   useGetPlaceCategory,
   useGetPlaceSubCategory,
 } from '../../../core/queries/placesHooks';
-import { Divider } from '../../../ui/components/Divider';
-import { EmptyState } from '../../../ui/components/EmptyState';
-import { Icon } from '../../../ui/components/Icon';
-import { IconButton } from '../../../ui/components/IconButton';
-import { Row } from '../../../ui/components/Row';
-import { StatefulMenuView } from '../../../ui/components/StatefulMenuView';
-import { Text } from '../../../ui/components/Text';
-import { TranslucentCard } from '../../../ui/components/TranslucentCard';
-import { useStylesheet } from '../../../ui/hooks/useStylesheet';
-import { useTheme } from '../../../ui/hooks/useTheme';
-import { Theme } from '../../../ui/types/Theme';
 import { CampusSelector } from '../components/CampusSelector';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';

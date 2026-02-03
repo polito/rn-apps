@@ -2,17 +2,19 @@ import { useTranslation } from 'react-i18next';
 import { FlatList } from 'react-native';
 
 import { faInbox, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  BottomBarSpacer,
+  BottomModal,
+  CtaButton,
+  EmptyState,
+  GlobalStyles,
+  IndentedDivider,
+  PersonListItem,
+} from '@polito/lib';
+import { useBottomModal } from '@polito/lib';
 
-import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
-import { BottomModal } from '../../core/components/BottomModal';
-import { GlobalStyles } from '../../core/components/GlobalStyles';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { useBottomModal } from '../../core/hooks/useBottomModal';
 import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { EmptyState } from '../../ui/components/EmptyState';
-import { IndentedDivider } from '../../ui/components/IndentedDivider';
-import { PersonListItem } from '../../ui/components/PersonListItem';
 import { AddStaffModalContent } from './AddStaffModalContent';
 
 export const StaffScreen = () => {

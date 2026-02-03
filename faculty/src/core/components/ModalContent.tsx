@@ -3,12 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-
-import { HeaderAccessory } from '../../ui/components/HeaderAccessory';
-import { IconButton } from '../../ui/components/IconButton';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
+import {
+  HeaderAccessory,
+  IconButton,
+  Text,
+  Theme,
+  useStylesheet,
+} from '@polito/lib';
 
 type Props = {
   title: string;

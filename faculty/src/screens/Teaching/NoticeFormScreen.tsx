@@ -11,20 +11,22 @@ import {
 } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import {
+  Card,
+  CtaButton,
+  IconButton,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 
+import { DateRow } from '../../core/components/DateRow';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { Card } from '../../ui/components/Card';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { DateRow } from '../../ui/components/DateRow';
-import { IconButton } from '../../ui/components/IconButton';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 
 // Gestione sicura e compatibile dei date picker
 const handleDateChange = <T extends Date | null>(
@@ -46,7 +48,7 @@ const handleDateChange = <T extends Date | null>(
 
 export const NoticeFormScreen = () => {
   const navigation = useNavigation();
-  const { colors, spacing } = useTheme();
+  const { colors, spacing, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { selectedCourse, addNoticeToCourse } = useCourses();
   const { t } = useTranslation();
@@ -130,7 +132,7 @@ export const NoticeFormScreen = () => {
             placeholder={t('other.insertTitle')}
             value={title}
             onChangeText={setTitle}
-            style={[styles.input, { color: colors.formPlaceHolder }]}
+            style={[styles.input, { color: palettes.gray[600] }]}
           />
         </Card>
 
@@ -143,7 +145,7 @@ export const NoticeFormScreen = () => {
             value={description}
             onChangeText={setDescription}
             multiline
-            style={[styles.input, { color: colors.formPlaceHolder }]}
+            style={[styles.input, { color: palettes.gray[600] }]}
           />
         </Card>
 
@@ -200,7 +202,7 @@ export const NoticeFormScreen = () => {
   );
 };
 
-const createStyles = ({ colors }: Theme) =>
+const createStyles = ({ palettes }: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -210,7 +212,7 @@ const createStyles = ({ colors }: Theme) =>
     label: {
       marginLeft: 15,
       marginTop: 5,
-      color: colors.primary[700],
+      color: palettes.primary[700],
     },
     input: {
       borderBottomWidth: 0,

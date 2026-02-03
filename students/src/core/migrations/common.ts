@@ -1,4 +1,4 @@
-import { PreferencesContextProps } from '@lib/core/contexts/PreferencesContext';
+import { PreferencesContextProps } from '@polito/lib';
 import { QueryClient } from '@tanstack/react-query';
 
 import { AppPreferences } from '../types/preferences';

@@ -1,6 +1,6 @@
 import Svg, { ClipPath, Defs, G, Path, SvgProps } from 'react-native-svg';
 
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useTheme } from '@polito/lib';
 
 export const PolitoLogo = (props: SvgProps) => {
   const { palettes, dark } = useTheme();

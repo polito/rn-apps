@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 
-import { dateFormatter, formatReadableDate } from '@lib/core/utils/dates';
-import { ScreenDateTime } from '@lib/ui/components/ScreenDateTime';
 import { Booking } from '@polito/api-client';
+import { dateFormatter, formatReadableDate } from '@polito/lib';
+import { ScreenDateTime } from '@polito/lib';
 
 interface Props {
   accessible?: boolean;

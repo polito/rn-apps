@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { MixedStyleDeclaration } from 'react-native-render-html';
 
-import { linkUrls, sanitizeHtml } from '@lib/core/utils/html';
-import { HtmlView } from '@lib/ui/components/HtmlView';
+import { linkUrls, sanitizeHtml } from '@polito/lib';
+import { HtmlView } from '@polito/lib';
 
 export interface HtmlMessage {
   message: string;

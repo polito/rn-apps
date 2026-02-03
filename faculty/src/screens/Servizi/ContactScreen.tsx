@@ -12,22 +12,24 @@ import {
   faUser,
   faUserTie,
 } from '@fortawesome/free-solid-svg-icons';
+import {
+  Col,
+  Icon,
+  IconButton,
+  ListItem,
+  Row,
+  SectionHeader,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 
+import { RoleListItem } from '../../core/components/RoleListItem';
+import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
-import { Col } from '../../ui/components/Col';
-import { Icon } from '../../ui/components/Icon';
-import { IconButton } from '../../ui/components/IconButton';
-import { ListItem } from '../../ui/components/ListItem';
-import { RoleListItem } from '../../ui/components/RoleListItem';
-import { Row } from '../../ui/components/Row';
-import { SectionHeader } from '../../ui/components/SectionHeader';
-import { SectionList } from '../../ui/components/SectionList';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 
 export const ContactScreen = () => {
   const { t } = useTranslation();

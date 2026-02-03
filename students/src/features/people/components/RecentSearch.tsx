@@ -4,16 +4,16 @@ import { FlatList, Platform, StyleSheet, View } from 'react-native';
 import ContextMenu from 'react-native-context-menu-view';
 
 import { faEllipsisVertical, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { IS_ANDROID } from '@lib/core/constants';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
 import { PersonOverview } from '@polito/api-client/models';
+import { IS_ANDROID } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib';
+import { IconButton } from '@polito/lib';
+import { IndentedDivider } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { AppPreferences } from '~/core/types/preferences';
 
@@ -23,7 +23,7 @@ type MenuProps = PropsWithChildren<{
   person: PersonOverview;
 }>;
 
-export const Menu = ({ person, children }: MenuProps) => {
+const Menu = ({ person, children }: MenuProps) => {
   const { t } = useTranslation();
   const { palettes } = useTheme();
   const { peopleSearched, updatePreference } =

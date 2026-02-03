@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { notNullish } from '@lib/core/utils/predicates';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { PlaceOverview } from '@polito/api-client';
 import { PlaceCategory } from '@polito/api-client/models';
+import { usePreferencesContext } from '@polito/lib';
+import { notNullish } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 
@@ -17,7 +17,7 @@ import { DEFAULT_CATEGORY_MARKER } from '../constants';
 import { usePlaceCategoriesMap } from '../hooks/usePlaceCategoriesMap';
 import { SearchPlace, isPlace } from '../types';
 
-export interface MarkersLayerProps {
+interface MarkersLayerProps {
   selectedPoiId?: string;
   search?: string;
   places?: SearchPlace[];

@@ -10,22 +10,24 @@ import {
 } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import {
+  Card,
+  CtaButton,
+  IconButton,
+  Select,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { DateRow } from '../../core/components/DateRow';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { Card } from '../../ui/components/Card';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { DateRow } from '../../ui/components/DateRow';
-import { IconButton } from '../../ui/components/IconButton';
-import { Select } from '../../ui/components/Select';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 import { ProfileStackParamList } from './ServiceNavigator';
 
 const places = [
@@ -41,7 +43,7 @@ const places = [
 ];
 export const IssueReportForm = () => {
   const { t } = useTranslation();
-  const { spacing, colors } = useTheme();
+  const { spacing, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
@@ -170,7 +172,7 @@ export const IssueReportForm = () => {
             style={{
               marginLeft: 17,
               marginTop: 5,
-              color: colors.formTitle,
+              color: palettes.gray[800],
             }}
           >
             {t('other.describeFault')}
@@ -187,7 +189,7 @@ export const IssueReportForm = () => {
               padding: spacing[2],
               marginLeft: 10,
               fontSize: 16,
-              color: colors.formPlaceHolder,
+              color: palettes.gray[600],
               minHeight: 50, // puoi regolare l'altezza minima
             }}
           />

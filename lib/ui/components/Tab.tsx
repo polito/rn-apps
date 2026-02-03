@@ -7,14 +7,13 @@ import {
   View,
 } from 'react-native';
 
-import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
-
 import color from 'color';
 
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
+import { UnreadBadge } from './UnreadBadge';
 
-export interface Props {
+export interface TabProps {
   selected?: boolean;
   textStyle?: StyleProp<TextStyle>;
   badge?: number | string;
@@ -30,7 +29,7 @@ export const Tab = ({
   textStyle,
   badge,
   ...rest
-}: PropsWithChildren<TouchableHighlightProps & Props>) => {
+}: PropsWithChildren<TouchableHighlightProps & TabProps>) => {
   const { dark, palettes, spacing, fontWeights } = useTheme();
   const backgroundColor = useMemo(
     () =>

@@ -1,4 +1,5 @@
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { usePreferencesContext } from '@polito/lib';
+
 import { useGetSite } from '../../../core/queries/placesHooks';
 
 export const useGetCurrentCampus = () => {

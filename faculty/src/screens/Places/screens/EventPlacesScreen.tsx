@@ -4,18 +4,20 @@ import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { faSignsPost } from '@fortawesome/free-solid-svg-icons';
+import {
+  ActivityIndicator,
+  BottomSheet,
+  EmptyState,
+  GlobalStyles,
+  notNullish,
+  useTheme,
+} from '@polito/lib';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
 
-import { GlobalStyles } from '../../../core/components/GlobalStyles';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetMultiplePlaces } from '../../../core/queries/placesHooks';
-import { ActivityIndicator } from '../../../ui/components/ActivityIndicator';
-import { BottomSheet } from '../../../ui/components/BottomSheet';
-import { EmptyState } from '../../../ui/components/EmptyState';
-import { useTheme } from '../../../ui/hooks/useTheme';
-import { notNullish } from '../../../utils/predicates';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesBottomSheet } from '../components/PlacesBottomSheet';

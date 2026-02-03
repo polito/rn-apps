@@ -1,16 +1,18 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
+import {
+  ListItem,
+  Section,
+  SectionHeader,
+  Theme,
+  useStylesheet,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { ListItem } from '../../ui/components/ListItem';
-import { Section } from '../../ui/components/Section';
-import { SectionHeader } from '../../ui/components/SectionHeader';
-import { SectionList } from '../../ui/components/SectionList';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
 import { TeachingStackParamList } from './TeachingNavigator';
 
 export const ManagedCoursesScreen = () => {

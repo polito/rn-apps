@@ -1,14 +1,10 @@
 import { useTranslation } from 'react-i18next';
 
 import { faChevronDown, faSchool } from '@fortawesome/free-solid-svg-icons';
+import { Icon, Row, StatefulMenuView, Text, useTheme } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib';
 
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useGetSite, useGetSites } from '../../../core/queries/placesHooks';
-import { Icon } from '../../../ui/components/Icon';
-import { Row } from '../../../ui/components/Row';
-import { StatefulMenuView } from '../../../ui/components/StatefulMenuView';
-import { Text } from '../../../ui/components/Text';
-import { useTheme } from '../../../ui/hooks/useTheme';
 
 export const CampusSelector = () => {
   const { t } = useTranslation();

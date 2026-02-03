@@ -16,27 +16,29 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { PlaceOverview } from '@polito/api-client';
+import {
+  ActivityIndicator,
+  BottomSheet,
+  EmptyState,
+  GlobalStyles,
+  Icon,
+  IconButton,
+  IndentedDivider,
+  ListItem,
+  ListItemProps,
+  Row,
+  Text,
+  dateFormatter,
+  useTheme,
+} from '@polito/lib';
+import { notNullish, useFeedbackContext } from '@polito/lib';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 
 import { last } from 'lodash';
 import { DateTime } from 'luxon';
 
-import { GlobalStyles } from '../../../core/components/GlobalStyles';
-import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
 import { useGetFreeRooms } from '../../../core/queries/placesHooks';
-import { ActivityIndicator } from '../../../ui/components/ActivityIndicator';
-import { BottomSheet } from '../../../ui/components/BottomSheet';
-import { EmptyState } from '../../../ui/components/EmptyState';
-import { Icon } from '../../../ui/components/Icon';
-import { IconButton } from '../../../ui/components/IconButton';
-import { IndentedDivider } from '../../../ui/components/IndentedDivider';
-import { ListItem, ListItemProps } from '../../../ui/components/ListItem';
-import { Row } from '../../../ui/components/Row';
-import { Text } from '../../../ui/components/Text';
-import { useTheme } from '../../../ui/hooks/useTheme';
-import { dateFormatter } from '../../../utils/dates';
-import { notNullish } from '../../../utils/predicates';
 import { CampusSelector } from '../components/CampusSelector';
 import {
   MapNavigationOptions,

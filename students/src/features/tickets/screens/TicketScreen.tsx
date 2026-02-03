@@ -7,16 +7,16 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
-import { IS_IOS } from '@lib/core/constants';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { ChatBubble } from '@lib/ui/components/ChatBubble';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { GlobalStyles } from '@lib/ui/styles/GlobalStyles';
-import { Theme } from '@lib/ui/types/Theme';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
+import { IS_IOS } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib';
+import { ChatBubble } from '@polito/lib';
+import { IconButton } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { GlobalStyles } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { MenuView } from '@react-native-menu/menu';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';

@@ -1,7 +1,7 @@
 import { JSXElementConstructor } from 'react';
 import { View } from 'react-native';
 
-import { Stack, StackProps } from '@lib/ui/components/Stack';
+import { Stack, StackProps } from './Stack';
 
 export type RowProps<T extends JSXElementConstructor<any> = typeof View> =
   StackProps<T> & { readonly direction?: 'row' };

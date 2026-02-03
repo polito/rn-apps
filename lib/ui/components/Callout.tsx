@@ -1,11 +1,10 @@
 import { StyleSheet, View } from 'react-native';
 
-import { Col, ColProps } from '@lib/ui/components/Col';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { lightTheme } from '@lib/ui/themes/light';
-import { Theme } from '@lib/ui/types/Theme';
-
 import { ThemeContext } from '../contexts/ThemeContext';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { lightTheme } from '../themes/light';
+import { Theme } from '../types/Theme';
+import { Col, ColProps } from './Col';
 
 export type CalloutProps = ColProps;
 

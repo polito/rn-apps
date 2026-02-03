@@ -13,11 +13,11 @@ import { Image, Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { IS_ANDROID, IS_IOS } from '@lib/core/constants';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { useDeviceOrientation } from '@lib/core/hooks/useDeviceOrientation';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { GlobalStyles } from '@lib/ui/styles/GlobalStyles';
+import { IS_ANDROID, IS_IOS } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib';
+import { useDeviceOrientation } from '@polito/lib';
+import { ActivityIndicator } from '@polito/lib';
+import { GlobalStyles } from '@polito/lib';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import {
   Header,
@@ -84,7 +84,7 @@ const Route = ({ renderRoute }: RouteProps) => {
   );
 };
 
-export const MapNavigator = ({
+const MapNavigator = ({
   initialRouteName,
   children,
   screenOptions,

@@ -9,10 +9,10 @@ import {
 } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
 
+import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
 
 export interface TextFieldProps extends Omit<TextInputProps, 'placeholder'> {
   inputRef?: Ref<TextInput>;

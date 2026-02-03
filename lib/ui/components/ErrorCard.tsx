@@ -1,9 +1,9 @@
 import { PropsWithChildren, ReactElement } from 'react';
 import { Platform, TextStyle, ViewProps, ViewStyle } from 'react-native';
 
-import { Card } from '@lib/ui/components/Card';
-import { Text } from '@lib/ui/components/Text';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useTheme } from '../hooks/useTheme';
+import { Card } from './Card';
+import { Text } from './Text';
 
 type Props = PropsWithChildren<
   ViewProps & {

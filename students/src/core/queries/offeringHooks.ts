@@ -13,10 +13,10 @@ import { pluckData } from '~/utils/queries.ts';
 
 import { compact } from 'lodash';
 
-export const OFFERING_QUERY_KEY = ['offering'];
-export const DEGREES_QUERY_PREFIX = 'degrees';
-export const COURSES_QUERY_PREFIX = 'courses';
-export const STATISTICS_QUERY_PREFIX = 'statistics';
+const OFFERING_QUERY_KEY = ['offering'];
+const DEGREES_QUERY_PREFIX = 'degrees';
+const COURSES_QUERY_PREFIX = 'courses';
+const STATISTICS_QUERY_PREFIX = 'statistics';
 const useOfferingClient = (): OfferingApi => {
   return new OfferingApi();
 };

@@ -7,7 +7,8 @@ import FastImage, {
   ImageStyle,
   ResizeMode,
 } from '@d11/react-native-fast-image';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
+
+import { ActivityIndicator } from './ActivityIndicator';
 
 type Props = Partial<Omit<FastImageStaticProperties, 'resizeMode'>> &
   FastImageProps & {

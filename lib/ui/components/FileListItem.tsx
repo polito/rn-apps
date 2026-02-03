@@ -19,12 +19,13 @@ import {
   faFileWord,
   faFileZipper,
 } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { Icon } from '@lib/ui/components/Icon';
-import { ListItem, ListItemProps } from '@lib/ui/components/ListItem';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
+
+import { useOfflineDisabled } from '../../core/hooks/useOfflineDisabled';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
+import { Icon } from './Icon';
+import { ListItem, ListItemProps } from './ListItem';
 
 type IconType = string;
 

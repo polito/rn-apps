@@ -19,23 +19,25 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
+  BottomModal,
+  CtaButton,
+  GlobalStyles,
+  ListItem,
+  OverviewList,
+  Row,
+  SectionHeader,
+  Text,
+  Theme,
+  useBottomModal,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { BottomModal } from '../../core/components/BottomModal';
-import { GlobalStyles } from '../../core/components/GlobalStyles';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { useBottomModal } from '../../core/hooks/useBottomModal';
 import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { ListItem } from '../../ui/components/ListItem';
-import { OverviewList } from '../../ui/components/OverviewList';
-import { Row } from '../../ui/components/Row';
-import { SectionHeader } from '../../ui/components/SectionHeader';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 import { AddStudentsModalContent } from './AddStudentsModalContent';
 import { TeachingStackParamList } from './TeachingNavigator';
 
@@ -47,7 +49,7 @@ export const CourseStudentsTab = () => {
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [newGroupTitle, setNewGroupTitle] = useState('');
-  const { colors, spacing } = useTheme();
+  const { palettes, spacing } = useTheme();
   const [editingGroupsMode, setEditingGroupsMode] = useState(false);
   const [isMenuVisible2, setMenuVisible2] = useState(false);
   const [isMenuVisible3, setMenuVisible3] = useState(false);
@@ -158,13 +160,13 @@ export const CourseStudentsTab = () => {
               icon={faFilter}
               size={18}
               // Cambia colore se un filtro è attivo
-              color={filterType !== 'all' ? colors.primary[600] : '#888'}
+              color={filterType !== 'all' ? palettes.primary[600] : '#888'}
             />
           </TouchableOpacity>
 
           <Popover
             isVisible={isMenuVisible3}
-            from={buttonRef3}
+            from={buttonRef3.current}
             onRequestClose={() => setMenuVisible3(false)}
           >
             <TouchableOpacity
@@ -357,7 +359,7 @@ export const CourseStudentsTab = () => {
                 </TouchableOpacity>
                 <Popover
                   isVisible={isMenuVisible2}
-                  from={buttonRef2}
+                  from={buttonRef2.current}
                   onRequestClose={() => setMenuVisible2(false)}
                 >
                   <TouchableOpacity
@@ -422,7 +424,7 @@ export const CourseStudentsTab = () => {
                       <FontAwesomeIcon
                         icon={faEnvelope}
                         size={20}
-                        style={{ color: colors.primary[600] }}
+                        style={{ color: palettes.primary[600] }}
                       />
                     </TouchableOpacity>
                   }
@@ -455,7 +457,7 @@ export const CourseStudentsTab = () => {
                       <FontAwesomeIcon
                         icon={faUser}
                         size={20}
-                        style={{ color: colors.primary[600] }}
+                        style={{ color: palettes.primary[600] }}
                       />
                     )
                   }

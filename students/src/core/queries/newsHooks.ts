@@ -3,8 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';
 
-export const NEWS_ITEM_QUERY_PREFIX = 'news';
-export const NEWS_QUERY_KEY = [NEWS_ITEM_QUERY_PREFIX];
+const NEWS_ITEM_QUERY_PREFIX = 'news';
+const NEWS_QUERY_KEY = [NEWS_ITEM_QUERY_PREFIX];
 
 const useNewsClient = (): NewsApi => {
   return new NewsApi();

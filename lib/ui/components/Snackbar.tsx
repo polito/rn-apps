@@ -9,15 +9,14 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useScreenReader } from '@lib/core/hooks/useScreenReader';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Feedback } from '@lib/ui/types/Feedback';
-import { Theme } from '@lib/ui/types/Theme';
-
 import useLatestCallback from 'use-latest-callback';
 
+import { useScreenReader } from '../../core/hooks/useScreenReader';
+import { Feedback } from '../../core/types/Feedback';
+import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
+import { Text } from './Text';
 
 export type Props = Feedback & {
   /**

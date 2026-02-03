@@ -20,29 +20,26 @@ import {
   faFont,
   faShieldHalved,
 } from '@fortawesome/free-solid-svg-icons';
-import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
-import {
-  PreferencesContextBase,
-  usePreferencesContext,
-} from '@lib/core/contexts/PreferencesContext';
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { formatFileSize } from '@lib/core/utils/files';
-import { Badge } from '@lib/ui/components/Badge';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { Col } from '@lib/ui/components/Col';
-import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
-import { Icon } from '@lib/ui/components/Icon';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
-import { SwitchListItem } from '@lib/ui/components/SwitchListItem';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { lightTheme } from '@lib/ui/themes/light';
-import { Theme } from '@lib/ui/types/Theme';
+import { useFeedbackContext } from '@polito/lib';
+import { PreferencesContextBase, usePreferencesContext } from '@polito/lib';
+import { useOfflineDisabled } from '@polito/lib';
+import { formatFileSize } from '@polito/lib';
+import { Badge } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { Col } from '@polito/lib';
+import { DisclosureIndicator } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { SectionHeader } from '@polito/lib';
+import { StatefulMenuView } from '@polito/lib';
+import { SwitchListItem } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { lightTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { useCheckMfa } from '~/core/queries/authHooks';
 import { AppPreferences } from '~/core/types/preferences';

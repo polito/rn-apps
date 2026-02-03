@@ -1,14 +1,16 @@
 import { FlatList } from 'react-native';
 
 import { faInbox } from '@fortawesome/free-solid-svg-icons';
+import {
+  BottomBarSpacer,
+  EmptyState,
+  GlobalStyles,
+  IndentedDivider,
+} from '@polito/lib';
 
-import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
-import { GlobalStyles } from '../../core/components/GlobalStyles';
+import { CourseAssignmentsListItem } from '../../core/components/CourseAssignmentsListItem';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
-import { CourseAssignmentsListItem } from '../../ui/components/CourseAssignmentsListItem';
-import { EmptyState } from '../../ui/components/EmptyState';
-import { IndentedDivider } from '../../ui/components/IndentedDivider';
 
 export const CourseAssignmentsTab = () => {
   const { paddingHorizontal } = useSafeAreaSpacing();

@@ -9,16 +9,18 @@ import {
   faHourglassStart,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
+  Card,
+  ListItem,
+  OverviewList,
+  Section,
+  Switch,
+  Text,
+  Theme,
+  useStylesheet,
+} from '@polito/lib';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { Card } from '../../ui/components/Card';
-import { ListItem } from '../../ui/components/ListItem';
-import { OverviewList } from '../../ui/components/OverviewList';
-import { Section } from '../../ui/components/Section';
-import { Switch } from '../../ui/components/Switch';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
 
 export const NoticeScreen = () => {
   const styles = useStylesheet(createStyles);

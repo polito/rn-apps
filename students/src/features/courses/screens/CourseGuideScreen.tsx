@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 import { Platform, SafeAreaView, ScrollView } from 'react-native';
 
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { Card } from '@lib/ui/components/Card';
-import { Col } from '@lib/ui/components/Col';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { Section } from '@lib/ui/components/Section';
-import { Text } from '@lib/ui/components/Text';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { CourseGuideSection } from '@polito/api-client/models/CourseGuideSection';
+import { BottomBarSpacer } from '@polito/lib';
+import { Card } from '@polito/lib';
+import { Col } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetCourseGuide } from '../../../core/queries/courseHooks';

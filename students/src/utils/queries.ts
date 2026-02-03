@@ -23,7 +23,7 @@ export const pluckData = <T>(response: SuccessResponse<T>) => {
   return response.data;
 };
 
-export const parseApiError = async (error: Error): Promise<ApiError | null> => {
+const parseApiError = async (error: Error): Promise<ApiError | null> => {
   if (!(error instanceof ResponseError)) {
     return null;
   }

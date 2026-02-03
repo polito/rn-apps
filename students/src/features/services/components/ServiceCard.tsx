@@ -5,21 +5,18 @@ import { Dimensions, StyleSheet } from 'react-native';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
 import { faStar as faStarFilled } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { uniformInsets } from '@lib/core/utils/insets';
-import { To, resolveLinkTo } from '@lib/core/utils/resolveLinkTo';
-import { Icon } from '@lib/ui/components/Icon';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import {
-  TouchableCard,
-  TouchableCardProps,
-} from '@lib/ui/components/TouchableCard';
-import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
+import { usePreferencesContext } from '@polito/lib';
+import { uniformInsets } from '@polito/lib';
+import { To, resolveLinkTo } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { IconButton } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { TouchableCard, TouchableCardProps } from '@polito/lib';
+import { UnreadBadge } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

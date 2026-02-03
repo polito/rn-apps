@@ -1,6 +1,6 @@
 import { View, ViewProps } from 'react-native';
 
-import { useTheme } from '../../ui/hooks/useTheme';
+import { useTheme } from '@polito/lib';
 
 declare interface TranslucentViewProps {
   style?: ViewProps['style'];

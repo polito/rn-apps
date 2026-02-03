@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
-import { formatDate } from '@lib/core/utils/dates';
-import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
 import { ExamGrade } from '@polito/api-client';
+import { formatDate } from '@polito/lib';
+import { DisclosureIndicator } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { formatGrade } from '../../../utils/grades';
 

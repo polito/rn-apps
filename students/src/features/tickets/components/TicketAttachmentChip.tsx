@@ -2,11 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { open } from 'react-native-file-viewer';
 
-import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { darkTheme } from '@lib/ui/themes/dark';
-import { Theme } from '@lib/ui/types/Theme';
 import { TicketAttachment } from '@polito/api-client/models/TicketAttachment';
+import { ThemeContext } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { darkTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import {
   useGetTicketAttachment,

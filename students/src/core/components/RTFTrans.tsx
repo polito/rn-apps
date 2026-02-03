@@ -2,7 +2,7 @@ import { ComponentProps, ReactNode } from 'react';
 import { Trans } from 'react-i18next';
 import { StyleProp, Text, TextStyle } from 'react-native';
 
-export type RTFTransProps = ComponentProps<typeof Trans> & {
+type RTFTransProps = ComponentProps<typeof Trans> & {
   children?: ReactNode;
   style?: StyleProp<TextStyle>;
 };

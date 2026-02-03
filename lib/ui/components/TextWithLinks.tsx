@@ -2,8 +2,8 @@ import { PropsWithChildren } from 'react';
 import { TextProps } from 'react-native';
 import { MixedStyleDeclaration } from 'react-native-render-html';
 
-import { linkUrls } from '@lib/core/utils/html';
-import { HtmlView } from '@lib/ui/components/HtmlView';
+import { linkUrls } from '../../core/utils/html';
+import { HtmlView } from './HtmlView';
 
 type Props = {
   baseStyle?: MixedStyleDeclaration;

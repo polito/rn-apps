@@ -1,8 +1,8 @@
 import { Platform, StyleSheet } from 'react-native';
 
-import { Row, RowProps } from '@lib/ui/components/Row';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
+import { Row, RowProps } from './Row';
 
 export type HeaderAccessoryProps = RowProps;
 

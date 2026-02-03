@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, TouchableWithoutFeedback, View } from 'react-native';
 
@@ -9,6 +9,7 @@ import {
   faCompass,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import { Icon, useSplashContext } from '@polito/lib';
 import {
   BottomTabNavigationProp,
   createBottomTabNavigator,
@@ -30,7 +31,6 @@ import {
   TeachingNavigator,
   TeachingStackParamList,
 } from '../../screens/Teaching/TeachingNavigator';
-import { Icon } from '../../ui/components/Icon';
 
 export type RootParamList = {
   Didattica: NavigatorScreenParams<TeachingStackParamList>;
@@ -43,12 +43,18 @@ const TabsNav = createBottomTabNavigator<RootParamList>();
 
 export const NavBar = () => {
   const { t } = useTranslation();
+  const splashContext = useSplashContext();
   const tabBarStyle: any = {
     position: Platform.select({ ios: 'absolute' }),
   };
   if (Platform.OS === 'ios') {
     tabBarStyle.height = 84;
   }
+
+  // TODO: move this step to ApiProvider when it will be created
+  useEffect(() => {
+    splashContext.setIsAppLoaded(true);
+  }, [splashContext]);
 
   const [isDID, setIsDID] = useState(true);
 
@@ -77,7 +83,9 @@ export const NavBar = () => {
                   // You can navigate to a specific screen or perform any action here
                 }}
               >
-                <View {...props} />
+                <View style={props.style} testID={props.testID}>
+                  {props.children}
+                </View>
               </TouchableWithoutFeedback>
             ),
           }}
@@ -106,7 +114,9 @@ export const NavBar = () => {
                   }); // Se desideri navigare in modo esplicito
                 }}
               >
-                <View {...props} />
+                <View style={props.style} testID={props.testID}>
+                  {props.children}
+                </View>
               </TouchableWithoutFeedback>
             ),
           }}
@@ -132,7 +142,9 @@ export const NavBar = () => {
                 bottomNavigation.navigate('Agenda', { screen: 'Agenda2' }); // Se desideri navigare in modo esplicito
               }}
             >
-              <View {...props} />
+              <View style={props.style} testID={props.testID}>
+                {props.children}
+              </View>
             </TouchableWithoutFeedback>
           ),
         }}
@@ -161,7 +173,9 @@ export const NavBar = () => {
                 }); // Se desideri navigare in modo esplicito
               }}
             >
-              <View {...props} />
+              <View style={props.style} testID={props.testID}>
+                {props.children}
+              </View>
             </TouchableWithoutFeedback>
           ),
         }}
@@ -185,7 +199,9 @@ export const NavBar = () => {
                 bottomNavigation.navigate('Services'); // Se desideri navigare in modo esplicito
               }}
             >
-              <View {...props} />
+              <View style={props.style} testID={props.testID}>
+                {props.children}
+              </View>
             </TouchableWithoutFeedback>
           ),
         }}
@@ -209,15 +225,13 @@ export const NavBar = () => {
                 bottomNavigation.navigate('Profile'); // Se desideri navigare in modo esplicito
               }}
             >
-              <View {...props} />
+              <View style={props.style} testID={props.testID}>
+                {props.children}
+              </View>
             </TouchableWithoutFeedback>
           ),
         }}
       />
     </TabsNav.Navigator>
   );
-};
-
-export type TabsNavigatorParamList = {
-  Teaching: undefined;
 };

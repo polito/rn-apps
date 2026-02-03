@@ -3,16 +3,19 @@ import { useTranslation } from 'react-i18next';
 import { FlatList } from 'react-native';
 
 import { faFile, faFolder, faInbox } from '@fortawesome/free-solid-svg-icons';
+import {
+  BottomBarSpacer,
+  CtaButton,
+  CtaButtonSpacer,
+  EmptyState,
+  Icon,
+  IndentedDivider,
+  ListItem,
+  useTheme,
+} from '@polito/lib';
 
-import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
-import { CtaButton, CtaButtonSpacer } from '../../ui/components/CtaButton';
-import { EmptyState } from '../../ui/components/EmptyState';
-import { Icon } from '../../ui/components/Icon';
-import { IndentedDivider } from '../../ui/components/IndentedDivider';
-import { ListItem } from '../../ui/components/ListItem';
-import { useTheme } from '../../ui/hooks/useTheme';
 import { CourseFileListItem } from './CourseFileListItem';
 
 export const CourseFilesTab = () => {
@@ -67,7 +70,6 @@ export const CourseFilesTab = () => {
           keyExtractor={item => item.id.toString()}
           renderItem={({ item: file, index }) => (
             <CourseFileListItem
-              fileId={file.id}
               key={file.id}
               name={file.name}
               date={file.date}

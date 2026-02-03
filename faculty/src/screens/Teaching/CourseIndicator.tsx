@@ -1,8 +1,9 @@
-import { useTheme } from '../../ui/hooks/useTheme';
+import { useTheme } from '@polito/lib';
+
 import { CourseIcon } from './CourseIcon';
 
 export const CourseIndicator = () => {
-  const { colors } = useTheme();
+  const { palettes } = useTheme();
 
-  return <CourseIcon color={colors.primary[500]} />;
+  return <CourseIcon color={palettes.primary[500]} />;
 };

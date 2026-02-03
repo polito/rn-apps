@@ -10,14 +10,14 @@ import {
   ViewProps,
 } from 'react-native';
 
-import { Card } from '@lib/ui/components/Card.tsx';
-import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton.tsx';
-import { OverviewList } from '@lib/ui/components/OverviewList.tsx';
-import { ScreenTitle } from '@lib/ui/components/ScreenTitle.tsx';
-import { Text } from '@lib/ui/components/Text.tsx';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet.ts';
-import { useTheme } from '@lib/ui/hooks/useTheme.ts';
-import { Theme } from '@lib/ui/types/Theme.tsx';
+import { Card } from '@polito/lib';
+import { CtaButton, CtaButtonSpacer } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { ScreenTitle } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useRequestEsc } from '../../../core/queries/escHooks.ts';

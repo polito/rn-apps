@@ -4,17 +4,18 @@ import { SystemBars } from 'react-native-edge-to-edge';
 import overrideColorScheme from 'react-native-override-color-scheme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { NavigationContainer } from '@lib/core/components/NavigationContainer';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { useSplashContext } from '@lib/core/contexts/SplashContext';
-import { fromUiTheme } from '@lib/core/utils/navigation-theme';
-import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
-import { darkTheme } from '@lib/ui/themes/dark';
-import { lightTheme } from '@lib/ui/themes/light';
 import { LinkingOptions, ParamListBase } from '@react-navigation/native';
 
 import i18n from 'i18next';
 import { Settings } from 'luxon';
+
+import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { useSplashContext } from '../../core/contexts/SplashContext';
+import { ThemeContext } from '../contexts/ThemeContext';
+import { NavigationContainer } from '../navigation/NavigationContainer';
+import { fromUiTheme } from '../navigation/navigation-theme';
+import { darkTheme } from '../themes/dark';
+import { lightTheme } from '../themes/light';
 
 type UiProviderProps<T extends ParamListBase = ParamListBase> =
   PropsWithChildren<{

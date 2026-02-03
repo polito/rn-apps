@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { Linking } from 'react-native';
 
-import { IS_IOS } from '@lib/core/constants';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { IS_IOS } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 
 import * as WebBrowser from 'expo-web-browser';
 

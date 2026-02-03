@@ -2,10 +2,10 @@ import { useMemo, useState } from 'react';
 import { PixelRatio, Platform, StyleSheet, View } from 'react-native';
 
 import FastImage from '@d11/react-native-fast-image';
-import { ImageLoader } from '@lib/ui/components/ImageLoader';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
+import { ImageLoader } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { SCREEN_WIDTH } from '@lib/core/constants';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BookingSeats } from '@polito/api-client';
+import { SCREEN_WIDTH } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { isEmpty } from 'lodash';

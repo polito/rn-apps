@@ -2,16 +2,16 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
-import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
-import { Text } from '@lib/ui/components/Text';
-import { TextField } from '@lib/ui/components/TextField';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { GlobalStyles } from '@lib/ui/styles/GlobalStyles';
-import { Theme } from '@lib/ui/types/Theme';
+import { useFeedbackContext } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { CtaButton, CtaButtonSpacer } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { ScreenTitle } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { TextField } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { GlobalStyles } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useBookExam, useGetExams } from '../../../core/queries/examHooks';

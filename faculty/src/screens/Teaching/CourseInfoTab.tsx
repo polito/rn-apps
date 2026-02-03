@@ -3,25 +3,27 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { faUser } from '@fortawesome/free-regular-svg-icons';
+import {
+  BottomBarSpacer,
+  Card,
+  GlobalStyles,
+  Grid,
+  Icon,
+  ListItem,
+  Metric,
+  OverviewList,
+  Row,
+  Section,
+  SectionHeader,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
-import { GlobalStyles } from '../../core/components/GlobalStyles';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
-import { Card } from '../../ui/components/Card';
-import { Grid } from '../../ui/components/Grid';
-import { Icon } from '../../ui/components/Icon';
-import { ListItem } from '../../ui/components/ListItem';
-import { Metric } from '../../ui/components/Metric';
-import { OverviewList } from '../../ui/components/OverviewList';
-import { Row } from '../../ui/components/Row';
-import { Section } from '../../ui/components/Section';
-import { SectionHeader } from '../../ui/components/SectionHeader';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 import { TeachingStackParamList } from './TeachingNavigator';
 
 export const CourseInfoTab = () => {
@@ -113,11 +115,7 @@ export const CourseInfoTab = () => {
       {/* Sezione per lo staff */}
       <Section>
         {selectedCourse.managed ? (
-          <SectionHeader
-            title={t('other.managingAccesses')}
-            linkTo="Staff"
-            linkname={t('other.modify')}
-          />
+          <SectionHeader title={t('other.managingAccesses')} linkTo="Staff" />
         ) : (
           <SectionHeader title="Staff" />
         )}
@@ -178,7 +176,7 @@ export const CourseInfoTab = () => {
   );
 };
 
-const createStyles = ({ colors, spacing }: Theme) =>
+const createStyles = ({ colors, palettes, spacing }: Theme) =>
   StyleSheet.create({
     heading: {
       paddingTop: spacing[5],
@@ -195,7 +193,7 @@ const createStyles = ({ colors, spacing }: Theme) =>
       marginRight: spacing[2],
     },
     periodDropdownIcon: {
-      color: colors.secondary['500'],
+      color: palettes.secondary['500'],
     },
     dotIcon: {
       marginBottom: spacing[2],

@@ -2,20 +2,20 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 
-import { formatDateTime } from '@lib/core/utils/dates';
-import { linkUrls } from '@lib/core/utils/html';
-import { HtmlView } from '@lib/ui/components/HtmlView';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { PersonListItem } from '@lib/ui/components/PersonListItem';
-import { Section } from '@lib/ui/components/Section';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
 import { Message } from '@polito/api-client';
+import { formatDateTime } from '@polito/lib';
+import { linkUrls } from '@polito/lib';
+import { HtmlView } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { PersonListItem } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 
-export type Props = {
+type Props = {
   message: Message;
   modal?: boolean;
 };

@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { BottomBarSpacer } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { SectionHeader } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetCourses } from '../../../core/queries/courseHooks';

@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ViewStyle } from 'react-native';
 
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-
 import { DateTime } from 'luxon';
 
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import {
   CalendarCellStyle,
   CalendarCellTextStyle,

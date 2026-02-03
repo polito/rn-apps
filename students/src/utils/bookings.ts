@@ -1,6 +1,6 @@
-import { APP_TIMEZONE } from '@lib/core/utils/dates';
-import { Theme } from '@lib/ui/types/Theme';
 import { Booking, BookingTopic } from '@polito/api-client';
+import { APP_TIMEZONE } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { inRange } from 'lodash';
 import { DateTime } from 'luxon';

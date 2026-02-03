@@ -13,7 +13,7 @@ const teachersToMenuAction = (
     };
   });
 
-export const formatYearPeriod = (year: number) => {
+const formatYearPeriod = (year: number) => {
   const formattedYear = String(year).slice(-2);
   return `${year - 1}/${formattedYear}`;
 };

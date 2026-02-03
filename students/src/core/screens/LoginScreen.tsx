@@ -12,16 +12,16 @@ import {
 } from 'react-native';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
-import { CtaButton } from '@lib/ui/components/CtaButton';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { Row } from '@lib/ui/components/Row';
-import { Section } from '@lib/ui/components/Section';
-import { Text } from '@lib/ui/components/Text';
-import { TextField } from '@lib/ui/components/TextField';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
+import { CtaButton } from '@polito/lib';
+import { IconButton } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { TextField } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { PolitoLogo } from '~/core/components/Logo.tsx';
 import { useAuth } from '~/core/hooks/useAuth.ts';

@@ -1,4 +1,4 @@
-import { Divider, DividerProps } from '@lib/ui/components/Divider';
+import { Divider, DividerProps } from './Divider';
 
 interface IndentedDividerProps extends DividerProps {
   indent?: number;

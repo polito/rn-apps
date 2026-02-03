@@ -4,9 +4,9 @@ import { Image } from 'react-native';
 
 import { faFrown, faMapLocation } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
-import { EmptyState } from '@lib/ui/components/EmptyState';
-import { Icon } from '@lib/ui/components/Icon';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { EmptyState } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { useGetPlaceCategories } from '../../../core/queries/placesHooks';

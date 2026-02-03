@@ -7,20 +7,20 @@ import {
   faCalendarDay,
   faEllipsisVertical,
 } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { APP_TIMEZONE } from '@lib/core/utils/dates';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { Tabs } from '@lib/ui/components/Tabs';
-import { Calendar } from '@lib/ui/components/calendar/Calendar';
-import { CalendarHeader } from '@lib/ui/components/calendar/CalendarHeader';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { WeekNum } from '@lib/ui/types/Calendar';
-import { Theme } from '@lib/ui/types/Theme';
-import { HOURS } from '@lib/ui/utils/calendar';
+import { usePreferencesContext } from '@polito/lib';
+import { useOfflineDisabled } from '@polito/lib';
+import { APP_TIMEZONE } from '@polito/lib';
+import { ActivityIndicator } from '@polito/lib';
+import { HeaderAccessory } from '@polito/lib';
+import { IconButton } from '@polito/lib';
+import { Tabs } from '@polito/lib';
+import { Calendar } from '@polito/lib';
+import { CalendarHeader } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { WeekNum } from '@polito/lib';
+import { Theme } from '@polito/lib';
+import { HOURS } from '@polito/lib';
 import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';

@@ -1,5 +1,5 @@
-import { PreferencesContextProps } from '@lib/core/contexts/PreferencesContext';
 import { CoursesApi } from '@polito/api-client';
+import { PreferencesContextProps } from '@polito/lib';
 
 import { AppPreferences, CoursesPreferences } from '~/core/types/preferences';
 

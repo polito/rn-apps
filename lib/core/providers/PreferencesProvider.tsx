@@ -7,7 +7,6 @@ import {
   useState,
 } from 'react';
 
-import { useDeviceLanguage } from '@lib/core/hooks/useDeviceLanguage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
@@ -16,6 +15,7 @@ import {
   editablePreferenceKeys as commonEditablePreferenceKeys,
   objectPreferenceKeys as commonObjectPreferenceKeys,
 } from '../contexts/PreferencesContext';
+import { useDeviceLanguage } from '../hooks/useDeviceLanguage';
 
 type PreferencesProviderProps<
   Extra,

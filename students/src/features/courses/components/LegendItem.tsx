@@ -1,9 +1,9 @@
 import { StyleSheet, View } from 'react-native';
 
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import type { Theme } from '@lib/ui/types/Theme';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import type { Theme } from '@polito/lib';
 
 export const LegendItem = ({
   bulletColor,

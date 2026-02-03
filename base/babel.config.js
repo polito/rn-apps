@@ -8,8 +8,8 @@ module.exports = function (api) {
         'module-resolver',
         {
           alias: {
-            '@lib': '../lib',
             '~': './src',
+            assets: './assets',
           },
         },
       ],

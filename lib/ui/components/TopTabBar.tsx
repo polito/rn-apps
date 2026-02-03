@@ -1,8 +1,9 @@
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { HeaderAccessory } from '@lib/ui/components/HeaderAccessory';
-import { Tab } from '@lib/ui/components/Tab';
-import { Tabs } from '@lib/ui/components/Tabs';
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
+
+import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { HeaderAccessory } from './HeaderAccessory';
+import { Tab } from './Tab';
+import { Tabs } from './Tabs';
 
 export const TopTabBar = ({
   state,

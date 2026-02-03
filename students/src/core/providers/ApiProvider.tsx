@@ -8,11 +8,11 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 
-import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { useSplashContext } from '@lib/core/contexts/SplashContext';
-import { isEnvProduction } from '@lib/core/utils/env.ts';
 import { ResponseError } from '@polito/api-client/runtime';
+import { useFeedbackContext } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib';
+import { useSplashContext } from '@polito/lib';
+import { isEnvProduction } from '@polito/lib';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';

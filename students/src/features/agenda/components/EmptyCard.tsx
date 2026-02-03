@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { Card } from '@lib/ui/components/Card';
-import { EmptyState } from '@lib/ui/components/EmptyState';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+import { Card } from '@polito/lib';
+import { EmptyState } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 interface Props {
   icon: IconDefinition;

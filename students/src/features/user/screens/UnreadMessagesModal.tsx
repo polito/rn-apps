@@ -7,8 +7,8 @@ import {
   faCheckCircle,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
-import { useScreenReader } from '@lib/core/hooks/useScreenReader';
-import { CtaButton } from '@lib/ui/components/CtaButton';
+import { useScreenReader } from '@polito/lib';
+import { CtaButton } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useHideTabs } from '../../../core/hooks/useHideTabs';

@@ -8,35 +8,35 @@ import {
   faTriangleExclamation,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { useBottomModal } from '@lib/core/hooks/useBottomModal';
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
+import { ExamStatusEnum } from '@polito/api-client';
+import { usePreferencesContext } from '@polito/lib';
+import { useBottomModal } from '@polito/lib';
+import { useOfflineDisabled } from '@polito/lib';
 import {
   dateFormatter,
   formatDate,
   formatDateTime,
   formatReadableDate,
   isValidDate,
-} from '@lib/core/utils/dates';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { BottomModal } from '@lib/ui/components/BottomModal';
-import { Col } from '@lib/ui/components/Col';
-import { CtaButtonSpacer } from '@lib/ui/components/CtaButton';
-import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
-import { ErrorCard } from '@lib/ui/components/ErrorCard';
-import { Icon } from '@lib/ui/components/Icon';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { PersonListItem } from '@lib/ui/components/PersonListItem';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { Row } from '@lib/ui/components/Row';
-import { ScreenDateTime } from '@lib/ui/components/ScreenDateTime';
-import { ScreenTitle } from '@lib/ui/components/ScreenTitle';
-import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { Text } from '@lib/ui/components/Text';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { ExamStatusEnum } from '@polito/api-client';
+} from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { BottomModal } from '@polito/lib';
+import { Col } from '@polito/lib';
+import { CtaButtonSpacer } from '@polito/lib';
+import { CtaButtonContainer } from '@polito/lib';
+import { ErrorCard } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { PersonListItem } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { ScreenDateTime } from '@polito/lib';
+import { ScreenTitle } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { SectionHeader } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetExams } from '~/core/queries/examHooks';

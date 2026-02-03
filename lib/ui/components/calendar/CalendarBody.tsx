@@ -8,14 +8,13 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { DateTime } from 'luxon';
 
 import { useNow } from '../../hooks/calendar/useNow';
 import { usePanResponder } from '../../hooks/calendar/usePanResponder';
+import { useStylesheet } from '../../hooks/useStylesheet';
 import {
   CalendarCellStyle,
   EventCellStyle,
@@ -23,6 +22,7 @@ import {
   HorizontalDirection,
   ICalendarEventBase,
 } from '../../types/Calendar';
+import { Theme } from '../../types/Theme';
 import {
   HOURS,
   getRelativeTopInDay,

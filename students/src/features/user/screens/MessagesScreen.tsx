@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { Section } from '@lib/ui/components/Section';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { BottomBarSpacer } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 
 import { useGetMessages } from '../../../core/queries/studentHooks';
 import { MessageListItem } from '../components/MessageListItem';

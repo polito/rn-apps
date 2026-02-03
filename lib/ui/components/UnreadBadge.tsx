@@ -2,16 +2,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TextProps } from 'react-native';
 
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { Row } from '@lib/ui/components/Row';
-import { VisuallyHidden } from '@lib/ui/components/VisuallyHidden';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
-
 import { isNumber } from 'lodash';
 
+import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
+import { Row } from './Row';
 import { Text } from './Text';
+import { VisuallyHidden } from './VisuallyHidden';
 
 interface Props {
   text?: string | number;

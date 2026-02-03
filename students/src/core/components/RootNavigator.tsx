@@ -11,13 +11,13 @@ import {
   faCompass,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { tabBarStyle } from '@lib/core/utils/tab-bar';
-import { Icon } from '@lib/ui/components/Icon';
-import { TranslucentView } from '@lib/ui/components/TranslucentView';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
+import { usePreferencesContext } from '@polito/lib';
+import { tabBarStyle } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { TranslucentView } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { filterUnread } from '../../../src/utils/messages';

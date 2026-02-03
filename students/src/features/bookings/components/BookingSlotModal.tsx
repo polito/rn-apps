@@ -11,15 +11,15 @@ import {
   faHourglassEnd,
   faHourglassStart,
 } from '@fortawesome/free-solid-svg-icons';
-import { APP_TIMEZONE } from '@lib/core/utils/dates';
-import { setTimeoutAccessibilityInfoHelper } from '@lib/core/utils/setTimeoutAccessibilityInfo';
-import { EmptyState } from '@lib/ui/components/EmptyState';
-import { ModalContent } from '@lib/ui/components/ModalContent';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
+import { APP_TIMEZONE } from '@polito/lib';
+import { setTimeoutAccessibilityInfoHelper } from '@polito/lib';
+import { EmptyState } from '@polito/lib';
+import { ModalContent } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { inRange } from 'lodash';
 import { DateTime } from 'luxon';

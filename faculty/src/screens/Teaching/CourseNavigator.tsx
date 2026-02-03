@@ -3,16 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { View, useWindowDimensions } from 'react-native';
 
 import { faPlus, faSliders } from '@fortawesome/free-solid-svg-icons';
+import { IconButton, Row, Text, TopTabBar, useTheme } from '@polito/lib';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { IconButton } from '../../ui/components/IconButton';
-import { Row } from '../../ui/components/Row';
-import { Text } from '../../ui/components/Text';
-import { TopTabBar } from '../../ui/components/TopTapBar';
-import { useTheme } from '../../ui/hooks/useTheme';
 import { CourseAssignmentsTab } from './CourseAssignmentsTab';
 import { CourseFilesTab } from './CourseFilesTab';
 import { CourseInfoTab } from './CourseInfoTab';
@@ -21,9 +17,7 @@ import { CourseNoticesTab } from './CourseNoticesTab';
 import { CourseStudentsTab } from './CourseStudentsTab';
 import { TeachingStackParamList } from './TeachingNavigator';
 
-export interface CourseTabsParamList
-  extends ParamListBase,
-    TeachingStackParamList {
+interface CourseTabsParamList extends ParamListBase, TeachingStackParamList {
   CourseInfoScreen: undefined;
   CourseNoticesScreen: undefined;
   CourseFilesScreen: undefined;
@@ -36,7 +30,7 @@ const TopTabs = createMaterialTopTabNavigator<CourseTabsParamList>();
 export const CourseNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { colors, fontSizes, spacing } = theme;
+  const { palettes, fontSizes, spacing } = theme;
   const { width } = useWindowDimensions();
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
@@ -69,7 +63,7 @@ export const CourseNavigator = () => {
           {showPlusButton ? (
             <IconButton
               icon={faPlus}
-              color={colors.primary[400]}
+              color={palettes.primary[400]}
               size={fontSizes.lg}
               accessibilityLabel={t('common.add')}
               onPress={() => {
@@ -93,7 +87,7 @@ export const CourseNavigator = () => {
           )}
           <IconButton
             icon={faSliders}
-            color={colors.primary[400]}
+            color={palettes.primary[400]}
             size={fontSizes.lg}
             accessibilityLabel={t('common.preferences')}
             hitSlop={{ left: spacing[3], right: spacing[3] }}
@@ -109,7 +103,7 @@ export const CourseNavigator = () => {
     spacing,
     t,
     width,
-    colors.primary,
+    palettes.primary,
     selectedCourse,
   ]);
 

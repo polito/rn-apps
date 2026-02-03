@@ -1,8 +1,8 @@
 import Svg, { Path } from 'react-native-svg';
 
-import { IS_ANDROID } from '@lib/core/constants';
-import { Row, RowProps } from '@lib/ui/components/Row';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { IS_ANDROID } from '@polito/lib';
+import { Row, RowProps } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 
 export const HeaderLogo = (props: RowProps) => {
   const { palettes, dark } = useTheme();

@@ -2,14 +2,11 @@ import { useLayoutEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { IconButton, Text, Theme, useStylesheet } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { IconButton } from '../../ui/components/IconButton';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
 import { TeachingStackParamList } from './TeachingNavigator';
 
 export const CourseGuideScreen = () => {

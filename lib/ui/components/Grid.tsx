@@ -7,9 +7,9 @@ import {
 } from 'react';
 import { LayoutChangeEvent, View, ViewProps } from 'react-native';
 
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { GlobalStyles } from '@lib/ui/styles/GlobalStyles';
-import { Theme } from '@lib/ui/types/Theme';
+import { useTheme } from '../hooks/useTheme';
+import { GlobalStyles } from '../styles/GlobalStyles';
+import { Theme } from '../types/Theme';
 
 interface Props extends PropsWithChildren<ViewProps> {
   /**

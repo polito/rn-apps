@@ -10,29 +10,31 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { ResponseError } from '@polito/api-client/runtime';
+import {
+  ActivityIndicator,
+  BottomSheet,
+  Col,
+  EmptyState,
+  GlobalStyles,
+  IconButton,
+  ListItem,
+  MAX_RECENT_SEARCHES,
+  OverviewList,
+  Section,
+  SectionHeader,
+  Text,
+  Theme,
+  usePreferencesContext,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { CameraBounds, CameraPadding } from '@rnmapbox/maps';
 import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
 
 import { Polygon } from 'geojson';
 
-import { GlobalStyles } from '../../../core/components/GlobalStyles';
-import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useGetPlace } from '../../../core/queries/placesHooks';
-import { MAX_RECENT_SEARCHES } from '../../../core/themes/constants';
-import { ActivityIndicator } from '../../../ui/components/ActivityIndicator';
-import { BottomSheet } from '../../../ui/components/BottomSheet';
-import { Col } from '../../../ui/components/Col';
-import { EmptyState } from '../../../ui/components/EmptyState';
-import { IconButton } from '../../../ui/components/IconButton';
-import { ListItem } from '../../../ui/components/ListItem';
-import { OverviewList } from '../../../ui/components/OverviewList';
-import { Section } from '../../../ui/components/Section';
-import { SectionHeader } from '../../../ui/components/SectionHeader';
-import { Text } from '../../../ui/components/Text';
-import { useStylesheet } from '../../../ui/hooks/useStylesheet';
-import { useTheme } from '../../../ui/hooks/useTheme';
-import { Theme } from '../../../ui/types/Theme';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';

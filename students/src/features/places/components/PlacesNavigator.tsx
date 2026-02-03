@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { ImageURISource, Platform, StyleSheet, View } from 'react-native';
 import { PERMISSIONS, request } from 'react-native-permissions';
 
-import { notNullish } from '@lib/core/utils/predicates';
-import { Divider } from '@lib/ui/components/Divider';
-import { TranslucentView } from '@lib/ui/components/TranslucentView';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { notNullish } from '@polito/lib';
+import { Divider } from '@polito/lib';
+import { TranslucentView } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
   Images,
@@ -29,7 +29,7 @@ import { PlaceScreen } from '../screens/PlaceScreen';
 import { PlacesScreen } from '../screens/PlacesScreen';
 import { createMapNavigator } from './MapNavigator';
 
-export type ServiceStackParamList = {
+type ServiceStackParamList = {
   Places: undefined;
   MessagesModal: undefined;
 };

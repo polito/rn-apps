@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { CtaButton } from '@lib/ui/components/CtaButton';
+import { CtaButton } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

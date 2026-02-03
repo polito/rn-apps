@@ -2,15 +2,15 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { Card } from '@lib/ui/components/Card';
-import { Grid } from '@lib/ui/components/Grid';
-import { Icon } from '@lib/ui/components/Icon';
-import { Row } from '@lib/ui/components/Row';
-import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { GlobalStyles } from '@lib/ui/styles/GlobalStyles';
-import { Theme } from '@lib/ui/types/Theme';
+import { Card } from '@polito/lib';
+import { Grid } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { StatefulMenuView } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { GlobalStyles } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { StatisticsFilters } from '../utils/computeStatisticsFilters';
 

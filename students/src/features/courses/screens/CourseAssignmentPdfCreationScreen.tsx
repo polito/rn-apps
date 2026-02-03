@@ -19,17 +19,17 @@ import {
   faFileCircleXmark,
   faPrint,
 } from '@fortawesome/free-solid-svg-icons';
-import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
-import { displayTabBar, hideTabBar } from '@lib/core/utils/tab-bar';
-import { pdfSizes } from '@lib/features/courses/constants';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { Divider } from '@lib/ui/components/Divider';
-import { Icon } from '@lib/ui/components/Icon';
-import { Swiper } from '@lib/ui/components/Swiper';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
+import { useFeedbackContext } from '@polito/lib';
+import { displayTabBar, hideTabBar } from '@polito/lib';
+import { pdfSizes } from '@polito/lib';
+import { ActivityIndicator } from '@polito/lib';
+import { Divider } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { Swiper } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';

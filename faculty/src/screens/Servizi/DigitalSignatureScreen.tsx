@@ -4,20 +4,22 @@ import { FlatList, ScrollView, View } from 'react-native';
 import { Platform } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import {
+  Badge,
+  IconButton,
+  IndentedDivider,
+  ListItem,
+  OverviewList,
+  SectionHeader,
+  Text,
+  useTheme,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
 import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
-import { Badge } from '../../ui/components/Badge';
-import { IconButton } from '../../ui/components/IconButton';
-import { IndentedDivider } from '../../ui/components/IndentedDivider';
-import { ListItem } from '../../ui/components/ListItem';
-import { OverviewList } from '../../ui/components/OverviewList';
-import { SectionHeader } from '../../ui/components/SectionHeader';
-import { Text } from '../../ui/components/Text';
-import { useTheme } from '../../ui/hooks/useTheme';
 import { ProfileStackParamList } from './ServiceNavigator';
 
 export const DigitalSignatureScreen = () => {

@@ -11,12 +11,12 @@ import { noop } from 'lodash';
 
 import { pluckData } from '../../utils/queries';
 
-export const SITES_QUERY_KEY = 'sites';
-export const BUILDINGS_QUERY_KEY = 'buildings';
-export const PLACES_QUERY_KEY = 'places';
-export const PLACE_QUERY_KEY = 'place';
-export const PLACE_CATEGORIES_QUERY_KEY = 'place-categories';
-export const FREE_ROOMS_QUERY_KEY = 'free-rooms';
+const SITES_QUERY_KEY = 'sites';
+const BUILDINGS_QUERY_KEY = 'buildings';
+const PLACES_QUERY_KEY = 'places';
+const PLACE_QUERY_KEY = 'place';
+const PLACE_CATEGORIES_QUERY_KEY = 'place-categories';
+const FREE_ROOMS_QUERY_KEY = 'free-rooms';
 
 const usePlacesClient = (): PlacesApi => {
   return new PlacesApi();

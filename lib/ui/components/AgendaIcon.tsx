@@ -1,8 +1,8 @@
 import { View } from 'react-native';
 
-import { courseIcons } from '@lib/features/courses/constants';
-import { Icon } from '@lib/ui/components/Icon';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { courseIcons } from '../../features/courses/constants';
+import { useTheme } from '../hooks/useTheme';
+import { Icon } from './Icon';
 
 interface Props {
   color: string;

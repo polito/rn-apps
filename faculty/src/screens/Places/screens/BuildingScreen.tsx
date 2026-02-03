@@ -9,6 +9,22 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { ResponseError } from '@polito/api-client/runtime';
+import {
+  ActivityIndicator,
+  BottomSheet,
+  Col,
+  EmptyState,
+  GlobalStyles,
+  IconButton,
+  ListItem,
+  OverviewList,
+  Section,
+  SectionHeader,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import { useHeaderHeight } from '@react-navigation/elements';
 import {
   CameraBounds,
@@ -20,22 +36,8 @@ import {
 
 import { Polygon } from 'geojson';
 
-import { GlobalStyles } from '../../../core/components/GlobalStyles';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetBuilding, useGetSite } from '../../../core/queries/placesHooks';
-import { ActivityIndicator } from '../../../ui/components/ActivityIndicator';
-import { BottomSheet } from '../../../ui/components/BottomSheet';
-import { Col } from '../../../ui/components/Col';
-import { EmptyState } from '../../../ui/components/EmptyState';
-import { IconButton } from '../../../ui/components/IconButton';
-import { ListItem } from '../../../ui/components/ListItem';
-import { OverviewList } from '../../../ui/components/OverviewList';
-import { Section } from '../../../ui/components/Section';
-import { SectionHeader } from '../../../ui/components/SectionHeader';
-import { Text } from '../../../ui/components/Text';
-import { useStylesheet } from '../../../ui/hooks/useStylesheet';
-import { useTheme } from '../../../ui/hooks/useTheme';
-import { Theme } from '../../../ui/types/Theme';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';

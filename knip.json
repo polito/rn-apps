@@ -1,0 +1,49 @@
+{
+  "workspaces": {
+    ".": {
+      "entry": "tools/**/*.js",
+      "project": "tools/**/*.js",
+      "ignoreDependencies": [
+        "@commitlint/cli",
+        "@total-typescript/ts-reset",
+        "lint-staged"
+      ]
+    },
+    "{students,faculty,base}": {
+      "project": ["src/**/*.{ts,tsx,js}", "index.js", "react-native.config.js"],
+      "entry": ["index.js", "react-native.config.js"],
+      "ignoreDependencies": [
+        "@env",
+        "@babel/preset-env",
+        "@react-native/metro-babel-transformer",
+        "@react-native-community/cli",
+        "@react-native-community/cli-platform-android",
+        "@react-native-community/cli-platform-ios",
+        "expo-updates"
+      ],
+      "ignoreUnresolved": ["metro-transform-worker", "metro-minify-terser"],
+      "typescript": true
+    },
+    "lib": {
+      "project": ["**/*.{ts,tsx}"],
+      "entry": [
+        "index.ts",
+        "ui/index.ts",
+        "core/index.ts",
+        "features/index.ts"
+      ],
+      "ignore": ["**/*.android.tsx", "**/*.ios.tsx", "**/*.native.tsx"],
+      "ignoreDependencies": ["@env", "assets"],
+      "typescript": true
+    }
+  },
+  "rules": {
+    "exports": "error",
+    "files": "error",
+    "unlisted": "error",
+    "dependencies": "error",
+    "types": "error",
+    "binaries": "error",
+    "enumMembers": "error"
+  }
+}

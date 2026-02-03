@@ -24,28 +24,30 @@ import {
   faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
+  BottomBarSpacer,
+  BottomModal,
+  CtaButton,
+  EmptyState,
+  GlobalStyles,
+  Icon,
+  IconButton,
+  IndentedDivider,
+  ListItem,
+  OverviewList,
+  Section,
+  SectionHeader,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
+import { useBottomModal } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { BottomBarSpacer } from '../core/components/BottomBarSpacer';
-import { BottomModal } from '../core/components/BottomModal';
-import { GlobalStyles } from '../core/components/GlobalStyles';
 import { useCourses } from '../core/contexts/CoursesContext';
-import { useBottomModal } from '../core/hooks/useBottomModal';
 import { useSafeAreaSpacing } from '../core/hooks/useSafeAreaSpacing';
-import { CtaButton } from '../ui/components/CtaButton';
-import { EmptyState } from '../ui/components/EmptyState';
-import { Icon } from '../ui/components/Icon';
-import { IconButton } from '../ui/components/IconButton';
-import { IndentedDivider } from '../ui/components/IndentedDivider';
-import { ListItem } from '../ui/components/ListItem';
-import { OverviewList } from '../ui/components/OverviewList';
-import { Section } from '../ui/components/Section';
-import { SectionHeader } from '../ui/components/SectionHeader';
-import { Text } from '../ui/components/Text';
-import { useStylesheet } from '../ui/hooks/useStylesheet';
-import { useTheme } from '../ui/hooks/useTheme';
-import { Theme } from '../ui/types/Theme';
 import { AddStudentsToExamModalContent } from './Teaching/AddStudentsToExamModalContent';
 import { TeachingStackParamList } from './Teaching/TeachingNavigator';
 

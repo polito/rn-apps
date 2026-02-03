@@ -8,11 +8,9 @@ import {
   faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 import { ExamStatusEnum } from '@polito/api-client';
+import { Badge, lightTheme, useTheme } from '@polito/lib';
 
-import { lightTheme } from '../../core/themes/light';
 import { Exam } from '../../core/types/api';
-import { Badge } from '../../ui/components/Badge';
-import { useTheme } from '../../ui/hooks/useTheme';
 
 interface Props {
   exam: Exam;

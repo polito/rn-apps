@@ -15,6 +15,16 @@ import {
   faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
+  AgendaCard,
+  BottomBarSpacer,
+  IconButton,
+  Row,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import DateTimePicker, {
   DateTimePickerAndroid,
 } from '@react-native-community/datetimepicker';
@@ -24,17 +34,9 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Locale, format } from 'date-fns';
 import { enUS, it } from 'date-fns/locale';
 
-import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
 import { Logo } from '../../core/components/Logo';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
-import { AgendaCard } from '../../ui/components/AgendaCard';
-import { IconButton } from '../../ui/components/IconButton';
-import { Row } from '../../ui/components/Row';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 import { AgendaStackParamList } from './AgendaNavigator';
 
 const localeMap: Record<string, Locale> = {
@@ -46,7 +48,7 @@ export const AgendaScreen = () => {
   const { t, i18n } = useTranslation();
   const locale = localeMap[i18n.language] || enUS;
 
-  const { colors, spacing, fontSizes } = useTheme();
+  const { colors, spacing, fontSizes, palettes } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<AgendaStackParamList>>();
   const styles = useStylesheet(createStyles);
@@ -78,7 +80,7 @@ export const AgendaScreen = () => {
 
           <IconButton
             icon={faCalendarDay}
-            color={colors.primary[400]}
+            color={palettes.primary[400]}
             size={fontSizes.lg}
             accessibilityLabel={t('common.preferences')}
             hitSlop={{ left: spacing[2], right: spacing[2] }}
@@ -107,7 +109,7 @@ export const AgendaScreen = () => {
 
           <IconButton
             icon={faPlus}
-            color={colors.primary[400]}
+            color={palettes.primary[400]}
             size={fontSizes.lg}
             accessibilityLabel={t('common.add')}
             hitSlop={{ left: spacing[2], right: spacing[2] }}
@@ -128,13 +130,13 @@ export const AgendaScreen = () => {
               }}
               icon={faEllipsisVertical}
               size={fontSizes.lg}
-              color={colors.primary[400]}
+              color={palettes.primary[400]}
             />
           </TouchableOpacity>
         </Row>
       ),
     });
-  }, [navigation, startDate, spacing, fontSizes.lg, colors.primary, t]);
+  }, [navigation, startDate, spacing, fontSizes.lg, palettes.primary, t]);
 
   const normalizeDate = (date: Date) => {
     const newDate = new Date(date);
@@ -172,7 +174,7 @@ export const AgendaScreen = () => {
     <View style={styles.container}>
       <Popover
         isVisible={isMenuVisible}
-        from={buttonRef}
+        from={buttonRef.current}
         onRequestClose={() => setMenuVisible(false)}
       >
         <TouchableOpacity>
@@ -238,7 +240,7 @@ export const AgendaScreen = () => {
                             <View
                               style={{
                                 backgroundColor: isToday
-                                  ? colors.primary[700]
+                                  ? palettes.primary[700]
                                   : undefined,
                                 borderRadius: 8,
                                 paddingHorizontal: 6,
@@ -272,7 +274,7 @@ export const AgendaScreen = () => {
                   <AgendaCard
                     style={{ flex: 1 }}
                     title={item.title}
-                    color={colors.info[500]}
+                    color={palettes.info[500]}
                     type={
                       item.type === 'lezione'
                         ? t('common.lecture')

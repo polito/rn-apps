@@ -7,11 +7,11 @@ import {
   faCircleXmark,
   faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { Badge } from '@lib/ui/components/Badge';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { lightTheme } from '@lib/ui/themes/light';
 import { ExamStatusEnum } from '@polito/api-client';
+import { usePreferencesContext } from '@polito/lib';
+import { Badge } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { lightTheme } from '@polito/lib';
 
 import { AppPreferences } from '~/core/types/preferences';
 

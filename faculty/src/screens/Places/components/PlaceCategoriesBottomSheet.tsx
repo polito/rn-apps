@@ -4,12 +4,10 @@ import { Image } from 'react-native';
 
 import { faMapLocation } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { EmptyState, Icon, useTheme } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 
 import { useGetPlaceCategories } from '../../../core/queries/placesHooks';
-import { EmptyState } from '../../../ui/components/EmptyState';
-import { Icon } from '../../../ui/components/Icon';
-import { useTheme } from '../../../ui/hooks/useTheme';
 import { formatPlaceCategory } from '../utils/category';
 import { PlacesBottomSheet, PlacesBottomSheetProps } from './PlacesBottomSheet';
 

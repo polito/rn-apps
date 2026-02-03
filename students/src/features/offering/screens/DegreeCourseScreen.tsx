@@ -16,26 +16,26 @@ import {
   faMicroscope,
   faPersonChalkboard,
 } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { Card } from '@lib/ui/components/Card.tsx';
-import { Grid } from '@lib/ui/components/Grid.tsx';
-import { Icon } from '@lib/ui/components/Icon.tsx';
-import { ListItem } from '@lib/ui/components/ListItem.tsx';
-import { LoadingContainer } from '@lib/ui/components/LoadingContainer.tsx';
-import { Metric } from '@lib/ui/components/Metric.tsx';
-import { OverviewList } from '@lib/ui/components/OverviewList.tsx';
-import { RefreshControl } from '@lib/ui/components/RefreshControl.tsx';
-import { Row } from '@lib/ui/components/Row.tsx';
-import { ScreenTitle } from '@lib/ui/components/ScreenTitle.tsx';
-import { Section } from '@lib/ui/components/Section.tsx';
-import { SectionHeader } from '@lib/ui/components/SectionHeader.tsx';
-import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView.tsx';
-import { Text } from '@lib/ui/components/Text.tsx';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet.ts';
-import { useTheme } from '@lib/ui/hooks/useTheme.ts';
-import { GlobalStyles } from '@lib/ui/styles/GlobalStyles';
-import { Theme } from '@lib/ui/types/Theme.tsx';
+import { useOfflineDisabled } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { Card } from '@polito/lib';
+import { Grid } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { LoadingContainer } from '@polito/lib';
+import { Metric } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { ScreenTitle } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { SectionHeader } from '@polito/lib';
+import { StatefulMenuView } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { GlobalStyles } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { MenuAction } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 

@@ -13,9 +13,9 @@ import Svg, {
   Text,
 } from 'react-native-svg';
 
-import { useBottomModal } from '@lib/core/hooks/useBottomModal';
-import { BottomModal } from '@lib/ui/components/BottomModal';
 import { EuropeanStudentCardDetailsStatusEnum } from '@polito/api-client';
+import { useBottomModal } from '@polito/lib';
+import { BottomModal } from '@polito/lib';
 
 import { EscInfoBottomModal } from '../../features/user/components/EscInfoBottomModal.tsx';
 import { UserQrModal } from '../../features/user/components/UserQrModal.tsx';

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { Platform } from 'react-native';
 
-import { tabBarStyle } from '@lib/core/utils/tab-bar';
+import { tabBarStyle } from '@polito/lib';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 export const useHideTabs = (

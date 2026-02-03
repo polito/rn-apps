@@ -10,16 +10,16 @@ import {
   faEllipsisVertical,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { IS_ANDROID, IS_IOS } from '@lib/core/constants';
-import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
-import { formatDateTime } from '@lib/core/utils/dates';
-import { formatFileSize, splitNameAndExtension } from '@lib/core/utils/files';
-import { notNullish } from '@lib/core/utils/predicates';
-import { FileListItem } from '@lib/ui/components/FileListItem';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { ListItemProps } from '@lib/ui/components/ListItem';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { BASE_PATH, CourseFileOverview } from '@polito/api-client';
+import { IS_ANDROID, IS_IOS } from '@polito/lib';
+import { useFeedbackContext } from '@polito/lib';
+import { formatDateTime } from '@polito/lib';
+import { formatFileSize, splitNameAndExtension } from '@polito/lib';
+import { notNullish } from '@polito/lib';
+import { FileListItem } from '@polito/lib';
+import { IconButton } from '@polito/lib';
+import { ListItemProps } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 
 import { useDownloadCourseFile } from '../../../core/hooks/useDownloadCourseFile';

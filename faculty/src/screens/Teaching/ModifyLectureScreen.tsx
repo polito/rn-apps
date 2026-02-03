@@ -11,22 +11,24 @@ import {
 } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import {
+  Card,
+  CtaButton,
+  IconButton,
+  Row,
+  Select,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 
+import { DateRow } from '../../core/components/DateRow';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { Card } from '../../ui/components/Card';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { DateRow } from '../../ui/components/DateRow';
-import { IconButton } from '../../ui/components/IconButton';
-import { Row } from '../../ui/components/Row';
-import { Select } from '../../ui/components/Select';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 
 const availableSlots = [
   '08:30',
@@ -283,7 +285,7 @@ export const ModifyLectureScreen = () => {
                 >
                   <Text
                     style={{
-                      color: isSelected ? colors.white : colors.text[700],
+                      color: isSelected ? colors.white : palettes.text[700],
                     }}
                   >
                     {member.name}
@@ -323,7 +325,7 @@ export const ModifyLectureScreen = () => {
   );
 };
 
-const createStyles = ({ colors }: Theme) =>
+const createStyles = ({ palettes }: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -332,6 +334,6 @@ const createStyles = ({ colors }: Theme) =>
     label: {
       marginLeft: 17,
       marginTop: 5,
-      color: colors.primary[700],
+      color: palettes.primary[700],
     },
   });

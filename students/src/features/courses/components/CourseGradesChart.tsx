@@ -2,14 +2,14 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import Svg, { G, Line, Path, Text as SvgText } from 'react-native-svg';
 
-import { Col } from '@lib/ui/components/Col.tsx';
-import { Text } from '@lib/ui/components/Text.tsx';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet.ts';
-import { useTheme } from '@lib/ui/hooks/useTheme.ts';
-import type { Theme } from '@lib/ui/types/Theme.tsx';
 import type { CourseStatistics } from '@polito/api-client';
 import { GradeCount } from '@polito/api-client/models/GradeCount';
 import { GradeCountGradeEnum } from '@polito/api-client/models/GradeCount.ts';
+import { Col } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import type { Theme } from '@polito/lib';
 
 import { LegendItem } from './LegendItem.tsx';
 import { NoChartDataContainer } from './NoChartDataContainer.tsx';

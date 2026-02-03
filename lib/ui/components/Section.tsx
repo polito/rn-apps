@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
 import { Platform, ViewProps } from 'react-native';
 
-import { Col, ColProps } from '@lib/ui/components/Col';
+import { Col, ColProps } from './Col';
 
 export const Section = ({
   style,

@@ -2,16 +2,16 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { faWarning } from '@fortawesome/free-solid-svg-icons';
-import { Col } from '@lib/ui/components/Col';
-import { DisclosureIndicator } from '@lib/ui/components/DisclosureIndicator';
-import { Icon } from '@lib/ui/components/Icon';
-import { ModalContent } from '@lib/ui/components/ModalContent';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { Theme } from '@lib/ui/types/Theme';
 import { Survey } from '@polito/api-client';
+import { Col } from '@polito/lib';
+import { DisclosureIndicator } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { ModalContent } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { SurveyListItemByTypeName } from './SurveyListItemByTypeName';
 

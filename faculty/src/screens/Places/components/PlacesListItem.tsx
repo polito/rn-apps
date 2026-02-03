@@ -2,13 +2,9 @@ import { useTranslation } from 'react-i18next';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { PlaceRef } from '@polito/api-client';
+import { Icon, ListItem, notNullish, useTheme } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-import { Icon } from '../../../ui/components/Icon';
-import { ListItem } from '../../../ui/components/ListItem';
-import { useTheme } from '../../../ui/hooks/useTheme';
-import { notNullish } from '../../../utils/predicates';
 
 type Props = {
   eventName: string;

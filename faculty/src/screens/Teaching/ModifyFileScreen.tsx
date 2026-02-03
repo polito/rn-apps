@@ -5,17 +5,19 @@ import { StyleSheet, TextInput, View } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
+import {
+  Card,
+  CtaButton,
+  IconButton,
+  Select,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { Card } from '../../ui/components/Card';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { IconButton } from '../../ui/components/IconButton';
-import { Select } from '../../ui/components/Select';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 
 // Funzione per gestire il cambio della data (gestione robusta per Android)
 // const _handleDateChange = (
@@ -41,7 +43,7 @@ import { Theme } from '../../ui/types/Theme';
 export const ModifyFileScreen = () => {
   const navigation = useNavigation();
   const { selectedCourse, updateCourseFile, selectedFile } = useCourses();
-  const { colors, spacing } = useTheme();
+  const { spacing, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const [title, setTitle] = useState(selectedFile?.name ?? '');
   const [selectedDirectory, setSelectedDirectory] = useState(
@@ -99,7 +101,7 @@ export const ModifyFileScreen = () => {
             style={{
               marginLeft: 15,
               marginTop: 5,
-              color: colors.formTitle,
+              color: palettes.gray[800],
             }}
           >
             Titolo
@@ -113,7 +115,7 @@ export const ModifyFileScreen = () => {
               padding: spacing[2],
               marginLeft: 10,
               fontSize: 16,
-              color: colors.formPlaceHolder,
+              color: palettes.gray[600],
             }}
           />
         </Card>
@@ -124,7 +126,7 @@ export const ModifyFileScreen = () => {
             style={{
               marginLeft: 15,
               marginTop: 5,
-              color: colors.formTitle,
+              color: palettes.gray[800],
             }}
           >
             Cartella
@@ -171,7 +173,7 @@ export const ModifyFileScreen = () => {
   );
 };
 
-const createStyles = ({ colors }: Theme) =>
+const createStyles = ({ colors, palettes }: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -187,13 +189,13 @@ const createStyles = ({ colors }: Theme) =>
       marginBottom: 16, // Distanza dal bordo inferiore
     },
     blueButtonContainer: {
-      backgroundColor: colors.primary[500],
+      backgroundColor: palettes.primary[500],
       marginHorizontal: 20,
       borderRadius: 8,
       padding: 0,
     },
     button: {
-      backgroundColor: colors.primary[500],
+      backgroundColor: palettes.primary[500],
       paddingVertical: 12,
       borderRadius: 8,
       alignItems: 'center',

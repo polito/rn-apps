@@ -6,11 +6,11 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 
-import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
-import { useSafeBottomBarHeight } from '@lib/core/hooks/useSafeBottomBarHeight';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { CtaButton, CtaButtonSpacer } from '@lib/ui/components/CtaButton';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useFeedbackContext } from '@polito/lib';
+import { useSafeBottomBarHeight } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { CtaButton, CtaButtonSpacer } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Checkbox } from '../../../core/components/Checkbox';

@@ -1,16 +1,18 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
+import {
+  ListItem,
+  Section,
+  SectionHeader,
+  Theme,
+  useStylesheet,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { ListItem } from '../../ui/components/ListItem';
-import { Section } from '../../ui/components/Section';
-import { SectionHeader } from '../../ui/components/SectionHeader';
-import { SectionList } from '../../ui/components/SectionList';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
 import { TeachingStackParamList } from './TeachingNavigator';
 
 export const CoursesScreen = () => {
@@ -78,7 +80,7 @@ export const CoursesScreen = () => {
   );
 };
 
-const createStyles = ({ colors, spacing }: Theme) =>
+const createStyles = ({ palettes, colors, spacing }: Theme) =>
   StyleSheet.create({
     loader: {
       marginVertical: spacing[8],
@@ -100,7 +102,7 @@ const createStyles = ({ colors, spacing }: Theme) =>
       alignItems: 'center',
     },
     buttonText: {
-      color: colors.text[700], // Colore del testo del bottone
+      color: palettes.text[700], // Colore del testo del bottone
       fontSize: 16,
       fontWeight: 'light',
     },

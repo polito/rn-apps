@@ -5,22 +5,24 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, TextInput, View } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import {
+  Card,
+  CtaButton,
+  IconButton,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { Card } from '../../ui/components/Card';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { IconButton } from '../../ui/components/IconButton';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 
 export const ProfileForm = () => {
   const { t, i18n } = useTranslation();
   const styles = useStylesheet(createStyles);
   const navigation = useNavigation();
-  const { colors, spacing } = useTheme();
+  const { spacing, palettes } = useTheme();
   const { user, setUser } = useCourses();
   const [domicilie, setDomicilie] = useState(user.domicilie);
   const [tdomicilie, setTdomicilie] = useState(user.taxDomicilie);
@@ -73,7 +75,7 @@ export const ProfileForm = () => {
             style={{
               marginLeft: 15,
               marginTop: 5,
-              color: colors.formTitle,
+              color: palettes.gray[800],
             }}
           >
             {t('other.residence')}
@@ -87,7 +89,7 @@ export const ProfileForm = () => {
               padding: spacing[2],
               marginLeft: 10,
               fontSize: 16,
-              color: colors.formPlaceHolder,
+              color: palettes.gray[600],
             }}
           />
         </Card>
@@ -97,7 +99,7 @@ export const ProfileForm = () => {
             style={{
               marginLeft: 15,
               marginTop: 5,
-              color: colors.formTitle,
+              color: palettes.gray[800],
             }}
           >
             {t('other.fiscalResidence')}
@@ -111,7 +113,7 @@ export const ProfileForm = () => {
               padding: spacing[2],
               marginLeft: 10,
               fontSize: 16,
-              color: colors.formPlaceHolder,
+              color: palettes.gray[600],
             }}
           />
         </Card>
@@ -125,7 +127,7 @@ export const ProfileForm = () => {
             style={{
               marginLeft: 15,
               marginTop: 5,
-              color: colors.formTitle,
+              color: palettes.gray[800],
             }}
           >
             {t('other.telephone')}
@@ -139,7 +141,7 @@ export const ProfileForm = () => {
               padding: spacing[2],
               marginLeft: 10,
               fontSize: 16,
-              color: colors.formPlaceHolder,
+              color: palettes.gray[600],
             }}
           />
         </Card>
@@ -150,7 +152,7 @@ export const ProfileForm = () => {
             style={{
               marginLeft: 15,
               marginTop: 5,
-              color: colors.formTitle,
+              color: palettes.gray[800],
             }}
           >
             Email
@@ -164,7 +166,7 @@ export const ProfileForm = () => {
               padding: spacing[2],
               marginLeft: 10,
               fontSize: 16,
-              color: colors.formPlaceHolder,
+              color: palettes.gray[600],
             }}
           />
         </Card>
@@ -175,7 +177,7 @@ export const ProfileForm = () => {
             style={{
               marginLeft: 15,
               marginTop: 5,
-              color: colors.formTitle,
+              color: palettes.gray[800],
             }}
           >
             {t('other.privateMail')}
@@ -189,7 +191,7 @@ export const ProfileForm = () => {
               padding: spacing[2],
               marginLeft: 10,
               fontSize: 16,
-              color: colors.formPlaceHolder,
+              color: palettes.gray[600],
             }}
           />
         </Card>

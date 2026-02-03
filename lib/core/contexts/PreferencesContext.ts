@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import { Accessibility } from '@lib/core/types';
+import { Accessibility } from '../types/Accessibility';
 
 export const editablePreferenceKeys = [
   // This version is used exclusively for migrations.

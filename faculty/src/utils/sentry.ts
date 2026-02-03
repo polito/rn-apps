@@ -1,6 +1,5 @@
+import { isEnvProduction } from '@polito/lib';
 import * as Sentry from '@sentry/react-native';
-
-import { isEnvProduction } from './env';
 
 export const navigationIntegration = Sentry.reactNavigationIntegration({
   enableTimeToInitialDisplay: true,

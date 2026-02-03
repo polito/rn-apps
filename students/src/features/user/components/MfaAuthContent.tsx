@@ -2,11 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Text, View } from 'react-native';
 
-import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
-import useAppState from '@lib/core/utils/useAppState';
-import { CtaButton } from '@lib/ui/components/CtaButton';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
 import { FetchChallenge200ResponseData, MessageType } from '@polito/api-client';
+import { useFeedbackContext } from '@polito/lib';
+import useAppState from '@polito/lib';
+import { CtaButton } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { RTFTrans } from '~/core/components/RTFTrans';

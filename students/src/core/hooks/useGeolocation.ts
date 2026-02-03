@@ -2,13 +2,13 @@ import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking } from 'react-native';
 
-import { IS_ANDROID } from '@lib/core/constants';
-import { useFeedbackContext } from '@lib/core/contexts/FeedbackContext';
+import { IS_ANDROID } from '@polito/lib';
+import { useFeedbackContext } from '@polito/lib';
 import Geolocation from '@react-native-community/geolocation';
 
 import GeoPoint from 'geopoint';
 
-export type Coordinates = {
+type Coordinates = {
   latitude: number;
   longitude: number;
 };
@@ -30,7 +30,7 @@ const openSettings = () => {
   }
 };
 
-export const computeDistance = (a?: Coordinates, b?: Coordinates) => {
+const computeDistance = (a?: Coordinates, b?: Coordinates) => {
   if (!a || !b) return 0;
 
   const pointA = new GeoPoint(a.latitude, a.longitude);

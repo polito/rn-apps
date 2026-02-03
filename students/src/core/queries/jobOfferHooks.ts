@@ -3,8 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 
 import { pluckData } from '../../utils/queries';
 
-export const JOB_OFFER_QUERY_PREFIX = 'jobOffers';
-export const JOB_OFFERS_QUERY_KEY = [JOB_OFFER_QUERY_PREFIX];
+const JOB_OFFER_QUERY_PREFIX = 'jobOffers';
+const JOB_OFFERS_QUERY_KEY = [JOB_OFFER_QUERY_PREFIX];
 const useJobOffersClient = (): JobOffersApi => {
   return new JobOffersApi();
 };

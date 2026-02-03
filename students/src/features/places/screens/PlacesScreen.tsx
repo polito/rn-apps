@@ -33,25 +33,25 @@ import {
   faExpand,
   faMagnifyingGlassLocation,
 } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { Divider } from '@lib/ui/components/Divider';
-import { EmptyState } from '@lib/ui/components/EmptyState';
-import { Icon } from '@lib/ui/components/Icon';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { PillButton } from '@lib/ui/components/PillButton';
-import { PillIconButton } from '@lib/ui/components/PillIconButton';
-import { Row } from '@lib/ui/components/Row';
-import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
-import { Tabs } from '@lib/ui/components/Tabs';
-import { Text } from '@lib/ui/components/Text';
-import { TranslucentCard } from '@lib/ui/components/TranslucentCard';
-import { ThemeContext } from '@lib/ui/contexts/ThemeContext';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { useTheme } from '@lib/ui/hooks/useTheme';
-import { GlobalStyles } from '@lib/ui/styles/GlobalStyles';
-import { darkTheme } from '@lib/ui/themes/dark';
-import { Theme } from '@lib/ui/types/Theme';
 import { PlaceOverview } from '@polito/api-client';
+import { usePreferencesContext } from '@polito/lib';
+import { Divider } from '@polito/lib';
+import { EmptyState } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { IconButton } from '@polito/lib';
+import { PillButton } from '@polito/lib';
+import { PillIconButton } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { StatefulMenuView } from '@polito/lib';
+import { Tabs } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { TranslucentCard } from '@polito/lib';
+import { ThemeContext } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { GlobalStyles } from '@polito/lib';
+import { darkTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { useHeaderHeight } from '@react-navigation/elements';
 import Mapbox from '@rnmapbox/maps';
 

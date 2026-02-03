@@ -9,21 +9,21 @@ import {
   faMessage,
   faSignOut,
 } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { CtaButton } from '@lib/ui/components/CtaButton';
-import { Icon } from '@lib/ui/components/Icon';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { Row } from '@lib/ui/components/Row';
-import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { StatefulMenuView } from '@lib/ui/components/StatefulMenuView';
-import { Text } from '@lib/ui/components/Text';
-import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
-import { useTheme } from '@lib/ui/hooks/useTheme';
 import { Student } from '@polito/api-client';
+import { useOfflineDisabled } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { CtaButton } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { SectionHeader } from '@polito/lib';
+import { StatefulMenuView } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { UnreadBadge } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { MenuAction, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';

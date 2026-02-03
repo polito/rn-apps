@@ -8,7 +8,7 @@ import {
 import { Platform, ScrollView, ScrollViewProps } from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
-import { Props as TabProps } from './Tab';
+import { TabProps } from './Tab';
 
 interface Props {
   selectedIndexes?: number[];

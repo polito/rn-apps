@@ -1,6 +1,6 @@
 const path = require('node:path');
-const {mergeConfig, getDefaultConfig} = require('@react-native/metro-config');
-const {getSentryExpoConfig} = require('@sentry/react-native/metro');
+const { mergeConfig, getDefaultConfig } = require('@react-native/metro-config');
+const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 /**
  * Metro configuration
  * https://reactnative.dev/docs/metro
@@ -14,11 +14,13 @@ config.watchFolders = [
   __dirname,
   path.join(monorepoRoot, 'node_modules'), // to resolve hoisted dependencies of the monorepo
   path.join(monorepoRoot, 'lib'), // to include lib package,
+  path.join(__dirname, 'assets'), // to include shared assets
 ];
 
 config.resolver = {
   ...config.resolver,
   extraNodeModules: {
+    '@polito/lib': path.join(monorepoRoot, 'lib'),
     assets: path.join(__dirname, 'assets'),
   },
 };

@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { toOASTruncable } from '@lib/core/utils/dates';
 import {
   ExamGrade,
   Message,
@@ -10,6 +9,7 @@ import {
 } from '@polito/api-client';
 import { UpdateDevicePreferencesRequest } from '@polito/api-client/apis/StudentApi';
 import type { ProvisionalGradeState } from '@polito/api-client/models/ProvisionalGradeState';
+import { toOASTruncable } from '@polito/lib';
 import * as Sentry from '@sentry/react-native';
 import {
   useMutation,
@@ -27,14 +27,14 @@ import { useMfaChallengeHandler } from './authHooks.ts';
 import { COURSE_QUERY_PREFIX } from './courseHooks';
 
 export const STUDENT_QUERY_KEY = ['student'];
-export const GRADES_QUERY_KEY = ['grades'];
-export const PROVISIONAL_GRADES_QUERY_KEY = ['provisionalGrades'];
-export const PROVISIONAL_GRADE_STATES_QUERY_KEY = ['provisionalGradeStates'];
-export const MESSAGES_QUERY_PREFIX = 'messages';
+const GRADES_QUERY_KEY = ['grades'];
+const PROVISIONAL_GRADES_QUERY_KEY = ['provisionalGrades'];
+const PROVISIONAL_GRADE_STATES_QUERY_KEY = ['provisionalGradeStates'];
+const MESSAGES_QUERY_PREFIX = 'messages';
 export const MESSAGES_QUERY_KEY = [MESSAGES_QUERY_PREFIX];
 export const NOTIFICATIONS_QUERY_KEY = ['notifications'];
-export const NOTIFICATIONS_PREFERENCES_QUERY_KEY = ['notificationsPreferences'];
-export const GUIDES_QUERY_KEY = ['guides'];
+const NOTIFICATIONS_PREFERENCES_QUERY_KEY = ['notificationsPreferences'];
+const GUIDES_QUERY_KEY = ['guides'];
 export const DEADLINES_QUERY_PREFIX = 'deadlines';
 
 const UNREAD_MAIL_QUERY_KEY = ['unreadEmails'];

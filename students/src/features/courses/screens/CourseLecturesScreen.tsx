@@ -17,17 +17,17 @@ import {
   faChevronUp,
   faVideo,
 } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled } from '@lib/core/hooks/useOfflineDisabled';
-import { formatDate } from '@lib/core/utils/dates';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { Icon } from '@lib/ui/components/Icon';
-import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
-import { ListItem } from '@lib/ui/components/ListItem';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { TranslucentView } from '@lib/ui/components/TranslucentView';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useOfflineDisabled } from '@polito/lib';
+import { formatDate } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { IndentedDivider } from '@polito/lib';
+import { ListItem } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { SectionHeader } from '@polito/lib';
+import { TranslucentView } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useNotifications } from '../../../core/hooks/useNotifications';
@@ -190,7 +190,7 @@ type CourseLectureListItemProps = {
   lecture: CourseLecture;
 };
 
-export const CourseLectureListItem = ({
+const CourseLectureListItem = ({
   courseId,
   section,
   lecture,

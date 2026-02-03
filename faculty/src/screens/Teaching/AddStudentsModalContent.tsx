@@ -9,16 +9,18 @@ import {
 } from 'react-native';
 
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import {
+  Badge,
+  Col,
+  CtaButton,
+  Icon,
+  Text,
+  Theme,
+  useStylesheet,
+} from '@polito/lib';
 
 import { ModalContent } from '../../core/components/ModalContent';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { Badge } from '../../ui/components/Badge';
-import { Col } from '../../ui/components/Col';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { Icon } from '../../ui/components/Icon';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { Theme } from '../../ui/types/Theme';
 
 type Props = {
   close: () => void;

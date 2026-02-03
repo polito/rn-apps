@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { usePreferencesContext } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 

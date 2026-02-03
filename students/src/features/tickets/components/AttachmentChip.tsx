@@ -3,13 +3,13 @@ import { FlatList, StyleSheet, ViewProps } from 'react-native';
 
 import { faFile } from '@fortawesome/free-regular-svg-icons';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { ActivityIndicator } from '@lib/ui/components/ActivityIndicator';
-import { Icon } from '@lib/ui/components/Icon';
-import { IconButton } from '@lib/ui/components/IconButton';
-import { Row } from '@lib/ui/components/Row';
-import { Text } from '@lib/ui/components/Text';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+import { ActivityIndicator } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { IconButton } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { Attachment } from '../../services/types/Attachment';
 

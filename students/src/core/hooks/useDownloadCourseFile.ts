@@ -13,7 +13,7 @@ import {
 } from 'react-native-fs';
 import { dirname } from 'react-native-path';
 
-import { cleanupEmptyFolders } from '@lib/core/utils/files';
+import { cleanupEmptyFolders } from '@polito/lib';
 
 import { useCourseContext } from '../../../src/features/courses/contexts/CourseContext';
 import { CourseFilesCacheContext } from '../../features/courses/contexts/CourseFilesCacheContext';

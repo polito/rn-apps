@@ -1,9 +1,9 @@
 import { Children, PropsWithChildren, isValidElement } from 'react';
 import { Platform } from 'react-native';
 
-import { Divider } from '@lib/ui/components/Divider';
-import { IndentedDivider } from '@lib/ui/components/IndentedDivider';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useTheme } from '../hooks/useTheme';
+import { Divider } from './Divider';
+import { IndentedDivider } from './IndentedDivider';
 
 interface Props {
   dividers?: boolean;

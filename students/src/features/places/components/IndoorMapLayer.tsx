@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { useTheme } from '@polito/lib';
 import { RasterLayer, RasterSource } from '@rnmapbox/maps';
 
 import { INTERIORS_MIN_ZOOM, MAX_ZOOM } from '../constants';

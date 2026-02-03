@@ -2,16 +2,18 @@ import { FlatList } from 'react-native';
 
 import { faChevronRight, faInbox } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
+  BottomBarSpacer,
+  EmptyState,
+  GlobalStyles,
+  IndentedDivider,
+  ListItem,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
-import { GlobalStyles } from '../../core/components/GlobalStyles';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
-import { EmptyState } from '../../ui/components/EmptyState';
-import { IndentedDivider } from '../../ui/components/IndentedDivider';
-import { ListItem } from '../../ui/components/ListItem';
 import { TeachingStackParamList } from './TeachingNavigator';
 
 export const CourseLecturesTab = () => {

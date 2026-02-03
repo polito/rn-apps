@@ -2,11 +2,11 @@ import { PropsWithChildren, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
-import { setTimeoutAccessibilityInfoHelper } from '@lib/core/utils/setTimeoutAccessibilityInfo';
-import { CtaButton } from '@lib/ui/components/CtaButton';
-import { CtaButtonContainer } from '@lib/ui/components/CtaButtonContainer';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet';
-import { Theme } from '@lib/ui/types/Theme';
+import { setTimeoutAccessibilityInfoHelper } from '@polito/lib';
+import { CtaButton } from '@polito/lib';
+import { CtaButtonContainer } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

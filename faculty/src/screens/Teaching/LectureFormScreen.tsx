@@ -12,22 +12,24 @@ import {
 } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import {
+  Card,
+  CtaButton,
+  IconButton,
+  Row,
+  Select,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 
+import { DateRow } from '../../core/components/DateRow';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { Card } from '../../ui/components/Card';
-import { CtaButton } from '../../ui/components/CtaButton';
-import { DateRow } from '../../ui/components/DateRow';
-import { IconButton } from '../../ui/components/IconButton';
-import { Row } from '../../ui/components/Row';
-import { Select } from '../../ui/components/Select';
-import { Text } from '../../ui/components/Text';
-import { useStylesheet } from '../../ui/hooks/useStylesheet';
-import { useTheme } from '../../ui/hooks/useTheme';
-import { Theme } from '../../ui/types/Theme';
 
 const availableSlots = [
   '08:30',
@@ -212,7 +214,7 @@ export const LectureFormScreen = () => {
             placeholder={t('other.enterTopic')}
             value={description}
             onChangeText={setDescription}
-            style={[styles.input, { color: colors.formPlaceHolder }]}
+            style={[styles.input, { color: palettes.gray[600] }]}
           />
         </Card>
 
@@ -273,7 +275,7 @@ export const LectureFormScreen = () => {
         <Card style={{ marginBottom: spacing[4] }}>
           <Text
             variant="heading"
-            style={{ marginLeft: 15, marginTop: 5, color: colors.formTitle }}
+            style={{ marginLeft: 15, marginTop: 5, color: palettes.gray[800] }}
           >
             {t('other.selectDate')}
           </Text>

@@ -1,7 +1,6 @@
 import { Platform, View, ViewProps } from 'react-native';
 
-import { IS_IOS } from '@lib/core/constants';
-
+import { IS_IOS } from '../../core/constants';
 import { useTheme } from '../hooks/useTheme';
 
 export type CardProps = ViewProps & {

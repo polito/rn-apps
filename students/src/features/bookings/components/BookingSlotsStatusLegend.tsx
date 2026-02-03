@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Platform, View } from 'react-native';
 
-import { PillButton } from '@lib/ui/components/PillButton';
-import { Text } from '@lib/ui/components/Text';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { PillButton } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { MenuView } from '@react-native-menu/menu';
 
 export const BookingSlotsStatusLegend = () => {

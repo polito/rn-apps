@@ -3,17 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, View, ViewProps } from 'react-native';
 
 import { faBan, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { useDeviceOrientation } from '@lib/core/hooks/useDeviceOrientation';
-import { Card } from '@lib/ui/components/Card.tsx';
-import { Col } from '@lib/ui/components/Col.tsx';
-import { CtaButton } from '@lib/ui/components/CtaButton.tsx';
-import { Icon } from '@lib/ui/components/Icon.tsx';
-import { ModalContent } from '@lib/ui/components/ModalContent.tsx';
-import { Row } from '@lib/ui/components/Row.tsx';
-import { Text } from '@lib/ui/components/Text.tsx';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet.ts';
-import { useTheme } from '@lib/ui/hooks/useTheme.ts';
-import { Theme } from '@lib/ui/types/Theme.tsx';
+import { useDeviceOrientation } from '@polito/lib';
+import { Card } from '@polito/lib';
+import { Col } from '@polito/lib';
+import { CtaButton } from '@polito/lib';
+import { Icon } from '@polito/lib';
+import { ModalContent } from '@polito/lib';
+import { Row } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { useTheme } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog.ts';
 import { useDeleteEsc } from '../../../core/queries/escHooks.ts';

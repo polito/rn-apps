@@ -2,15 +2,15 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleProp, StyleSheet, TextLayoutLine, TextStyle } from 'react-native';
 
-import { IS_ANDROID, IS_IOS } from '@lib/core/constants';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { Text } from '@lib/ui/components/Text.tsx';
-import { useStylesheet } from '@lib/ui/hooks/useStylesheet.ts';
-import { Theme } from '@lib/ui/types/Theme.tsx';
+import { IS_ANDROID, IS_IOS } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib';
+import { Text } from '@polito/lib';
+import { useStylesheet } from '@polito/lib';
+import { Theme } from '@polito/lib';
 
 import { AppPreferences } from '../types/preferences.ts';
 
-export type ReadMoreTextProps = {
+type ReadMoreTextProps = {
   message: string;
   styleText?: StyleProp<TextStyle>;
   styleReadMore?: StyleProp<TextStyle>;

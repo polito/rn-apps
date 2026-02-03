@@ -1,15 +1,8 @@
 import { useMemo } from 'react';
 
-import {
-  PreferencesContextProps,
-  usePreferencesContext,
-} from '@lib/core/contexts/PreferencesContext';
-import {
-  APP_TIMEZONE,
-  dateFormatter,
-  formatMachineDate,
-} from '@lib/core/utils/dates';
 import { Booking, Deadline, ExamStatusEnum } from '@polito/api-client';
+import { PreferencesContextProps, usePreferencesContext } from '@polito/lib';
+import { APP_TIMEZONE, dateFormatter, formatMachineDate } from '@polito/lib';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { AppPreferences, CoursesPreferences } from '~/core/types/preferences';

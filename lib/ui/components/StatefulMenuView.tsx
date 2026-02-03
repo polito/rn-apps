@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from 'react';
 
-import { IS_ANDROID } from '@lib/core/constants';
 import { MenuAction, MenuView } from '@react-native-menu/menu';
 import { MenuComponentProps } from '@react-native-menu/menu/src/types';
+
+import { IS_ANDROID } from '../../core/constants';
 
 export const StatefulMenuView = ({
   actions,

@@ -9,19 +9,19 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { IS_IOS } from '@lib/core/constants';
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { To, resolveLinkTo } from '@lib/core/utils/resolveLinkTo';
-import { Col } from '@lib/ui/components/Col';
-import { Row } from '@lib/ui/components/Row';
-import { UnreadBadge } from '@lib/ui/components/UnreadBadge';
-import { GlobalStyles } from '@lib/ui/styles/GlobalStyles';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { IS_IOS } from '../../core/constants';
+import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { To, resolveLinkTo } from '../../core/utils/resolveLinkTo';
 import { useTheme } from '../hooks/useTheme';
+import { GlobalStyles } from '../styles/GlobalStyles';
+import { Col } from './Col';
 import { DisclosureIndicator } from './DisclosureIndicator';
+import { Row } from './Row';
 import { Text } from './Text';
+import { UnreadBadge } from './UnreadBadge';
 
 export interface ListItemProps extends TouchableHighlightProps {
   title: string | ReactElement;

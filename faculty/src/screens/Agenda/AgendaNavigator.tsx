@@ -3,13 +3,13 @@ import { Platform, TouchableOpacity } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { Text } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { Logo } from '../../core/components/Logo';
 import { useTitlesStyles } from '../../core/hooks/useTitleStyles';
-import { Text } from '../../ui/components/Text';
-import { useTheme } from '../../ui/hooks/useTheme';
 import { AgendaScreen } from './AgendaScreen';
 import { AgendaWeekScreen } from './AgendaWeekScreen';
 import { LectureScreen } from './LectureScreen';

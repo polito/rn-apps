@@ -5,17 +5,19 @@ import { Platform } from 'react-native';
 
 import { faArrowLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
+  BottomBarSpacer,
+  IconButton,
+  IndentedDivider,
+  ListItem,
+  Text,
+  useTheme,
+} from '@polito/lib';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { BottomBarSpacer } from '../../core/components/BottomBarSpacer';
 import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
 import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
-import { IconButton } from '../../ui/components/IconButton';
-import { IndentedDivider } from '../../ui/components/IndentedDivider';
-import { ListItem } from '../../ui/components/ListItem';
-import { Text } from '../../ui/components/Text';
-import { useTheme } from '../../ui/hooks/useTheme';
 import { ProfileStackParamList } from './ServiceNavigator';
 
 export const BookingScreen = () => {

@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { setTimeoutAccessibilityInfoHelper } from '@lib/core/utils/setTimeoutAccessibilityInfo';
-import { BottomBarSpacer } from '@lib/ui/components/BottomBarSpacer';
-import { CtaButton } from '@lib/ui/components/CtaButton';
-import { OverviewList } from '@lib/ui/components/OverviewList';
-import { RefreshControl } from '@lib/ui/components/RefreshControl';
-import { Section } from '@lib/ui/components/Section';
-import { SectionHeader } from '@lib/ui/components/SectionHeader';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { setTimeoutAccessibilityInfoHelper } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib';
+import { CtaButton } from '@polito/lib';
+import { OverviewList } from '@polito/lib';
+import { RefreshControl } from '@polito/lib';
+import { Section } from '@polito/lib';
+import { SectionHeader } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetBookings } from '../../../core/queries/bookingHooks';

@@ -1,6 +1,5 @@
-import { PillButton, PillButtonProps } from '@lib/ui/components/PillButton';
-
 import { DropdownActivator } from './DropdownActivator';
+import { PillButton, PillButtonProps } from './PillButton';
 
 export type PillDropdownActivatorProps = PillButtonProps;
 

@@ -3,8 +3,8 @@ import {
   ActivityIndicator as RNActivityIndicator,
 } from 'react-native';
 
-import { IS_ANDROID } from '@lib/core/constants';
-import { useTheme } from '@lib/ui/hooks/useTheme';
+import { IS_ANDROID } from '../../core/constants';
+import { useTheme } from '../hooks/useTheme';
 
 export const ActivityIndicator = (props: ActivityIndicatorProps) => {
   const { palettes } = useTheme();

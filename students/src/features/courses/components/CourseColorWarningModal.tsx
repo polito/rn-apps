@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Modal, StyleSheet, Switch, Text, View } from 'react-native';
 
-import { usePreferencesContext } from '@lib/core/contexts/PreferencesContext';
-import { useTheme } from '@lib/ui/hooks/useTheme.ts';
+import { usePreferencesContext } from '@polito/lib';
+import { useTheme } from '@polito/lib';
 
 import { AppPreferences } from '~/core/types/preferences';
 
