@@ -1,12 +1,10 @@
 import { useTranslation } from 'react-i18next';
 
 import { BookingsApi } from '@polito/api-client';
-import { setTimeoutAccessibilityInfoHelper } from '@polito/lib';
+import { pluckData, setTimeoutAccessibilityInfoHelper } from '@polito/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { DateTime } from 'luxon';
-
-import { pluckData } from '../../utils/queries';
 
 export const BOOKINGS_QUERY_KEY = ['bookings'];
 const BOOKINGS_TOPICS_QUERY_KEY = ['booking', 'topics'];

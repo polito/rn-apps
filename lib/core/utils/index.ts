@@ -4,6 +4,7 @@ export * from './env';
 export * from './files';
 export * from './html';
 export * from './predicates';
+export * from './queries';
 export * from './reducers';
 export * from './resolveLinkTo';
 export * from './sentry';

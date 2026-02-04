@@ -1,5 +1,8 @@
 import { createContext, useContext } from 'react';
 
+//TODO: switch to @polito/map-client when published
+import { PlaceOverview } from '@polito/api-client';
+
 import { Accessibility } from '../types/Accessibility';
 
 export const editablePreferenceKeys = [
@@ -18,10 +21,12 @@ export type CommonPreferences = {
   colorScheme: 'light' | 'dark' | 'system';
   language: 'it' | 'en';
   accessibility: Accessibility;
+  campusId?: string;
+  placesSearched: PlaceOverview[];
 };
 
 // Specify here complex keys, that require serialization/deserialization
-export const objectPreferenceKeys = ['accessibility'];
+export const objectPreferenceKeys = ['accessibility', 'placesSearched'];
 
 // Make the full preferences shape generic so callers can pass app-specific keys
 // Default Extra type keeps previous shape for backward compatibility

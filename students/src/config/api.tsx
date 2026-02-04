@@ -5,6 +5,7 @@ import {
   ConfigurationParameters,
 } from '@polito/api-client';
 import { DefaultConfig } from '@polito/api-client/runtime';
+import { PlacesApiConfig } from '@polito/lib';
 
 /**
  * Updates the global API configuration used by all clients
@@ -39,4 +40,5 @@ export const updateGlobalApiConfiguration = ({
   }
 
   DefaultConfig.config = new Configuration(configurationParameters);
+  PlacesApiConfig.config = new Configuration(configurationParameters);
 };

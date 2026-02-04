@@ -2,13 +2,18 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import { ExamGrade } from '@polito/api-client';
-import { useTheme } from '@polito/lib';
+import {
+  HeaderLogoNoProps,
+  createHeaderCloseButton,
+  useTheme,
+  useTitlesStyles,
+} from '@polito/lib';
+import { PlacesNavigator, PlacesStackParamList } from '@polito/lib';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { createHeaderCloseButton } from '../../../core/components/HeaderCloseButton';
-import { HeaderLogoNoProps } from '../../../core/components/HeaderLogo';
-import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { UnreadMessagesModal } from '~/features/user/screens/UnreadMessagesModal';
+
 import { OnboardingModal } from '../../../core/screens/OnboardingModal';
 import {
   SharedScreens,
@@ -19,8 +24,6 @@ import {
   CourseSharedScreensParamList,
 } from '../../courses/navigation/CourseSharedScreens';
 import { CoursesScreen } from '../../courses/screens/CoursesScreen';
-import { PlacesNavigator } from '../../places/components/PlacesNavigator';
-import { PlacesStackParamList } from '../../places/components/PlacesNavigator';
 import { CpdSurveysScreen } from '../../surveys/screens/CpdSurveysScreen';
 import { TranscriptTopTabsNavigator } from '../../transcript/navigation/TranscriptTopTabsNavigator';
 import { ProvisionalGradeScreen } from '../../transcript/screens/ProvisionalGradeScreen';
@@ -177,12 +180,13 @@ export const TeachingNavigator = () => {
       />
       <Stack.Screen
         name="PlacesTeachingStack"
-        component={PlacesNavigator}
         options={{
           title: t('placeScreen.title'),
           headerShown: false,
         }}
-      />
+      >
+        {() => <PlacesNavigator unreadMessagesModal={UnreadMessagesModal} />}
+      </Stack.Screen>
       <Stack.Screen
         name="CpdSurveys"
         component={CpdSurveysScreen}

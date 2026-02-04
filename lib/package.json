@@ -40,6 +40,7 @@
     "use-latest-callback": "^0.2.4"
   },
   "dependencies": {
+    "@polito/api-client": "^2.2.6",
     "color": "^5.0.3",
     "dom-serializer": "^2.0.0",
     "domhandler": "^5.0.3",

@@ -9,7 +9,12 @@ import type {
   EnrolMfaRequest,
   ValidateMfaRequest,
 } from '@polito/api-client/models';
-import { usePreferencesContext } from '@polito/lib';
+import {
+  ApiError,
+  pluckData,
+  rethrowApiError,
+  usePreferencesContext,
+} from '@polito/lib';
 import { isEnvProduction } from '@polito/lib';
 import { getApp } from '@react-native-firebase/app';
 import { useNavigation } from '@react-navigation/core';
@@ -25,7 +30,6 @@ import {
   resetCredentials,
   setCredentials,
 } from '../../utils/keychain.ts';
-import { ApiError, pluckData, rethrowApiError } from '../../utils/queries';
 import { DEFAULT_CHPASS_URL, DEFAULT_SSO_LOGIN_URL } from '../constants.ts';
 import { useApiContext } from '../contexts/ApiContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';

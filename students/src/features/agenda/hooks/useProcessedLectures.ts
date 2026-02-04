@@ -1,10 +1,9 @@
 import { useMemo } from 'react';
 
-import { usePreferencesContext } from '@polito/lib';
+import { resolvePlaceId, usePreferencesContext } from '@polito/lib';
 
 import { AppPreferences } from '~/core/types/preferences';
 
-import { resolvePlaceId } from '../../places/utils/resolvePlaceId';
 import { AgendaItem } from '../types/AgendaItem';
 
 export const useProcessedLectures = (data: AgendaItem[]) => {

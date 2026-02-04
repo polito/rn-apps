@@ -4,13 +4,12 @@ import {
   FetchChallenge200ResponseData,
   OfferingCourseStaff,
 } from '@polito/api-client/models';
+import { HeaderLogoNoProps, createHeaderCloseButton } from '@polito/lib';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { PolitoAuthenticatorScreen } from '~/features/user/screens/PolitoAuthenticatorScreen';
 
-import { createHeaderCloseButton } from '../../core/components/HeaderCloseButton';
-import { HeaderLogoNoProps } from '../../core/components/HeaderLogo';
 import { CourseStatisticsFilterType } from '../../features/courses/components/CourseStatisticsFilters.tsx';
 import { CourseStatisticsScreen } from '../../features/courses/screens/CourseStatisticsScreen';
 import { DegreeCourseGuideScreen } from '../../features/offering/screens/DegreeCourseGuideScreen';

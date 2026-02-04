@@ -9,7 +9,7 @@ import {
 } from '@polito/api-client';
 import { UpdateDevicePreferencesRequest } from '@polito/api-client/apis/StudentApi';
 import type { ProvisionalGradeState } from '@polito/api-client/models/ProvisionalGradeState';
-import { toOASTruncable } from '@polito/lib';
+import { pluckData, toOASTruncable } from '@polito/lib';
 import * as Sentry from '@sentry/react-native';
 import {
   useMutation,
@@ -21,7 +21,6 @@ import {
 import { DateTime } from 'luxon';
 
 import { filterUnread } from '../../utils/messages';
-import { pluckData } from '../../utils/queries';
 import { UpdateNotificationPreferencesRequestKey } from '../types/notificationTypes';
 import { useMfaChallengeHandler } from './authHooks.ts';
 import { COURSE_QUERY_PREFIX } from './courseHooks';

@@ -11,19 +11,24 @@ import {
   faCompass,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@polito/lib';
-import { tabBarStyle } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { TranslucentView } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  HeaderLogo,
+  Icon,
+  Theme,
+  TranslucentView,
+  tabBarStyle,
+  useGetCurrentCampus,
+  usePreferencesContext,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib';
+import { PlacesNavigator } from '@polito/lib';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+import { UnreadMessagesModal } from '~/features/user/screens/UnreadMessagesModal';
 
 import { filterUnread } from '../../../src/utils/messages';
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
-import { PlacesNavigator } from '../../features/places/components/PlacesNavigator';
-import { useGetCurrentCampus } from '../../features/places/hooks/useGetCurrentCampus';
 import { ServicesNavigator } from '../../features/services/components/ServicesNavigator';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
@@ -34,7 +39,6 @@ import { useGetSites } from '../queries/placesHooks';
 import { useGetMessages, useGetStudent } from '../queries/studentHooks';
 import { RootParamList } from '../types/navigation';
 import { AppPreferences } from '../types/preferences';
-import { HeaderLogo } from './HeaderLogo';
 
 const TabNavigator = createBottomTabNavigator<RootParamList>();
 const androidTabBarHeight = 60;
@@ -140,14 +144,16 @@ export const RootNavigator = ({
       />
       <TabNavigator.Screen
         name="PlacesTab"
-        component={PlacesNavigator}
         options={{
+          headerShown: false,
           tabBarLabel: t('placesScreen.title'),
           tabBarIcon: ({ color }) => (
             <Icon icon={faCompass} color={color} size={tabBarIconSize} />
           ),
         }}
-      />
+      >
+        {() => <PlacesNavigator unreadMessagesModal={UnreadMessagesModal} />}
+      </TabNavigator.Screen>
       <TabNavigator.Screen
         name="ServicesTab"
         component={ServicesNavigator}

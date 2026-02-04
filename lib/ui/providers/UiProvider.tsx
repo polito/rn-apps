@@ -25,7 +25,7 @@ export const UiProvider = <T extends ParamListBase = ParamListBase>({
   linking,
   children,
 }: UiProviderProps<T>) => {
-  const { colorScheme, language } = usePreferencesContext<{}>();
+  const { colorScheme, language } = usePreferencesContext();
   const safeAreaInsets = useSafeAreaInsets();
   const theme = useColorScheme();
   const { isAppLoaded } = useSplashContext();

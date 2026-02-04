@@ -4,4 +4,5 @@ export * from './calendar/usePanResponder';
 export * from './useBottomModal';
 export * from './useStylesheet';
 export * from './useTheme';
+export * from './useTitlesStyles';
 export * from './useSafeBottomBarHeight';

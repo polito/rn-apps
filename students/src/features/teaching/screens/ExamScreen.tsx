@@ -13,37 +13,37 @@ import { usePreferencesContext } from '@polito/lib';
 import { useBottomModal } from '@polito/lib';
 import { useOfflineDisabled } from '@polito/lib';
 import {
+  BottomBarSpacer,
+  BottomModal,
+  Col,
+  CtaButtonContainer,
+  CtaButtonSpacer,
+  ErrorCard,
+  Icon,
+  ListItem,
+  OverviewList,
+  PersonListItem,
+  PlacesListItem,
+  RefreshControl,
+  Row,
+  ScreenDateTime,
+  ScreenTitle,
+  Section,
+  SectionHeader,
+  Text,
   dateFormatter,
   formatDate,
   formatDateTime,
   formatReadableDate,
   isValidDate,
+  useTheme,
 } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { BottomModal } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { CtaButtonSpacer } from '@polito/lib';
-import { CtaButtonContainer } from '@polito/lib';
-import { ErrorCard } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { PersonListItem } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { ScreenDateTime } from '@polito/lib';
-import { ScreenTitle } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useTheme } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetExams } from '~/core/queries/examHooks';
 import { useGetPerson } from '~/core/queries/peopleHooks';
 import { useGetAllCpdSurveys } from '~/core/queries/surveysHooks';
 import { AppPreferences } from '~/core/types/preferences';
-import { PlacesListItem } from '~/features/places/components/PlacesListItem';
 
 import { ExamCpdModalContent } from '../../surveys/components/ExamCpdModalContent';
 import { ExamCTA } from '../components/ExamCTA';

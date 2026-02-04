@@ -7,12 +7,11 @@ import { IconButton } from '@polito/lib';
 import { Row } from '@polito/lib';
 import { Text } from '@polito/lib';
 import { TopTabBar } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { useTheme, useTitlesStyles } from '@polito/lib';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useNotifications } from '../../../core/hooks/useNotifications';
-import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseIndicator } from '../components/CourseIndicator';

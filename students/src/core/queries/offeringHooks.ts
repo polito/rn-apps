@@ -4,12 +4,12 @@ import {
   OfferingApi,
 } from '@polito/api-client';
 import { GetCourseStatisticsRequest } from '@polito/api-client/apis/OfferingApi';
+import { pluckData } from '@polito/lib';
 import { MenuAction } from '@react-native-menu/menu';
 import { useQuery } from '@tanstack/react-query';
 
 import { Degree } from '~/features/offering/types/Degree.ts';
 import { getShortYear } from '~/utils/offerings.ts';
-import { pluckData } from '~/utils/queries.ts';
 
 import { compact } from 'lodash';
 

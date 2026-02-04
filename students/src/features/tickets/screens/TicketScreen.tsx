@@ -16,7 +16,7 @@ import { RefreshControl } from '@polito/lib';
 import { useStylesheet } from '@polito/lib';
 import { useTheme } from '@polito/lib';
 import { GlobalStyles } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { Theme, useScreenTitle } from '@polito/lib';
 import { MenuView } from '@react-native-menu/menu';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
@@ -31,7 +31,6 @@ import { AppPreferences } from '~/core/types/preferences';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
-import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import {
   useGetTicket,
   useMarkTicketAsClosed,

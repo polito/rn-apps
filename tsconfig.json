@@ -2,9 +2,6 @@
   "extends": "@react-native/typescript-config/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "paths": {
-      "@lib/*": ["./lib/*"]
-    },
     "types": ["node"],
     "skipLibCheck": true,
     "strictNullChecks": true

@@ -1,11 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
-import { useTheme } from '@polito/lib';
+import { HeaderLogoNoProps, useTheme, useTitlesStyles } from '@polito/lib';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HeaderLogoNoProps } from '../../../core/components/HeaderLogo';
-import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { SharedScreens } from '../../../shared/navigation/SharedScreens';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';

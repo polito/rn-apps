@@ -5,6 +5,8 @@ export * from './styles/GlobalStyles';
 export * from './themes/dark';
 export * from './themes/light';
 export * from './types/Theme';
+export * from './types/Calendar';
+export * from './types/Input';
 export * from './utils';
 export * from './navigation';
 export * from './hooks';

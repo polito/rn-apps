@@ -71,7 +71,7 @@ export const ListItem = ({
   ...rest
 }: ListItemProps) => {
   const { fontSizes, fontWeights, colors, spacing } = useTheme();
-  const { accessibility } = usePreferencesContext<{}>();
+  const { accessibility } = usePreferencesContext();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const titleElement =
     typeof title === 'string' ? (

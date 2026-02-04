@@ -1,7 +1,6 @@
 import { JobOffersApi } from '@polito/api-client';
+import { pluckData } from '@polito/lib';
 import { useQuery } from '@tanstack/react-query';
-
-import { pluckData } from '../../utils/queries';
 
 const JOB_OFFER_QUERY_PREFIX = 'jobOffers';
 const JOB_OFFERS_QUERY_KEY = [JOB_OFFER_QUERY_PREFIX];

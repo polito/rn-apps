@@ -8,7 +8,7 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 
 import { Logo } from '../../core/components/Logo';
-import { RootParamList } from '../../core/components/NavBar';
+import { RootParamList } from '../../core/components/RootNavigator';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
 import { ServiceCard } from './ServiceCard';

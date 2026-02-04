@@ -23,7 +23,7 @@ import { PersonListItem } from '@polito/lib';
 import { Row } from '@polito/lib';
 import { Swiper } from '@polito/lib';
 import { useTheme } from '@polito/lib';
-import { GlobalStyles } from '@polito/lib';
+import { GlobalStyles, resolvePlaceId } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences.ts';
@@ -36,7 +36,6 @@ import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { CourseIcon } from '../../courses/components/CourseIcon';
 import { isLiveVC, isRecordedVC } from '../../courses/utils/lectures';
-import { resolvePlaceId } from '../../places/utils/resolvePlaceId';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;

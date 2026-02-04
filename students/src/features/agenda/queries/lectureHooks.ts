@@ -3,7 +3,12 @@ import { useMemo } from 'react';
 import { Lecture as ApiLecture, LecturesApi } from '@polito/api-client';
 import { ResponseError } from '@polito/api-client/runtime';
 import { usePreferencesContext } from '@polito/lib';
-import { APP_TIMEZONE, isCurrentMonth, toOASTruncable } from '@polito/lib';
+import {
+  APP_TIMEZONE,
+  isCurrentMonth,
+  pluckData,
+  toOASTruncable,
+} from '@polito/lib';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { AppPreferences, CoursesPreferences } from '~/core/types/preferences';
@@ -15,7 +20,6 @@ import {
   useGetCourses,
 } from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
-import { pluckData } from '../../../utils/queries';
 import { Lecture } from '../types/Lecture';
 import { formatNextLecture } from '../utils/formatters';
 

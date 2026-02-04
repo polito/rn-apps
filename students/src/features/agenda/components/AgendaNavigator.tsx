@@ -2,14 +2,14 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import { usePreferencesContext } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { HeaderLogo, useTheme, useTitlesStyles } from '@polito/lib';
+import { PlacesNavigator, PlacesStackParamList } from '@polito/lib';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';
+import { UnreadMessagesModal } from '~/features/user/screens/UnreadMessagesModal';
 
-import { HeaderLogo } from '../../../core/components/HeaderLogo';
-import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import {
   SharedScreens,
   SharedScreensParamList,
@@ -19,8 +19,6 @@ import {
   CourseSharedScreens,
   CourseSharedScreensParamList,
 } from '../../courses/navigation/CourseSharedScreens';
-import { PlacesNavigator } from '../../places/components/PlacesNavigator';
-import { PlacesStackParamList } from '../../places/components/PlacesNavigator';
 import { ExamScreen } from '../../teaching/screens/ExamScreen';
 import { AgendaScreen } from '../screens/AgendaScreen';
 import { AgendaWeekScreen } from '../screens/AgendaWeekScreen';
@@ -151,12 +149,13 @@ export const AgendaNavigator = () => {
       />
       <Stack.Screen
         name="PlacesAgendaStack"
-        component={PlacesNavigator}
         options={{
           title: t('placeScreen.title'),
           headerShown: false,
         }}
-      />
+      >
+        {() => <PlacesNavigator unreadMessagesModal={UnreadMessagesModal} />}
+      </Stack.Screen>
       {CourseSharedScreens()}
       {SharedScreens()}
     </Stack.Navigator>

@@ -1,8 +1,8 @@
 import { Survey, SurveysApi } from '@polito/api-client';
+import { pluckData } from '@polito/lib';
 import { useQuery } from '@tanstack/react-query';
 
 import { SurveyType } from '../../features/surveys/types/SurveyType';
-import { pluckData } from '../../utils/queries';
 
 const SURVEYS_QUERY_KEY = ['surveys'];
 const CPD_QUERY_KEY = ['cpd'];

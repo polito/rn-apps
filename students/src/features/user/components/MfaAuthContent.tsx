@@ -4,7 +4,7 @@ import { Alert, Text, View } from 'react-native';
 
 import { FetchChallenge200ResponseData, MessageType } from '@polito/api-client';
 import { useFeedbackContext } from '@polito/lib';
-import useAppState from '@polito/lib';
+import { useAppState } from '@polito/lib';
 import { CtaButton } from '@polito/lib';
 import { useStylesheet } from '@polito/lib';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';

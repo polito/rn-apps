@@ -15,7 +15,7 @@ import * as Sentry from '@sentry/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // <-- import React Query
-import { NavBar } from '~/core/components/NavBar';
+import { RootNavigator } from '~/core/components/RootNavigator';
 import { CoursesProvider } from '~/core/contexts/CoursesContext';
 import { RootParamList } from '~/core/types/navigation';
 import {
@@ -72,7 +72,7 @@ const App = () => {
                 <CoursesProvider>
                   <FeedbackProvider>
                     <GestureHandlerRootView style={{ flex: 1 }}>
-                      <NavBar />
+                      <RootNavigator />
                     </GestureHandlerRootView>
                   </FeedbackProvider>
                 </CoursesProvider>

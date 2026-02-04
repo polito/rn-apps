@@ -15,13 +15,13 @@ import { OverviewList } from '@polito/lib';
 import { TextField } from '@polito/lib';
 import { useStylesheet } from '@polito/lib';
 import { Theme } from '@polito/lib';
+import { ApiError } from '@polito/lib';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { RTFTrans } from '~/core/components/RTFTrans';
 import { AppPreferences } from '~/core/types/preferences';
-import { ApiError } from '~/utils/queries';
 
 import {
   MFA_STATUS_QUERY_KEY,

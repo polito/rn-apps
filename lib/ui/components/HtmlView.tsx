@@ -67,7 +67,7 @@ const CustomImageRenderer = (props: InternalRendererProps<any>) => {
 const createCustomTextRenderer = (variant: string) => {
   return (props: InternalRendererProps<any>) => {
     const { fontSizes } = useTheme();
-    const { accessibility } = usePreferencesContext<{}>();
+    const { accessibility } = usePreferencesContext();
     const tnode = props.tnode;
 
     const isTextNode = tnode.type === 'text';
@@ -183,7 +183,7 @@ export const wrapText = (html: string): string => {
 
 export const HtmlView = ({ variant, props }: HtmlViewProps) => {
   const { colors, palettes, spacing, fontSizes } = useTheme();
-  const { accessibility } = usePreferencesContext<{}>();
+  const { accessibility } = usePreferencesContext();
   const { width } = useWindowDimensions();
   const styles = useStylesheet(createStyles);
 

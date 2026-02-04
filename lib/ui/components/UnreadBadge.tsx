@@ -31,7 +31,7 @@ export const UnreadBadge = ({
   const isOutlined = useMemo(() => variant === 'outlined', [variant]);
   const isDigit = isNumber(text);
   const [styless, setStyless] = useState();
-  const { accessibility } = usePreferencesContext<{}>();
+  const { accessibility } = usePreferencesContext();
 
   useEffect(() => {
     const changeStyle = () => {

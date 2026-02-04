@@ -3,12 +3,13 @@ import { Platform } from 'react-native';
 
 import { TicketStatus } from '@polito/api-client';
 import { TicketFAQ } from '@polito/api-client/models/TicketFAQ';
-import { useTheme } from '@polito/lib';
+import { HeaderLogo, useTheme, useTitlesStyles } from '@polito/lib';
+import { PlacesNavigator, PlacesStackParamList } from '@polito/lib';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { HeaderLogo } from '../../../core/components/HeaderLogo';
-import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
+import { UnreadMessagesModal } from '~/features/user/screens/UnreadMessagesModal';
+
 import {
   SharedScreens,
   SharedScreensParamList,
@@ -23,10 +24,6 @@ import { GuidesScreen } from '../../guides/screens/GuidesScreen';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
 import { OfferingTopTabsNavigator } from '../../offering/navigation/OfferingTopTabsNavigator';
 import { ContactsScreen } from '../../people/screens/ContactsScreen';
-import {
-  PlacesNavigator,
-  PlacesStackParamList,
-} from '../../places/components/PlacesNavigator';
 import { SurveyListScreen } from '../../surveys/screens/SurveyListScreen';
 import { SurveysScreen } from '../../surveys/screens/SurveysScreen';
 import { CreateTicketScreen } from '../../tickets/screens/CreateTicketScreen';
@@ -337,12 +334,13 @@ export const ServicesNavigator = () => {
       />
       <Stack.Screen
         name="PlacesAgendaStack"
-        component={PlacesNavigator}
         options={{
           title: t('placeScreen.title'),
           headerShown: false,
         }}
-      />
+      >
+        {() => <PlacesNavigator unreadMessagesModal={UnreadMessagesModal} />}
+      </Stack.Screen>
       {SharedScreens()}
     </Stack.Navigator>
   );

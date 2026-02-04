@@ -12,7 +12,7 @@ import {
   CoursesApi,
   UploadCourseAssignmentRequest,
 } from '@polito/api-client';
-import { courseColors } from '@polito/lib';
+import { courseColors, pluckData } from '@polito/lib';
 import { usePreferencesContext } from '@polito/lib';
 import { notNullish } from '@polito/lib';
 import {
@@ -24,7 +24,6 @@ import {
 
 import { CourseLectureSection } from '../../features/courses/types/CourseLectureSections';
 import { isCourseDetailed } from '../../features/courses/utils/courses';
-import { pluckData } from '../../utils/queries';
 import { CourseOverview } from '../types/api';
 import {
   CourseDirectoryContentWithLocations,

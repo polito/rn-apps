@@ -1,10 +1,9 @@
 import { usePreferencesContext } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { useTheme, useTitlesStyles } from '@polito/lib';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';
 
-import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import { useCourseContext } from '../contexts/CourseContext';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
 import { CourseFilesScreen } from '../screens/CourseFilesScreen';

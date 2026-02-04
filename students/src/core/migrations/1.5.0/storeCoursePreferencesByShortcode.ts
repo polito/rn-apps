@@ -1,9 +1,7 @@
 import { CoursesApi } from '@polito/api-client';
-import { PreferencesContextProps } from '@polito/lib';
+import { PreferencesContextProps, pluckData } from '@polito/lib';
 
 import { AppPreferences, CoursesPreferences } from '~/core/types/preferences';
-
-import { pluckData } from '../../../utils/queries';
 
 export const storeCoursePreferencesByShortcode = async (
   preferences: PreferencesContextProps<AppPreferences>,

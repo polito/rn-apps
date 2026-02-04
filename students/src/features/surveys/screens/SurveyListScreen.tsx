@@ -5,11 +5,10 @@ import { FlatList, Platform } from 'react-native';
 import { BottomBarSpacer } from '@polito/lib';
 import { IndentedDivider } from '@polito/lib';
 import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
+import { RefreshControl, useScreenTitle } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
-import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import { useGetSurveys } from '../../../core/queries/surveysHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { SurveyListItem } from '../components/SurveyListItem';

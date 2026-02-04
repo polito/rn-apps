@@ -23,6 +23,8 @@ export * from './FileListItem';
 export * from './FullWidthPicture';
 export * from './Grid';
 export * from './HeaderAccessory';
+export * from './HeaderCloseButton';
+export * from './HeaderLogo';
 export * from './HtmlView';
 export * from './Icon';
 export * from './IconButton';

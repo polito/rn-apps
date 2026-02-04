@@ -31,7 +31,7 @@ import { useStylesheet } from '@polito/lib';
 import { useTheme } from '@polito/lib';
 import { faSeat } from '@polito/lib';
 import { Theme } from '@polito/lib';
-import { isToday } from '@polito/lib';
+import { isToday, resolvePlaceId, useTitlesStyles } from '@polito/lib';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { inRange } from 'lodash';
@@ -40,7 +40,6 @@ import { DateTime } from 'luxon';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useGeolocation } from '../../../core/hooks/useGeolocation';
 import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
-import { useTitlesStyles } from '../../../core/hooks/useTitlesStyles';
 import {
   useDeleteBooking,
   useGetBookings,
@@ -48,7 +47,6 @@ import {
 } from '../../../core/queries/bookingHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { BookingDateTime } from '../../bookings/components/BookingDateTime';
-import { resolvePlaceId } from '../../places/utils/resolvePlaceId';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;
