@@ -1,10 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { Icon } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { Icon, Row, Text, useTheme } from '@polito/lib/ui';
 
 interface TrailingItemProps {
   cfu: number;

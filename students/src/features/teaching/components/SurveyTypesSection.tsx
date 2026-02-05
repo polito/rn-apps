@@ -1,8 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { OverviewList } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
+import { OverviewList, Section, SectionHeader } from '@polito/lib/ui';
 
 import { SurveyCategoryListItem } from '../../surveys/components/SurveyCategoryListItem';
 import { SurveyType } from '../../surveys/types/SurveyType';

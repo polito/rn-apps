@@ -14,7 +14,7 @@ import {
   Theme,
   useStylesheet,
   useTheme,
-} from '@polito/lib';
+} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 
 import { useCourses } from '../../core/contexts/CoursesContext';

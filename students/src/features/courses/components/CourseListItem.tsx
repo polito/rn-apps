@@ -4,14 +4,18 @@ import { Alert, Platform, View } from 'react-native';
 import ContextMenu from 'react-native-context-menu-view';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
-import { IS_ANDROID } from '@polito/lib';
-import { usePreferencesContext } from '@polito/lib';
-import { useOfflineDisabled } from '@polito/lib';
-import { DisclosureIndicator } from '@polito/lib';
-import { IconButton } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { UnreadBadge } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import {
+  IS_ANDROID,
+  useOfflineDisabled,
+  usePreferencesContext,
+} from '@polito/lib/core';
+import {
+  DisclosureIndicator,
+  IconButton,
+  ListItem,
+  UnreadBadge,
+  useTheme,
+} from '@polito/lib/ui';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { AppPreferences } from '~/core/types/preferences';

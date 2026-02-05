@@ -11,8 +11,7 @@ import Popover from 'react-native-popover-view';
 
 import { faArrowLeft, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Text } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { Text, useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import {
   NativeStackNavigationProp,
@@ -21,7 +20,6 @@ import {
 
 import { Logo } from '../../core/components/Logo';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { useTitlesStyles } from '../../core/hooks/useTitleStyles';
 import { AgendaStackParamList } from '../Agenda/AgendaNavigator';
 import { ExamScreen } from '../ExamScreen';
 import { ExamScreen2 } from '../ExamScreen2';

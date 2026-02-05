@@ -1,5 +1,5 @@
-import { usePreferencesContext } from '@polito/lib';
-import { useTheme, useTitlesStyles } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib/core';
+import { useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';

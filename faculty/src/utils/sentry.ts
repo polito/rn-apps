@@ -1,4 +1,4 @@
-import { isEnvProduction } from '@polito/lib';
+import { isEnvProduction } from '@polito/lib/core';
 import * as Sentry from '@sentry/react-native';
 
 export const navigationIntegration = Sentry.reactNavigationIntegration({

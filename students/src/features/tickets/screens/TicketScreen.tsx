@@ -8,15 +8,21 @@ import Animated, {
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
-import { IS_IOS } from '@polito/lib';
-import { usePreferencesContext } from '@polito/lib';
-import { ChatBubble } from '@polito/lib';
-import { IconButton } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { GlobalStyles } from '@polito/lib';
-import { Theme, useScreenTitle } from '@polito/lib';
+import {
+  IS_IOS,
+  usePreferencesContext,
+  useScreenTitle,
+} from '@polito/lib/core';
+import {
+  ChatBubble,
+  GlobalStyles,
+  IconButton,
+  RefreshControl,
+  type Theme,
+  useSafeAreaSpacing,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { MenuView } from '@react-native-menu/menu';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
@@ -30,7 +36,6 @@ import { AppPreferences } from '~/core/types/preferences';
 
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useNotifications } from '../../../core/hooks/useNotifications';
-import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import {
   useGetTicket,
   useMarkTicketAsClosed,

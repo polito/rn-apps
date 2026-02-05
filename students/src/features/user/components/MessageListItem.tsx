@@ -1,9 +1,8 @@
 import { useTranslation } from 'react-i18next';
 
 import { Message } from '@polito/api-client';
-import { formatDateTime } from '@polito/lib';
-import { getHtmlTextContent } from '@polito/lib';
-import { ListItem } from '@polito/lib';
+import { formatDateTime, getHtmlTextContent } from '@polito/lib/core';
+import { ListItem } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

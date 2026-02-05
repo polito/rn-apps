@@ -1,4 +1,4 @@
-import { APP_TIMEZONE, dateFormatter } from '@polito/lib';
+import { APP_TIMEZONE, dateFormatter } from '@polito/lib/core';
 
 import { CoursesPreferences } from '~/core/types/preferences';
 

@@ -3,17 +3,18 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@polito/lib';
-import { useOfflineDisabled } from '@polito/lib';
-import { HeaderAccessory } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { TranslucentTextField } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { GlobalStyles } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { useOfflineDisabled, usePreferencesContext } from '@polito/lib/core';
+import {
+  GlobalStyles,
+  HeaderAccessory,
+  OverviewList,
+  Row,
+  Section,
+  Theme,
+  TranslucentTextField,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 
 import { AppPreferences } from '~/core/types/preferences';
 

@@ -11,18 +11,20 @@ import {
   faCompass,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import { usePreferencesContext } from '@polito/lib/core';
+import {
+  PlacesNavigator,
+  useGetCurrentCampus,
+} from '@polito/lib/features/places';
 import {
   HeaderLogo,
   Icon,
   Theme,
   TranslucentView,
   tabBarStyle,
-  useGetCurrentCampus,
-  usePreferencesContext,
   useStylesheet,
   useTheme,
-} from '@polito/lib';
-import { PlacesNavigator } from '@polito/lib';
+} from '@polito/lib/ui';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { UnreadMessagesModal } from '~/features/user/screens/UnreadMessagesModal';

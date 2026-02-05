@@ -1,4 +1,4 @@
-import { Tabs } from '@polito/lib';
+import { Tabs } from '@polito/lib/ui';
 
 import { AgendaTypeFilter } from './AgendaTypeFilter';
 

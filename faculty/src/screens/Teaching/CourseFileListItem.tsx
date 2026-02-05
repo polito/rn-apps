@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { TouchableHighlightProps } from 'react-native';
 
-import { FileListItem } from '@polito/lib';
+import { FileListItem } from '@polito/lib/ui';
 
 interface Props {
   isDownloaded: boolean;

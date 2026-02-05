@@ -13,7 +13,7 @@ import Popover from 'react-native-popover-view';
 
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { ListItem, Text, Theme, useStylesheet } from '@polito/lib';
+import { ListItem, Text, Theme, useStylesheet } from '@polito/lib/ui';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
 

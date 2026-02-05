@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { usePreferencesContext } from '@polito/lib';
-import { sanitizeHtml } from '@polito/lib';
-import { TextWithLinks } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { sanitizeHtml, usePreferencesContext } from '@polito/lib/core';
+import {
+  TextWithLinks,
+  type Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 
 import { AppPreferences } from '~/core/types/preferences';
 

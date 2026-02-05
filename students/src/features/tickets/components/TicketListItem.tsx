@@ -10,19 +10,24 @@ import {
   faPaperclip,
 } from '@fortawesome/free-solid-svg-icons';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
-import { IS_IOS } from '@polito/lib';
-import { useOfflineDisabled } from '@polito/lib';
-import { formatDateTime } from '@polito/lib';
-import { getHtmlTextContent } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { IconButton } from '@polito/lib';
-import { ListItem, ListItemProps } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  IS_IOS,
+  formatDateTime,
+  getHtmlTextContent,
+  useOfflineDisabled,
+} from '@polito/lib/core';
+import {
+  Col,
+  Icon,
+  IconButton,
+  ListItem,
+  type ListItemProps,
+  Row,
+  Text,
+  type Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';

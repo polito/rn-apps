@@ -3,9 +3,7 @@ import { PixelRatio, Platform, StyleSheet, View } from 'react-native';
 
 import FastImage from '@d11/react-native-fast-image';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
-import { ImageLoader } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { ImageLoader, type Theme, useStylesheet } from '@polito/lib/ui';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';

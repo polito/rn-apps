@@ -4,12 +4,9 @@ import { StyleSheet, View } from 'react-native';
 import { BarChart, barDataItem } from 'react-native-gifted-charts';
 
 import type { CourseStatistics } from '@polito/api-client';
-import { useFeedbackContext } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import type { Theme } from '@polito/lib';
+import { useFeedbackContext } from '@polito/lib/core';
+import { Col, Text, useStylesheet, useTheme } from '@polito/lib/ui';
+import type { Theme } from '@polito/lib/ui';
 
 import { emptyChartData, kChartAnimationDuration } from '../chartConstant.ts';
 import { LegendItem } from './LegendItem.tsx';

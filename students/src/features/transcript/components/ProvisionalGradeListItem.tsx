@@ -5,15 +5,16 @@ import {
   ProvisionalGrade,
   ProvisionalGradeStateEnum,
 } from '@polito/api-client/models/ProvisionalGrade';
-import { IS_IOS } from '@polito/lib';
-import { dateFormatter, formatDate } from '@polito/lib';
-import { DisclosureIndicator } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { IS_IOS, dateFormatter, formatDate } from '@polito/lib/core';
+import {
+  DisclosureIndicator,
+  ListItem,
+  Row,
+  Text,
+  type Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 
 import { useGetRejectionTime } from '../hooks/useGetRejectionTime';
 import { ProvisionalGradeStatusBadge } from './ProvisionalGradeStatusBadge';

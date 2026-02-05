@@ -8,17 +8,19 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 
-import { courseColors } from '@polito/lib';
-import { usePreferencesContext } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { CtaButton } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib/core';
+import { courseColors } from '@polito/lib/features/courses';
+import {
+  BottomBarSpacer,
+  CtaButton,
+  OverviewList,
+  Section,
+  SectionHeader,
+  useBottomBarAwareStyles,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useBottomBarAwareStyles } from '~/core/hooks/useBottomBarAwareStyles.ts';
 import { AppPreferences } from '~/core/types/preferences';
 
 import ColorPicker, {

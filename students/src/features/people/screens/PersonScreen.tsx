@@ -16,22 +16,23 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { PersonCourse, PhoneNumber } from '@polito/api-client';
-import { useOfflineDisabled } from '@polito/lib';
-import { notNullish } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { Metric } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { notNullish, useOfflineDisabled } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  Col,
+  Icon,
+  ListItem,
+  Metric,
+  OverviewList,
+  RefreshControl,
+  Row,
+  Section,
+  SectionHeader,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';

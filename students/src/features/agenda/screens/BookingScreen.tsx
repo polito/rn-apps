@@ -12,26 +12,32 @@ import Barcode from 'react-native-barcode-svg';
 
 import { faCheckCircle, faLocation } from '@fortawesome/free-solid-svg-icons';
 import { Booking } from '@polito/api-client';
-import { useFeedbackContext } from '@polito/lib';
-import { useOfflineDisabled } from '@polito/lib';
-import { APP_TIMEZONE } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { Card } from '@polito/lib';
-import { CtaButton } from '@polito/lib';
-import { CtaButtonContainer } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { ScreenTitle } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { faSeat } from '@polito/lib';
-import { Theme } from '@polito/lib';
-import { isToday, resolvePlaceId, useTitlesStyles } from '@polito/lib';
+import {
+  APP_TIMEZONE,
+  useFeedbackContext,
+  useOfflineDisabled,
+} from '@polito/lib/core';
+import { resolvePlaceId } from '@polito/lib/features/places';
+import {
+  BottomBarSpacer,
+  Card,
+  CtaButton,
+  CtaButtonContainer,
+  Icon,
+  ListItem,
+  OverviewList,
+  RefreshControl,
+  ScreenTitle,
+  Section,
+  SectionHeader,
+  Text,
+  Theme,
+  faSeat,
+  isToday,
+  useStylesheet,
+  useTheme,
+  useTitlesStyles,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { inRange } from 'lodash';

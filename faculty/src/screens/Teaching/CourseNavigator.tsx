@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { View, useWindowDimensions } from 'react-native';
 
 import { faPlus, faSliders } from '@fortawesome/free-solid-svg-icons';
-import { IconButton, Row, Text, TopTabBar, useTheme } from '@polito/lib';
+import { IconButton, Row, Text, TopTabBar, useTheme } from '@polito/lib/ui';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';

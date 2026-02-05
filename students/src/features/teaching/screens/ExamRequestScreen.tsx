@@ -2,16 +2,19 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
-import { useFeedbackContext } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { CtaButton, CtaButtonSpacer } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { ScreenTitle } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { TextField } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { GlobalStyles } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { useFeedbackContext } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  CtaButton,
+  CtaButtonSpacer,
+  GlobalStyles,
+  OverviewList,
+  ScreenTitle,
+  Text,
+  TextField,
+  type Theme,
+  useStylesheet,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useBookExam, useGetExams } from '../../../core/queries/examHooks';

@@ -3,15 +3,16 @@ import { StyleSheet } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { JobOfferOverview } from '@polito/api-client';
-import { formatDate } from '@polito/lib';
-import { getHtmlTextContent } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { formatDate, getHtmlTextContent } from '@polito/lib/core';
+import {
+  Col,
+  Icon,
+  ListItem,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 

@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
-import { usePreferencesContext } from '@polito/lib';
-import { HeaderLogo, useTheme, useTitlesStyles } from '@polito/lib';
-import { PlacesNavigator, PlacesStackParamList } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib/core';
+import {
+  PlacesNavigator,
+  type PlacesStackParamList,
+} from '@polito/lib/features/places';
+import { HeaderLogo, useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 

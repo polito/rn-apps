@@ -20,26 +20,31 @@ import {
   faFont,
   faShieldHalved,
 } from '@fortawesome/free-solid-svg-icons';
-import { useFeedbackContext } from '@polito/lib';
-import { PreferencesContextBase, usePreferencesContext } from '@polito/lib';
-import { useOfflineDisabled } from '@polito/lib';
-import { formatFileSize } from '@polito/lib';
-import { Badge } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { DisclosureIndicator } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { StatefulMenuView } from '@polito/lib';
-import { SwitchListItem } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { lightTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  PreferencesContextBase,
+  formatFileSize,
+  useFeedbackContext,
+  useOfflineDisabled,
+  usePreferencesContext,
+} from '@polito/lib/core';
+import {
+  Badge,
+  BottomBarSpacer,
+  Col,
+  DisclosureIndicator,
+  Icon,
+  ListItem,
+  OverviewList,
+  Section,
+  SectionHeader,
+  StatefulMenuView,
+  SwitchListItem,
+  Text,
+  type Theme,
+  lightTheme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 
 import { useCheckMfa } from '~/core/queries/authHooks';
 import { AppPreferences } from '~/core/types/preferences';

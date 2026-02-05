@@ -15,15 +15,17 @@ import {
   faChevronUp,
 } from '@fortawesome/free-solid-svg-icons';
 import { BookingSubtopic } from '@polito/api-client/models';
-import { sanitizeHtml } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { IndentedDivider } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { sanitizeHtml } from '@polito/lib/core';
+import {
+  Icon,
+  IndentedDivider,
+  OverviewList,
+  RefreshControl,
+  Row,
+  SectionHeader,
+  Text,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetBookingTopics } from '../../../core/queries/bookingHooks';

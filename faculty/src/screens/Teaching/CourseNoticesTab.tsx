@@ -8,12 +8,12 @@ import {
   GlobalStyles,
   IndentedDivider,
   ListItem,
-} from '@polito/lib';
+  useSafeAreaSpacing,
+} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
 import { TeachingStackParamList } from './TeachingNavigator';
 
 export const CourseNoticesTab = () => {

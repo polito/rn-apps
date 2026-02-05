@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { Col, Row, Text, Theme, useStylesheet } from '@polito/lib';
+import { Col, Row, Text, Theme, useStylesheet } from '@polito/lib/ui';
 
 import { DateTime } from 'luxon';
 

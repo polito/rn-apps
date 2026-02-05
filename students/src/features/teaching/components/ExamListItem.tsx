@@ -4,20 +4,22 @@ import { View } from 'react-native';
 
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import { IS_IOS } from '@polito/lib';
-import { usePreferencesContext } from '@polito/lib';
 import {
+  IS_IOS,
   dateFormatter,
   formatDate,
   formatReadableDate,
   isValidDate,
-} from '@polito/lib';
-import { DisclosureIndicator } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+  usePreferencesContext,
+} from '@polito/lib/core';
+import {
+  DisclosureIndicator,
+  Icon,
+  ListItem,
+  Row,
+  Text,
+  useTheme,
+} from '@polito/lib/ui';
 
 import { AppPreferences } from '~/core/types/preferences';
 

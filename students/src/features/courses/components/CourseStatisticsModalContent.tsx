@@ -1,9 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
-import { ModalContent } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { ModalContent, Text, Theme, useStylesheet } from '@polito/lib/ui';
 
 export const CourseStatisticsModalContent = ({
   title,

@@ -1,14 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { useOfflineDisabled } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { useOfflineDisabled } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  OverviewList,
+  RefreshControl,
+  Section,
+  SectionHeader,
+  type Theme,
+  useStylesheet,
+} from '@polito/lib/ui';
 
 import {
   useGetGrades,

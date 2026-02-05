@@ -2,13 +2,15 @@ import { StyleSheet, View } from 'react-native';
 
 import { ProvisionalGradeStateEnum } from '@polito/api-client/models/ProvisionalGrade';
 import { ProvisionalGradeState } from '@polito/api-client/models/ProvisionalGradeState';
-import { Card } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { VerticalDashedLine } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  Card,
+  Col,
+  Row,
+  Text,
+  type Theme,
+  VerticalDashedLine,
+  useStylesheet,
+} from '@polito/lib/ui';
 
 import { useGetProvisionalGradeStates } from '../../../core/queries/studentHooks';
 

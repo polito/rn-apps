@@ -15,19 +15,21 @@ import {
   faCompass,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import { usePreferencesContext, useSplashContext } from '@polito/lib/core';
+import {
+  PlacesNavigator,
+  PlacesStackParamList,
+  useGetCurrentCampus,
+  useGetSites,
+} from '@polito/lib/features/places';
 import {
   Icon,
   Theme,
   TranslucentView,
   tabBarStyle,
-  useGetCurrentCampus,
-  useGetSites,
-  usePreferencesContext,
-  useSplashContext,
   useStylesheet,
   useTheme,
-} from '@polito/lib';
-import { PlacesNavigator, PlacesStackParamList } from '@polito/lib';
+} from '@polito/lib/ui';
 import {
   BottomTabNavigationProp,
   createBottomTabNavigator,

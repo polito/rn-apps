@@ -1,10 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { Card } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { Card, Text, type Theme, useStylesheet } from '@polito/lib/ui';
 
 import { ReadMoreText } from '../../../core/components/ReadMoreText.tsx';
 

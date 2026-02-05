@@ -3,10 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { faChartSimple } from '@fortawesome/free-solid-svg-icons';
-import { Icon } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import type { Theme } from '@polito/lib';
+import { Icon, useStylesheet, useTheme } from '@polito/lib/ui';
+import type { Theme } from '@polito/lib/ui';
 
 export const NoChartDataContainer = ({
   hasData,

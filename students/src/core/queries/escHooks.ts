@@ -1,5 +1,5 @@
 import { EscApi } from '@polito/api-client/apis/EscApi.ts';
-import { pluckData } from '@polito/lib';
+import { pluckData } from '@polito/lib/core';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { STUDENT_QUERY_KEY } from './studentHooks.ts';

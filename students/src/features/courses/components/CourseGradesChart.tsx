@@ -5,11 +5,8 @@ import Svg, { G, Line, Path, Text as SvgText } from 'react-native-svg';
 import type { CourseStatistics } from '@polito/api-client';
 import { GradeCount } from '@polito/api-client/models/GradeCount';
 import { GradeCountGradeEnum } from '@polito/api-client/models/GradeCount.ts';
-import { Col } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import type { Theme } from '@polito/lib';
+import { Col, Text, useStylesheet, useTheme } from '@polito/lib/ui';
+import type { Theme } from '@polito/lib/ui';
 
 import { LegendItem } from './LegendItem.tsx';
 import { NoChartDataContainer } from './NoChartDataContainer.tsx';

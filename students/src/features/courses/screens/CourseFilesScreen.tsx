@@ -4,12 +4,16 @@ import { FlatList, Platform } from 'react-native';
 
 import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
-import { usePreferencesContext } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { CtaButton, CtaButtonSpacer } from '@polito/lib';
-import { IndentedDivider } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  CtaButton,
+  CtaButtonSpacer,
+  IndentedDivider,
+  OverviewList,
+  RefreshControl,
+  useSafeAreaSpacing,
+} from '@polito/lib/ui';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -17,7 +21,6 @@ import { AppPreferences } from '~/core/types/preferences';
 
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
-import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';

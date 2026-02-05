@@ -2,13 +2,15 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { Col } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  Col,
+  Icon,
+  Row,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 
 type BookingDetailProps = {
   icon: IconProp;

@@ -9,7 +9,7 @@ import {
   Text,
   Theme,
   useStylesheet,
-} from '@polito/lib';
+} from '@polito/lib/ui';
 
 type Props = {
   title: string;

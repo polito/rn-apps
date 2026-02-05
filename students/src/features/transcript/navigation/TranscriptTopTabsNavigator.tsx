@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { TopTabBar } from '@polito/lib';
+import { TopTabBar } from '@polito/lib/ui';
 import {
   MaterialTopTabBarProps,
   createMaterialTopTabNavigator,

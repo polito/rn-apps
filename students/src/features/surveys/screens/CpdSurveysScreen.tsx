@@ -2,13 +2,13 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
+import { useScreenTitle } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   OverviewList,
   RefreshControl,
   Section,
-  useScreenTitle,
-} from '@polito/lib';
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';

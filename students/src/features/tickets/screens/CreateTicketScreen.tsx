@@ -4,18 +4,20 @@ import { StyleSheet } from 'react-native';
 
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import { CreateTicketRequest } from '@polito/api-client';
-import { ChatBubble } from '@polito/lib';
-import { CtaButton } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { ScreenContainer } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { Select } from '@polito/lib';
-import { TextField } from '@polito/lib';
-import { ThemeContext } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { darkTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  ChatBubble,
+  CtaButton,
+  OverviewList,
+  ScreenContainer,
+  Section,
+  SectionHeader,
+  Select,
+  TextField,
+  type Theme,
+  ThemeContext,
+  darkTheme,
+  useStylesheet,
+} from '@polito/lib/ui';
 import { MenuAction } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 

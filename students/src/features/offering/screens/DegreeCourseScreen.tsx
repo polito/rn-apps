@@ -16,26 +16,28 @@ import {
   faMicroscope,
   faPersonChalkboard,
 } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { Card } from '@polito/lib';
-import { Grid } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { LoadingContainer } from '@polito/lib';
-import { Metric } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { ScreenTitle } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { StatefulMenuView } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { GlobalStyles } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { useOfflineDisabled } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  Card,
+  GlobalStyles,
+  Grid,
+  Icon,
+  ListItem,
+  LoadingContainer,
+  Metric,
+  OverviewList,
+  RefreshControl,
+  Row,
+  ScreenTitle,
+  Section,
+  SectionHeader,
+  StatefulMenuView,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { MenuAction } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 

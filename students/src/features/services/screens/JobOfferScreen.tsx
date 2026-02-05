@@ -3,15 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import replace from 'react-string-replace';
 
-import { formatDate } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { Card } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { ScreenTitle } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { formatDate } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  Card,
+  RefreshControl,
+  ScreenTitle,
+  Section,
+  Text,
+  Theme,
+  useStylesheet,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';

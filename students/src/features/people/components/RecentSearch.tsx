@@ -5,15 +5,16 @@ import ContextMenu from 'react-native-context-menu-view';
 
 import { faEllipsisVertical, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { PersonOverview } from '@polito/api-client/models';
-import { IS_ANDROID } from '@polito/lib';
-import { usePreferencesContext } from '@polito/lib';
-import { IconButton } from '@polito/lib';
-import { IndentedDivider } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { IS_ANDROID, usePreferencesContext } from '@polito/lib/core';
+import {
+  IconButton,
+  IndentedDivider,
+  Row,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 
 import { AppPreferences } from '~/core/types/preferences';
 

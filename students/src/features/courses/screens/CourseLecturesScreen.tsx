@@ -17,21 +17,22 @@ import {
   faChevronUp,
   faVideo,
 } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled } from '@polito/lib';
-import { formatDate } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { IndentedDivider } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { TranslucentView } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { formatDate, useOfflineDisabled } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  Icon,
+  IndentedDivider,
+  ListItem,
+  OverviewList,
+  RefreshControl,
+  SectionHeader,
+  TranslucentView,
+  useSafeAreaSpacing,
+  useTheme,
+} from '@polito/lib/ui';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useNotifications } from '../../../core/hooks/useNotifications';
-import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseLectures } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { useCourseContext } from '../contexts/CourseContext';

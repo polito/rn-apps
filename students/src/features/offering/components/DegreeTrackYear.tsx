@@ -2,12 +2,14 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { useOfflineDisabled } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { useOfflineDisabled } from '@polito/lib/core';
+import {
+  ListItem,
+  OverviewList,
+  Text,
+  Theme,
+  useStylesheet,
+} from '@polito/lib/ui';
 
 import {
   getTracksCoursesGrouped,

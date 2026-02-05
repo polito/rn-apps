@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { usePreferencesContext } from '@polito/lib';
-import { useSplashContext } from '@polito/lib';
-import { useBottomModal } from '@polito/lib';
-import { BottomModal } from '@polito/lib';
+import { usePreferencesContext, useSplashContext } from '@polito/lib/core';
+import { BottomModal, useBottomModal } from '@polito/lib/ui';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useApiContext } from '../contexts/ApiContext';

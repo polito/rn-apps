@@ -10,14 +10,16 @@ import {
 } from 'react-native';
 
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
-import { useBottomModal } from '@polito/lib';
-import { BottomModal } from '@polito/lib';
-import { Card } from '@polito/lib';
-import { LoadingContainer } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  BottomModal,
+  Card,
+  LoadingContainer,
+  SectionHeader,
+  Theme,
+  useBottomModal,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetCourseStatistics } from '../../../core/queries/offeringHooks';

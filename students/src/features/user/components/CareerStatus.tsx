@@ -3,10 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { StudentStatusEnum } from '@polito/api-client';
-import { Row } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { Row, Text, useStylesheet, useTheme } from '@polito/lib/ui';
 
 type Props = {
   status: StudentStatusEnum;

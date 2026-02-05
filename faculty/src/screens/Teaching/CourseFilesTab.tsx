@@ -11,11 +11,11 @@ import {
   Icon,
   IndentedDivider,
   ListItem,
+  useSafeAreaSpacing,
   useTheme,
-} from '@polito/lib';
+} from '@polito/lib/ui';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
 import { CourseFileListItem } from './CourseFileListItem';
 
 export const CourseFilesTab = () => {

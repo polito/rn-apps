@@ -6,7 +6,7 @@ import {
 } from 'react-native-permissions';
 
 import { MessageType } from '@polito/api-client';
-import { isEnvProduction } from '@polito/lib';
+import { isEnvProduction } from '@polito/lib/core';
 import { getApp } from '@react-native-firebase/app';
 import {
   AuthorizationStatus,

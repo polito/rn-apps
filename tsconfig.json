@@ -3,6 +3,12 @@
   "compilerOptions": {
     "baseUrl": ".",
     "types": ["node"],
+    "paths": {
+      "~/*": ["./src/*"],
+      "@polito/lib/core": ["../lib/src/core"],
+      "@polito/lib/ui": ["../lib/src/ui"],
+      "@polito/lib/features/*": ["../lib/src/features/*"]
+    },
     "skipLibCheck": true,
     "strictNullChecks": true
   }

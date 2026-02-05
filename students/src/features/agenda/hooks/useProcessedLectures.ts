@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
-import { resolvePlaceId, usePreferencesContext } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib/core';
+import { resolvePlaceId } from '@polito/lib/features/places';
 
 import { AppPreferences } from '~/core/types/preferences';
 

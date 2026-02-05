@@ -2,8 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking } from 'react-native';
 
-import { IS_ANDROID } from '@polito/lib';
-import { useFeedbackContext } from '@polito/lib';
+import { IS_ANDROID, useFeedbackContext } from '@polito/lib/core';
 import Geolocation from '@react-native-community/geolocation';
 
 import GeoPoint from 'geopoint';

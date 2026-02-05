@@ -24,7 +24,7 @@ import {
   Theme,
   useStylesheet,
   useTheme,
-} from '@polito/lib';
+} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

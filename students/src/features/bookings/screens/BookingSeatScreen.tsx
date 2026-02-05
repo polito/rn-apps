@@ -5,17 +5,21 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import { Booking } from '@polito/api-client';
-import { SCREEN_WIDTH } from '@polito/lib';
-import { useFeedbackContext } from '@polito/lib';
-import { useOfflineDisabled } from '@polito/lib';
-import { APP_TIMEZONE } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { CtaButton } from '@polito/lib';
-import { CtaButtonContainer } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { faSeat } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  APP_TIMEZONE,
+  SCREEN_WIDTH,
+  useFeedbackContext,
+  useOfflineDisabled,
+} from '@polito/lib/core';
+import {
+  Col,
+  CtaButton,
+  CtaButtonContainer,
+  Row,
+  Theme,
+  faSeat,
+  useStylesheet,
+} from '@polito/lib/ui';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';

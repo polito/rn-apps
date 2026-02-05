@@ -1,4 +1,4 @@
-import { PreferencesContextProps } from '@polito/lib';
+import { PreferencesContextProps } from '@polito/lib/core';
 import { QueryClient } from '@tanstack/react-query';
 
 import semver from 'semver/preload';

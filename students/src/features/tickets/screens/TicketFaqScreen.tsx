@@ -2,13 +2,15 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { faPencil } from '@fortawesome/free-solid-svg-icons';
-import { BottomBarSpacer } from '@polito/lib';
-import { CtaButton } from '@polito/lib';
-import { HtmlView } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  BottomBarSpacer,
+  CtaButton,
+  HtmlView,
+  Section,
+  SectionHeader,
+  type Theme,
+  useStylesheet,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';

@@ -8,7 +8,7 @@ import {
   GetTicketReplyAttachmentRequest,
   ReplyToTicketRequest,
 } from '@polito/api-client/apis/TicketsApi';
-import { pluckData } from '@polito/lib';
+import { pluckData } from '@polito/lib/core';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useApiContext } from '../contexts/ApiContext';

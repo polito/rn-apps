@@ -2,13 +2,16 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform } from 'react-native';
 
-import { BottomBarSpacer } from '@polito/lib';
-import { IndentedDivider } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl, useScreenTitle } from '@polito/lib';
+import { useScreenTitle } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  IndentedDivider,
+  OverviewList,
+  RefreshControl,
+  useSafeAreaSpacing,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetSurveys } from '../../../core/queries/surveysHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { SurveyListItem } from '../components/SurveyListItem';

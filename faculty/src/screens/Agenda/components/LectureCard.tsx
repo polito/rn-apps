@@ -11,7 +11,7 @@ import {
   Theme,
   useStylesheet,
   useTheme,
-} from '@polito/lib';
+} from '@polito/lib/ui';
 
 import { LectureItem } from '../types/AgendaItem';
 

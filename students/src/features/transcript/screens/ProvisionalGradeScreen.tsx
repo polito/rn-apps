@@ -3,22 +3,28 @@ import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { ProvisionalGradeStateEnum } from '@polito/api-client/models/ProvisionalGrade';
-import { useFeedbackContext } from '@polito/lib';
-import { usePreferencesContext } from '@polito/lib';
-import { useOfflineDisabled } from '@polito/lib';
-import { formatDate, formatDateWithTimeIfNotNull } from '@polito/lib';
-import { ActivityIndicator } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { CtaButton, CtaButtonSpacer } from '@polito/lib';
-import { CtaButtonContainer } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { ScreenTitle } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  formatDate,
+  formatDateWithTimeIfNotNull,
+  useFeedbackContext,
+  useOfflineDisabled,
+  usePreferencesContext,
+} from '@polito/lib/core';
+import {
+  ActivityIndicator,
+  BottomBarSpacer,
+  Col,
+  CtaButton,
+  CtaButtonContainer,
+  CtaButtonSpacer,
+  RefreshControl,
+  Row,
+  ScreenTitle,
+  Text,
+  type Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences.ts';

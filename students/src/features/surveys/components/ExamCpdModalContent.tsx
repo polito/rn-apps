@@ -3,15 +3,17 @@ import { StyleSheet } from 'react-native';
 
 import { faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Survey } from '@polito/api-client';
-import { Col } from '@polito/lib';
-import { DisclosureIndicator } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ModalContent } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  Col,
+  DisclosureIndicator,
+  Icon,
+  ModalContent,
+  OverviewList,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 
 import { SurveyListItemByTypeName } from './SurveyListItemByTypeName';
 

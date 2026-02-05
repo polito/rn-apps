@@ -5,14 +5,16 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { OfferingCourseOverview } from '@polito/api-client/models/OfferingCourseOverview';
-import { Icon } from '@polito/lib';
-import { IndentedDivider } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  Icon,
+  IndentedDivider,
+  OverviewList,
+  RefreshControl,
+  SectionHeader,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';

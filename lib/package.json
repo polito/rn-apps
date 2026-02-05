@@ -2,7 +2,11 @@
   "name": "@polito/lib",
   "version": "1.0.0",
   "private": true,
-  "main": "index.ts",
+  "exports": {
+    "./core": "./src/core/index.ts",
+    "./features/*": "./src/features/*/index.ts",
+    "./ui": "./src/ui/index.ts"
+  },
   "peerDependencies": {
     "@d11/react-native-fast-image": "^8.11.1",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",

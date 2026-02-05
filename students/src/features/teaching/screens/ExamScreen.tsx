@@ -9,9 +9,16 @@ import {
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { ExamStatusEnum } from '@polito/api-client';
-import { usePreferencesContext } from '@polito/lib';
-import { useBottomModal } from '@polito/lib';
-import { useOfflineDisabled } from '@polito/lib';
+import {
+  dateFormatter,
+  formatDate,
+  formatDateTime,
+  formatReadableDate,
+  isValidDate,
+  useOfflineDisabled,
+  usePreferencesContext,
+} from '@polito/lib/core';
+import { PlacesListItem } from '@polito/lib/features/places';
 import {
   BottomBarSpacer,
   BottomModal,
@@ -23,7 +30,6 @@ import {
   ListItem,
   OverviewList,
   PersonListItem,
-  PlacesListItem,
   RefreshControl,
   Row,
   ScreenDateTime,
@@ -31,13 +37,9 @@ import {
   Section,
   SectionHeader,
   Text,
-  dateFormatter,
-  formatDate,
-  formatDateTime,
-  formatReadableDate,
-  isValidDate,
+  useBottomModal,
   useTheme,
-} from '@polito/lib';
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetExams } from '~/core/queries/examHooks';

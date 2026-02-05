@@ -2,13 +2,15 @@ import { Pressable, StyleSheet } from 'react-native';
 
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { OfferingCourseOverview } from '@polito/api-client/models/OfferingCourseOverview';
-import { Col } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  Col,
+  Icon,
+  Row,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 
 import { GroupCoursesExpanded } from './GroupCoursesExpanded';
 

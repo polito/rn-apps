@@ -17,7 +17,7 @@ import {
   Text,
   Theme,
   useStylesheet,
-} from '@polito/lib';
+} from '@polito/lib/ui';
 
 import { ModalContent } from '../../core/components/ModalContent';
 import { useCourses } from '../../core/contexts/CoursesContext';

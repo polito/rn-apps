@@ -2,13 +2,15 @@ import { useMemo } from 'react';
 import { Platform, SafeAreaView, ScrollView } from 'react-native';
 
 import { CourseGuideSection } from '@polito/api-client/models/CourseGuideSection';
-import { BottomBarSpacer } from '@polito/lib';
-import { Card } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import {
+  BottomBarSpacer,
+  Card,
+  Col,
+  RefreshControl,
+  Section,
+  Text,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetCourseGuide } from '../../../core/queries/courseHooks';

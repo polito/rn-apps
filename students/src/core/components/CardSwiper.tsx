@@ -15,12 +15,14 @@ import Animated, {
 import FastImage from '@d11/react-native-fast-image';
 import { Student } from '@polito/api-client';
 import { EuropeanStudentCard } from '@polito/api-client';
-import { useDeviceOrientation } from '@polito/lib';
-import { CtaButton } from '@polito/lib';
-import { CtaButtonContainer } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { useDeviceOrientation } from '@polito/lib/core';
+import {
+  CtaButton,
+  CtaButtonContainer,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

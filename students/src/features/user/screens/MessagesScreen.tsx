@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
-import { BottomBarSpacer } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import {
+  BottomBarSpacer,
+  OverviewList,
+  RefreshControl,
+  Section,
+  useTheme,
+} from '@polito/lib/ui';
 
 import { useGetMessages } from '../../../core/queries/studentHooks';
 import { MessageListItem } from '../components/MessageListItem';

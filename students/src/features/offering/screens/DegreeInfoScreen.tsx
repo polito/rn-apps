@@ -7,16 +7,18 @@ import {
   View,
 } from 'react-native';
 
-import { getHtmlTextContent } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { Card } from '@polito/lib';
-import { LoadingContainer } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { ScreenTitle } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { getHtmlTextContent } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  Card,
+  LoadingContainer,
+  RefreshControl,
+  ScreenTitle,
+  Section,
+  Text,
+  Theme,
+  useStylesheet,
+} from '@polito/lib/ui';
 
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { useDegreeContext } from '../contexts/DegreeContext';

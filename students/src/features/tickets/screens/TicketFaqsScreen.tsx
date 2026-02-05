@@ -13,21 +13,23 @@ import { Document } from 'react-native-render-html';
 
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faPencil, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { BottomBarSpacer } from '@polito/lib';
-import { CtaButton } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { IconButton } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { ScreenTitle } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { TextField } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { GlobalStyles } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  BottomBarSpacer,
+  CtaButton,
+  GlobalStyles,
+  Icon,
+  IconButton,
+  ListItem,
+  OverviewList,
+  Row,
+  ScreenTitle,
+  Section,
+  Text,
+  TextField,
+  type Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { innerText } from 'domutils';

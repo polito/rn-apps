@@ -2,12 +2,8 @@ import { useCallback, useEffect } from 'react';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import Modal from 'react-native-modal';
 
-import { useDeviceOrientation } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { useDeviceOrientation } from '@polito/lib/core';
+import { Col, Row, Text, type Theme, useStylesheet } from '@polito/lib/ui';
 
 import { QrEsc } from '../../../core/components/QrEsc.tsx';
 

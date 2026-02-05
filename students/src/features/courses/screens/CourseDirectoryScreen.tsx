@@ -5,18 +5,21 @@ import { FlatList, Platform, StyleSheet } from 'react-native';
 import { faFile } from '@fortawesome/free-regular-svg-icons';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
-import { usePreferencesContext } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { CtaButton } from '@polito/lib';
-import { IndentedDivider } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { TranslucentTextField } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { GlobalStyles } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  CtaButton,
+  GlobalStyles,
+  IndentedDivider,
+  OverviewList,
+  RefreshControl,
+  Row,
+  Text,
+  Theme,
+  TranslucentTextField,
+  useSafeAreaSpacing,
+  useStylesheet,
+} from '@polito/lib/ui';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -24,7 +27,6 @@ import { AppPreferences } from '~/core/types/preferences';
 
 import { DateTime } from 'luxon';
 
-import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import {
   useGetCourseDirectory,
   useGetCourseFilesRecent,

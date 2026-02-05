@@ -1,16 +1,18 @@
 import { useEffect, useMemo } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { usePreferencesContext } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { Card } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { ScreenTitle } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  Card,
+  OverviewList,
+  RefreshControl,
+  ScreenTitle,
+  Section,
+  Text,
+  Theme,
+  useStylesheet,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';

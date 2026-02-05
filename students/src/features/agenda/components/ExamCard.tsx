@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AgendaCard } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { AgendaCard, useTheme } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

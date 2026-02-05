@@ -2,11 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { GuideField } from '@polito/api-client';
-import { useFeedbackContext } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { useFeedbackContext } from '@polito/lib/core';
+import { ListItem, Text, Theme, useStylesheet } from '@polito/lib/ui';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 type Props = {

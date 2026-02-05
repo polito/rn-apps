@@ -10,14 +10,17 @@ import {
   ViewProps,
 } from 'react-native';
 
-import { Card } from '@polito/lib';
-import { CtaButton, CtaButtonSpacer } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { ScreenTitle } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  Card,
+  CtaButton,
+  CtaButtonSpacer,
+  OverviewList,
+  ScreenTitle,
+  Text,
+  type Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useRequestEsc } from '../../../core/queries/escHooks.ts';

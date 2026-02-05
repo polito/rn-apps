@@ -12,9 +12,8 @@ import {
   CoursesApi,
   UploadCourseAssignmentRequest,
 } from '@polito/api-client';
-import { courseColors, pluckData } from '@polito/lib';
-import { usePreferencesContext } from '@polito/lib';
-import { notNullish } from '@polito/lib';
+import { notNullish, pluckData, usePreferencesContext } from '@polito/lib/core';
+import { courseColors } from '@polito/lib/features/courses';
 import {
   useMutation,
   useQueries,

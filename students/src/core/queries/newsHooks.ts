@@ -1,5 +1,5 @@
 import { NewsApi } from '@polito/api-client';
-import { pluckData } from '@polito/lib';
+import { pluckData } from '@polito/lib/core';
 import { useQuery } from '@tanstack/react-query';
 
 const NEWS_ITEM_QUERY_PREFIX = 'news';

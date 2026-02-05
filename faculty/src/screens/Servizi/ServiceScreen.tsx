@@ -3,14 +3,20 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 import { Platform } from 'react-native';
 
-import { Grid, Text, Theme, useStylesheet, useTheme } from '@polito/lib';
+import {
+  Grid,
+  Text,
+  Theme,
+  useBottomBarAwareStyles,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 
 import { Logo } from '../../core/components/Logo';
 import { RootParamList } from '../../core/components/RootNavigator';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
 import { ServiceCard } from './ServiceCard';
 
 export const ServiceScreen = () => {

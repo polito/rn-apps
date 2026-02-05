@@ -3,17 +3,19 @@ import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, View, ViewProps } from 'react-native';
 
 import { faBan, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { useDeviceOrientation } from '@polito/lib';
-import { Card } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { CtaButton } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ModalContent } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { useDeviceOrientation } from '@polito/lib/core';
+import {
+  Card,
+  Col,
+  CtaButton,
+  Icon,
+  ModalContent,
+  Row,
+  Text,
+  type Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog.ts';
 import { useDeleteEsc } from '../../../core/queries/escHooks.ts';

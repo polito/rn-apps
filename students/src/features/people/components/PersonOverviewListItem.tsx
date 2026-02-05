@@ -9,13 +9,12 @@ import {
 
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { PersonOverview } from '@polito/api-client/models';
-import { MAX_RECENT_SEARCHES } from '@polito/lib';
-import { usePreferencesContext } from '@polito/lib';
-import { useOfflineDisabled } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import {
+  MAX_RECENT_SEARCHES,
+  useOfflineDisabled,
+  usePreferencesContext,
+} from '@polito/lib/core';
+import { Icon, ListItem, useStylesheet, useTheme } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';

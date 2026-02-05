@@ -10,20 +10,22 @@ import {
   faSignOut,
 } from '@fortawesome/free-solid-svg-icons';
 import { Student } from '@polito/api-client';
-import { useOfflineDisabled } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { CtaButton } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { StatefulMenuView } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { UnreadBadge } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { useOfflineDisabled } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  CtaButton,
+  Icon,
+  ListItem,
+  OverviewList,
+  RefreshControl,
+  Row,
+  Section,
+  SectionHeader,
+  StatefulMenuView,
+  Text,
+  UnreadBadge,
+  useTheme,
+} from '@polito/lib/ui';
 import { MenuAction, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';

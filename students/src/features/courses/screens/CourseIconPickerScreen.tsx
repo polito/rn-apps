@@ -2,17 +2,23 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, TouchableOpacity } from 'react-native';
 
-import { PreferencesContextBase, usePreferencesContext } from '@polito/lib';
-import { courseIcons } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { CtaButton, CtaButtonSpacer } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import {
+  PreferencesContextBase,
+  usePreferencesContext,
+} from '@polito/lib/core';
+import { courseIcons } from '@polito/lib/features/courses';
+import {
+  BottomBarSpacer,
+  CtaButton,
+  CtaButtonSpacer,
+  Icon,
+  useSafeAreaSpacing,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';
 
-import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 
 const icons = Object.entries(courseIcons);

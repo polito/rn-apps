@@ -1,12 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
-import { usePreferencesContext } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Section } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  ListItem,
+  OverviewList,
+  RefreshControl,
+  Section,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';

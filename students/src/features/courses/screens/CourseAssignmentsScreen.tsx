@@ -1,12 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
-import { useOfflineDisabled } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { CtaButton } from '@polito/lib';
-import { List } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
+import { useOfflineDisabled } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  CtaButton,
+  List,
+  OverviewList,
+  RefreshControl,
+} from '@polito/lib/ui';
 import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';

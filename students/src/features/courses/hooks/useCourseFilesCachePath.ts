@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { readDir } from 'react-native-fs';
 
-import { PUBLIC_APP_DIRECTORY_PATH } from '@polito/lib';
+import { PUBLIC_APP_DIRECTORY_PATH } from '@polito/lib/core';
 
 import { useApiContext } from '../../../core/contexts/ApiContext';
 import { useGetCourse } from '../../../core/queries/courseHooks';

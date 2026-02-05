@@ -22,7 +22,8 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import { SplashProvider, useSplashContext } from '@polito/lib';
+import { useSplashContext } from '@polito/lib/core';
+import { SplashProvider } from '@polito/lib/ui';
 
 type SectionProps = PropsWithChildren<{
   title: string;

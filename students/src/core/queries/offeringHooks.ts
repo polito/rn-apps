@@ -4,7 +4,7 @@ import {
   OfferingApi,
 } from '@polito/api-client';
 import { GetCourseStatisticsRequest } from '@polito/api-client/apis/OfferingApi';
-import { pluckData } from '@polito/lib';
+import { pluckData } from '@polito/lib/core';
 import { MenuAction } from '@react-native-menu/menu';
 import { useQuery } from '@tanstack/react-query';
 

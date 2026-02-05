@@ -3,10 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { TicketReply } from '@polito/api-client/models/TicketReply';
-import { ChatBubble } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { ChatBubble, Text, type Theme, useStylesheet } from '@polito/lib/ui';
 
 import { HtmlMessage } from './HtmlMessage';
 import { TicketAttachmentChip } from './TicketAttachmentChip';

@@ -16,7 +16,7 @@ import {
   Theme,
   useStylesheet,
   useTheme,
-} from '@polito/lib';
+} from '@polito/lib/ui';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';

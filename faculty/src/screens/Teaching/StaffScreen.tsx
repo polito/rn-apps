@@ -10,11 +10,11 @@ import {
   GlobalStyles,
   IndentedDivider,
   PersonListItem,
-} from '@polito/lib';
-import { useBottomModal } from '@polito/lib';
+  useBottomModal,
+  useSafeAreaSpacing,
+} from '@polito/lib/ui';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
 import { AddStaffModalContent } from './AddStaffModalContent';
 
 export const StaffScreen = () => {

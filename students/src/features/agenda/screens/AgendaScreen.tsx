@@ -15,17 +15,22 @@ import {
   faCalendarDay,
   faEllipsisVertical,
 } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@polito/lib';
-import { useOfflineDisabled } from '@polito/lib';
-import { APP_TIMEZONE } from '@polito/lib';
-import { ActivityIndicator } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { HeaderAccessory } from '@polito/lib';
-import { IconButton } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  APP_TIMEZONE,
+  useOfflineDisabled,
+  usePreferencesContext,
+} from '@polito/lib/core';
+import {
+  ActivityIndicator,
+  BottomBarSpacer,
+  HeaderAccessory,
+  IconButton,
+  OverviewList,
+  Theme,
+  useSafeAreaSpacing,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -35,7 +40,6 @@ import { AppPreferences } from '~/core/types/preferences';
 
 import { DateTime } from 'luxon';
 
-import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { EXAMS_QUERY_KEY } from '../../../core/queries/examHooks';
 import { DEADLINES_QUERY_PREFIX } from '../../../core/queries/studentHooks';

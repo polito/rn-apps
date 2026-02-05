@@ -5,15 +5,17 @@ import { openCamera, openPicker } from 'react-native-image-crop-picker';
 
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
-import { useFeedbackContext } from '@polito/lib';
-import { pdfSizes } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { IconButton } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { TranslucentTextField } from '@polito/lib';
-import { TranslucentView } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { useFeedbackContext } from '@polito/lib/core';
+import { pdfSizes } from '@polito/lib/features/courses';
+import {
+  Col,
+  IconButton,
+  Row,
+  type Theme,
+  TranslucentTextField,
+  TranslucentView,
+  useStylesheet,
+} from '@polito/lib/ui';
 import { pick, types } from '@react-native-documents/picker';
 import { MenuView } from '@react-native-menu/menu';
 

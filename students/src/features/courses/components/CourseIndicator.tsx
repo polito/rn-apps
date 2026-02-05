@@ -1,5 +1,5 @@
-import { usePreferencesContext } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib/core';
+import { useTheme } from '@polito/lib/ui';
 
 import { AppPreferences } from '~/core/types/preferences';
 

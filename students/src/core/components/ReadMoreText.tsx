@@ -2,11 +2,8 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleProp, StyleSheet, TextLayoutLine, TextStyle } from 'react-native';
 
-import { IS_ANDROID, IS_IOS } from '@polito/lib';
-import { usePreferencesContext } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { IS_ANDROID, IS_IOS, usePreferencesContext } from '@polito/lib/core';
+import { Text, Theme, useStylesheet } from '@polito/lib/ui';
 
 import { AppPreferences } from '../types/preferences.ts';
 

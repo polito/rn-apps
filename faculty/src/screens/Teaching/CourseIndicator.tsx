@@ -1,4 +1,4 @@
-import { useTheme } from '@polito/lib';
+import { useTheme } from '@polito/lib/ui';
 
 import { CourseIcon } from './CourseIcon';
 

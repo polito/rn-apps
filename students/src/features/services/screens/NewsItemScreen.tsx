@@ -12,22 +12,24 @@ import {
   faFileAlt,
   faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons';
-import { formatDate, formatDateFromString } from '@polito/lib';
-import { ActivityIndicator } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { Card } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { HtmlView } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ImageLoader } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { ScreenTitle } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { formatDate, formatDateFromString } from '@polito/lib/core';
+import {
+  ActivityIndicator,
+  BottomBarSpacer,
+  Card,
+  Col,
+  HtmlView,
+  Icon,
+  ImageLoader,
+  RefreshControl,
+  Row,
+  ScreenTitle,
+  Section,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';

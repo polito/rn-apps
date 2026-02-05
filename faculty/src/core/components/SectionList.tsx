@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
 import { ActivityIndicator, Platform } from 'react-native';
 
-import { Card, List, useTheme } from '@polito/lib';
+import { Card, List, useTheme } from '@polito/lib/ui';
 
 type Props = PropsWithChildren<{
   dividers?: boolean;

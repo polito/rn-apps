@@ -18,7 +18,7 @@ import {
   Text,
   Theme,
   useStylesheet,
-} from '@polito/lib';
+} from '@polito/lib/ui';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
 

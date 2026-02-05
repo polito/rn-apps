@@ -1,8 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { type Theme, useStylesheet } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useHideTabs } from '~/core/hooks/useHideTabs';

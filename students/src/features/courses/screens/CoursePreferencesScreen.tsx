@@ -14,19 +14,23 @@ import {
   faIcons,
   faVideoCamera,
 } from '@fortawesome/free-solid-svg-icons';
-import { useFeedbackContext } from '@polito/lib';
-import { usePreferencesContext } from '@polito/lib';
-import { formatFileSize } from '@polito/lib';
-import { courseIcons } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { SwitchListItem } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import {
+  formatFileSize,
+  useFeedbackContext,
+  usePreferencesContext,
+} from '@polito/lib/core';
+import { courseIcons } from '@polito/lib/features/courses';
+import {
+  BottomBarSpacer,
+  Icon,
+  ListItem,
+  OverviewList,
+  RefreshControl,
+  Section,
+  SectionHeader,
+  SwitchListItem,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';

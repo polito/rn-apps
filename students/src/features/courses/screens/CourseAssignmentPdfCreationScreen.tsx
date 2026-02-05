@@ -19,17 +19,20 @@ import {
   faFileCircleXmark,
   faPrint,
 } from '@fortawesome/free-solid-svg-icons';
-import { useFeedbackContext } from '@polito/lib';
-import { displayTabBar, hideTabBar } from '@polito/lib';
-import { pdfSizes } from '@polito/lib';
-import { ActivityIndicator } from '@polito/lib';
-import { Divider } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { Swiper } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { useFeedbackContext } from '@polito/lib/core';
+import { pdfSizes } from '@polito/lib/features/courses';
+import {
+  ActivityIndicator,
+  Divider,
+  Icon,
+  Swiper,
+  Text,
+  Theme,
+  displayTabBar,
+  hideTabBar,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';

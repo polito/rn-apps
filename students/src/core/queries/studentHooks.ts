@@ -9,7 +9,7 @@ import {
 } from '@polito/api-client';
 import { UpdateDevicePreferencesRequest } from '@polito/api-client/apis/StudentApi';
 import type { ProvisionalGradeState } from '@polito/api-client/models/ProvisionalGradeState';
-import { pluckData, toOASTruncable } from '@polito/lib';
+import { pluckData, toOASTruncable } from '@polito/lib/core';
 import * as Sentry from '@sentry/react-native';
 import {
   useMutation,

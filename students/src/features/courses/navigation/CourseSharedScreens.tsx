@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { useTheme } from '@polito/lib';
+import { useTheme } from '@polito/lib/ui';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 

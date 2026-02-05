@@ -1,15 +1,17 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { CtaButtonSpacer } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { ScreenTitle } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { TextField } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { GlobalStyles } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  CtaButtonSpacer,
+  GlobalStyles,
+  OverviewList,
+  ScreenTitle,
+  Text,
+  TextField,
+  type Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 
 type ExamRescheduleProps = {
   firstState: { isError: boolean; value?: string };

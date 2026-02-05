@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { TouchableHighlightProps } from 'react-native';
 
 import { CourseDirectory } from '@polito/api-client';
-import { DirectoryListItem } from '@polito/lib';
+import { DirectoryListItem } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

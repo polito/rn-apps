@@ -11,13 +11,13 @@ import {
   IndentedDivider,
   ListItem,
   Text,
-} from '@polito/lib';
+  useBottomBarAwareStyles,
+  useSafeAreaSpacing,
+} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
-import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
 import { ProfileStackParamList } from './ServiceNavigator';
 
 export const BookEventsRoomScreen = () => {

@@ -6,7 +6,7 @@ import {
   faChevronLeft,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
-import { IconButton, Row, Text, useTheme } from '@polito/lib';
+import { IconButton, Row, Text, useTheme } from '@polito/lib/ui';
 
 import { DateTime } from 'luxon';
 

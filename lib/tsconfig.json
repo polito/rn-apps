@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "types": ["node"],
-    "paths": { "@lib/*": ["./*"], "assets/*": ["../assets/*"] },
+    "paths": { "assets/*": ["../assets/*"] },
     "skipLibCheck": true
   },
   "include": ["**/*"]

@@ -5,16 +5,18 @@ import {
   faComments,
   faPersonCirclePlus,
 } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { SwitchListItem } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { useOfflineDisabled } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  Col,
+  Icon,
+  OverviewList,
+  RefreshControl,
+  Section,
+  SectionHeader,
+  SwitchListItem,
+  useTheme,
+} from '@polito/lib/ui';
 
 import {
   useGetNotificationPreferences,

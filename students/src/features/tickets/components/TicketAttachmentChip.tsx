@@ -3,10 +3,12 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { open } from 'react-native-file-viewer';
 
 import { TicketAttachment } from '@polito/api-client/models/TicketAttachment';
-import { ThemeContext } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { darkTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  type Theme,
+  ThemeContext,
+  darkTheme,
+  useStylesheet,
+} from '@polito/lib/ui';
 
 import {
   useGetTicketAttachment,

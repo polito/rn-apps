@@ -6,11 +6,11 @@ import {
   EmptyState,
   GlobalStyles,
   IndentedDivider,
-} from '@polito/lib';
+  useSafeAreaSpacing,
+} from '@polito/lib/ui';
 
 import { CourseAssignmentsListItem } from '../../core/components/CourseAssignmentsListItem';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
 
 export const CourseAssignmentsTab = () => {
   const { paddingHorizontal } = useSafeAreaSpacing();

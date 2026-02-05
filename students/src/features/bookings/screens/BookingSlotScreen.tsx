@@ -10,26 +10,32 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 import { BookingSlot } from '@polito/api-client';
-import { usePreferencesContext } from '@polito/lib';
-import { useBottomModal } from '@polito/lib';
-import { useOfflineDisabled } from '@polito/lib';
-import { APP_TIMEZONE, dateFormatter, formatDate } from '@polito/lib';
-import { ActivityIndicator } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { BottomModal } from '@polito/lib';
-import { HeaderAccessory } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { IconButton } from '@polito/lib';
-import { Tabs } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { Calendar } from '@polito/lib';
-import { CalendarHeader } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { faSeat } from '@polito/lib';
-import { WeekNum } from '@polito/lib';
-import { Theme } from '@polito/lib';
-import { CALENDAR_CELL_HEIGHT } from '@polito/lib';
+import {
+  APP_TIMEZONE,
+  dateFormatter,
+  formatDate,
+  useOfflineDisabled,
+  usePreferencesContext,
+} from '@polito/lib/core';
+import {
+  ActivityIndicator,
+  BottomBarSpacer,
+  BottomModal,
+  CALENDAR_CELL_HEIGHT,
+  Calendar,
+  CalendarHeader,
+  HeaderAccessory,
+  Icon,
+  IconButton,
+  Tabs,
+  Text,
+  Theme,
+  WeekNum,
+  faSeat,
+  useBottomModal,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';

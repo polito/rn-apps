@@ -5,22 +5,21 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { useOfflineDisabled, usePreferencesContext } from '@polito/lib/core';
 import {
   IconButton,
   ListItem,
   SectionHeader,
   Select,
   Text,
-  usePreferencesContext,
   useTheme,
-} from '@polito/lib';
+} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 
 import i18next from 'i18next';
 import { Settings } from 'luxon';
 
 import { SectionList } from '../../core/components/SectionList';
-import { useOfflineDisabled } from '../../core/hooks/useOfflineDisabled';
 
 // Componente Select per la lingua (rimane uguale)
 const LanguageSelect = () => {

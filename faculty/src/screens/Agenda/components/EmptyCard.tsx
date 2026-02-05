@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { Card, EmptyState, Theme, useStylesheet } from '@polito/lib';
+import { Card, EmptyState, Theme, useStylesheet } from '@polito/lib/ui';
 
 interface Props {
   icon: IconDefinition;

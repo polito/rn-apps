@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { TopTabBar } from '@polito/lib';
+import { TopTabBar } from '@polito/lib/ui';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ParamListBase } from '@react-navigation/native';
 

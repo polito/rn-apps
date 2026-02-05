@@ -11,11 +11,11 @@ import type {
 } from '@polito/api-client/models';
 import {
   ApiError,
+  isEnvProduction,
   pluckData,
   rethrowApiError,
   usePreferencesContext,
-} from '@polito/lib';
-import { isEnvProduction } from '@polito/lib';
+} from '@polito/lib/core';
 import { getApp } from '@react-native-firebase/app';
 import { useNavigation } from '@react-navigation/core';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';

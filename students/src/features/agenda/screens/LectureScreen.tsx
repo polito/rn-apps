@@ -11,19 +11,25 @@ import {
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { VirtualClassroom } from '@polito/api-client/models/VirtualClassroom';
-import { usePreferencesContext } from '@polito/lib';
-import { convertMachineDateToFormatDate } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { CtaButton, CtaButtonSpacer } from '@polito/lib';
-import { CtaButtonContainer } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { PersonListItem } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Swiper } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { GlobalStyles, resolvePlaceId } from '@polito/lib';
+import {
+  convertMachineDateToFormatDate,
+  usePreferencesContext,
+} from '@polito/lib/core';
+import { resolvePlaceId } from '@polito/lib/features/places';
+import {
+  BottomBarSpacer,
+  CtaButton,
+  CtaButtonContainer,
+  CtaButtonSpacer,
+  GlobalStyles,
+  Icon,
+  ListItem,
+  OverviewList,
+  PersonListItem,
+  Row,
+  Swiper,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences.ts';

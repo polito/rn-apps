@@ -3,14 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { Platform, View } from 'react-native';
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@polito/lib';
-import { useOfflineDisabled } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { StatefulMenuView } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { TopTabBar } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { useOfflineDisabled, usePreferencesContext } from '@polito/lib/core';
+import {
+  Icon,
+  Row,
+  StatefulMenuView,
+  Text,
+  TopTabBar,
+  useTheme,
+} from '@polito/lib/ui';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ParamListBase } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';

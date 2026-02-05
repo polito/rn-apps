@@ -15,14 +15,14 @@ import {
   SectionHeader,
   Text,
   Theme,
+  useBottomBarAwareStyles,
   useStylesheet,
   useTheme,
-} from '@polito/lib';
+} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 
 import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
 
 export const StudentContact = () => {
   const { spacing, colors } = useTheme();

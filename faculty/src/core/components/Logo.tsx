@@ -1,6 +1,7 @@
 import Svg, { Path } from 'react-native-svg';
 
-import { IS_ANDROID, Row, RowProps, useTheme } from '@polito/lib';
+import { IS_ANDROID } from '@polito/lib/core';
+import { Row, RowProps, useTheme } from '@polito/lib/ui';
 
 export const Logo = (props: RowProps) => {
   const { palettes, dark } = useTheme();

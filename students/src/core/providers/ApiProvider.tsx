@@ -9,10 +9,12 @@ import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 
 import { ResponseError } from '@polito/api-client/runtime';
-import { useFeedbackContext } from '@polito/lib';
-import { usePreferencesContext } from '@polito/lib';
-import { useSplashContext } from '@polito/lib';
-import { isEnvProduction } from '@polito/lib';
+import {
+  isEnvProduction,
+  useFeedbackContext,
+  usePreferencesContext,
+  useSplashContext,
+} from '@polito/lib/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';

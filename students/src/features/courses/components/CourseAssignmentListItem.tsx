@@ -5,12 +5,8 @@ import ContextMenu from 'react-native-context-menu-view';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { CourseAssignment } from '@polito/api-client';
-import { IS_ANDROID } from '@polito/lib';
-import { formatDateTime } from '@polito/lib';
-import { formatFileSize } from '@polito/lib';
-import { FileListItem } from '@polito/lib';
-import { IconButton } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { IS_ANDROID, formatDateTime, formatFileSize } from '@polito/lib/core';
+import { FileListItem, IconButton, useTheme } from '@polito/lib/ui';
 
 interface Props {
   item: CourseAssignment;

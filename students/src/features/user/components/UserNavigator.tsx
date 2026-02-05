@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
-import { HeaderLogoNoProps, useTheme, useTitlesStyles } from '@polito/lib';
+import { HeaderLogoNoProps, useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { SharedScreens } from '../../../shared/navigation/SharedScreens';

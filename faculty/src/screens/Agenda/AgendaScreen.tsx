@@ -16,15 +16,16 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
-  AgendaCard,
   BottomBarSpacer,
   IconButton,
   Row,
   Text,
   Theme,
+  useSafeAreaSpacing,
   useStylesheet,
   useTheme,
-} from '@polito/lib';
+} from '@polito/lib/ui';
+import { AgendaCard } from '@polito/lib/ui';
 import DateTimePicker, {
   DateTimePickerAndroid,
 } from '@react-native-community/datetimepicker';
@@ -36,7 +37,6 @@ import { enUS, it } from 'date-fns/locale';
 
 import { Logo } from '../../core/components/Logo';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
 import { AgendaStackParamList } from './AgendaNavigator';
 
 const localeMap: Record<string, Locale> = {

@@ -6,9 +6,11 @@ import {
   unlink,
 } from 'react-native-fs';
 
-import { PUBLIC_APP_DIRECTORY_PATH } from '@polito/lib';
-import { PreferencesContextProps } from '@polito/lib';
-import { splitNameAndExtension } from '@polito/lib';
+import {
+  PUBLIC_APP_DIRECTORY_PATH,
+  PreferencesContextProps,
+  splitNameAndExtension,
+} from '@polito/lib/core';
 
 import { AppPreferences } from '~/core/types/preferences';
 

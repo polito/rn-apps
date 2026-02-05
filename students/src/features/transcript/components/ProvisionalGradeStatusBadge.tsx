@@ -4,9 +4,7 @@ import {
   ProvisionalGrade,
   ProvisionalGradeStateEnum,
 } from '@polito/api-client/models/ProvisionalGrade';
-import { Badge } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { lightTheme } from '@polito/lib';
+import { Badge, lightTheme, useTheme } from '@polito/lib/ui';
 
 type Props = {
   grade: ProvisionalGrade;

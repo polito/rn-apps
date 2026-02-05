@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { StatusBar } from 'react-native';
 
-import { IS_ANDROID } from '@polito/lib';
-import { displayTabBar, hideTabBar } from '@polito/lib';
+import { IS_ANDROID } from '@polito/lib/core';
+import { displayTabBar, hideTabBar } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 
 export const useFullscreenUi = (fullscreen: boolean) => {

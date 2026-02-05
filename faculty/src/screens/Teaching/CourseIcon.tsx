@@ -1,8 +1,8 @@
 import { StyleSheet, View } from 'react-native';
 
 import { faEyeSlash } from '@fortawesome/free-regular-svg-icons';
-import { Icon, Theme, useStylesheet } from '@polito/lib';
-import { courseIcons } from '@polito/lib';
+import { courseIcons } from '@polito/lib/features/courses';
+import { Icon, Theme, useStylesheet } from '@polito/lib/ui';
 
 interface Props {
   color?: string;

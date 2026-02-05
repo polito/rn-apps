@@ -1,8 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { CourseStaffInner } from '@polito/api-client/models';
-import { ListItem } from '@polito/lib';
-import { PersonListItem } from '@polito/lib';
+import { ListItem, PersonListItem } from '@polito/lib/ui';
 
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 

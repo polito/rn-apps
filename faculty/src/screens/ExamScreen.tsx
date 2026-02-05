@@ -39,15 +39,15 @@ import {
   SectionHeader,
   Text,
   Theme,
+  useSafeAreaSpacing,
   useStylesheet,
   useTheme,
-} from '@polito/lib';
-import { useBottomModal } from '@polito/lib';
+} from '@polito/lib/ui';
+import { useBottomModal } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../core/contexts/CoursesContext';
-import { useSafeAreaSpacing } from '../core/hooks/useSafeAreaSpacing';
 import { AddStudentsToExamModalContent } from './Teaching/AddStudentsToExamModalContent';
 import { TeachingStackParamList } from './Teaching/TeachingNavigator';
 

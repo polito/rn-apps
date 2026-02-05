@@ -5,7 +5,7 @@ import {
   GetBuildingsRequest,
   GetFreeRoomsRequest,
 } from '@polito/api-client/apis/PlacesApi';
-import { pluckData } from '@polito/lib';
+import { pluckData } from '@polito/lib/core';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 const SITES_QUERY_KEY = 'sites';

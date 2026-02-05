@@ -1,7 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 
-import { BottomBarSpacer, ListItem, Section, SectionHeader } from '@polito/lib';
+import {
+  BottomBarSpacer,
+  ListItem,
+  Section,
+  SectionHeader,
+} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

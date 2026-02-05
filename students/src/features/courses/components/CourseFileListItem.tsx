@@ -11,15 +11,21 @@ import {
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { BASE_PATH, CourseFileOverview } from '@polito/api-client';
-import { IS_ANDROID, IS_IOS } from '@polito/lib';
-import { useFeedbackContext } from '@polito/lib';
-import { formatDateTime } from '@polito/lib';
-import { formatFileSize, splitNameAndExtension } from '@polito/lib';
-import { notNullish } from '@polito/lib';
-import { FileListItem } from '@polito/lib';
-import { IconButton } from '@polito/lib';
-import { ListItemProps } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import {
+  IS_ANDROID,
+  IS_IOS,
+  formatDateTime,
+  formatFileSize,
+  notNullish,
+  splitNameAndExtension,
+  useFeedbackContext,
+} from '@polito/lib/core';
+import {
+  FileListItem,
+  IconButton,
+  ListItemProps,
+  useTheme,
+} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 
 import { useDownloadCourseFile } from '../../../core/hooks/useDownloadCourseFile';

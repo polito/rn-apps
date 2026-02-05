@@ -10,14 +10,14 @@ import {
   IconButton,
   Text,
   Theme,
+  useBottomBarAwareStyles,
   useStylesheet,
   useTheme,
-} from '@polito/lib';
+} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { useBottomBarAwareStyles } from '../../core/hooks/useBottomBarAwareStyles';
 import { EmergencyCard } from './EmergencyCard';
 import { ServiceCard } from './ServiceCard';
 import { ProfileStackParamList } from './ServiceNavigator';

@@ -2,13 +2,8 @@ import { StyleSheet } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { NewsItemOverview } from '@polito/api-client';
-import { formatDate } from '@polito/lib';
-import { getHtmlTextContent } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { formatDate, getHtmlTextContent } from '@polito/lib/core';
+import { Icon, ListItem, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';

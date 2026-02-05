@@ -2,12 +2,14 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
 import { faLink } from '@fortawesome/free-solid-svg-icons';
-import { convertMachineDateToFormatDate } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { convertMachineDateToFormatDate } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  Icon,
+  ListItem,
+  OverviewList,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';

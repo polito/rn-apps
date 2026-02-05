@@ -3,15 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 
 import { Message } from '@polito/api-client';
-import { formatDateTime } from '@polito/lib';
-import { linkUrls } from '@polito/lib';
-import { HtmlView } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { PersonListItem } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { formatDateTime, linkUrls } from '@polito/lib/core';
+import {
+  HtmlView,
+  OverviewList,
+  PersonListItem,
+  Section,
+  Text,
+  type Theme,
+  useStylesheet,
+} from '@polito/lib/ui';
 
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 

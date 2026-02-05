@@ -4,7 +4,7 @@ import {
   FetchChallenge200ResponseData,
   OfferingCourseStaff,
 } from '@polito/api-client/models';
-import { HeaderLogoNoProps, createHeaderCloseButton } from '@polito/lib';
+import { HeaderLogoNoProps, createHeaderCloseButton } from '@polito/lib/ui';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 

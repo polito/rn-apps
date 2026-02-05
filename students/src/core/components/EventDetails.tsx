@@ -1,10 +1,8 @@
 import { ReactElement } from 'react';
 import { View, ViewProps } from 'react-native';
 
-import { dateFormatter } from '@polito/lib';
-import { ScreenTitle } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { dateFormatter } from '@polito/lib/core';
+import { ScreenTitle, Text, useTheme } from '@polito/lib/ui';
 
 type Props = ViewProps & {
   title?: string;

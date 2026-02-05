@@ -10,15 +10,17 @@ import {
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { TicketOverview, TicketStatus } from '@polito/api-client';
-import { getHtmlTextContent } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { CtaButton } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { getHtmlTextContent } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  CtaButton,
+  OverviewList,
+  RefreshControl,
+  Section,
+  SectionHeader,
+  type Theme,
+  useStylesheet,
+} from '@polito/lib/ui';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onlineManager } from '@tanstack/react-query';

@@ -2,13 +2,13 @@ import { useMemo } from 'react';
 
 import { Lecture as ApiLecture, LecturesApi } from '@polito/api-client';
 import { ResponseError } from '@polito/api-client/runtime';
-import { usePreferencesContext } from '@polito/lib';
 import {
   APP_TIMEZONE,
   isCurrentMonth,
   pluckData,
   toOASTruncable,
-} from '@polito/lib';
+  usePreferencesContext,
+} from '@polito/lib/core';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { AppPreferences, CoursesPreferences } from '~/core/types/preferences';

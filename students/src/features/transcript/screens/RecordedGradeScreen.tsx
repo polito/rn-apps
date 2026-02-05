@@ -3,28 +3,30 @@ import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faFlagCheckered } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@polito/lib';
-import { useBottomModal } from '@polito/lib';
-import { formatDate } from '@polito/lib';
-import { ActivityIndicator } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { BottomModal } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { CtaButton } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { ModalContent } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { PersonListItem } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { ScreenTitle } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib/core';
+import { formatDate } from '@polito/lib/core';
+import {
+  ActivityIndicator,
+  BottomBarSpacer,
+  BottomModal,
+  Col,
+  CtaButton,
+  Icon,
+  ListItem,
+  ModalContent,
+  OverviewList,
+  PersonListItem,
+  RefreshControl,
+  Row,
+  ScreenTitle,
+  Section,
+  SectionHeader,
+  Text,
+  type Theme,
+  useBottomModal,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';

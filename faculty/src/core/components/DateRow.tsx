@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { TouchableOpacity, View } from 'react-native';
 
 import { faCalendar } from '@fortawesome/free-solid-svg-icons';
-import { Card, IconButton, Row, Text, useTheme } from '@polito/lib';
+import { Card, IconButton, Row, Text, useTheme } from '@polito/lib/ui';
 
 export const DateRow = ({
   label,

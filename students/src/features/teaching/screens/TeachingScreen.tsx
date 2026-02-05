@@ -4,25 +4,26 @@ import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { ExamStatusEnum } from '@polito/api-client';
-import { usePreferencesContext } from '@polito/lib';
-import { useOfflineDisabled } from '@polito/lib';
-import { ActivityIndicator } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { Card } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { Metric } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { UnreadBadge } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { GlobalStyles } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { useOfflineDisabled, usePreferencesContext } from '@polito/lib/core';
+import {
+  ActivityIndicator,
+  BottomBarSpacer,
+  Card,
+  Col,
+  GlobalStyles,
+  Icon,
+  Metric,
+  OverviewList,
+  RefreshControl,
+  Row,
+  Section,
+  SectionHeader,
+  Text,
+  type Theme,
+  UnreadBadge,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';

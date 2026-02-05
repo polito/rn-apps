@@ -3,11 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import Video from 'react-native-video';
 
-import { usePreferencesContext } from '@polito/lib';
-import { ActivityIndicator } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib/core';
+import { ActivityIndicator, Text, Theme, useStylesheet } from '@polito/lib/ui';
 
 import { AppPreferences } from '../types/preferences';
 

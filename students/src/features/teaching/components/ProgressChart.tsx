@@ -1,11 +1,8 @@
 import { View, ViewProps } from 'react-native';
 import { ProgressChart as RNCKProgressChart } from 'react-native-chart-kit';
 
-import { usePreferencesContext } from '@polito/lib';
-import { uniformInsets } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useTheme } from '@polito/lib';
+import { usePreferencesContext } from '@polito/lib/core';
+import { Col, Text, uniformInsets, useTheme } from '@polito/lib/ui';
 
 import { AppPreferences } from '~/core/types/preferences';
 

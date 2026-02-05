@@ -5,7 +5,7 @@ import {
   ConfigurationParameters,
 } from '@polito/api-client';
 import { DefaultConfig } from '@polito/api-client/runtime';
-import { PlacesApiConfig } from '@polito/lib';
+import { PlacesApiConfig } from '@polito/lib/features/places';
 
 /**
  * Updates the global API configuration used by all clients

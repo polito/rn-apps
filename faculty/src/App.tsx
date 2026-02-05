@@ -4,12 +4,8 @@ import { initReactI18next } from 'react-i18next';
 import { LogBox } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import {
-  FeedbackProvider,
-  PreferencesProvider,
-  SplashProvider,
-  UiProvider,
-} from '@polito/lib';
+import { PreferencesProvider } from '@polito/lib/core';
+import { FeedbackProvider, SplashProvider, UiProvider } from '@polito/lib/ui';
 import Mapbox from '@rnmapbox/maps';
 import * as Sentry from '@sentry/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

@@ -3,21 +3,23 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
-import { useBottomModal } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { BottomModal } from '@polito/lib';
-import { Card } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { Metric } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Section } from '@polito/lib';
-import { SectionHeader } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { GlobalStyles } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  BottomBarSpacer,
+  BottomModal,
+  Card,
+  Col,
+  GlobalStyles,
+  Metric,
+  RefreshControl,
+  Row,
+  Section,
+  SectionHeader,
+  Text,
+  type Theme,
+  useBottomModal,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 
 import { isNil } from 'lodash';
 

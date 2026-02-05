@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
-import { Text, Theme, useStylesheet } from '@polito/lib';
+import { Text, Theme, useStylesheet } from '@polito/lib/ui';
 
 import { format, isToday, isTomorrow } from 'date-fns';
 // Importa da date-fns

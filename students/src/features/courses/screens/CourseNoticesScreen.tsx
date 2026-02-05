@@ -2,23 +2,28 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList } from 'react-native';
 
-import { useOfflineDisabled } from '@polito/lib';
-import { APP_TIMEZONE, formatDate } from '@polito/lib';
-import { getHtmlTextContent } from '@polito/lib';
-import { BottomBarSpacer } from '@polito/lib';
-import { IndentedDivider } from '@polito/lib';
-import { ListItem } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { GlobalStyles } from '@polito/lib';
+import {
+  APP_TIMEZONE,
+  formatDate,
+  getHtmlTextContent,
+  useOfflineDisabled,
+} from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  GlobalStyles,
+  IndentedDivider,
+  ListItem,
+  OverviewList,
+  RefreshControl,
+  useSafeAreaSpacing,
+  useTheme,
+} from '@polito/lib/ui';
 
 import { DateTime } from 'luxon';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
-import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { useCourseContext } from '../contexts/CourseContext';
 

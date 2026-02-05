@@ -3,8 +3,11 @@ import { Platform } from 'react-native';
 
 import { TicketStatus } from '@polito/api-client';
 import { TicketFAQ } from '@polito/api-client/models/TicketFAQ';
-import { HeaderLogo, useTheme, useTitlesStyles } from '@polito/lib';
-import { PlacesNavigator, PlacesStackParamList } from '@polito/lib';
+import {
+  PlacesNavigator,
+  type PlacesStackParamList,
+} from '@polito/lib/features/places';
+import { HeaderLogo, useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 

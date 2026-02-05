@@ -1,12 +1,8 @@
 import { initReactI18next } from 'react-i18next';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { Sentry } from '@polito/lib';
-import { extendSuperJSON } from '@polito/lib';
-import { FeedbackProvider } from '@polito/lib';
-import { PreferencesProvider } from '@polito/lib';
-import { SplashProvider } from '@polito/lib';
-import { UiProvider } from '@polito/lib';
+import { PreferencesProvider, Sentry, extendSuperJSON } from '@polito/lib/core';
+import { FeedbackProvider, SplashProvider, UiProvider } from '@polito/lib/ui';
 import Mapbox from '@rnmapbox/maps';
 
 import i18n from 'i18next';

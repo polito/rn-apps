@@ -11,15 +11,19 @@ import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { usePreferencesContext } from '@polito/lib';
-import { useSplashContext } from '@polito/lib';
-import { resetNavigationStatusTo } from '@polito/lib';
-import { Col } from '@polito/lib';
-import { CtaButton } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import {
+  resetNavigationStatusTo,
+  usePreferencesContext,
+  useSplashContext,
+} from '@polito/lib/core';
+import {
+  Col,
+  CtaButton,
+  Row,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { TeachingStackParamList } from '../../features/teaching/components/TeachingNavigator';

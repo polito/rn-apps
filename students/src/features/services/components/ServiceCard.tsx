@@ -5,18 +5,20 @@ import { Dimensions, StyleSheet } from 'react-native';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
 import { faStar as faStarFilled } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@polito/lib';
-import { uniformInsets } from '@polito/lib';
-import { To, resolveLinkTo } from '@polito/lib';
-import { Icon } from '@polito/lib';
-import { IconButton } from '@polito/lib';
-import { Row } from '@polito/lib';
-import { Text } from '@polito/lib';
-import { TouchableCard, TouchableCardProps } from '@polito/lib';
-import { UnreadBadge } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
-import { useTheme } from '@polito/lib';
-import { Theme } from '@polito/lib';
+import { To, resolveLinkTo, usePreferencesContext } from '@polito/lib/core';
+import {
+  Icon,
+  IconButton,
+  Row,
+  Text,
+  Theme,
+  TouchableCard,
+  type TouchableCardProps,
+  UnreadBadge,
+  uniformInsets,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

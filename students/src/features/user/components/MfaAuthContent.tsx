@@ -3,10 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Text, View } from 'react-native';
 
 import { FetchChallenge200ResponseData, MessageType } from '@polito/api-client';
-import { useFeedbackContext } from '@polito/lib';
-import { useAppState } from '@polito/lib';
-import { CtaButton } from '@polito/lib';
-import { useStylesheet } from '@polito/lib';
+import { useAppState, useFeedbackContext } from '@polito/lib/core';
+import { CtaButton, useStylesheet } from '@polito/lib/ui';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { RTFTrans } from '~/core/components/RTFTrans';

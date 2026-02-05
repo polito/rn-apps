@@ -3,13 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Platform } from 'react-native';
 
 import { TicketStatus } from '@polito/api-client';
-import { BottomBarSpacer } from '@polito/lib';
-import { IndentedDivider } from '@polito/lib';
-import { OverviewList } from '@polito/lib';
-import { RefreshControl, useScreenTitle } from '@polito/lib';
+import { useScreenTitle } from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  IndentedDivider,
+  OverviewList,
+  RefreshControl,
+  useSafeAreaSpacing,
+} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useSafeAreaSpacing } from '../../../core/hooks/useSafeAreaSpacing';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';

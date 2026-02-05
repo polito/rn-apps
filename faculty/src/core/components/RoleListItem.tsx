@@ -9,16 +9,16 @@ import {
   ViewStyle,
 } from 'react-native';
 
+import { IS_IOS } from '@polito/lib/core';
 import {
   Col,
   DisclosureIndicator,
   GlobalStyles,
-  IS_IOS,
   Row,
   Text,
   UnreadBadge,
   useTheme,
-} from '@polito/lib';
+} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 
 interface ListItemProps extends TouchableHighlightProps {

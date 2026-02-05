@@ -2,8 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 
-import { usePreferencesContext } from '@polito/lib';
-import { useDeviceLanguage } from '@polito/lib';
+import { useDeviceLanguage, usePreferencesContext } from '@polito/lib/core';
 
 import { UnsupportedUserTypeError } from '~/core/errors/UnsupportedUserTypeError';
 import {

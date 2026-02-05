@@ -1,6 +1,6 @@
 import { ScrollView } from 'react-native';
 
-import { BottomBarSpacer } from '@polito/lib';
+import { BottomBarSpacer } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetMessages } from '../../../core/queries/studentHooks';

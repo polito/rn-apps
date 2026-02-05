@@ -1,7 +1,6 @@
 import { PropsWithChildren, useCallback, useEffect, useState } from 'react';
 
-import { readDirRecursively } from '@polito/lib';
-import { notNullish } from '@polito/lib';
+import { notNullish, readDirRecursively } from '@polito/lib/core';
 
 import {
   CourseFilesCacheContext,
