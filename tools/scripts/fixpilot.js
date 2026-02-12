@@ -4,11 +4,9 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const { run, getWorkspaces } = require('./utils');
 
 const { IS_CONVERGING_NOW, CI } = process.env;
-
-const shell = process.env.SHELL || '/bin/bash';
-const stdio = 'inherit';
 
 if (IS_CONVERGING_NOW === 'true' || CI === 'true') {
   process.exit(0);
@@ -19,12 +17,6 @@ if (os.platform() !== 'darwin') {
     "ℹ️ No Apple's in your way, you're gonna have a much better day!",
   );
   process.exit(0);
-}
-
-function run(cmd, options = {}) {
-  const out = execSync(cmd, { stdio, shell, ...options });
-  const str = out?.toString();
-  if (str) console.log(str);
 }
 
 console.log(`
@@ -41,14 +33,9 @@ console.log(`
 This script will clean up and prepare the iOS build environment and make sure everything is in a good state.
 `);
 
-process.on('SIGINT', () => {
-  console.log('\n❌ Operation cancelled by user');
-  process.exit(1);
-});
-
 try {
   // Change to project root directory
-  process.chdir(path.resolve(__dirname, '..'));
+  process.chdir(path.resolve(__dirname, '../..'));
 
   // check node version is that in .nvmrc
   const nvmrc = fs.readFileSync('.nvmrc', 'utf-8').trim();
@@ -92,17 +79,14 @@ try {
     run('sudo rm -rf ~/Library/Developer/Xcode/DerivedData');
   }
 
-  // read workspaces form package.json
-  const packageJson = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, '../package.json'), 'utf-8'),
-  );
-  const workspaces = (packageJson.workspaces || []).filter(w => w !== 'lib');
+  // read workspaces form package.json (skipping lib since it isn't a react-native package)
+  const workspaces = getWorkspaces().filter(w => w !== 'lib');
   console.log('🔍 found workspaces:', workspaces.join(', '));
 
   const skipModules = process.argv.includes('--skip-modules');
   for (const workspace of workspaces) {
     console.log(`\n🔧 Processing workspace: ${workspace}`);
-    const workspacePath = path.resolve(__dirname, '..', workspace);
+    const workspacePath = path.resolve(__dirname, '../..', workspace);
     process.chdir(workspacePath);
     console.log('🎵 cleaning Pods and build files');
     run('rm -rf ios/Pods ios/build ios/.xcode.env.local');
@@ -112,7 +96,7 @@ try {
     }
   }
 
-  process.chdir(path.resolve(__dirname, '..'));
+  process.chdir(path.resolve(__dirname, '../..'));
   if (!skipModules) {
     console.log('\n🧼 cleaning root node_modules');
     run('rm -rf node_modules');
@@ -127,13 +111,13 @@ try {
   run('bundle install');
 
   for (const workspace of workspaces) {
-    const workspacePath = path.resolve(__dirname, '..', workspace);
+    const workspacePath = path.resolve(__dirname, '../..', workspace);
     const iosPath = path.join(workspacePath, 'ios');
     if (fs.existsSync(iosPath)) {
       process.chdir(iosPath);
       console.log(`📦 Installing pods for workspace: ${workspace}`);
       try {
-        run('bundle exec pod install');
+        run('bundle exec pod install', undefined, false);
       } catch (error) {
         console.log(
           '🛁 Pod install failed, trying to remove Podfile.lock and retry',

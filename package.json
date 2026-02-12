@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "fixpilot": "node ./tools/fixpilot.js",
+    "fixpilot": "node ./tools/scripts/fixpilot.js",
     "lint:check": "eslint --max-warnings=0 '**/*.{ts,tsx}'",
     "lint": "npm run lint:check -- --fix",
     "knip": "knip --no-config-hints",
@@ -28,8 +28,11 @@
     "faculty:android": "npm --workspace=faculty run android",
     "base:ios": "npm --workspace=base run ios",
     "base:android": "npm --workspace=base run android",
-    "deps:check": "syncpack lint || echo \"Run 'npm run deps:fix' to fix dependency issues\"",
-    "deps:fix": "syncpack fix",
+    "add": "node ./tools/scripts/installDeps.js",
+    "deps:check": "node ./tools/scripts/checkDeps.js",
+    "deps:fix": "node ./tools/scripts/checkDeps.js -- --fix",
+    "remove": "node ./tools/scripts/manageDeps.js",
+    "update": "node ./tools/scripts/manageDeps.js",
     "postinstall": "npm run fixpilot -- --skip-modules --skip-derived",
     "prepare": "husky tools/.husky"
   },
@@ -50,7 +53,6 @@
     "knip": "^5.82.1",
     "lint-staged": "^15.2.10",
     "prettier": "^3.5.0",
-    "syncpack": "^14.0.0-alpha.37",
     "typescript": "5.0.4"
   },
   "overrides": {

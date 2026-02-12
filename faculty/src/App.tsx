@@ -48,7 +48,7 @@ i18n.use(initReactI18next).init({
 const queryClient = new QueryClient();
 initSentry();
 
-Mapbox.setAccessToken(process.env.MAPBOX_TOKEN!);
+Mapbox.setAccessToken(process.env.MAPBOX_TOKEN! || 'no_token');
 
 const App = () => {
   return (
