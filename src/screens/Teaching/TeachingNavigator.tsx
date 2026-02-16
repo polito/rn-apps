@@ -30,6 +30,7 @@ import { GradesScreen } from '../GradesScreen';
 import { ContactScreen2 } from './ContactScreen2';
 import { CourseGuideScreen } from './CourseGuideScreen';
 import { CourseSharedScreens } from './CourseSharedScreens';
+import { StaffScreen } from './CourseStaffScreen';
 import { CoursesScreen } from './CoursesScreen';
 import { FilesFormScreen } from './FilesFormScreen';
 import { FormScreen } from './FormScreen';
@@ -40,7 +41,6 @@ import { ModifyLectureScreen } from './ModifyLectureScreen';
 import { ModifyNoticeScreen } from './ModifyNoticeScreen';
 import { NoticeFormScreen } from './NoticeFormScreen';
 import { NoticeScreen } from './NoticeScreen';
-import { StaffScreen } from './StaffScreen';
 import { StudentContact } from './StudentContact';
 import { TeachingScreen } from './TeachingScreen';
 

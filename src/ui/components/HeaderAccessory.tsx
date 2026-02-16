@@ -1,4 +1,4 @@
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { useSafeAreaSpacing } from '../../../src/core/hooks/useSafeAreaSpacing';
 import { useStylesheet } from '../../ui/hooks/useStylesheet';
@@ -25,20 +25,12 @@ export const HeaderAccessory = ({
 const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
     container: {
-      backgroundColor: Platform.select({
-        ios:
-          typeof colors.headersBackground === 'string'
-            ? colors.headersBackground
-            : undefined,
-        android:
-          typeof colors.surface === 'string' ? colors.surface : undefined,
-      }),
-      borderBottomWidth: Platform.select({
-        ios: StyleSheet.hairlineWidth,
-      }),
+      backgroundColor: colors.surface,
+
+      borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor:
         typeof colors.divider === 'string' ? colors.divider : undefined,
-      elevation: 3,
+      elevation: 0,
       zIndex: 1,
     },
   });

@@ -366,6 +366,9 @@
     "emptyState": "Non ci sono avvisi",
     "title": "Avvisi"
   },
+  "courseStaffTab": {
+    "title": "Docenti"
+  },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
     "cleanCacheFeedback": "I file sono stati rimossi correttamente",

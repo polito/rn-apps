@@ -2,14 +2,13 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, useWindowDimensions } from 'react-native';
 
-import { faPlus, faSliders } from '@fortawesome/free-solid-svg-icons';
+import { faSliders } from '@fortawesome/free-solid-svg-icons';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { useCourses } from '../../core/contexts/CoursesContext';
+import { useTitlesStyles } from '../../core/hooks/useTitleStyles';
 import { IconButton } from '../../ui/components/IconButton';
-import { Row } from '../../ui/components/Row';
 import { Text } from '../../ui/components/Text';
 import { TopTabBar } from '../../ui/components/TopTapBar';
 import { useTheme } from '../../ui/hooks/useTheme';
@@ -18,6 +17,7 @@ import { CourseFilesTab } from './CourseFilesTab';
 import { CourseInfoTab } from './CourseInfoTab';
 import { CourseLecturesTab } from './CourseLecturesTab';
 import { CourseNoticesTab } from './CourseNoticesTab';
+import { StaffScreen } from './CourseStaffScreen';
 import { CourseStudentsTab } from './CourseStudentsTab';
 import { TeachingStackParamList } from './TeachingNavigator';
 
@@ -25,9 +25,11 @@ export interface CourseTabsParamList
   extends ParamListBase,
     TeachingStackParamList {
   CourseInfoScreen: undefined;
+  CourseStaffScreen: undefined;
   CourseNoticesScreen: undefined;
   CourseFilesScreen: undefined;
   CourseLecturesScreen: undefined;
+  CourseStudentsScreen: undefined;
   CourseAssignmentsScreen: undefined;
 }
 
@@ -40,57 +42,28 @@ export const CourseNavigator = () => {
   const { width } = useWindowDimensions();
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-  const { selectedCourse } = useCourses();
 
   const [showPlusButton, setShowPlusButton] = useState<boolean>(false); // <--- Stato
-  const [formPage, setFormPage] = useState('');
+  const [_formPage, setFormPage] = useState('');
+  const [tab, setTab] = useState('Info');
+  const titleStyles = useTitlesStyles(theme);
 
   useEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
-        <View style={{ flex: 1, alignItems: 'center', position: 'relative' }}>
-          <Text
-            variant="heading"
-            style={{
-              textAlign: 'center',
-              maxWidth: width * 0.6,
-              marginTop: spacing[2],
-              marginLeft: spacing[10],
-            }}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {selectedCourse?.title}
-          </Text>
-        </View>
+        <Text
+          variant="heading"
+          style={{
+            fontSize: 17,
+            textAlign: 'center',
+          }}
+          numberOfLines={1}
+        >
+          {t('common.course')}
+        </Text>
       ),
-      headerRight: () => (
-        <Row>
-          {showPlusButton ? (
-            <IconButton
-              icon={faPlus}
-              color={colors.primary[400]}
-              size={fontSizes.lg}
-              accessibilityLabel={t('common.add')}
-              onPress={() => {
-                if (formPage === 'Notice') {
-                  navigation.navigate('NoticeForm');
-                }
-                if (formPage === 'Files') {
-                  navigation.navigate('FilesForm');
-                }
-                if (formPage === 'Lecture') {
-                  navigation.navigate('LectureForm');
-                }
-                if (formPage === 'Students') {
-                  navigation.navigate('StudentsForm');
-                }
-              }}
-            />
-          ) : (
-            // 👇 Spacer invisibile per mantenere l'allineamento
-            <View style={{ width: fontSizes.lg + spacing[6] }} />
-          )}
+      headerRight: () =>
+        tab === 'Info' ? (
           <IconButton
             icon={faSliders}
             color={colors.primary[400]}
@@ -98,19 +71,20 @@ export const CourseNavigator = () => {
             accessibilityLabel={t('common.preferences')}
             hitSlop={{ left: spacing[3], right: spacing[3] }}
           />
-        </Row>
-      ),
+        ) : (
+          <View style={{ width: width * 0.1 }}></View>
+        ),
     });
   }, [
-    formPage,
+    tab,
     showPlusButton, // 🔥 Trigga il re-render dell'header
     fontSizes.lg,
     navigation,
     spacing,
     t,
-    width,
     colors.primary,
-    selectedCourse,
+    titleStyles.headerTitleStyle,
+    width,
   ]);
 
   return (
@@ -120,7 +94,27 @@ export const CourseNavigator = () => {
         component={CourseInfoTab}
         options={{ title: 'Info' }}
         listeners={{
-          tabPress: () => setShowPlusButton(false),
+          tabPress: () => {
+            setShowPlusButton(false);
+            setTab('Info');
+            setFormPage('');
+          },
+          focus: () => {
+            setShowPlusButton(false);
+            setFormPage('');
+          },
+        }}
+      />
+      <TopTabs.Screen
+        name="CourseStaffScreen"
+        component={StaffScreen}
+        options={{ title: t('courseStaffTab.title') }}
+        listeners={{
+          tabPress: () => {
+            setShowPlusButton(false);
+            setFormPage('');
+            setTab('Staff');
+          },
           focus: () => {
             setShowPlusButton(false);
             setFormPage('');
@@ -133,12 +127,13 @@ export const CourseNavigator = () => {
         options={{ title: t('common.notice_plural') }}
         listeners={{
           tabPress: () => {
-            setShowPlusButton(true);
-            setFormPage('Notice');
+            setShowPlusButton(false);
+            setFormPage('');
+            setTab('Notices');
           },
           focus: () => {
-            setShowPlusButton(true);
-            setFormPage('Notice');
+            setShowPlusButton(false);
+            setFormPage('');
           },
         }}
       />
@@ -150,6 +145,7 @@ export const CourseNavigator = () => {
           tabPress: () => {
             setShowPlusButton(true);
             setFormPage('Files');
+            setTab('Files');
           },
           focus: () => {
             setShowPlusButton(true);
@@ -165,6 +161,7 @@ export const CourseNavigator = () => {
           tabPress: () => {
             setShowPlusButton(true);
             setFormPage('Lecture');
+            setTab('Lectures');
           },
           focus: () => {
             setShowPlusButton(true);
@@ -180,6 +177,7 @@ export const CourseNavigator = () => {
           tabPress: () => {
             setShowPlusButton(false);
             setFormPage('Students');
+            setTab('Students');
           },
           focus: () => {
             setShowPlusButton(false);
@@ -192,7 +190,11 @@ export const CourseNavigator = () => {
         component={CourseAssignmentsTab}
         options={{ title: t('courseAssignmentsTab.title') }}
         listeners={{
-          tabPress: () => setShowPlusButton(false),
+          tabPress: () => {
+            setShowPlusButton(false);
+            setFormPage('');
+            setTab('Assignments');
+          },
           focus: () => {
             setShowPlusButton(false);
             setFormPage('');
