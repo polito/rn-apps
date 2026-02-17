@@ -12,10 +12,10 @@ import { useSafeAreaSpacing } from '../../core/hooks/useSafeAreaSpacing';
 import { CtaButton } from '../../ui/components/CtaButton';
 import { EmptyState } from '../../ui/components/EmptyState';
 import { IndentedDivider } from '../../ui/components/IndentedDivider';
-import { PersonListItem } from '../../ui/components/PersonListItem';
 import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { Theme } from '../../ui/types/Theme';
 import { AddStaffModalContent } from './AddStaffModalContent';
+import { StaffListItem } from './StaffListItem';
 
 export const StaffScreen = () => {
   const { selectedCourse } = useCourses();
@@ -49,18 +49,7 @@ export const StaffScreen = () => {
         contentContainerStyle={paddingHorizontal}
         data={staffData}
         keyExtractor={item => item.id.toString()}
-        renderItem={({ item: staff }) => (
-          <PersonListItem
-            key={`${staff.id}`}
-            person={staff.name}
-            subtitle={
-              staff.role === 'Titolare'
-                ? t('other.owner')
-                : t('other.collaborator')
-            }
-            staff={staff}
-          />
-        )}
+        renderItem={({ item: staff }) => <StaffListItem staff={staff} />}
         ListFooterComponent={<BottomBarSpacer />}
         ItemSeparatorComponent={() => <IndentedDivider />}
         ListEmptyComponent={() => {

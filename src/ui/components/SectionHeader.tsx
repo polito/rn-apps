@@ -38,6 +38,7 @@ interface Props {
     TouchableOpacityProps & {
       iconStyle?: FAProps['style'];
     };
+  linkname?: string;
 }
 
 /**
@@ -56,6 +57,7 @@ export const SectionHeader = ({
   separator = true,
   trailingItem,
   trailingIcon,
+  linkname,
 }: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
@@ -124,7 +126,7 @@ export const SectionHeader = ({
             }}
           >
             <Text variant="link">
-              {t('sectionHeader.cta')}
+              {linkname || t('sectionHeader.cta')}
               {(linkToMoreCount ?? 0) > 0 &&
                 ' ' +
                   t('sectionHeader.ctaMoreSuffix', {

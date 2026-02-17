@@ -33,7 +33,7 @@ LogBox.ignoreLogs([
 const queryClient = new QueryClient();
 initSentry();
 
-Mapbox.setAccessToken(process.env.MAPBOX_TOKEN!);
+Mapbox.setAccessToken(process.env.MAPBOX_TOKEN! || 'no_token');
 
 export const App = () => {
   const colorScheme = useColorScheme();

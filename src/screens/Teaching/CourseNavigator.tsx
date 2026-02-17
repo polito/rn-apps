@@ -14,7 +14,7 @@ import { TopTabBar } from '../../ui/components/TopTapBar';
 import { useTheme } from '../../ui/hooks/useTheme';
 import { CourseAssignmentsTab } from './CourseAssignmentsTab';
 import { CourseFilesTab } from './CourseFilesTab';
-import { CourseInfoTab } from './CourseInfoTab';
+import { CourseInfoScreen } from './CourseInfoScreen';
 import { CourseLecturesTab } from './CourseLecturesTab';
 import { CourseNoticesTab } from './CourseNoticesTab';
 import { StaffScreen } from './CourseStaffScreen';
@@ -91,7 +91,7 @@ export const CourseNavigator = () => {
     <TopTabs.Navigator tabBar={props => <TopTabBar {...props} />}>
       <TopTabs.Screen
         name="CourseInfoScreen"
-        component={CourseInfoTab}
+        component={CourseInfoScreen}
         options={{ title: 'Info' }}
         listeners={{
           tabPress: () => {

@@ -24,7 +24,7 @@ export const Metric = ({ title, value, color, ...rest }: CardProps & Props) => {
       {['string', 'number'].includes(typeof value) ? (
         <Text
           accessible={false}
-          variant="heading"
+          variant="title"
           style={[
             {
               color: color ?? palettes.secondary[dark ? 500 : 600],

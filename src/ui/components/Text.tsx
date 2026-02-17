@@ -75,13 +75,14 @@ export const Text = ({
   const textWeight = fontWeights[weight ?? defaultWeights[variant]];
   const textColor =
     typeof colors[variant] === 'string' ? colors[variant] : undefined;
+  const isAndroid = Platform.OS === 'android';
 
   return (
     <RNText
       style={[
         {
           fontFamily: fontFamilyName,
-          fontWeight: textWeight,
+          ...(isAndroid ? {} : { fontWeight: textWeight }),
           color: textColor,
         },
         italic && {
@@ -103,6 +104,7 @@ const createStyles = ({ fontSizes }: Theme) =>
   StyleSheet.create({
     heading: {
       fontSize: fontSizes.md,
+      lineHeight: fontSizes.md * 1.25,
     },
     subHeading: {
       fontSize: fontSizes.md,
@@ -110,6 +112,7 @@ const createStyles = ({ fontSizes }: Theme) =>
     },
     title: {
       fontSize: fontSizes.xl,
+      lineHeight: fontSizes.xl * 1.25,
     },
     headline: {
       fontSize: fontSizes.md,
@@ -117,9 +120,11 @@ const createStyles = ({ fontSizes }: Theme) =>
     caption: {
       fontSize: fontSizes.sm,
       textTransform: 'uppercase',
+      lineHeight: fontSizes.sm * 1.25,
     },
     prose: {
       fontSize: fontSizes.md,
+      lineHeight: fontSizes.md * 1.5,
     },
     longProse: {
       fontSize: fontSizes.md,
