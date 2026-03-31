@@ -44,7 +44,7 @@ export const PreferencesContext = createContext<
   PreferencesContextProps<any> | undefined
 >(undefined);
 
-export const usePreferencesContext = <Extra = any>() => {
+export const usePreferencesContext = <Extra = {}>() => {
   const preferencesContext = useContext(PreferencesContext) as
     | PreferencesContextProps<Extra>
     | undefined;

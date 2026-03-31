@@ -185,6 +185,7 @@
     "logout": "Logout",
     "mightTakeAWhile": "Potrebbe volerci un momento",
     "minutes": "Minuti",
+    "moodle": "Moodle",
     "navigate": "Naviga",
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",
@@ -365,6 +366,9 @@
   "courseNoticesTab": {
     "emptyState": "Non ci sono avvisi",
     "title": "Avvisi"
+  },
+  "courseStaffTab": {
+    "title": "Docenti"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",

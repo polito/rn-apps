@@ -46,7 +46,7 @@ export const CourseLecturesTab = () => {
           subtitle={`${lesson.date} - ${lesson.time}`}
           onPress={() => {
             setSelectedLecture(lesson);
-            navigation.navigate('Lezione');
+            navigation.navigate('Lecture');
           }}
           trailingItem={<FontAwesomeIcon icon={faChevronRight} size={24} />}
         />

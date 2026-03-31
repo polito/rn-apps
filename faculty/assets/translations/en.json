@@ -78,6 +78,7 @@
       "true": "Active"
     },
     "agenda": "Agenda",
+    "academicYearShort": "A.Y.",
     "agent": "Agent",
     "all": "All",
     "appFeedback": "App Feedback",
@@ -177,6 +178,7 @@
     "logout": "Logout",
     "mightTakeAWhile": "This might take a while",
     "minutes": "Minutes",
+    "moodle": "Moodle",
     "navigate": "Navigate",
     "newItems": "New item",
     "newItems_plural": "New items",
@@ -353,6 +355,9 @@
   "courseNoticesTab": {
     "emptyState": "There are no notices here",
     "title": "Notices"
+  },
+  "courseStaffTab": {
+    "title": "Staff"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
@@ -950,7 +955,7 @@
     "avtext3": "AUDIOVISUAL SYSTEMS",
     "avtext4": "Call 5003 from an internal phone",
     "avtext5": "or",
-    "myCourses": "My courses",
+    "myCourses": "My Courses",
     "managedCourses": "Managed Courses",
     "appeals": "Exam calls",
     "showMore": "Show More",

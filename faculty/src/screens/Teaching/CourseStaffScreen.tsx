@@ -9,13 +9,13 @@ import {
   EmptyState,
   GlobalStyles,
   IndentedDivider,
-  PersonListItem,
   useBottomModal,
   useSafeAreaSpacing,
 } from '@polito/lib/ui';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { AddStaffModalContent } from './AddStaffModalContent';
+import { StaffListItem } from './StaffListItem';
 
 export const StaffScreen = () => {
   const { selectedCourse } = useCourses();
@@ -49,18 +49,7 @@ export const StaffScreen = () => {
         contentContainerStyle={paddingHorizontal}
         data={staffData}
         keyExtractor={item => item.id.toString()}
-        renderItem={({ item: staff }) => (
-          <PersonListItem
-            key={`${staff.id}`}
-            person={staff.name}
-            subtitle={
-              staff.role === 'Titolare'
-                ? t('other.owner')
-                : t('other.collaborator')
-            }
-            staff={staff}
-          />
-        )}
+        renderItem={({ item: staff }) => <StaffListItem staff={staff} />}
         ListFooterComponent={<BottomBarSpacer />}
         ItemSeparatorComponent={() => <IndentedDivider />}
         ListEmptyComponent={() => {

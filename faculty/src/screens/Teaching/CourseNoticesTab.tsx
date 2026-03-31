@@ -46,7 +46,7 @@ export const CourseNoticesTab = () => {
           subtitle={notice.startDate}
           onPress={() => {
             setSelectedNotice(notice);
-            navigation.navigate('Avviso');
+            navigation.navigate('Notice');
           }}
           trailingItem={<FontAwesomeIcon icon={faChevronRight} size={24} />}
         />

@@ -126,6 +126,7 @@ interface Issue {
 }
 interface Course {
   id: number;
+  code: string;
   managed: boolean;
   title: string;
   subtitle: string;
@@ -348,6 +349,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
   const [fakeCourses, setFakeCourses] = useState<Course[]>([
     {
       id: 1,
+      code: 'MAT101',
       title: 'Matematica',
       managed: true,
       subtitle: 'Iscritti: 120 - Periodo 1',
@@ -1007,6 +1009,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     },
     {
       id: 2,
+      code: 'FIS101',
       title: 'Fisica',
       managed: true,
 
@@ -1342,6 +1345,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     },
     {
       id: 3,
+      code: 'PRG201',
       title: 'Programmazione',
       managed: true,
 
@@ -1685,6 +1689,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     },
     {
       id: 4,
+      code: 'CHM101',
       title: 'Chimica',
       managed: true,
 
@@ -1692,7 +1697,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
       period: 2,
       registered: 78,
       teacherId: 'Prof. Neri',
-      year: '2023/2024',
+      year: '2024/2025',
       cfu: 6,
       notices: [
         {
@@ -2031,6 +2036,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
   const [managedCourses, setManagedCourses] = useState<Course[]>([
     {
       id: 5,
+      code: 'INF201',
       title: 'Informatica Teorica',
       subtitle: 'Iscritti: 120 - Periodo 1',
       managed: false,
@@ -2374,6 +2380,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     },
     {
       id: 6,
+      code: 'INF201',
       title: 'Intelligenza Artificiale',
       subtitle: 'Iscritti: 95 - Periodo 2',
       period: 2,

@@ -74,7 +74,7 @@ export const ExamScreen2 = () => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
       e.preventDefault();
-      navigation.navigate('Appelli');
+      navigation.navigate('ExamsCalls');
     });
 
     return unsubscribe;
@@ -86,7 +86,7 @@ export const ExamScreen2 = () => {
         <IconButton
           icon={faArrowLeft}
           size={22}
-          onPress={() => navigation.navigate('Appelli')}
+          onPress={() => navigation.navigate('ExamsCalls')}
         />
       ),
       headerTitle: () => (

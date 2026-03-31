@@ -1,109 +1,91 @@
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
-  ListItem,
+  IndentedDivider,
+  OverviewList,
   Section,
   SectionHeader,
   Theme,
   useStylesheet,
 } from '@polito/lib/ui';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { TeachingStackParamList } from './TeachingNavigator';
+import { CourseListItem } from './CourseListItem';
 
 export const CoursesScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { fakeCourses, setSelectedCourse } = useCourses(); // Usa il hook per ottenere i dati
-  const navigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
+  const { fakeCourses } = useCourses(); // Usa il hook per ottenere i dati
 
   return (
-    <ScrollView>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      // contentContainerStyle={styles.scrollContainer}
+    >
       <View style={styles.sectionsContainer}>
-        <Section>
-          <SectionHeader title="2024/2025" linkTo="" />
-          <SectionList>
-            {fakeCourses.map(course => (
-              <ListItem
-                key={course.id}
-                title={course.title}
-                subtitle={(() => {
-                  const parts = course.subtitle.split(' - ');
-                  const enrolled = parts[0].replace(
-                    'Iscritti',
-                    t('other.enrolledStudents'),
+        {fakeCourses &&
+          (fakeCourses.length > 0 ? (
+            Object.entries(
+              fakeCourses.reduce(
+                (byYear, course) => {
+                  (byYear[course.year] = byYear[course.year] ?? []).push(
+                    course,
                   );
-                  const period = parts[1].replace('Periodo', t('other.period'));
-                  return `${enrolled} - ${period}`;
-                })()}
-                onPress={() => {
-                  setSelectedCourse(course);
-                  navigation.navigate('Course', { from: 'Incarichi' });
-                }}
-              />
-            ))}
-          </SectionList>
-        </Section>
-
-        <Section>
-          <SectionHeader title="2023/2024" linkTo="" />
-          <SectionList>
-            {fakeCourses.map(course => (
-              <ListItem
-                key={course.id}
-                title={course.title}
-                subtitle={(() => {
-                  const parts = course.subtitle.split(' - ');
-                  const enrolled = parts[0].replace(
-                    'Iscritti',
-                    t('other.enrolledStudents'),
-                  );
-                  const period = parts[1].replace('Periodo', t('other.period'));
-                  return `${enrolled} - ${period}`;
-                })()}
-                onPress={() => {
-                  setSelectedCourse(course);
-                  navigation.navigate('Course', { from: 'Incarichi' });
-                }}
-              />
-            ))}
-          </SectionList>
-        </Section>
-        <View style={styles.paddingView} />
+                  return byYear;
+                },
+                {} as Record<string, typeof fakeCourses>,
+              ) as Record<string, typeof fakeCourses>,
+            ).map(([year, courses]) => (
+              <Section key={year}>
+                <SectionHeader
+                  title={
+                    year !== 'undefined'
+                      ? `${t('common.academicYearShort')} ${year}`
+                      : t('coursesScreen.otherCoursesSectionTitle')
+                  }
+                  accessibilityLabel={`${
+                    year !== 'undefined'
+                      ? `${t('common.academicYearShort')} ${year}`
+                      : t('coursesScreen.otherCoursesSectionTitle')
+                  }. ${t('coursesScreen.total', { total: courses.length })}`}
+                />
+                <OverviewList style={styles.listContainer}>
+                  {courses.map((course, index) => (
+                    <React.Fragment key={course.code}>
+                      <CourseListItem course={course} />
+                      {index < courses.length - 1 && (
+                        <IndentedDivider style={styles.divider} />
+                      )}
+                    </React.Fragment>
+                  ))}
+                </OverviewList>
+              </Section>
+            ))
+          ) : (
+            <OverviewList emptyStateText={t('coursesScreen.emptyState')} />
+          ))}
       </View>
     </ScrollView>
   );
 };
 
-const createStyles = ({ palettes, colors, spacing }: Theme) =>
+const createStyles = ({ palettes, spacing }: Theme) =>
   StyleSheet.create({
-    loader: {
-      marginVertical: spacing[8],
+    scrollContainer: {
+      paddingHorizontal: spacing[5],
     },
     sectionsContainer: {
       paddingVertical: spacing[5],
     },
-    paddingView: {
-      height: 200, // Aggiungi uno spazio extra, modifica a piacere
-      backgroundColor: undefined, // Componente trasparente
+    listContainer: {
+      borderRadius: spacing[3],
+      marginHorizontal: spacing[5],
+      elevation: 0,
     },
-    button: {
-      backgroundColor: colors.white, // Colore del background del bottone
-      paddingVertical: 12,
+    divider: {
       marginLeft: spacing[4],
-      marginBottom: spacing[4],
-      width: 100,
-      borderRadius: 8,
-      alignItems: 'center',
-    },
-    buttonText: {
-      color: palettes.text[700], // Colore del testo del bottone
-      fontSize: 16,
-      fontWeight: 'light',
+      backgroundColor: palettes.gray[300],
     },
   });

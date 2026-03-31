@@ -93,7 +93,7 @@ const MapDefaultContent = () => {
         tileSize={RASTER_TILE_SIZE}
         maxZoomLevel={MAX_ZOOM}
       >
-        <RasterLayer id="outdoor" aboveLayerID="background" style={null} />
+        <RasterLayer id="outdoor" aboveLayerID="background" style={{}} />
       </RasterSource>
 
       {/* Indoor map */}
@@ -107,7 +107,7 @@ const MapDefaultContent = () => {
         minZoomLevel={INTERIORS_MIN_ZOOM}
         maxZoomLevel={MAX_ZOOM}
       >
-        <RasterLayer id="indoor" aboveLayerID="outdoor" style={null} />
+        <RasterLayer id="indoor" aboveLayerID="outdoor" style={{}} />
       </RasterSource>
     </>
   );
