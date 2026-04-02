@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
-import { usePreferencesContext } from '@polito/lib/core';
+import { AgendaNavigatorID, usePreferencesContext } from '@polito/lib/core';
 import {
   PlacesNavigator,
   type PlacesStackParamList,
@@ -11,12 +11,14 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';
+import { AgendaPreferencesScreen } from '~/features/agenda/screens/AgendaPreferencesScreen.tsx';
+import { HiddenEventsScreen } from '~/features/agenda/screens/HiddenEventsScreen.tsx';
 import { UnreadMessagesModal } from '~/features/user/screens/UnreadMessagesModal';
-
 import {
   SharedScreens,
   SharedScreensParamList,
-} from '../../../shared/navigation/SharedScreens';
+} from '~/shared/navigation/SharedScreens.tsx';
+
 import { BookingSeatScreen } from '../../bookings/screens/BookingSeatScreen';
 import {
   CourseSharedScreens,
@@ -45,9 +47,9 @@ export type AgendaStackParamList = CourseSharedScreensParamList &
       seatId: number;
     };
     PlacesAgendaStack: NavigatorScreenParams<PlacesStackParamList>;
+    AgendaPreferences: undefined;
+    HiddenEvents: undefined;
   };
-
-export const AgendaNavigatorID = 'AgendaTabNavigator';
 
 const Stack = createNativeStackNavigator<
   AgendaStackParamList,
@@ -159,6 +161,22 @@ export const AgendaNavigator = () => {
       >
         {() => <PlacesNavigator unreadMessagesModal={UnreadMessagesModal} />}
       </Stack.Screen>
+      <Stack.Screen
+        name="AgendaPreferences"
+        component={AgendaPreferencesScreen}
+        options={{
+          title: t('common.preferencesAgenda'),
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="HiddenEvents"
+        component={HiddenEventsScreen}
+        options={{
+          title: t('common.hiddenEvents'),
+          headerShown: true,
+        }}
+      />
       {CourseSharedScreens()}
       {SharedScreens()}
     </Stack.Navigator>

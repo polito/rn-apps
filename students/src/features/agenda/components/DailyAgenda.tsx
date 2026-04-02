@@ -3,7 +3,6 @@ import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { isCurrentMonth, isCurrentYear } from '@polito/lib/core';
 import { Col, Row, Text, Theme, useStylesheet } from '@polito/lib/ui';
 
-import { useProcessedLectures } from '../hooks/useProcessedLectures.ts';
 import { AgendaDay } from '../types/AgendaDay';
 import { BookingCard } from './BookingCard';
 import { DeadlineCard } from './DeadlineCard';
@@ -25,8 +24,6 @@ export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
   const monthOfYear =
     !isCurrentMonth(agendaDay.date) && agendaDay.date.toFormat('MMM');
   const year = !isCurrentYear(agendaDay.date) && agendaDay.date.toFormat('y');
-
-  const filteredAgendaDay = useProcessedLectures(agendaDay.items);
 
   return (
     <Row onLayout={onLayout}>
@@ -67,7 +64,7 @@ export const DailyAgenda = ({ agendaDay, isEmptyWeek, onLayout }: Props) => {
             <EmptyDay />
           )
         ) : (
-          filteredAgendaDay.map(item => {
+          agendaDay.items.map(item => {
             switch (item.type) {
               case 'booking':
                 return <BookingCard key={item.key} item={item} />;

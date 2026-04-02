@@ -3,6 +3,8 @@ import { checkVersion } from 'react-native-check-version';
 
 import { useSplashContext } from '@polito/lib/core';
 
+import { isEnvProduction } from '~/utils/env.ts';
+
 import { GITHUB_URL } from '../constants.ts';
 import { getFcmToken, useUpdateAppInfo } from '../queries/authHooks.ts';
 
@@ -35,7 +37,7 @@ export const useCheckForUpdate = () => {
           }, 3000);
           updateAppInfo(token)
             .then(({ data }) => {
-              if (data.suggestUpdate) {
+              if (data.suggestUpdate && isEnvProduction) {
                 checkVersion()
                   .then(res => {
                     if (res.error) {

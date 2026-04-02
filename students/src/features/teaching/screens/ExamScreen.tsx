@@ -8,7 +8,6 @@ import {
   faTriangleExclamation,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
-import { ExamStatusEnum } from '@polito/api-client';
 import {
   dateFormatter,
   formatDate,
@@ -40,6 +39,7 @@ import {
   useBottomModal,
   useTheme,
 } from '@polito/lib/ui';
+import { ExamStatusEnum } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetExams } from '~/core/queries/examHooks';
@@ -287,7 +287,10 @@ export const ExamScreen = ({ route, navigation }: Props) => {
             </>
           )}
           {exam?.feedback && exam?.status === ExamStatusEnum.Unavailable && (
-            <ErrorCard text={exam.feedback} />
+            <ErrorCard
+              text={exam.feedback}
+              style={{ paddingTop: spacing[3] }}
+            />
           )}
           <CtaButtonSpacer />
           <BottomBarSpacer />

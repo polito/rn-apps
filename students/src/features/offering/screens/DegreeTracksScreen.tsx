@@ -4,7 +4,6 @@ import { Pressable, SectionList, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
-import { OfferingCourseOverview } from '@polito/api-client/models/OfferingCourseOverview';
 import {
   Icon,
   IndentedDivider,
@@ -15,6 +14,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { OfferingCourseOverview } from '@polito/student-api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';

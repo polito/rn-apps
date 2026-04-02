@@ -17,8 +17,8 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog.ts';
-import { useDeleteEsc } from '../../../core/queries/escHooks.ts';
+import { useConfirmationDialog } from '~/core/hooks/useConfirmationDialog.ts';
+import { useDeleteEsc } from '~/core/queries/escHooks.ts';
 
 type Props = PropsWithChildren<
   ViewProps & {

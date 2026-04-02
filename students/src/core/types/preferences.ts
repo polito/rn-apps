@@ -1,11 +1,14 @@
-import { PersonOverview, PlaceOverview } from '@polito/api-client';
+import { PersonOverview } from '@polito/student-api-client';
 
 import { AgendaTypesFilterState } from '~/features/agenda/types/AgendaTypesFilterState';
-
-import { HiddenRecurrence } from '../../features/courses/types/Recurrence';
+import {
+  HiddenRecurrence,
+  SingleEvent,
+} from '~/features/courses/types/Recurrence';
 
 export const editablePreferenceKeys = [
-  'accessibility',
+  // This version is used exclusively for migrations.
+  // For all other cases, use DeviceInfo from react-native-device-info.
   'lastInstalledVersion',
   'username',
   'campusId',
@@ -16,7 +19,6 @@ export const editablePreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
-  'onboardingStep',
   'emailGuideRead',
   'placesSearched',
   'agendaScreen',
@@ -24,6 +26,9 @@ export const editablePreferenceKeys = [
   'hideGrades',
   'loginUid',
   'politoAuthnEnrolmentStatus',
+  'fileStorageLocation',
+  'customStoragePath',
+  'customStorageDisplayPath',
 ] as const;
 
 // Specify here complex keys, that require serialization/deserialization
@@ -32,7 +37,6 @@ export const objectPreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
-  'onboardingStep',
   'emailGuideRead',
   'placesSearched',
   'agendaScreen',
@@ -68,9 +72,7 @@ export type AppPreferences = {
   };
   favoriteServices: string[];
   peopleSearched: PersonOverview[];
-  onboardingStep?: number;
   emailGuideRead?: boolean;
-  placesSearched: PlaceOverview[];
   agendaScreen: {
     layout: 'weekly' | 'daily';
     filters: AgendaTypesFilterState;
@@ -84,6 +86,9 @@ export type AppPreferences = {
     insertedDeviceName?: string;
     hideInitialPrompt?: boolean;
   };
+  fileStorageLocation?: 'internal' | 'custom';
+  customStoragePath?: string;
+  customStorageDisplayPath?: string;
 };
 
 export const initialAppPreferences: AppPreferences = {
@@ -91,7 +96,6 @@ export const initialAppPreferences: AppPreferences = {
   courses: {},
   favoriteServices: [],
   peopleSearched: [],
-  placesSearched: [],
   agendaScreen: {
     layout: 'daily',
     filters: {
@@ -101,5 +105,15 @@ export const initialAppPreferences: AppPreferences = {
       lecture: false,
     },
   },
-  filesScreen: 'filesView',
+  filesScreen: 'directoryView',
 };
+
+export interface CoursePreferencesProps {
+  color: string;
+  icon?: string;
+  isHidden: boolean;
+  order?: number;
+  isHiddenInAgenda: boolean;
+  itemsToHideInAgenda?: HiddenRecurrence[];
+  singleItemsToHideInAgenda?: SingleEvent[];
+}

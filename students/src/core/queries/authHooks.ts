@@ -3,20 +3,21 @@ import { Alert, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import uuid from 'react-native-uuid';
 
-import { AuthApi, LoginRequest, SwitchCareerRequest } from '@polito/api-client';
-import type {
-  AppInfoRequest,
-  EnrolMfaRequest,
-  ValidateMfaRequest,
-} from '@polito/api-client/models';
 import {
   ApiError,
-  isEnvProduction,
   pluckData,
   rethrowApiError,
   usePreferencesContext,
 } from '@polito/lib/core';
-import { getApp } from '@react-native-firebase/app';
+import {
+  AppInfoRequest,
+  AuthApi,
+  EnrolMfaRequest,
+  LoginRequest,
+  SwitchCareerRequest,
+  ValidateMfaRequest,
+} from '@polito/student-api-client';
+import { getMessaging, getToken } from '@react-native-firebase/messaging';
 import { useNavigation } from '@react-navigation/core';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -34,12 +35,11 @@ import { DEFAULT_CHPASS_URL, DEFAULT_SSO_LOGIN_URL } from '../constants.ts';
 import { useApiContext } from '../contexts/ApiContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { WebviewType, useOpenInAppLink } from '../hooks/useOpenInAppLink.ts';
-import { asyncStoragePersister } from '../providers/ApiProvider';
-import { RootParamList } from '../types/navigation.ts';
+import { QueryStorage } from '../providers/ApiProvider.tsx';
 import { AppPreferences } from '../types/preferences.ts';
 
 export const WEBMAIL_LINK_QUERY_KEY = ['webmailLink'];
-const MFA_CHALLENGE_QUERY_KEY = ['mfaChallenge'];
+export const MFA_CHALLENGE_QUERY_KEY = ['mfaChallenge'];
 export const MFA_STATUS_QUERY_KEY = ['mfaStatus'];
 
 const useAuthClient = (): AuthApi => {
@@ -49,10 +49,8 @@ const useAuthClient = (): AuthApi => {
 export async function getFcmToken(
   catchException: boolean = true,
 ): Promise<string | undefined> {
-  if (!isEnvProduction) return undefined;
-
   try {
-    return await getApp().messaging().getToken();
+    return await getToken(getMessaging());
   } catch (e) {
     if (!catchException) {
       throw e;
@@ -64,7 +62,7 @@ export async function getFcmToken(
   return undefined;
 }
 
-const getClientId = async (): Promise<string> => {
+export const getClientId = async (): Promise<string> => {
   try {
     const credentials = await getCredentials();
     if (credentials && credentials.username) {
@@ -111,6 +109,7 @@ export const useLogin = () => {
               version: `${Platform.Version}`,
               model,
               manufacturer,
+              toothPicCompatible: true,
             };
             dto.client = {
               name: 'students-app',
@@ -160,7 +159,9 @@ export const useLogout = () => {
     onSuccess: async () => {
       updatePreference('politoAuthnEnrolmentStatus', {});
       refreshContext();
-      asyncStoragePersister.removeClient();
+      QueryStorage.clear().catch(e => {
+        console.error('Error clearing query storage:', e);
+      });
       queryClient.removeQueries();
       await resetCredentials();
     },
@@ -174,7 +175,7 @@ export const useSwitchCareer = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (dto?: SwitchCareerRequest) =>
+    mutationFn: (dto: SwitchCareerRequest) =>
       authClient.switchCareer({ switchCareerRequest: dto }).then(pluckData),
     onSuccess: async data => {
       const { token, username, clientId } = data;
@@ -182,7 +183,6 @@ export const useSwitchCareer = () => {
       and avoid waiting for the setCredentials & preferences update,
       since it's already refreshed upon username change in prefs */
       refreshContext({ token, username });
-      asyncStoragePersister.removeClient();
       queryClient.invalidateQueries();
 
       await setCredentials(clientId, token);
@@ -255,22 +255,14 @@ export const useMfaEnrol = () => {
 
 export const useMfaAuth = () => {
   const authClient = useAuthClient();
-  const navigation = useNavigation<NativeStackNavigationProp<RootParamList>>();
 
   return useMutation({
-    mutationFn: (dto: ValidateMfaRequest) =>
+    mutationFn: async (dto: ValidateMfaRequest) =>
       authClient
         .validateMfa({ validateMfaRequest: dto })
         .then(pluckData)
-        .then(res => {
-          if (!res) throw new Error('MFA verification failed');
-          return res;
-        })
+        .then(({ success }) => success)
         .catch(rethrowApiError),
-
-    onSuccess: async data => {
-      data.success === true && navigation.goBack();
-    },
   });
 };
 

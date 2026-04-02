@@ -15,7 +15,6 @@ import {
   faPhone,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { PersonCourse, PhoneNumber } from '@polito/api-client';
 import { notNullish, useOfflineDisabled } from '@polito/lib/core';
 import {
   BottomBarSpacer,
@@ -33,6 +32,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { PersonCourse, PhoneNumber } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';

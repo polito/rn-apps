@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { TicketOverview, TicketStatus } from '@polito/api-client';
 import { getHtmlTextContent } from '@polito/lib/core';
 import {
   BottomBarSpacer,
@@ -21,6 +20,7 @@ import {
   type Theme,
   useStylesheet,
 } from '@polito/lib/ui';
+import { TicketOverview, TicketStatus } from '@polito/student-api-client';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onlineManager } from '@tanstack/react-query';

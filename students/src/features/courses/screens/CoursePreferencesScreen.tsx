@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
-import { stat, unlink } from 'react-native-fs';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -14,12 +13,8 @@ import {
   faIcons,
   faVideoCamera,
 } from '@fortawesome/free-solid-svg-icons';
-import {
-  formatFileSize,
-  useFeedbackContext,
-  usePreferencesContext,
-} from '@polito/lib/core';
-import { courseIcons } from '@polito/lib/features/courses';
+import { useFeedbackContext, usePreferencesContext } from '@polito/lib/core';
+import { courseColors, courseIcons } from '@polito/lib/features/courses';
 import {
   BottomBarSpacer,
   Icon,
@@ -31,43 +26,125 @@ import {
   SwitchListItem,
   useTheme,
 } from '@polito/lib/ui';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
-import { AppPreferences } from '~/core/types/preferences';
-
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import {
+  DownloadContext,
+  useDownloadsContext,
+} from '~/core/contexts/DownloadsContext';
+import { getFileDatabase } from '~/core/database/FileDatabase';
+import {
+  CourseSectionEnum,
+  getCourseKey,
   useGetCourse,
   useUpdateCoursePreferences,
-} from '../../../core/queries/courseHooks';
+} from '~/core/queries/courseHooks';
+import { AppPreferences } from '~/core/types/preferences';
+import { formatFileSize } from '~/utils/files';
+
+import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
-import { CourseContext } from '../contexts/CourseContext';
-import { useCourseFilesCachePath } from '../hooks/useCourseFilesCachePath';
+import { CourseContext, useCourseContext } from '../contexts/CourseContext';
 
 const CleanCourseFilesListItem = () => {
   const { t } = useTranslation();
   const { setFeedback } = useFeedbackContext();
+  const {
+    downloads,
+    updateDownload,
+    getCourseFolderPath,
+    deleteLocalPath,
+    removeFileFromStorage,
+    cacheSizeVersion,
+    refreshCacheVersion,
+    isAnyDownloadInProgress,
+  } = useDownloadsContext();
+  const queryClient = useQueryClient();
+
   const { fontSizes } = useTheme();
-  const [courseFilesCache] = useCourseFilesCachePath();
-  const [cacheSize, setCacheSize] = useState<number>(0);
+  const courseId = useCourseContext();
+  const { data: course } = useGetCourse(courseId);
+  const courseFilesCache = getCourseFolderPath(courseId, course?.name);
+  const [cacheSize, setCacheSize] = useState<number | undefined>(undefined);
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
     message: t('coursePreferencesScreen.cleanCacheConfirmMessage'),
   });
 
-  const refreshSize = () => {
-    if (courseFilesCache) {
-      stat(courseFilesCache)
-        .then(({ size }) => {
-          setCacheSize(size);
-        })
-        .catch(() => {
-          setCacheSize(0);
-        });
-    }
-  };
+  const fileDatabaseRef = useRef(getFileDatabase());
+  const ctx = DownloadContext.Course;
+  const ctxId = courseId.toString();
 
-  useEffect(refreshSize, [courseFilesCache]);
+  const refreshSize = useCallback(() => {
+    fileDatabaseRef.current
+      .getTotalSizeByContext(ctx, ctxId)
+      .then(size => {
+        setCacheSize(size);
+      })
+      .catch(() => {
+        setCacheSize(undefined);
+      });
+  }, [ctx, ctxId]);
+
+  useEffect(() => {
+    refreshSize();
+  }, [cacheSizeVersion, refreshSize]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshSize();
+    }, [refreshSize]),
+  );
+
+  const handleCleanPress = useCallback(async () => {
+    if (!courseFilesCache || !(await confirm())) return;
+    try {
+      Object.keys(downloads).forEach(key => {
+        if (key.includes(courseFilesCache)) {
+          updateDownload(key, {
+            isDownloaded: false,
+            phase: undefined,
+          });
+        }
+      });
+
+      const files = await fileDatabaseRef.current.getFilesByContext(ctx, ctxId);
+      await Promise.all(
+        files.map(f => removeFileFromStorage(f.path).catch(() => {})),
+      );
+
+      await fileDatabaseRef.current.deleteFilesByContext(ctx, ctxId);
+      await deleteLocalPath(courseFilesCache).catch(() => {});
+      refreshCacheVersion();
+      setFeedback({
+        text: t('coursePreferencesScreen.cleanCacheFeedback'),
+        isPersistent: false,
+      });
+      refreshSize();
+      queryClient.invalidateQueries({
+        queryKey: getCourseKey(courseId, CourseSectionEnum.Files),
+      });
+    } catch {
+      setFeedback({ text: t('common.error'), isPersistent: false });
+    }
+  }, [
+    courseFilesCache,
+    confirm,
+    downloads,
+    updateDownload,
+    ctx,
+    ctxId,
+    setFeedback,
+    t,
+    refreshSize,
+    queryClient,
+    courseId,
+    deleteLocalPath,
+    removeFileFromStorage,
+    refreshCacheVersion,
+  ]);
 
   return (
     <ListItem
@@ -76,18 +153,11 @@ const CleanCourseFilesListItem = () => {
       subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
       })}
-      disabled={cacheSize === 0}
+      disabled={
+        (cacheSize !== undefined && cacheSize === 0) || isAnyDownloadInProgress
+      }
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
-      onPress={async () => {
-        if (courseFilesCache && (await confirm())) {
-          unlink(courseFilesCache).then(() => {
-            setFeedback({
-              text: t('coursePreferencesScreen.cleanCacheFeedback'),
-            });
-            refreshSize();
-          });
-        }
-      }}
+      onPress={handleCleanPress}
     />
   );
 };
@@ -111,7 +181,14 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
     () => coursesPrefs[uniqueShortcode],
     [uniqueShortcode, coursesPrefs],
   );
-  const selectedColor = coursePrefs?.color;
+
+  const defaultPrefs = {
+    color: courseColors[0].color,
+    isHidden: false,
+    isHiddenInAgenda: false,
+  };
+
+  const selectedColor = coursePrefs?.color || defaultPrefs.color;
 
   return (
     <CourseContext.Provider value={courseId}>
@@ -155,7 +232,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   leadingItem={
                     <Icon
                       icon={
-                        coursePrefs.icon && coursePrefs.icon in courseIcons
+                        coursePrefs?.icon && coursePrefs.icon in courseIcons
                           ? courseIcons[coursePrefs.icon]
                           : faIcons
                       }
@@ -167,12 +244,13 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   title={t('coursePreferencesScreen.showInExtracts')}
                   subtitle={t('coursePreferencesScreen.showInExtractsSubtitle')}
                   disabled={!coursePrefs}
-                  value={!coursePrefs.isHidden}
+                  value={!coursePrefs?.isHidden}
                   leadingItem={<Icon icon={faEye} size={fontSizes['2xl']} />}
                   onChange={value => {
                     updatePreference('courses', {
                       ...coursesPrefs,
                       [uniqueShortcode]: {
+                        ...defaultPrefs,
                         ...coursePrefs,
                         isHidden: !value,
                       },
@@ -247,7 +325,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                 <SwitchListItem
                   title={t('common.hideInAgenda')}
                   disabled={!coursePrefs}
-                  value={coursePrefs.isHiddenInAgenda || coursePrefs.isHidden}
+                  value={coursePrefs?.isHiddenInAgenda || coursePrefs?.isHidden}
                   leadingItem={
                     <Icon icon={faEyeSlash} size={fontSizes['2xl']} />
                   }
@@ -255,6 +333,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                     updatePreference('courses', {
                       ...coursesPrefs,
                       [uniqueShortcode]: {
+                        ...defaultPrefs,
                         ...coursePrefs,
                         isHiddenInAgenda: value,
                       },
@@ -270,7 +349,10 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                       uniqueShortcode,
                     });
                   }}
-                  disabled={!coursePrefs.itemsToHideInAgenda?.length}
+                  disabled={
+                    !coursePrefs?.itemsToHideInAgenda?.length &&
+                    !coursePrefs.singleItemsToHideInAgenda?.length
+                  }
                   trailingItem={
                     <Icon icon={faChevronRight} size={fontSizes.xl} />
                   }

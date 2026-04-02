@@ -1,4 +1,4 @@
-import { usePreferencesContext } from '@polito/lib/core';
+import { FileNavigatorID, usePreferencesContext } from '@polito/lib/core';
 import { useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -16,10 +16,9 @@ export type FileStackParamList = {
     courseId: number;
     directoryId?: string;
     directoryName?: string;
+    skipInitialDownloadCheck?: boolean;
   };
 };
-
-export const FileNavigatorID = 'FileTabNavigator';
 
 const Stack = createNativeStackNavigator<
   FileStackParamList,
@@ -27,19 +26,21 @@ const Stack = createNativeStackNavigator<
 >();
 export const FileNavigator = () => {
   const theme = useTheme();
-  const { filesScreen } = usePreferencesContext<AppPreferences>();
   const courseId = useCourseContext();
+  const { filesScreen } = usePreferencesContext<AppPreferences>();
+
+  const initialRouteName =
+    filesScreen === 'filesView' ? 'RecentFiles' : 'DirectoryFiles';
 
   return (
     <Stack.Navigator
       id={FileNavigatorID}
       screenOptions={{
+        animation: 'none',
         headerShown: false,
         ...useTitlesStyles(theme),
       }}
-      initialRouteName={
-        filesScreen === 'filesView' ? 'RecentFiles' : 'DirectoryFiles'
-      }
+      initialRouteName={initialRouteName}
     >
       <Stack.Screen
         name="RecentFiles"

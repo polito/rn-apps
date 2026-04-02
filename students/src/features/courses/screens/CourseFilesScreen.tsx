@@ -1,102 +1,194 @@
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform } from 'react-native';
+import { FlatList, Platform, StyleSheet, View } from 'react-native';
 
-import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
-import { CourseDirectory, CourseFileOverview } from '@polito/api-client';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { usePreferencesContext } from '@polito/lib/core';
 import {
   BottomBarSpacer,
-  CtaButton,
-  CtaButtonSpacer,
+  GlobalStyles,
   IndentedDivider,
   OverviewList,
   RefreshControl,
+  Row,
+  Theme,
+  TranslucentTextField,
   useSafeAreaSpacing,
+  useStylesheet,
+  useTheme,
 } from '@polito/lib/ui';
+import {
+  CourseDirectory,
+  CourseFileOverview,
+} from '@polito/student-api-client';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
+import { useDownloadsContext } from '~/core/contexts/DownloadsContext';
+import {
+  CourseSectionEnum,
+  getCourseKey,
+  useGetCourseFilesRecent,
+} from '~/core/queries/courseHooks';
 import { AppPreferences } from '~/core/types/preferences';
 
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
-import { useGetCourseFilesRecent } from '../../../core/queries/courseHooks';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
-import { CourseFilesCacheContext } from '../contexts/CourseFilesCacheContext';
+import { FileScreenHeader } from '../components/FileScreenHeader';
+import { useFileManagement } from '../hooks/useFileManagement';
 import { FileStackParamList } from '../navigation/FileNavigator';
 
 type Props = NativeStackScreenProps<FileStackParamList, 'RecentFiles'>;
 
-export const CourseFilesScreen = ({ navigation, route }: Props) => {
+const CourseFilesScreenContent = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const [scrollEnabled, setScrollEnabled] = useState(true);
-  const { refresh } = useContext(CourseFilesCacheContext);
   const courseId = route.params.courseId;
+  const multiSelectNav =
+    (navigation.getParent()?.getParent() as any) ?? navigation;
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
   const { updatePreference } = usePreferencesContext<AppPreferences>();
-
-  useOnLeaveScreen(() => {
-    clearNotificationScope(['teaching', 'courses', courseId, 'files']);
-  });
-
-  useFocusEffect(
-    useCallback(() => {
-      refresh();
-    }, [refresh]),
-  );
-
+  const [searchFilter, setSearchFilter] = useState('');
+  const styles = useStylesheet(createStyles);
   const onSwipeStart = useCallback(() => setScrollEnabled(false), []);
   const onSwipeEnd = useCallback(() => setScrollEnabled(true), []);
 
+  useFocusEffect(
+    useCallback(() => {
+      queryClient.invalidateQueries({
+        queryKey: getCourseKey(courseId, CourseSectionEnum.Files),
+      });
+    }, [courseId, queryClient]),
+  );
+  const {
+    sortedData,
+    activeSort,
+    sortOptions,
+    onPressSortOption,
+    isRemoving,
+    isDownloading,
+  } = useFileManagement({
+    courseId,
+    data: recentFilesQuery.data,
+    isDirectoryView: false,
+  });
+  const { downloads } = useDownloadsContext();
+
+  const fileListData = useMemo(() => {
+    const base = (sortedData || recentFilesQuery.data) ?? [];
+    if (!searchFilter.trim()) return base;
+    const q = searchFilter.trim().toLowerCase();
+    return base.filter(item => (item.name ?? '').toLowerCase().includes(q));
+  }, [sortedData, recentFilesQuery.data, searchFilter]);
+
+  useOnLeaveScreen(() => {
+    clearNotificationScope(['teaching', 'courses', `${courseId}`, 'files']);
+  });
+
+  const onToggleView = useCallback(() => {
+    navigation.replace('DirectoryFiles', { courseId });
+    updatePreference('filesScreen', 'directoryView');
+  }, [navigation, courseId, updatePreference]);
+
+  const { spacing } = useTheme();
+
+  const footerSpacerHeight = spacing[20];
+
   return (
     <>
-      <FlatList
-        contentInsetAdjustmentBehavior="automatic"
-        data={recentFilesQuery.data}
-        contentContainerStyle={paddingHorizontal}
-        scrollEnabled={scrollEnabled}
-        keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
-        initialNumToRender={15}
-        maxToRenderPerBatch={15}
-        windowSize={4}
-        renderItem={({ item }) => {
-          return (
-            <CourseRecentFileListItem
-              item={item}
-              onSwipeStart={onSwipeStart}
-              onSwipeEnd={onSwipeEnd}
-            />
-          );
-        }}
-        refreshControl={<RefreshControl queries={[recentFilesQuery]} />}
-        ItemSeparatorComponent={Platform.select({
-          ios: IndentedDivider,
-        })}
-        ListFooterComponent={
-          <>
-            <CtaButtonSpacer />
-            <BottomBarSpacer />
-          </>
-        }
-        ListEmptyComponent={
-          !recentFilesQuery.isLoading ? (
-            <OverviewList emptyStateText={t('courseFilesTab.empty')} />
-          ) : null
-        }
-      />
-      {recentFilesQuery.data && navigation && (
-        <CtaButton
-          title={t('courseFilesTab.navigateFolders')}
-          icon={faFolderOpen}
-          action={() => {
-            navigation.replace('DirectoryFiles', { courseId });
-            updatePreference('filesScreen', 'directoryView');
-          }}
+      <Row align="center" style={[paddingHorizontal, styles.searchBar]}>
+        <TranslucentTextField
+          autoFocus={searchFilter.length !== 0}
+          autoCorrect={false}
+          leadingIcon={faSearch}
+          value={searchFilter}
+          onChangeText={setSearchFilter}
+          style={[GlobalStyles.grow, styles.textField]}
+          label={t('courseDirectoryScreen.search')}
+          editable={true}
+          isClearable={!!searchFilter}
+          onClear={() => setSearchFilter('')}
+          onClearLabel={t('contactsScreen.clearSearch')}
         />
-      )}
+      </Row>
+      <FileScreenHeader
+        activeSort={activeSort}
+        sortOptions={sortOptions}
+        onPressSortOption={onPressSortOption}
+        isDirectoryView={false}
+        onToggleView={onToggleView}
+        isSelectDisabled={isDownloading || isRemoving}
+      />
+
+      <View style={{ flex: 1 }}>
+        <FlatList
+          contentInsetAdjustmentBehavior="automatic"
+          data={fileListData}
+          extraData={{ downloads, isRemoving }}
+          contentContainerStyle={paddingHorizontal}
+          scrollEnabled={scrollEnabled}
+          keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
+          initialNumToRender={15}
+          maxToRenderPerBatch={15}
+          windowSize={4}
+          renderItem={({ item }) => {
+            const fileItem = item as CourseFileOverview;
+            return (
+              <CourseRecentFileListItem
+                item={fileItem}
+                onSwipeStart={onSwipeStart}
+                onSwipeEnd={onSwipeEnd}
+                enableMultiSelect={false}
+                disabled={isRemoving}
+                onLongPress={() => {
+                  if (isDownloading || isRemoving) return;
+                  multiSelectNav?.navigate('CourseFileMultiSelect', {
+                    courseId,
+                    mode: 'recent',
+                    initialSelectedIds: [fileItem.id],
+                  });
+                }}
+              />
+            );
+          }}
+          refreshControl={<RefreshControl queries={[recentFilesQuery]} />}
+          ItemSeparatorComponent={Platform.select({
+            ios: IndentedDivider,
+          })}
+          ListFooterComponent={
+            <>
+              <View style={{ height: footerSpacerHeight }} />
+              <BottomBarSpacer />
+            </>
+          }
+          ListEmptyComponent={
+            !recentFilesQuery.isLoading ? (
+              <OverviewList emptyStateText={t('courseFilesTab.empty')} />
+            ) : null
+          }
+        />
+      </View>
     </>
   );
+};
+
+const createStyles = ({ spacing, shapes, colors }: Theme) =>
+  StyleSheet.create({
+    textField: {
+      borderRadius: shapes.lg,
+    },
+    searchBar: {
+      paddingBottom: spacing[2],
+      paddingTop: spacing[2],
+      backgroundColor: colors.background,
+    },
+  });
+
+export const CourseFilesScreen = ({ navigation, route }: Props) => {
+  return <CourseFilesScreenContent navigation={navigation} route={route} />;
 };

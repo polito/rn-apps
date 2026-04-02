@@ -1,10 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  ProvisionalGrade,
-  ProvisionalGradeStateEnum,
-} from '@polito/api-client/models/ProvisionalGrade';
 import { IS_IOS, dateFormatter, formatDate } from '@polito/lib/core';
 import {
   DisclosureIndicator,
@@ -15,6 +11,10 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import {
+  ProvisionalGrade,
+  ProvisionalGradeStateEnum,
+} from '@polito/student-api-client';
 
 import { useGetRejectionTime } from '../hooks/useGetRejectionTime';
 import { ProvisionalGradeStatusBadge } from './ProvisionalGradeStatusBadge';

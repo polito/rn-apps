@@ -28,7 +28,20 @@
     "rooms": "Aule {{roomNames}}",
     "selectDate": "Seleziona data",
     "title": "Agenda",
-    "weeklyLayout": "Layout settimanale"
+    "weeklyLayout": "Layout settimanale",
+    "hideEvent": "Preferenze agenda",
+    "noHiddenEvents": "Non ci sono eventi nascosti"
+  },
+  "agendaDialog": {
+    "hideEventTitle": "Nascondi evento",
+    "hideEventMessage": "Scegli come nascondere questo evento dall'agenda",
+    "hideThisEvent": "Nascondi solo questo",
+    "hideThisAndFutureEvents": "Nascondi questo e futuri"
+  },
+  "AgendaPreferences": {
+    "hideInAgenda": "Nascondi in agenda",
+    "hideEvent": "Nascondi evento",
+    "showInAgenda": "Mostra in agenda"
   },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
@@ -36,8 +49,7 @@
       "available": "Prenotabile",
       "booked": "Prenotato",
       "full": "Non prenotabile",
-      "notAvailable": "Non ancora prenotabile",
-      "notAvailableBooking": "Non prenotabile"
+      "notAvailable": "Non ancora prenotabile"
     },
     "cancelBooking": "Annulla prenotazione",
     "cancelBookingText": "Sei sicuro di voler annullare la prenotazione?",
@@ -70,6 +82,7 @@
   },
   "bookingsScreen": {
     "emptyState": "Non hai prenotazioni attive",
+    "emptyWeek": "Non hai eventi disponibili in questa settimana",
     "newBooking": "Nuova prenotazione",
     "sectionTitle": "Attive",
     "title": "Prenotazioni"
@@ -149,13 +162,30 @@
     "department": "Dipartimento",
     "desk": "Cattedra",
     "done": "Fatto",
+    "cancelSelection": "Annulla selezione",
+    "gotIt": "Ho capito",
+    "selectAll": "Seleziona tutto",
+    "deselectAll": "Deseleziona tutto",
+    "selectDirectories": "Seleziona directory",
+    "hideFolders": "Visualizza per file",
+    "showFolders": "Visualizza per cartelle",
+    "selectEverything": "Seleziona tutto",
     "doubleClickToSeeLinks": "Premi due volte per vedere i link",
     "doubleTapToActive": "Doppio tocco per attivare",
     "doubleTapToDeactivate": "Doppio tocco per disattivare",
     "download": "Scarica",
     "downloadError": "Qualcosa è andato storto con durante il download",
+    "downloadInProgress": "Download in corso",
+    "downloadInProgressCount": "Download in corso {{current}}/{{total}}",
+    "downloadLargeFilesPleaseWait": "Alcuni file sono molto grandi, attendere.",
+    "downloadProgress": "Scaricando {{current}} di {{total}}",
+    "downloadCompleted": "Tutti i file scaricati con successo",
+    "downloadCompletedShort": "Download completato",
+    "removeInProgress": "Rimozione file in corso",
+    "removeCompletedShort": "File rimossi",
+    "downloadCompletedWithErrors": "{{successCount}} file scaricati, {{errorCount}} falliti",
     "downloadStatus": {
-      "false": "Non scaricato",
+      "false": "Non scaricati",
       "true": "Scaricato"
     },
     "duration": "Durata",
@@ -200,6 +230,7 @@
     "grade": "Voto",
     "hiddenEvents": "Eventi nascosti",
     "hide": "Nascondi",
+    "hiddenEvent": "Nascondi evento",
     "hideInAgenda": "Nascondi in agenda",
     "hour": "Orario",
     "hours": "Ore",
@@ -216,9 +247,11 @@
     "location": "Sede",
     "logout": "Logout",
     "mightTakeAWhile": "Potrebbe volerci un momento",
+    "module": "Modulo",
     "minutes": "Minuti",
     "more": "Più",
     "navigate": "Naviga",
+    "newest": "Data più recente",
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",
     "newVersionTitle": "Nuova versione disponibile!",
@@ -235,6 +268,9 @@
     "objectives": "Obiettivi formativi",
     "of": "Su",
     "ok": "Ok",
+    "oldest": "Meno recente",
+    "yes": "Sì",
+    "no": "No",
     "or": "oppure",
     "open": "Apri",
     "openSettings": "Apri impostazioni",
@@ -249,6 +285,8 @@
       "true": "Doppio click per chiudere"
     },
     "options": "Opzioni",
+    "orderByNameAZ": "Nome A-Z",
+    "orderByNameZA": "Nome Z-A",
     "other": "Altro",
     "pause": "Pausa",
     "period": "Semestre",
@@ -256,19 +294,26 @@
     "phoneContacts": "Contatto telefonico",
     "play": "Riproduci",
     "preferences": "Preferenze",
+    "preferencesAgenda": "Preferenze agenda",
     "profilePic": "Immagine di profilo",
     "recentlyViewed": "Visto di recente",
     "refresh": "Aggiorna",
     "remaining": "{{value}} rimanenti",
     "remove": "Rimuovi",
+    "removeAll": "Rimuovi tutti",
+    "removeAllDownloaded": "Rimuovi tutti i file scaricati",
+    "downloadAttachment": "Scarica allegato",
+    "removeAttachment": "Rimuovi allegato",
     "reset": "Reimposta",
     "retract": "Ritira",
     "roleCollaborator": "Collaboratore",
     "roleHolder": "Titolare",
     "search": "Cerca",
     "seat": "Postazione",
+    "select": "Seleziona",
     "selectAnOption": "Seleziona una delle opzioni",
     "selectColor": "Seleziona il colore",
+    "series": "Serie",
     "services": "Servizi",
     "show": "Mostra",
     "shortUsername": "Matr.",
@@ -353,28 +398,50 @@
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
-    "subtitle_plural": "{{count}} file"
+    "subtitle_plural": "{{count}} file",
+    "fileCount": "{{count}} file",
+    "fileCount_plural": "{{count}} file",
+    "folderCount": "{{count}} cartella",
+    "folderCount_plural": "{{count}} cartelle",
+    "empty": "Vuota",
+    "unavailableDuringDownload": "cartella non accessibile durante il download"
   },
   "courseDirectoryScreen": {
+    "selectFiles": "Seleziona file",
     "clearSearch": "Cancella ricerca",
     "emptyRootFolder": "Non ci sono file",
     "emptyFolder": "La cartella è vuota",
     "noResult": "Nessun risultato trovato",
     "navigateRecentFiles": "Sfoglia file recenti",
-    "search": "Cerca"
+    "search": "Cerca",
+    "downloadSelected": "Scarica file selezionati",
+    "stopDownload": "Ferma download"
   },
   "courseFileListItem": {
     "openFileError": "Impossibile aprire il file.",
     "reDownloadFile": "Ri-scarica file",
-    "fileSavedDocumentsPath": "File salvato nella cartella documenti",
-    "fileSaved": "File salvato in {{cachedFilePath}}"
+    "fileSavedPrefix": "File salvato in"
   },
   "courseFilesTab": {
     "browseFiles": "Esplora file",
     "empty": "Non ci sono file",
     "navigateFolders": "Sfoglia le cartelle",
     "recentSectionTitle": "File recenti",
-    "title": "Materiale"
+    "removeFilesTitle": "Rimuovi file",
+    "removeFileConfirmation": "Il file verrà rimosso localmente dal tuo dispositivo. Vuoi continuare?",
+    "removeFilesConfirmation": "I {{count}} file verranno rimossi localmente dal tuo dispositivo. Vuoi continuare?",
+    "title": "Materiale",
+    "updateDownloadedTitle": "Aggiorna file scaricati",
+    "updateDownloadedMessage": "{{count}} file selezionati sono già scaricati. Vuoi aggiornarli?",
+    "updateDownloadedInfoTitle": "Download",
+    "updateDownloadedInfoMessage": "1 file già scaricato verrà aggiornato e 1 nuovo file verrà scaricato.",
+    "updateDownloadedInfoMessageOnlyUpdate": "1 file già scaricato verrà aggiornato.",
+    "updateDownloadedInfoMessageOnlyUpdates": "{{downloadedCount}} file già scaricati verranno aggiornati.",
+    "updateDownloadedInfoMessageOneUpdate": "1 file già scaricato verrà aggiornato e {{newCount}} nuovi file verranno scaricati.",
+    "updateDownloadedInfoMessageOneDownload": "{{downloadedCount}} file già scaricati verranno aggiornati e 1 nuovo file verrà scaricato.",
+    "updateDownloadedInfoMessages": "{{downloadedCount}} file già scaricati verranno aggiornati e {{newCount}} nuovi file verranno scaricati.",
+    "downloadOnlyNew": "Solo nuovi",
+    "downloadAll": "Scarica tutti"
   },
   "courseGuideScreen": {
     "title": "Guida del corso"
@@ -452,7 +519,7 @@
     }
   },
   "courseHideEventScreen": {
-    "button": "Mostra in Agenda",
+    "button": "Mostra in agenda",
     "selectItems": "Seleziona tutti"
   },
   "courseIconPickerScreen": {
@@ -502,7 +569,9 @@
     "showInExtractsSubtitle": "In home screen e agenda"
   },
   "courseScreen": {
-    "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi."
+    "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi.",
+    "fileIntegrityCheckFailed": "Controllo integrità file fallito. Il file scaricato potrebbe essere corrotto.",
+    "fileNotFound": "Il file non è stato trovato sul dispositivo. Prova a riscaricarlo."
   },
   "courseVirtualClassroomScreen": {
     "liveCta": "Collegati alla diretta",
@@ -519,6 +588,8 @@
     "total": "Sono presenti {{ total }} questionari"
   },
   "createTicketScreen": {
+    "duplicateMessage": "Hai già creato un ticket simile.",
+    "duplicateTitle": "Ticket già esistente",
     "addFile": "Aggiungi file",
     "insert": "Inserimento ticket",
     "messageLabel": "Descrivi il tuo problema e, se vuoi, allega un file",
@@ -711,7 +782,9 @@
   "messageScreen": {
     "backTitle": "Archivio",
     "sender": "Mittente",
-    "title": "Messaggio"
+    "title": "Messaggio",
+    "viewProvisionalGrade": "Vai a valutazioni",
+    "viewProvisionalGradeDescription": "Controlla la tua valutazione provvisoria e prendi una decisione"
   },
   "messagesScreen": {
     "empty": "Non ci sono messaggi",
@@ -751,14 +824,15 @@
     },
     "auth": {
       "prompt": "Nuova richiesta di accesso con autenticazione multi-fattore. Vuoi proseguire?",
-      "unlockFailure": "Operazione annullata. Fai pull-down sulla pagina del profilo personale per riprovare.",
+      "unlockDismissed": "Operazione annullata: per autorizzare o negare l'accesso è necessario prima sbloccare PoliTO Authenticator. Fai pull-down sulla pagina del profilo personale per riprovare.",
       "note": "Non hai richiesto questo accesso? Potrebbe trattarsi di un tentativo sospetto. Cambia subito la password da <b>idp.polito.it</b>.",
       "allow": "Si, autorizza",
       "denyAccess": "Nega accesso",
       "expiration": "Tempo rimanente per autorizzare: {{time}}",
       "expired": "Richiesta di accesso scaduta",
       "rejected": "Richiesta di accesso respinta",
-      "accepted": "Richiesta di accesso accettata"
+      "accepted": "Richiesta di accesso accettata",
+      "failed": "Si è verificato un errore durante l'elaborazione della firma"
     },
     "settings": {
       "information": "Informazioni",
@@ -773,6 +847,7 @@
       "none": "Nessuno",
       "description": "<b>PoliTO Authenticator</b> è un metodo di autenticazione a due fattori che consente un accesso sicuro e rapido ai servizi del Politecnico inviando una notifica al tuo dispositivo per conferma.<br/><br/>Si basa sulla crittografia asimmetrica ed è <b>installato per dispositivo</b>: ogni installazione è indipendente e legata a un singolo dispositivo.<br/><br/>Le seguenti azioni disabiliteranno questa installazione di PoliTO Authenticator per questo dispositivo:<br/>- Disconnessione<br/>- Disinstallazione dell'app<br/>- Cancellazione dei dati dell'app tramite le impostazioni del dispositivo<br/><br/>Puoi sempre gestire tutti i metodi di autenticazione multi-fattore visitando<br/><b>idp.polito.it > Gestione MFA</b>",
       "notAccessible": "La chiave crittografica per <b>PoliTO Authenticator</b> non è accessibile su questo dispositivo. Questo può accadere se si sono verificati errori durante l'attivazione o se le credenziali del dispositivo (PIN/password/riconoscimento biometrico) sono state modificate.",
+      "notAccessibleAlert": "La chiave crittografica per PoliTO Authenticator non è accessibile su questo dispositivo. Fare riferimento alle impostazioni per ulteriori dettagli e correggere il problema.",
       "lockedDescription": "PoliTO Authenticator su questo dispositivo è stato bloccato per ragioni di sicurezza. Contattare al più presto il supporto tecnico mediante i riferimenti presenti su idp.polito.it/help",
       "locked": "Bloccato",
       "removed": "PoliTO Authenticator su questo dispositivo è stato rimosso dal pannello di Gestione MFA. È possibile reimpostarlo entrando nella sezione dedicata presente su questa schermata.",
@@ -808,27 +883,6 @@
     "emptyState": "Nessun corso disponibile",
     "master": "Laurea magistrale",
     "title": "Offerta formativa"
-  },
-  "onboardingScreen": {
-    "steps": {
-      "0": {
-        "content": "Puoi personalizzare ciò che vedi e rendere più organizzata la tua agenda scegliendo i corsi da visualizzare, i colori e le icone.",
-        "title": "Cosa è cambiato?"
-      },
-      "1": {
-        "content": "Ti orienterai con più facilità all'interno del Politecnico grazie al nuovo sistema di mappe e filtri per trovare ciò che cerchi.",
-        "title": "Cosa è cambiato?"
-      },
-      "2": {
-        "content": "I tuoi commenti ci aiutano a migliorare: puoi mandare feedback sulla nuova app, aprendo un ticket che arriverà direttamente al team di sviluppo.",
-        "title": "Come dare un feedback?"
-      },
-      "3": {
-        "content": "Per avere accesso alla tua email Polito segui la guida “Configura la tua email” nella nuova sezione “Guide”.",
-        "title": "Come configurare l’email?"
-      }
-    },
-    "title": "Novità"
   },
   "personScreen": {
     "call": "Chiama",
@@ -926,7 +980,19 @@
     "openThemeMenu": "Doppio click per aprire il menu di selezione tema",
     "title": "Impostazioni",
     "securityTitle": "Sicurezza",
-    "authenticatorTitle": "PoliTO Authenticator"
+    "authenticatorTitle": "PoliTO Authenticator",
+    "storageTitle": "Archiviazione file",
+    "storageInternal": "Interno app",
+    "storageCustom": "Percorso personalizzato",
+    "storageInternalDescription": "I file vengono salvati nella cartella privata dell'app",
+    "storageCustomDescription": "I file vengono copiati anche nella cartella scelta",
+    "storageChangeConfirmMessage": "Tutti i file dei corsi scaricati in locale verranno rimossi. Dovrai riscaricarli se confermi.",
+    "storageChangeConfirmTitle": "Cambiare posizione di archiviazione?",
+    "storageChanging": "Cambio storage in corso...",
+    "storageCustomSet": "Cartella personalizzata impostata",
+    "storageInternalSet": "Storage interno impostato",
+    "storageMovingFiles": "Spostamento file in corso...",
+    "storageMovedFiles": "{{count}} file spostati"
   },
   "ssoScreen": {
     "ssoButton": "Entra con Single-Sign-On",
@@ -978,6 +1044,10 @@
     "pickFileTitle": "Puoi includere un allegato per messaggio",
     "reply": "Rispondi",
     "sendError": "C'è stato un'errore nell'invio del messaggio. Riprova.",
+    "virtualOperator": "OPERATORE VIRTUALE",
+    "feedbackTitle": "Hai parlato con un operatore virtuale",
+    "feedbackDescription": "Questo nuovo servizio nasce per darti un supporto più veloce ed efficace. Se hai bisogno di ulteriore assistenza, il nostro team ti risponderà al più presto!",
+    "feedbackQuestion": "La risposta ti soddisfa?",
     "ticketNumber": "Numero ticket",
     "title": "Ticket",
     "youCanReopenTheTicket": "Puoi riaprire il ticket in qualsiasi momento, inviando una risposta"

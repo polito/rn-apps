@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 
-import { ExamStatusEnum } from '@polito/api-client';
 import { useFeedbackContext } from '@polito/lib/core';
 import { CtaButton } from '@polito/lib/ui';
+import { ExamStatusEnum } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onlineManager } from '@tanstack/react-query';

@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { open } from 'react-native-file-viewer';
 
-import { TicketAttachment } from '@polito/api-client/models/TicketAttachment';
 import {
   type Theme,
   ThemeContext,
   darkTheme,
   useStylesheet,
 } from '@polito/lib/ui';
+import { TicketAttachment } from '@polito/student-api-client';
 
 import {
   useGetTicketAttachment,

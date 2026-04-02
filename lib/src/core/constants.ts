@@ -12,3 +12,10 @@ export const PUBLIC_APP_DIRECTORY_PATH = IS_IOS
   : Platform.Version > '29'
     ? ANDROID_DOCUMENT_DIRECTORY_PATH
     : ExternalDirectoryPath;
+export const MAX_CONCURRENT_DOWNLOADS = 3;
+
+// Navigator IDs
+export const AgendaNavigatorID = 'AgendaTabNavigator';
+export const FileNavigatorID = 'FileTabNavigator';
+export const TeachingNavigatorID = 'TeachingTabNavigator';
+export const UserNavigatorID = 'UserTabNavigator';

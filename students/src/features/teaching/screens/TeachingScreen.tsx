@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { ExamStatusEnum } from '@polito/api-client';
 import { useOfflineDisabled, usePreferencesContext } from '@polito/lib/core';
 import {
   ActivityIndicator,
@@ -24,6 +23,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { ExamStatusEnum } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';
@@ -58,6 +58,11 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
   const transcriptBadge = null;
+
+  const hasValidModules = (course: any) => {
+    if (!course.modules || course.modules.length === 0) return true;
+    return course.modules.some((module: any) => module.id !== null);
+  };
 
   const courses = useMemo(() => {
     if (!coursesQuery.data) return [];
@@ -125,7 +130,40 @@ export const TeachingScreen = ({ navigation }: Props) => {
             linkTo={{ screen: 'Courses' }}
             linkToMoreCount={
               coursesQuery.data
-                ? coursesQuery.data.length - courses.length
+                ? (() => {
+                    // Compute hidden items directly
+                    let hiddenCount = 0;
+
+                    coursesQuery.data.forEach(course => {
+                      if (
+                        !isCourseDetailed(course) ||
+                        !course.uniqueShortcode
+                      ) {
+                        hiddenCount += 1 + (course.modules?.length || 0);
+                        return;
+                      }
+
+                      // Corsi nascosti
+                      if (coursePreferences[course.uniqueShortcode]?.isHidden) {
+                        hiddenCount += 1 + (course.modules?.length || 0);
+                        return;
+                      }
+
+                      // Moduli nascosti nei corsi visibili
+                      if (course.modules) {
+                        course.modules.forEach((module, index) => {
+                          const moduleShortcode = `${course.shortcode}${index + 1}`;
+                          if (coursePreferences[moduleShortcode]?.isHidden) {
+                            hiddenCount += 1;
+                          }
+                        });
+                      }
+                    });
+
+                    const count = hiddenCount;
+
+                    return count > 0 ? count : undefined;
+                  })()
                 : undefined
             }
           />
@@ -140,7 +178,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 : t('coursesScreen.emptyState');
             })()}
           >
-            {courses.map(course => (
+            {courses.filter(hasValidModules).map(course => (
               <CourseListItem
                 key={course.shortcode + '' + course.id}
                 course={course}
@@ -325,6 +363,6 @@ const createStyles = ({ spacing }: Theme) =>
       alignItems: 'center',
     },
     graph: {
-      paddingHorizontal: spacing[12],
+      paddingHorizontal: spacing[4],
     },
   });

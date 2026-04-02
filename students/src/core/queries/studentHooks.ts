@@ -1,15 +1,15 @@
 import { useMemo } from 'react';
 
+import { pluckData, toOASTruncable } from '@polito/lib/core';
 import {
   ExamGrade,
   Message,
   MessageType,
+  ProvisionalGradeState,
   Student,
   StudentApi,
-} from '@polito/api-client';
-import { UpdateDevicePreferencesRequest } from '@polito/api-client/apis/StudentApi';
-import type { ProvisionalGradeState } from '@polito/api-client/models/ProvisionalGradeState';
-import { pluckData, toOASTruncable } from '@polito/lib/core';
+  UpdateDevicePreferencesRequest,
+} from '@polito/student-api-client';
 import * as Sentry from '@sentry/react-native';
 import {
   useMutation,
@@ -308,6 +308,19 @@ export const useMarkMessageAsRead = (invalidate: boolean = true) => {
   });
 };
 
+export const useDeleteMessage = () => {
+  const studentClient = useStudentClient();
+  const client = useQueryClient();
+
+  return useMutation({
+    mutationFn: (messageId: number) =>
+      studentClient.deleteMessage({ messageId }),
+    onSuccess() {
+      return client.invalidateQueries({ queryKey: MESSAGES_QUERY_KEY });
+    },
+  });
+};
+
 export const useGetGuides = () => {
   const studentClient = useStudentClient();
 
@@ -388,7 +401,7 @@ export const useGetUnreadEmails = () => {
 
   return useQuery({
     queryKey: UNREAD_MAIL_QUERY_KEY,
-    queryFn: () => studentClient.getUnreadEmailslNumber().then(pluckData),
+    queryFn: () => studentClient.getUnreadEmailsNumber().then(pluckData),
     refetchInterval: 5 * 60 * 1000, // 5 minutes
   });
 };

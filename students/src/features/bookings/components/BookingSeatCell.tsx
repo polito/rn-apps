@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, PressableProps, StyleSheet } from 'react-native';
 
-import { BookingSeatCell as BookingSeatCellType } from '@polito/api-client';
 import { useTheme } from '@polito/lib/ui';
+import { BookingSeatCell as BookingSeatCellType } from '@polito/student-api-client';
 
 type BookingSeatProps = PressableProps & {
   seat: BookingSeatCellType;

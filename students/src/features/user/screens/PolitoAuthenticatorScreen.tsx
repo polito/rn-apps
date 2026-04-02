@@ -1,10 +1,8 @@
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { type Theme, useStylesheet } from '@polito/lib/ui';
+import { type Theme, useHideTabs, useStylesheet } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-
-import { useHideTabs } from '~/core/hooks/useHideTabs';
 
 import { PolitoAuthenticatorLogo } from '../../../core/components/PolitoAuthenticatorLogo';
 import { MfaAuthScreen } from '../components/MfaAuthContent';

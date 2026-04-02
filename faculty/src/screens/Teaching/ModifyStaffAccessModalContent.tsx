@@ -1,9 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { CtaButton, Text, Theme, useStylesheet } from '@polito/lib/ui';
+import {
+  CtaButton,
+  ModalContent,
+  Text,
+  Theme,
+  useStylesheet,
+} from '@polito/lib/ui';
 
-import { ModalContent } from '../../core/components/ModalContent';
 import { Staff } from '../../core/contexts/CoursesContext';
 
 type Props = {

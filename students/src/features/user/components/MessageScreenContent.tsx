@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 
-import { Message } from '@polito/api-client';
 import { formatDateTime, linkUrls } from '@polito/lib/core';
 import {
   HtmlView,
@@ -13,6 +12,7 @@ import {
   type Theme,
   useStylesheet,
 } from '@polito/lib/ui';
+import { Message } from '@polito/student-api-client';
 
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 

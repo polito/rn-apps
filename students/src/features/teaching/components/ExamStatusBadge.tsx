@@ -7,9 +7,9 @@ import {
   faCircleXmark,
   faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
-import { ExamStatusEnum } from '@polito/api-client';
 import { usePreferencesContext } from '@polito/lib/core';
 import { Badge, lightTheme, useTheme } from '@polito/lib/ui';
+import { ExamStatusEnum } from '@polito/student-api-client';
 
 import { AppPreferences } from '~/core/types/preferences';
 
@@ -89,6 +89,9 @@ export const ExamStatusBadge = ({ exam, textOnly }: Props) => {
           ? undefined
           : statusIcon
       }
+      style={{
+        alignItems: 'center',
+      }}
     />
   );
 };

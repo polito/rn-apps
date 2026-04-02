@@ -11,7 +11,6 @@ import {
 import Barcode from 'react-native-barcode-svg';
 
 import { faCheckCircle, faLocation } from '@fortawesome/free-solid-svg-icons';
-import { Booking } from '@polito/api-client';
 import {
   APP_TIMEZONE,
   useFeedbackContext,
@@ -38,6 +37,7 @@ import {
   useTheme,
   useTitlesStyles,
 } from '@polito/lib/ui';
+import { Booking } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { inRange } from 'lodash';

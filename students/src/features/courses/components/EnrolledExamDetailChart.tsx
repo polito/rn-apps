@@ -2,9 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { BarChart, barDataItem } from 'react-native-gifted-charts';
 
-import type { CourseStatistics } from '@polito/api-client';
 import { Col, Text, useStylesheet, useTheme } from '@polito/lib/ui';
 import type { Theme } from '@polito/lib/ui';
+import type { CourseStatistics } from '@polito/student-api-client';
 
 import { emptyChartData, kChartAnimationDuration } from '../chartConstant.ts';
 import { LegendItem } from './LegendItem.tsx';

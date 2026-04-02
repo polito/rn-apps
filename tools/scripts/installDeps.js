@@ -2,7 +2,12 @@
 
 const fs = require('fs');
 const path = require('path');
-const { run, getWorkspaces, createCliError } = require('./utils');
+const {
+  run,
+  createCliError,
+  validateWorkspaces,
+  getWorkspaces,
+} = require('./utils');
 
 // Checks
 
@@ -46,31 +51,7 @@ if (!isAll) {
   if (targetWorkspaces.length === 0) {
     fail('Provide at least one workspace name after --workspaces flag.');
   }
-}
-
-const rootJsonPath = path.resolve(__dirname, '../../package.json');
-if (!fs.existsSync(rootJsonPath)) {
-  fail('package.json not found at root level.', false);
-}
-
-const existingWorkspaces = getWorkspaces();
-
-const allWorkspacesValid = targetWorkspaces.every(ws =>
-  existingWorkspaces.includes(ws),
-);
-
-if (!allWorkspacesValid) {
-  const invalidWorkspaces = targetWorkspaces.filter(
-    ws => !existingWorkspaces.includes(ws),
-  );
-  const invalidList = invalidWorkspaces.map(ws => `  - ${ws}`).join('\n');
-  const existingList = existingWorkspaces.map(ws => `  - ${ws}`).join('\n');
-
-  fail(
-    `The following workspaces do not exist:\n${invalidList}\n\n` +
-      `✅ Available workspaces:\n${existingList}`,
-    false,
-  );
+  validateWorkspaces(targetWorkspaces);
 }
 
 // Logic
@@ -88,7 +69,7 @@ const libDeps = {
 const needsLib = cleanDependencies.some(dep =>
   Object.keys(libDeps).includes(dep),
 );
-
+const existingWorkspaces = getWorkspaces();
 let list = isAll ? existingWorkspaces : targetWorkspaces;
 const wsSet = new Set(list);
 if (needsLib) wsSet.add('lib');

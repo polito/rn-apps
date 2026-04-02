@@ -8,13 +8,13 @@ import {
 } from 'react-native';
 
 import { faUser } from '@fortawesome/free-regular-svg-icons';
-import { PersonOverview } from '@polito/api-client/models';
 import {
   MAX_RECENT_SEARCHES,
   useOfflineDisabled,
   usePreferencesContext,
 } from '@polito/lib/core';
 import { Icon, ListItem, useStylesheet, useTheme } from '@polito/lib/ui';
+import { PersonOverview } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';

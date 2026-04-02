@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { ProvisionalGradeStateEnum } from '@polito/api-client/models/ProvisionalGrade';
 import {
   formatDate,
   formatDateWithTimeIfNotNull,
@@ -25,6 +24,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { ProvisionalGradeStateEnum } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences.ts';

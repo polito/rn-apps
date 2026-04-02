@@ -7,6 +7,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useApiContext } from '../contexts/ApiContext';
 import { useCheckForUpdate } from '../hooks/useCheckForUpdate';
 import { MigrationService } from '../migrations/MigrationService';
+import { DownloadsProvider } from '../providers/DownloadsProvider';
 import { AppPreferences } from '../types/preferences';
 import { GuestNavigator } from './GuestNavigator';
 import { NewVersionModal } from './NewVersionModal';
@@ -73,7 +74,9 @@ export const AppContent = () => {
         onModalHide={() => setVersionModalVisible(false)}
       />
       {isLogged && !preferences.loginUid ? (
-        <RootNavigator versionModalIsOpen={versionModalVisible} />
+        <DownloadsProvider>
+          <RootNavigator versionModalIsOpen={versionModalVisible} />
+        </DownloadsProvider>
       ) : (
         <GuestNavigator />
       )}

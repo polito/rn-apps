@@ -1,11 +1,11 @@
 import { API_BASE_PATH } from '@env';
+import { PlacesApiConfig } from '@polito/lib/features/places';
 import {
   BASE_PATH,
   Configuration,
   ConfigurationParameters,
-} from '@polito/api-client';
-import { DefaultConfig } from '@polito/api-client/runtime';
-import { PlacesApiConfig } from '@polito/lib/features/places';
+  DefaultConfig,
+} from '@polito/student-api-client';
 
 /**
  * Updates the global API configuration used by all clients

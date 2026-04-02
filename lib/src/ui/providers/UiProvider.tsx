@@ -2,6 +2,7 @@ import { PropsWithChildren, useEffect, useMemo } from 'react';
 import { Linking, useColorScheme } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import overrideColorScheme from 'react-native-override-color-scheme';
+import { PaperProvider } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LinkingOptions, ParamListBase } from '@react-navigation/native';
@@ -12,10 +13,16 @@ import { Settings } from 'luxon';
 import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
 import { useSplashContext } from '../../core/contexts/SplashContext';
 import { ThemeContext } from '../contexts/ThemeContext';
+import { useMaterialTheme } from '../hooks/useMaterialTheme';
 import { NavigationContainer } from '../navigation/NavigationContainer';
 import { fromUiTheme } from '../navigation/navigation-theme';
 import { darkTheme } from '../themes/dark';
 import { lightTheme } from '../themes/light';
+
+const PaperProviderWrapper = ({ children }: PropsWithChildren) => {
+  const materialTheme = useMaterialTheme();
+  return <PaperProvider theme={materialTheme}>{children}</PaperProvider>;
+};
 
 type UiProviderProps<T extends ParamListBase = ParamListBase> =
   PropsWithChildren<{
@@ -54,7 +61,7 @@ export const UiProvider = <T extends ParamListBase = ParamListBase>({
   }, [language]);
 
   useEffect(() => {
-    // Ottieni l'URL iniziale e naviga a `PlacesTab` con i parametri
+    // Get initial URL and navigate to PlacesTab with the params
     const GoToUrlOnMap = () => {
       Linking.getInitialURL().then(url => {
         if (url) {
@@ -70,7 +77,7 @@ export const UiProvider = <T extends ParamListBase = ParamListBase>({
     <ThemeContext.Provider value={uiTheme}>
       <SystemBars style="auto" />
       <NavigationContainer<T> linking={linking} theme={navigationTheme}>
-        {children}
+        <PaperProviderWrapper>{children}</PaperProviderWrapper>
       </NavigationContainer>
     </ThemeContext.Provider>
   );

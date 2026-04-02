@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ImageURISource, Platform, StyleSheet, View } from 'react-native';
 import { PERMISSIONS, request } from 'react-native-permissions';
 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
   Images,
   RasterLayer,
@@ -93,7 +94,11 @@ const MapDefaultContent = () => {
         tileSize={RASTER_TILE_SIZE}
         maxZoomLevel={MAX_ZOOM}
       >
-        <RasterLayer id="outdoor" aboveLayerID="background" style={{}} />
+        <RasterLayer
+          id="outdoor"
+          aboveLayerID="background"
+          style={{ rasterOpacity: 1 }}
+        />
       </RasterSource>
 
       {/* Indoor map */}
@@ -107,12 +112,21 @@ const MapDefaultContent = () => {
         minZoomLevel={INTERIORS_MIN_ZOOM}
         maxZoomLevel={MAX_ZOOM}
       >
-        <RasterLayer id="indoor" aboveLayerID="outdoor" style={{}} />
+        <RasterLayer
+          id="indoor"
+          aboveLayerID="outdoor"
+          style={{ rasterOpacity: 1 }}
+        />
       </RasterSource>
     </>
   );
 };
 
+type UnreadMessageModalProps = NativeStackNavigationProp<
+  PlacesStackParamList,
+  'MessagesModal',
+  undefined
+>;
 interface PlacesNavigatorProps {
   unreadMessagesModal: ComponentType<any>;
 }
@@ -205,7 +219,11 @@ export const PlacesNavigator = ({
         <Map.Screen
           name="MessagesModal"
           component={unreadMessagesModal}
-          options={({ navigation }) => ({
+          options={({
+            navigation,
+          }: {
+            navigation: UnreadMessageModalProps;
+          }) => ({
             headerTitle: t('messagesScreen.title'),
             headerLargeTitle: false,
             presentation: 'modal',

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Alert,
   Dimensions,
   ListRenderItemInfo,
   SafeAreaView,
@@ -10,7 +9,6 @@ import {
 } from 'react-native';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import { VirtualClassroom } from '@polito/api-client/models/VirtualClassroom';
 import {
   convertMachineDateToFormatDate,
   usePreferencesContext,
@@ -30,19 +28,20 @@ import {
   Swiper,
   useTheme,
 } from '@polito/lib/ui';
+import { VirtualClassroomRecording } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences.ts';
-
-import { DateTime, WeekdayNumbers } from 'luxon';
 
 import { EventDetails } from '../../../core/components/EventDetails.tsx';
 import { VideoPlayer } from '../../../core/components/VideoPlayer';
 import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { CourseIcon } from '../../courses/components/CourseIcon';
-import { isLiveVC, isRecordedVC } from '../../courses/utils/lectures';
+import { isRecordedVC } from '../../courses/utils/lectures';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
+import { useAgendaDialog } from '../hooks/useAgendaDialog';
+import { cleanupPastSingleEvents } from '../utils/hiddenEvents';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Lecture'>;
 
@@ -57,6 +56,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   );
   const { courses: coursesPrefs, updatePreference } =
     usePreferencesContext<AppPreferences>();
+  const agendaDialog = useAgendaDialog();
 
   const coursePrefs = useMemo(() => {
     if (!lecture?.uniqueShortcode) {
@@ -90,7 +90,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
   const renderItem = ({
     item,
     index,
-  }: ListRenderItemInfo<VirtualClassroom>) => {
+  }: ListRenderItemInfo<VirtualClassroomRecording>) => {
     return (
       <View
         style={{
@@ -110,7 +110,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
     );
   };
 
-  const [playingVC, setPlayingVC] = useState<VirtualClassroom[]>([]);
+  const [playingVC, setPlayingVC] = useState<VirtualClassroomRecording[]>([]);
 
   useEffect(() => {
     if (!associatedVirtualClassrooms || !virtualClassrooms) return;
@@ -121,40 +121,21 @@ export const LectureScreen = ({ route, navigation }: Props) => {
         .map(vc => {
           const apiVC = virtualClassrooms.find(vcs => vcs.id === vc.id);
 
-          return apiVC as VirtualClassroom;
+          return apiVC as VirtualClassroomRecording;
         })
         .filter(vc => vc && vc?.videoUrl),
     );
   }, [associatedVirtualClassrooms, currentIndex, virtualClassrooms]);
 
-  const hideEvent = () => {
-    Alert.alert(
-      t('lectureScreen.hideEventAlertTitle'),
-      t('lectureScreen.hideEventAlertMessage', {
-        title: lecture.title,
-        day: DateTime.now()
-          .set({ weekday: lecture.start.weekday as WeekdayNumbers })
-          .toFormat('cccc'),
-        fromTime: lecture.fromTime,
-        toTime: lecture.toTime,
-      }),
-      [
-        { text: t('common.cancel'), onPress: () => {} },
-        {
-          text: t('common.ok'),
-          onPress: () => {
-            changeEventVisibility();
-          },
-        },
-      ],
-      { cancelable: false },
-    );
-  };
-
   const changeEventVisibility = () => {
     if (!lecture.uniqueShortcode || !coursePrefs) {
       return;
     }
+
+    const cleanedSingleEvents = cleanupPastSingleEvents(
+      coursePrefs.singleItemsToHideInAgenda,
+    );
+
     updatePreference('courses', {
       ...coursesPrefs,
       [lecture?.uniqueShortcode]: {
@@ -168,9 +149,44 @@ export const LectureScreen = ({ route, navigation }: Props) => {
             room: lecture.place ? resolvePlaceId(lecture.place) : '',
           },
         ],
+        singleItemsToHideInAgenda: cleanedSingleEvents,
       },
     });
     navigation.pop();
+  };
+
+  const changeSingleEventVisibility = () => {
+    if (!lecture.uniqueShortcode || !coursePrefs) {
+      return;
+    }
+
+    const cleanedSingleEvents = cleanupPastSingleEvents(
+      coursePrefs.singleItemsToHideInAgenda,
+    );
+
+    updatePreference('courses', {
+      ...coursesPrefs,
+      [lecture?.uniqueShortcode]: {
+        ...coursePrefs,
+        singleItemsToHideInAgenda: [
+          ...cleanedSingleEvents,
+          {
+            start: lecture.fromTime,
+            end: lecture.toTime,
+            day: lecture.start.toString(),
+            room: lecture.place ? resolvePlaceId(lecture.place) : '',
+          },
+        ],
+      },
+    });
+    navigation.pop();
+  };
+
+  const hideEvent = () => {
+    agendaDialog.hideEvent(
+      () => changeSingleEventVisibility(),
+      () => changeEventVisibility(),
+    );
   };
 
   return (
@@ -186,9 +202,9 @@ export const LectureScreen = ({ route, navigation }: Props) => {
             playingVC[0] &&
             isRecordedVC(playingVC[0]) && (
               <VideoPlayer
-                source={{ uri: playingVC[0]?.videoUrl }}
+                source={{ uri: playingVC[0].videoUrl }}
                 toggleFullScreen={toggleFullScreen}
-                poster={playingVC[0]?.coverUrl ?? undefined}
+                poster={playingVC[0].coverUrl ?? undefined}
               />
             )}
           {playingVC && playingVC.length > 1 && (
@@ -208,11 +224,11 @@ export const LectureScreen = ({ route, navigation }: Props) => {
             </View>
           )}
 
-          {playingVC && isLiveVC(playingVC) && (
+          {/* playingVC && isLiveVC(playingVC[0]) && (
+          // TODO: handle live VC
             <View />
-            // TODO handle live VC
-            // <CtaButton accessibility={accessibility} title={t('courseVirtualClassroomScreen.liveCta')} action={Linking.openURL(lecture.)}/>
-          )}
+            <CtaButton title={t('courseVirtualClassroomScreen.liveCta')} action={Linking.openURL(lecture.)}/>
+          ) */}
           <Row justify="space-between" align="center">
             <EventDetails
               title={currentVideoTitle ?? lecture.title}

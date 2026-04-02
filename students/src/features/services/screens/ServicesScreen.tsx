@@ -49,13 +49,13 @@ export const ServicesScreen = () => {
     favoriteServices: favoriteServiceIds,
     emailGuideRead,
     updatePreference,
+    peopleSearched,
     accessibility,
   } = usePreferencesContext<AppPreferences>();
   const { getUnreadsCount } = useNotifications();
   const styles = useStylesheet(createStyles);
   const isOffline = useOfflineDisabled();
   const queryClient = useQueryClient();
-  const { peopleSearched } = usePreferencesContext<AppPreferences>();
   const unreadTickets = getUnreadsCount(['services', 'tickets']);
   const unreadEmailsQuery = useGetUnreadEmails();
   const [fontSize, setFontSize] = useState(Number(accessibility?.fontSize));
@@ -71,6 +71,7 @@ export const ServicesScreen = () => {
         queryFn: GetWebmailLink,
         staleTime: 55 * 1000, // 55 seconds
         gcTime: 55 * 1000, // 55 seconds
+        persister: undefined, // disable persister
       })
       .then(res => openInAppLink(res.url));
   }, [openInAppLink, queryClient]);

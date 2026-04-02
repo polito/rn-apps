@@ -8,4 +8,5 @@ export { resolvePlaceId } from './utils/resolvePlaceId';
 export {
   DefaultConfig as PlacesApiConfig,
   useGetSites,
+  useGetPlace,
 } from './queries/placesHooks';

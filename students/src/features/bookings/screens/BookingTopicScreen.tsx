@@ -14,7 +14,6 @@ import {
   faChevronRight,
   faChevronUp,
 } from '@fortawesome/free-solid-svg-icons';
-import { BookingSubtopic } from '@polito/api-client/models';
 import { sanitizeHtml } from '@polito/lib/core';
 import {
   Icon,
@@ -26,6 +25,7 @@ import {
   Text,
   useTheme,
 } from '@polito/lib/ui';
+import { BookingSubtopic } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetBookingTopics } from '../../../core/queries/bookingHooks';

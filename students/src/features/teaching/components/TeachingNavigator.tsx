@@ -1,23 +1,18 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
-import { ExamGrade } from '@polito/api-client';
+import { TeachingNavigatorID } from '@polito/lib/core';
 import {
   PlacesNavigator,
   type PlacesStackParamList,
 } from '@polito/lib/features/places';
-import {
-  HeaderLogoNoProps,
-  createHeaderCloseButton,
-  useTheme,
-  useTitlesStyles,
-} from '@polito/lib/ui';
+import { HeaderLogoNoProps, useTheme, useTitlesStyles } from '@polito/lib/ui';
+import { ExamGrade } from '@polito/student-api-client';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { UnreadMessagesModal } from '~/features/user/screens/UnreadMessagesModal';
 
-import { OnboardingModal } from '../../../core/screens/OnboardingModal';
 import {
   SharedScreens,
   SharedScreensParamList,
@@ -51,12 +46,9 @@ export type TeachingStackParamList = CourseSharedScreensParamList &
     Transcript: undefined;
     ProvisionalGrade: { id: number };
     RecordedGrade: { grade: ExamGrade };
-    OnboardingModal: undefined;
     PlacesTeachingStack: NavigatorScreenParams<PlacesStackParamList>;
     CpdSurveys: { categoryId: string; typeId: string; typeName: string };
   };
-
-export const TeachingNavigatorID = 'TeachingTabNavigator';
 
 const Stack = createNativeStackNavigator<
   TeachingStackParamList,
@@ -169,17 +161,6 @@ export const TeachingNavigator = () => {
           headerLargeTitle: false,
           headerBackButtonDisplayMode: 'minimal',
         }}
-      />
-      <Stack.Screen
-        name="OnboardingModal"
-        component={OnboardingModal}
-        options={({ navigation }) => ({
-          headerTitle: t('onboardingScreen.title'),
-          headerLargeTitle: false,
-          presentation: 'modal',
-          headerLeft: HeaderLogoNoProps,
-          headerRight: createHeaderCloseButton(navigation),
-        })}
       />
       <Stack.Screen
         name="PlacesTeachingStack"

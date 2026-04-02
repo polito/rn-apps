@@ -3,6 +3,8 @@ PODS:
   - BVLinearGradient (2.8.3):
     - React-Core
   - DoubleConversion (1.1.6)
+  - EXConstants (17.1.8):
+    - ExpoModulesCore
   - Expo (53.0.25):
     - DoubleConversion
     - ExpoModulesCore
@@ -30,6 +32,10 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - ExpoAsset (11.1.7):
+    - ExpoModulesCore
+  - ExpoFileSystem (18.1.11):
+    - ExpoModulesCore
   - ExpoModulesCore (2.5.0):
     - DoubleConversion
     - glog
@@ -55,6 +61,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - ExpoSQLite (15.2.14):
+    - ExpoModulesCore
   - ExpoWebBrowser (14.2.0):
     - ExpoModulesCore
   - fast_float (6.1.4)
@@ -1721,6 +1729,8 @@ PODS:
     - React-Core
   - react-native-render-html (6.3.4):
     - React-Core
+  - react-native-saf-x (2.2.3):
+    - React-Core
   - react-native-safe-area-context (5.6.2):
     - DoubleConversion
     - glog
@@ -1796,7 +1806,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-video (6.19.0):
+  - react-native-video (6.19.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1811,7 +1821,7 @@ PODS:
     - React-hermes
     - React-ImageManager
     - React-jsi
-    - react-native-video/Video (= 6.19.0)
+    - react-native-video/Video (= 6.19.1)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-renderercss
@@ -1821,7 +1831,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-video/Fabric (6.19.0):
+  - react-native-video/Fabric (6.19.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1845,7 +1855,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-video/Video (6.19.0):
+  - react-native-video/Video (6.19.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2609,7 +2619,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (4.18.0):
+  - RNScreens (4.13.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2633,9 +2643,9 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNScreens/common (= 4.18.0)
+    - RNScreens/common (= 4.13.1)
     - Yoga
-  - RNScreens/common (4.18.0):
+  - RNScreens/common (4.13.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2755,8 +2765,12 @@ DEPENDENCIES:
   - boost (from `../../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - BVLinearGradient (from `../../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `../../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
+  - EXConstants (from `../../node_modules/expo-constants/ios`)
   - Expo (from `../../node_modules/expo`)
+  - ExpoAsset (from `../../node_modules/expo-asset/ios`)
+  - ExpoFileSystem (from `../../node_modules/expo-file-system/ios`)
   - ExpoModulesCore (from `../../node_modules/expo-modules-core`)
+  - ExpoSQLite (from `../../node_modules/expo-sqlite/ios`)
   - ExpoWebBrowser (from `../../node_modules/expo-web-browser/ios`)
   - fast_float (from `../../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
   - FBLazyVector (from `../../node_modules/react-native/Libraries/FBLazyVector`)
@@ -2814,6 +2828,7 @@ DEPENDENCIES:
   - react-native-pager-view (from `../../node_modules/react-native-pager-view`)
   - react-native-pdf-light (from `../../node_modules/react-native-pdf-light`)
   - react-native-render-html (from `../../node_modules/react-native-render-html`)
+  - react-native-saf-x (from `../../node_modules/react-native-saf-x`)
   - react-native-safe-area-context (from `../../node_modules/react-native-safe-area-context`)
   - react-native-video (from `../../node_modules/react-native-video`)
   - React-NativeModulesApple (from `../../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -2905,10 +2920,18 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/react-native-linear-gradient"
   DoubleConversion:
     :podspec: "../../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
+  EXConstants:
+    :path: "../../node_modules/expo-constants/ios"
   Expo:
     :path: "../../node_modules/expo"
+  ExpoAsset:
+    :path: "../../node_modules/expo-asset/ios"
+  ExpoFileSystem:
+    :path: "../../node_modules/expo-file-system/ios"
   ExpoModulesCore:
     :path: "../../node_modules/expo-modules-core"
+  ExpoSQLite:
+    :path: "../../node_modules/expo-sqlite/ios"
   ExpoWebBrowser:
     :path: "../../node_modules/expo-web-browser/ios"
   fast_float:
@@ -3012,6 +3035,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/react-native-pdf-light"
   react-native-render-html:
     :path: "../../node_modules/react-native-render-html"
+  react-native-saf-x:
+    :path: "../../node_modules/react-native-saf-x"
   react-native-safe-area-context:
     :path: "../../node_modules/react-native-safe-area-context"
   react-native-video:
@@ -3123,8 +3148,12 @@ SPEC CHECKSUMS:
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   BVLinearGradient: cb006ba232a1f3e4f341bb62c42d1098c284da70
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
+  EXConstants: d3d551cb154718f5161c4247304e96aa59f6cca7
   Expo: a9aaba7e05fb1445c5605b2b1be1904efa2aaaff
+  ExpoAsset: ef06e880126c375f580d4923fdd1cdf4ee6ee7d6
+  ExpoFileSystem: 7f92f7be2f5c5ed40a7c9efc8fa30821181d9d63
   ExpoModulesCore: 00a1b5c73248465bd0b93f59f8538c4573dac579
+  ExpoSQLite: 14c1c8aa6cf5b30b33759f14307b4eb84e806277
   ExpoWebBrowser: dc39a88485f007e61a3dff05d6a75f22ab4a2e92
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
   FBLazyVector: 07309209b7b914451b8f822544a18e2a0a85afff
@@ -3195,8 +3224,9 @@ SPEC CHECKSUMS:
   react-native-pager-view: f79b095ad2f207028f17626dd7aaf8411c42accc
   react-native-pdf-light: 53139b084304650c3495dd8765e43d363d30bfce
   react-native-render-html: 5afc4751f1a98621b3009432ef84c47019dcb2bd
+  react-native-saf-x: 684113757246eb8f86d2bae21d965652f78f8eeb
   react-native-safe-area-context: 0b8555c40461feb7198e999912a3446602e7c601
-  react-native-video: e462d6a29232133bb87f3ec6495880f6ef41bc0f
+  react-native-video: d2dec50e56e6c636334d5e2f629cad6b4ffe5925
   React-NativeModulesApple: d94850b316446b0c39a82eb278d6efaa1a634055
   React-oscompat: 56b4766e96b06843a3af49a6763ef40992e720aa
   React-perflogger: 8fe9ec5f9ddbab1b8906c1aec159aa946e0ba041
@@ -3244,7 +3274,7 @@ SPEC CHECKSUMS:
   rnmapbox-maps: f7eeb3af74b6bf5ba93955ebfc89e296e1798fdb
   RNPermissions: 4a89efc466a965c2f6db34a55cabc2b67eb01599
   RNReanimated: 20103253618713069eeaf4511633f1b25c75650c
-  RNScreens: f38464ec1e83bda5820c3b05ccf4908e3841c5cc
+  RNScreens: 7e56b051227a1a11c3068849d1a9a5dd457537df
   RNSentry: 42fdbb9d8576a23cbb3f4533a7d6f1bee75c2c46
   RNSVG: 88e0593581542e88fa1acca15e36c9bd00acdce3
   SDWebImage: d0184764be51240d49c761c37f53dd017e1ccaaf

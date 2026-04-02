@@ -4,7 +4,6 @@ import { Platform, StyleSheet, View } from 'react-native';
 
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
-import { Booking } from '@polito/api-client';
 import {
   APP_TIMEZONE,
   SCREEN_WIDTH,
@@ -20,6 +19,7 @@ import {
   faSeat,
   useStylesheet,
 } from '@polito/lib/ui';
+import { Booking } from '@polito/student-api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';

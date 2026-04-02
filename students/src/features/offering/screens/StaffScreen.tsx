@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
 import { SafeAreaView, ScrollView } from 'react-native';
 
-import { OfferingCourseStaff } from '@polito/api-client/models';
-import { Person } from '@polito/api-client/models/Person';
 import { OverviewList, Section } from '@polito/lib/ui';
+import { OfferingCourseStaff, Person } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetPersons } from '../../../core/queries/peopleHooks';

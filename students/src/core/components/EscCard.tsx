@@ -13,8 +13,8 @@ import Svg, {
   Text,
 } from 'react-native-svg';
 
-import { EuropeanStudentCardDetailsStatusEnum } from '@polito/api-client';
 import { BottomModal, useBottomModal } from '@polito/lib/ui';
+import { EuropeanStudentCardDetailsStatusEnum } from '@polito/student-api-client';
 
 import { EscInfoBottomModal } from '../../features/user/components/EscInfoBottomModal.tsx';
 import { UserQrModal } from '../../features/user/components/UserQrModal.tsx';

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -9,7 +9,6 @@ import {
   View,
   useColorScheme,
 } from 'react-native';
-import { stat, unlink } from 'react-native-fs';
 
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -17,12 +16,12 @@ import {
   faCalendarDay,
   faCircleExclamation,
   faCircleHalfStroke,
+  faFolderOpen,
   faFont,
   faShieldHalved,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   PreferencesContextBase,
-  formatFileSize,
   useFeedbackContext,
   useOfflineDisabled,
   usePreferencesContext,
@@ -45,7 +44,10 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { useFocusEffect } from '@react-navigation/native';
 
+import { useDownloadsContext } from '~/core/contexts/DownloadsContext';
+import { getFileDatabase } from '~/core/database/FileDatabase';
 import { useCheckMfa } from '~/core/queries/authHooks';
 import { AppPreferences } from '~/core/types/preferences';
 import { hasPrivateKeyMFA, resetPrivateKeyMFA } from '~/utils/keychain';
@@ -56,33 +58,49 @@ import { Settings } from 'luxon';
 import { version } from '../../../../package.json';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
-import { useCoursesFilesCachePath } from '../../courses/hooks/useCourseFilesCachePath';
+import { formatFileSize } from '../../../utils/files';
 
 const CleanCacheListItem = () => {
   const { t } = useTranslation();
 
   const { setFeedback } = useFeedbackContext();
-
   const { fontSizes } = useTheme();
-  const filesCache = useCoursesFilesCachePath();
+  const {
+    getCoursesCachePath,
+    removeFileFromStorage,
+    deleteLocalPath,
+    cacheSizeVersion,
+    refreshCacheVersion,
+    isAnyDownloadInProgress,
+  } = useDownloadsContext();
+  const filesCache = getCoursesCachePath();
   const [cacheSize, setCacheSize] = useState<number>();
   const confirm = useConfirmationDialog({
     title: t('common.areYouSure?'),
     message: t('settingsScreen.cleanCacheConfirmMessage'),
   });
-  const refreshSize = () => {
-    if (filesCache) {
-      stat(filesCache)
-        .then(({ size }) => {
-          setCacheSize(size);
-        })
-        .catch(() => {
-          setCacheSize(0);
-        });
-    }
-  };
+  const fileDatabaseRef = useRef(getFileDatabase());
 
-  useEffect(refreshSize, [filesCache]);
+  const refreshSize = useCallback(() => {
+    fileDatabaseRef.current
+      .getTotalSize()
+      .then(size => {
+        setCacheSize(size);
+      })
+      .catch(() => {
+        setCacheSize(undefined);
+      });
+  }, []);
+
+  useEffect(() => {
+    refreshSize();
+  }, [cacheSizeVersion, refreshSize]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshSize();
+    }, [refreshSize]),
+  );
   return (
     <ListItem
       isAction
@@ -91,16 +109,28 @@ const CleanCacheListItem = () => {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
       })}
       accessibilityRole="button"
-      disabled={cacheSize === 0}
+      disabled={
+        (cacheSize !== undefined && cacheSize === 0) || isAnyDownloadInProgress
+      }
       leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
       onPress={async () => {
         if (filesCache && (await confirm())) {
-          unlink(filesCache).then(() => {
+          try {
+            const allFiles = await fileDatabaseRef.current.getAllFiles();
+            await Promise.all(
+              allFiles.map(f => removeFileFromStorage(f.path).catch(() => {})),
+            );
+            await fileDatabaseRef.current.deleteAllFiles();
+            await deleteLocalPath(filesCache).catch(() => {});
+            refreshCacheVersion();
             setFeedback({
               text: t('coursePreferencesScreen.cleanCacheFeedback'),
+              isPersistent: false,
             });
             refreshSize();
-          });
+          } catch {
+            setFeedback({ text: t('common.error'), isPersistent: false });
+          }
         }
       }}
     />
@@ -134,7 +164,8 @@ const ThemeIcon = () => {
 
 const VisualizationListItem = () => {
   const { t } = useTranslation();
-  const { colorScheme, updatePreference } = usePreferencesContext();
+  const { colorScheme, updatePreference } =
+    usePreferencesContext<AppPreferences>();
   const settingsColorScheme = useColorScheme();
 
   const colorSchema = {
@@ -310,6 +341,154 @@ const Notifications = () => {
   );
 };
 
+const StorageLocationListItem = () => {
+  const { t } = useTranslation();
+  const { fontSizes } = useTheme();
+  const {
+    fileStorageLocation,
+    customStoragePath,
+    customStorageDisplayPath,
+    updatePreference,
+  } = usePreferencesContext<AppPreferences>();
+  const { setFeedback } = useFeedbackContext();
+  const { pickStorageFolder, removeFileFromStorage } = useDownloadsContext();
+  const [isMoving, setIsMoving] = useState(false);
+  const currentLocation =
+    fileStorageLocation === 'custom' ? 'custom' : 'internal';
+  const confirmStorageChange = useConfirmationDialog({
+    title: t('settingsScreen.storageChangeConfirmTitle'),
+    message: t('settingsScreen.storageChangeConfirmMessage'),
+  });
+
+  const choices = useMemo(
+    () => [
+      { id: 'internal', title: t('settingsScreen.storageInternal') },
+      { id: 'custom', title: t('settingsScreen.storageCustom') },
+    ],
+    [t],
+  );
+
+  const handlePickDirectory = useCallback(async () => {
+    if (!(await confirmStorageChange())) return;
+    try {
+      const result = await pickStorageFolder();
+
+      setIsMoving(true);
+      setFeedback({ text: t('settingsScreen.storageChanging') });
+
+      try {
+        const fileDatabase = getFileDatabase();
+        const allFiles = await fileDatabase.getAllFiles();
+        await Promise.all(
+          allFiles.map(f => removeFileFromStorage(f.path).catch(() => {})),
+        );
+        await fileDatabase.deleteAllFiles();
+      } catch (deleteError) {
+        console.error('Error removing files before switch:', deleteError);
+      }
+
+      updatePreference('customStoragePath', result.uri);
+      updatePreference('customStorageDisplayPath', result.displayPath);
+      updatePreference('fileStorageLocation', 'custom');
+      setFeedback({ text: t('settingsScreen.storageCustomSet') });
+    } catch (error: any) {
+      if (error?.code !== 'CANCELLED') {
+        console.error('Error picking directory:', error);
+        setFeedback({ text: t('common.error'), isError: true });
+      }
+    } finally {
+      setIsMoving(false);
+    }
+  }, [
+    confirmStorageChange,
+    updatePreference,
+    setFeedback,
+    t,
+    pickStorageFolder,
+    removeFileFromStorage,
+  ]);
+
+  const handleSwitchToInternal = useCallback(async () => {
+    if (!customStoragePath) {
+      updatePreference('fileStorageLocation', 'internal');
+      return;
+    }
+    if (!(await confirmStorageChange())) return;
+
+    setIsMoving(true);
+    setFeedback({ text: t('settingsScreen.storageChanging') });
+
+    try {
+      const fileDatabase = getFileDatabase();
+      const allFiles = await fileDatabase.getAllFiles();
+      await Promise.all(
+        allFiles.map(f => removeFileFromStorage(f.path).catch(() => {})),
+      );
+      await fileDatabase.deleteAllFiles();
+    } catch (deleteError) {
+      console.error('Error removing files before switch:', deleteError);
+    } finally {
+      setIsMoving(false);
+    }
+
+    updatePreference('fileStorageLocation', 'internal');
+    setFeedback({ text: t('settingsScreen.storageInternalSet') });
+  }, [
+    customStoragePath,
+    confirmStorageChange,
+    updatePreference,
+    setFeedback,
+    t,
+    removeFileFromStorage,
+  ]);
+
+  const handleChange = useCallback(
+    async (newLocation: string) => {
+      if (newLocation === currentLocation || isMoving) return;
+      if (newLocation === 'custom') {
+        await handlePickDirectory();
+      } else {
+        await handleSwitchToInternal();
+      }
+    },
+    [currentLocation, isMoving, handlePickDirectory, handleSwitchToInternal],
+  );
+
+  const subtitle = useMemo(() => {
+    if (currentLocation === 'custom' && customStorageDisplayPath) {
+      return customStorageDisplayPath;
+    }
+    return currentLocation === 'custom'
+      ? t('settingsScreen.storageCustomDescription')
+      : t('settingsScreen.storageInternalDescription');
+  }, [currentLocation, customStorageDisplayPath, t]);
+
+  return (
+    <StatefulMenuView
+      actions={choices.map(c => ({
+        id: c.id,
+        title: c.title,
+        state: c.id === currentLocation ? 'on' : undefined,
+      }))}
+      onPressAction={({ nativeEvent: { event } }) => {
+        handleChange(event);
+      }}
+    >
+      <ListItem
+        isAction
+        disabled={isMoving}
+        title={
+          currentLocation === 'custom'
+            ? t('settingsScreen.storageCustom')
+            : t('settingsScreen.storageInternal')
+        }
+        subtitle={subtitle}
+        leadingItem={<Icon icon={faFolderOpen} size={fontSizes['2xl']} />}
+      />
+    </StatefulMenuView>
+  );
+};
+
 export const SettingsScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
@@ -443,6 +622,14 @@ export const SettingsScreen = () => {
               />
             </OverviewList>
           </Section>
+          {Platform.OS === 'android' && (
+            <Section>
+              <SectionHeader title={t('settingsScreen.storageTitle')} />
+              <OverviewList indented>
+                <StorageLocationListItem />
+              </OverviewList>
+            </Section>
+          )}
           <Section>
             <SectionHeader title={t('common.cache')} />
             <OverviewList indented>

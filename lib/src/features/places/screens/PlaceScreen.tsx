@@ -7,10 +7,15 @@ import {
   faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { ResponseError } from '@polito/api-client/runtime';
+import { ResponseError } from '@polito/student-api-client';
 import { useHeaderHeight } from '@react-navigation/elements';
-import { CameraBounds, CameraPadding } from '@rnmapbox/maps';
-import { FillLayer, LineLayer, ShapeSource } from '@rnmapbox/maps';
+import {
+  CameraBounds,
+  CameraPadding,
+  FillLayer,
+  LineLayer,
+  ShapeSource,
+} from '@rnmapbox/maps';
 
 import { Polygon } from 'geojson';
 

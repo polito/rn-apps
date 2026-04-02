@@ -90,10 +90,32 @@ function getWorkspaces() {
   return rootJson.workspaces || [];
 }
 
+function validateWorkspaces(targetWorkspaces) {
+  if (targetWorkspaces.length === 0) return;
+  const existingWorkspaces = getWorkspaces();
+  const fail = createCliError();
+
+  const invalidWorkspaces = targetWorkspaces.filter(
+    ws => !existingWorkspaces.includes(ws),
+  );
+
+  if (invalidWorkspaces.length > 0) {
+    const invalidList = invalidWorkspaces.map(ws => `  - ${ws}`).join('\n');
+    const existingList = existingWorkspaces.map(ws => `  - ${ws}`).join('\n');
+
+    fail(
+      `❌ The following workspaces do not exist:\n${invalidList}\n\n` +
+        `✅ Available workspaces:\n${existingList}`,
+      false,
+    );
+  }
+}
+
 module.exports = {
   run,
   getWorkspaces,
   maxVersionGreater,
+  validateWorkspaces,
   getPackageJsonData,
   getPackageLockData,
   createCliError,

@@ -1,10 +1,10 @@
+import { pluckData } from '@polito/lib/core';
 import {
   Degree as ApiDegree,
   CourseStatistics,
+  GetCourseStatisticsRequest,
   OfferingApi,
-} from '@polito/api-client';
-import { GetCourseStatisticsRequest } from '@polito/api-client/apis/OfferingApi';
-import { pluckData } from '@polito/lib/core';
+} from '@polito/student-api-client';
 import { MenuAction } from '@react-native-menu/menu';
 import { useQuery } from '@tanstack/react-query';
 

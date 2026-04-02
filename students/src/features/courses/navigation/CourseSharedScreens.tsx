@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
+import { Platform } from 'react-native';
 
-import { useTheme } from '@polito/lib/ui';
+import { createHeaderCloseButton, useTheme } from '@polito/lib/ui';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -9,6 +10,7 @@ import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssig
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
 import { CourseColorPickerScreen } from '../screens/CourseColorPickerScreen';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
+import { CourseFileMultiSelectScreen } from '../screens/CourseFileMultiSelectScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
 import { CourseHideEventScreen } from '../screens/CourseHideEventScreen';
 import { CourseIconPickerScreen } from '../screens/CourseIconPickerScreen';
@@ -20,7 +22,12 @@ import { Assignment } from '../types/Assignment';
 import { CourseNavigator } from './CourseNavigator';
 
 export interface CourseSharedScreensParamList extends ParamListBase {
-  Course: { id: number; animated?: boolean };
+  Course: {
+    id: number;
+    animated?: boolean;
+    title?: string;
+    uniqueShortcode?: string;
+  };
   Notice: { noticeId: number; courseId: number };
   CoursePreferences: { courseId: number; uniqueShortcode: string };
   CourseGuide: { courseId: number };
@@ -28,6 +35,7 @@ export interface CourseSharedScreensParamList extends ParamListBase {
     courseId: number;
     directoryId?: string;
     directoryName?: string;
+    skipInitialDownloadCheck?: boolean;
   };
   CourseVideolecture: {
     courseId: number;
@@ -45,6 +53,13 @@ export interface CourseSharedScreensParamList extends ParamListBase {
   CourseIconPicker: { courseId: number; uniqueShortcode: string };
   CourseColorPicker: { courseId: number; uniqueShortcode: string };
   CourseHideEvent: { courseId: number; uniqueShortcode: string };
+  CourseFileMultiSelect: {
+    courseId: number;
+    mode: 'directory' | 'recent';
+    directoryId?: string;
+    directoryName?: string;
+    initialSelectedIds?: string[];
+  };
 }
 
 const Stack = createNativeStackNavigator<CourseSharedScreensParamList>();
@@ -197,6 +212,22 @@ export const CourseSharedScreens = () => {
           title: t('courseColorPickerScreen.title'),
           headerLargeTitle: false,
         }}
+      />
+      <Stack.Screen
+        name="CourseFileMultiSelect"
+        component={CourseFileMultiSelectScreen}
+        options={({ navigation }) => ({
+          presentation: 'modal',
+          headerShown: Platform.OS === 'android' ? true : false,
+          headerLargeTitle: false,
+          headerTransparent: false,
+          title: t('courseDirectoryScreen.selectFiles'),
+          headerLeft: () => null,
+          headerRight:
+            Platform.OS === 'android'
+              ? () => null
+              : createHeaderCloseButton(navigation),
+        })}
       />
     </>
   );

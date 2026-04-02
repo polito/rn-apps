@@ -1,4 +1,14 @@
 {
   "name": "faculty",
-  "displayName": "faculty"
+  "displayName": "faculty",
+  "plugins": [
+    [
+      "@sentry/react-native/expo",
+      {
+        "url": "https://sentry.k8s.polito.it/",
+        "project": "students-app",
+        "organization": "polito"
+      }
+    ]
+  ]
 }

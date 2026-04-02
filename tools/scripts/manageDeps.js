@@ -2,17 +2,18 @@
 
 const {
   run,
-  getWorkspaces,
   getPackageLockData,
   createCliError,
+  validateWorkspaces,
+  getWorkspaces,
 } = require('./utils');
 
 const failUpdate = createCliError(`
-  npm run update <dep1[@version]> <dep2[@version]> ...\
+  npm run update <dep1[@version]> [dep2[@version] ...] [--workspaces <ws1> <ws2> ...]\
   `);
 
 const failRemove = createCliError(`
-  npm run remove <dep1> <dep2> ...\
+  npm run remove <dep1> [dep2 ...] [--workspaces <ws1> <ws2> ...]\
   `);
 
 const action = process.env.npm_lifecycle_event;
@@ -20,9 +21,18 @@ if (!['update', 'remove'].includes(action)) {
   console.error(
     '❌ Unknown action. Use "npm run update" to update dependencies or "npm run remove" to remove them.',
   );
+  process.exit(1);
 }
+
 const isUpdate = action === 'update';
-const toManage = process.argv.slice(2);
+const args = process.argv.slice(2);
+const workspaceFlagIndex = args.indexOf('--workspaces');
+
+const firstFlagIndex = Math.min(
+  workspaceFlagIndex === -1 ? Infinity : workspaceFlagIndex,
+);
+
+const toManage = args.slice(0, firstFlagIndex);
 
 if (toManage.length === 0) {
   if (isUpdate) {
@@ -30,6 +40,11 @@ if (toManage.length === 0) {
   } else {
     failRemove('No dependencies specified to remove.');
   }
+}
+
+const targetWorkspaces = args.slice(firstFlagIndex + 1);
+if (targetWorkspaces.length > 0) {
+  validateWorkspaces(targetWorkspaces);
 }
 
 const clearDeps = toManage.map(dep => {
@@ -46,10 +61,19 @@ const clearDeps = toManage.map(dep => {
   return dep;
 });
 
-const existingWorkspaces = getWorkspaces();
+// Update/Remove using workspaces if avaiable
+if (targetWorkspaces.length > 0) {
+  const workspacesArgs = targetWorkspaces.map(ws => `-w ${ws}`).join(' ');
+  const depsArgs = clearDeps.join(' ');
+  const command = `npm ${isUpdate ? 'install' : 'uninstall'} ${depsArgs}${isUpdate ? '@latest' : ''} ${workspacesArgs}`;
+  run(command);
+  process.exit(0);
+}
+
 const lockData = getPackageLockData();
 
 const packages = lockData.packages || {};
+const existingWorkspaces = getWorkspaces();
 const pDeps = {};
 for (const workspace of existingWorkspaces) {
   const set = new Set([

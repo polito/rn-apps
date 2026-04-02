@@ -18,7 +18,7 @@ export const IndoorMapLayer = ({ floorId }: IndoorMapLayerProps) => {
     <>
       <RasterLayer
         key={`indoor:${colorScheme}:${_floorId}`}
-        style={null}
+        style={{ rasterOpacity: 1 }}
         id="indoor"
         sourceID="indoorSource"
         aboveLayerID="outdoor"

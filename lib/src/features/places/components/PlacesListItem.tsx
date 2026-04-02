@@ -1,10 +1,14 @@
 import { useTranslation } from 'react-i18next';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import { PlaceRef } from '@polito/api-client';
+import { PlaceRef } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import {
+  AgendaNavigatorID,
+  TeachingNavigatorID,
+} from '../../../core/constants';
 import { notNullish } from '../../../core/utils/predicates';
 import { Icon, ListItem } from '../../../ui/components';
 import { useTheme } from '../../../ui/hooks/useTheme';
@@ -44,7 +48,7 @@ export const PlacesListItem = ({ places, eventName }: Props) => {
       onPress={
         placeIds?.length
           ? () => {
-              if (navigation.getId() === 'AgendaTabNavigator') {
+              if (navigation.getId() === AgendaNavigatorID) {
                 navigation.navigate('PlacesAgendaStack', {
                   screen: 'EventPlaces',
                   params: {
@@ -53,7 +57,7 @@ export const PlacesListItem = ({ places, eventName }: Props) => {
                     isCrossNavigation: true,
                   },
                 });
-              } else if (navigation.getId() === 'TeachingTabNavigator') {
+              } else if (navigation.getId() === TeachingNavigatorID) {
                 navigation.navigate('PlacesTeachingStack', {
                   screen: 'EventPlaces',
                   params: {

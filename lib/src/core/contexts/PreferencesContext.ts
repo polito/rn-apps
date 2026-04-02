@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 
 //TODO: switch to @polito/map-client when published
-import { PlaceOverview } from '@polito/api-client';
+import { PlaceOverview } from '@polito/student-api-client';
 
 import { Accessibility } from '../types/Accessibility';
 

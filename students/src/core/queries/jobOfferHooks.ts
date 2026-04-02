@@ -1,5 +1,5 @@
-import { JobOffersApi } from '@polito/api-client';
 import { pluckData } from '@polito/lib/core';
+import { JobOffersApi } from '@polito/student-api-client';
 import { useQuery } from '@tanstack/react-query';
 
 const JOB_OFFER_QUERY_PREFIX = 'jobOffers';

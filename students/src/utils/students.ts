@@ -1,8 +1,8 @@
 import {
   DegreeOverview,
-  GetOffering200ResponseData,
+  OfferingResponse,
   Student,
-} from '@polito/api-client';
+} from '@polito/student-api-client';
 
 export const getStudentEnrollmentYear = (student?: Student) => {
   if (!student) return '...';
@@ -14,7 +14,7 @@ const matchDegreeByName = (name: string) => (degree: DegreeOverview) =>
 
 export const getStudentDegree = (
   student?: Student,
-  offerings?: GetOffering200ResponseData,
+  offerings?: OfferingResponse,
 ) => {
   if (!offerings || !student?.degreeName) return null;
 

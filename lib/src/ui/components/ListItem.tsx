@@ -68,11 +68,12 @@ export const ListItem = ({
   multilineTitle = false,
   titleProps,
   unread = false,
+  onLongPress,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, fontWeights, colors, spacing } = useTheme();
-  const { accessibility } = usePreferencesContext();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const { accessibility } = usePreferencesContext();
   const titleElement =
     typeof title === 'string' ? (
       <Row align="center" gap={2}>
@@ -153,6 +154,9 @@ export const ListItem = ({
       ]}
       disabled={disabled}
       {...rest}
+      // These two added due to the issue #60 indicated in react-native-context-menu-view
+      // https://github.com/mpiannucci/react-native-context-menu-view/issues/60
+      {...(onLongPress != null ? { onLongPress, delayLongPress: 100 } : {})}
     >
       <View
         style={[

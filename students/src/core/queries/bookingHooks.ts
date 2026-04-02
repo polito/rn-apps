@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
-import { BookingsApi } from '@polito/api-client';
 import { pluckData, setTimeoutAccessibilityInfoHelper } from '@polito/lib/core';
+import { BookingsApi } from '@polito/student-api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { DateTime } from 'luxon';

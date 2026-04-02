@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { NewsItemOverview } from '@polito/api-client';
 import { formatDate, getHtmlTextContent } from '@polito/lib/core';
 import { Icon, ListItem, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
+import { NewsItemOverview } from '@polito/student-api-client';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';

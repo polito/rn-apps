@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { Platform, SafeAreaView, ScrollView } from 'react-native';
 
-import { CourseGuideSection } from '@polito/api-client/models/CourseGuideSection';
 import {
   BottomBarSpacer,
   Card,
@@ -11,6 +10,7 @@ import {
   Text,
   useTheme,
 } from '@polito/lib/ui';
+import { GuideSection } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetCourseGuide } from '../../../core/queries/courseHooks';
@@ -23,7 +23,7 @@ export const CourseGuideScreen = ({ route }: Props) => {
   const { spacing } = useTheme();
   const guideQuery = useGetCourseGuide(courseId);
   const guideSections = useMemo(() => {
-    const sections: CourseGuideSection[] = [];
+    const sections: GuideSection[] = [];
 
     guideQuery.data?.forEach(section => {
       const content = section.content.replace(/[\f\n]+/g, '\n').trim();

@@ -9,7 +9,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, View, ViewToken } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import useStateRef from 'react-usestateref';
 
 import {
   faCalendarDay,
@@ -36,13 +35,13 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { BOOKINGS_QUERY_KEY } from '~/core/queries/bookingHooks.ts';
+import { EXAMS_QUERY_KEY } from '~/core/queries/examHooks.ts';
+import { DEADLINES_QUERY_PREFIX } from '~/core/queries/studentHooks.ts';
 import { AppPreferences } from '~/core/types/preferences';
 
 import { DateTime } from 'luxon';
 
-import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
-import { EXAMS_QUERY_KEY } from '../../../core/queries/examHooks';
-import { DEADLINES_QUERY_PREFIX } from '../../../core/queries/studentHooks';
 import { AgendaFilters } from '../components/AgendaFilters';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 import { WeeklyAgenda } from '../components/WeeklyAgenda';
@@ -58,11 +57,10 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
   const { palettes, fontSizes } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { updatePreference, agendaScreen } =
+  const { updatePreference, agendaScreen, language } =
     usePreferencesContext<AppPreferences>();
   const client = useQueryClient();
   const { marginHorizontal } = useSafeAreaSpacing();
-  const { language } = usePreferencesContext<AppPreferences>();
   const { params } = route;
   const today = useMemo(
     () => DateTime.now().setZone(APP_TIMEZONE).toJSDate(),
@@ -73,8 +71,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
     ? DateTime.fromISO(params.date)
     : DateTime.now().setZone(APP_TIMEZONE);
 
-  const [nextDate, setNextDate, nextDateRef] =
-    useStateRef<DateTime>(selectedDate);
+  const [nextDate, setNextDate] = useState<DateTime>(selectedDate);
 
   const [weeks, setWeeks] = useState<DateTime[]>([
     selectedDate.startOf('week'),
@@ -95,16 +92,15 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
 
   const isOffline = useOfflineDisabled();
 
-  const [agendaState, setAgendaState, agendaStateRef] =
-    useStateRef<AgendaState>({
-      contentHeight: 0, // the total height of scrollview content
-      currentOffset: 0, // current scrollview offset
-      isRefreshing: false, // is refreshing all agenda data
-      shouldLoadNext: false, // should retrieve the previous page of data
-      shouldLoadPrevious: true, // should retrieve the next page of data
-      dayOffsetInWeek: 0, // the offset of day inside its week
-      dayOffsetOverall: 0, // the offset of day, based on contentHeight
-    });
+  const [agendaState, setAgendaState] = useState<AgendaState>({
+    contentHeight: 0, // the total height of scrollview content
+    currentOffset: 0, // current scrollview offset
+    isRefreshing: false, // is refreshing all agenda data
+    shouldLoadNext: false, // should retrieve the previous page of data
+    shouldLoadPrevious: true, // should retrieve the next page of data
+    dayOffsetInWeek: 0, // the offset of day inside its week
+    dayOffsetOverall: 0, // the offset of day, based on contentHeight
+  });
 
   const refreshQueries = useCallback(() => {
     const dependingQueryKeys = [
@@ -136,11 +132,14 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
       if (!viewableItems.length) return;
       const startDate = (viewableItems[0].item as AgendaWeek).dateRange.start;
       if (startDate === null) return;
-      if (startDate.startOf('week').equals(nextDateRef.current.startOf('week')))
-        return;
-      setNextDate(startDate);
+      setNextDate(prevDate => {
+        if (startDate.startOf('week').equals(prevDate.startOf('week'))) {
+          return prevDate;
+        }
+        return startDate;
+      });
     },
-    [nextDateRef, setNextDate],
+    [],
   );
 
   const getSelectedWeek = useCallback(
@@ -160,13 +159,17 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
   );
 
   const scrollToSelectedDay = useCallback(() => {
-    agendaStateRef.current.dayOffsetOverall > 0 &&
-      flatListRef.current?.scrollToOffset({
-        offset: agendaStateRef.current.dayOffsetOverall,
-        animated: true,
-      });
+    setAgendaState(prevState => {
+      if (prevState.dayOffsetOverall > 0) {
+        flatListRef.current?.scrollToOffset({
+          offset: prevState.dayOffsetOverall,
+          animated: true,
+        });
+      }
+      return prevState;
+    });
     setIsScrolling(false);
-  }, [agendaStateRef]);
+  }, []);
 
   // TODO try to scroll backwards
   // https://github.com/polito/students-app/blob/v1.6.9/src/features/agenda/screens/AgendaScreen.tsx#L155
@@ -181,9 +184,17 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         id: 'weekly',
         title: t('agendaScreen.weeklyLayout'),
       },
+      {
+        id: 'hide-event',
+        title: t('agendaScreen.hideEvent'),
+      },
     ],
     [t],
   );
+
+  const navigateToHideEventScreen = useCallback(() => {
+    navigation.navigate('AgendaPreferences');
+  }, [navigation]);
 
   useEffect(() => {
     if (isScrolling) {
@@ -209,6 +220,9 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
           break;
         case 'refresh':
           refreshQueries();
+          break;
+        case 'hide-event':
+          navigateToHideEventScreen();
           break;
       }
     };
@@ -246,6 +260,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
     refreshQueries,
     nextDate,
     screenOptions,
+    navigateToHideEventScreen,
   ]);
 
   return (

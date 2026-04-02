@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 
-import { Message } from '@polito/api-client';
 import { formatDateTime, getHtmlTextContent } from '@polito/lib/core';
 import { ListItem } from '@polito/lib/ui';
+import { Message } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -14,9 +14,15 @@ interface Props {
   messageItem: Message;
   index: number;
   totalData: number;
+  isSwiping: boolean;
 }
 
-export const MessageListItem = ({ messageItem, index, totalData }: Props) => {
+export const MessageListItem = ({
+  messageItem,
+  index,
+  totalData,
+  isSwiping,
+}: Props) => {
   const { t } = useTranslation();
   const { mutate: markAsRead } = useMarkMessageAsRead();
   const { accessibilityListLabel } = useAccessibility();
@@ -27,6 +33,8 @@ export const MessageListItem = ({ messageItem, index, totalData }: Props) => {
   const sentAt = formatDateTime(messageItem.sentAt);
 
   const onPressItem = () => {
+    if (isSwiping) return;
+
     if (!messageItem.isRead) {
       markAsRead(messageItem.id);
     }

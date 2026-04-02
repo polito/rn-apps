@@ -1,7 +1,13 @@
 import { initReactI18next } from 'react-i18next';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { PreferencesProvider, Sentry, extendSuperJSON } from '@polito/lib/core';
+import { APP_VERSION, BUILD_NO, SENTRY_DSN } from '@env';
+import {
+  PreferencesProvider,
+  Sentry,
+  extendSuperJSON,
+  initSentry,
+} from '@polito/lib/core';
 import { FeedbackProvider, SplashProvider, UiProvider } from '@polito/lib/ui';
 import Mapbox from '@rnmapbox/maps';
 
@@ -9,8 +15,8 @@ import i18n from 'i18next';
 
 import { en, it } from '../assets/translations';
 import { AppContent } from './core/components/AppContent';
+import { DialogProvider } from './core/components/Dialog';
 import { ApiProvider } from './core/providers/ApiProvider';
-import { DownloadsProvider } from './core/providers/DownloadsProvider';
 import { RootParamList } from './core/types/navigation';
 import {
   AppPreferences,
@@ -18,6 +24,7 @@ import {
   objectPreferenceKeys as appObjectPreferenceKeys,
   initialAppPreferences,
 } from './core/types/preferences';
+import { isEnvProduction } from './utils/env';
 import { setDeepLink } from './utils/linking';
 
 extendSuperJSON();
@@ -37,6 +44,19 @@ i18n.use(initReactI18next).init({
   },
 });
 
+initSentry({
+  dsn: SENTRY_DSN,
+  enabled: isEnvProduction,
+  appName: 'students',
+  version: APP_VERSION,
+  dist: BUILD_NO,
+  environment: process.env.NODE_ENV,
+});
+
+extendSuperJSON();
+
+Mapbox.setAccessToken(process.env.MAPBOX_TOKEN || 'no_token');
+
 const App = () => {
   return (
     <SafeAreaProvider>
@@ -50,9 +70,8 @@ const App = () => {
           <UiProvider<RootParamList> linking={setDeepLink()}>
             <FeedbackProvider>
               <ApiProvider>
-                <DownloadsProvider>
-                  <AppContent />
-                </DownloadsProvider>
+                <DialogProvider />
+                <AppContent />
               </ApiProvider>
             </FeedbackProvider>
           </UiProvider>

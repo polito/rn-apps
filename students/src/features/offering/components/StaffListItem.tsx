@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 
-import { CourseStaffInner } from '@polito/api-client/models';
 import { ListItem, PersonListItem } from '@polito/lib/ui';
+import { CourseAllOfStaff } from '@polito/student-api-client';
 
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 
-export const StaffListItem = ({ staff }: { staff: CourseStaffInner }) => {
+export const StaffListItem = ({ staff }: { staff: CourseAllOfStaff }) => {
   const { t } = useTranslation();
   const { data: person } = useGetPerson(staff.id);
 

@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { BarChart, barDataItem } from 'react-native-gifted-charts';
 
-import type { CourseStatistics } from '@polito/api-client';
 import { useFeedbackContext } from '@polito/lib/core';
 import { Col, Text, useStylesheet, useTheme } from '@polito/lib/ui';
 import type { Theme } from '@polito/lib/ui';
+import type { CourseStatistics } from '@polito/student-api-client';
 
 import { emptyChartData, kChartAnimationDuration } from '../chartConstant.ts';
 import { LegendItem } from './LegendItem.tsx';
@@ -102,7 +102,7 @@ export const EnrolledExamChart = ({
               labelWidth: barWidth * 2,
               labelTextStyle: {
                 fontSize: fontSizes['2xs'],
-                textAlign: 'center',
+                textAlign: 'center' as const,
                 color: colors.title,
               },
               frontColor: `${palettes.green[500]}a6`,

@@ -13,8 +13,6 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import FastImage from '@d11/react-native-fast-image';
-import { Student } from '@polito/api-client';
-import { EuropeanStudentCard } from '@polito/api-client';
 import { useDeviceOrientation } from '@polito/lib/core';
 import {
   CtaButton,
@@ -23,6 +21,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { EuropeanStudentCard, Student } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

@@ -13,6 +13,8 @@ import {
 import { usePreferencesContext } from '@polito/lib/core';
 import { Icon, ListItem, Row, Text, useTheme } from '@polito/lib/ui';
 
+import { AppPreferences } from '~/core/types/preferences';
+
 import { Exam } from '../../core/types/api';
 
 interface Props {
@@ -30,7 +32,7 @@ export const ExamListItem = ({
 }: Props) => {
   const { t } = useTranslation();
 
-  const { accessibility } = usePreferencesContext();
+  const { accessibility } = usePreferencesContext<AppPreferences>();
   const { colors, spacing } = useTheme();
   const formatHHmm = dateFormatter('HH:mm');
   const listItemProps = useMemo(() => {

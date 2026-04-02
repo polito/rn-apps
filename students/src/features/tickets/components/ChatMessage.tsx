@@ -1,9 +1,9 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { TicketReply } from '@polito/api-client/models/TicketReply';
 import { ChatBubble, Text, type Theme, useStylesheet } from '@polito/lib/ui';
+import { TicketReply, TicketSpecialAgent } from '@polito/student-api-client';
 
 import { HtmlMessage } from './HtmlMessage';
 import { TicketAttachmentChip } from './TicketAttachmentChip';
@@ -21,10 +21,19 @@ export const ChatMessage = ({
 }: ChatMessageProps) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
+  const isAiAgent = useMemo(
+    () => message.agentId === TicketSpecialAgent.AiAgent,
+    [message.agentId],
+  );
+  const agentDisplayId =
+    typeof message.agentId === 'number' ? message.agentId : null;
+  const hasAnyAgent = message.agentId != null;
 
-  const messageFirstPart = !message.agentId
+  const messageFirstPart = !hasAnyAgent
     ? t('ticketScreen.incomingMessage')
-    : [t('ticketScreen.outgoingMessage'), message.agentId].join(', ');
+    : isAiAgent
+      ? t('ticketScreen.virtualOperator')
+      : [t('ticketScreen.outgoingMessage'), agentDisplayId ?? ''].join(', ');
   const accessibilityMessageText = [messageFirstPart, message.message].join(
     ', ',
   );
@@ -60,9 +69,11 @@ export const ChatMessage = ({
         time={message.createdAt}
         style={styles.bubbleContainer}
       >
-        {message.agentId && (
+        {hasAnyAgent && (
           <Text style={styles.agentText}>
-            {t('common.agent')} {message.agentId}
+            {isAiAgent
+              ? t('ticketScreen.virtualOperator')
+              : [t('common.agent'), agentDisplayId ?? ''].join(' ')}
           </Text>
         )}
         <HtmlMessage

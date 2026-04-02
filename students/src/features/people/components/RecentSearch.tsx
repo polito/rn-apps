@@ -4,7 +4,6 @@ import { FlatList, Platform, StyleSheet, View } from 'react-native';
 import ContextMenu from 'react-native-context-menu-view';
 
 import { faEllipsisVertical, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { PersonOverview } from '@polito/api-client/models';
 import { IS_ANDROID, usePreferencesContext } from '@polito/lib/core';
 import {
   IconButton,
@@ -15,6 +14,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { PersonOverview } from '@polito/student-api-client';
 
 import { AppPreferences } from '~/core/types/preferences';
 

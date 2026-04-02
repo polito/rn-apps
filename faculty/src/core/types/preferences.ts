@@ -1,4 +1,4 @@
-import { PersonOverview, PlaceOverview } from '@polito/api-client';
+import { PersonOverview } from '@polito/api-client';
 
 import { AgendaTypesFilterState } from '../../screens/Agenda/types/AgendaTypesFilterState';
 import { HiddenRecurrence } from './Recurrence';
@@ -6,7 +6,6 @@ import { HiddenRecurrence } from './Recurrence';
 export const editablePreferenceKeys = [
   // This version is used exclusively for migrations.
   // For all other cases, use DeviceInfo from react-native-device-info.
-  'accessibility',
   'lastInstalledVersion',
   'username',
   'campusId',
@@ -27,7 +26,6 @@ export const editablePreferenceKeys = [
 
 // Specify here complex keys, that require serialization/deserialization
 export const objectPreferenceKeys = [
-  'accessibility',
   'courses',
   'notifications',
   'favoriteServices',
@@ -70,7 +68,6 @@ export type AppPreferences = {
   peopleSearched: PersonOverview[];
   onboardingStep?: number;
   emailGuideRead?: boolean;
-  placesSearched: PlaceOverview[];
   agendaScreen: {
     layout: 'weekly' | 'daily';
     filters: AgendaTypesFilterState;
@@ -85,7 +82,6 @@ export const initialAppPreferences: AppPreferences = {
   courses: {},
   favoriteServices: [],
   peopleSearched: [],
-  placesSearched: [],
   agendaScreen: {
     layout: 'daily',
     filters: {

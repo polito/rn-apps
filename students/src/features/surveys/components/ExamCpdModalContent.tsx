@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { faWarning } from '@fortawesome/free-solid-svg-icons';
-import { Survey } from '@polito/api-client';
 import {
   Col,
   DisclosureIndicator,
@@ -14,6 +13,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { Survey } from '@polito/student-api-client';
 
 import { SurveyListItemByTypeName } from './SurveyListItemByTypeName';
 

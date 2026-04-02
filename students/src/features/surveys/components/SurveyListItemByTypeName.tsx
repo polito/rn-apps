@@ -1,5 +1,5 @@
-import { Survey } from '@polito/api-client';
 import { ListItem, type ListItemProps } from '@polito/lib/ui';
+import { Survey } from '@polito/student-api-client';
 
 import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 

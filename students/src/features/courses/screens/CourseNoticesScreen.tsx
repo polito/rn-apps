@@ -47,7 +47,7 @@ export const CourseNoticesScreen = () => {
     [noticesQuery],
   );
   const noticesNotificationScope = useMemo(
-    () => ['teaching', 'courses', courseId.toString(), 'notices'],
+    () => ['teaching', 'courses', `${courseId}`, 'notices'] as const,
     [courseId],
   );
 
@@ -81,7 +81,9 @@ export const CourseNoticesScreen = () => {
               date: formatDate(notice.publishedAt),
             },
           }}
-          unread={!!getUnreadsCount([...noticesNotificationScope, notice.id])}
+          unread={
+            !!getUnreadsCount([...noticesNotificationScope, `${notice.id}`])
+          }
         />
       )}
       ListFooterComponent={<BottomBarSpacer />}

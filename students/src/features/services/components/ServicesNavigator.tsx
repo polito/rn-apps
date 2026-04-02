@@ -1,13 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
-import { TicketStatus } from '@polito/api-client';
-import { TicketFAQ } from '@polito/api-client/models/TicketFAQ';
 import {
   PlacesNavigator,
   type PlacesStackParamList,
 } from '@polito/lib/features/places';
 import { HeaderLogo, useTheme, useTitlesStyles } from '@polito/lib/ui';
+import { TicketFAQ, TicketStatus } from '@polito/student-api-client';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 

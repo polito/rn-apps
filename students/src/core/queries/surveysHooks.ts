@@ -1,5 +1,5 @@
-import { Survey, SurveysApi } from '@polito/api-client';
 import { pluckData } from '@polito/lib/core';
+import { Survey, SurveysApi } from '@polito/student-api-client';
 import { useQuery } from '@tanstack/react-query';
 
 import { SurveyType } from '../../features/surveys/types/SurveyType';

@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
-import { Booking } from '@polito/api-client';
 import { APP_TIMEZONE, getHtmlTextContent } from '@polito/lib/core';
 import { ListItem, Theme, useStylesheet } from '@polito/lib/ui';
+import { Booking } from '@polito/student-api-client';
 
 import { DateTime } from 'luxon';
 

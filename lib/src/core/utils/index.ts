@@ -1,7 +1,5 @@
 export * from './dates';
 export * from './device';
-export * from './env';
-export * from './files';
 export * from './html';
 export * from './navigation';
 export * from './predicates';

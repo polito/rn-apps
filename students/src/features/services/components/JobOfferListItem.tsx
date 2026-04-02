@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { JobOfferOverview } from '@polito/api-client';
 import { formatDate, getHtmlTextContent } from '@polito/lib/core';
 import {
   Col,
@@ -13,6 +12,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { JobOfferOverview } from '@polito/student-api-client';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 

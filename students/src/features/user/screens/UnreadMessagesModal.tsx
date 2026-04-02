@@ -8,22 +8,21 @@ import {
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { useScreenReader } from '@polito/lib/core';
-import { CtaButton } from '@polito/lib/ui';
+import { CtaButton, useHideTabs, useTheme } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useHideTabs } from '../../../core/hooks/useHideTabs';
 import {
   useGetModalMessages,
   useInvalidateMessages,
   useMarkMessageAsRead,
 } from '../../../core/queries/studentHooks';
+import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { MessageScreenContent } from '../components/MessageScreenContent';
 
-type Props = NativeStackScreenProps<any, 'MessagesModal'>;
+type Props = NativeStackScreenProps<TeachingStackParamList, 'MessagesModal'>;
 
 export const UnreadMessagesModal = ({ navigation }: Props) => {
   const { data: messages } = useGetModalMessages();
-
   const invalidateMessages = useInvalidateMessages();
   const { t } = useTranslation();
   const [messagesReadCount, setMessageReadCount] = useState(0);
@@ -31,8 +30,11 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
   const isLastMessageToRead = messagesReadCount + 1 === messagesToReadCount;
   const { mutate } = useMarkMessageAsRead(false);
   const { isScreenReaderEnabled, announce } = useScreenReader();
-
+  const { spacing } = useTheme();
   const { bottom } = useSafeAreaInsets();
+
+  const currentMessage = messages?.[messagesReadCount];
+  const isExamMessage = currentMessage?.type === ('exams' as any);
 
   useEffect(() => {
     if (!messagesToReadCount) {
@@ -62,8 +64,6 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
 
   useHideTabs(undefined, () => invalidateMessages.run());
 
-  const currentMessage = messages?.[messagesReadCount];
-
   const onConfirm = async () => {
     if (currentMessage) {
       await new Promise(ok => mutate(currentMessage.id, { onSettled: ok }));
@@ -75,6 +75,19 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
     }
   };
 
+  const onViewProvisionalGrade = async () => {
+    if (currentMessage) {
+      await new Promise(ok => mutate(currentMessage.id, { onSettled: ok }));
+    }
+
+    navigation.goBack();
+    navigation.navigate('Transcript');
+  };
+
+  const showExamButton = isExamMessage;
+  const showNextButton = !isLastMessageToRead;
+  const showEndButton = !isExamMessage && isLastMessageToRead;
+
   return (
     <>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -85,18 +98,40 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
       <View
         style={{
           paddingVertical: bottom,
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
         }}
       >
-        <CtaButton
-          absolute={false}
-          title={t(
-            isLastMessageToRead
-              ? 'messagesScreen.end'
-              : 'messagesScreen.readNext',
-          )}
-          action={onConfirm}
-          icon={isLastMessageToRead ? faCheckCircle : faChevronRight}
-        />
+        {showExamButton && (
+          <CtaButton
+            absolute={false}
+            title={t('messageScreen.viewProvisionalGrade')}
+            action={onViewProvisionalGrade}
+            variant="filled"
+            containerStyle={{ flex: 1 }}
+          />
+        )}
+
+        {showNextButton && (
+          <CtaButton
+            absolute={false}
+            title=""
+            variant="outlined"
+            action={onConfirm}
+            icon={faChevronRight}
+            style={{ paddingLeft: spacing[4], paddingRight: spacing[2] }}
+          />
+        )}
+
+        {showEndButton && (
+          <CtaButton
+            absolute={false}
+            title={t('messagesScreen.end')}
+            action={onConfirm}
+            icon={faCheckCircle}
+            containerStyle={{ flex: 1 }}
+          />
+        )}
       </View>
     </>
   );

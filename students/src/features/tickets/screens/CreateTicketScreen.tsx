@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Alert } from 'react-native';
 import { StyleSheet } from 'react-native';
 
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
-import { CreateTicketRequest } from '@polito/api-client';
+import { ApiError } from '@polito/lib/core';
 import {
   ChatBubble,
   CtaButton,
@@ -18,6 +19,7 @@ import {
   darkTheme,
   useStylesheet,
 } from '@polito/lib/ui';
+import { CreateTicketRequest } from '@polito/student-api-client';
 import { MenuAction } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -62,7 +64,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   }, [ticketBody]);
 
   useEffect(() => {
-    if (isSuccess && !!data.id) {
+    if (isSuccess && data?.id) {
       navigation.navigate(initialTopicId ? 'Services' : 'Tickets');
       navigation.navigate('Ticket', { id: data.id });
     }
@@ -133,6 +135,19 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
       return [baseText, t('common.disabledPreviousValue')].join(', ');
     }
   }, [t, topicId]);
+
+  const handleDuplicateError = (err: ApiError) => {
+    const message = err.message;
+    if (typeof message === 'string') {
+      const normalized = message.toLowerCase();
+      if (normalized.includes('duplicate')) {
+        Alert.alert(
+          t('createTicketScreen.duplicateTitle'),
+          t('createTicketScreen.duplicateMessage'),
+        );
+      }
+    }
+  };
 
   return (
     <ScreenContainer>
@@ -206,12 +221,16 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
         absolute={false}
         disabled={!createTopicEnabled}
         title={t('createTicketScreen.sendTicket')}
-        action={() =>
-          handleCreateTicket({
-            ...ticketBody,
-            message: ticketBody?.message?.trim().replace(/\n/g, '<br>'),
-          } as CreateTicketRequest)
-        }
+        action={async () => {
+          try {
+            await handleCreateTicket({
+              ...ticketBody,
+              message: ticketBody?.message?.trim().replace(/\n/g, '<br>'),
+            } as CreateTicketRequest);
+          } catch (err) {
+            handleDuplicateError(err as ApiError);
+          }
+        }}
         loading={isPending}
         icon={faPaperPlane}
       />

@@ -21,9 +21,7 @@ export const CourseIcon = ({ color, icon, isHidden }: Props) => {
               backgroundColor: color,
             }
           : undefined,
-        isHidden && {
-          backgroundColor: undefined,
-        },
+        isHidden && styles.hiddenContainer,
       ]}
     >
       {(isHidden && (
@@ -45,6 +43,10 @@ const createStyles = ({ colors, palettes }: Theme) =>
       backgroundColor: palettes.primary[400],
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    hiddenContainer: {
+      backgroundColor: colors.surface,
+      borderRadius: 15,
     },
     hiddenIcon: {
       color: colors.prose,

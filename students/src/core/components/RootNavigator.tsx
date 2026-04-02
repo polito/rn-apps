@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,6 +15,7 @@ import { usePreferencesContext } from '@polito/lib/core';
 import {
   PlacesNavigator,
   useGetCurrentCampus,
+  useGetSites,
 } from '@polito/lib/features/places';
 import {
   HeaderLogo,
@@ -34,11 +35,13 @@ import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigato
 import { ServicesNavigator } from '../../features/services/components/ServicesNavigator';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
+import { useApiContext } from '../contexts/ApiContext';
+import { useDownloadsContext } from '../contexts/DownloadsContext';
 import { useInitFirebaseMessaging } from '../hooks/messaging';
 import { useModalManager } from '../hooks/useModalManager';
 import { useNotifications } from '../hooks/useNotifications';
-import { useGetSites } from '../queries/placesHooks';
 import { useGetMessages, useGetStudent } from '../queries/studentHooks';
+import { OnboardingModal } from '../screens/OnboardingModal';
 import { RootParamList } from '../types/navigation';
 import { AppPreferences } from '../types/preferences';
 
@@ -54,14 +57,18 @@ export const RootNavigator = ({
   const { colors } = useTheme();
   const { bottom } = useSafeAreaInsets();
   const styles = useStylesheet(createStyles);
+  const { username } = useApiContext();
+  const { syncLocalFilesToDb } = useDownloadsContext();
   const { data: student } = useGetStudent();
   const { updatePreference, accessibility } =
     usePreferencesContext<AppPreferences>();
   const { getUnreadsCount } = useNotifications();
+  const hasSyncedFiles = useRef(false);
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
   const [tabBarIconSize, setTabBarIconSize] = useState(20);
-  useModalManager(versionModalIsOpen);
+  const { isOnboardingVisible, closeOnboarding } =
+    useModalManager(versionModalIsOpen);
   const profileMessages = useGetMessages();
 
   useEffect(() => {
@@ -75,6 +82,13 @@ export const RootNavigator = ({
   }, [student]);
 
   useInitFirebaseMessaging();
+
+  useEffect(() => {
+    if (username && !hasSyncedFiles.current) {
+      hasSyncedFiles.current = true;
+      syncLocalFilesToDb().catch(() => {});
+    }
+  }, [username, syncLocalFilesToDb]);
 
   useEffect(() => {
     if (student && !campus && sites?.data?.length) {
@@ -102,85 +116,90 @@ export const RootNavigator = ({
   );
 
   return (
-    <TabNavigator.Navigator
-      backBehavior="history"
-      screenOptions={{
-        tabBarShowLabel:
-          accessibility?.fontSize && accessibility.fontSize > 125
-            ? false
-            : true,
-        headerShown: false,
-        tabBarHideOnKeyboard: true,
-        tabBarVisibilityAnimationConfig: {
-          show: instantAnimation,
-          hide: instantAnimation,
-        },
-        tabBarStyle: [styles.tabBarStyle, androidTabBarBottom],
-        tabBarBackground: () => <TranslucentView fallbackOpacity={1} />,
-        tabBarItemStyle: styles.tabBarItemStyle,
-        tabBarLabelStyle: [styles.tabBarLabelStyle],
-        tabBarInactiveTintColor: colors.tabBarInactive,
-        tabBarBadgeStyle: styles.tabBarBadgeStyle,
-      }}
-    >
-      <TabNavigator.Screen
-        name="TeachingTab"
-        component={TeachingNavigator}
-        options={{
-          tabBarLabel: t('teachingScreen.title'),
-          tabBarIcon: ({ color }) => (
-            <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
-          ),
-          tabBarBadge: getUnreadsCount(['teaching']),
-        }}
-      />
-      <TabNavigator.Screen
-        name="AgendaTab"
-        component={AgendaNavigator}
-        options={{
-          tabBarLabel: t('agendaScreen.title'),
-          tabBarIcon: ({ color }) => (
-            <Icon icon={faCalendar} color={color} size={tabBarIconSize} />
-          ),
-        }}
-      />
-      <TabNavigator.Screen
-        name="PlacesTab"
-        options={{
+    <>
+      <TabNavigator.Navigator
+        backBehavior="history"
+        screenOptions={{
+          tabBarShowLabel:
+            accessibility?.fontSize && accessibility.fontSize > 125
+              ? false
+              : true,
           headerShown: false,
-          tabBarLabel: t('placesScreen.title'),
-          tabBarIcon: ({ color }) => (
-            <Icon icon={faCompass} color={color} size={tabBarIconSize} />
-          ),
+          tabBarHideOnKeyboard: true,
+          tabBarVisibilityAnimationConfig: {
+            show: instantAnimation,
+            hide: instantAnimation,
+          },
+          tabBarStyle: [styles.tabBarStyle, androidTabBarBottom],
+          tabBarBackground: () => <TranslucentView fallbackOpacity={1} />,
+          tabBarItemStyle: styles.tabBarItemStyle,
+          tabBarLabelStyle: [styles.tabBarLabelStyle],
+          tabBarInactiveTintColor: colors.tabBarInactive,
+          tabBarBadgeStyle: styles.tabBarBadgeStyle,
         }}
       >
-        {() => <PlacesNavigator unreadMessagesModal={UnreadMessagesModal} />}
-      </TabNavigator.Screen>
-      <TabNavigator.Screen
-        name="ServicesTab"
-        component={ServicesNavigator}
-        options={{
-          headerLeft: () => <HeaderLogo />,
-          tabBarLabel: t('common.services'),
-          tabBarIcon: ({ color }) => (
-            <Icon icon={faCircleInfo} color={color} size={tabBarIconSize} />
-          ),
-          tabBarBadge: getUnreadsCount(['services']),
-        }}
+        <TabNavigator.Screen
+          name="TeachingTab"
+          component={TeachingNavigator}
+          options={{
+            tabBarLabel: t('teachingScreen.title'),
+            tabBarIcon: ({ color }) => (
+              <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
+            ),
+            tabBarBadge: getUnreadsCount(['teaching']),
+          }}
+        />
+        <TabNavigator.Screen
+          name="AgendaTab"
+          component={AgendaNavigator}
+          options={{
+            tabBarLabel: t('agendaScreen.title'),
+            tabBarIcon: ({ color }) => (
+              <Icon icon={faCalendar} color={color} size={tabBarIconSize} />
+            ),
+          }}
+        />
+        <TabNavigator.Screen
+          name="PlacesTab"
+          options={{
+            tabBarLabel: t('placesScreen.title'),
+            tabBarIcon: ({ color }) => (
+              <Icon icon={faCompass} color={color} size={tabBarIconSize} />
+            ),
+          }}
+        >
+          {() => <PlacesNavigator unreadMessagesModal={UnreadMessagesModal} />}
+        </TabNavigator.Screen>
+        <TabNavigator.Screen
+          name="ServicesTab"
+          component={ServicesNavigator}
+          options={{
+            headerLeft: () => <HeaderLogo />,
+            tabBarLabel: t('common.services'),
+            tabBarIcon: ({ color }) => (
+              <Icon icon={faCircleInfo} color={color} size={tabBarIconSize} />
+            ),
+            tabBarBadge: getUnreadsCount(['services']),
+          }}
+        />
+        <TabNavigator.Screen
+          name="ProfileTab"
+          component={UserNavigator}
+          options={{
+            tabBarLabel: t('profileScreen.title'),
+            tabBarIcon: ({ color }) => (
+              <Icon icon={faUser} color={color} size={tabBarIconSize} />
+            ),
+            tabBarBadge:
+              filterUnread(profileMessages.data || []).length || undefined,
+          }}
+        />
+      </TabNavigator.Navigator>
+      <OnboardingModal
+        visible={isOnboardingVisible}
+        onClose={closeOnboarding}
       />
-      <TabNavigator.Screen
-        name="ProfileTab"
-        component={UserNavigator}
-        options={{
-          tabBarLabel: t('profileScreen.title'),
-          tabBarIcon: ({ color }) => (
-            <Icon icon={faUser} color={color} size={tabBarIconSize} />
-          ),
-          tabBarBadge:
-            filterUnread(profileMessages.data || []).length || undefined,
-        }}
-      />
-    </TabNavigator.Navigator>
+    </>
   );
 };
 

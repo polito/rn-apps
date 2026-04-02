@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
+import { UserNavigatorID } from '@polito/lib/core';
 import { HeaderLogoNoProps, useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -30,7 +31,6 @@ export type UserStackParamList = OfferingStackParamList & {
   Person: { id: number };
 };
 
-const UserNavigatorID = 'UserTabNavigator';
 const Stack = createNativeStackNavigator<
   UserStackParamList,
   typeof UserNavigatorID

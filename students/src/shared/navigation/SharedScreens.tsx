@@ -1,10 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
-import {
-  FetchChallenge200ResponseData,
-  OfferingCourseStaff,
-} from '@polito/api-client/models';
 import { HeaderLogoNoProps, createHeaderCloseButton } from '@polito/lib/ui';
+import { MfaChallenge, OfferingCourseStaff } from '@polito/student-api-client';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -50,7 +47,7 @@ export interface SharedScreensParamList extends ParamListBase {
   };
   PolitoAuthenticator: {
     activeView: 'enroll' | 'auth';
-    challenge?: FetchChallenge200ResponseData;
+    challenge?: MfaChallenge;
   };
 }
 const Stack = createNativeStackNavigator<SharedScreensParamList>();
@@ -106,6 +103,7 @@ export const SharedScreens = () => {
         getId={({ params }) => `${params.courseId}${params.courseShortcode}`}
         options={{
           headerTitle: t('courseStatisticsScreen.title'),
+          headerTitleAlign: 'center',
           headerBackTitle: t('common.course'),
         }}
       />

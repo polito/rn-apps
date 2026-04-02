@@ -7,9 +7,9 @@ import {
   GlobalStyles,
   Grid,
   Icon,
+  Metric,
   Row,
   StatefulMenuView,
-  Text,
   Theme,
   useStylesheet,
 } from '@polito/lib/ui';
@@ -38,15 +38,9 @@ export const CourseStatisticsFilters = ({
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   return (
-    <Card padded accessible style={styles.container}>
-      <Grid gap={10}>
+    <Card style={styles.metricsCard} accessible={true}>
+      <Grid>
         <View style={GlobalStyles.grow}>
-          <Text
-            accessibilityLabel={t('courseStatisticsScreen.period')}
-            style={styles.label}
-          >
-            {t('courseStatisticsScreen.period')}
-          </Text>
           {(filterType === CourseStatisticsFilterType.YEAR ||
             filterType === CourseStatisticsFilterType.DEFAULT) &&
           years.length > 1 ? (
@@ -56,36 +50,32 @@ export const CourseStatisticsFilters = ({
               }}
               actions={years}
             >
-              <Row>
-                <Text
-                  accessibilityLabel={currentYear?.title ?? '--'}
-                  style={styles.dropdownText}
-                  weight="semibold"
-                >
-                  {currentYear?.title ?? '--'}
-                </Text>
+              <Row justify="flex-start" align="center">
+                <Metric
+                  title={t('courseStatisticsScreen.period')}
+                  value={currentYear?.title ?? '--'}
+                  accessibilityLabel={`${t('courseStatisticsScreen.period')}: ${
+                    currentYear?.title ?? '--'
+                  }`}
+                  valueStyle={styles.dropdownText}
+                />
                 <Icon icon={faChevronDown} style={styles.chevronStyle} />
               </Row>
             </StatefulMenuView>
           ) : (
             <Row>
-              <Text
-                accessibilityLabel={currentYear?.title ?? '--'}
-                style={styles.dropdownText}
-                weight="semibold"
-              >
-                {currentYear?.title ?? '--'}
-              </Text>
+              <Metric
+                title={t('courseStatisticsScreen.period')}
+                value={currentYear?.title ?? '--'}
+                accessibilityLabel={`${t('courseStatisticsScreen.period')}: ${
+                  currentYear?.title ?? '--'
+                }`}
+                valueStyle={styles.dropdownText}
+              />
             </Row>
           )}
         </View>
         <View style={GlobalStyles.grow}>
-          <Text
-            style={styles.label}
-            accessibilityLabel={t('courseStatisticsScreen.teacher')}
-          >
-            {t('courseStatisticsScreen.teacher')}
-          </Text>
           {filterType === CourseStatisticsFilterType.TEACHER ||
           filterType === CourseStatisticsFilterType.DEFAULT ? (
             <StatefulMenuView
@@ -95,14 +85,14 @@ export const CourseStatisticsFilters = ({
               actions={teachers}
             >
               <Row style={{ alignItems: 'center' }}>
-                <Text
-                  style={[styles.dropdownText, { flexShrink: 1 }]}
-                  accessibilityLabel={currentTeacher?.title ?? '--'}
-                  weight="semibold"
-                  numberOfLines={1}
-                >
-                  {currentTeacher?.title ?? '--'}
-                </Text>
+                <Metric
+                  title={t('courseStatisticsScreen.teacher')}
+                  value={currentTeacher?.title ?? '--'}
+                  accessibilityLabel={`${t('courseStatisticsScreen.teacher')}: ${
+                    currentTeacher?.title ?? '--'
+                  }`}
+                  valueStyle={styles.dropdownText}
+                />
                 <Icon
                   icon={faChevronDown}
                   style={[styles.chevronStyle, { flexShrink: 0 }]}
@@ -111,14 +101,14 @@ export const CourseStatisticsFilters = ({
             </StatefulMenuView>
           ) : (
             <Row>
-              <Text
-                style={styles.dropdownText}
-                accessibilityLabel={currentTeacher?.title ?? '--'}
-                weight="semibold"
-                numberOfLines={1}
-              >
-                {currentTeacher?.title ?? '--'}
-              </Text>
+              <Metric
+                title={t('courseStatisticsScreen.teacher')}
+                value={currentTeacher?.title ?? '--'}
+                accessibilityLabel={`${t('courseStatisticsScreen.teacher')}: ${
+                  currentTeacher?.title ?? '--'
+                }`}
+                valueStyle={styles.dropdownText}
+              />
             </Row>
           )}
         </View>
@@ -127,20 +117,22 @@ export const CourseStatisticsFilters = ({
   );
 };
 
-const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
+const createStyles = ({ spacing, fontSizes, palettes }: Theme) =>
   StyleSheet.create({
-    container: {
-      marginBottom: spacing[4],
-    },
-    label: {
-      fontSize: fontSizes.xs,
-      marginBottom: spacing[0.5],
+    metricsCard: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[4],
+      marginTop: spacing[0],
+      marginBottom: spacing[5],
     },
     dropdownText: {
-      color: colors.heading,
-      fontSize: fontSizes.sm,
+      color: palettes.text['800'],
+      fontSize: fontSizes.lg,
     },
     chevronStyle: {
-      marginLeft: 10,
+      marginLeft: spacing[2],
+      marginTop: spacing[5],
     },
   });

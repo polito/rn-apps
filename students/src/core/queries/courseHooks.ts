@@ -1,25 +1,27 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  CourseOverview as ApiCourseOverview,
-  CourseDirectory,
-  CourseDirectoryContentInner,
-  CourseFileOverview,
-  CourseOverviewPreviousEditionsInner,
-  CoursePreferencesRequest,
-  CourseVcOtherCoursesInner,
-  CoursesApi,
-  UploadCourseAssignmentRequest,
-} from '@polito/api-client';
 import { notNullish, pluckData, usePreferencesContext } from '@polito/lib/core';
 import { courseColors } from '@polito/lib/features/courses';
+import {
+  CourseOverview as ApiCourseOverview,
+  CourseAllOfVcOtherCourses,
+  CourseDirectory,
+  CourseDirectoryEntry,
+  CourseFileOverview,
+  CourseModuleEdition,
+  CoursePreferencesRequest,
+  CoursesApi,
+  UploadCourseAssignmentRequest,
+} from '@polito/student-api-client';
 import {
   useMutation,
   useQueries,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
+
+import { stripIdInParentheses } from '~/utils/files';
 
 import { CourseLectureSection } from '../../features/courses/types/CourseLectureSections';
 import { isCourseDetailed } from '../../features/courses/utils/courses';
@@ -53,7 +55,9 @@ const setupCourses = (
   courses?.forEach(c => {
     const newC = c as CourseOverview;
     const hasDetails = isCourseDetailed(newC);
-    newC.uniqueShortcode = c.shortcode + c.moduleNumber;
+    // Courses without modules: shortcode + '1'; courses with modules: shortcode
+    newC.uniqueShortcode =
+      c.modules && c.modules.length > 0 ? c.shortcode : c.shortcode + '1';
 
     if (hasDetails && !(newC.uniqueShortcode in coursePreferences)) {
       const usedColors = Object.values(coursePreferences)
@@ -78,6 +82,38 @@ const setupCourses = (
       hasNewPreferences = true;
     }
 
+    if (c.modules && c.modules.length > 0) {
+      c.modules.forEach((module, index) => {
+        if (module.id) {
+          const moduleUniqueShortcode = `${c.shortcode}${index + 1}`;
+          if (!(moduleUniqueShortcode in coursePreferences)) {
+            const usedColors = Object.values(coursePreferences)
+              .map(cp => cp.color)
+              .filter(notNullish);
+            let colorData: (typeof courseColors)[0] | undefined;
+            for (const currentColor of courseColors) {
+              if (!usedColors.includes(currentColor.color)) {
+                colorData = currentColor;
+                break;
+              }
+            }
+            if (!colorData) {
+              colorData =
+                courseColors[
+                  Math.round(Math.random() * (courseColors.length - 1))
+                ];
+            }
+            coursePreferences[moduleUniqueShortcode] = {
+              color: colorData.color,
+              isHidden: false,
+              isHiddenInAgenda: false,
+            };
+            hasNewPreferences = true;
+          }
+        }
+      });
+    }
+
     updatedCourses.push(newC);
   });
 
@@ -91,7 +127,7 @@ const setupCourses = (
 export const useGetCourses = () => {
   const coursesClient = useCoursesClient();
   const { courses: coursePreferences, updatePreference } =
-    usePreferencesContext();
+    usePreferencesContext<AppPreferences>();
 
   return useQuery<CourseOverview[]>({
     queryKey: COURSES_QUERY_KEY,
@@ -99,7 +135,6 @@ export const useGetCourses = () => {
       coursesClient
         .getCourses()
         .then(pluckData)
-        .then(c => c.sort((a, b) => (a.name > b.name ? 1 : -1)))
         .then(c => setupCourses(c, coursePreferences, updatePreference)),
   });
 };
@@ -149,11 +184,15 @@ export const useGetCourseEditions = (courseId: number) => {
   return useQuery({
     queryKey: getCourseKey(courseId, CourseSectionEnum.Editions),
     queryFn: () => {
-      const course = coursesQuery.data?.find(
+      const coursesModules = coursesQuery.data
+        ?.flatMap(c => c.modules)
+        .concat(coursesQuery.data)
+        .filter(notNullish);
+      const course = coursesModules?.find(
         c =>
-          c.id === courseId || c.previousEditions.some(e => e.id === courseId),
+          c.id === courseId || c.previousEditions.some(e => +e.id === courseId),
       );
-      const editions: CourseOverviewPreviousEditionsInner[] = [];
+      const editions: CourseModuleEdition[] = [];
       if (!course || !course.previousEditions.length) return editions;
       if (course.id) {
         editions.push({
@@ -176,7 +215,7 @@ export const useGetCourseEditions = (courseId: number) => {
 
 const courseFilesStaleTime = 60000; // 1 minute
 
-const useGetCourseFiles = (courseId: number) => {
+export const useGetCourseFiles = (courseId: number) => {
   const coursesClient = useCoursesClient();
 
   return useQuery({
@@ -211,14 +250,14 @@ export const useGetCourseFilesRecent = (courseId: number) => {
 };
 
 const isFile = (
-  item: CourseDirectoryContentInner,
+  item: CourseDirectoryEntry,
 ): item is { type: 'file' } & CourseFileOverview => item.type === 'file';
 
 /**
- * Assigns a location to each file
+ * Assigns a location to each file (folder path segments without "(number)" id suffix).
  */
 const computeFileLocations = (
-  directoryContent: CourseDirectoryContentInner[],
+  directoryContent: CourseDirectoryEntry[],
   location: string = '/',
 ): CourseDirectoryContentWithLocations[] => {
   const result: CourseDirectoryContentWithLocations[] = [];
@@ -226,13 +265,18 @@ const computeFileLocations = (
     if (isFile(item)) {
       result.push({ ...item, location });
     } else {
+      const segmentName = stripIdInParentheses(item.name);
       result.push({
         ...item,
+        location:
+          location.length === 1
+            ? location + segmentName
+            : location + '/' + segmentName,
         files: computeFileLocations(
           item.files,
           location.length === 1
-            ? location + item.name
-            : location + '/' + item.name,
+            ? location + segmentName
+            : location + '/' + segmentName,
         ),
       });
     }
@@ -298,13 +342,13 @@ export const useGetCourseDirectory = (
     queryFn: () => {
       if (!directoryId) {
         // Root directory
-        return new Promise<CourseDirectoryContentInner[]>(resolve => {
+        return new Promise<CourseDirectoryEntry[]>(resolve => {
           resolve(rootDirectoryContent!);
         });
       }
       const directory = findDirectory(directoryId, rootDirectoryContent!);
 
-      return new Promise<CourseDirectoryContentInner[] | null>(resolve => {
+      return new Promise<CourseDirectoryEntry[] | null>(resolve => {
         resolve(directory);
       });
     },
@@ -328,14 +372,14 @@ export const useGetCourseDirectory = (
  */
 const findDirectory = (
   searchDirectoryId: string,
-  directoryContent: CourseDirectoryContentInner[],
-): CourseDirectoryContentInner[] | null => {
+  directoryContent: CourseDirectoryEntry[],
+): CourseDirectoryEntry[] | null => {
   let result = null;
   const childDirectories = directoryContent.filter(
     f => f.type === 'directory',
   ) as CourseDirectory[];
 
-  let nextDepthFiles: CourseDirectoryContentInner[] = [];
+  let nextDepthFiles: CourseDirectoryEntry[] = [];
   for (let i = 0; i < childDirectories.length; i++) {
     const currentDir = childDirectories[i];
     if (currentDir.id === searchDirectoryId) {
@@ -351,6 +395,23 @@ const findDirectory = (
   }
 
   return result;
+};
+
+export const getFlattenedCourseFiles = (
+  content: CourseDirectoryContentWithLocations[],
+  directoryId?: string,
+): CourseFileOverviewWithLocation[] => {
+  if (!directoryId) {
+    return flattenFiles(content);
+  }
+  const dirContent = findDirectory(
+    directoryId,
+    content as CourseDirectoryEntry[],
+  );
+  if (!dirContent) {
+    return [];
+  }
+  return flattenFiles(dirContent as CourseDirectoryContentWithLocations[]);
 };
 
 export const useGetCourseAssignments = (courseId: number) => {
@@ -412,11 +473,8 @@ export const useGetCourseVirtualClassrooms = (courseId: number) => {
   });
 };
 
-const useGetCourseRelatedVirtualClassrooms = (
-  relatedVCs: (
-    | CourseOverviewPreviousEditionsInner
-    | CourseVcOtherCoursesInner
-  )[],
+export const useGetCourseRelatedVirtualClassrooms = (
+  relatedVCs: (CourseModuleEdition | CourseAllOfVcOtherCourses)[],
 ) => {
   const coursesClient = useCoursesClient();
 
@@ -460,8 +518,8 @@ export const useGetCourseLectures = (courseId: number) => {
   const virtualClassroomsQuery = useGetCourseVirtualClassrooms(courseId);
 
   const relatedVCDefinitions: (
-    | CourseOverviewPreviousEditionsInner
-    | CourseVcOtherCoursesInner
+    | CourseModuleEdition
+    | CourseAllOfVcOtherCourses
   )[] = (courseQuery.data?.vcPreviousYears ?? []).concat(
     courseQuery.data?.vcOtherCourses ?? [],
   );

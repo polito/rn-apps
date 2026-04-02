@@ -134,7 +134,7 @@ if (isFixing) {
       return maxVersionGreater(max, curr.version) ? max : curr.version;
     }, rootVer);
     run(
-      `npm run add ${dep}@${maxVersion} -- --workspace ${versions
+      `npm run add ${dep}@${maxVersion} -- --workspaces ${versions
         .map(ws => ws.name)
         .join(' ')}`,
     );

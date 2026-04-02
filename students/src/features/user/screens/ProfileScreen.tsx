@@ -9,7 +9,6 @@ import {
   faMessage,
   faSignOut,
 } from '@fortawesome/free-solid-svg-icons';
-import { Student } from '@polito/api-client';
 import { useOfflineDisabled } from '@polito/lib/core';
 import {
   BottomBarSpacer,
@@ -26,6 +25,7 @@ import {
   UnreadBadge,
   useTheme,
 } from '@polito/lib/ui';
+import { Student } from '@polito/student-api-client';
 import { MenuAction, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';

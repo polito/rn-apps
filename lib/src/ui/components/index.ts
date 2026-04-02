@@ -55,6 +55,7 @@ export * from './Separator';
 export * from './Snackbar';
 export * from './Stack';
 export * from './StatefulMenuView';
+export * from './Swipeable';
 export * from './Swiper';
 export * from './Switch';
 export * from './SwitchListItem';

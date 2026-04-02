@@ -1,7 +1,6 @@
 import { Pressable, StyleSheet } from 'react-native';
 
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
-import { OfferingCourseOverview } from '@polito/api-client/models/OfferingCourseOverview';
 import {
   Col,
   Icon,
@@ -11,6 +10,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { OfferingCourseOverview } from '@polito/student-api-client';
 
 import { GroupCoursesExpanded } from './GroupCoursesExpanded';
 

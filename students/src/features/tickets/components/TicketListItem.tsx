@@ -9,7 +9,6 @@ import {
   faEllipsisVertical,
   faPaperclip,
 } from '@fortawesome/free-solid-svg-icons';
-import { TicketOverview, TicketStatus } from '@polito/api-client';
 import {
   IS_IOS,
   formatDateTime,
@@ -28,6 +27,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { TicketOverview, TicketStatus } from '@polito/student-api-client';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';

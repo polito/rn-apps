@@ -14,12 +14,12 @@ import {
   Col,
   CtaButton,
   Icon,
+  ModalContent,
   Text,
   Theme,
   useStylesheet,
 } from '@polito/lib/ui';
 
-import { ModalContent } from '../../core/components/ModalContent';
 import { useCourses } from '../../core/contexts/CoursesContext';
 
 type Props = {

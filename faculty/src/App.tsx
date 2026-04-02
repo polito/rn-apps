@@ -4,10 +4,10 @@ import { initReactI18next } from 'react-i18next';
 import { LogBox } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { PreferencesProvider } from '@polito/lib/core';
+import { APP_VERSION, BUILD_NO, SENTRY_DSN } from '@env';
+import { PreferencesProvider, Sentry, initSentry } from '@polito/lib/core';
 import { FeedbackProvider, SplashProvider, UiProvider } from '@polito/lib/ui';
 import Mapbox from '@rnmapbox/maps';
-import * as Sentry from '@sentry/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // <-- import React Query
@@ -21,11 +21,11 @@ import {
   initialAppPreferences,
 } from '~/core/types/preferences';
 import { setDeepLink } from '~/utils/linking';
-import { initSentry } from '~/utils/sentry';
 
 import i18n from 'i18next';
 
 import { en, it } from '../assets/translations';
+import { isEnvProduction } from './utils/env';
 
 LogBox.ignoreLogs([
   'VirtualizedLists should never be nested inside plain ScrollViews',
@@ -44,9 +44,17 @@ i18n.use(initReactI18next).init({
   },
 });
 
+initSentry({
+  dsn: SENTRY_DSN,
+  enabled: isEnvProduction,
+  appName: 'faculty',
+  version: APP_VERSION,
+  dist: BUILD_NO,
+  environment: process.env.NODE_ENV || 'development',
+});
+
 // Crea l'istanza di QueryClient
 const queryClient = new QueryClient();
-initSentry();
 
 Mapbox.setAccessToken(process.env.MAPBOX_TOKEN! || 'no_token');
 

@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform } from 'react-native';
 
-import { TicketStatus } from '@polito/api-client';
 import { useScreenTitle } from '@polito/lib/core';
 import {
   BottomBarSpacer,
@@ -11,6 +10,7 @@ import {
   RefreshControl,
   useSafeAreaSpacing,
 } from '@polito/lib/ui';
+import { TicketStatus } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetTickets } from '../../../core/queries/ticketHooks';

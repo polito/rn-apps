@@ -16,6 +16,8 @@ import {
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 
+import { AppPreferences } from '~/core/types/preferences';
+
 import i18next from 'i18next';
 import { Settings } from 'luxon';
 
@@ -24,7 +26,8 @@ import { SectionList } from '../../core/components/SectionList';
 // Componente Select per la lingua (rimane uguale)
 const LanguageSelect = () => {
   const { t } = useTranslation();
-  const { language, updatePreference } = usePreferencesContext();
+  const { language, updatePreference } =
+    usePreferencesContext<AppPreferences>();
   const isDisabled = useOfflineDisabled();
 
   const options = useMemo(() => {

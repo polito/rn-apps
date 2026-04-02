@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
-import { ExamGrade } from '@polito/api-client';
 import { formatDate } from '@polito/lib/core';
 import {
   DisclosureIndicator,
@@ -11,6 +10,7 @@ import {
   type Theme,
   useStylesheet,
 } from '@polito/lib/ui';
+import { ExamGrade } from '@polito/student-api-client';
 
 import { formatGrade } from '../../../utils/grades';
 

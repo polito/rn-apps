@@ -4,9 +4,11 @@ import { Linking, Platform, TouchableHighlightProps } from 'react-native';
 import ContextMenu from 'react-native-context-menu-view';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
-import { CourseAssignment } from '@polito/api-client';
-import { IS_ANDROID, formatDateTime, formatFileSize } from '@polito/lib/core';
+import { IS_ANDROID, formatDateTime } from '@polito/lib/core';
 import { FileListItem, IconButton, useTheme } from '@polito/lib/ui';
+import { CourseAssignment } from '@polito/student-api-client';
+
+import { formatFileSize } from '~/utils/files';
 
 interface Props {
   item: CourseAssignment;

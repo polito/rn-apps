@@ -55,10 +55,8 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
 
   const queryClient = useQueryClient();
 
-  const { updatePreference, agendaScreen } =
+  const { updatePreference, agendaScreen, language, accessibility } =
     usePreferencesContext<AppPreferences>();
-
-  const { language, accessibility } = usePreferencesContext<AppPreferences>();
 
   const { t } = useTranslation();
   const { palettes, fontSizes } = useTheme();
@@ -158,6 +156,10 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
         id: 'daily',
         title: t('agendaScreen.dailyLayout'),
       },
+      {
+        id: 'hide-event',
+        title: t('agendaScreen.hideEvent'),
+      },
     ],
     [t],
   );
@@ -173,6 +175,10 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
       });
     };
 
+    const navigateToHideEventScreen = () => {
+      navigation.navigate('AgendaPreferences');
+    };
+
     const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
       switch (event) {
         case 'daily':
@@ -180,6 +186,9 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
           break;
         case 'refresh':
           refetch();
+          break;
+        case 'hide-event':
+          navigateToHideEventScreen();
           break;
       }
     };

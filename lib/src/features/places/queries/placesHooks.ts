@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
 
-import { GetPlacesRequest, PlacesApi } from '@polito/api-client';
 import {
   GetBuildingsRequest,
   GetFreeRoomsRequest,
-} from '@polito/api-client/apis/PlacesApi';
+} from '@polito/student-api-client';
+import { GetPlacesRequest, PlacesApi } from '@polito/student-api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { pluckData } from '../../../core/utils/queries';
 
 //TODO: replace with @polito/map-client when available
-export { DefaultConfig } from '@polito/api-client';
+export { DefaultConfig } from '@polito/student-api-client';
 
 const SITES_QUERY_KEY = 'sites';
 const BUILDINGS_QUERY_KEY = 'buildings';

@@ -33,7 +33,7 @@ import {
   faExpand,
   faMagnifyingGlassLocation,
 } from '@fortawesome/free-solid-svg-icons';
-import { PlaceOverview } from '@polito/api-client';
+import { PlaceOverview } from '@polito/student-api-client';
 import { useHeaderHeight } from '@react-navigation/elements';
 import Mapbox from '@rnmapbox/maps';
 

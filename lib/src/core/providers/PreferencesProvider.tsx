@@ -67,6 +67,7 @@ export const PreferencesProvider = <Extra extends Record<string, any> = {}>({
         colorScheme: 'system',
         language: deviceLanguage,
         accessibility: {},
+        placesSearched: [],
         updatePreference: () => {},
         ...initialPreferences,
       }) as unknown as PreferencesContextProps<Extra>,
