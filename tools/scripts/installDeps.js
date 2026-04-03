@@ -2,62 +2,67 @@
 
 const fs = require('fs');
 const path = require('path');
+const { Command } = require('commander');
 const {
   run,
-  createCliError,
   validateWorkspaces,
   getWorkspaces,
+  getCurrentWorkspace,
+  MONOREPO_ROOT,
 } = require('./utils');
 
 // Checks
 
-const args = process.argv.slice(2);
-const allFlagIndex = args.indexOf('--all');
-const workspaceFlagIndex = args.indexOf('--workspaces');
+const program = new Command();
+program.showHelpAfterError();
 
-const addCommandUsage = `
-npm run add {dependencies} -- --all
-npm run add {dependencies} -- --workspaces {workspaces}`;
-const fail = createCliError(addCommandUsage);
+program
+  .name('npm run add')
+  .usage('<dependencies...> [options]')
+  .description('Add dependencies to workspaces with proper hoisting')
+  .argument('<dependencies...>', 'Dependencies to add')
+  .option('-a, --all', 'Target all workspaces')
+  .option('-w, --workspaces <workspaces...>', 'Target workspaces');
 
-if (allFlagIndex !== -1 && workspaceFlagIndex !== -1) {
-  fail('Cannot use both --all and --workspaces flags together.');
+// NPM uses "--" to separate script args; ensure commander
+// sees only the user-provided arguments.
+const userArgs = process.argv.slice(2).filter(arg => arg !== '--');
+program.parse(['node', 'installDeps.js', ...userArgs]);
+
+const { all: isAll, workspaces: workspacesFlag } = program.opts();
+
+if (isAll && workspacesFlag) {
+  program.error('Cannot use both --all and --workspaces flags together.');
 }
 
-if (allFlagIndex === -1 && workspaceFlagIndex === -1) {
-  fail('You must specify either --all or --workspaces {workspaces}.');
+let targetWorkspaces = [];
+const currentWorkspace = getCurrentWorkspace();
+const hasWorkspaces =
+  Array.isArray(workspacesFlag) && workspacesFlag.length > 0;
+
+if (isAll) {
+  targetWorkspaces = getWorkspaces();
+} else if (hasWorkspaces) {
+  validateWorkspaces(workspacesFlag);
+  targetWorkspaces = workspacesFlag;
+} else if (currentWorkspace && currentWorkspace !== 'root') {
+  targetWorkspaces = [currentWorkspace];
+} else {
+  program.error(
+    'You must specify --all, --workspaces, or run this from a workspace directory.',
+  );
 }
 
-const firstFlagIndex = Math.min(
-  allFlagIndex === -1 ? Infinity : allFlagIndex,
-  workspaceFlagIndex === -1 ? Infinity : workspaceFlagIndex,
-);
-
-const dependencies = args.slice(0, firstFlagIndex);
+const dependencies = program.args || [];
 const cleanDependencies = dependencies.map(dep => {
   const lastAtIndex = dep.lastIndexOf('@');
   return lastAtIndex > 0 ? dep.substring(0, lastAtIndex) : dep;
 });
 
-if (dependencies.length === 0) {
-  fail('Provide at least one dependency name before the flags.');
-}
-
-let targetWorkspaces = [];
-const isAll = allFlagIndex !== -1;
-
-if (!isAll) {
-  targetWorkspaces = args.slice(workspaceFlagIndex + 1);
-  if (targetWorkspaces.length === 0) {
-    fail('Provide at least one workspace name after --workspaces flag.');
-  }
-  validateWorkspaces(targetWorkspaces);
-}
-
 // Logic
 
-const libPath = path.resolve(__dirname, '../../lib');
-const jsonPath = path.resolve(libPath, 'package.json');
+const libPath = path.join(MONOREPO_ROOT, 'lib');
+const jsonPath = path.join(libPath, 'package.json');
 const rawData = fs.readFileSync(jsonPath, 'utf-8');
 const libJson = JSON.parse(rawData);
 
@@ -88,6 +93,10 @@ const uninstallWorkspaceFlags = finalWorkspaces
 
 const installWorkspaceFlags = finalWorkspaces.map(ws => `-w ${ws}`).join(' ');
 
+const originalDir = process.cwd();
+const isLibWorkspace = path.basename(originalDir) === 'lib';
+// Change to project root directory to execute the command
+process.chdir(MONOREPO_ROOT);
 // Remove the dependency from all workspaces (except lib) to ensure a clean slate.
 const uninstallCommand =
   `npm uninstall ${cleanDependencies.join(' ')} ${uninstallWorkspaceFlags}`.trim();
@@ -101,4 +110,8 @@ run(command);
 console.log(
   '✅ Dependencies added successfully! Running fixpilot to clean up...',
 );
-run('npm run fixpilot -- --skip-modules --skip-derived');
+
+if (!isLibWorkspace) {
+  process.chdir(isAll || workspacesFlag ? MONOREPO_ROOT : originalDir);
+  run('npm run fixpilot -- --skip-modules --skip-derived');
+}

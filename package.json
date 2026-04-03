@@ -29,12 +29,12 @@
     "base:ios": "npm --workspace=base run ios",
     "base:android": "npm --workspace=base run android",
     "add": "node ./tools/scripts/installDeps.js",
-    "deps:check": "node ./tools/scripts/checkDeps.js",
-    "deps:fix": "node ./tools/scripts/checkDeps.js -- --fix",
     "remove": "node ./tools/scripts/manageDeps.js",
     "update": "node ./tools/scripts/manageDeps.js",
-    "postinstall": "npm run fixpilot -- --skip-modules --skip-derived",
-    "prepare": "husky tools/.husky"
+    "deps:check": "node ./tools/scripts/checkDeps.js",
+    "deps:fix": "node ./tools/scripts/checkDeps.js -- --fix",
+    "prepare": "husky tools/.husky",
+    "postinstall": "npm run fixpilot -- --skip-modules --skip-derived"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.5.0",
@@ -45,6 +45,7 @@
     "@total-typescript/ts-reset": "^0.5.1",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/node": "^20.19.30",
+    "commander": "^14.0.3",
     "eslint": "^8.19.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-react": "^7.30.1",

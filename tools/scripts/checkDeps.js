@@ -10,6 +10,8 @@
 // 1. Remove the dependencies from all workspaces
 // 2. Reinstall them at the root level
 
+const { Command } = require('commander');
+
 const {
   run,
   maxVersionGreater,
@@ -17,7 +19,18 @@ const {
   getPackageLockData,
 } = require('./utils');
 
-const isFixing = process.argv.includes('--fix');
+const program = new Command();
+program.showHelpAfterError();
+program
+  .name('npm run deps')
+  .description('Check for dependency hoisting issues')
+  .option('--fix', 'Automatically fix dependency issues');
+
+// Strip that bare terminator so commander can still parse options.
+const userArgs = process.argv.slice(2).filter(arg => arg !== '--');
+program.parse(['node', 'checkDeps.js', ...userArgs]);
+
+const { fix: isFixing } = program.opts();
 
 const lockJson = getPackageLockData();
 const workspaces = getWorkspaces();

@@ -14,7 +14,10 @@
     "types:check": "tsc --noEmit",
     "check": "npm run lint:check && npm run format:check && npm run types:check",
     "pod-install": "cd ios && bundle exec pod install",
-    "fixpilot": "node ../scripts/fixpilot.js"
+    "fixpilot": "node ../tools/scripts/fixpilot.js",
+    "add": "node ../tools/scripts/installDeps.js",
+    "remove": "node ../tools/scripts/manageDeps.js",
+    "update": "node ../tools/scripts/manageDeps.js"
   },
   "dependencies": {
     "@d11/react-native-fast-image": "^8.11.1",

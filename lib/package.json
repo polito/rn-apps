@@ -7,6 +7,11 @@
     "./features/*": "./src/features/*/index.ts",
     "./ui": "./src/ui/index.ts"
   },
+  "scripts": {
+    "add": "node ../tools/scripts/installDeps.js",
+    "remove": "node ../tools/scripts/manageDeps.js",
+    "update": "node ../tools/scripts/manageDeps.js"
+  },
   "peerDependencies": {
     "@d11/react-native-fast-image": "^8.11.1",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",

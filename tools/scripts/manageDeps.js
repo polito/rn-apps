@@ -1,20 +1,14 @@
 #!/usr/bin/env node
-
+const { Command } = require('commander');
 const {
   run,
   getPackageLockData,
-  createCliError,
   validateWorkspaces,
   getWorkspaces,
+  getCurrentWorkspace,
+  MONOREPO_ROOT,
 } = require('./utils');
-
-const failUpdate = createCliError(`
-  npm run update <dep1[@version]> [dep2[@version] ...] [--workspaces <ws1> <ws2> ...]\
-  `);
-
-const failRemove = createCliError(`
-  npm run remove <dep1> [dep2 ...] [--workspaces <ws1> <ws2> ...]\
-  `);
+const path = require('path');
 
 const action = process.env.npm_lifecycle_event;
 if (!['update', 'remove'].includes(action)) {
@@ -25,29 +19,58 @@ if (!['update', 'remove'].includes(action)) {
 }
 
 const isUpdate = action === 'update';
-const args = process.argv.slice(2);
-const workspaceFlagIndex = args.indexOf('--workspaces');
+const program = new Command();
 
-const firstFlagIndex = Math.min(
-  workspaceFlagIndex === -1 ? Infinity : workspaceFlagIndex,
-);
+program.showHelpAfterError();
 
-const toManage = args.slice(0, firstFlagIndex);
-
-if (toManage.length === 0) {
-  if (isUpdate) {
-    failUpdate('No dependencies specified to update.');
-  } else {
-    failRemove('No dependencies specified to remove.');
-  }
+if (isUpdate) {
+  program
+    .name('npm run update')
+    .usage('<dep1[@version]> [dep2[@version] ...] [options]')
+    .description('Update dependencies to latest version across workspaces');
+} else {
+  program
+    .name('npm run remove')
+    .usage('<dep1> [dep2 ...] [options]')
+    .description('Remove dependencies across workspaces');
 }
 
-const targetWorkspaces = args.slice(firstFlagIndex + 1);
-if (targetWorkspaces.length > 0) {
-  validateWorkspaces(targetWorkspaces);
+program
+  .argument('<dependencies...>', 'Dependencies to manage')
+  .option('-a, --all', 'Target all workspaces')
+  .option('-w, --workspaces <workspaces...>', 'Target workspaces');
+
+// NPM uses "--" to separate script args; ensure commander
+// sees only the user-provided arguments.
+const userArgs = process.argv.slice(2).filter(arg => arg !== '--');
+program.parse(['node', 'manageDeps.js', ...userArgs]);
+
+const { all: allFlag, workspaces: workspacesFlag } = program.opts();
+
+if (allFlag && workspacesFlag) {
+  program.error('Cannot use both --all and --workspaces flags together.');
 }
 
-const clearDeps = toManage.map(dep => {
+let targetWorkspaces = [];
+const currentWorkspace = getCurrentWorkspace();
+const hasWorkspaces =
+  Array.isArray(workspacesFlag) && workspacesFlag.length > 0;
+
+if (allFlag) {
+  targetWorkspaces = getWorkspaces();
+} else if (hasWorkspaces) {
+  validateWorkspaces(workspacesFlag);
+  targetWorkspaces = workspacesFlag;
+} else if (currentWorkspace && currentWorkspace !== 'root') {
+  targetWorkspaces = [currentWorkspace];
+} else {
+  program.error(
+    'You must specify --all, --workspaces, or run this from a workspace directory.',
+  );
+}
+
+const deps = program.args || [];
+const clearDeps = deps.map(dep => {
   const lastAtIndex = dep.lastIndexOf('@');
   if (lastAtIndex > 0) {
     const name = dep.substring(0, lastAtIndex);
@@ -61,21 +84,11 @@ const clearDeps = toManage.map(dep => {
   return dep;
 });
 
-// Update/Remove using workspaces if avaiable
-if (targetWorkspaces.length > 0) {
-  const workspacesArgs = targetWorkspaces.map(ws => `-w ${ws}`).join(' ');
-  const depsArgs = clearDeps.join(' ');
-  const command = `npm ${isUpdate ? 'install' : 'uninstall'} ${depsArgs}${isUpdate ? '@latest' : ''} ${workspacesArgs}`;
-  run(command);
-  process.exit(0);
-}
-
 const lockData = getPackageLockData();
 
 const packages = lockData.packages || {};
-const existingWorkspaces = getWorkspaces();
 const pDeps = {};
-for (const workspace of existingWorkspaces) {
+for (const workspace of targetWorkspaces) {
   const set = new Set([
     ...Object.keys(packages[workspace]?.dependencies || {}),
     ...Object.keys(packages[workspace]?.devDependencies || {}),
@@ -84,12 +97,22 @@ for (const workspace of existingWorkspaces) {
   pDeps[workspace] = set;
 }
 
+// Change to project root directory to execute the command
+const originalDir = process.cwd();
+const isLibWorkspace = path.basename(originalDir) === 'lib';
+process.chdir(MONOREPO_ROOT);
+
 for (const dep of clearDeps) {
   const needDep = Object.keys(pDeps).filter(ws => pDeps[ws].has(dep));
   if (needDep.length === 0) {
-    console.warn(`⚠️  Warning: Dependency ${dep} not found in any workspace.`);
+    console.warn(`⚠️  Warning: Dependency ${dep} not found.`);
     continue;
   }
   const command = `npm ${isUpdate ? 'install' : 'uninstall'} ${dep}${isUpdate ? '@latest' : ''} -w ${needDep.join(' -w ')}`;
   run(command);
+}
+
+if (!isLibWorkspace) {
+  process.chdir(allFlag || workspacesFlag ? MONOREPO_ROOT : originalDir);
+  run('npm run fixpilot -- --skip-modules --skip-derived');
 }

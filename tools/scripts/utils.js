@@ -2,6 +2,9 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const { program } = require('commander');
+
+const MONOREPO_ROOT = path.resolve(__dirname, '../../');
 
 const handleStop = () => {
   console.log('\n❌ Operation cancelled by user');
@@ -36,18 +39,6 @@ function run(
   }
 }
 
-const createCliError = commandUsage => {
-  return (message, showUsage = true) => {
-    console.error(`\x1b[31m❌ Error:\x1b[0m ${message}`);
-    if (showUsage && commandUsage) {
-      console.error(`\n\x1b[2mUsage:\x1b[0m${commandUsage}\n`);
-    } else {
-      console.error('');
-    }
-    process.exit(1);
-  };
-};
-
 const maxVersionGreater = (v1, v2) => {
   const parse = v =>
     v
@@ -66,7 +57,7 @@ const maxVersionGreater = (v1, v2) => {
 };
 
 const getPackageJsonData = () => {
-  const jsonPath = path.resolve(__dirname, '../../package.json');
+  const jsonPath = path.join(MONOREPO_ROOT, 'package.json');
   if (!fs.existsSync(jsonPath)) {
     console.error('❌ package.json not found.');
     process.exit(1);
@@ -76,7 +67,7 @@ const getPackageJsonData = () => {
 };
 
 const getPackageLockData = () => {
-  const lockPath = path.resolve(__dirname, '../../package-lock.json');
+  const lockPath = path.join(MONOREPO_ROOT, 'package-lock.json');
   if (!fs.existsSync(lockPath)) {
     console.error('❌ package-lock.json not found.');
     process.exit(1);
@@ -93,7 +84,6 @@ function getWorkspaces() {
 function validateWorkspaces(targetWorkspaces) {
   if (targetWorkspaces.length === 0) return;
   const existingWorkspaces = getWorkspaces();
-  const fail = createCliError();
 
   const invalidWorkspaces = targetWorkspaces.filter(
     ws => !existingWorkspaces.includes(ws),
@@ -103,12 +93,31 @@ function validateWorkspaces(targetWorkspaces) {
     const invalidList = invalidWorkspaces.map(ws => `  - ${ws}`).join('\n');
     const existingList = existingWorkspaces.map(ws => `  - ${ws}`).join('\n');
 
-    fail(
-      `❌ The following workspaces do not exist:\n${invalidList}\n\n` +
+    program.error(
+      `The following workspaces do not exist:\n${invalidList}\n\n` +
         `✅ Available workspaces:\n${existingList}`,
       false,
     );
   }
+}
+
+function getCurrentWorkspace() {
+  let currentDir = process.cwd();
+  if (currentDir === MONOREPO_ROOT) {
+    return 'root';
+  }
+  while (
+    currentDir !== MONOREPO_ROOT &&
+    currentDir !== path.dirname(currentDir)
+  ) {
+    const pkgPath = path.join(currentDir, 'package.json');
+    if (fs.existsSync(pkgPath)) {
+      return path.basename(currentDir);
+    }
+    currentDir = path.dirname(currentDir);
+  }
+
+  return null;
 }
 
 module.exports = {
@@ -118,5 +127,6 @@ module.exports = {
   validateWorkspaces,
   getPackageJsonData,
   getPackageLockData,
-  createCliError,
+  getCurrentWorkspace,
+  MONOREPO_ROOT,
 };

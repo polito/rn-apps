@@ -4,7 +4,12 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const { run, getWorkspaces } = require('./utils');
+const {
+  run,
+  getWorkspaces,
+  getCurrentWorkspace,
+  MONOREPO_ROOT,
+} = require('./utils');
 
 const { IS_CONVERGING_NOW, CI } = process.env;
 
@@ -33,9 +38,11 @@ console.log(`
 This script will clean up and prepare the iOS build environment and make sure everything is in a good state.
 `);
 
+const currentWorkspace = getCurrentWorkspace();
+
 try {
   // Change to project root directory
-  process.chdir(path.resolve(__dirname, '../..'));
+  process.chdir(MONOREPO_ROOT);
 
   // check node version is that in .nvmrc
   const nvmrc = fs.readFileSync('.nvmrc', 'utf-8').trim();
@@ -80,13 +87,16 @@ try {
   }
 
   // read workspaces form package.json (skipping lib since it isn't a react-native package)
-  const workspaces = getWorkspaces().filter(w => w !== 'lib');
+  let workspaces = getWorkspaces().filter(w => w !== 'lib');
+  if (currentWorkspace && currentWorkspace !== 'root') {
+    workspaces = [currentWorkspace];
+  }
   console.log('🔍 found workspaces:', workspaces.join(', '));
 
   const skipModules = process.argv.includes('--skip-modules');
   for (const workspace of workspaces) {
     console.log(`\n🔧 Processing workspace: ${workspace}`);
-    const workspacePath = path.resolve(__dirname, '../..', workspace);
+    const workspacePath = path.join(MONOREPO_ROOT, workspace);
     process.chdir(workspacePath);
     console.log('🎵 cleaning Pods and build files');
     run('rm -rf ios/Pods ios/build ios/.xcode.env.local');
@@ -96,7 +106,7 @@ try {
     }
   }
 
-  process.chdir(path.resolve(__dirname, '../..'));
+  process.chdir(MONOREPO_ROOT);
   if (!skipModules) {
     console.log('\n🧼 cleaning root node_modules');
     run('rm -rf node_modules');
@@ -111,7 +121,7 @@ try {
   run('bundle install');
 
   for (const workspace of workspaces) {
-    const workspacePath = path.resolve(__dirname, '../..', workspace);
+    const workspacePath = path.join(MONOREPO_ROOT, workspace);
     const iosPath = path.join(workspacePath, 'ios');
     if (fs.existsSync(iosPath)) {
       process.chdir(iosPath);
