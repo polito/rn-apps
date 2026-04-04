@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android --active-arch-only --appIdSuffix=dev ./students",
-    "ios": "react-native run-ios || echo 'If iOS startup fails, try running: npm run fixpilot'",
+    "android": "react-native run-android --active-arch-only --appIdSuffix=dev ./students --port 8081",
+    "ios": "react-native run-ios --port 8081 || echo 'If iOS startup fails, try running: npm run fixpilot'",
     "start": "react-native start --reset-cache",
     "commit": "commit",
     "lint:check": "eslint --max-warnings=0 './**/*.{ts,tsx}'",

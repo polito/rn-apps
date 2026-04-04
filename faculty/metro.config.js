@@ -25,6 +25,11 @@ config.resolver = {
   },
 };
 
+config.server = {
+  ...config.server,
+  port: 8082,
+};
+
 // Disable Babel's RC lookup, reducing the config loading in Babel - resulting in faster bootup transformations
 config.transformer.enableBabelRCLookup = false;
 

@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios || echo 'If iOS startup fails, try running: npm run fixpilot'",
+    "android": "react-native run-android --port 8083",
+    "ios": "react-native run-ios --port 8083 || echo 'If iOS startup fails, try running: npm run fixpilot'",
     "start": "react-native start --reset-cache",
     "commit": "commit",
     "lint:check": "eslint --max-warnings=0 './**/*.{ts,tsx}'",
