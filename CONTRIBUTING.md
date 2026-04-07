@@ -15,7 +15,7 @@ by [.nvmrc](./.nvmrc), see [Deeper Shell integration](https://github.com/nvm-sh/
 
 GitHub requires the usage of a personal access token to pull from public registries.
 
-To work on this project, you'll need to configure it correctly in order to be able to pull `@polito/api-client`.
+To work on this project, you'll need to configure it correctly in order to be able to pull the PoliTo API clients.
 
 You'll need to create a personal access token with the `read:packages` scope and add it to your `.npmrc` file.
 
@@ -49,19 +49,30 @@ the `DOWNLOADS:READ` scope. Paste the generated token in the following files:
 ## Project setup
 
 ```shell
-$ git clone https://github.com/polito/students-app.git # Clone the repo
-$ cd students-app
-$ npm install # Install dependencies
-$ npm run start # Start React Native server
+$ git clone https://github.com/polito/rn-apps.git # Clone the monorepo
+$ cd rn-apps
+$ npm install # Install root dependencies
 ```
 
 See [Running on Device](https://reactnative.dev/docs/running-on-device) for guidance on how to prepare your
 environment to run the app.
 
+## Dependency Management
+
+To keep all applications in sync and avoid version conflicts, we use custom wrappers for dependency management. These scripts ensure that the `package-lock.json` at the root remains the single source of truth.
+
+- **Adding/Removing/Updating:**
+  Use `npm run add`, `npm run remove`, or `npm run update`.
+  - If run from a **workspace folder**: it targets only that app/library.
+  - If run from the **root**: it executes the action across the entire monorepo.
+  - **Help**: Append `-h` or `--help` to any of these three commands to see the full command structure and available options.
+- **Consistency Checks:**
+  Run `npm run deps:check` to identify hoisting issues or version mismatches between workspaces. Use `npm run deps:fix` to attempt an automatic repair.
+
 ## iOS local development
 
 In order to build and run the application locally (especially if you're not part of the official Apple Development Team)
-[select the `students dev` scheme](https://developer.apple.com/documentation/xcode/building-and-running-an-app#Select-a-scheme-for-your-target).
+[select the `dev` scheme](https://developer.apple.com/documentation/xcode/building-and-running-an-app#Select-a-scheme-for-your-target).
 This scheme is pre-configured to automatically manage signing and will show up with a `DEV` badge and a dedicated bundle
 identifier on the destination device in order to distinguish it from the production app.
 
@@ -69,6 +80,9 @@ identifier on the destination device in order to distinguish it from the product
 
 The iOS toolchain is quite fragile and may break due to various reasons (Xcode updates, library updates, etc...).
 To help with this, a small helper script called `fixpilot` is provided to automatically fix common issues.
+
+Fixpilot is designed to be context-aware: it automatically identifies the correct workspace to ensure that all recovery actions are applied to the right environment. Notably, if triggered from the monorepo root, it will automatically detect and run the fix across all apps present in the project.
+
 You can run it with:
 
 ```shell
@@ -77,12 +91,11 @@ $ npm run fixpilot
 
 ## Project structure
 
-The project uses feature modules to keep the main areas semantically organized. Each module should be divided by entity
+Each app workspace in this monorepo (for example, `students/`) uses feature modules to keep the main areas semantically organized. Each module should be divided by entity
 type (`components`, `hooks`, `styles`, `screens`). The `core` module contains general-purpose items, used across the
 app.
 
-The `lib` folder is used to isolate library/design-system-level components that one day may be extracted into a
-dedicated package for reuse.
+A typical app workspace (e.g. `students/`) is structured as follows:
 
 ```
 ├── assets
@@ -99,10 +112,25 @@ dedicated package for reuse.
 │   │   :   ├── hooks
 │   │       └── screens
 │   └── utils                # Utilities
-└── lib                      # Library modules
 ```
 
+## Lib
+
+The `lib` folder is used to isolate library/design-system-level components that are shared across all apps.
+
+Imports from `@polito/lib` are intentionally split into three main entry points, to keep concerns well separated:
+
+- `@polito/lib/core` – shared logic, hooks, types, utilities and cross-cutting infrastructure
+- `@polito/lib/features/<feature>` – feature-specific building blocks and domain helpers
+- `@polito/lib/ui` – design-system components, layout primitives, theming and navigation helpers
+
 ## Npm scripts
+
+The table below describes the npm scripts defined inside each app workspace (for example, in `students/package.json`).
+When working from the monorepo root, you can either:
+
+- run them directly from the specific package directory
+- or use the root-level convenience scripts.
 
 | Name          | Description                                                                 |
 | ------------- | --------------------------------------------------------------------------- |
@@ -114,6 +142,19 @@ dedicated package for reuse.
 | `types:check` | Runs static type checking                                                   |
 | `check`       | Runs all code checks                                                        |
 | `commit`      | Runs commitlint's CLI                                                       |
+
+### Root-level scripts
+
+At the monorepo root there are additional scripts to orchestrate work across all workspaces:
+
+- `npm run lint` / `lint:check` – lint the TypeScript/TSX codebase with ESLint.
+- `npm run format` / `format:check` – format (or just check) the codebase with Prettier.
+- `npm run types:check` – run static type checking across all workspaces.
+- `npm run check` – run the full quality pipeline (lint, format check, types, dependency checks, knip).
+- `npm run start:students` / `start:faculty` / `start:base` – start the React Native dev server for each app.
+- `npm run students:ios` / `students:android` (and similar for `faculty` and `base`) – run the apps on device/emulator.
+- `npm run deps:check` / `deps:fix` – check and fix dependency hoisting issues.
+- `npm run add` / `remove` / `update` – Core dependency management helpers. See [Dependency Management](#dependency-management) for usage and help.
 
 ## Code style
 

@@ -99,7 +99,7 @@ export const CourseInfoScreen = () => {
           <SectionHeader
             title={t('courseInfoTab.staffSectionTitle')}
             linkTo="#"
-            linkname="Edit"
+            // linkname="Edit" TODO: fix link behavior and uncomment this
           />
           <OverviewList indented style={styles.listContainer}>
             {selectedCourse.staff.map((member, index) => {
