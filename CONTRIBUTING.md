@@ -31,21 +31,6 @@ Windows) with the following content:
 //npm.pkg.github.com/:_authToken=YOUR_TOKEN_HERE
 ```
 
-### Add a MapBox token
-
-MapBox requires a token in order to install the `@rnmapbox/maps` npm package and pull native dependencies. Create a
-MapBox account and [create a new token](https://account.mapbox.com/access-tokens/create) with all the public scopes and
-the `DOWNLOADS:READ` scope. Paste the generated token in the following files:
-
-- `.env`
-- `android/local.properties`
-- a `.netrc` file in your home directory with the following content:
-  ```
-  machine api.mapbox.com
-    login mapbox
-    password <TOKEN HERE>
-  ```
-
 ## Project setup
 
 ```shell
@@ -177,28 +162,57 @@ is encouraged. Notably, here are some rules we think are important:
 
 ## Git workflow
 
+To maintain a clean and automated ecosystem, we use a unified naming convention for branches, commits, PRs, and issues based on the monorepo structure.
+
+### Common Scopes & Types
+
+Before creating anything, identify the correct **Scope** and **Type**:
+
+- **Allowed Scopes**: Must correspond to the monorepo folders:
+  - `students`, `faculty`, `base`, `lib`, `tools`
+  - _Global_: Omit the scope (or leave it empty) for changes affecting the entire monorepo.
+- **Common Types**:
+  - `feat` (new feature)
+  - `fix` (bug fix)
+  - `docs` (documentation changes only)
+  - `chore` (maintenance/deps)
+
+### Branching Model
+
+We follow a [Git Flow](https://danielkummer.github.io/git-flow-cheatsheet/)-like model. Always branch off from `main`.
+
+**Format**: `<type>/<scope>/<short-description>`
+
+- **Multi-scope**: Use a hyphen to join scopes (e.g., `feat/students-faculty/...`).
+- **Examples**:
+  - `feat/students/add-sso-login`
+  - `fix/lib/shadow-button-android`
+  - `chore/update-monorepo-structure` (Global: no scope)
+
 ### Commits
 
-We use [Conventional Commits](https://conventionalcommits.org/) to keep a consistent style and automatically generate
-changelog entries for new releases. The `npm run commit` script can be of help with this: it runs the commitlint cli to
-help you
-write good commit messages.
+We follow the [Conventional Commits](https://conventionalcommits.org/) specification.
 
-### Git flow
+**Format**: `<type>(<scope1>,<scope2>): <description>`
 
-We use a [Git Flow](https://danielkummer.github.io/git-flow-cheatsheet/)-like branching model. In short:
+- **Multi-scope**: Use commas inside the parentheses: `fix(students,faculty): description`.
+- **Global**: Omit the parentheses: `chore: description`.
+- **References**: Use footers like `Refs #10` or `Fixes #123`.
 
-- `main` is the stable trunk.
-- Use `feature/...` branches to work on new features.
-- Use `hotfix/...`branches to perform urgent fixes.
-- When useful, add a scope to your commits (ie `feat(teaching): implement trascript page`). Don't repeat branch
-  prefixes here.
-- Use kebab-case for branch names and scopes (ie `feature/data-fetching`).
-- Use commit footers to reference related issues (ie `Refs #10`). Be sure to mark resolved issues
-  with `Closes/Fixes #<issue_number>`.
+> ⚠️ Respecting this structure is essential for a clean and coherent changelog.
 
-> ⚠️ Respecting these rules is important in order to obtain a clean and coherent changelog. If you have any doubt don't
-> hesitate to ask for help.
+> 💡 **Tip**: Run `npm run commit` for a guided CLI helper that ensures compliance.
+
+### Pull Request & Issue Naming
+
+Both must follow the same naming convention for better traceability in our project boards.
+
+**Format**: `[<SCOPE1>,<SCOPE2>] <Description>`
+
+- **Examples**:
+  - `[Students] Implement login with SSO`
+  - `[Lib] Refactor Design System: Typography & Colors`
+  - `[Faculty,Students] Fix session timeout handling`
 
 ### Hooks
 
