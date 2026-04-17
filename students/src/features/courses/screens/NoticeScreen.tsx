@@ -1,11 +1,13 @@
 import { useCallback, useMemo } from 'react';
 import { SafeAreaView, ScrollView } from 'react-native';
 
-import { linkUrls, sanitizeHtml } from '@polito/lib/core';
-import { BottomBarSpacer, RefreshControl, useTheme } from '@polito/lib/ui';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { linkUrls, sanitizeHtml } from '../../../../../lib/src/core/utils/html';
+import { BottomBarSpacer } from '../../../../../lib/src/ui/components/BottomBarSpacer';
+import { RefreshControl } from '../../../../../lib/src/ui/components/RefreshControl';
+import { useTheme } from '../../../../../lib/src/ui/hooks/useTheme';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
@@ -28,6 +30,17 @@ export const NoticeScreen = ({ route }: Props) => {
         ),
       ),
     [noticesQuery, noticeId],
+  );
+
+  const htmlRenderersProps = useMemo(
+    () => ({
+      table: {
+        webViewProps: {
+          style: { overflow: 'hidden' },
+        },
+      },
+    }),
+    [],
   );
 
   useFocusEffect(
@@ -55,6 +68,7 @@ export const NoticeScreen = ({ route }: Props) => {
             paddingTop: 0,
             paddingHorizontal: spacing[5],
           }}
+          renderersProps={htmlRenderersProps}
         />
         <BottomBarSpacer />
       </SafeAreaView>
