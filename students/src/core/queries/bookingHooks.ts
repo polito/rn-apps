@@ -1,14 +1,19 @@
 import { useTranslation } from 'react-i18next';
 
-import { pluckData, setTimeoutAccessibilityInfoHelper } from '@polito/lib/core';
 import { BookingsApi } from '@polito/student-api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { DateTime } from 'luxon';
 
+import {
+  pluckData,
+  setTimeoutAccessibilityInfoHelper,
+  toOASTruncable,
+} from '../../../../lib/src/core/utils';
+
 export const BOOKINGS_QUERY_KEY = ['bookings'];
 const BOOKINGS_TOPICS_QUERY_KEY = ['booking', 'topics'];
-const BOOKINGS_SLOTS_QUERY_KEY = ['booking', 'slots'];
+export const BOOKINGS_SLOTS_QUERY_KEY = ['booking', 'slots'];
 const BOOKINGS_SEATS_QUERY_KEY = ['booking', 'seats'];
 
 const useBookingClient = (): BookingsApi => {
@@ -52,8 +57,8 @@ export const useGetBookingSlots = (
       bookingClient
         .getBookingSlots({
           bookingTopicId,
-          fromDate: fromDate.toJSDate(),
-          toDate: toDate.toJSDate(),
+          fromDate: toOASTruncable(fromDate),
+          toDate: toOASTruncable(toDate),
         })
         .then(pluckData),
     enabled: true,
@@ -142,7 +147,11 @@ export const useCreateBooking = () => {
         },
       }),
     onSuccess() {
-      return client.invalidateQueries({ queryKey: BOOKINGS_QUERY_KEY });
+      return Promise.all([
+        client.invalidateQueries({ queryKey: BOOKINGS_QUERY_KEY }),
+        client.invalidateQueries({ queryKey: BOOKINGS_SLOTS_QUERY_KEY }),
+        client.invalidateQueries({ queryKey: ['agenda'] }),
+      ]);
     },
   });
 };
@@ -161,6 +170,7 @@ export const useDeleteBooking = (bookingId: number) => {
       );
       return Promise.all([
         client.invalidateQueries({ queryKey: BOOKINGS_QUERY_KEY }),
+        client.invalidateQueries({ queryKey: BOOKINGS_SLOTS_QUERY_KEY }),
         client.invalidateQueries({ queryKey: ['agenda'] }),
       ]);
     },
