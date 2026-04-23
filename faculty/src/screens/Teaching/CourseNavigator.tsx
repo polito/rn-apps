@@ -1,21 +1,26 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, useWindowDimensions } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
-import { faSliders } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faSliders } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
+  HeaderAccessory,
   IconButton,
+  Tab,
+  Tabs,
   Text,
-  TopTabBar,
   useTheme,
-  useTitlesStyles,
 } from '@polito/lib/ui';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {
+  MaterialTopTabBarProps,
+  createMaterialTopTabNavigator,
+} from '@react-navigation/material-top-tabs';
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { FileNavigator } from '../../features/files/navigation/FileNavigator';
 import { CourseAssignmentsTab } from './CourseAssignmentsTab';
-import { CourseFilesTab } from './CourseFilesTab';
 import { CourseInfoScreen } from './CourseInfoScreen';
 import { CourseLecturesTab } from './CourseLecturesTab';
 import { CourseNoticesTab } from './CourseNoticesTab';
@@ -35,60 +40,205 @@ interface CourseTabsParamList extends ParamListBase, TeachingStackParamList {
 
 const TopTabs = createMaterialTopTabNavigator<CourseTabsParamList>();
 
+const CourseTopTabBar = ({
+  state,
+  descriptors,
+  navigation,
+}: MaterialTopTabBarProps) => {
+  const { dark, palettes, fontFamilies, fontSizes, fontWeights, spacing } =
+    useTheme();
+
+  return (
+    <HeaderAccessory>
+      <Tabs>
+        {state.routes.map((route, index) => {
+          const { options } = descriptors[route.key];
+          const label =
+            options.tabBarLabel !== undefined
+              ? options.tabBarLabel
+              : options.title !== undefined
+                ? options.title
+                : route.name;
+          const isFocused = state.index === index;
+
+          const onPress = () => {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
+
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate({
+                name: route.name,
+                merge: true,
+                params: {},
+              });
+            }
+          };
+
+          const onLongPress = () => {
+            navigation.emit({
+              type: 'tabLongPress',
+              target: route.key,
+            });
+          };
+
+          return (
+            <Tab
+              key={route.key}
+              selected={isFocused}
+              accessibilityLabel={options.tabBarAccessibilityLabel}
+              testID={route.key}
+              onPress={onPress}
+              onLongPress={onLongPress}
+              textStyle={{
+                fontFamily: fontFamilies.body,
+                fontSize: fontSizes.xs + 1,
+                fontStyle: 'normal',
+                fontWeight: fontWeights.medium,
+                lineHeight: 19.5,
+              }}
+              style={[
+                {
+                  display: 'flex',
+                  paddingVertical: spacing[1] - 1,
+                  paddingHorizontal: spacing[2.5],
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: spacing[1],
+                },
+                !isFocused
+                  ? {
+                      borderWidth: 1,
+                      borderColor: palettes.primary[dark ? 600 : 50],
+                    }
+                  : undefined,
+              ]}
+            >
+              {label as string}
+            </Tab>
+          );
+        })}
+      </Tabs>
+    </HeaderAccessory>
+  );
+};
+
 export const CourseNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { palettes, fontSizes, spacing } = theme;
-  const { width } = useWindowDimensions();
+  const { dark, palettes, fontSizes, spacing, fontFamilies, fontWeights } =
+    theme;
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
+  const headerSideWidth = 44;
 
   const [showPlusButton, setShowPlusButton] = useState<boolean>(false); // <--- Stato
   const [_formPage, setFormPage] = useState('');
   const [tab, setTab] = useState('Info');
-  const titleStyles = useTitlesStyles(theme);
+  const headerTitle = (() => {
+    switch (tab) {
+      case 'Info':
+        return 'Info';
+      case 'Staff':
+        return t('courseStaffTab.title');
+      case 'Notices':
+        return t('common.notice_plural');
+      case 'Files':
+        return t('courseFilesTab.title');
+      case 'Lectures':
+        return t('common.lecture_plural');
+      case 'Students':
+        return t('other.students');
+      case 'Assignments':
+        return t('courseAssignmentsTab.title');
+      default:
+        return t('common.course');
+    }
+  })();
 
   useEffect(() => {
     navigation.setOptions({
+      headerTitleAlign: 'center',
+      headerBackVisible: false,
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          accessibilityLabel={t('common.back')}
+          style={{
+            display: 'flex',
+            width: headerSideWidth,
+            paddingLeft: 2,
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 10,
+            paddingVertical: spacing[2],
+          }}
+        >
+          <FontAwesomeIcon
+            icon={faChevronLeft}
+            color={palettes.primary[500]}
+            style={{ width: 11.421, height: 19.878 }}
+          />
+        </TouchableOpacity>
+      ),
       headerTitle: () => (
         <Text
           variant="heading"
           style={{
-            fontSize: 17,
+            fontSize: 16,
+            color: dark ? palettes.gray[50] : palettes.primary[700],
+            fontWeight: fontWeights.medium,
             textAlign: 'center',
+            fontFamily: fontFamilies.body,
+            fontStyle: 'normal',
           }}
           numberOfLines={1}
         >
-          {t('common.course')}
+          {headerTitle}
         </Text>
       ),
       headerRight: () =>
         tab === 'Info' ? (
-          <IconButton
-            icon={faSliders}
-            color={palettes.primary[400]}
-            size={fontSizes.lg}
-            accessibilityLabel={t('common.preferences')}
-            hitSlop={{ left: spacing[3], right: spacing[3] }}
-          />
+          <View
+            style={{
+              width: headerSideWidth,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <IconButton
+              icon={faSliders}
+              color={palettes.primary[400]}
+              size={fontSizes.lg}
+              accessibilityLabel={t('common.preferences')}
+              hitSlop={{ left: spacing[3], right: spacing[3] }}
+            />
+          </View>
         ) : (
-          <View style={{ width: width * 0.1 }} />
+          <View style={{ width: headerSideWidth }} />
         ),
     });
   }, [
     tab,
+    headerSideWidth,
     showPlusButton, // 🔥 Trigga il re-render dell'header
     fontSizes.lg,
+    fontSizes.md,
     navigation,
     spacing,
+    fontFamilies.body,
+    fontWeights.medium,
     t,
+    dark,
     palettes.primary,
-    titleStyles.headerTitleStyle,
-    width,
+    palettes.gray,
+    headerTitle,
   ]);
 
   return (
-    <TopTabs.Navigator tabBar={props => <TopTabBar {...props} />}>
+    <TopTabs.Navigator tabBar={props => <CourseTopTabBar {...props} />}>
       <TopTabs.Screen
         name="CourseInfoScreen"
         component={CourseInfoScreen}
@@ -102,6 +252,7 @@ export const CourseNavigator = () => {
           focus: () => {
             setShowPlusButton(false);
             setFormPage('');
+            setTab('Info');
           },
         }}
       />
@@ -118,6 +269,7 @@ export const CourseNavigator = () => {
           focus: () => {
             setShowPlusButton(false);
             setFormPage('');
+            setTab('Staff');
           },
         }}
       />
@@ -134,12 +286,13 @@ export const CourseNavigator = () => {
           focus: () => {
             setShowPlusButton(false);
             setFormPage('');
+            setTab('Notices');
           },
         }}
       />
       <TopTabs.Screen
         name="CourseFilesScreen"
-        component={CourseFilesTab}
+        component={FileNavigator}
         options={{ title: t('courseFilesTab.title') }}
         listeners={{
           tabPress: () => {
@@ -150,6 +303,7 @@ export const CourseNavigator = () => {
           focus: () => {
             setShowPlusButton(true);
             setFormPage('Files');
+            setTab('Files');
           },
         }}
       />
@@ -166,6 +320,7 @@ export const CourseNavigator = () => {
           focus: () => {
             setShowPlusButton(true);
             setFormPage('Lecture');
+            setTab('Lectures');
           },
         }}
       />
@@ -182,6 +337,7 @@ export const CourseNavigator = () => {
           focus: () => {
             setShowPlusButton(false);
             setFormPage('Students');
+            setTab('Students');
           },
         }}
       />
@@ -198,6 +354,7 @@ export const CourseNavigator = () => {
           focus: () => {
             setShowPlusButton(false);
             setFormPage('');
+            setTab('Assignments');
           },
         }}
       />

@@ -1,6 +1,7 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, TextInput, View } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -17,33 +18,17 @@ import {
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 
-import { useCourses } from '../../core/contexts/CoursesContext';
+import { useCourses } from '../../../core/contexts/CoursesContext';
 
-// Funzione per gestire il cambio della data (gestione robusta per Android)
-// const _handleDateChange = (
-//   event: DateTimePickerEvent | undefined,
-//   selectedDate: Date | undefined,
-//   setShowPicker: React.Dispatch<React.SetStateAction<boolean>>,
-//   setDate: React.Dispatch<React.SetStateAction<Date>>,
-// ) => {
-//   if (!event) {
-//     // Evento undefined/null (es. Android chiusura picker senza selezionare)
-//     setShowPicker(false);
-//     return;
-//   }
-
-//   if (event.type === 'set' && selectedDate) {
-//     setShowPicker(false);
-//     setDate(selectedDate);
-//   } else if (event.type === 'dismissed') {
-//     setShowPicker(false);
-//   }
-// };
+// TODO: replace with real values from the file picker / API response
+const DEFAULT_FILE_SIZE = 100;
+const DEFAULT_MIME_TYPE = 'pdf';
 
 export const ModifyFileScreen = () => {
   const navigation = useNavigation();
   const { selectedCourse, updateCourseFile, selectedFile } = useCourses();
-  const { spacing, palettes } = useTheme();
+  const { t } = useTranslation();
+  useTheme();
   const styles = useStylesheet(createStyles);
   const [title, setTitle] = useState(selectedFile?.name ?? '');
   const [selectedDirectory, setSelectedDirectory] = useState(
@@ -60,8 +45,8 @@ export const ModifyFileScreen = () => {
       id: selectedFile.id,
       name: title,
       date: selectedFile.date,
-      size: 100, // Dimensione del file, se disponibile
-      mimeType: 'pdf', // Tipo MIME di default
+      size: DEFAULT_FILE_SIZE, // Dimensione del file, se disponibile
+      mimeType: DEFAULT_MIME_TYPE, // Tipo MIME di default
       dirId: Number(selectedDirectory),
     };
 
@@ -78,8 +63,8 @@ export const ModifyFileScreen = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
-        <Text variant="heading" style={{ marginLeft: 85 }}>
-          Modifica file
+        <Text variant="heading" style={styles.headerTitle}>
+          {t('courseFilesTab.modifyFileTitle', { defaultValue: 'Edit file' })}
         </Text>
       ),
       headerLeft: () => (
@@ -90,49 +75,35 @@ export const ModifyFileScreen = () => {
         />
       ),
     });
-  }, [navigation]);
+  }, [navigation, styles.headerTitle, t]);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.root}>
       <View style={styles.container}>
-        <Card style={{ marginBottom: spacing[4] }}>
-          <Text
-            variant="heading"
-            style={{
-              marginLeft: 15,
-              marginTop: 5,
-              color: palettes.gray[800],
-            }}
-          >
-            Titolo
+        <Card style={styles.card}>
+          <Text variant="heading" style={styles.sectionTitle}>
+            {t('common.title', { defaultValue: 'Title' })}
           </Text>
           <TextInput
-            placeholder="Inserisci il titolo"
+            placeholder={
+              t('courseFilesTab.insertFileTitle', {
+                defaultValue: 'Enter file title',
+              }) ?? ''
+            }
             value={title}
             onChangeText={setTitle}
-            style={{
-              borderBottomWidth: 0,
-              padding: spacing[2],
-              marginLeft: 10,
-              fontSize: 16,
-              color: palettes.gray[600],
-            }}
+            style={styles.textInput}
           />
         </Card>
 
-        <Card style={{ marginBottom: spacing[4] }}>
-          <Text
-            variant="heading"
-            style={{
-              marginLeft: 15,
-              marginTop: 5,
-              color: palettes.gray[800],
-            }}
-          >
-            Cartella
+        <Card style={styles.card}>
+          <Text variant="heading" style={styles.sectionTitle}>
+            {t('other.folder', { defaultValue: 'Folder' })}
           </Text>
           <Select
-            label="Seleziona Directory"
+            label={t('other.selectDirectory', {
+              defaultValue: 'Select directory',
+            })}
             value={selectedDirectory}
             onSelectOption={setSelectedDirectory}
             options={
@@ -144,26 +115,20 @@ export const ModifyFileScreen = () => {
           />
         </Card>
 
-        <Card
-          style={{
-            width: 100,
-            height: 100,
-            justifyContent: 'center',
-            alignItems: 'center',
-            alignSelf: 'center',
-          }}
-        >
+        <Card style={styles.uploadCard}>
           <IconButton
             icon={faFileUpload}
             onPress={() => {}}
             noPadding
             size={40}
           />
-          <Text>Carica file</Text>
+          <Text>{t('other.uploadFile', { defaultValue: 'Upload file' })}</Text>
         </Card>
       </View>
       <CtaButton
-        title="Conferma modifica"
+        title={t('courseFilesTab.confirmEdit', {
+          defaultValue: 'Confirm edit',
+        })}
         action={handlePublish}
         absolute={false}
         variant="filled"
@@ -173,36 +138,38 @@ export const ModifyFileScreen = () => {
   );
 };
 
-const createStyles = ({ colors, palettes }: Theme) =>
+const createStyles = ({ palettes, spacing, fontSizes }: Theme) =>
   StyleSheet.create({
+    root: {
+      flex: 1,
+    },
+    headerTitle: {
+      marginLeft: 85,
+    },
     container: {
       flex: 1,
-      paddingBottom: 20, // Distanza tra il contenuto e il fondo per il bottone
+      paddingBottom: spacing[6], // Distanza tra il contenuto e il fondo per il bottone
     },
-    buttonContainer: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      paddingHorizontal: 20,
-      paddingVertical: 8,
-      marginBottom: 16, // Distanza dal bordo inferiore
+    card: {
+      marginBottom: spacing[4], // Distanza dal bordo inferiore
     },
-    blueButtonContainer: {
-      backgroundColor: palettes.primary[500],
-      marginHorizontal: 20,
-      borderRadius: 8,
-      padding: 0,
+    sectionTitle: {
+      marginLeft: 15,
+      marginTop: 5,
+      color: palettes.gray[800],
     },
-    button: {
-      backgroundColor: palettes.primary[500],
-      paddingVertical: 12,
-      borderRadius: 8,
+    textInput: {
+      borderBottomWidth: 0,
+      padding: spacing[2],
+      marginLeft: 10,
+      fontSize: fontSizes.md,
+      color: palettes.gray[600],
+    },
+    uploadCard: {
+      width: 100,
+      height: 100,
+      justifyContent: 'center',
       alignItems: 'center',
-    },
-    buttonText: {
-      color: colors.white,
-      fontSize: 16,
-      fontWeight: 'bold',
+      alignSelf: 'center',
     },
   });

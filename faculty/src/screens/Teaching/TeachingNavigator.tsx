@@ -24,6 +24,7 @@ import {
 } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { ModifyFileScreen } from '../../features/files/screens/ModifyFileScreen';
 import { ExamScreen } from '../ExamScreen';
 import { ExamScreen2 } from '../ExamScreen2';
 import { ExamScreen3 } from '../ExamScreen3';
@@ -34,11 +35,9 @@ import { CourseGuideScreen } from './CourseGuideScreen';
 import { CourseSharedScreens } from './CourseSharedScreens';
 import { StaffScreen } from './CourseStaffScreen';
 import { CoursesScreen } from './CoursesScreen';
-import { FilesFormScreen } from './FilesFormScreen';
 import { FormScreen } from './FormScreen';
 import { LectureFormScreen } from './LectureFormScreen';
 import { LessonScreen } from './LessonScreen';
-import { ModifyFileScreen } from './ModifyFileScreen';
 import { ModifyLectureScreen } from './ModifyLectureScreen';
 import { ModifyNoticeScreen } from './ModifyNoticeScreen';
 import { NoticeFormScreen } from './NoticeFormScreen';
@@ -75,7 +74,6 @@ export type TeachingStackParamList = {
   Exam2: undefined;
   StudentContact: undefined;
   NoticeForm: undefined;
-  FilesForm: undefined;
   LectureForm: undefined;
   StudentsForm: undefined;
   Contatto: undefined;
@@ -187,14 +185,6 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="NoticeForm"
         component={NoticeFormScreen}
-        options={{
-          headerShown: true,
-        }}
-      />
-
-      <Stack.Screen
-        name="FilesForm"
-        component={FilesFormScreen}
         options={{
           headerShown: true,
         }}
