@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { useOfflineDisabled } from '@polito/lib/core';
 import {
@@ -15,12 +16,18 @@ import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
 import { CourseAssignmentListItem } from '../components/CourseAssignmentListItem';
 import { useCourseContext } from '../contexts/CourseContext';
+import { useOptionalCourseTabContentTopStyle } from '../hooks/useCourseCollapsingContentStyle';
+import { useCourseCollapsingTabScroll } from '../hooks/useCourseCollapsingTabScroll';
 import { CourseTabsParamList } from '../navigation/CourseNavigator';
 
 type Props = MaterialTopTabScreenProps<
   CourseTabsParamList,
   'CourseAssignmentsScreen'
 >;
+
+const assignmentsStyles = StyleSheet.create({
+  grow: { flex: 1 },
+});
 
 export const CourseAssignmentsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
@@ -31,9 +38,17 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
   const isCacheMissing = useOfflineDisabled(
     () => assignmentsQuery.data === undefined,
   );
+  const { scrollHandler } = useCourseCollapsingTabScroll();
+  const topContentStyle = useOptionalCourseTabContentTopStyle();
+
   return (
     <>
-      <ScrollView
+      <Animated.ScrollView
+        style={assignmentsStyles.grow}
+        contentContainerStyle={topContentStyle}
+        contentInsetAdjustmentBehavior="never"
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
         refreshControl={<RefreshControl manual queries={[assignmentsQuery]} />}
       >
         <SafeAreaView>
@@ -63,7 +78,7 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
           )}
           <BottomBarSpacer />
         </SafeAreaView>
-      </ScrollView>
+      </Animated.ScrollView>
       <CtaButton
         title={t('courseAssignmentUploadScreen.title')}
         action={() =>

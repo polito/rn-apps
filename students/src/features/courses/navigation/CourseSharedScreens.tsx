@@ -5,6 +5,7 @@ import { createHeaderCloseButton, useTheme } from '@polito/lib/ui';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { IS_IOS_LIQUID_GLASS } from '../contexts/CourseCollapsingHeaderContext';
 import { CourseAssignmentPdfCreationScreen } from '../screens/CourseAssignmentPdfCreationScreen';
 import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
@@ -75,10 +76,23 @@ export const CourseSharedScreens = () => {
         component={CourseNavigator}
         getId={({ params }: { params: any }) => `${params.id}`}
         options={({ route: { params } }: { route: { params: any } }) => ({
-          headerLargeStyle: {
-            backgroundColor: colors.headersBackground,
-          },
-          headerTransparent: false,
+          ...(IS_IOS_LIQUID_GLASS
+            ? {
+                headerTransparent: true,
+                headerBlurEffect: 'systemThickMaterial',
+                scrollEdgeEffects: {
+                  top: 'none',
+                },
+                headerStyle: { backgroundColor: 'transparent' },
+                headerLargeStyle: { backgroundColor: 'transparent' },
+              }
+            : {
+                headerLargeStyle: {
+                  backgroundColor: colors.headersBackground,
+                },
+                headerTransparent: false,
+                headerBlurEffect: 'none',
+              }),
           headerLargeTitle: false,
           headerShadowVisible: false,
           headerBackButtonDisplayMode: 'minimal',

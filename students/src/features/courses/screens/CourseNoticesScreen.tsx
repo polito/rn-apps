@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList } from 'react-native';
+import { StyleSheet } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import {
   APP_TIMEZONE,
@@ -10,7 +11,6 @@ import {
 } from '@polito/lib/core';
 import {
   BottomBarSpacer,
-  GlobalStyles,
   IndentedDivider,
   ListItem,
   OverviewList,
@@ -26,6 +26,12 @@ import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
 import { useCourseContext } from '../contexts/CourseContext';
+import { useOptionalCourseTabContentTopStyle } from '../hooks/useCourseCollapsingContentStyle';
+import { useCourseCollapsingTabScroll } from '../hooks/useCourseCollapsingTabScroll';
+
+const noticesStyles = StyleSheet.create({
+  grow: { flex: 1 },
+});
 
 export const CourseNoticesScreen = () => {
   const { t } = useTranslation();
@@ -55,12 +61,17 @@ export const CourseNoticesScreen = () => {
     clearNotificationScope(noticesNotificationScope);
   });
 
+  const { scrollHandler } = useCourseCollapsingTabScroll();
+  const topContentStyle = useOptionalCourseTabContentTopStyle();
+
   return (
-    <FlatList
-      contentInsetAdjustmentBehavior="automatic"
+    <Animated.FlatList
+      contentInsetAdjustmentBehavior="never"
       initialNumToRender={15}
-      style={GlobalStyles.grow}
-      contentContainerStyle={paddingHorizontal}
+      style={noticesStyles.grow}
+      contentContainerStyle={[paddingHorizontal, topContentStyle]}
+      onScroll={scrollHandler}
+      scrollEventThrottle={16}
       refreshControl={<RefreshControl manual queries={[noticesQuery]} />}
       data={notices}
       keyExtractor={item => item.id.toString()}

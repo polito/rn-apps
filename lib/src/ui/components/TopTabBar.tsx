@@ -1,3 +1,5 @@
+import type { StyleProp, ViewStyle } from 'react-native';
+
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 
 import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
@@ -5,14 +7,19 @@ import { HeaderAccessory } from './HeaderAccessory';
 import { Tab } from './Tab';
 import { Tabs } from './Tabs';
 
+type Props = MaterialTopTabBarProps & {
+  containerStyle?: StyleProp<ViewStyle>;
+};
+
 export const TopTabBar = ({
   state,
   descriptors,
   navigation,
-}: MaterialTopTabBarProps) => {
+  containerStyle,
+}: Props) => {
   const { accessibility } = usePreferencesContext();
   return (
-    <HeaderAccessory>
+    <HeaderAccessory style={containerStyle}>
       <Tabs>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];

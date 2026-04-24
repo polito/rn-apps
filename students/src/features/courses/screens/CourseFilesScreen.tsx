@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { usePreferencesContext } from '@polito/lib/core';
@@ -37,6 +38,9 @@ import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { CourseRecentFileListItem } from '../components/CourseRecentFileListItem';
 import { FileScreenHeader } from '../components/FileScreenHeader';
+import { COURSE_EXPANDED_HEADER_HEIGHT } from '../contexts/CourseCollapsingHeaderContext';
+import { useOptionalCourseTabContentTopStyle } from '../hooks/useCourseCollapsingContentStyle';
+import { useOptionalCourseCollapsingTabScroll } from '../hooks/useCourseCollapsingTabScroll';
 import { useFileManagement } from '../hooks/useFileManagement';
 import { FileStackParamList } from '../navigation/FileNavigator';
 
@@ -96,84 +100,109 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
   }, [navigation, courseId, updatePreference]);
 
   const { spacing } = useTheme();
+  const { scrollHandler } = useOptionalCourseCollapsingTabScroll();
+  const topContentStyle = useOptionalCourseTabContentTopStyle();
 
   const footerSpacerHeight = spacing[20];
 
-  return (
-    <>
-      <Row align="center" style={[paddingHorizontal, styles.searchBar]}>
-        <TranslucentTextField
-          autoFocus={searchFilter.length !== 0}
-          autoCorrect={false}
-          leadingIcon={faSearch}
-          value={searchFilter}
-          onChangeText={setSearchFilter}
-          style={[GlobalStyles.grow, styles.textField]}
-          label={t('courseDirectoryScreen.search')}
-          editable={true}
-          isClearable={!!searchFilter}
-          onClear={() => setSearchFilter('')}
-          onClearLabel={t('contactsScreen.clearSearch')}
+  const listHeader = useMemo(
+    () => (
+      <>
+        <Row align="center" style={[paddingHorizontal, styles.searchBar]}>
+          <TranslucentTextField
+            autoFocus={searchFilter.length !== 0}
+            autoCorrect={false}
+            leadingIcon={faSearch}
+            value={searchFilter}
+            onChangeText={setSearchFilter}
+            style={[GlobalStyles.grow, styles.textField]}
+            label={t('courseDirectoryScreen.search')}
+            editable={true}
+            isClearable={!!searchFilter}
+            onClear={() => setSearchFilter('')}
+            onClearLabel={t('contactsScreen.clearSearch')}
+          />
+        </Row>
+        <FileScreenHeader
+          activeSort={activeSort}
+          sortOptions={sortOptions}
+          onPressSortOption={onPressSortOption}
+          isDirectoryView={false}
+          onToggleView={onToggleView}
+          isSelectDisabled={isDownloading || isRemoving}
         />
-      </Row>
-      <FileScreenHeader
-        activeSort={activeSort}
-        sortOptions={sortOptions}
-        onPressSortOption={onPressSortOption}
-        isDirectoryView={false}
-        onToggleView={onToggleView}
-        isSelectDisabled={isDownloading || isRemoving}
-      />
+      </>
+    ),
+    [
+      searchFilter,
+      setSearchFilter,
+      styles,
+      paddingHorizontal,
+      t,
+      activeSort,
+      sortOptions,
+      onPressSortOption,
+      onToggleView,
+      isDownloading,
+      isRemoving,
+    ],
+  );
 
-      <View style={{ flex: 1 }}>
-        <FlatList
-          contentInsetAdjustmentBehavior="automatic"
-          data={fileListData}
-          extraData={{ downloads, isRemoving }}
-          contentContainerStyle={paddingHorizontal}
-          scrollEnabled={scrollEnabled}
-          keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
-          initialNumToRender={15}
-          maxToRenderPerBatch={15}
-          windowSize={4}
-          renderItem={({ item }) => {
-            const fileItem = item as CourseFileOverview;
-            return (
-              <CourseRecentFileListItem
-                item={fileItem}
-                onSwipeStart={onSwipeStart}
-                onSwipeEnd={onSwipeEnd}
-                enableMultiSelect={false}
-                disabled={isRemoving}
-                onLongPress={() => {
-                  if (isDownloading || isRemoving) return;
-                  multiSelectNav?.navigate('CourseFileMultiSelect', {
-                    courseId,
-                    mode: 'recent',
-                    initialSelectedIds: [fileItem.id],
-                  });
-                }}
-              />
-            );
-          }}
-          refreshControl={<RefreshControl queries={[recentFilesQuery]} />}
-          ItemSeparatorComponent={Platform.select({
-            ios: IndentedDivider,
-          })}
-          ListFooterComponent={
-            <>
-              <View style={{ height: footerSpacerHeight }} />
-              <BottomBarSpacer />
-            </>
-          }
-          ListEmptyComponent={
-            !recentFilesQuery.isLoading ? (
-              <OverviewList emptyStateText={t('courseFilesTab.empty')} />
-            ) : null
-          }
-        />
-      </View>
-    </>
+  return (
+    <Animated.FlatList
+      contentInsetAdjustmentBehavior="never"
+      style={{ flex: 1 }}
+      ListHeaderComponent={listHeader}
+      data={fileListData}
+      extraData={{ downloads, isRemoving }}
+      contentContainerStyle={[
+        paddingHorizontal,
+        topContentStyle,
+        { paddingBottom: COURSE_EXPANDED_HEADER_HEIGHT },
+      ]}
+      onScroll={scrollHandler}
+      scrollEventThrottle={16}
+      scrollEnabled={scrollEnabled}
+      keyExtractor={(item: CourseDirectory | CourseFileOverview) => item.id}
+      initialNumToRender={15}
+      maxToRenderPerBatch={15}
+      windowSize={4}
+      renderItem={({ item }) => {
+        const fileItem = item as CourseFileOverview;
+        return (
+          <CourseRecentFileListItem
+            item={fileItem}
+            onSwipeStart={onSwipeStart}
+            onSwipeEnd={onSwipeEnd}
+            enableMultiSelect={false}
+            disabled={isRemoving}
+            onLongPress={() => {
+              if (isDownloading || isRemoving) return;
+              multiSelectNav?.navigate('CourseFileMultiSelect', {
+                courseId,
+                mode: 'recent',
+                initialSelectedIds: [fileItem.id],
+              });
+            }}
+          />
+        );
+      }}
+      refreshControl={<RefreshControl queries={[recentFilesQuery]} />}
+      ItemSeparatorComponent={Platform.select({
+        ios: IndentedDivider,
+      })}
+      ListFooterComponent={
+        <>
+          <View style={{ height: footerSpacerHeight }} />
+          <BottomBarSpacer />
+        </>
+      }
+      ListEmptyComponent={
+        !recentFilesQuery.isLoading ? (
+          <OverviewList emptyStateText={t('courseFilesTab.empty')} />
+        ) : null
+      }
+    />
   );
 };
 

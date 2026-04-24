@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
@@ -25,7 +20,6 @@ import {
   PersonListItem,
   RefreshControl,
   Row,
-  ScreenTitle,
   Section,
   SectionHeader,
   StatefulMenuView,
@@ -49,7 +43,6 @@ import {
   useGetCourseEditions,
   useGetCourseExams,
 } from '../../../core/queries/courseHooks';
-import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetPersons } from '../../../core/queries/peopleHooks';
 import { LectureCard } from '../../agenda/components/LectureCard';
 import { useGetNextLecture } from '../../agenda/queries/lectureHooks';
@@ -57,6 +50,8 @@ import { ExamListItem } from '../../teaching/components/ExamListItem';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseStatisticsFilterType } from '../components/CourseStatisticsFilters.tsx';
 import { useCourseContext } from '../contexts/CourseContext';
+import { useOptionalCourseTabContentTopStyle } from '../hooks/useCourseCollapsingContentStyle';
+import { useCourseCollapsingTabScroll } from '../hooks/useCourseCollapsingTabScroll';
 
 type StaffMember = Person & { courseRole: 'roleHolder' | 'roleCollaborator' };
 
@@ -70,7 +65,6 @@ export const CourseInfoScreen = () => {
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const { data: editions } = useGetCourseEditions(courseId);
   const courseQuery = useGetCourse(courseId);
-  const coursesQuery = useGetCourses();
   const {
     nextLecture,
     dayOfMonth,
@@ -96,28 +90,6 @@ export const CourseInfoScreen = () => {
     (getUnreadsCountPerCourse(null, editions) ?? 0) - (unreadsCurrentYear ?? 0);
 
   const isOffline = useOfflineDisabled();
-
-  const isModule = useMemo(() => {
-    if (!coursesQuery.data) return false;
-    return coursesQuery.data.some(
-      course =>
-        course.modules?.some(module => module.id === courseId) ||
-        course.modules?.some(module =>
-          module.previousEditions.some(e => +e.id === courseId),
-        ),
-    );
-  }, [coursesQuery.data, courseId]);
-
-  const parentCourse = useMemo(() => {
-    if (!coursesQuery.data || !isModule) return null;
-    return coursesQuery.data.find(
-      course =>
-        course.modules?.some(module => module.id === courseId) ||
-        course.modules?.some(module =>
-          module.previousEditions.some(e => +e.id === courseId),
-        ),
-    );
-  }, [coursesQuery.data, courseId, isModule]);
 
   const { getParent } = useNavigation();
 
@@ -168,10 +140,16 @@ export const CourseInfoScreen = () => {
   );
   const isGuideDisabled = useOfflineDisabled(isGuideDataMissing);
   const isStatisticsDisabled = !courseQuery.data?.shortcode;
+  const { scrollHandler } = useCourseCollapsingTabScroll();
+  const topContentStyle = useOptionalCourseTabContentTopStyle();
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
+    <Animated.ScrollView
+      style={GlobalStyles.grow}
+      contentContainerStyle={topContentStyle}
+      contentInsetAdjustmentBehavior="never"
+      onScroll={scrollHandler}
+      scrollEventThrottle={16}
       refreshControl={
         <RefreshControl
           queries={[courseQuery, courseExamsQuery, ...staffQueries]}
@@ -180,19 +158,6 @@ export const CourseInfoScreen = () => {
       }
     >
       <SafeAreaView>
-        <Section style={styles.heading}>
-          <ScreenTitle title={courseQuery.data?.name} />
-          <Text variant="caption">
-            {courseQuery.data?.shortcode ?? ' '}
-            {isModule && ` - ${parentCourse?.name}`}
-            {!isModule && courseQuery.data?.cfu && (
-              <Text variant="caption">
-                {' - '}
-                {courseQuery.data.cfu} {t('common.cfu').toLowerCase()}
-              </Text>
-            )}
-          </Text>
-        </Section>
         <Card style={styles.metricsCard} accessible={true}>
           <Grid>
             <View
@@ -387,7 +352,7 @@ export const CourseInfoScreen = () => {
         </Section>
         <BottomBarSpacer />
       </SafeAreaView>
-    </ScrollView>
+    </Animated.ScrollView>
   );
 };
 
@@ -399,16 +364,15 @@ const createStyles = ({
   shapes,
 }: Theme) =>
   StyleSheet.create({
-    heading: {
-      paddingTop: spacing[5],
-      paddingHorizontal: spacing[4],
+    grow: {
+      flex: 1,
     },
     metricsCard: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       paddingHorizontal: spacing[5],
       paddingVertical: spacing[4],
-      marginTop: 0,
+      marginTop: spacing[4],
       marginBottom: spacing[7],
     },
     periodMetric: {

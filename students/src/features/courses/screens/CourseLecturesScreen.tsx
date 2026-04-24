@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Animated,
   Platform,
   Pressable,
   SectionList,
@@ -9,6 +8,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -20,6 +20,7 @@ import {
 import { formatDate, useOfflineDisabled } from '@polito/lib/core';
 import {
   BottomBarSpacer,
+  GlobalStyles,
   Icon,
   IndentedDivider,
   ListItem,
@@ -36,23 +37,28 @@ import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useGetCourseLectures } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { useCourseContext } from '../contexts/CourseContext';
+import { useOptionalCourseTabContentTopStyle } from '../hooks/useCourseCollapsingContentStyle';
+import { useCourseCollapsingTabScroll } from '../hooks/useCourseCollapsingTabScroll';
 import {
   CourseLecture,
   CourseLectureSection,
 } from '../types/CourseLectureSections';
 import { isRecordedVC, isVideoLecture } from '../utils/lectures';
 
+const AnimatedSectionList = Animated.createAnimatedComponent(
+  SectionList,
+) as unknown as typeof SectionList<CourseLecture, CourseLectureSection>;
+
 export const CourseLecturesScreen = () => {
   const { t } = useTranslation();
   const safeAreaInsets = useSafeAreaInsets();
   const courseId = useCourseContext();
   const { spacing, colors } = useTheme();
-  const scrollPosition = useRef(new Animated.Value(0));
   const courseLecturesQuery = useGetCourseLectures(courseId);
   const { clearNotificationScope } = useNotifications();
   const [lectures, setLectures] = useState<CourseLectureSection[]>([]);
-  const sectionListRef =
-    useRef<SectionList<CourseLecture, CourseLectureSection>>(null);
+  const { scrollHandler } = useCourseCollapsingTabScroll();
+  const topContentStyle = useOptionalCourseTabContentTopStyle();
   const isCacheMissing = useOfflineDisabled(
     () => courseLecturesQuery.data === undefined,
   );
@@ -112,12 +118,15 @@ export const CourseLecturesScreen = () => {
   };
 
   return (
-    <SectionList
-      ref={sectionListRef}
-      contentInsetAdjustmentBehavior="automatic"
+    <AnimatedSectionList
+      style={GlobalStyles.grow}
+      contentContainerStyle={topContentStyle}
+      contentInsetAdjustmentBehavior="never"
       sections={lectures}
       refreshControl={<RefreshControl queries={[courseLecturesQuery]} />}
       stickySectionHeadersEnabled={true}
+      onScroll={scrollHandler}
+      scrollEventThrottle={16}
       ListEmptyComponent={() => {
         if (!courseLecturesQuery.isLoading) {
           return (
@@ -128,10 +137,6 @@ export const CourseLecturesScreen = () => {
         }
         return null;
       }}
-      onScroll={Animated.event(
-        [{ nativeEvent: { contentOffset: { y: scrollPosition.current } } }],
-        { useNativeDriver: false },
-      )}
       ItemSeparatorComponent={Platform.select({
         ios: () => (
           <IndentedDivider
