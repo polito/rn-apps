@@ -33,7 +33,7 @@ type Props = {
   directories?: Directory[];
   onClose?: () => void;
   onConfirm?: (targetDirectoryId: number) => void;
-  onAddFolder?: (name: string) => void;
+  onAddFolder?: (name: string) => number | undefined;
 };
 
 /** Modal-like screen used for move destination selection. */
@@ -42,7 +42,7 @@ export const MoveFilesScreen = ({
   directories = [],
   onClose = () => {},
   onConfirm = () => {},
-  onAddFolder = () => {},
+  onAddFolder = () => undefined,
 }: Props) => {
   const { t } = useTranslation();
   const { palettes, colors, dark } = useTheme();
@@ -81,7 +81,14 @@ export const MoveFilesScreen = ({
       const name =
         folderName.trim() ||
         t('courseFilesTab.newFolder', { defaultValue: 'New Folder' });
-      onAddFolder(name);
+      const createdDirectoryId = onAddFolder(name);
+      setView('choose-folder');
+      setFolderName('');
+      setIsFolderInputFocused(false);
+      if (typeof createdDirectoryId === 'number') {
+        setSelectedDirId(createdDirectoryId);
+      }
+      return;
     } else if (selectedDirId !== null) {
       onConfirm(selectedDirId);
     }

@@ -24,12 +24,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { formatDate } from '@polito/lib/core';
 import { Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
-import {
-  errorCodes,
-  isErrorWithCode,
-  pick,
-  types,
-} from '@react-native-documents/picker';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -40,6 +34,13 @@ import { CreateFolderIcon } from '../components/CreateFolderIcon';
 
 export type UploadType = 'file' | 'folder';
 const DEFAULT_FOLDER_NAME = 'New Folder';
+const MOCKED_UPLOADED_FILES = [
+  'Lecture_01_Introduction.pdf',
+  'Assignment_01_Guidelines.pdf',
+  'Course_Outline_2026.pdf',
+  'Week_02_Notes.pdf',
+  'Lab_Instructions.pdf',
+];
 
 type Props = NativeStackScreenProps<
   FileStackParamList,
@@ -80,37 +81,11 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
     }, []),
   );
 
-  const pickFiles = async (count: number) => {
-    try {
-      const results = await pick({
-        mode: 'import',
-        allowMultiSelection: count > 1,
-        type: [types.pdf],
-      });
-
-      const pickedNames = results
-        .map(file => file.name?.trim())
-        .filter((name): name is string => Boolean(name))
-        .slice(0, count);
-
-      if (!pickedNames.length) return;
-
-      setUploadedFiles(prev => [...prev, ...pickedNames]);
-    } catch (error) {
-      if (
-        isErrorWithCode(error) &&
-        error.code === errorCodes.OPERATION_CANCELED
-      ) {
-        return;
-      }
-
-      Alert.alert(
-        t('common.error', { defaultValue: 'Error' }),
-        t('courseFilesTab.pickFileError', {
-          defaultValue: 'Could not select files. Please try again.',
-        }),
-      );
-    }
+  const pickFiles = (count: number) => {
+    // Mocked selection used until the native picker flow is re-enabled.
+    const mockedFiles = MOCKED_UPLOADED_FILES.slice(0, count);
+    if (!mockedFiles.length) return;
+    setUploadedFiles(prev => [...prev, ...mockedFiles]);
   };
 
   const focusFolderNameInput = () => {
@@ -310,7 +285,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                   shouldMuteUploadMethodStyles
                     ? uploadType === 'file'
                       ? palettes.primary[500]
-                      : palettes.gray[500]
+                      : palettes.gray[300]
                     : uploadType === 'file'
                       ? palettes.primary[500]
                       : palettes.gray[500]
@@ -340,7 +315,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                     ? shouldMuteUploadMethodStyles
                       ? dark
                         ? palettes.primary[500]
-                        : palettes.gray[200]
+                        : palettes.gray[300]
                       : palettes.primary[500]
                     : shouldMuteUploadMethodStyles
                       ? dark
@@ -389,7 +364,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                   shouldMuteUploadMethodStyles
                     ? isCreateFolderSelected
                       ? palettes.primary[500]
-                      : palettes.gray[500]
+                      : palettes.gray[300]
                     : isCreateFolderSelected
                       ? palettes.primary[500]
                       : palettes.gray[500]

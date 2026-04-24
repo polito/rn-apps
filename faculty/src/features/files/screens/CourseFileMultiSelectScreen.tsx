@@ -287,19 +287,19 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
 
   const handleAddFolder = useCallback(
     (name: string) => {
-      if (!course) return;
+      if (!course) return undefined;
       const lastDirectoryId = course.directories.length
         ? Math.max(...course.directories.map(dir => dir.id))
         : 0;
+      const nextDirectoryId = lastDirectoryId + 1;
       addDirectoryToCourse(courseId, {
-        id: lastDirectoryId + 1,
+        id: nextDirectoryId,
         name,
         files: [],
       });
-      setIsMoveModalVisible(false);
-      navigation.goBack();
+      return nextDirectoryId;
     },
-    [addDirectoryToCourse, course, courseId, navigation],
+    [addDirectoryToCourse, course, courseId],
   );
 
   const handleDeletePress = useCallback(() => {
