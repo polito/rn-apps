@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { FileStackParamList } from '../../../core/types/navigation';
@@ -18,7 +20,12 @@ export const FileNavigator = () => {
       <Stack.Screen
         name="CourseFolderFilesScreen"
         component={CourseFilesScreen}
-        options={{ presentation: 'modal' }}
+        options={{
+          presentation: Platform.OS === 'android' ? 'card' : 'modal',
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
+          headerShown: Platform.OS === 'android',
+          headerTitleAlign: 'center',
+        }}
       />
       <Stack.Screen
         name="CourseDirectoryScreen"

@@ -132,6 +132,7 @@ export const RootNavigator = () => {
               [
                 'CourseFileMultiSelectScreen',
                 'CourseFilesUploadScreen',
+                'CourseFolderFilesScreen',
               ].includes(getFocusedRouteNameFromRoute(route) ?? '')
                 ? { display: 'none' }
                 : null,
@@ -167,6 +168,7 @@ export const RootNavigator = () => {
               [
                 'CourseFileMultiSelectScreen',
                 'CourseFilesUploadScreen',
+                'CourseFolderFilesScreen',
               ].includes(getFocusedRouteNameFromRoute(route) ?? '')
                 ? { display: 'none' }
                 : null,

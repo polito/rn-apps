@@ -16,7 +16,11 @@ import {
   MaterialTopTabBarProps,
   createMaterialTopTabNavigator,
 } from '@react-navigation/material-top-tabs';
-import { ParamListBase, useNavigation } from '@react-navigation/native';
+import {
+  ParamListBase,
+  getFocusedRouteNameFromRoute,
+  useNavigation,
+} from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { FileNavigator } from '../../features/files/navigation/FileNavigator';
@@ -47,6 +51,19 @@ const CourseTopTabBar = ({
 }: MaterialTopTabBarProps) => {
   const { dark, palettes, fontFamilies, fontSizes, fontWeights, spacing } =
     useTheme();
+  const focusedTopRoute = state.routes[state.index];
+  const focusedNestedRoute = getFocusedRouteNameFromRoute(
+    focusedTopRoute as never,
+  );
+  const hideTabsOnAndroid =
+    Platform.OS === 'android' &&
+    focusedTopRoute?.name === 'CourseFilesScreen' &&
+    focusedNestedRoute != null &&
+    focusedNestedRoute !== 'CourseFilesScreen';
+
+  if (hideTabsOnAndroid) {
+    return null;
+  }
 
   return (
     <HeaderAccessory>

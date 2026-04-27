@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -255,6 +255,47 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     [activeDirectoryId, sortedDirectories],
   );
 
+  useEffect(() => {
+    if (Platform.OS !== 'android') {
+      return;
+    }
+
+    if (activeDirectory) {
+      const directoryTitle =
+        activeDirectory.name?.trim() ||
+        t('courseFilesTab.folder', { defaultValue: 'Folder' });
+      navigation.setOptions({
+        headerShown: true,
+        headerTitle: directoryTitle,
+      });
+      return;
+    }
+
+    navigation.setOptions({
+      headerShown: false,
+      headerTitle: '',
+    });
+  }, [activeDirectory, navigation, t]);
+
+  useEffect(() => {
+    if (Platform.OS !== 'android') {
+      return;
+    }
+
+    const teachingStackNavigation = navigation.getParent()?.getParent();
+    if (!teachingStackNavigation) {
+      return;
+    }
+
+    teachingStackNavigation.setOptions({
+      headerShown: !activeDirectory,
+    });
+
+    return () => {
+      teachingStackNavigation.setOptions({ headerShown: true });
+    };
+  }, [activeDirectory, navigation]);
+
   const visibleFiles = useMemo(() => {
     if (!activeDirectory) {
       return sortedFiles;
@@ -350,7 +391,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {activeDirectory ? (
+        {activeDirectory && Platform.OS === 'ios' ? (
           <View style={styles.directoryHeader}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
