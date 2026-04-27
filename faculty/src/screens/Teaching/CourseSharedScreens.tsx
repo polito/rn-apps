@@ -1,9 +1,11 @@
-import { useTranslation } from 'react-i18next';
+import { Platform } from 'react-native';
 
 import { useTheme } from '@polito/lib/ui';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { CourseFileMultiSelectScreen } from '../../features/files/screens/CourseFileMultiSelectScreen';
+import { CourseFilesUploadScreen } from '../../features/files/screens/CourseFilesUploadScreen';
 // import { CourseAssignmentPdfCreationScreen } from '../CourseAssignmentPdfCreationScreen';
 // import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
 // import { CourseAssignmentUploadScreen } from './CourseAssignmentUploadScreen';
@@ -35,6 +37,13 @@ export interface CourseSharedScreensParamList extends ParamListBase {
     directoryId?: string;
     directoryName?: string;
   };
+  CourseFileMultiSelectScreen: {
+    courseId: number;
+    path?: string;
+    action?: 'move' | 'delete';
+    initialSelectedIds?: string[];
+  };
+  CourseFilesUploadScreen: { courseId: number; path?: string };
   CourseVideolecture: {
     courseId: number;
     lectureId: number;
@@ -56,7 +65,6 @@ export interface CourseSharedScreensParamList extends ParamListBase {
 const Stack = createNativeStackNavigator<CourseSharedScreensParamList>();
 
 export const CourseSharedScreens = () => {
-  useTranslation();
   const { colors } = useTheme();
 
   return (
@@ -75,6 +83,32 @@ export const CourseSharedScreens = () => {
           headerBackButtonDisplayMode: 'minimal',
           animation: (params?.animated ?? true) ? 'default' : 'none',
         })}
+      />
+      <Stack.Screen
+        name="CourseFileMultiSelectScreen"
+        component={CourseFileMultiSelectScreen}
+        options={{
+          presentation: Platform.OS === 'android' ? 'card' : 'modal',
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
+          headerShown: Platform.OS === 'android',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerTitle: Platform.OS === 'android' ? 'Select Files' : '',
+          headerTitleAlign: 'center',
+        }}
+      />
+      <Stack.Screen
+        name="CourseFilesUploadScreen"
+        component={CourseFilesUploadScreen}
+        options={{
+          presentation: Platform.OS === 'android' ? 'card' : 'modal',
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
+          headerShown: Platform.OS === 'android',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerTitle: Platform.OS === 'android' ? 'Upload Files' : '',
+          headerTitleAlign: 'center',
+        }}
       />
       {/* <Stack.Screen
         name="Notice"

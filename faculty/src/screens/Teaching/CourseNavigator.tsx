@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TouchableOpacity, View } from 'react-native';
+import { Platform, TouchableOpacity, View } from 'react-native';
 
 import { faChevronLeft, faSliders } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -159,30 +159,36 @@ export const CourseNavigator = () => {
   })();
 
   useEffect(() => {
+    const isAndroid = Platform.OS === 'android';
+
     navigation.setOptions({
       headerTitleAlign: 'center',
-      headerBackVisible: false,
-      headerLeft: () => (
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          accessibilityLabel={t('common.back')}
-          style={{
-            display: 'flex',
-            width: headerSideWidth,
-            paddingLeft: 2,
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 10,
-            paddingVertical: spacing[2],
-          }}
-        >
-          <FontAwesomeIcon
-            icon={faChevronLeft}
-            color={palettes.primary[500]}
-            style={{ width: 11.421, height: 19.878 }}
-          />
-        </TouchableOpacity>
-      ),
+      headerBackVisible: isAndroid,
+      headerTintColor: palettes.primary[500],
+      headerLeft: isAndroid
+        ? undefined
+        : () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              accessibilityLabel={t('common.back')}
+              style={{
+                display: 'flex',
+                width: headerSideWidth,
+                marginLeft: -spacing[3],
+                paddingLeft: 0,
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 10,
+                paddingVertical: spacing[2],
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faChevronLeft}
+                color={palettes.primary[500]}
+                style={{ width: 11.421, height: 19.878 }}
+              />
+            </TouchableOpacity>
+          ),
       headerTitle: () => (
         <Text
           variant="heading"

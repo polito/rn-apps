@@ -1,7 +1,9 @@
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Alert,
   Modal,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -208,6 +210,40 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     () => new Map(sortedFiles.map((file, index) => [file.id, index])),
     [sortedFiles],
   );
+  const downloadTitle = t('courseFilesTab.download', {
+    defaultValue: 'Download',
+  });
+  const downloadOverwriteMessage = t('courseFilesTab.overwriteMessage', {
+    defaultValue:
+      'This file has been already downloaded. Do you want to overwrite it?',
+  });
+  const cancelLabel = t('common.cancel', { defaultValue: 'Cancel' });
+  const confirmLabel = t('common.confirm', { defaultValue: 'Confirm' });
+
+  const promptOverwriteDownload = useCallback(
+    (fileId: string) => {
+      if (Platform.OS === 'android') {
+        Alert.alert(downloadTitle, downloadOverwriteMessage, [
+          { text: cancelLabel, style: 'cancel' },
+          {
+            text: confirmLabel,
+            onPress: () => startDownload(fileId),
+          },
+        ]);
+        return;
+      }
+
+      setConfirmDownloadFileId(fileId);
+    },
+    [
+      cancelLabel,
+      confirmLabel,
+      downloadOverwriteMessage,
+      downloadTitle,
+      setConfirmDownloadFileId,
+      startDownload,
+    ],
+  );
 
   const activeDirectory = useMemo(
     () =>
@@ -264,7 +300,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
                 startDownload(fileId);
               }
             : status === 'downloaded'
-              ? () => setConfirmDownloadFileId(fileId)
+              ? () => promptOverwriteDownload(fileId)
               : undefined,
       };
     });
@@ -275,7 +311,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     selectedCourse?.id,
     navigation,
     startDownload,
-    setConfirmDownloadFileId,
+    promptOverwriteDownload,
   ]);
   const folderEntries: CourseFileEntry[] = useMemo(
     () =>
@@ -432,15 +468,8 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
               }
             />
             <View style={styles.confirmContent}>
-              <Text style={styles.confirmTitle}>
-                {t('courseFilesTab.download', { defaultValue: 'Download' })}
-              </Text>
-              <Text style={styles.confirmBody}>
-                {t('courseFilesTab.overwriteMessage', {
-                  defaultValue:
-                    'This file has been already downloaded. Do you want to overwrite it?',
-                })}
-              </Text>
+              <Text style={styles.confirmTitle}>{downloadTitle}</Text>
+              <Text style={styles.confirmBody}>{downloadOverwriteMessage}</Text>
             </View>
             <View
               style={[
@@ -455,7 +484,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
                 <Text
                   style={[styles.cancelActionText, { color: colors.readMore }]}
                 >
-                  {t('common.cancel', { defaultValue: 'Cancel' })}
+                  {cancelLabel}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -470,7 +499,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
                 <Text
                   style={[styles.confirmActionText, { color: colors.readMore }]}
                 >
-                  {t('common.confirm', { defaultValue: 'Confirm' })}
+                  {confirmLabel}
                 </Text>
               </TouchableOpacity>
             </View>

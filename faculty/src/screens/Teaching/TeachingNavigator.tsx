@@ -65,6 +65,13 @@ export type TeachingStackParamList = {
 
   Grades: undefined;
   CourseDirectory: undefined;
+  CourseFileMultiSelectScreen: {
+    courseId: number;
+    path?: string;
+    action?: 'move' | 'delete';
+    initialSelectedIds?: string[];
+  };
+  CourseFilesUploadScreen: { courseId: number; path?: string };
   CourseDirectoryRoot: undefined;
   ModifyNotice: undefined;
   ModifyFile: undefined;
