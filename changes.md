@@ -9,8 +9,8 @@ This change set introduces:
 1. Feature-oriented file architecture under `faculty/src/features/files`
 2. New screens for directory browsing, multi-select, move, upload, and edit flows
 3. New reusable UI components and file-management hooks
-4. Navigation updates to route through the new feature module
-5. New i18n strings and supporting assets
+4. Navigation updates to align file flows with Teaching navigation, especially on Android
+5. UI and state-handling refinements for upload, move, and context-menu behavior
 
 ---
 
@@ -20,31 +20,31 @@ This change set introduces:
 
 - Replaces the old Teaching tab screen and becomes the main entry for course file browsing.
 - Integrates feature hooks/utilities for normalized file entries and action handling.
-- Serves as the launch point for downstream actions (open directory, move, upload, modify, multi-select).
+- Updated across follow-up commits to better handle nested navigation, headers, and tab visibility.
 
 ### `faculty/src/features/files/screens/CourseDirectoryScreen.tsx` _(new)_
 
 - Adds dedicated directory-level navigation instead of keeping all logic in one screen.
-- Separates hierarchical browsing concerns from list-item UI and action menus.
+- Supports clearer folder traversal and improved Android header behavior.
 
 ### `faculty/src/features/files/screens/MoveFilesScreen.tsx` _(new)_
 
 - Introduces a focused move flow for selected file entries.
-- Works with the new typed file entry model and feature utilities to resolve source/destination paths.
+- Received follow-up UI refinements and a background-color consistency update.
 
 ### `faculty/src/features/files/screens/CourseFileMultiSelectScreen.tsx` _(new)_
 
 - Adds explicit multi-select workflow for batch operations.
-- Coordinates checkbox state and action menus through reusable shared components.
+- Refined after the initial refactor to improve interaction consistency.
 
 ### `faculty/src/features/files/screens/CourseFilesUploadScreen.tsx` _(new)_
 
 - Adds upload-specific screen so upload behavior is isolated from browse/edit UI.
-- Enables cleaner future handling of file validation, errors, and quota responses.
+- Refined with improved multi-file handling, dashed upload UI, dark-mode styling, and screen-exit state reset.
 
 ### `faculty/src/features/files/screens/ModifyFileScreen.tsx`
 
-- Migrated from Teaching folder and updated to align with new feature routes and typed file entities.
+- Migrated from the Teaching folder and updated to align with new feature routes and typed file entities.
 - Keeps single-file edit/rename behavior in the feature domain.
 
 ---
@@ -88,13 +88,14 @@ These hooks isolate file cache path logic, loading/refresh behavior, and managem
 
 ### Teaching navigators
 
+- `faculty/src/core/components/RootNavigator.tsx`
 - `faculty/src/screens/Teaching/CourseNavigator.tsx`
 - `faculty/src/screens/Teaching/CourseSharedScreens.tsx`
 - `faculty/src/screens/Teaching/TeachingNavigator.tsx`
 - `faculty/src/features/files/navigation/FileNavigator.tsx` _(new)_
 - `faculty/src/features/files/screens/index.ts` _(new)_
 
-Result: file-related routes are now defined as a coherent feature navigation surface instead of ad-hoc Teaching-only bindings.
+Result: file-related routes are now defined as a coherent feature navigation surface and later aligned with shared Teaching screens to improve Android back behavior, header consistency, and tab-bar visibility.
 
 ---
 
@@ -160,7 +161,6 @@ Result: file-related routes are now defined as a coherent feature navigation sur
 
 ### Configuration / dependencies
 
-- `.vscode/settings.json`
 - `faculty/package.json`
 - `faculty/ios/Podfile.lock`
 - `package-lock.json`
@@ -172,18 +172,26 @@ Result: file-related routes are now defined as a coherent feature navigation sur
 
 Added/updated strings for the moved and new files screens, menus, and actions to keep i18n coverage complete in both languages.
 
-### Navigation and typing
+### Navigation and routing
 
+- `faculty/src/core/components/RootNavigator.tsx`
 - `faculty/src/core/types/navigation.ts`
 - `faculty/src/screens/Teaching/CourseNavigator.tsx`
 - `faculty/src/screens/Teaching/CourseSharedScreens.tsx`
 - `faculty/src/screens/Teaching/TeachingNavigator.tsx`
 
-### Files feature screens/components (updated after move)
+These files were updated after the initial refactor to better integrate file flows with Teaching navigation and fix Android-specific modal/header behavior.
 
-- `faculty/src/features/files/components/CourseFileListItem.tsx`
+### Files feature screens/components
+
+- `faculty/src/core/components/CourseFilesContextMenu.tsx`
+- `faculty/src/features/files/screens/CourseFileMultiSelectScreen.tsx`
 - `faculty/src/features/files/screens/CourseFilesScreen.tsx`
+- `faculty/src/features/files/screens/CourseFilesUploadScreen.tsx`
 - `faculty/src/features/files/screens/ModifyFileScreen.tsx`
+- `faculty/src/features/files/screens/MoveFilesScreen.tsx`
+
+These files received follow-up refinements for upload handling, move flow UI, tab-bar visibility, folder navigation headers, context-menu styling, and upload-state reset on screen exit.
 
 ---
 
@@ -200,7 +208,7 @@ Added/updated strings for the moved and new files screens, menus, and actions to
 | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Feature-first structure       | Files-domain logic moved from `screens/Teaching` into `features/files` with dedicated `components`, `hooks`, `navigation`, `screens`, `types`, and `utils` |
 | Separation of concerns        | Screens orchestrate flow, reusable components handle UI patterns, hooks/utilities own data/path logic                                                      |
-| Typed navigation contracts    | Route params and screen names centralized through `core/types/navigation.ts` and feature navigator exports                                                 |
+| Typed navigation contracts    | Route params and screen names are typed through core navigation definitions and integrated across Teaching and files navigators                            |
 | Backward-compatible migration | Legacy Teaching files screens replaced via route rewiring rather than changing unrelated domains                                                           |
 | Localized user-facing strings | New/updated labels and actions added in both `en.json` and `it.json`                                                                                       |
 | Explicit error modeling       | File-domain failures represented via dedicated error classes (`FileUploadError`, `FileQuotaExceededError`, `UnsupportedFileTypeError`)                     |
@@ -211,7 +219,7 @@ Added/updated strings for the moved and new files screens, menus, and actions to
 
 ```text
 Course (Teaching domain)
- └── Files feature entrypoint (navigator route + course context)
+ └── Files flow entrypoint (navigator route + course context)
       │
       ▼
 CourseFilesScreen
