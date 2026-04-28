@@ -19,10 +19,8 @@ import {
   Section,
   SectionHeader,
   Text,
-  Theme,
-  useStylesheet,
-  useTheme,
 } from '@polito/lib/ui';
+import { Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
@@ -95,11 +93,10 @@ export const CourseInfoScreen = () => {
           </View>
         </Card>
 
-        <Section style={styles.sectionStyle}>
+        <Section>
           <SectionHeader
             title={t('courseInfoTab.staffSectionTitle')}
             linkTo="#"
-            // linkname="Edit" TODO: fix link behavior and uncomment this
           />
           <OverviewList indented style={styles.listContainer}>
             {selectedCourse.staff.map((member, index) => {
@@ -135,7 +132,7 @@ export const CourseInfoScreen = () => {
           </OverviewList>
         </Section>
 
-        <Section style={styles.sectionStyle}>
+        <Section>
           <SectionHeader title={t('examsScreen.title')} />
           <OverviewList indented style={styles.listContainer}>
             {selectedCourse.examcalls.map((call, index) => (
@@ -241,8 +238,5 @@ const createStyles = ({ colors, spacing, shapes, palettes }: Theme) =>
       alignItems: 'center',
       gap: spacing[2.5],
       justifyContent: 'space-between',
-    },
-    sectionStyle: {
-      marginBottom: spacing[2.5], // This sums up with the default margin of Card in ListItem of PersonListItem
     },
   });
