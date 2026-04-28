@@ -3,6 +3,7 @@ import { createContext, useContext } from 'react';
 //TODO: switch to @polito/map-client when published
 import { PlaceOverview } from '@polito/student-api-client';
 
+import { HiddenRecurrence } from '../../../../faculty/src/core/types/Recurrence';
 import { Accessibility } from '../types/Accessibility';
 
 export const editablePreferenceKeys = [
@@ -14,6 +15,18 @@ export const editablePreferenceKeys = [
 
 // Runtime list of editable keys (kept for migrations / runtime checks)
 export type PreferenceKey = (typeof editablePreferenceKeys)[number];
+export type CoursesPreferences = {
+  [courseId: number | string]: CoursePreferencesProps;
+};
+export interface CoursePreferencesProps {
+  color: string;
+  icon?: string;
+  isHidden: boolean;
+  order?: number;
+  isHiddenInAgenda: boolean;
+  isExamCallsHidden?: boolean;
+  itemsToHideInAgenda?: HiddenRecurrence[];
+}
 
 // Core/common preferences that every app should provide
 export type CommonPreferences = {
@@ -23,6 +36,7 @@ export type CommonPreferences = {
   accessibility: Accessibility;
   campusId?: string;
   placesSearched: PlaceOverview[];
+  courses: CoursesPreferences;
 };
 
 // Specify here complex keys, that require serialization/deserialization
