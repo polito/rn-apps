@@ -235,7 +235,7 @@ export const MoveFilesScreen = ({
                         ? palettes.primary[300]
                         : palettes.primary[500],
                       backgroundColor: dark
-                        ? 'rgba(240, 249, 255, 0.10)'
+                        ? colors.surface
                         : palettes.info[50],
                     },
                   ]}
