@@ -1,5 +1,6 @@
 import {
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   TouchableOpacity,
@@ -36,6 +37,7 @@ export const CourseFilesContextMenu = ({
   animationType = 'none',
 }: Props) => {
   const { colors, dark, fontSizes, palettes } = useTheme();
+  const isAndroid = Platform.OS === 'android';
   // Keep menu colors aligned with native menus in both themes.
   const menuLabelColor = dark ? palettes.gray[50] : '#383838';
   const backdropColor = `${colors.black}40`;
@@ -65,6 +67,7 @@ export const CourseFilesContextMenu = ({
               top: anchorPosition.top,
               shadowColor: colors.black,
               backgroundColor: menuBackgroundColor,
+              borderRadius: isAndroid ? 0 : 12,
               ...(anchorPosition.left !== undefined
                 ? { left: anchorPosition.left }
                 : {}),
@@ -96,10 +99,11 @@ export const CourseFilesContextMenu = ({
                 item.checked !== undefined
                   ? styles.itemChecked
                   : styles.itemPlain,
-                index < items.length - 1 && {
-                  borderBottomColor: menuSeparatorColor,
-                  borderBottomWidth: StyleSheet.hairlineWidth,
-                },
+                !isAndroid &&
+                  index < items.length - 1 && {
+                    borderBottomColor: menuSeparatorColor,
+                    borderBottomWidth: StyleSheet.hairlineWidth,
+                  },
               ]}
             >
               {item.checked !== undefined && (

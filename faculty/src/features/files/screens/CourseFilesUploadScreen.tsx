@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -123,6 +123,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
   const [folderName, setFolderName] = useState(DEFAULT_FOLDER_NAME);
   const [isFolderNameFocused, setIsFolderNameFocused] = useState(false);
   const folderNameInputRef = useRef<TextInput>(null);
+  const allowScreenExitRef = useRef(false);
   const isCreateFolderSelected = uploadType === 'folder';
   const normalizedFolderName = folderName.trim();
   const hasEditedFolderName = normalizedFolderName !== DEFAULT_FOLDER_NAME;
@@ -136,12 +137,33 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
 
   useFocusEffect(
     useCallback(() => {
+      allowScreenExitRef.current = false;
       setUploadType('file');
       setUploadedFiles([]);
       setFolderName(DEFAULT_FOLDER_NAME);
       setIsFolderNameFocused(false);
     }, []),
   );
+
+  const resetUploadStep = useCallback(() => {
+    setUploadedFiles([]);
+    setUploadType('file');
+    setFolderName(DEFAULT_FOLDER_NAME);
+    setIsFolderNameFocused(false);
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', event => {
+      if (allowScreenExitRef.current || !showBackButton) {
+        return;
+      }
+
+      event.preventDefault();
+      resetUploadStep();
+    });
+
+    return unsubscribe;
+  }, [navigation, resetUploadStep, showBackButton]);
 
   const pickFiles = (count: number) => {
     // Mocked selection used until the native picker flow is re-enabled.
@@ -177,6 +199,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
         name: title,
         files: [],
       });
+      allowScreenExitRef.current = true;
       navigation.goBack();
       return;
     }
@@ -199,6 +222,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
         dirId: selectedDirectoryId,
       });
     });
+    allowScreenExitRef.current = true;
     navigation.goBack();
   };
 
@@ -238,10 +262,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
           <TouchableOpacity
             onPress={() => {
               if (showBackButton) {
-                setUploadedFiles([]);
-                setUploadType('file');
-                setFolderName(DEFAULT_FOLDER_NAME);
-                setIsFolderNameFocused(false);
+                resetUploadStep();
                 return;
               }
               navigation.goBack();
