@@ -114,3 +114,11 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+// @d11/react-native-fast-image pulls com.caverock:androidsvg (JAR); other deps (e.g. coil-svg) pull
+// com.caverock:androidsvg-aar. Both contain the same classes → checkDebugDuplicateClasses fails.
+configurations.configureEach {
+    resolutionStrategy.dependencySubstitution {
+        substitute(module('com.caverock:androidsvg')).using(module('com.caverock:androidsvg-aar:1.4'))
+    }
+}
