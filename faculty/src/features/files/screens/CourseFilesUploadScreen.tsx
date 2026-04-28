@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { ReactNode, useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Svg, { Rect } from 'react-native-svg';
 
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -46,6 +47,67 @@ type Props = NativeStackScreenProps<
   FileStackParamList,
   'CourseFilesUploadScreen'
 >;
+
+type DashedOutlineProps = {
+  children: ReactNode;
+  color: string;
+  radius: number;
+};
+
+const DashedOutline = ({ children, color, radius }: DashedOutlineProps) => {
+  const [size, setSize] = useState({ width: 0, height: 0 });
+
+  return (
+    <View
+      style={[stylesForDashedOutline.container, { borderRadius: radius }]}
+      onLayout={event => {
+        const { width, height } = event.nativeEvent.layout;
+        setSize(prev =>
+          prev.width === width && prev.height === height
+            ? prev
+            : { width, height },
+        );
+      }}
+    >
+      {children}
+      {size.width > 0 && size.height > 0 ? (
+        <Svg
+          pointerEvents="none"
+          style={[
+            StyleSheet.absoluteFillObject,
+            stylesForDashedOutline.overlay,
+          ]}
+          width={size.width}
+          height={size.height}
+        >
+          <Rect
+            x={0.5}
+            y={0.5}
+            width={size.width - 1}
+            height={size.height - 1}
+            rx={radius}
+            ry={radius}
+            fill="none"
+            stroke={color}
+            strokeWidth={1}
+            strokeDasharray={[18, 18]}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </Svg>
+      ) : null}
+    </View>
+  );
+};
+
+const stylesForDashedOutline = StyleSheet.create({
+  container: {
+    position: 'relative',
+  },
+  overlay: {
+    zIndex: 1,
+  },
+});
 
 export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
   const { courseId } = route.params;
@@ -127,13 +189,15 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
       ? Math.max(...allFiles.map(file => file.id))
       : 0;
 
-    addMaterialToCourse(courseId, selectedDirectoryId, {
-      id: lastFileId + 1,
-      name: title,
-      date: formatDate(new Date()),
-      size: 100,
-      mimeType: 'pdf',
-      dirId: selectedDirectoryId,
+    uploadedFiles.forEach((fileName, index) => {
+      addMaterialToCourse(courseId, selectedDirectoryId, {
+        id: lastFileId + index + 1,
+        name: fileName || title,
+        date: formatDate(new Date()),
+        size: 100,
+        mimeType: 'pdf',
+        dirId: selectedDirectoryId,
+      });
     });
     navigation.goBack();
   };
@@ -284,7 +348,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                 color={
                   shouldMuteUploadMethodStyles
                     ? uploadType === 'file'
-                      ? palettes.primary[500]
+                      ? palettes.gray[300]
                       : palettes.gray[300]
                     : uploadType === 'file'
                       ? palettes.primary[500]
@@ -363,7 +427,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                 color={
                   shouldMuteUploadMethodStyles
                     ? isCreateFolderSelected
-                      ? palettes.primary[500]
+                      ? palettes.gray[300]
                       : palettes.gray[300]
                     : isCreateFolderSelected
                       ? palettes.primary[500]
@@ -428,35 +492,36 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                 </View>
               ))}
             </View>
-            <TouchableOpacity
-              onPress={() => {
-                pickFiles(1);
-              }}
-              accessibilityRole="button"
-              style={[
-                styles.addMoreZone,
-                {
-                  borderColor: palettes.primary[600],
-                  backgroundColor: dark ? colors.surface : palettes.info[50],
-                },
-              ]}
-            >
-              <Text
+            <DashedOutline color={palettes.primary[600]} radius={12}>
+              <TouchableOpacity
+                onPress={() => {
+                  pickFiles(1);
+                }}
+                accessibilityRole="button"
                 style={[
-                  styles.addMoreText,
-                  { color: dark ? palettes.gray[50] : palettes.primary[800] },
+                  styles.addMoreZone,
+                  {
+                    backgroundColor: dark ? colors.surface : palettes.info[50],
+                  },
                 ]}
               >
-                {t('courseFilesTab.addMoreFiles', {
-                  defaultValue: 'Add more files',
-                })}
-              </Text>
-              <FontAwesomeIcon
-                icon={faFaceSmile}
-                size={fontSizes.md}
-                color={dark ? palettes.gray[50] : palettes.primary[800]}
-              />
-            </TouchableOpacity>
+                <Text
+                  style={[
+                    styles.addMoreText,
+                    { color: dark ? palettes.gray[50] : palettes.primary[800] },
+                  ]}
+                >
+                  {t('courseFilesTab.addMoreFiles', {
+                    defaultValue: 'Add more files',
+                  })}
+                </Text>
+                <FontAwesomeIcon
+                  icon={faFaceSmile}
+                  size={fontSizes.md}
+                  color={dark ? palettes.gray[50] : palettes.primary[800]}
+                />
+              </TouchableOpacity>
+            </DashedOutline>
           </View>
         ) : isCreateFolderSelected ? (
           <TouchableOpacity
@@ -508,47 +573,48 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
             </View>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity
-            onPress={() => {
-              pickFiles(3);
-            }}
-            accessibilityRole="button"
-            style={[
-              styles.uploadZone,
-              {
-                backgroundColor: dark ? colors.surface : palettes.info[50],
-                borderColor: palettes.primary[600],
-              },
-            ]}
-          >
-            <FontAwesomeIcon
-              icon={faFileArrowUp}
-              size={24}
-              color={dark ? palettes.gray[50] : palettes.primary[700]}
-            />
-            <View style={styles.uploadZoneTextContainer}>
-              <Text
-                style={[
-                  styles.uploadZoneTitle,
-                  { color: dark ? palettes.gray[50] : palettes.primary[700] },
-                ]}
-              >
-                {t('courseFilesTab.uploadYourFile', {
-                  defaultValue: 'Upload your file',
-                })}
-              </Text>
-              <Text
-                style={[
-                  styles.uploadZoneSubtitle,
-                  { color: dark ? palettes.gray[50] : palettes.text[700] },
-                ]}
-              >
-                {t('courseFilesTab.clickToChooseFile', {
-                  defaultValue: 'Click here to choose your file',
-                })}
-              </Text>
-            </View>
-          </TouchableOpacity>
+          <DashedOutline color={palettes.primary[600]} radius={6}>
+            <TouchableOpacity
+              onPress={() => {
+                pickFiles(3);
+              }}
+              accessibilityRole="button"
+              style={[
+                styles.uploadZone,
+                {
+                  backgroundColor: dark ? colors.surface : palettes.info[50],
+                },
+              ]}
+            >
+              <FontAwesomeIcon
+                icon={faFileArrowUp}
+                size={24}
+                color={dark ? palettes.gray[50] : palettes.primary[700]}
+              />
+              <View style={styles.uploadZoneTextContainer}>
+                <Text
+                  style={[
+                    styles.uploadZoneTitle,
+                    { color: dark ? palettes.gray[50] : palettes.primary[700] },
+                  ]}
+                >
+                  {t('courseFilesTab.uploadYourFile', {
+                    defaultValue: 'Upload your file',
+                  })}
+                </Text>
+                <Text
+                  style={[
+                    styles.uploadZoneSubtitle,
+                    { color: dark ? palettes.gray[50] : palettes.text[700] },
+                  ]}
+                >
+                  {t('courseFilesTab.clickToChooseFile', {
+                    defaultValue: 'Click here to choose your file',
+                  })}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </DashedOutline>
         )}
       </ScrollView>
 
@@ -578,9 +644,21 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
           <FontAwesomeIcon
             icon={faPaperPlane}
             size={fontSizes.md}
-            color={palettes.gray[50]}
+            color={
+              !isPublishEnabled && dark ? palettes.gray[700] : palettes.gray[50]
+            }
           />
-          <Text style={[styles.ctaLabel, { color: palettes.gray[50] }]}>
+          <Text
+            style={[
+              styles.ctaLabel,
+              {
+                color:
+                  !isPublishEnabled && dark
+                    ? palettes.gray[700]
+                    : palettes.gray[50],
+              },
+            ]}
+          >
             {t('other.publish', { defaultValue: 'Publish' })}
           </Text>
         </TouchableOpacity>
@@ -678,11 +756,9 @@ const createStyles = ({
       flexShrink: 0,
     },
     uploadZone: {
-      borderWidth: 1,
-      borderStyle: 'dashed',
-      borderRadius: shapes.md,
-      minHeight: 136,
-      padding: spacing[5],
+      borderRadius: 6,
+      minHeight: 112,
+      padding: 18,
       alignItems: 'center',
       justifyContent: 'center',
       gap: 8,
@@ -698,6 +774,7 @@ const createStyles = ({
       lineHeight: 22,
     },
     uploadedFilesCard: {
+      marginTop: 6,
       borderRadius: shapes.lg,
       borderWidth: StyleSheet.hairlineWidth,
       overflow: 'hidden',
@@ -731,8 +808,6 @@ const createStyles = ({
     },
     addMoreZone: {
       minHeight: 54,
-      borderWidth: 1,
-      borderStyle: 'dashed',
       borderRadius: shapes.md,
       paddingHorizontal: spacing[5],
       flexDirection: 'row',

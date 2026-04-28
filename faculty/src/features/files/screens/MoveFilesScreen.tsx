@@ -231,21 +231,29 @@ export const MoveFilesScreen = ({
                   style={[
                     styles.outlinedButton,
                     {
-                      borderColor: palettes.primary[500],
-                      backgroundColor: palettes.info[50],
+                      borderColor: dark
+                        ? palettes.primary[300]
+                        : palettes.primary[500],
+                      backgroundColor: dark
+                        ? 'rgba(240, 249, 255, 0.10)'
+                        : palettes.info[50],
                     },
                   ]}
                 >
                   <CreateFolderIcon
                     width={16}
                     height={16}
-                    color={palettes.primary[500]}
+                    color={dark ? palettes.primary[200] : palettes.primary[500]}
                     filled
                   />
                   <Text
                     style={[
                       styles.outlinedButtonText,
-                      { color: palettes.primary[500] },
+                      {
+                        color: dark
+                          ? palettes.primary[200]
+                          : palettes.primary[500],
+                      },
                     ]}
                   >
                     {t('courseFilesTab.addNewFolder', {
@@ -270,12 +278,21 @@ export const MoveFilesScreen = ({
                   <FontAwesomeIcon
                     icon={faCheck}
                     size={16}
-                    color={palettes.gray[50]}
+                    color={
+                      !isConfirmEnabled && dark
+                        ? palettes.gray[700]
+                        : palettes.gray[50]
+                    }
                   />
                   <Text
                     style={[
                       styles.filledButtonText,
-                      { color: palettes.gray[50] },
+                      {
+                        color:
+                          !isConfirmEnabled && dark
+                            ? palettes.gray[700]
+                            : palettes.gray[50],
+                      },
                     ]}
                   >
                     {t('common.confirm', { defaultValue: 'Confirm' })}
