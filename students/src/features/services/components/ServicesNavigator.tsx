@@ -5,7 +5,12 @@ import {
   PlacesNavigator,
   type PlacesStackParamList,
 } from '@polito/lib/features/places';
-import { HeaderLogo, useTheme, useTitlesStyles } from '@polito/lib/ui';
+import {
+  HeaderLogo,
+  createHeaderCloseButton,
+  useTheme,
+  useTitlesStyles,
+} from '@polito/lib/ui';
 import { TicketFAQ, TicketStatus } from '@polito/student-api-client';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -20,6 +25,7 @@ import { BookingScreen } from '../../agenda/screens/BookingScreen';
 import { BookingSeatScreen } from '../../bookings/screens/BookingSeatScreen';
 import { BookingSeatSelectionScreen } from '../../bookings/screens/BookingSeatSelectionScreen';
 import { BookingSlotScreen } from '../../bookings/screens/BookingSlotScreen';
+import { BookingSlotsLegendScreen } from '../../bookings/screens/BookingSlotsLegendScreen';
 import { BookingTopicScreen } from '../../bookings/screens/BookingTopicScreen';
 import { GuideScreen } from '../../guides/screens/GuideScreen';
 import { GuidesScreen } from '../../guides/screens/GuidesScreen';
@@ -70,6 +76,7 @@ export type ServiceStackParamList = OfferingStackParamList & {
   Booking: { id: number };
   BookingTopic: undefined;
   BookingSlot: { topicId: string; topicName: string };
+  BookingSlotsLegend: undefined;
   BookingSeatSelection: {
     slotId: string;
     topicId: string;
@@ -280,6 +287,24 @@ export const ServicesNavigator = () => {
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
+        })}
+      />
+      <Stack.Screen
+        name="BookingSlotsLegend"
+        component={BookingSlotsLegendScreen}
+        options={({ navigation }) => ({
+          presentation: Platform.OS === 'ios' ? 'formSheet' : 'modal',
+          ...(Platform.OS === 'ios'
+            ? {
+                sheetAllowedDetents: 'fitToContents',
+                sheetGrabberVisible: true,
+              }
+            : {}),
+          headerTitle: t('common.legend'),
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerShadowVisible: false,
+          headerRight: createHeaderCloseButton(navigation),
         })}
       />
       <Stack.Screen

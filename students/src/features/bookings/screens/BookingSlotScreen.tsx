@@ -7,7 +7,13 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, SectionList, StyleSheet, View } from 'react-native';
+import {
+  Platform,
+  Pressable,
+  SectionList,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -65,6 +71,7 @@ import { WeekFilter } from '../../agenda/components/WeekFilter';
 import { AgendaOption } from '../../agenda/types/AgendaOption';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingSlotModal } from '../components/BookingSlotModal';
+import { BookingSlotsLegendModal } from '../components/BookingSlotsLegendModal';
 import { BookingSlotsStatusLegend } from '../components/BookingSlotsStatusLegend';
 
 const START_DATE = DateTime.now().setZone(APP_TIMEZONE).startOf('day');
@@ -251,6 +258,14 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     [refetch],
   );
 
+  const onPressLegend = useCallback(() => {
+    if (Platform.OS === 'android') {
+      showBottomModal(<BookingSlotsLegendModal close={closeBottomModal} />);
+      return;
+    }
+    navigation.navigate('BookingSlotsLegend');
+  }, [closeBottomModal, navigation, showBottomModal]);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -298,7 +313,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
       <BottomModal dismissable {...bottomModal} />
       <HeaderAccessory justify="space-between">
         <Tabs>
-          <BookingSlotsStatusLegend />
+          <BookingSlotsStatusLegend onPress={onPressLegend} />
         </Tabs>
         {!showAgenda && (
           <WeekFilter

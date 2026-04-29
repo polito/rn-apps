@@ -48,6 +48,7 @@
     "bookingStatus": {
       "available": "Available",
       "booked": "Booked",
+      "concluded": "Concluded",
       "full": "Full",
       "notAvailable": "Not yet bookable"
     },
