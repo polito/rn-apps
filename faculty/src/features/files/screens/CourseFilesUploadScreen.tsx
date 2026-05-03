@@ -24,7 +24,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { formatDate } from '@polito/lib/core';
-import { Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
+import {
+  IndentedDivider,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -503,12 +509,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                     {fileName}
                   </Text>
                   {index !== uploadedFiles.length - 1 ? (
-                    <View
-                      style={[
-                        styles.uploadedFileDivider,
-                        { backgroundColor: colors.divider },
-                      ]}
-                    />
+                    <IndentedDivider style={styles.uploadedFileDivider} />
                   ) : null}
                 </View>
               ))}

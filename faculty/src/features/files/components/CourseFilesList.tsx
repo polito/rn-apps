@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { useTheme } from '@polito/lib/ui';
+import { IndentedDivider, useTheme } from '@polito/lib/ui';
 
 import { CourseFileListItem, FileDownloadStatus } from './CourseFileListItem';
 
@@ -51,18 +51,9 @@ export const CourseFilesList = ({ files }: Props) => {
               trailing={file.trailing}
             />
             {index < files.length - 1 && (
-              <View
-                style={[styles.dividerContainer, { marginRight: -spacing[5] }]}
-              >
-                <View
-                  style={[
-                    styles.divider,
-                    {
-                      backgroundColor: colors.divider,
-                    },
-                  ]}
-                />
-              </View>
+              <IndentedDivider
+                style={[styles.fileDivider, { marginRight: -spacing[5] }]}
+              />
             )}
           </View>
         ))}
@@ -84,14 +75,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     alignSelf: 'stretch',
   },
-  dividerContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    alignSelf: 'stretch',
-  },
-  divider: {
-    height: 1,
+  fileDivider: {
     alignSelf: 'stretch',
   },
 });

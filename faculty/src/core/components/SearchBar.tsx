@@ -27,10 +27,16 @@ export const SearchBar = ({
   const fieldTextColor = dark ? colors.heading : palettes.gray[500];
   const fieldIconColor = dark ? colors.secondaryText : palettes.gray[500];
   const fieldBgColor = dark ? palettes.gray[700] : palettes.gray[200];
+  const fieldBorderColor = dark ? palettes.gray[600] : palettes.gray[300];
 
   return (
     <View style={styles.root}>
-      <View style={[styles.field, { backgroundColor: fieldBgColor }]}>
+      <View
+        style={[
+          styles.field,
+          { backgroundColor: fieldBgColor, borderColor: fieldBorderColor },
+        ]}
+      >
         <View style={styles.iconWrapper}>
           <FontAwesomeIcon
             icon={faMagnifyingGlass}
@@ -87,6 +93,7 @@ const createStyles = ({
       alignItems: 'center',
       overflow: 'hidden',
       borderRadius: spacing[1.5],
+      borderWidth: 1,
       paddingHorizontal: spacing[1.5],
       paddingVertical: spacing[1],
       gap: spacing[1.5],
