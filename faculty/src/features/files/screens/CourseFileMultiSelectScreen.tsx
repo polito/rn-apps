@@ -64,6 +64,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
   } = useCourses();
   const theme = useTheme();
   const { fontSizes, palettes, colors, spacing, dark } = theme;
+  const iosGrabberColor = dark ? palettes.gray[500] : colors.secondaryText;
   const moveButtonColors = useMemo(
     () => ({
       border: theme.dark
@@ -443,14 +444,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
           ]}
         >
           <View
-            style={[
-              styles.iosGrabber,
-              {
-                backgroundColor: dark
-                  ? palettes.gray[500]
-                  : 'rgba(60, 60, 67, 0.30)',
-              },
-            ]}
+            style={[styles.iosGrabber, { backgroundColor: iosGrabberColor }]}
           />
           <View style={styles.header}>
             <TouchableOpacity

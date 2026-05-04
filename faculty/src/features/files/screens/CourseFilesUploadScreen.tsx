@@ -118,6 +118,7 @@ const stylesForDashedOutline = StyleSheet.create({
 export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
   const { courseId } = route.params;
   const { colors, dark, fontSizes, palettes } = useTheme();
+  const iosGrabberColor = dark ? palettes.gray[500] : colors.secondaryText;
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const bottomTabBarHeight = useBottomTabBarHeight();
@@ -271,14 +272,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
           ]}
         >
           <View
-            style={[
-              styles.iosGrabber,
-              {
-                backgroundColor: dark
-                  ? palettes.gray[500]
-                  : 'rgba(60, 60, 67, 0.30)',
-              },
-            ]}
+            style={[styles.iosGrabber, { backgroundColor: iosGrabberColor }]}
           />
           <View style={styles.header}>
             <TouchableOpacity

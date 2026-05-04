@@ -109,6 +109,7 @@ type Props = NativeStackScreenProps<
 export const CourseFilesScreen = ({ route, navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { colors, dark, palettes } = useTheme();
+  const iosGrabberColor = dark ? palettes.gray[500] : colors.secondaryText;
   const alertSeparatorColor = dark
     ? 'rgba(255, 255, 255, 0.22)'
     : 'rgba(128, 128, 128, 0.55)';
@@ -386,14 +387,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
           ]}
         >
           <View
-            style={[
-              styles.iosGrabber,
-              {
-                backgroundColor: dark
-                  ? palettes.gray[500]
-                  : 'rgba(60, 60, 67, 0.30)',
-              },
-            ]}
+            style={[styles.iosGrabber, { backgroundColor: iosGrabberColor }]}
           />
           <View style={styles.directoryHeader}>
             <TouchableOpacity
