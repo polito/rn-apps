@@ -101,6 +101,7 @@ export const CourseNavigator = () => {
           },
           focus: () => {
             setShowPlusButton(false);
+            setTab('Info');
             setFormPage('');
           },
         }}
@@ -117,6 +118,7 @@ export const CourseNavigator = () => {
           },
           focus: () => {
             setShowPlusButton(false);
+            setTab('Staff');
             setFormPage('');
           },
         }}
@@ -133,6 +135,7 @@ export const CourseNavigator = () => {
           },
           focus: () => {
             setShowPlusButton(false);
+            setTab('Notices');
             setFormPage('');
           },
         }}
@@ -149,6 +152,7 @@ export const CourseNavigator = () => {
           },
           focus: () => {
             setShowPlusButton(true);
+            setTab('Files');
             setFormPage('Files');
           },
         }}
@@ -165,6 +169,7 @@ export const CourseNavigator = () => {
           },
           focus: () => {
             setShowPlusButton(true);
+            setTab('Lectures');
             setFormPage('Lecture');
           },
         }}
@@ -181,6 +186,7 @@ export const CourseNavigator = () => {
           },
           focus: () => {
             setShowPlusButton(false);
+            setTab('Students');
             setFormPage('Students');
           },
         }}
@@ -197,6 +203,7 @@ export const CourseNavigator = () => {
           },
           focus: () => {
             setShowPlusButton(false);
+            setTab('Assignments');
             setFormPage('');
           },
         }}

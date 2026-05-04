@@ -1,29 +1,31 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 import { faInbox, faPlus } from '@fortawesome/free-solid-svg-icons';
 import {
-  BottomBarSpacer,
   BottomModal,
   CtaButton,
   EmptyState,
   GlobalStyles,
-  IndentedDivider,
+  Theme,
+  useBottomBarAwareStyles,
   useBottomModal,
-  useSafeAreaSpacing,
+  useStylesheet,
+  useTheme,
 } from '@polito/lib/ui';
 
-import { useCourses } from '../../core/contexts/CoursesContext';
+import { Staff, useCourses } from '../../core/contexts/CoursesContext';
 import { AddStaffModalContent } from './AddStaffModalContent';
+import { HandleAccessModalContent } from './HandleAccessModalContent';
 import { StaffListItem } from './StaffListItem';
 
 export const StaffScreen = () => {
   const { selectedCourse } = useCourses();
-  // const _styles = useStylesheet(createStyles);
-  // Troviamo il corso corrispondente
   const course = selectedCourse;
-
-  const { paddingHorizontal } = useSafeAreaSpacing();
+  const styles = useStylesheet(createStyles);
+  const { palettes, spacing } = useTheme();
+  const bottomBarAwareStyles = useBottomBarAwareStyles();
 
   const { t } = useTranslation();
   const {
@@ -32,75 +34,109 @@ export const StaffScreen = () => {
     close: closeBottomModal,
   } = useBottomModal();
 
-  // Se il corso non esiste, restituiamo null
+  const staffData = useMemo(() => {
+    if (!course) {
+      return [];
+    }
+
+    return [...(course.staff ?? [])].sort((a, b) => {
+      const staffWeight = (staff: Staff) => (staff.role === 'Titolare' ? 0 : 1);
+      const roleDiff = staffWeight(a) - staffWeight(b);
+      if (roleDiff !== 0) return roleDiff;
+      return a.name.localeCompare(b.name);
+    });
+  }, [course]);
+
   if (!course) {
     return null;
   }
-  const { staff: staffData } = course; // Otteniamo le notifiche del corso
 
   return (
     <>
       <BottomModal dismissable {...bottomModal} />
-
-      <FlatList
-        contentInsetAdjustmentBehavior="automatic"
-        initialNumToRender={15}
-        style={GlobalStyles.grow}
-        contentContainerStyle={paddingHorizontal}
-        data={staffData}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item: staff }) => <StaffListItem staff={staff} />}
-        ListFooterComponent={<BottomBarSpacer />}
-        ItemSeparatorComponent={() => <IndentedDivider />}
-        ListEmptyComponent={() => {
-          if (!staffData || staffData.length === 0) {
-            return <EmptyState icon={faInbox} message="Lectures empty" />;
-          }
-          return null;
-        }}
-      />
+      <View style={styles.screen}>
+        <FlatList
+          contentInsetAdjustmentBehavior="automatic"
+          initialNumToRender={15}
+          style={GlobalStyles.grow}
+          contentContainerStyle={[
+            styles.listContainer,
+            (!staffData || staffData.length === 0) && styles.emptyListContainer,
+          ]}
+          data={staffData}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item: staff }) => (
+            <StaffListItem
+              staff={staff}
+              onPress={() =>
+                showBottomModal(
+                  <HandleAccessModalContent
+                    close={closeBottomModal}
+                    staff={staff}
+                  />,
+                )
+              }
+            />
+          )}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          ListEmptyComponent={() => {
+            if (!staffData || staffData.length === 0) {
+              return (
+                <EmptyState
+                  icon={faInbox}
+                  message={t('courseStaffTab.emptyState')}
+                />
+              );
+            }
+            return null;
+          }}
+        />
+      </View>
       <CtaButton
-        title={t('other.addCollaborator')}
-        action={() => {
-          showBottomModal(<AddStaffModalContent close={closeBottomModal} />);
-        }}
+        title={t('other.addMember')}
+        action={() =>
+          showBottomModal(<AddStaffModalContent close={closeBottomModal} />, {
+            avoidKeyboard: false,
+          })
+        }
         icon={faPlus}
         absolute={false}
         variant="filled"
+        containerStyle={{
+          paddingHorizontal: spacing[5],
+          paddingTop: spacing[2],
+          ...bottomBarAwareStyles,
+        }}
+        style={{
+          borderRadius: 12,
+          backgroundColor: palettes.primary[500],
+          borderColor: palettes.primary[500],
+        }}
+        textStyle={{ color: palettes.gray[50] }}
       />
     </>
   );
 };
 
-// const createStyles = ({ colors, palettes }: Theme) =>
-//   StyleSheet.create({
-//     container: {
-//       flex: 1,
-//       paddingBottom: 20, // Distanza tra il contenuto e il fondo per il bottone
-//     },
-//     buttonContainer: {
-//       position: 'absolute',
-//       bottom: 0,
-//       left: 0,
-//       right: 0,
-//       paddingHorizontal: 20,
-//       paddingVertical: 8,
-//       marginBottom: 16, // Distanza dal bordo inferiore
-//     },
-//     blueButtonContainer: {
-//       backgroundColor: palettes.lightBlue[500],
-//       marginHorizontal: 20,
-//       borderRadius: 8,
-//       padding: 0,
-//     },
-//     button: {
-//       backgroundColor: palettes.lightBlue[500], // Colore del background del bottone
-//       paddingVertical: 12,
-//       borderRadius: 8,
-//       alignItems: 'center',
-//     },
-//     buttonText: {
-//       color: colors.white, // Colore del testo del bottone
-//       fontSize: 16,
-//     },
-//   });
+const createStyles = ({ colors, spacing }: Theme) =>
+  StyleSheet.create({
+    screen: {
+      flex: 1,
+      marginTop: spacing[4],
+    },
+    listContainer: {
+      marginHorizontal: spacing[5],
+      borderRadius: spacing[4],
+      backgroundColor: colors.surface,
+      overflow: 'hidden',
+    },
+    emptyListContainer: {
+      minHeight: 160,
+      justifyContent: 'center',
+    },
+    separator: {
+      height: StyleSheet.hairlineWidth,
+      marginLeft: spacing[10],
+      backgroundColor: colors.divider,
+    },
+  });

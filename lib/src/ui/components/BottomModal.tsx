@@ -6,6 +6,7 @@ export type BottomModalProps = PropsWithChildren<{
   visible: boolean;
   onClose?: () => void;
   dismissable?: boolean;
+  avoidKeyboard?: boolean;
   scrollOffset?: number;
   scrollViewRef?: any;
   onModalHide?: () => void;
@@ -16,6 +17,7 @@ export const BottomModal = ({
   visible,
   onClose,
   dismissable,
+  avoidKeyboard = true,
   scrollOffset,
   scrollViewRef,
   onModalHide,
@@ -44,7 +46,7 @@ export const BottomModal = ({
       animationInTiming={400}
       isVisible={visible}
       backdropOpacity={0.4}
-      avoidKeyboard={true}
+      avoidKeyboard={avoidKeyboard}
       animationIn="slideInUp"
       animationOut="slideOutUp"
       backdropColor="black"

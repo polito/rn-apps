@@ -6656,9 +6656,11 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
       prevCourses.map(course => {
         if (course.id !== courseId) return course;
 
-        const existingStaffIds = new Set(course.staff.map(member => member.id));
+        const existingStaffIds = new Set(
+          course.staff.map(member => member.idProfile ?? member.id),
+        );
         const uniqueNewStaff = newStaff.filter(
-          member => !existingStaffIds.has(member.id),
+          member => !existingStaffIds.has(member.idProfile ?? member.id),
         );
 
         return {
@@ -6670,10 +6672,10 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
 
     if (selectedCourse && selectedCourse.id === courseId) {
       const existingStaffIds = new Set(
-        selectedCourse.staff.map(member => member.id),
+        selectedCourse.staff.map(member => member.idProfile ?? member.id),
       );
       const uniqueNewStaff = newStaff.filter(
-        member => !existingStaffIds.has(member.id),
+        member => !existingStaffIds.has(member.idProfile ?? member.id),
       );
 
       setSelectedCourse(prev =>
