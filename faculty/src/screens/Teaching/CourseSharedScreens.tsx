@@ -1,5 +1,7 @@
-import { Platform } from 'react-native';
+import { Platform, TouchableOpacity } from 'react-native';
 
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useTheme } from '@polito/lib/ui';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -73,7 +75,13 @@ export const CourseSharedScreens = () => {
         name="Course"
         component={CourseNavigator}
         getId={({ params }: { params: any }) => `${params.id}`}
-        options={({ route: { params } }: { route: { params: any } }) => ({
+        options={({
+          route: { params },
+          navigation,
+        }: {
+          route: { params: any };
+          navigation: any;
+        }) => ({
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
@@ -81,6 +89,19 @@ export const CourseSharedScreens = () => {
           headerLargeTitle: false,
           headerShadowVisible: false,
           headerBackButtonDisplayMode: 'minimal',
+          headerBackVisible: Platform.OS === 'android',
+          headerLeft:
+            Platform.OS === 'ios'
+              ? () => (
+                  <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    accessibilityRole="button"
+                    style={{ paddingHorizontal: 8, paddingVertical: 6 }}
+                  >
+                    <FontAwesomeIcon icon={faChevronLeft} size={22} />
+                  </TouchableOpacity>
+                )
+              : undefined,
           animation: (params?.animated ?? true) ? 'default' : 'none',
         })}
       />

@@ -202,7 +202,7 @@ export const CourseNavigator = () => {
               <FontAwesomeIcon
                 icon={faChevronLeft}
                 color={palettes.primary[500]}
-                style={{ width: 11.421, height: 19.878 }}
+                size={22}
               />
             </TouchableOpacity>
           ),

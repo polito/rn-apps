@@ -63,7 +63,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
     updateCourseFile,
   } = useCourses();
   const theme = useTheme();
-  const { fontSizes, palettes, colors, spacing } = theme;
+  const { fontSizes, palettes, colors, spacing, dark } = theme;
   const moveButtonColors = useMemo(
     () => ({
       border: theme.dark
@@ -436,31 +436,54 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       {Platform.OS === 'ios' ? (
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.doneButton}
-          >
-            <Text
-              style={[styles.doneButtonText, { color: palettes.gray[500] }]}
+        <View
+          style={[
+            styles.iosHeaderContainer,
+            { backgroundColor: dark ? colors.surface : colors.white },
+          ]}
+        >
+          <View
+            style={[
+              styles.iosGrabber,
+              {
+                backgroundColor: dark
+                  ? palettes.gray[500]
+                  : 'rgba(60, 60, 67, 0.30)',
+              },
+            ]}
+          />
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.doneButton}
             >
-              {t('common.done', { defaultValue: 'Done' })}
-            </Text>
-          </TouchableOpacity>
-          <View style={styles.headerRight}>
-            <TextButton onPress={handleToggleSelectAll}>
               <Text
-                style={[
-                  styles.doneButtonText,
-                  { color: palettes.primary[400] },
-                ]}
+                style={[styles.doneButtonText, { color: palettes.gray[500] }]}
               >
-                {allFilesSelected
-                  ? t('common.deselectAll', { defaultValue: 'Deselect all' })
-                  : t('common.selectAll', { defaultValue: 'Select all' })}
+                {t('common.done', { defaultValue: 'Done' })}
               </Text>
-            </TextButton>
+            </TouchableOpacity>
+            <View style={styles.headerRight}>
+              <TextButton onPress={handleToggleSelectAll}>
+                <Text
+                  style={[
+                    styles.doneButtonText,
+                    { color: palettes.primary[400] },
+                  ]}
+                >
+                  {allFilesSelected
+                    ? t('common.deselectAll', { defaultValue: 'Deselect all' })
+                    : t('common.selectAll', { defaultValue: 'Select all' })}
+                </Text>
+              </TextButton>
+            </View>
           </View>
+          <View
+            style={[
+              styles.iosHeaderDivider,
+              { backgroundColor: dark ? palettes.gray[600] : colors.divider },
+            ]}
+          />
         </View>
       ) : null}
 
@@ -565,7 +588,22 @@ const createStyles = ({ colors, spacing, fontFamilies, fontWeights }: Theme) =>
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingHorizontal: spacing[5],
-      paddingVertical: spacing[2],
+      paddingTop: spacing[0.5],
+      paddingBottom: spacing[2],
+    },
+    iosHeaderContainer: {
+      alignSelf: 'stretch',
+    },
+    iosGrabber: {
+      alignSelf: 'center',
+      width: 36,
+      height: 5,
+      borderRadius: 999,
+      marginTop: spacing[1.5],
+    },
+    iosHeaderDivider: {
+      height: StyleSheet.hairlineWidth,
+      width: '100%',
     },
     headerRight: {
       flexDirection: 'row',
@@ -589,7 +627,7 @@ const createStyles = ({ colors, spacing, fontFamilies, fontWeights }: Theme) =>
     searchBarWrap: {
       overflow: 'hidden',
       paddingHorizontal: 18,
-      paddingTop: spacing[3],
+      paddingTop: spacing[6],
     },
     keyboardAvoiding: {
       flex: 1,

@@ -219,6 +219,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
   });
   const cancelLabel = t('common.cancel', { defaultValue: 'Cancel' });
   const confirmLabel = t('common.confirm', { defaultValue: 'Confirm' });
+  const menuVerticalOffset = Platform.OS === 'ios' ? 2 : 6;
 
   const promptOverwriteDownload = useCallback(
     (fileId: string) => {
@@ -301,17 +302,9 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
       return sortedFiles;
     }
 
-    const normalizedSearch = search.trim().toLowerCase();
-    const filesInDirectory = activeDirectory.files.filter(file =>
-      normalizedSearch.length === 0
-        ? true
-        : file.name.toLowerCase().includes(normalizedSearch),
-    );
-
-    return [...filesInDirectory].sort((a, b) =>
-      a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
-    );
-  }, [activeDirectory, search, sortedFiles]);
+    const activeFileIds = new Set(activeDirectory.files.map(file => file.id));
+    return sortedFiles.filter(file => activeFileIds.has(file.id));
+  }, [activeDirectory, sortedFiles]);
 
   const fileEntries: CourseFileEntry[] = useMemo(() => {
     return visibleFiles.map(file => {
@@ -385,20 +378,35 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
 
   return (
     <View style={styles.screen}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
-        {activeDirectory && Platform.OS === 'ios' ? (
+      {activeDirectory && Platform.OS === 'ios' ? (
+        <View
+          style={[
+            styles.iosHeaderContainer,
+            { backgroundColor: dark ? colors.surface : colors.white },
+          ]}
+        >
+          <View
+            style={[
+              styles.iosGrabber,
+              {
+                backgroundColor: dark
+                  ? palettes.gray[500]
+                  : 'rgba(60, 60, 67, 0.30)',
+              },
+            ]}
+          />
           <View style={styles.directoryHeader}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               accessibilityRole="button"
               style={styles.directoryBackButton}
             >
-              <Text style={styles.directoryBackText}>
+              <Text
+                style={[
+                  styles.directoryBackText,
+                  { color: palettes.gray[500] },
+                ]}
+              >
                 {t('common.back', { defaultValue: 'Back' })}
               </Text>
             </TouchableOpacity>
@@ -407,7 +415,15 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
             </Text>
             <View style={styles.directoryHeaderRightSpacer} />
           </View>
-        ) : null}
+          <View
+            style={[
+              styles.iosHeaderDivider,
+              { backgroundColor: dark ? palettes.gray[600] : colors.divider },
+            ]}
+          />
+        </View>
+      ) : null}
+      <View style={styles.controlsContainer}>
         <SearchBar value={search} onChangeText={setSearch} />
 
         <CourseFilesMenu
@@ -429,7 +445,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
               node.measureInWindow(
                 (x: number, y: number, w: number, h: number) => {
                   setSortAnchorPosition({
-                    top: y + h + 6,
+                    top: y + h + menuVerticalOffset,
                     left: 18,
                   });
                   setSortMenuVisible(true);
@@ -448,7 +464,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
               node.measureInWindow(
                 (x: number, y: number, w: number, h: number) => {
                   setMenuAnchorPosition({
-                    top: y + h + 6,
+                    top: y + h + menuVerticalOffset,
                     left: Math.max(18, x + w - 250),
                   });
                   setMenuVisible(true);
@@ -459,7 +475,14 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
             }
           }}
         />
+      </View>
 
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         {viewMode === 'files' || activeDirectory ? (
           <CourseFilesList files={fileEntries} />
         ) : (
@@ -582,22 +605,42 @@ const createStyles = ({
       flex: 1,
     },
     content: {
-      padding: spacing[5],
+      paddingHorizontal: spacing[5],
+      paddingBottom: spacing[5],
       flexDirection: 'column',
       alignItems: 'flex-start',
-      gap: spacing[2.5],
+      gap: spacing[2],
       flexGrow: 1,
       flexShrink: 0,
       flexBasis: 0,
       alignSelf: 'stretch',
     },
-    directoryHeader: {
+    controlsContainer: {
+      paddingHorizontal: spacing[5],
+      paddingTop: spacing[5],
+      gap: spacing[2.5],
+    },
+    iosHeaderContainer: {
+      alignSelf: 'stretch',
+    },
+    iosGrabber: {
+      alignSelf: 'center',
+      width: 36,
+      height: 5,
+      borderRadius: 999,
+      marginTop: spacing[1.5],
+    },
+    iosHeaderDivider: {
+      height: StyleSheet.hairlineWidth,
       width: '100%',
+    },
+    directoryHeader: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingTop: spacing[2],
-      paddingBottom: spacing[1],
+      paddingHorizontal: spacing[5],
+      paddingTop: spacing[0.5],
+      paddingBottom: spacing[2],
     },
     directoryBackButton: {
       minWidth: 56,

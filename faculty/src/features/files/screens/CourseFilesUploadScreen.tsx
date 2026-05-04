@@ -264,27 +264,50 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       {Platform.OS === 'ios' ? (
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => {
-              if (showBackButton) {
-                resetUploadStep();
-                return;
-              }
-              navigation.goBack();
-            }}
-            style={styles.closeButton}
-            accessibilityRole="button"
-          >
-            <Text
-              style={[styles.closeButtonText, { color: palettes.gray[500] }]}
+        <View
+          style={[
+            styles.iosHeaderContainer,
+            { backgroundColor: dark ? colors.surface : colors.white },
+          ]}
+        >
+          <View
+            style={[
+              styles.iosGrabber,
+              {
+                backgroundColor: dark
+                  ? palettes.gray[500]
+                  : 'rgba(60, 60, 67, 0.30)',
+              },
+            ]}
+          />
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => {
+                if (showBackButton) {
+                  resetUploadStep();
+                  return;
+                }
+                navigation.goBack();
+              }}
+              style={styles.closeButton}
+              accessibilityRole="button"
             >
-              {showBackButton
-                ? t('common.back', { defaultValue: 'Back' })
-                : t('common.close', { defaultValue: 'Close' })}
-            </Text>
-          </TouchableOpacity>
-          <View style={styles.headerRight} />
+              <Text
+                style={[styles.closeButtonText, { color: palettes.gray[500] }]}
+              >
+                {showBackButton
+                  ? t('common.back', { defaultValue: 'Back' })
+                  : t('common.close', { defaultValue: 'Close' })}
+              </Text>
+            </TouchableOpacity>
+            <View style={styles.headerRight} />
+          </View>
+          <View
+            style={[
+              styles.iosHeaderDivider,
+              { backgroundColor: dark ? palettes.gray[600] : colors.divider },
+            ]}
+          />
         </View>
       ) : null}
 
@@ -707,7 +730,22 @@ const createStyles = ({
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingHorizontal: spacing[5],
-      paddingVertical: spacing[2],
+      paddingTop: spacing[0.5],
+      paddingBottom: spacing[2],
+    },
+    iosHeaderContainer: {
+      alignSelf: 'stretch',
+    },
+    iosGrabber: {
+      alignSelf: 'center',
+      width: 36,
+      height: 5,
+      borderRadius: 999,
+      marginTop: spacing[1.5],
+    },
+    iosHeaderDivider: {
+      height: StyleSheet.hairlineWidth,
+      width: '100%',
     },
     headerRight: {
       minWidth: 1,
