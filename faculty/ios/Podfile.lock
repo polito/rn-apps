@@ -2446,7 +2446,7 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - "react-native-blur (from `../../node_modules/@react-native-community/blur`)"
-  - "react-native-document-picker (from `../node_modules/@react-native-documents/picker`)"
+  - "react-native-document-picker (from `../../node_modules/@react-native-documents/picker`)"
   - "react-native-menu (from `../../node_modules/@react-native-menu/menu`)"
   - react-native-override-color-scheme (from `../../node_modules/react-native-override-color-scheme`)
   - react-native-pager-view (from `../../node_modules/react-native-pager-view`)
@@ -2599,7 +2599,7 @@ EXTERNAL SOURCES:
   react-native-blur:
     :path: "../../node_modules/@react-native-community/blur"
   react-native-document-picker:
-    :path: "../node_modules/@react-native-documents/picker"
+    :path: "../../node_modules/@react-native-documents/picker"
   react-native-menu:
     :path: "../../node_modules/@react-native-menu/menu"
   react-native-override-color-scheme:

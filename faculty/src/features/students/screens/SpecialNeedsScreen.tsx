@@ -160,7 +160,7 @@ export const SpecialNeedsScreen = () => {
           style={[
             styles.infoCard,
             // Keep the info card's dark-theme background aligned with design token --info-info-100.
-            dark && { backgroundColor: '#E0F2FE' },
+            dark && { backgroundColor: palettes.primary[100] },
           ]}
         >
           <Text style={styles.infoCardHeader}>
@@ -307,7 +307,7 @@ const createStyles = ({
       width: 36,
       height: 5,
       borderRadius: 2.5,
-      backgroundColor: 'rgba(60, 60, 67, 0.30)',
+      backgroundColor: palettes.gray[600],
       alignSelf: 'center',
       marginTop: spacing[1.5],
     },

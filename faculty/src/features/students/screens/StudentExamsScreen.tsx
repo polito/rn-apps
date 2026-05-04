@@ -328,7 +328,7 @@ const createStyles = ({
       width: 36,
       height: 5,
       borderRadius: 2.5,
-      backgroundColor: 'rgba(60, 60, 67, 0.30)',
+      backgroundColor: palettes.gray[600],
       alignSelf: 'center',
       marginTop: spacing[1.5],
     },
