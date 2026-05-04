@@ -33,6 +33,13 @@ export interface CourseSharedScreensParamList extends ParamListBase {
     directoryId?: string;
     directoryName?: string;
   };
+  CourseFileMultiSelectScreen: {
+    courseId: number;
+    path?: string;
+    action?: 'move' | 'delete';
+    initialSelectedIds?: string[];
+  };
+  CourseFilesUploadScreen: { courseId: number; path?: string };
   CourseVideolecture: {
     courseId: number;
     lectureId: number;

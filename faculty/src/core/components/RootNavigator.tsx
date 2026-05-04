@@ -34,7 +34,11 @@ import {
   BottomTabNavigationProp,
   createBottomTabNavigator,
 } from '@react-navigation/bottom-tabs';
-import { NavigatorScreenParams, useNavigation } from '@react-navigation/native';
+import {
+  NavigatorScreenParams,
+  getFocusedRouteNameFromRoute,
+  useNavigation,
+} from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import {
@@ -105,7 +109,9 @@ export const RootNavigator = () => {
         //   hide: instantAnimation,
         // },
         tabBarStyle: [styles.tabBarStyle, androidTabBarBottom],
-        tabBarBackground: () => <TranslucentView fallbackOpacity={1} />,
+        tabBarBackground: () => (
+          <TranslucentView blurAmount={20} fallbackOpacity={0.85} />
+        ),
         tabBarItemStyle: styles.tabBarItemStyle,
         tabBarLabelStyle: [styles.tabBarLabelStyle],
         tabBarInactiveTintColor: colors.tabBarInactive,
@@ -116,12 +122,23 @@ export const RootNavigator = () => {
         <TabNavigator.Screen
           name="Didattica"
           component={TeachingNavigator}
-          options={{
+          options={({ route }) => ({
             headerShown: false,
             tabBarLabel: t('teachingScreen.title'),
             tabBarIcon: ({ color }) => (
               <Icon icon={faBookOpen} color={color} size={20} />
             ),
+            tabBarStyle: [
+              styles.tabBarStyle,
+              androidTabBarBottom,
+              [
+                'CourseFileMultiSelectScreen',
+                'CourseFilesUploadScreen',
+                'CourseFolderFilesScreen',
+              ].includes(getFocusedRouteNameFromRoute(route) ?? '')
+                ? { display: 'none' }
+                : null,
+            ],
             tabBarButton: props => (
               <TouchableWithoutFeedback
                 onPress={() => {
@@ -135,18 +152,29 @@ export const RootNavigator = () => {
                 </View>
               </TouchableWithoutFeedback>
             ),
-          }}
+          })}
         />
       ) : (
         <TabNavigator.Screen
           name="Didattica"
           component={TeachingNavigator}
-          options={{
+          options={({ route }) => ({
             headerShown: false,
             tabBarLabel: t('teachingScreen.title'),
             tabBarIcon: ({ color }) => (
               <Icon icon={faBookOpen} color={color} size={20} />
             ),
+            tabBarStyle: [
+              styles.tabBarStyle,
+              androidTabBarBottom,
+              [
+                'CourseFileMultiSelectScreen',
+                'CourseFilesUploadScreen',
+                'CourseFolderFilesScreen',
+              ].includes(getFocusedRouteNameFromRoute(route) ?? '')
+                ? { display: 'none' }
+                : null,
+            ],
             tabBarButton: props => (
               <TouchableWithoutFeedback
                 onPress={() => {
@@ -166,7 +194,7 @@ export const RootNavigator = () => {
                 </View>
               </TouchableWithoutFeedback>
             ),
-          }}
+          })}
         />
       )}
       <TabNavigator.Screen
