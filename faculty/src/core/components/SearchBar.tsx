@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import {
   faCircleXmark,
   faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Theme, useStylesheet, useTheme } from '@polito/lib/ui';
+import { TextField, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 
 interface Props {
   value: string;
@@ -44,12 +44,13 @@ export const SearchBar = ({
             color={fieldIconColor}
           />
         </View>
-        <TextInput
-          style={[styles.input, { color: fieldTextColor }]}
+        <TextField
+          label={placeholder ?? t('common.search')}
+          style={styles.textField}
+          inputStyle={[styles.input, { color: fieldTextColor }]}
           value={value}
           onChangeText={onChangeText}
           selectionColor={palettes.secondary[600]}
-          placeholder={placeholder ?? t('common.search')}
           placeholderTextColor={
             dark ? colors.secondaryText : palettes.gray[500]
           }
@@ -109,10 +110,16 @@ const createStyles = ({
       flex: 1,
       padding: 0,
       paddingVertical: 0,
+      paddingHorizontal: 0,
+      borderBottomWidth: 0,
       textAlignVertical: 'center',
       includeFontPadding: false,
       fontFamily: fontFamilies.body,
       fontSize: fontSizes.md,
       fontWeight: fontWeights.normal,
+    },
+    textField: {
+      flex: 1,
+      paddingVertical: 0,
     },
   });
