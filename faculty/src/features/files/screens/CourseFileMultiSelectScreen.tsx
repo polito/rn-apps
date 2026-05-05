@@ -5,7 +5,6 @@ import {
   InteractionManager,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
@@ -35,19 +34,13 @@ import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { FileStackParamList } from '../../../core/types/navigation';
 import {
-  CourseFileEntry,
+  CourseFileEntry as CourseFileListEntry,
   CourseFilesList,
 } from '../components/CourseFilesList';
 import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
+import { CourseFileEntry } from '../types/CourseFileEntry';
+import { mapFileEntry } from '../utils/mapFileEntry';
 import { MoveFilesScreen } from './MoveFilesScreen';
-
-type CourseFileRow = {
-  id: string;
-  name: string;
-  date: string;
-  size: number;
-  mimeType: string;
-};
 
 type Props = NativeStackScreenProps<
   FileStackParamList,
@@ -73,20 +66,20 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
     [fakeCourses, courseId],
   );
 
-  const flatFiles: CourseFileRow[] = useMemo(() => {
+  const flatFiles: CourseFileEntry[] = useMemo(() => {
     if (!course) return [];
     return course.directories.flatMap(dir =>
-      dir.files.map(f => ({
-        id: String(f.id),
-        name: f.name,
-        date: f.date,
-        size: f.size,
-        mimeType:
-          f.mimeType === 'pdf' || f.mimeType === 'application/pdf'
-            ? 'application/pdf'
-            : f.mimeType.includes('/')
-              ? f.mimeType
-              : 'application/octet-stream',
+      dir.files.map(file => ({
+        file: mapFileEntry({
+          ...file,
+          mimeType:
+            file.mimeType === 'pdf' || file.mimeType === 'application/pdf'
+              ? 'application/pdf'
+              : file.mimeType.includes('/')
+                ? file.mimeType
+                : 'application/octet-stream',
+        }),
+        status: 'idle',
       })),
     );
   }, [course]);
@@ -106,7 +99,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
     )
       return;
     const validIds = initialSelectedIds.filter(id =>
-      flatFiles.some(f => f.id === id),
+      flatFiles.some(entry => entry.file.id === id),
     );
     if (validIds.length > 0) {
       setSelectedFileIds(prev => new Set([...prev, ...validIds]));
@@ -117,17 +110,18 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
   const listData = useMemo(() => {
     if (!searchFilter.trim()) return flatFiles;
     const q = searchFilter.trim().toLowerCase();
-    return flatFiles.filter(f => f.name.toLowerCase().includes(q));
+    return flatFiles.filter(entry => entry.file.name.toLowerCase().includes(q));
   }, [flatFiles, searchFilter]);
 
   const allFilesSelected =
-    flatFiles.length > 0 && flatFiles.every(f => selectedFileIds.has(f.id));
+    flatFiles.length > 0 &&
+    flatFiles.every(entry => selectedFileIds.has(entry.file.id));
 
-  const handleToggleFile = useCallback((file: CourseFileRow) => {
+  const handleToggleFile = useCallback((entry: CourseFileEntry) => {
     setSelectedFileIds(prev => {
       const next = new Set(prev);
-      if (next.has(file.id)) next.delete(file.id);
-      else next.add(file.id);
+      if (next.has(entry.file.id)) next.delete(entry.file.id);
+      else next.add(entry.file.id);
       return next;
     });
   }, []);
@@ -137,12 +131,12 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
       if (flatFiles.length > 0 && prev.size === flatFiles.length) {
         return new Set();
       }
-      return new Set(flatFiles.map(f => f.id));
+      return new Set(flatFiles.map(entry => entry.file.id));
     });
   }, [flatFiles]);
 
   const totalSelectedCount = useMemo(
-    () => flatFiles.filter(f => selectedFileIds.has(f.id)).length,
+    () => flatFiles.filter(entry => selectedFileIds.has(entry.file.id)).length,
     [flatFiles, selectedFileIds],
   );
 
@@ -156,11 +150,11 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
 
   const handleMoveConfirm = useCallback(
     (targetDirectoryId: number) => {
-      const selectedFiles = flatFiles.filter(file =>
-        selectedFileIds.has(file.id),
+      const selectedFiles = flatFiles.filter(entry =>
+        selectedFileIds.has(entry.file.id),
       );
-      selectedFiles.forEach(file => {
-        const fileId = Number(file.id);
+      selectedFiles.forEach(entry => {
+        const fileId = Number(entry.file.id);
         if (Number.isNaN(fileId)) {
           return;
         }
@@ -169,10 +163,10 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
           fileId,
           {
             id: fileId,
-            name: file.name,
-            date: file.date,
-            size: file.size,
-            mimeType: file.mimeType,
+            name: entry.file.name,
+            date: entry.file.date ?? '',
+            size: entry.file.size ?? 0,
+            mimeType: entry.file.mimeType ?? 'application/octet-stream',
             dirId: targetDirectoryId,
           },
           targetDirectoryId,
@@ -202,7 +196,9 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
   );
 
   const handleDeletePress = useCallback(() => {
-    const toRemove = flatFiles.filter(f => selectedFileIds.has(f.id));
+    const toRemove = flatFiles.filter(entry =>
+      selectedFileIds.has(entry.file.id),
+    );
     if (toRemove.length === 0) return;
 
     const fileCount = toRemove.length;
@@ -232,7 +228,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
             isPreferred: true,
             onPress: () => {
               toRemove.forEach(f => {
-                removeFileFromCourse(courseId, Number(f.id));
+                removeFileFromCourse(courseId, Number(f.file.id));
               });
               navigation.goBack();
             },
@@ -300,17 +296,24 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
 
   const checkboxIconColor = palettes.gray[500];
 
-  const fileEntries: CourseFileEntry[] = useMemo(
+  const fileEntries: CourseFileListEntry[] = useMemo(
     () =>
-      listData.map(file => ({
-        id: file.id,
-        name: file.name || t('common.unnamedFile'),
+      listData.map(entry => ({
+        id: entry.file.id,
+        name:
+          entry.file.name ||
+          t('common.unnamedFile', { defaultValue: 'Unnamed file' }),
         status: 'downloaded',
-        onPress: () => handleToggleFile(file),
+        accessibilityRole: 'checkbox' as const,
+        accessibilityState: { checked: selectedFileIds.has(entry.file.id) },
+        accessibilityLabel:
+          entry.file.name ||
+          t('common.unnamedFile', { defaultValue: 'Unnamed file' }),
+        onPress: () => handleToggleFile(entry),
         trailing: (
           <Checkbox
-            isChecked={selectedFileIds.has(file.id)}
-            onPress={() => handleToggleFile(file)}
+            isChecked={selectedFileIds.has(entry.file.id)}
+            onPress={() => handleToggleFile(entry)}
             textStyle={styles.checkboxTrailingText}
             containerStyle={styles.checkboxTrailingContainer}
             checkboxStyle={styles.checkboxTrailingIcon}
@@ -348,7 +351,15 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
             />
           }
           right={
-            <TextButton onPress={handleToggleSelectAll}>
+            <TextButton
+              onPress={handleToggleSelectAll}
+              accessibilityRole="button"
+              accessibilityLabel={
+                allFilesSelected
+                  ? t('common.deselectAll', { defaultValue: 'Deselect all' })
+                  : t('common.selectAll', { defaultValue: 'Select all' })
+              }
+            >
               <Text
                 style={[
                   styles.doneButtonText,
@@ -381,14 +392,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
         keyboardVerticalOffset={0}
       >
         <View style={styles.listOuter}>
-          <ScrollView
-            style={styles.listScroll}
-            contentContainerStyle={styles.listScrollContent}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            <CourseFilesList files={fileEntries} />
-          </ScrollView>
+          <CourseFilesList files={fileEntries} />
         </View>
 
         <View style={styles.ctaRowWrapper}>
@@ -467,12 +471,6 @@ const createStyles = ({ colors, spacing, fontFamilies, fontWeights }: Theme) =>
       flex: 1,
       minHeight: 0,
       marginHorizontal: 18,
-    },
-    listScroll: {
-      flex: 1,
-    },
-    listScrollContent: {
-      flexGrow: 1,
     },
     ctaRowWrapper: {
       overflow: 'hidden',

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
-import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 
-import { Text, Theme, useStylesheet } from '@polito/lib/ui';
+import { TextButton, Theme, useStylesheet } from '@polito/lib/ui';
 
 type IosTopBarProps = {
   backgroundColor: string;
@@ -55,7 +55,7 @@ export const IosTopBarTextAction = ({
   const styles = useStylesheet(createStyles);
 
   return (
-    <Pressable
+    <TextButton
       onPress={onPress}
       disabled={disabled}
       accessibilityRole="button"
@@ -68,9 +68,10 @@ export const IosTopBarTextAction = ({
             : styles.alignCenter,
         containerStyle,
       ]}
+      textStyle={[styles.textActionLabel, { color }]}
     >
-      <Text style={[styles.textActionLabel, { color }]}>{label}</Text>
-    </Pressable>
+      {label}
+    </TextButton>
   );
 };
 
@@ -116,6 +117,8 @@ const createStyles = ({ spacing, fontFamilies, fontWeights }: Theme) =>
     textActionButton: {
       minHeight: 28,
       paddingVertical: spacing[1],
+      paddingHorizontal: 0,
+      marginRight: 0,
       justifyContent: 'center',
     },
     alignStart: {

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 import {
   FileDownloadStatus,
@@ -23,44 +23,50 @@ export interface CourseFileEntry {
 
 interface Props {
   files: CourseFileEntry[];
+  fillHeight?: boolean;
 }
 
-export const CourseFilesList = ({ files }: Props) => {
+export const CourseFilesList = ({ files, fillHeight = false }: Props) => {
   const { colors, spacing } = useTheme();
 
   return (
     <View
       style={[
         styles.card,
+        fillHeight ? styles.cardFill : null,
         { borderRadius: spacing[3], backgroundColor: colors.surface },
       ]}
     >
-      <View
-        style={[
+      <FlatList
+        style={fillHeight ? styles.flatListFill : null}
+        contentContainerStyle={[
           styles.listContent,
           { paddingLeft: spacing[4], paddingRight: spacing[5] },
         ]}
-      >
-        {files.map((file, index) => (
-          <View key={file.id} style={styles.itemContainer}>
+        data={files}
+        keyExtractor={item => item.id}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item, index }) => (
+          <View style={styles.itemContainer}>
             <ManagedFileListItem
-              name={file.name}
-              subtitle={file.subtitle}
-              status={file.status}
-              onPress={file.onPress}
-              isFolder={file.isFolder}
-              onLongPress={file.onLongPress}
-              onActionPress={file.trailing ? undefined : file.onActionPress}
-              trailing={file.trailing}
+              name={item.name}
+              subtitle={item.subtitle}
+              status={item.status}
+              onPress={item.onPress}
+              isFolder={item.isFolder}
+              onLongPress={item.onLongPress}
+              onActionPress={item.trailing ? undefined : item.onActionPress}
+              trailing={item.trailing}
             />
-            {index < files.length - 1 && (
+            {index < files.length - 1 ? (
               <IndentedDivider
                 style={[styles.fileDivider, { marginRight: -spacing[5] }]}
               />
-            )}
+            ) : null}
           </View>
-        ))}
-      </View>
+        )}
+      />
     </View>
   );
 };
@@ -69,11 +75,18 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
   },
+  cardFill: {
+    flex: 1,
+  },
+  flatListFill: {
+    flex: 1,
+  },
   listContent: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'flex-start',
+    alignItems: 'stretch',
     alignSelf: 'stretch',
+    width: '100%',
   },
   itemContainer: {
     alignSelf: 'stretch',

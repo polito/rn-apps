@@ -29,6 +29,6 @@ export type FileStackParamList = {
     action?: 'move' | 'delete';
     initialSelectedIds?: string[];
   };
-  ModifyFileScreen: { courseId?: number; fileId?: string };
+  ModifyFileScreen: { courseId: number; fileId: string };
   MoveFilesScreen: { courseId?: number; fileIds?: string[] };
 };

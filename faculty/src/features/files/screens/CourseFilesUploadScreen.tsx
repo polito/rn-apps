@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -11,11 +11,8 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Svg, { Rect } from 'react-native-svg';
 
-import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import {
-  faCircleDot,
   faFaceSmile,
   faFile,
   faFileArrowUp,
@@ -38,7 +35,10 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { FileStackParamList } from '../../../core/types/navigation';
+import { DashedOutline } from '../components/DashedOutline';
+import { FolderNameCard } from '../components/FolderNameCard';
 import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
+import { SelectableRadioRow } from '../components/SelectableRadioRow';
 
 export type UploadType = 'file' | 'folder';
 const DEFAULT_FOLDER_NAME = 'New Folder';
@@ -54,67 +54,6 @@ type Props = NativeStackScreenProps<
   FileStackParamList,
   'CourseFilesUploadScreen'
 >;
-
-type DashedOutlineProps = {
-  children: ReactNode;
-  color: string;
-  radius: number;
-};
-
-const DashedOutline = ({ children, color, radius }: DashedOutlineProps) => {
-  const [size, setSize] = useState({ width: 0, height: 0 });
-
-  return (
-    <View
-      style={[stylesForDashedOutline.container, { borderRadius: radius }]}
-      onLayout={event => {
-        const { width, height } = event.nativeEvent.layout;
-        setSize(prev =>
-          prev.width === width && prev.height === height
-            ? prev
-            : { width, height },
-        );
-      }}
-    >
-      {children}
-      {size.width > 0 && size.height > 0 ? (
-        <Svg
-          pointerEvents="none"
-          style={[
-            StyleSheet.absoluteFillObject,
-            stylesForDashedOutline.overlay,
-          ]}
-          width={size.width}
-          height={size.height}
-        >
-          <Rect
-            x={0.5}
-            y={0.5}
-            width={size.width - 1}
-            height={size.height - 1}
-            rx={radius}
-            ry={radius}
-            fill="none"
-            stroke={color}
-            strokeWidth={1}
-            strokeDasharray={[18, 18]}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </Svg>
-      ) : null}
-    </View>
-  );
-};
-
-const stylesForDashedOutline = StyleSheet.create({
-  container: {
-    position: 'relative',
-  },
-  overlay: {
-    zIndex: 1,
-  },
-});
 
 export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
   const { courseId } = route.params;
@@ -317,15 +256,25 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
         </Text>
 
         <View style={styles.listContainer}>
-          <TouchableOpacity
+          <SelectableRadioRow
+            label={t('courseFilesTab.addFile', { defaultValue: 'Add file' })}
+            selected={uploadType === 'file'}
             onPress={() => setUploadType('file')}
             disabled={shouldMuteUploadMethodStyles}
-            accessibilityRole="radio"
-            accessibilityState={{
-              checked: uploadType === 'file',
-              disabled: shouldMuteUploadMethodStyles,
-            }}
-            style={[
+            leading={
+              <FontAwesomeIcon
+                icon={faFile}
+                size={20}
+                color={
+                  shouldMuteUploadMethodStyles
+                    ? palettes.gray[300]
+                    : dark
+                      ? palettes.gray[50]
+                      : palettes.primary[700]
+                }
+              />
+            }
+            containerStyle={[
               styles.listItem,
               {
                 backgroundColor: shouldMuteUploadMethodStyles
@@ -341,62 +290,38 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                 borderWidth: uploadType === 'file' ? 1 : 0,
               },
             ]}
-          >
-            <View style={styles.listItemLeading}>
-              <FontAwesomeIcon
-                icon={faFile}
-                size={20}
-                color={
-                  shouldMuteUploadMethodStyles
-                    ? palettes.gray[300]
-                    : dark
-                      ? palettes.gray[50]
-                      : palettes.primary[700]
-                }
-              />
-            </View>
-            <View style={styles.listItemContent}>
-              <Text
-                style={[
-                  styles.listItemLabel,
-                  {
-                    color: shouldMuteUploadMethodStyles
-                      ? palettes.gray[300]
-                      : dark
-                        ? palettes.gray[50]
-                        : palettes.text[800],
-                  },
-                ]}
-              >
-                {t('courseFilesTab.addFile', { defaultValue: 'Add file' })}
-              </Text>
-            </View>
-            <View style={styles.listItemTrailing}>
-              <FontAwesomeIcon
-                icon={uploadType === 'file' ? faCircleDot : faCircle}
-                size={14}
-                color={
-                  shouldMuteUploadMethodStyles
-                    ? uploadType === 'file'
-                      ? palettes.gray[300]
-                      : palettes.gray[300]
-                    : uploadType === 'file'
-                      ? palettes.primary[500]
-                      : palettes.gray[500]
-                }
-              />
-            </View>
-          </TouchableOpacity>
+            labelStyle={[
+              styles.listItemLabel,
+              {
+                color: shouldMuteUploadMethodStyles
+                  ? palettes.gray[300]
+                  : dark
+                    ? palettes.gray[50]
+                    : palettes.text[800],
+              },
+            ]}
+            trailingColor={
+              shouldMuteUploadMethodStyles
+                ? palettes.gray[300]
+                : uploadType === 'file'
+                  ? palettes.primary[500]
+                  : palettes.gray[500]
+            }
+            radioSize={14}
+          />
 
-          <TouchableOpacity
+          <SelectableRadioRow
+            label={t('courseFilesTab.createFolder', {
+              defaultValue: 'Create folder',
+            })}
+            selected={uploadType === 'folder'}
             onPress={() => setUploadType('folder')}
             disabled={shouldMuteUploadMethodStyles}
-            accessibilityRole="radio"
-            accessibilityState={{
-              checked: uploadType === 'folder',
-              disabled: shouldMuteUploadMethodStyles,
-            }}
-            style={[
+            leading={<CreateFolderIcon width={20} height={20} />}
+            leadingContainerStyle={
+              shouldMuteUploadMethodStyles ? styles.disabledLeading : undefined
+            }
+            containerStyle={[
               styles.listItem,
               {
                 backgroundColor: shouldMuteUploadMethodStyles
@@ -419,53 +344,27 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                 borderWidth: uploadType === 'folder' ? 1 : 0,
               },
             ]}
-          >
-            <View
-              style={[
-                styles.listItemLeading,
-                shouldMuteUploadMethodStyles
-                  ? styles.disabledLeading
-                  : undefined,
-              ]}
-            >
-              <CreateFolderIcon width={20} height={20} />
-            </View>
-            <View style={styles.listItemContent}>
-              <Text
-                style={[
-                  styles.listItemLabel,
-                  {
-                    color: shouldMuteUploadMethodStyles
-                      ? palettes.gray[300]
-                      : isCreateFolderSelected
-                        ? palettes.gray[400]
-                        : dark
-                          ? palettes.gray[50]
-                          : palettes.text[800],
-                  },
-                ]}
-              >
-                {t('courseFilesTab.createFolder', {
-                  defaultValue: 'Create folder',
-                })}
-              </Text>
-            </View>
-            <View style={styles.listItemTrailing}>
-              <FontAwesomeIcon
-                icon={uploadType === 'folder' ? faCircleDot : faCircle}
-                size={14}
-                color={
-                  shouldMuteUploadMethodStyles
-                    ? isCreateFolderSelected
-                      ? palettes.gray[300]
-                      : palettes.gray[300]
-                    : isCreateFolderSelected
-                      ? palettes.primary[500]
-                      : palettes.gray[500]
-                }
-              />
-            </View>
-          </TouchableOpacity>
+            labelStyle={[
+              styles.listItemLabel,
+              {
+                color: shouldMuteUploadMethodStyles
+                  ? palettes.gray[300]
+                  : isCreateFolderSelected
+                    ? palettes.gray[400]
+                    : dark
+                      ? palettes.gray[50]
+                      : palettes.text[800],
+              },
+            ]}
+            trailingColor={
+              shouldMuteUploadMethodStyles
+                ? palettes.gray[300]
+                : isCreateFolderSelected
+                  ? palettes.primary[500]
+                  : palettes.gray[500]
+            }
+            radioSize={14}
+          />
         </View>
 
         {uploadType === 'file' && uploadedFiles.length > 0 ? (
@@ -549,11 +448,24 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
             </DashedOutline>
           </View>
         ) : isCreateFolderSelected ? (
-          <TouchableOpacity
+          <FolderNameCard
+            label={t('courseFilesTab.nameYourFolder', {
+              defaultValue: 'Name your folder',
+            })}
+            value={folderName}
+            inputRef={folderNameInputRef}
+            onChangeText={setFolderName}
             onPress={focusFolderNameInput}
             onPressIn={focusFolderNameInput}
-            activeOpacity={1}
-            style={[
+            onFocus={() => setIsFolderNameFocused(true)}
+            onBlur={() => setIsFolderNameFocused(false)}
+            placeholder={t('courseFilesTab.newFolder', {
+              defaultValue: 'New Folder',
+            })}
+            placeholderTextColor={palettes.gray[400]}
+            selectionColor={palettes.secondary[500]}
+            cursorColor={palettes.secondary[500]}
+            containerStyle={[
               styles.folderNameCard,
               {
                 backgroundColor: colors.surface,
@@ -564,39 +476,13 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                     : palettes.gray[50],
               },
             ]}
-          >
-            <View style={styles.folderNameLeading}>
-              <CreateFolderIcon width={20} height={20} />
-            </View>
-            <View style={styles.folderNameContent}>
-              <Text
-                style={[styles.folderNameLabel, { color: palettes.gray[500] }]}
-              >
-                {t('courseFilesTab.nameYourFolder', {
-                  defaultValue: 'Name your folder',
-                })}
-              </Text>
-              <TextInput
-                ref={folderNameInputRef}
-                value={folderName}
-                onChangeText={setFolderName}
-                autoCapitalize="sentences"
-                editable
-                onFocus={() => setIsFolderNameFocused(true)}
-                onBlur={() => setIsFolderNameFocused(false)}
-                style={[
-                  styles.folderNameValue,
-                  { color: dark ? palettes.gray[50] : palettes.text[800] },
-                ]}
-                selectionColor={palettes.secondary[500]}
-                cursorColor={palettes.secondary[500]}
-                placeholder={t('courseFilesTab.newFolder', {
-                  defaultValue: 'New Folder',
-                })}
-                placeholderTextColor={palettes.gray[400]}
-              />
-            </View>
-          </TouchableOpacity>
+            labelStyle={{ color: palettes.gray[500] }}
+            inputStyle={[
+              styles.folderNameValue,
+              { color: dark ? palettes.gray[50] : palettes.text[800] },
+            ]}
+            inputProps={{ autoCapitalize: 'sentences', editable: true }}
+          />
         ) : (
           <DashedOutline color={palettes.primary[600]} radius={6}>
             <TouchableOpacity
@@ -700,34 +586,14 @@ const createStyles = ({
       paddingRight: spacing[2],
       overflow: 'hidden',
     },
-    listItemLeading: {
-      height: '100%',
-      paddingLeft: spacing[4],
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0,
-    },
     disabledLeading: {
       opacity: 0.45,
-    },
-    listItemContent: {
-      flex: 1,
-      height: '100%',
-      paddingLeft: spacing[4],
-      justifyContent: 'center',
-      overflow: 'hidden',
     },
     listItemLabel: {
       fontFamily: fontFamilies.body,
       fontSize: fontSizes.md,
       fontWeight: fontWeights.medium,
       lineHeight: 24,
-    },
-    listItemTrailing: {
-      width: 24,
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0,
     },
     uploadZone: {
       borderRadius: 6,
@@ -802,26 +668,6 @@ const createStyles = ({
       flexDirection: 'row',
       alignItems: 'center',
       overflow: 'hidden',
-    },
-    folderNameLeading: {
-      height: '100%',
-      paddingLeft: spacing[4],
-      width: 46,
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0,
-    },
-    folderNameContent: {
-      flex: 1,
-      paddingLeft: spacing[4],
-      justifyContent: 'center',
-      overflow: 'hidden',
-    },
-    folderNameLabel: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.normal,
-      lineHeight: 21,
     },
     folderNameValue: {
       fontFamily: fontFamilies.body,

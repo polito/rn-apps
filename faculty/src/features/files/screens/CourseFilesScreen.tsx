@@ -2,18 +2,18 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
+  FlatList,
   Modal,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import {
-  CtaButton,
+  IndentedDivider,
+  ManagedFileListItem,
+  OverviewList,
   Text,
   Theme,
   useStylesheet,
@@ -31,45 +31,14 @@ import { CourseFilesMenu } from '../../../core/components/CourseFilesMenu';
 import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { FileStackParamList } from '../../../core/types/navigation';
-import {
-  CourseFileEntry,
-  CourseFilesList,
-} from '../components/CourseFilesList';
+import { AddFileButton } from '../components/AddFileButton';
+import { AlertActionRow } from '../components/AlertActionRow';
+import { CourseFileEntry } from '../components/CourseFilesList';
 import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
 import { useAnchoredMenu } from '../hooks/useAnchoredMenu';
 import { useCourseFilesData } from '../hooks/useCourseFilesData';
-import { useFileManagement } from '../hooks/useFileManagement';
+import { FileSortMode, useFileManagement } from '../hooks/useFileManagement';
 import { formatFolderDetails } from '../utils/formatFolderDetails';
-
-const AddFileButton = ({
-  onPress,
-  bottomOffset,
-}: {
-  onPress: () => void;
-  bottomOffset: number;
-}) => {
-  const styles = useStylesheet(createStyles);
-  const { t } = useTranslation();
-
-  return (
-    <View
-      style={[
-        styles.ctaWrapper,
-        {
-          paddingBottom: bottomOffset + 18,
-        },
-      ]}
-    >
-      <CtaButton
-        title={t('courseFilesTab.addFileOrFolder')}
-        action={onPress}
-        absolute={false}
-        icon={faPlus}
-        containerStyle={styles.ctaButtonContainer}
-      />
-    </View>
-  );
-};
 
 type Props = NativeStackScreenProps<
   FileStackParamList,
@@ -78,7 +47,7 @@ type Props = NativeStackScreenProps<
 
 export const CourseFilesScreen = ({ route, navigation }: Props) => {
   const styles = useStylesheet(createStyles);
-  const { colors, dark, palettes } = useTheme();
+  const { colors, dark, palettes, spacing } = useTheme();
   const iosGrabberColor = dark ? palettes.gray[500] : palettes.gray[300];
   const alertSeparatorColor = dark
     ? 'rgba(255, 255, 255, 0.22)'
@@ -167,10 +136,6 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     },
   ];
 
-  const sortedFileIndexById = useMemo(
-    () => new Map(sortedFiles.map((file, index) => [file.id, index])),
-    [sortedFiles],
-  );
   const downloadTitle = t('courseFilesTab.download', {
     defaultValue: 'Download',
   });
@@ -181,6 +146,17 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
   const cancelLabel = t('common.cancel', { defaultValue: 'Cancel' });
   const confirmLabel = t('common.confirm', { defaultValue: 'Confirm' });
   const menuVerticalOffset = Platform.OS === 'ios' ? 2 : 6;
+  const sortLabels = useMemo<Record<FileSortMode, string>>(
+    () => ({
+      nameAsc: t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' }),
+      nameDesc: t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' }),
+      mostRecent: t('courseFilesTab.mostRecent', {
+        defaultValue: 'Most Recent',
+      }),
+      oldestFirst: t('common.oldestFirst', { defaultValue: 'Oldest first' }),
+    }),
+    [t],
+  );
 
   const promptOverwriteDownload = useCallback(
     (fileId: string) => {
@@ -212,7 +188,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
       activeDirectoryId == null
         ? undefined
         : sortedDirectories.find(
-            directory => directory.id === activeDirectoryId,
+            directory => directory.id === String(activeDirectoryId),
           ),
     [activeDirectoryId, sortedDirectories],
   );
@@ -270,10 +246,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
   const fileEntries: CourseFileEntry[] = useMemo(() => {
     return visibleFiles.map(file => {
       const fileId = file.id;
-      const status = getFileStatus(
-        fileId,
-        sortedFileIndexById.get(fileId) ?? 0,
-      );
+      const status = getFileStatus(fileId);
 
       return {
         id: fileId,
@@ -301,7 +274,6 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     });
   }, [
     visibleFiles,
-    sortedFileIndexById,
     getFileStatus,
     selectedCourse?.id,
     navigation,
@@ -328,7 +300,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
             }
             navigation.push('CourseFolderFilesScreen', {
               courseId: selectedCourse.id,
-              directoryId: folder.id,
+              directoryId: Number(folder.id),
             });
           },
           trailing: <View style={styles.staticTrailing} />,
@@ -336,6 +308,8 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
       }),
     [navigation, selectedCourse?.id, sortedDirectories, styles.staticTrailing],
   );
+  const listEntries =
+    viewMode === 'files' || activeDirectory ? fileEntries : folderEntries;
 
   return (
     <View style={styles.screen}>
@@ -364,17 +338,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
         <SearchBar value={search} onChangeText={setSearch} />
 
         <CourseFilesMenu
-          sortLabel={
-            sortMode === 'nameAsc'
-              ? t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' })
-              : sortMode === 'nameDesc'
-                ? t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' })
-                : sortMode === 'mostRecent'
-                  ? t('courseFilesTab.mostRecent', {
-                      defaultValue: 'Most Recent',
-                    })
-                  : t('common.oldestFirst', { defaultValue: 'Oldest first' })
-          }
+          sortLabel={sortLabels[sortMode]}
           onSortPress={() => {
             moreMenu.close();
             sortMenu.openFromRef({
@@ -394,18 +358,52 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
         />
       </View>
 
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
+      <FlatList
+        style={styles.flatList}
+        contentContainerStyle={styles.flatListContent}
+        data={listEntries}
+        keyExtractor={item => item.id}
+        initialNumToRender={15}
+        maxToRenderPerBatch={15}
+        windowSize={4}
         keyboardShouldPersistTaps="handled"
-      >
-        {viewMode === 'files' || activeDirectory ? (
-          <CourseFilesList files={fileEntries} />
-        ) : (
-          <CourseFilesList files={folderEntries} />
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item, index }) => (
+          <View
+            style={[
+              styles.itemContainer,
+              index === 0 ? styles.firstItem : null,
+              index === listEntries.length - 1 ? styles.lastItem : null,
+            ]}
+          >
+            <ManagedFileListItem
+              name={item.name}
+              subtitle={item.subtitle}
+              status={item.status}
+              onPress={item.onPress}
+              isFolder={item.isFolder}
+              onLongPress={item.onLongPress}
+              onActionPress={item.trailing ? undefined : item.onActionPress}
+              trailing={item.trailing}
+            />
+            {index < listEntries.length - 1 ? (
+              <IndentedDivider
+                style={[styles.fileDivider, { marginRight: -spacing[5] }]}
+              />
+            ) : null}
+          </View>
         )}
-      </ScrollView>
+        ListHeaderComponent={<View style={styles.listTopSpacing} />}
+        ListFooterComponent={<View style={styles.listBottomSpacing} />}
+        ListEmptyComponent={
+          <View style={styles.emptyStateContainer}>
+            <OverviewList
+              style={styles.emptyStateCard}
+              emptyStateText={t('courseFilesTab.empty')}
+            />
+          </View>
+        }
+      />
 
       <CourseFilesContextMenu
         visible={moreMenu.visible}
@@ -452,38 +450,19 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
               <Text style={styles.confirmTitle}>{downloadTitle}</Text>
               <Text style={styles.confirmBody}>{downloadOverwriteMessage}</Text>
             </View>
-            <View
-              style={[
-                styles.confirmActions,
-                { borderTopColor: alertSeparatorColor },
-              ]}
-            >
-              <TouchableOpacity
-                onPress={() => setConfirmDownloadFileId(undefined)}
-                style={styles.confirmAction}
-              >
-                <Text
-                  style={[styles.cancelActionText, { color: colors.readMore }]}
-                >
-                  {cancelLabel}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  if (confirmDownloadFileId) {
-                    startDownload(confirmDownloadFileId);
-                  }
-                  setConfirmDownloadFileId(undefined);
-                }}
-                style={styles.confirmAction}
-              >
-                <Text
-                  style={[styles.confirmActionText, { color: colors.readMore }]}
-                >
-                  {confirmLabel}
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <AlertActionRow
+              cancelLabel={cancelLabel}
+              confirmLabel={confirmLabel}
+              textColor={colors.readMore}
+              separatorColor={alertSeparatorColor}
+              onCancel={() => setConfirmDownloadFileId(undefined)}
+              onConfirm={() => {
+                if (confirmDownloadFileId) {
+                  startDownload(confirmDownloadFileId);
+                }
+                setConfirmDownloadFileId(undefined);
+              }}
+            />
           </Pressable>
         </Pressable>
       </Modal>
@@ -517,18 +496,43 @@ const createStyles = ({
       flex: 1,
       backgroundColor: colors.background,
     },
-    scrollView: {
+    flatList: {
       flex: 1,
     },
-    content: {
+    flatListContent: {
       paddingHorizontal: spacing[5],
-      paddingBottom: spacing[5],
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      gap: spacing[2],
       flexGrow: 1,
-      flexShrink: 0,
-      flexBasis: 0,
+    },
+    listTopSpacing: {
+      height: spacing[2],
+    },
+    listBottomSpacing: {
+      height: spacing[5],
+    },
+    emptyStateContainer: {
+      alignSelf: 'stretch',
+    },
+    emptyStateCard: {
+      borderRadius: spacing[3],
+      alignSelf: 'stretch',
+      marginHorizontal: 0,
+      marginVertical: 0,
+    },
+    itemContainer: {
+      alignSelf: 'stretch',
+      backgroundColor: colors.surface,
+      paddingLeft: spacing[4],
+      paddingRight: spacing[5],
+    },
+    firstItem: {
+      borderTopLeftRadius: spacing[3],
+      borderTopRightRadius: spacing[3],
+    },
+    lastItem: {
+      borderBottomLeftRadius: spacing[3],
+      borderBottomRightRadius: spacing[3],
+    },
+    fileDivider: {
       alignSelf: 'stretch',
     },
     controlsContainer: {
@@ -554,13 +558,6 @@ const createStyles = ({
     directoryHeaderRightSpacer: {
       minWidth: 56,
       minHeight: 28,
-    },
-    ctaWrapper: {
-      paddingHorizontal: spacing[5],
-      paddingTop: spacing[2],
-    },
-    ctaButtonContainer: {
-      padding: 0,
     },
     staticTrailing: {
       width: 24,
@@ -605,31 +602,5 @@ const createStyles = ({
       fontWeight: fontWeights.normal,
       lineHeight: 18,
       letterSpacing: -0.08,
-    },
-    confirmActions: {
-      flexDirection: 'row',
-      borderTopWidth: StyleSheet.hairlineWidth,
-    },
-    confirmAction: {
-      flex: 1,
-      minHeight: 44,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    confirmActionText: {
-      fontFamily: fontFamilies.body,
-      fontSize: 17,
-      fontStyle: 'normal',
-      fontWeight: fontWeights.semibold,
-      lineHeight: 22,
-      letterSpacing: -0.43,
-    },
-    cancelActionText: {
-      fontFamily: fontFamilies.body,
-      fontSize: 17,
-      fontStyle: 'normal',
-      fontWeight: fontWeights.normal,
-      lineHeight: 22,
-      letterSpacing: -0.43,
     },
   });

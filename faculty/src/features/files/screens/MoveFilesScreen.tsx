@@ -1,30 +1,25 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Keyboard,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
 import Modal from 'react-native-modal';
 
-import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import {
   faCheck,
   faChevronLeft,
-  faCircleDot,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   CreateFolderIcon,
   CtaButton,
+  IconButton,
   Text,
   Theme,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+
+import { FolderNameCard } from '../components/FolderNameCard';
+import { SelectableRadioRow } from '../components/SelectableRadioRow';
 
 type MoveView = 'choose-folder' | 'create-folder';
 
@@ -128,21 +123,20 @@ export const MoveFilesScreen = ({
       <View style={[styles.container, { backgroundColor: colors.surface }]}>
         {/* Header */}
         <View style={[styles.header, { backgroundColor: colors.background }]}>
-          <TouchableOpacity
-            style={styles.headerIconButton}
-            onPress={view === 'create-folder' ? handleBack : undefined}
-            disabled={view === 'choose-folder'}
-            accessibilityRole="button"
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            {view === 'create-folder' && (
-              <FontAwesomeIcon
-                icon={faChevronLeft}
-                size={16}
-                color={palettes.primary[500]}
-              />
-            )}
-          </TouchableOpacity>
+          {view === 'create-folder' ? (
+            <IconButton
+              style={styles.headerIconButton}
+              icon={faChevronLeft}
+              size={16}
+              color={palettes.primary[500]}
+              onPress={handleBack}
+              accessibilityRole="button"
+              noPadding
+              iconPadding={8}
+            />
+          ) : (
+            <View style={styles.headerIconButton} />
+          )}
 
           <Text
             style={[
@@ -153,18 +147,16 @@ export const MoveFilesScreen = ({
             {t('courseFilesTab.manageFiles', { defaultValue: 'Manage Files' })}
           </Text>
 
-          <TouchableOpacity
+          <IconButton
             style={styles.headerIconButton}
+            icon={faTimes}
+            size={16}
+            color={palettes.primary[500]}
             onPress={handleClose}
             accessibilityRole="button"
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <FontAwesomeIcon
-              icon={faTimes}
-              size={16}
-              color={palettes.primary[500]}
-            />
-          </TouchableOpacity>
+            noPadding
+            iconPadding={8}
+          />
         </View>
 
         {/* Content */}
@@ -187,12 +179,13 @@ export const MoveFilesScreen = ({
                 {directories.map(dir => {
                   const isSelected = selectedDirId === dir.id;
                   return (
-                    <TouchableOpacity
+                    <SelectableRadioRow
                       key={dir.id}
+                      label={dir.name}
+                      labelNumberOfLines={1}
+                      selected={isSelected}
                       onPress={() => setSelectedDirId(dir.id)}
-                      accessibilityRole="radio"
-                      accessibilityState={{ checked: isSelected }}
-                      style={[
+                      containerStyle={[
                         styles.folderItem,
                         { backgroundColor: colors.background },
                         isSelected && {
@@ -200,30 +193,14 @@ export const MoveFilesScreen = ({
                           borderColor: palettes.primary[500],
                         },
                       ]}
-                    >
-                      <View style={styles.folderItemContent}>
-                        <Text
-                          numberOfLines={1}
-                          style={[
-                            styles.folderItemName,
-                            {
-                              color: dark
-                                ? palettes.gray[50]
-                                : palettes.text[800],
-                            },
-                          ]}
-                        >
-                          {dir.name}
-                        </Text>
-                      </View>
-                      <View style={styles.folderItemTrailing}>
-                        <FontAwesomeIcon
-                          icon={isSelected ? faCircleDot : faCircle}
-                          size={16}
-                          color={palettes.primary[500]}
-                        />
-                      </View>
-                    </TouchableOpacity>
+                      labelStyle={[
+                        styles.folderItemName,
+                        {
+                          color: dark ? palettes.gray[50] : palettes.text[800],
+                        },
+                      ]}
+                      trailingColor={palettes.primary[500]}
+                    />
                   );
                 })}
               </View>
@@ -282,12 +259,27 @@ export const MoveFilesScreen = ({
                   })}
                 </Text>
 
-                <TouchableOpacity
+                <FolderNameCard
+                  label={t('courseFilesTab.typeFolderName', {
+                    defaultValue: 'Type folder name',
+                  })}
+                  value={folderName}
+                  inputRef={inputRef}
+                  onChangeText={setFolderName}
                   onPress={() =>
                     requestAnimationFrame(() => inputRef.current?.focus())
                   }
-                  activeOpacity={1}
-                  style={[
+                  onFocus={() => setIsFolderInputFocused(true)}
+                  onBlur={() => setIsFolderInputFocused(false)}
+                  placeholder={t('courseFilesTab.newFolder', {
+                    defaultValue: 'New Folder',
+                  })}
+                  placeholderTextColor={
+                    dark ? palettes.gray[400] : palettes.text[700]
+                  }
+                  selectionColor={palettes.orange[500]}
+                  leadingIconColor={folderIconColor}
+                  containerStyle={[
                     styles.folderNameCard,
                     { backgroundColor: colors.background },
                     isFolderInputFocused && {
@@ -295,49 +287,16 @@ export const MoveFilesScreen = ({
                       borderColor: palettes.primary[500],
                     },
                   ]}
-                >
-                  <View style={styles.folderNameLeading}>
-                    <CreateFolderIcon
-                      width={20}
-                      height={20}
-                      color={folderIconColor}
-                    />
-                  </View>
-                  <View style={styles.folderNameContent}>
-                    <Text
-                      style={[
-                        styles.folderNameLabel,
-                        { color: palettes.gray[500] },
-                      ]}
-                    >
-                      {t('courseFilesTab.typeFolderName', {
-                        defaultValue: 'Type folder name',
-                      })}
-                    </Text>
-                    <TextInput
-                      ref={inputRef}
-                      value={folderName}
-                      onChangeText={setFolderName}
-                      onFocus={() => setIsFolderInputFocused(true)}
-                      onBlur={() => setIsFolderInputFocused(false)}
-                      placeholder={t('courseFilesTab.newFolder', {
-                        defaultValue: 'New Folder',
-                      })}
-                      placeholderTextColor={
-                        dark ? palettes.gray[400] : palettes.text[700]
-                      }
-                      style={[
-                        styles.folderNameInput,
-                        {
-                          color: dark ? palettes.gray[50] : palettes.text[800],
-                        },
-                      ]}
-                      selectionColor={palettes.orange[500]}
-                      returnKeyType="done"
-                      onSubmitEditing={() => inputRef.current?.blur()}
-                    />
-                  </View>
-                </TouchableOpacity>
+                  labelStyle={{ color: palettes.gray[500] }}
+                  inputStyle={[
+                    styles.folderNameInput,
+                    { color: dark ? palettes.gray[50] : palettes.text[800] },
+                  ]}
+                  inputProps={{
+                    returnKeyType: 'done',
+                    onSubmitEditing: () => inputRef.current?.blur(),
+                  }}
+                />
               </View>
 
               {/* Buttons */}
@@ -422,21 +381,11 @@ const createStyles = ({
       paddingVertical: spacing[3],
       paddingRight: spacing[2],
     },
-    folderItemContent: {
-      flex: 1,
-      paddingLeft: spacing[4],
-      overflow: 'hidden',
-    },
     folderItemName: {
       fontFamily: fontFamilies.body,
       fontSize: fontSizes.md,
       fontWeight: fontWeights.medium,
       lineHeight: 24,
-    },
-    folderItemTrailing: {
-      width: 24,
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     buttons: {
       flexDirection: 'row',
@@ -462,25 +411,6 @@ const createStyles = ({
       height: 60,
       borderRadius: shapes.lg,
       overflow: 'hidden',
-    },
-    folderNameLeading: {
-      width: 46,
-      height: '100%',
-      paddingLeft: spacing[4],
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    folderNameContent: {
-      flex: 1,
-      paddingLeft: spacing[4],
-      justifyContent: 'center',
-      overflow: 'hidden',
-    },
-    folderNameLabel: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.normal,
-      lineHeight: 21,
     },
     folderNameInput: {
       fontFamily: fontFamilies.body,

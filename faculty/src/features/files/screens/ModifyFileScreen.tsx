@@ -1,6 +1,4 @@
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
@@ -17,37 +15,66 @@ import {
   useStylesheet,
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
+import { FileStackParamList } from '../../../core/types/navigation';
 
-export const ModifyFileScreen = () => {
+type Props = NativeStackScreenProps<FileStackParamList, 'ModifyFileScreen'>;
+
+export const ModifyFileScreen = ({ route }: Props) => {
   const navigation = useNavigation();
-  const { selectedCourse, updateCourseFile, selectedFile } = useCourses();
+  const { fakeCourses, updateCourseFile } = useCourses();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const [title, setTitle] = useState(selectedFile?.name ?? '');
-  const [selectedDirectory, setSelectedDirectory] = useState(
-    selectedFile?.dirId.toString() ?? '',
+  const [title, setTitle] = useState('');
+  const [selectedDirectory, setSelectedDirectory] = useState('');
+
+  const { courseId, fileId } = route.params;
+  const course = useMemo(
+    () => fakeCourses.find(currentCourse => currentCourse.id === courseId),
+    [courseId, fakeCourses],
   );
+  const file = useMemo(() => {
+    if (!course) {
+      return undefined;
+    }
+
+    for (const directory of course.directories) {
+      const match = directory.files.find(
+        currentFile => String(currentFile.id) === fileId,
+      );
+      if (match) {
+        return { ...match, dirId: directory.id };
+      }
+    }
+
+    return undefined;
+  }, [course, fileId]);
+
+  useEffect(() => {
+    setTitle(file?.name ?? '');
+    setSelectedDirectory(file?.dirId?.toString() ?? '');
+  }, [file]);
 
   const handlePublish = () => {
-    if (!selectedCourse) return;
-    if (!selectedFile) return;
+    if (!course) return;
+    if (!file) return;
     if (!title) return;
     if (!selectedDirectory) return;
 
     const newMaterial = {
-      id: selectedFile.id,
+      id: file.id,
       name: title,
-      date: selectedFile.date,
-      size: selectedFile.size,
-      mimeType: selectedFile.mimeType,
+      date: file.date,
+      size: file.size,
+      mimeType: file.mimeType,
       dirId: Number(selectedDirectory),
     };
 
     updateCourseFile(
-      selectedCourse.id,
-      selectedFile.id,
+      course.id,
+      file.id,
       newMaterial,
       Number(selectedDirectory),
     );
@@ -73,7 +100,7 @@ export const ModifyFileScreen = () => {
   }, [navigation, t]);
 
   return (
-    <GestureHandlerRootView style={styles.root}>
+    <View style={styles.root}>
       <View style={styles.container}>
         <Card style={styles.card}>
           <Text variant="heading" style={styles.sectionTitle}>
@@ -102,7 +129,7 @@ export const ModifyFileScreen = () => {
             value={selectedDirectory}
             onSelectOption={setSelectedDirectory}
             options={
-              selectedCourse?.directories?.map(dir => ({
+              course?.directories?.map(dir => ({
                 id: dir.id.toString(),
                 title: dir.name,
               })) || []
@@ -127,9 +154,9 @@ export const ModifyFileScreen = () => {
         action={handlePublish}
         absolute={false}
         variant="filled"
-        disabled={!title || !selectedDirectory}
+        disabled={!file || !title || !selectedDirectory}
       />
-    </GestureHandlerRootView>
+    </View>
   );
 };
 
@@ -140,20 +167,20 @@ const createStyles = ({ palettes, spacing, fontSizes }: Theme) =>
     },
     container: {
       flex: 1,
-      paddingBottom: spacing[6], // Distanza tra il contenuto e il fondo per il bottone
+      paddingBottom: spacing[6],
     },
     card: {
-      marginBottom: spacing[4], // Distanza dal bordo inferiore
+      marginBottom: spacing[4],
     },
     sectionTitle: {
-      marginLeft: 15,
-      marginTop: 5,
+      marginLeft: spacing[3],
+      marginTop: spacing[1],
       color: palettes.gray[800],
     },
     textInput: {
       borderBottomWidth: 0,
       padding: spacing[2],
-      marginLeft: 10,
+      marginLeft: spacing[2.5],
       fontSize: fontSizes.md,
       color: palettes.gray[600],
     },

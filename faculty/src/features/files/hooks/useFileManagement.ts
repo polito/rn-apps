@@ -6,6 +6,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Directory } from '../types/Directory';
 import { FileEntry } from '../types/FileEntry';
 
+/** Compare two names according to the given sort mode. */
+const compareByName = (
+  a: string,
+  b: string,
+  sortMode: FileSortMode,
+): number => {
+  const comparison = a.localeCompare(b);
+  return sortMode === 'nameAsc' ? comparison : -comparison;
+};
+
 export type FileSortMode =
   | 'nameAsc'
   | 'nameDesc'
@@ -56,9 +66,12 @@ export const useFileManagement = ({
   }, []);
 
   useEffect(() => {
-    if (!sortStorageKey) return;
-    AsyncStorage.getItem(sortStorageKey)
-      .then(value => {
+    if (!sortStorageKey) {
+      return;
+    }
+    const loadSortMode = async () => {
+      try {
+        const value = await AsyncStorage.getItem(sortStorageKey);
         if (
           value === 'nameAsc' ||
           value === 'nameDesc' ||
@@ -67,72 +80,86 @@ export const useFileManagement = ({
         ) {
           setSortMode(value);
         }
-      })
-      .catch(() => {});
+      } catch {}
+    };
+    void loadSortMode();
   }, [sortStorageKey]);
 
   useEffect(() => {
-    if (!viewStorageKey) return;
-    AsyncStorage.getItem(viewStorageKey)
-      .then(value => {
+    if (!viewStorageKey) {
+      return;
+    }
+    const loadViewMode = async () => {
+      try {
+        const value = await AsyncStorage.getItem(viewStorageKey);
         if (value === 'files' || value === 'folders') {
           setViewMode(value);
         }
-      })
-      .catch(() => {});
+      } catch {}
+    };
+    void loadViewMode();
   }, [viewStorageKey]);
 
   useEffect(() => {
     if (!sortStorageKey) return;
-    AsyncStorage.setItem(sortStorageKey, sortMode).catch(() => {});
+    const saveSortMode = async () => {
+      try {
+        await AsyncStorage.setItem(sortStorageKey, sortMode);
+      } catch {}
+    };
+    void saveSortMode();
   }, [sortMode, sortStorageKey]);
 
   useEffect(() => {
     if (!viewStorageKey) return;
-    AsyncStorage.setItem(viewStorageKey, viewMode).catch(() => {});
+    const saveViewMode = async () => {
+      try {
+        await AsyncStorage.setItem(viewStorageKey, viewMode);
+      } catch {}
+    };
+    void saveViewMode();
   }, [viewMode, viewStorageKey]);
 
   const normalizedSearch = useMemo(() => search.trim().toLowerCase(), [search]);
 
   const sortedFiles = useMemo(() => {
     const filtered = normalizedSearch
-      ? files.filter(file => file.name.toLowerCase().includes(normalizedSearch))
+      ? files.filter(file =>
+          file.name.toLowerCase().startsWith(normalizedSearch),
+        )
       : files;
 
     return [...filtered].sort((a, b) => {
       if (sortMode === 'nameAsc' || sortMode === 'nameDesc') {
-        const comparison = a.name.localeCompare(b.name);
-        return sortMode === 'nameAsc' ? comparison : -comparison;
+        return compareByName(a.name, b.name, sortMode);
       }
 
       const aDate = Date.parse(a.date ?? '');
       const bDate = Date.parse(b.date ?? '');
-      const hasValidDate = Number.isFinite(aDate) && Number.isFinite(bDate);
+      const aValid = Number.isFinite(aDate);
+      const bValid = Number.isFinite(bDate);
 
-      if (hasValidDate) {
-        return sortMode === 'mostRecent' ? bDate - aDate : aDate - bDate;
-      }
+      // Files without a date always go to the bottom regardless of sort direction
+      if (!aValid && !bValid) return 0;
+      if (!aValid) return 1;
+      if (!bValid) return -1;
 
-      const fallbackComparison = (a.date ?? '').localeCompare(b.date ?? '');
-      return sortMode === 'mostRecent'
-        ? -fallbackComparison
-        : fallbackComparison;
+      return sortMode === 'mostRecent' ? bDate - aDate : aDate - bDate;
     });
   }, [files, normalizedSearch, sortMode]);
 
   const sortedDirectories = useMemo(() => {
     const filtered = normalizedSearch
       ? directories.filter(directory =>
-          directory.name.toLowerCase().includes(normalizedSearch),
+          directory.name.toLowerCase().startsWith(normalizedSearch),
         )
       : directories;
 
     return [...filtered].sort((a, b) => {
       if (sortMode === 'nameAsc' || sortMode === 'nameDesc') {
-        const comparison = a.name.localeCompare(b.name);
-        return sortMode === 'nameAsc' ? comparison : -comparison;
+        return compareByName(a.name, b.name, sortMode);
       }
-      return a.id - b.id;
+      return a.id.localeCompare(b.id, undefined, { numeric: true });
     });
   }, [directories, normalizedSearch, sortMode]);
 
@@ -156,10 +183,8 @@ export const useFileManagement = ({
   }, []);
 
   const getFileStatus = useCallback(
-    (fileId: string, indexHint: number): FileDownloadStatus => {
-      const defaultStatus: FileDownloadStatus =
-        indexHint < 2 ? 'idle' : indexHint % 2 === 0 ? 'idle' : 'syncing';
-      return statusOverrides[fileId] ?? defaultStatus;
+    (fileId: string): FileDownloadStatus => {
+      return statusOverrides[fileId] ?? 'idle';
     },
     [statusOverrides],
   );

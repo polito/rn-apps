@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { Theme, useStylesheet } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
@@ -96,7 +96,7 @@ export const CourseDirectoryScreen = () => {
             if (selectedCourse?.id != null) {
               navigation.navigate('CourseFilesScreen', {
                 courseId: selectedCourse.id,
-                directoryId: folder.id,
+                directoryId: Number(folder.id),
               });
             }
           },
@@ -107,12 +107,7 @@ export const CourseDirectoryScreen = () => {
 
   return (
     <View style={styles.screen}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
+      <View style={styles.content}>
         <SearchBar value={search} onChangeText={setSearch} />
         <CourseFilesMenu
           sortLabel={
@@ -137,8 +132,8 @@ export const CourseDirectoryScreen = () => {
             });
           }}
         />
-        <CourseFilesList files={folderEntries} />
-      </ScrollView>
+        <CourseFilesList files={folderEntries} fillHeight />
+      </View>
 
       <CourseFilesContextMenu
         visible={moreMenu.visible}
@@ -162,17 +157,11 @@ const createStyles = ({ colors, spacing }: Theme) =>
       flex: 1,
       backgroundColor: colors.background,
     },
-    scrollView: {
-      flex: 1,
-    },
     content: {
+      flex: 1,
       padding: spacing[5],
       flexDirection: 'column',
-      alignItems: 'flex-start',
+      alignItems: 'stretch',
       gap: spacing[2],
-      flexGrow: 1,
-      flexShrink: 0,
-      flexBasis: 0,
-      alignSelf: 'stretch',
     },
   });
