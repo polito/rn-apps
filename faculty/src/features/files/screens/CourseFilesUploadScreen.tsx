@@ -118,7 +118,7 @@ const stylesForDashedOutline = StyleSheet.create({
 export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
   const { courseId } = route.params;
   const { colors, dark, fontSizes, palettes } = useTheme();
-  const iosGrabberColor = dark ? palettes.gray[500] : colors.secondaryText;
+  const iosGrabberColor = dark ? palettes.gray[500] : palettes.gray[300];
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const bottomTabBarHeight = useBottomTabBarHeight();

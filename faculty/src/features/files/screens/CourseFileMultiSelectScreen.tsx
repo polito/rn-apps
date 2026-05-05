@@ -64,7 +64,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
   } = useCourses();
   const theme = useTheme();
   const { fontSizes, palettes, colors, spacing, dark } = theme;
-  const iosGrabberColor = dark ? palettes.gray[500] : colors.secondaryText;
+  const iosGrabberColor = dark ? palettes.gray[500] : palettes.gray[300];
   const moveButtonColors = useMemo(
     () => ({
       border: theme.dark

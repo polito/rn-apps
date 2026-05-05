@@ -109,7 +109,7 @@ type Props = NativeStackScreenProps<
 export const CourseFilesScreen = ({ route, navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { colors, dark, palettes } = useTheme();
-  const iosGrabberColor = dark ? palettes.gray[500] : colors.secondaryText;
+  const iosGrabberColor = dark ? palettes.gray[500] : palettes.gray[300];
   const alertSeparatorColor = dark
     ? 'rgba(255, 255, 255, 0.22)'
     : 'rgba(128, 128, 128, 0.55)';
