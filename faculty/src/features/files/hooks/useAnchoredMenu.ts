@@ -1,4 +1,4 @@
-import { RefObject, useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { View } from 'react-native';
 
 type AnchorPosition = {
@@ -25,7 +25,7 @@ type OpenMenuOptions = {
 const DEFAULT_ANCHOR_POSITION: AnchorPosition = { top: 170, left: 18 };
 
 export const useAnchoredMenu = (initialPosition = DEFAULT_ANCHOR_POSITION) => {
-  const buttonRef: RefObject<View> = useRef<View>(null);
+  const buttonRef = useRef<View>(null);
   const [visible, setVisible] = useState(false);
   const [anchorPosition, setAnchorPosition] =
     useState<AnchorPosition>(initialPosition);
