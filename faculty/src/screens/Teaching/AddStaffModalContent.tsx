@@ -1,174 +1,440 @@
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  FlatList,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
-import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import {
-  Badge,
-  Col,
+  faMagnifyingGlass,
+  faMinus,
+  faPlus,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+  BottomBarSpacer,
   CtaButton,
+  CtaButtonContainer,
   Icon,
-  ModalContent,
+  IndentedDivider,
+  ListItem,
+  OverviewList,
+  Section,
   Text,
   Theme,
+  TranslucentTextField,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { useCourses } from '../../core/contexts/CoursesContext';
+import {
+  StaffAccessValue,
+  getStaffIdentityKey,
+} from '../../core/constants/staffAccess';
+import { personToStaff, useCourses } from '../../core/contexts/CoursesContext';
+import { CourseSharedScreensParamList } from './CourseSharedScreens';
 
-type Props = {
-  close: () => void;
+type SelectableProfile = ReturnType<typeof useCourses>['fakeProfiles'][number];
+
+type StaffAccessDraft = {
+  profileId: number;
+  access?: StaffAccessValue;
 };
 
-const mockStaffList = [
-  'Giulia Rossi',
-  'Marco Bianchi',
-  'Elena Verdi',
-  'Luca Neri',
-  'Sara Gialli',
-  'Davide Blu',
-];
+type Mode = 'search' | 'review';
+type AddStaffRouteProp = RouteProp<CourseSharedScreensParamList, 'AddStaff'>;
 
-export const AddStaffModalContent = ({ close }: Props) => {
+const getProfileName = (profile: Pick<SelectableProfile, 'name' | 'surname'>) =>
+  `${profile.name} ${profile.surname}`.trim();
+
+const getProfileCode = (id: number) => `D${id.toString().padStart(5, '0')}`;
+
+export const AddStaffModalContent = () => {
+  const route = useRoute<AddStaffRouteProp>();
+  const from = route.params?.from;
+  const navigation =
+    useNavigation<NativeStackNavigationProp<CourseSharedScreensParamList>>();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { addStaffToCourse, selectedCourse } = useCourses();
+  const { palettes, fontSizes } = useTheme();
+  const { fakeProfiles, selectedCourse, selectedLecture } = useCourses();
+  const [mode] = useState<Mode>('search');
   const [searchText, setSearchText] = useState('');
-  const [selectedStaff, setSelectedStaff] = useState<string[]>([]);
-  const { palettes, colors } = useTheme();
-  const filteredStaff = useMemo(() => {
-    return mockStaffList.filter(
-      name =>
-        name.toLowerCase().includes(searchText.toLowerCase()) &&
-        !selectedStaff.includes(name),
-    );
-  }, [searchText, selectedStaff]);
+  const [selectedStaff, setSelectedStaff] = useState<StaffAccessDraft[]>([]);
 
-  const handleAdd = (name: string) => {
-    setSelectedStaff(prev => [...prev, name]);
-    setSearchText('');
+  const existingStaffKeys = useMemo(
+    () => new Set((selectedCourse?.staff ?? []).map(getStaffIdentityKey)),
+    [selectedCourse?.staff],
+  );
+
+  const normalizedSearch = searchText.trim().toLowerCase();
+
+  const selectedStaffIds = useMemo(
+    () => new Set(selectedStaff.map(item => `${item.profileId}`)),
+    [selectedStaff],
+  );
+
+  const profilesById = useMemo(
+    () => new Map(fakeProfiles.map(profile => [profile.id, profile])),
+    [fakeProfiles],
+  );
+
+  const selectedProfiles = useMemo(
+    () =>
+      selectedStaff
+        .map(item => {
+          const profile = profilesById.get(item.profileId);
+          if (!profile) return null;
+          return { ...item, profile };
+        })
+        .filter(
+          (item): item is StaffAccessDraft & { profile: SelectableProfile } =>
+            item != null,
+        ),
+    [profilesById, selectedStaff],
+  );
+
+  const availableProfiles = useMemo(() => {
+    if (from === 'staffScreen') {
+      // if we are adding staff from the staff screen we want to show all the available profiles
+      return fakeProfiles.filter(
+        profile => !existingStaffKeys.has(`${profile.id}`),
+      );
+    } else if (!selectedCourse?.staff) {
+      return [];
+    } else {
+      // if we are adding staff from the lecture screen we want to show only the profiles of the staff of that course
+      return selectedCourse.staff
+        .filter(
+          staff =>
+            !selectedLecture?.staff?.some(
+              s => s.idProfile === staff?.idProfile,
+            ),
+        ) // filter out the staff that are already assigned to the lecture
+        .map(staff => profilesById.get(staff.idProfile ?? -1) ?? null)
+        .filter((p): p is SelectableProfile => Boolean(p));
+    }
+  }, [
+    existingStaffKeys,
+    fakeProfiles,
+    selectedCourse,
+    from,
+    profilesById,
+    selectedLecture,
+  ]);
+
+  const availableProfilesById = useMemo(
+    () => new Map(availableProfiles.map(profile => [profile?.id, profile])),
+    [availableProfiles],
+  );
+
+  const selectedRows = useMemo(
+    () =>
+      selectedStaff
+        .map(item => availableProfilesById.get(item.profileId))
+        .filter((profile): profile is SelectableProfile => profile != null)
+        .map(profile => ({
+          profile,
+          isSelected: true,
+        })),
+    [availableProfilesById, selectedStaff],
+  );
+
+  const unselectedRows = useMemo(
+    () =>
+      availableProfiles
+        .filter(profile => !selectedStaffIds.has(`${profile?.id}`))
+        .map(profile => ({
+          profile,
+          isSelected: false,
+        })),
+    [availableProfiles, selectedStaffIds],
+  );
+
+  const unselectedRowsToDisplay = useMemo(() => {
+    if (normalizedSearch.length === 0) return unselectedRows;
+
+    return unselectedRows?.filter(({ profile }) => {
+      const fullName = getProfileName(profile).toLowerCase();
+      return (
+        fullName.includes(normalizedSearch) ||
+        profile?.mail.toLowerCase().includes(normalizedSearch)
+      );
+    });
+  }, [normalizedSearch, unselectedRows]);
+
+  const unassignedStaffCount = useMemo(
+    () => selectedStaff.filter(item => !item.access).length,
+    [selectedStaff],
+  );
+
+  const isConfirmDisabled =
+    mode === 'search'
+      ? selectedStaff.length === 0
+      : selectedStaff.length === 0 || unassignedStaffCount > 0;
+
+  const toggleSelection = (profileId: number) => {
+    setSelectedStaff(prev =>
+      prev.some(item => item.profileId === profileId)
+        ? prev.filter(item => item.profileId !== profileId)
+        : [...prev, { profileId }],
+    );
   };
 
-  const handleRemove = (name: string) => {
-    setSelectedStaff(prev => prev.filter(n => n !== name));
+  const highlightMatch = (fullName: string) => {
+    const searchQuery = searchText.trim();
+    if (!searchQuery) {
+      return fullName;
+    }
+
+    const nameLower = fullName.toLowerCase();
+    const searchLower = searchQuery.toLowerCase();
+    const start = nameLower.indexOf(searchLower);
+    if (start < 0) {
+      return fullName;
+    }
+
+    const end = start + searchQuery.length;
+
+    return (
+      <Text
+        variant="title"
+        style={styles.searchTitleText}
+        weight="medium"
+        numberOfLines={1}
+      >
+        {fullName.slice(0, start)}
+        <Text variant="title" style={styles.searchTitleMatchText}>
+          {fullName.slice(start, end)}
+        </Text>
+        {fullName.slice(end)}
+      </Text>
+    );
   };
 
   return (
-    <ModalContent title={t('other.addCollaborator')} close={close}>
-      <Col pt={4} pb={8} ph={4} gap={3}>
-        <Col align="center" gap={3} />
-
-        {/* Barra di ricerca */}
-        <View style={styles.searchContainer}>
-          <Icon
-            icon={faSearch}
-            size={16}
-            color={palettes.gray[500]}
-            style={styles.searchIcon}
-          />
-          <TextInput
-            placeholder={t('other.lookForPeople')}
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.content}>
+        <Section style={styles.section}>
+          <TranslucentTextField
+            type="text"
+            label={t('common.search')}
+            leadingIcon={faMagnifyingGlass}
+            containerStyle={styles.searchContainer}
+            isClearable={searchText ? true : false}
             value={searchText}
             onChangeText={setSearchText}
-            style={styles.searchInput}
-            placeholderTextColor={palettes.gray[500]}
+            onClear={() => setSearchText('')}
           />
-        </View>
+        </Section>
 
-        {/* Lista filtrata */}
-        {searchText.length > 0 && (
-          <FlatList
-            data={filteredStaff}
-            keyExtractor={item => item}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.resultItem}
-                onPress={() => handleAdd(item)}
-              >
-                <Text>{item}</Text>
-              </TouchableOpacity>
+        {selectedRows.length === 0 && unselectedRowsToDisplay.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text
+              variant="secondaryText"
+              style={{ fontFamily: 'Montserrat-Regular' }}
+            >
+              {t('other.noPersona')}
+            </Text>
+          </View>
+        ) : (
+          <React.Fragment>
+            {normalizedSearch.length === 0 && selectedRows.length === 0 && (
+              <Text style={styles.sectionTitle}>
+                {t('other.basedOnPreviousCourses')}
+              </Text>
             )}
-          />
+
+            {selectedRows.length > 0 && (
+              <OverviewList indented style={styles.listContainer}>
+                {selectedRows.map((item, index) => {
+                  return (
+                    <React.Fragment key={item.profile.id}>
+                      <ListItem
+                        title={highlightMatch(getProfileName(item.profile))}
+                        subtitle={searchText && getProfileCode(item.profile.id)}
+                        onPress={() => toggleSelection(item.profile.id)}
+                        titleStyle={{
+                          color: palettes.text[800],
+                        }}
+                        subtitleStyle={{
+                          color: palettes.gray[600],
+                        }}
+                        containerStyle={styles.selectedRow}
+                        leadingItem={
+                          <Icon
+                            icon={faCircleUser}
+                            size={24}
+                            color={palettes.primary[700]}
+                          />
+                        }
+                        trailingItem={
+                          <Icon
+                            icon={faMinus}
+                            size={fontSizes.md}
+                            color={palettes.primary[600]}
+                          />
+                        }
+                      />
+                      {index < selectedRows.length - 1 && <IndentedDivider />}
+                    </React.Fragment>
+                  );
+                })}
+              </OverviewList>
+            )}
+
+            {unselectedRowsToDisplay?.length > 0 && (
+              <OverviewList indented style={styles.listContainer}>
+                {unselectedRowsToDisplay.map((item, index) => {
+                  return (
+                    <React.Fragment key={item.profile.id}>
+                      <ListItem
+                        title={highlightMatch(getProfileName(item.profile))}
+                        subtitle={searchText && getProfileCode(item.profile.id)}
+                        onPress={() => toggleSelection(item.profile.id)}
+                        titleStyle={{
+                          color: palettes.text[800],
+                        }}
+                        subtitleStyle={{
+                          color: palettes.gray[600],
+                        }}
+                        leadingItem={
+                          <Icon
+                            icon={faCircleUser}
+                            size={24}
+                            color={palettes.primary[700]}
+                          />
+                        }
+                        trailingItem={
+                          <Icon
+                            icon={faPlus}
+                            size={fontSizes.md}
+                            color={palettes.primary[600]}
+                          />
+                        }
+                      />
+                      {index < unselectedRowsToDisplay.length - 1 && (
+                        <IndentedDivider />
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </OverviewList>
+            )}
+          </React.Fragment>
         )}
+        <BottomBarSpacer />
+      </ScrollView>
 
-        {/* Persone selezionate */}
-        <View style={styles.selectedContainer}>
-          {selectedStaff.map(name => (
-            <TouchableOpacity key={name} onPress={() => handleRemove(name)}>
-              <Badge
-                text={name}
-                icon={faTimes}
-                backgroundColor={palettes.lightBlue[500]}
-                foregroundColor={colors.white}
-              />
-            </TouchableOpacity>
-          ))}
-        </View>
-      </Col>
-      <CtaButton
-        absolute={false}
-        title={t('other.add')}
-        action={() => {
-          if (!selectedCourse) return;
-
-          const newStaff = selectedStaff.map((name, index) => ({
-            id: Date.now() + index, // oppure un altro modo per generare ID univoci
-            name,
-            role: 'Collaboratore',
-            access: 'Può leggere',
-          }));
-
-          addStaffToCourse(selectedCourse.id, newStaff);
-          close();
-        }}
-      />
-    </ModalContent>
+      {selectedRows.length > 0 && (
+        <CtaButtonContainer absolute={true}>
+          <CtaButton
+            absolute={true}
+            disabled={isConfirmDisabled}
+            title={t('other.continue')}
+            style={
+              isConfirmDisabled
+                ? styles.confirmButtonDisabled
+                : styles.confirmButtonActive
+            }
+            textStyle={styles.confirmButtonText}
+            action={() => {
+              navigation.navigate('DefineAccess', {
+                addeddStaff: selectedProfiles.map(({ profile, access }) =>
+                  personToStaff(profile, undefined, access ?? ''),
+                ),
+                from: from,
+              });
+            }}
+          />
+        </CtaButtonContainer>
+      )}
+    </SafeAreaView>
   );
 };
 
-const createStyles = ({ colors, palettes, dark }: Theme) =>
+const createStyles = ({
+  colors,
+  palettes,
+  spacing,
+  fontSizes,
+  fontWeights,
+  shapes,
+}: Theme) =>
   StyleSheet.create({
-    message: {
-      color: dark ? colors.prose : colors.prose,
+    safeArea: {
+      flex: 1,
+    },
+    content: {
+      paddingVertical: spacing[5],
+      backgroundColor: colors.background,
+    },
+    section: {
+      paddingHorizontal: spacing[5],
     },
     searchContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: palettes.gray[200],
-      borderRadius: 12,
       borderWidth: 1,
       borderColor: palettes.gray[300],
-      paddingHorizontal: 12,
-      height: 40,
     },
-    searchIcon: {
-      marginRight: 8,
+
+    searchTitleText: {
+      fontSize: fontSizes.md,
+      lineHeight: fontSizes.sm * 1.4,
     },
-    searchInput: {
-      flex: 1,
-      fontSize: 16,
-      color: palettes.gray[800],
-      paddingVertical: 8,
-      height: 50,
-      textAlignVertical: 'center',
+    searchTitleMatchText: {
+      color: palettes.warning[600],
+      fontSize: fontSizes.md,
+      lineHeight: fontSizes.sm * 1.4,
     },
-    resultItem: {
-      padding: 10,
+
+    sectionTitle: {
+      color: palettes.primary[700],
+      fontSize: fontSizes.md,
+      lineHeight: fontSizes.md * 1.25,
+      fontWeight: fontWeights.semibold,
+      fontFamily: 'Montserrat-SemiBold',
+      paddingHorizontal: spacing[5],
+      marginBottom: spacing[5],
+    },
+    selectedCardContainer: {
+      borderRadius: 18,
       backgroundColor: palettes.gray[200],
-      borderBottomWidth: 1,
-      borderBottomColor: palettes.gray[300],
+      overflow: 'hidden',
     },
-    selectedContainer: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      marginTop: 10,
-      gap: 8,
+
+    selectedRow: {
+      backgroundColor: palettes.gray[200],
+    },
+    cardContainer: {
+      borderRadius: 18,
+      backgroundColor: colors.surface,
+      overflow: 'hidden',
+      maxHeight: 390,
+    },
+    divider: {
+      marginLeft: 76,
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: palettes.gray[300],
+    },
+    emptyContainer: {
+      padding: spacing[4],
+      alignItems: 'center',
+    },
+
+    confirmButtonActive: {
+      backgroundColor: palettes.primary[500],
+      borderColor: palettes.primary[500],
+    },
+    confirmButtonDisabled: {
+      backgroundColor: palettes.gray[500],
+      borderColor: palettes.gray[500],
+    },
+    confirmButtonText: {
+      color: colors.white,
+    },
+    listContainer: {
+      borderRadius: shapes.lg,
+      elevation: 0,
+      marginBottom: spacing[5],
+      marginTop: 0,
     },
   });

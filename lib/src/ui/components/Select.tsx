@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 
-import { IS_ANDROID } from '../../core/constants';
+import { useTheme } from '../../ui/hooks/useTheme';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
 import { Icon } from './Icon';
 import { ListItem } from './ListItem';
 import { StatefulMenuView } from './StatefulMenuView';
+import { Text } from './Text';
 
 interface DropdownOption {
   id: string;
@@ -24,7 +27,7 @@ interface Props {
   description?: string;
   disabled?: boolean;
   accessibilityLabel?: string;
-  hideChevron?: boolean;
+  ellipsis?: boolean;
 }
 
 export const Select = ({
@@ -35,11 +38,13 @@ export const Select = ({
   label,
   description,
   disabled,
-  hideChevron,
+  ellipsis = false,
 }: Props) => {
   const displayedValue = useMemo(() => {
     return options?.find(opt => opt?.id === value)?.title;
   }, [options, value]);
+  const styles = useStylesheet(createStyles);
+  const { fontSizes, palettes, shapes } = useTheme();
 
   return (
     <Pressable
@@ -55,19 +60,53 @@ export const Select = ({
         }}
       >
         <ListItem
-          isAction
           disabled={disabled}
-          title={displayedValue || label}
-          subtitle={description}
-          trailingItem={
-            hideChevron ? (
-              <View />
-            ) : IS_ANDROID ? (
-              <Icon icon={faChevronDown} />
-            ) : undefined
+          style={styles.selectorContainer}
+          title={
+            ellipsis ? (
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Icon
+                  icon={faEllipsis}
+                  size={shapes.xl}
+                  color={palettes.primary[400]}
+                />
+              </View>
+            ) : (
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={styles.text}>{displayedValue || label}</Text>
+                <Icon
+                  icon={faChevronDown}
+                  style={styles.icon}
+                  color={palettes.primary[400]}
+                  size={fontSizes.md}
+                />
+              </View>
+            )
           }
+          subtitle={description}
         />
       </StatefulMenuView>
     </Pressable>
   );
 };
+
+const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
+  StyleSheet.create({
+    icon: {
+      marginLeft: spacing[2.5],
+    },
+    text: {
+      color: palettes.primary[400],
+      fontSize: fontSizes.sm,
+      fontWeight: '500',
+      fontFamily: 'Montserrat-Medium',
+    },
+    selectorContainer: {
+      height: 40,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: spacing[2.5],
+      color: palettes.primary[400],
+    },
+  });
