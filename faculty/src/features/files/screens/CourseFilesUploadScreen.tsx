@@ -38,6 +38,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { FileStackParamList } from '../../../core/types/navigation';
+import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
 
 export type UploadType = 'file' | 'folder';
 const DEFAULT_FOLDER_NAME = 'New Folder';
@@ -264,17 +265,17 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       {Platform.OS === 'ios' ? (
-        <View
-          style={[
-            styles.iosHeaderContainer,
-            { backgroundColor: dark ? colors.surface : colors.white },
-          ]}
-        >
-          <View
-            style={[styles.iosGrabber, { backgroundColor: iosGrabberColor }]}
-          />
-          <View style={styles.header}>
-            <TouchableOpacity
+        <IosTopBar
+          backgroundColor={dark ? colors.surface : colors.white}
+          grabberColor={iosGrabberColor}
+          dividerColor={dark ? palettes.gray[600] : colors.divider}
+          left={
+            <IosTopBarTextAction
+              label={
+                showBackButton
+                  ? t('common.back', { defaultValue: 'Back' })
+                  : t('common.close', { defaultValue: 'Close' })
+              }
               onPress={() => {
                 if (showBackButton) {
                   resetUploadStep();
@@ -282,26 +283,12 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                 }
                 navigation.goBack();
               }}
-              style={styles.closeButton}
-              accessibilityRole="button"
-            >
-              <Text
-                style={[styles.closeButtonText, { color: palettes.gray[500] }]}
-              >
-                {showBackButton
-                  ? t('common.back', { defaultValue: 'Back' })
-                  : t('common.close', { defaultValue: 'Close' })}
-              </Text>
-            </TouchableOpacity>
-            <View style={styles.headerRight} />
-          </View>
-          <View
-            style={[
-              styles.iosHeaderDivider,
-              { backgroundColor: dark ? palettes.gray[600] : colors.divider },
-            ]}
-          />
-        </View>
+              color={palettes.gray[500]}
+              containerStyle={styles.closeButton}
+            />
+          }
+          right={<View style={styles.headerRight} />}
+        />
       ) : null}
 
       <ScrollView
@@ -681,40 +668,11 @@ const createStyles = ({
       flex: 1,
       backgroundColor: colors.background,
     },
-    header: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingHorizontal: spacing[5],
-      paddingTop: spacing[0.5],
-      paddingBottom: spacing[2],
-    },
-    iosHeaderContainer: {
-      alignSelf: 'stretch',
-    },
-    iosGrabber: {
-      alignSelf: 'center',
-      width: 36,
-      height: 5,
-      borderRadius: 999,
-      marginTop: spacing[1.5],
-    },
-    iosHeaderDivider: {
-      height: StyleSheet.hairlineWidth,
-      width: '100%',
-    },
     headerRight: {
-      minWidth: 1,
+      minWidth: 56,
     },
     closeButton: {
-      paddingVertical: spacing[1],
-    },
-    closeButtonText: {
-      fontFamily: fontFamilies.body,
-      fontSize: 17,
-      fontWeight: fontWeights.normal,
-      lineHeight: 22,
-      letterSpacing: -0.43,
+      minWidth: 56,
     },
     scroll: {
       flex: 1,

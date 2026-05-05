@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
@@ -18,31 +18,10 @@ import {
   CourseFileEntry,
   CourseFilesList,
 } from '../components/CourseFilesList';
+import { useAnchoredMenu } from '../hooks/useAnchoredMenu';
 import { useCourseFilesData } from '../hooks/useCourseFilesData';
 import { useFileManagement } from '../hooks/useFileManagement';
-
-const formatFolderDetails = (
-  totalBytes: number,
-  fileCount: number,
-  folderCount = 0,
-) => {
-  if (totalBytes === 0 && fileCount === 0 && folderCount === 0) {
-    return undefined;
-  }
-
-  const sizeInMb = totalBytes / (1024 * 1024);
-  const sizeLabel =
-    sizeInMb >= 1
-      ? `${Math.round(sizeInMb)} MB`
-      : `${(totalBytes / 1024).toFixed(1)} KB`;
-  const filesLabel = `${fileCount} ${fileCount === 1 ? 'file' : 'files'}`;
-  if (folderCount <= 0) {
-    return `${sizeLabel} - ${filesLabel}`;
-  }
-  const foldersLabel = `${folderCount} ${folderCount === 1 ? 'folder' : 'folders'}`;
-
-  return `${sizeLabel} - ${filesLabel} - ${foldersLabel}`;
-};
+import { formatFolderDetails } from '../utils/formatFolderDetails';
 
 /** Directory-first files screen. */
 export const CourseDirectoryScreen = () => {
@@ -51,18 +30,8 @@ export const CourseDirectoryScreen = () => {
   const styles = useStylesheet(createStyles);
   const { selectedCourse } = useCourses();
   const { t } = useTranslation();
-  const [sortMenuVisible, setSortMenuVisible] = useState(false);
-  const [menuVisible, setMenuVisible] = useState(false);
-  const sortButtonRef = useRef<View>(null);
-  const moreButtonRef = useRef<View>(null);
-  const [sortAnchorPosition, setSortAnchorPosition] = useState<{
-    top: number;
-    left: number;
-  }>({ top: 170, left: 18 });
-  const [menuAnchorPosition, setMenuAnchorPosition] = useState<{
-    top: number;
-    left: number;
-  }>({ top: 170, left: 18 });
+  const sortMenu = useAnchoredMenu();
+  const moreMenu = useAnchoredMenu();
   const { files, directories } = useCourseFilesData(selectedCourse);
 
   const { search, setSearch, sortMode, setSortMode, sortedDirectories } =
@@ -127,7 +96,7 @@ export const CourseDirectoryScreen = () => {
             if (selectedCourse?.id != null) {
               navigation.navigate('CourseFilesScreen', {
                 courseId: selectedCourse.id,
-                path: String(folder.id),
+                directoryId: folder.id,
               });
             }
           },
@@ -152,56 +121,36 @@ export const CourseDirectoryScreen = () => {
               : t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' })
           }
           onSortPress={() => {
-            setMenuVisible(false);
-            const node = sortButtonRef.current;
-            if (node?.measureInWindow) {
-              node.measureInWindow(
-                (x: number, y: number, w: number, h: number) => {
-                  setSortAnchorPosition({
-                    top: y + h + 6,
-                    left: 18,
-                  });
-                  setSortMenuVisible(true);
-                },
-              );
-            } else {
-              setSortMenuVisible(true);
-            }
+            moreMenu.close();
+            sortMenu.openFromRef({
+              verticalOffset: 6,
+              strategy: { align: 'left', left: 18 },
+            });
           }}
-          sortButtonRef={sortButtonRef}
-          moreButtonRef={moreButtonRef}
+          sortButtonRef={sortMenu.buttonRef}
+          moreButtonRef={moreMenu.buttonRef}
           onMorePress={() => {
-            setSortMenuVisible(false);
-            const node = moreButtonRef.current;
-            if (node?.measureInWindow) {
-              node.measureInWindow(
-                (x: number, y: number, w: number, h: number) => {
-                  setMenuAnchorPosition({
-                    top: y + h + 6,
-                    left: Math.max(18, x + w - 250),
-                  });
-                  setMenuVisible(true);
-                },
-              );
-            } else {
-              setMenuVisible(true);
-            }
+            sortMenu.close();
+            moreMenu.openFromRef({
+              verticalOffset: 6,
+              strategy: { align: 'right', minLeft: 18, menuWidth: 250 },
+            });
           }}
         />
         <CourseFilesList files={folderEntries} />
       </ScrollView>
 
       <CourseFilesContextMenu
-        visible={menuVisible}
-        onClose={() => setMenuVisible(false)}
+        visible={moreMenu.visible}
+        onClose={moreMenu.close}
         items={menuItems}
-        anchorPosition={menuAnchorPosition}
+        anchorPosition={moreMenu.anchorPosition}
       />
       <CourseFilesContextMenu
-        visible={sortMenuVisible}
-        onClose={() => setSortMenuVisible(false)}
+        visible={sortMenu.visible}
+        onClose={sortMenu.close}
         items={sortMenuItems}
-        anchorPosition={sortAnchorPosition}
+        anchorPosition={sortMenu.anchorPosition}
       />
     </View>
   );

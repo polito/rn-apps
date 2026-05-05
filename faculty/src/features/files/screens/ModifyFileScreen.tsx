@@ -15,21 +15,15 @@ import {
   TextField,
   Theme,
   useStylesheet,
-  useTheme,
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
 
-// TODO: replace with real values from the file picker / API response
-const DEFAULT_FILE_SIZE = 100;
-const DEFAULT_MIME_TYPE = 'pdf';
-
 export const ModifyFileScreen = () => {
   const navigation = useNavigation();
   const { selectedCourse, updateCourseFile, selectedFile } = useCourses();
   const { t } = useTranslation();
-  useTheme();
   const styles = useStylesheet(createStyles);
   const [title, setTitle] = useState(selectedFile?.name ?? '');
   const [selectedDirectory, setSelectedDirectory] = useState(
@@ -46,8 +40,8 @@ export const ModifyFileScreen = () => {
       id: selectedFile.id,
       name: title,
       date: selectedFile.date,
-      size: DEFAULT_FILE_SIZE, // Dimensione del file, se disponibile
-      mimeType: DEFAULT_MIME_TYPE, // Tipo MIME di default
+      size: selectedFile.size,
+      mimeType: selectedFile.mimeType,
       dirId: Number(selectedDirectory),
     };
 
@@ -64,7 +58,7 @@ export const ModifyFileScreen = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
-        <Text variant="heading" style={styles.headerTitle}>
+        <Text variant="heading">
           {t('courseFilesTab.modifyFileTitle', { defaultValue: 'Edit file' })}
         </Text>
       ),
@@ -76,7 +70,7 @@ export const ModifyFileScreen = () => {
         />
       ),
     });
-  }, [navigation, styles.headerTitle, t]);
+  }, [navigation, t]);
 
   return (
     <GestureHandlerRootView style={styles.root}>
@@ -143,9 +137,6 @@ const createStyles = ({ palettes, spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     root: {
       flex: 1,
-    },
-    headerTitle: {
-      marginLeft: 85,
     },
     container: {
       flex: 1,

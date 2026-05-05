@@ -7,7 +7,6 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -39,6 +38,7 @@ import {
   CourseFileEntry,
   CourseFilesList,
 } from '../components/CourseFilesList';
+import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
 import { MoveFilesScreen } from './MoveFilesScreen';
 
 type CourseFileRow = {
@@ -335,48 +335,33 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       {Platform.OS === 'ios' ? (
-        <View
-          style={[
-            styles.iosHeaderContainer,
-            { backgroundColor: dark ? colors.surface : colors.white },
-          ]}
-        >
-          <View
-            style={[styles.iosGrabber, { backgroundColor: iosGrabberColor }]}
-          />
-          <View style={styles.header}>
-            <TouchableOpacity
+        <IosTopBar
+          backgroundColor={dark ? colors.surface : colors.white}
+          grabberColor={iosGrabberColor}
+          dividerColor={dark ? palettes.gray[600] : colors.divider}
+          left={
+            <IosTopBarTextAction
+              label={t('common.done', { defaultValue: 'Done' })}
               onPress={() => navigation.goBack()}
-              style={styles.doneButton}
-            >
+              color={palettes.gray[500]}
+              containerStyle={styles.doneButton}
+            />
+          }
+          right={
+            <TextButton onPress={handleToggleSelectAll}>
               <Text
-                style={[styles.doneButtonText, { color: palettes.gray[500] }]}
+                style={[
+                  styles.doneButtonText,
+                  { color: palettes.primary[400] },
+                ]}
               >
-                {t('common.done', { defaultValue: 'Done' })}
+                {allFilesSelected
+                  ? t('common.deselectAll', { defaultValue: 'Deselect all' })
+                  : t('common.selectAll', { defaultValue: 'Select all' })}
               </Text>
-            </TouchableOpacity>
-            <View style={styles.headerRight}>
-              <TextButton onPress={handleToggleSelectAll}>
-                <Text
-                  style={[
-                    styles.doneButtonText,
-                    { color: palettes.primary[400] },
-                  ]}
-                >
-                  {allFilesSelected
-                    ? t('common.deselectAll', { defaultValue: 'Deselect all' })
-                    : t('common.selectAll', { defaultValue: 'Select all' })}
-                </Text>
-              </TextButton>
-            </View>
-          </View>
-          <View
-            style={[
-              styles.iosHeaderDivider,
-              { backgroundColor: dark ? palettes.gray[600] : colors.divider },
-            ]}
-          />
-        </View>
+            </TextButton>
+          }
+        />
       ) : null}
 
       <View style={styles.searchBarWrap}>
@@ -453,35 +438,8 @@ const createStyles = ({ colors, spacing, fontFamilies, fontWeights }: Theme) =>
       flex: 1,
       backgroundColor: colors.background,
     },
-    header: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingHorizontal: spacing[5],
-      paddingTop: spacing[0.5],
-      paddingBottom: spacing[2],
-    },
-    iosHeaderContainer: {
-      alignSelf: 'stretch',
-    },
-    iosGrabber: {
-      alignSelf: 'center',
-      width: 36,
-      height: 5,
-      borderRadius: 999,
-      marginTop: spacing[1.5],
-    },
-    iosHeaderDivider: {
-      height: StyleSheet.hairlineWidth,
-      width: '100%',
-    },
-    headerRight: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing[2],
-    },
     doneButton: {
-      paddingVertical: spacing[1],
+      minWidth: 56,
     },
     doneButtonText: {
       fontFamily: fontFamilies.body,

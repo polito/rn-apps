@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -35,8 +35,11 @@ import {
   CourseFileEntry,
   CourseFilesList,
 } from '../components/CourseFilesList';
+import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
+import { useAnchoredMenu } from '../hooks/useAnchoredMenu';
 import { useCourseFilesData } from '../hooks/useCourseFilesData';
 import { useFileManagement } from '../hooks/useFileManagement';
+import { formatFolderDetails } from '../utils/formatFolderDetails';
 
 const AddFileButton = ({
   onPress,
@@ -68,29 +71,6 @@ const AddFileButton = ({
   );
 };
 
-const formatFolderDetails = (
-  totalBytes: number,
-  fileCount: number,
-  folderCount = 0,
-) => {
-  if (totalBytes === 0 && fileCount === 0 && folderCount === 0) {
-    return undefined;
-  }
-
-  const sizeInMb = totalBytes / (1024 * 1024);
-  const sizeLabel =
-    sizeInMb >= 1
-      ? `${Math.round(sizeInMb)} MB`
-      : `${(totalBytes / 1024).toFixed(1)} KB`;
-  const filesLabel = `${fileCount} ${fileCount === 1 ? 'file' : 'files'}`;
-  if (folderCount <= 0) {
-    return `${sizeLabel} - ${filesLabel}`;
-  }
-  const foldersLabel = `${folderCount} ${folderCount === 1 ? 'folder' : 'folders'}`;
-
-  return `${sizeLabel} - ${filesLabel} - ${foldersLabel}`;
-};
-
 type Props = NativeStackScreenProps<
   FileStackParamList,
   'CourseFilesScreen' | 'CourseFolderFilesScreen'
@@ -109,18 +89,8 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
   const bottomTabBarHeight = useBottomTabBarHeight();
   const { selectedCourse } = useCourses();
   const { t } = useTranslation();
-  const [sortMenuVisible, setSortMenuVisible] = useState(false);
-  const [menuVisible, setMenuVisible] = useState(false);
-  const sortButtonRef = useRef<View>(null);
-  const moreButtonRef = useRef<View>(null);
-  const [sortAnchorPosition, setSortAnchorPosition] = useState<{
-    top: number;
-    left: number;
-  }>({ top: 170, left: 18 });
-  const [menuAnchorPosition, setMenuAnchorPosition] = useState<{
-    top: number;
-    left: number;
-  }>({ top: 170, left: 18 });
+  const sortMenu = useAnchoredMenu();
+  const moreMenu = useAnchoredMenu();
   const { files, directories } = useCourseFilesData(selectedCourse);
   const activeDirectoryId = route.params?.directoryId ?? null;
   const {
@@ -370,42 +340,25 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
   return (
     <View style={styles.screen}>
       {activeDirectory && Platform.OS === 'ios' ? (
-        <View
-          style={[
-            styles.iosHeaderContainer,
-            { backgroundColor: dark ? colors.surface : colors.white },
-          ]}
-        >
-          <View
-            style={[styles.iosGrabber, { backgroundColor: iosGrabberColor }]}
-          />
-          <View style={styles.directoryHeader}>
-            <TouchableOpacity
+        <IosTopBar
+          backgroundColor={dark ? colors.surface : colors.white}
+          grabberColor={iosGrabberColor}
+          dividerColor={dark ? palettes.gray[600] : colors.divider}
+          left={
+            <IosTopBarTextAction
+              label={t('common.back', { defaultValue: 'Back' })}
               onPress={() => navigation.goBack()}
-              accessibilityRole="button"
-              style={styles.directoryBackButton}
-            >
-              <Text
-                style={[
-                  styles.directoryBackText,
-                  { color: palettes.gray[500] },
-                ]}
-              >
-                {t('common.back', { defaultValue: 'Back' })}
-              </Text>
-            </TouchableOpacity>
+              color={palettes.gray[500]}
+              containerStyle={styles.directoryBackButton}
+            />
+          }
+          center={
             <Text numberOfLines={1} style={styles.directoryTitle}>
               {activeDirectory.name}
             </Text>
-            <View style={styles.directoryHeaderRightSpacer} />
-          </View>
-          <View
-            style={[
-              styles.iosHeaderDivider,
-              { backgroundColor: dark ? palettes.gray[600] : colors.divider },
-            ]}
-          />
-        </View>
+          }
+          right={<View style={styles.directoryHeaderRightSpacer} />}
+        />
       ) : null}
       <View style={styles.controlsContainer}>
         <SearchBar value={search} onChangeText={setSearch} />
@@ -423,40 +376,20 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
                   : t('common.oldestFirst', { defaultValue: 'Oldest first' })
           }
           onSortPress={() => {
-            setMenuVisible(false);
-            const node = sortButtonRef.current;
-            if (node?.measureInWindow) {
-              node.measureInWindow(
-                (x: number, y: number, w: number, h: number) => {
-                  setSortAnchorPosition({
-                    top: y + h + menuVerticalOffset,
-                    left: 18,
-                  });
-                  setSortMenuVisible(true);
-                },
-              );
-            } else {
-              setSortMenuVisible(true);
-            }
+            moreMenu.close();
+            sortMenu.openFromRef({
+              verticalOffset: menuVerticalOffset,
+              strategy: { align: 'left', left: 18 },
+            });
           }}
-          sortButtonRef={sortButtonRef}
-          moreButtonRef={moreButtonRef}
+          sortButtonRef={sortMenu.buttonRef}
+          moreButtonRef={moreMenu.buttonRef}
           onMorePress={() => {
-            setSortMenuVisible(false);
-            const node = moreButtonRef.current;
-            if (node?.measureInWindow) {
-              node.measureInWindow(
-                (x: number, y: number, w: number, h: number) => {
-                  setMenuAnchorPosition({
-                    top: y + h + menuVerticalOffset,
-                    left: Math.max(18, x + w - 250),
-                  });
-                  setMenuVisible(true);
-                },
-              );
-            } else {
-              setMenuVisible(true);
-            }
+            sortMenu.close();
+            moreMenu.openFromRef({
+              verticalOffset: menuVerticalOffset,
+              strategy: { align: 'right', minLeft: 18, menuWidth: 250 },
+            });
           }}
         />
       </View>
@@ -475,16 +408,16 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
       </ScrollView>
 
       <CourseFilesContextMenu
-        visible={menuVisible}
-        onClose={() => setMenuVisible(false)}
+        visible={moreMenu.visible}
+        onClose={moreMenu.close}
         items={menuItems}
-        anchorPosition={menuAnchorPosition}
+        anchorPosition={moreMenu.anchorPosition}
       />
       <CourseFilesContextMenu
-        visible={sortMenuVisible}
-        onClose={() => setSortMenuVisible(false)}
+        visible={sortMenu.visible}
+        onClose={sortMenu.close}
         items={sortMenuItems}
-        anchorPosition={sortAnchorPosition}
+        anchorPosition={sortMenu.anchorPosition}
       />
       <Modal
         visible={Boolean(confirmDownloadFileId)}
@@ -603,42 +536,8 @@ const createStyles = ({
       paddingTop: spacing[5],
       gap: spacing[2.5],
     },
-    iosHeaderContainer: {
-      alignSelf: 'stretch',
-    },
-    iosGrabber: {
-      alignSelf: 'center',
-      width: 36,
-      height: 5,
-      borderRadius: 999,
-      marginTop: spacing[1.5],
-    },
-    iosHeaderDivider: {
-      height: StyleSheet.hairlineWidth,
-      width: '100%',
-    },
-    directoryHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: spacing[5],
-      paddingTop: spacing[0.5],
-      paddingBottom: spacing[2],
-    },
     directoryBackButton: {
       minWidth: 56,
-      minHeight: 28,
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      paddingVertical: spacing[1],
-    },
-    directoryBackText: {
-      color: colors.heading,
-      fontFamily: fontFamilies.body,
-      fontSize: 17,
-      fontWeight: fontWeights.normal,
-      lineHeight: 22,
-      letterSpacing: -0.43,
     },
     directoryTitle: {
       flex: 1,
@@ -649,6 +548,7 @@ const createStyles = ({
       fontWeight: fontWeights.semibold,
       lineHeight: 22,
       letterSpacing: -0.43,
+      marginTop: 6,
       marginHorizontal: spacing[1],
     },
     directoryHeaderRightSpacer: {
