@@ -82,7 +82,7 @@ export const useFileManagement = ({
         }
       } catch {}
     };
-    void loadSortMode();
+    loadSortMode().catch(() => undefined);
   }, [sortStorageKey]);
 
   useEffect(() => {
@@ -97,7 +97,7 @@ export const useFileManagement = ({
         }
       } catch {}
     };
-    void loadViewMode();
+    loadViewMode().catch(() => undefined);
   }, [viewStorageKey]);
 
   useEffect(() => {
@@ -107,7 +107,7 @@ export const useFileManagement = ({
         await AsyncStorage.setItem(sortStorageKey, sortMode);
       } catch {}
     };
-    void saveSortMode();
+    saveSortMode().catch(() => undefined);
   }, [sortMode, sortStorageKey]);
 
   useEffect(() => {
@@ -117,7 +117,7 @@ export const useFileManagement = ({
         await AsyncStorage.setItem(viewStorageKey, viewMode);
       } catch {}
     };
-    void saveViewMode();
+    saveViewMode().catch(() => undefined);
   }, [viewMode, viewStorageKey]);
 
   const normalizedSearch = useMemo(() => search.trim().toLowerCase(), [search]);

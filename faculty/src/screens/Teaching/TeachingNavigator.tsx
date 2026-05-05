@@ -74,7 +74,7 @@ export type TeachingStackParamList = {
   CourseFilesUploadScreen: { courseId: number; path?: string };
   CourseDirectoryRoot: undefined;
   ModifyNotice: undefined;
-  ModifyFile: undefined;
+  ModifyFile: { courseId: number; fileId: string };
   ModifyLecture: undefined;
   Staff: undefined;
   Exam3: undefined;

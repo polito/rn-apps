@@ -14,23 +14,22 @@ import {
   Theme,
   useStylesheet,
 } from '@polito/lib/ui';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { FileStackParamList } from '../../../core/types/navigation';
 
-type Props = NativeStackScreenProps<FileStackParamList, 'ModifyFileScreen'>;
+type ModifyFileRouteParams = { courseId: number; fileId: string };
 
-export const ModifyFileScreen = ({ route }: Props) => {
+export const ModifyFileScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const { fakeCourses, updateCourseFile } = useCourses();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const [title, setTitle] = useState('');
   const [selectedDirectory, setSelectedDirectory] = useState('');
 
-  const { courseId, fileId } = route.params;
+  const { courseId, fileId } = route.params as ModifyFileRouteParams;
   const course = useMemo(
     () => fakeCourses.find(currentCourse => currentCourse.id === courseId),
     [courseId, fakeCourses],
