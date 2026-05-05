@@ -12,8 +12,13 @@ import {
 } from 'react-native';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
+import {
+  CtaButton,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { BlurView } from '@react-native-community/blur';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -40,7 +45,6 @@ const AddFileButton = ({
   onPress: () => void;
   bottomOffset: number;
 }) => {
-  const { palettes, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
 
@@ -53,27 +57,13 @@ const AddFileButton = ({
         },
       ]}
     >
-      <TouchableOpacity
-        onPress={onPress}
-        accessibilityRole="button"
-        style={[
-          styles.ctaButton,
-          {
-            backgroundColor: palettes.primary[500],
-          },
-        ]}
-      >
-        <View style={styles.ctaIconWrapper}>
-          <FontAwesomeIcon
-            icon={faPlus}
-            size={fontSizes.md}
-            color={palettes.gray[50]}
-          />
-        </View>
-        <Text style={[styles.ctaText, { color: palettes.gray[50] }]}>
-          {t('courseFilesTab.addFileOrFolder')}
-        </Text>
-      </TouchableOpacity>
+      <CtaButton
+        title={t('courseFilesTab.addFileOrFolder')}
+        action={onPress}
+        absolute={false}
+        icon={faPlus}
+        containerStyle={styles.ctaButtonContainer}
+      />
     </View>
   );
 };
@@ -587,7 +577,6 @@ const createStyles = ({
   spacing,
   shapes,
   fontFamilies,
-  fontSizes,
   fontWeights,
 }: Theme) =>
   StyleSheet.create({
@@ -670,29 +659,8 @@ const createStyles = ({
       paddingHorizontal: spacing[5],
       paddingTop: spacing[2],
     },
-    ctaButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: '100%',
-      borderRadius: shapes.lg,
-      paddingHorizontal: 21,
-      paddingVertical: spacing[3],
-      gap: spacing[2],
-      alignSelf: 'stretch',
-    },
-    ctaIconWrapper: {
-      height: 16,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    ctaText: {
-      textAlign: 'center',
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontStyle: 'normal',
-      fontWeight: fontWeights.semibold,
-      lineHeight: 21,
+    ctaButtonContainer: {
+      padding: 0,
     },
     staticTrailing: {
       width: 24,

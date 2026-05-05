@@ -20,6 +20,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { MENU_ACTIONS } from '@polito/lib/features/courses';
 import {
+  CtaButton,
   Icon,
   Text,
   TextButton,
@@ -63,38 +64,8 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
     updateCourseFile,
   } = useCourses();
   const theme = useTheme();
-  const { fontSizes, palettes, colors, spacing, dark } = theme;
+  const { fontSizes, palettes, colors, dark } = theme;
   const iosGrabberColor = dark ? palettes.gray[500] : palettes.gray[300];
-  const moveButtonColors = useMemo(
-    () => ({
-      border: theme.dark
-        ? theme.palettes.primary[400]
-        : theme.palettes.primary[500],
-      background: theme.dark
-        ? 'rgba(0, 109, 185, 0.22)'
-        : `${theme.palettes.lightBlue[50]}80`,
-      text: theme.dark
-        ? theme.palettes.primary[200]
-        : theme.palettes.primary[500],
-    }),
-    [theme],
-  );
-
-  const ctaButtonBaseStyle = useMemo(
-    () => ({
-      flexDirection: 'row' as const,
-      justifyContent: 'center' as const,
-      alignItems: 'center' as const,
-      alignSelf: 'stretch' as const,
-      gap: spacing[2],
-      paddingVertical: spacing[3],
-      paddingHorizontal: 21,
-      borderRadius: theme.shapes.lg,
-      borderWidth: 1,
-    }),
-    [spacing, theme.shapes.lg],
-  );
-
   const styles = useStylesheet(createStyles);
 
   const course = useMemo(
@@ -177,79 +148,6 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
 
   const isMoveDisabled = totalSelectedCount === 0;
   const isDeleteDisabled = totalSelectedCount === 0;
-
-  const moveButtonStyle = useMemo(() => {
-    if (isMoveDisabled) {
-      return {
-        ...ctaButtonBaseStyle,
-        borderColor: colors.secondaryText,
-        backgroundColor: colors.secondaryText,
-      };
-    }
-    return {
-      ...ctaButtonBaseStyle,
-      borderColor: moveButtonColors.border,
-      backgroundColor: moveButtonColors.background,
-    };
-  }, [
-    isMoveDisabled,
-    colors.secondaryText,
-    moveButtonColors,
-    ctaButtonBaseStyle,
-  ]);
-
-  const ctaPairLabelStyle = useMemo(
-    () => ({
-      textAlign: 'center' as const,
-      fontFamily: theme.fontFamilies.body,
-      fontSize: theme.fontSizes.sm,
-      fontStyle: 'normal' as const,
-      fontWeight: theme.fontWeights.semibold,
-      lineHeight: 21,
-    }),
-    [theme.fontFamilies.body, theme.fontSizes.sm, theme.fontWeights.semibold],
-  );
-
-  const moveButtonTextStyle = useMemo(
-    () => ({
-      ...ctaPairLabelStyle,
-      color: isMoveDisabled ? colors.disableTitle : moveButtonColors.text,
-    }),
-    [
-      ctaPairLabelStyle,
-      colors.disableTitle,
-      isMoveDisabled,
-      moveButtonColors.text,
-    ],
-  );
-
-  const deleteButtonStyle = useMemo(() => {
-    if (isDeleteDisabled) {
-      return {
-        ...ctaButtonBaseStyle,
-        borderColor: colors.secondaryText,
-        backgroundColor: colors.secondaryText,
-      };
-    }
-    return {
-      ...ctaButtonBaseStyle,
-      borderColor: palettes.danger[600],
-      backgroundColor: palettes.danger[600],
-    };
-  }, [
-    isDeleteDisabled,
-    colors.secondaryText,
-    palettes.danger,
-    ctaButtonBaseStyle,
-  ]);
-
-  const deleteButtonTextStyle = useMemo(
-    () => ({
-      ...ctaPairLabelStyle,
-      color: isDeleteDisabled ? colors.disableTitle : colors.white,
-    }),
-    [ctaPairLabelStyle, colors.disableTitle, colors.white, isDeleteDisabled],
-  );
 
   const handleMovePress = useCallback(() => {
     if (totalSelectedCount === 0) return;
@@ -511,50 +409,28 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
         <View style={styles.ctaRowWrapper}>
           <View style={styles.ctaRow}>
             <View style={styles.ctaPairButtonContainer}>
-              <TouchableOpacity
-                onPress={handleMovePress}
+              <CtaButton
+                title={t('courseFilesTab.move', { defaultValue: 'Move' })}
+                action={handleMovePress}
+                icon={faArrowUpRightFromSquare}
+                variant="outlined"
                 disabled={isMoveDisabled}
-                accessibilityRole="button"
-                accessibilityLabel={t('courseFilesTab.move', {
-                  defaultValue: 'Move',
-                })}
-                style={moveButtonStyle}
-              >
-                <View style={styles.moveButtonContent}>
-                  <Icon
-                    icon={faArrowUpRightFromSquare}
-                    size={fontSizes.md}
-                    color={moveButtonTextStyle.color}
-                    style={styles.moveButtonIcon}
-                  />
-                  <Text style={moveButtonTextStyle}>
-                    {t('courseFilesTab.move', { defaultValue: 'Move' })}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+                absolute={false}
+                containerStyle={styles.ctaButtonContainer}
+                style={styles.ctaPairButton}
+              />
             </View>
             <View style={styles.ctaPairButtonContainer}>
-              <TouchableOpacity
-                onPress={handleDeletePress}
+              <CtaButton
+                title={t('courseFilesTab.delete', { defaultValue: 'Delete' })}
+                action={handleDeletePress}
+                icon={faTrash}
+                destructive
                 disabled={isDeleteDisabled}
-                accessibilityRole="button"
-                accessibilityLabel={t('courseFilesTab.delete', {
-                  defaultValue: 'Delete',
-                })}
-                style={deleteButtonStyle}
-              >
-                <View style={styles.moveButtonContent}>
-                  <Icon
-                    icon={faTrash}
-                    size={fontSizes.md}
-                    color={deleteButtonTextStyle.color}
-                    style={styles.moveButtonIcon}
-                  />
-                  <Text style={deleteButtonTextStyle}>
-                    {t('courseFilesTab.delete', { defaultValue: 'Delete' })}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+                absolute={false}
+                containerStyle={styles.ctaButtonContainer}
+                style={styles.ctaPairButton}
+              />
             </View>
           </View>
         </View>
@@ -660,13 +536,12 @@ const createStyles = ({ colors, spacing, fontFamilies, fontWeights }: Theme) =>
       padding: 0,
       alignSelf: 'stretch',
     },
-    moveButtonContent: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
+    ctaButtonContainer: {
+      padding: 0,
+      width: '100%',
     },
-    moveButtonIcon: {
-      marginRight: spacing[2],
+    ctaPairButton: {
+      width: '100%',
     },
     checkboxTrailingText: {
       marginHorizontal: 0,

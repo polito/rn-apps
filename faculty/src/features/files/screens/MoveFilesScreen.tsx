@@ -19,6 +19,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   CreateFolderIcon,
+  CtaButton,
   Text,
   Theme,
   useStylesheet,
@@ -229,79 +230,41 @@ export const MoveFilesScreen = ({
 
               {/* Buttons */}
               <View style={styles.buttons}>
-                <TouchableOpacity
-                  onPress={() => setView('create-folder')}
-                  accessibilityRole="button"
-                  style={[
-                    styles.outlinedButton,
-                    {
-                      borderColor: dark
-                        ? palettes.primary[300]
-                        : palettes.primary[500],
-                      backgroundColor: dark
-                        ? colors.surface
-                        : palettes.info[50],
-                    },
-                  ]}
-                >
-                  <CreateFolderIcon
-                    width={16}
-                    height={16}
-                    color={dark ? palettes.primary[200] : palettes.primary[500]}
-                    filled
-                  />
-                  <Text
-                    style={[
-                      styles.outlinedButtonText,
-                      {
-                        color: dark
-                          ? palettes.primary[200]
-                          : palettes.primary[500],
-                      },
-                    ]}
-                  >
-                    {t('courseFilesTab.addNewFolder', {
+                <View style={styles.buttonSlot}>
+                  <CtaButton
+                    title={t('courseFilesTab.addNewFolder', {
                       defaultValue: 'Add New Folder',
                     })}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={isConfirmEnabled ? handleConfirm : undefined}
-                  disabled={!isConfirmEnabled}
-                  accessibilityRole="button"
-                  style={[
-                    styles.filledButton,
-                    {
-                      backgroundColor: isConfirmEnabled
-                        ? palettes.primary[500]
-                        : palettes.gray[400],
-                    },
-                  ]}
-                >
-                  <FontAwesomeIcon
-                    icon={faCheck}
-                    size={16}
-                    color={
-                      !isConfirmEnabled && dark
-                        ? palettes.gray[700]
-                        : palettes.gray[50]
+                    action={() => setView('create-folder')}
+                    variant="outlined"
+                    absolute={false}
+                    leftExtra={
+                      <View style={styles.addFolderIconWrap}>
+                        <CreateFolderIcon
+                          width={16}
+                          height={16}
+                          color={
+                            dark ? palettes.primary[200] : palettes.primary[500]
+                          }
+                          filled
+                        />
+                      </View>
                     }
+                    containerStyle={styles.ctaButtonContainer}
+                    style={styles.ctaButton}
                   />
-                  <Text
-                    style={[
-                      styles.filledButtonText,
-                      {
-                        color:
-                          !isConfirmEnabled && dark
-                            ? palettes.gray[700]
-                            : palettes.gray[50],
-                      },
-                    ]}
-                  >
-                    {t('common.confirm', { defaultValue: 'Confirm' })}
-                  </Text>
-                </TouchableOpacity>
+                </View>
+                <View style={styles.buttonSlot}>
+                  <CtaButton
+                    title={t('common.confirm', { defaultValue: 'Confirm' })}
+                    action={handleConfirm}
+                    icon={faCheck}
+                    disabled={!isConfirmEnabled}
+                    absolute={false}
+                    containerStyle={styles.ctaButtonContainer}
+                    style={styles.ctaButton}
+                  />
+                </View>
               </View>
             </>
           ) : (
@@ -379,29 +342,16 @@ export const MoveFilesScreen = ({
 
               {/* Buttons */}
               <View style={styles.buttons}>
-                <TouchableOpacity
-                  onPress={handleConfirm}
-                  accessibilityRole="button"
-                  style={[
-                    styles.filledButton,
-                    styles.filledButtonFull,
-                    { backgroundColor: palettes.primary[500] },
-                  ]}
-                >
-                  <FontAwesomeIcon
+                <View style={styles.buttonSlot}>
+                  <CtaButton
+                    title={t('common.confirm', { defaultValue: 'Confirm' })}
+                    action={handleConfirm}
                     icon={faCheck}
-                    size={16}
-                    color={palettes.gray[50]}
+                    absolute={false}
+                    containerStyle={styles.ctaButtonContainer}
+                    style={styles.ctaButton}
                   />
-                  <Text
-                    style={[
-                      styles.filledButtonText,
-                      { color: palettes.gray[50] },
-                    ]}
-                  >
-                    {t('common.confirm', { defaultValue: 'Confirm' })}
-                  </Text>
-                </TouchableOpacity>
+                </View>
               </View>
             </>
           )}
@@ -493,41 +443,18 @@ const createStyles = ({
       gap: 11,
       paddingVertical: spacing[3],
     },
-    outlinedButton: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing[2],
-      paddingHorizontal: 21,
-      paddingVertical: spacing[3],
-      borderRadius: shapes.lg,
-      borderWidth: 1,
-    },
-    outlinedButtonText: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 21,
-    },
-    filledButton: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing[2],
-      paddingHorizontal: 21,
-      paddingVertical: spacing[3],
-      borderRadius: shapes.lg,
-    },
-    filledButtonFull: {
+    buttonSlot: {
       flex: 1,
     },
-    filledButtonText: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 21,
+    ctaButtonContainer: {
+      width: '100%',
+      padding: 0,
+    },
+    ctaButton: {
+      width: '100%',
+    },
+    addFolderIconWrap: {
+      marginRight: spacing[2],
     },
     folderNameCard: {
       flexDirection: 'row',

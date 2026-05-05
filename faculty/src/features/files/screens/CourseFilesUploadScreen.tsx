@@ -26,13 +26,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { formatDate } from '@polito/lib/core';
 import {
   CreateFolderIcon,
+  CtaButton,
   IndentedDivider,
   Text,
   Theme,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -121,7 +121,6 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
   const iosGrabberColor = dark ? palettes.gray[500] : palettes.gray[300];
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const bottomTabBarHeight = useBottomTabBarHeight();
   const { addMaterialToCourse, addDirectoryToCourse, fakeCourses } =
     useCourses();
 
@@ -657,51 +656,14 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
         )}
       </ScrollView>
 
-      <View
-        style={[
-          styles.ctaWrapper,
-          Platform.OS === 'android'
-            ? { paddingBottom: bottomTabBarHeight + 12 }
-            : undefined,
-        ]}
-      >
-        <TouchableOpacity
-          onPress={handleConfirmPublish}
-          disabled={!isPublishEnabled}
-          accessibilityRole="button"
-          style={[
-            styles.ctaButton,
-            {
-              backgroundColor: hasUploadedSelection
-                ? palettes.primary[500]
-                : isPublishEnabled
-                  ? palettes.primary[500]
-                  : palettes.gray[500],
-            },
-          ]}
-        >
-          <FontAwesomeIcon
-            icon={faPaperPlane}
-            size={fontSizes.md}
-            color={
-              !isPublishEnabled && dark ? palettes.gray[700] : palettes.gray[50]
-            }
-          />
-          <Text
-            style={[
-              styles.ctaLabel,
-              {
-                color:
-                  !isPublishEnabled && dark
-                    ? palettes.gray[700]
-                    : palettes.gray[50],
-              },
-            ]}
-          >
-            {t('other.publish', { defaultValue: 'Publish' })}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <CtaButton
+        title={t('other.publish', { defaultValue: 'Publish' })}
+        action={handleConfirmPublish}
+        absolute={false}
+        icon={faPaperPlane}
+        disabled={!isPublishEnabled}
+        containerStyle={styles.ctaWrapper}
+      />
     </SafeAreaView>
   );
 };
@@ -933,22 +895,5 @@ const createStyles = ({
     },
     ctaWrapper: {
       padding: spacing[5],
-    },
-    ctaButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing[2],
-      paddingHorizontal: 21,
-      paddingVertical: spacing[3],
-      alignSelf: 'stretch',
-      borderRadius: shapes.lg,
-    },
-    ctaLabel: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 21,
-      textAlign: 'center',
     },
   });
