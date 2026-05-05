@@ -2,7 +2,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
@@ -12,6 +12,7 @@ import {
   IconButton,
   Select,
   Text,
+  TextField,
   Theme,
   useStylesheet,
   useTheme,
@@ -84,15 +85,15 @@ export const ModifyFileScreen = () => {
           <Text variant="heading" style={styles.sectionTitle}>
             {t('common.title', { defaultValue: 'Title' })}
           </Text>
-          <TextInput
-            placeholder={
+          <TextField
+            label={
               t('courseFilesTab.insertFileTitle', {
                 defaultValue: 'Enter file title',
               }) ?? ''
             }
             value={title}
             onChangeText={setTitle}
-            style={styles.textInput}
+            inputStyle={styles.textInput}
           />
         </Card>
 
