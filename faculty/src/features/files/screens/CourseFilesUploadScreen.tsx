@@ -25,6 +25,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { formatDate } from '@polito/lib/core';
 import {
+  CreateFolderIcon,
   IndentedDivider,
   Text,
   Theme,
@@ -37,7 +38,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { FileStackParamList } from '../../../core/types/navigation';
-import { CreateFolderIcon } from '../components/CreateFolderIcon';
 
 export type UploadType = 'file' | 'folder';
 const DEFAULT_FOLDER_NAME = 'New Folder';

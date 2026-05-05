@@ -3,19 +3,18 @@ import { useCallback, useEffect, useRef } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
 
-import {
-  faArrowsRotate,
-  faCircleCheck,
-  faDownload,
-} from '@fortawesome/free-solid-svg-icons';
+import { faArrowsRotate, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 
+import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
 import { CreateFolderIcon } from './CreateFolderIcon';
+import { Text } from './Text';
 
 export type FileDownloadStatus = 'idle' | 'syncing' | 'downloaded';
 
-interface Props {
+type Props = {
   name: string;
   subtitle?: string;
   status: FileDownloadStatus;
@@ -23,13 +22,12 @@ interface Props {
   isFolder?: boolean;
   onLongPress?: () => void;
   onActionPress?: () => void;
-  /** Replaces the download/sync trailing control when provided. */
   trailing?: ReactNode;
-}
+};
 
 const ACTION_DELAY_MS = 600;
 
-export const CourseFileListItem = ({
+export const ManagedFileListItem = ({
   name,
   subtitle,
   status,
@@ -51,9 +49,7 @@ export const CourseFileListItem = ({
   }, []);
 
   const handleTrailingActionPress = useCallback(() => {
-    if (!onActionPress) {
-      return;
-    }
+    if (!onActionPress) return;
 
     clearActionTimeout();
     actionTimeoutRef.current = setTimeout(() => {
@@ -64,7 +60,6 @@ export const CourseFileListItem = ({
 
   useEffect(() => clearActionTimeout, [clearActionTimeout]);
 
-  const hasBadge = false;
   const trailingIcon = status === 'syncing' ? faArrowsRotate : faDownload;
   const fileIconColor = dark ? palettes.gray[50] : palettes.primary[700];
   const trailingColor =
@@ -106,20 +101,6 @@ export const CourseFileListItem = ({
                 fill={fileIconColor}
               />
             </Svg>
-          )}
-          {hasBadge && (
-            <>
-              <View
-                style={[styles.badgeMask, { backgroundColor: colors.surface }]}
-              />
-              <View style={styles.badge}>
-                <FontAwesomeIcon
-                  icon={faCircleCheck}
-                  size={12.5}
-                  color={palettes.secondary[600]}
-                />
-              </View>
-            </>
           )}
         </View>
       </View>
@@ -192,18 +173,6 @@ const createStyles = ({ spacing }: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
       position: 'relative',
-    },
-    badgeMask: {
-      position: 'absolute',
-      top: 2,
-      right: 2,
-      width: 6,
-      height: 6,
-    },
-    badge: {
-      position: 'absolute',
-      top: 0,
-      right: 0,
     },
     content: {
       flexGrow: 1,

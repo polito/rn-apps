@@ -1,9 +1,12 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { IndentedDivider, useTheme } from '@polito/lib/ui';
-
-import { CourseFileListItem, FileDownloadStatus } from './CourseFileListItem';
+import {
+  FileDownloadStatus,
+  IndentedDivider,
+  ManagedFileListItem,
+  useTheme,
+} from '@polito/lib/ui';
 
 export interface CourseFileEntry {
   id: string;
@@ -40,7 +43,7 @@ export const CourseFilesList = ({ files }: Props) => {
       >
         {files.map((file, index) => (
           <View key={file.id} style={styles.itemContainer}>
-            <CourseFileListItem
+            <ManagedFileListItem
               name={file.name}
               subtitle={file.subtitle}
               status={file.status}

@@ -17,9 +17,13 @@ import {
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
-
-import { CreateFolderIcon } from '../components/CreateFolderIcon';
+import {
+  CreateFolderIcon,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 
 type MoveView = 'choose-folder' | 'create-folder';
 

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { FileDownloadStatus } from '@polito/lib/ui';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { FileDownloadStatus } from '../components/CourseFileListItem';
 import { Directory } from '../types/Directory';
 import { FileEntry } from '../types/FileEntry';
 
