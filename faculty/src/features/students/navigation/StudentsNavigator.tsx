@@ -19,7 +19,15 @@ export const StudentsNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="CourseStudentsScreen" component={CourseStudentsTab} />
-      <Stack.Screen name="StudentContact" component={StudentContactScreen} />
+      <Stack.Screen
+        name="StudentContact"
+        component={StudentContactScreen}
+        options={{
+          presentation: 'card',
+          animation: 'slide_from_right',
+          fullScreenGestureEnabled: true,
+        }}
+      />
       <Stack.Screen
         name="AddStudents"
         component={AddStudentsScreen}

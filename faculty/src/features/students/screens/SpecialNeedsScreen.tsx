@@ -30,9 +30,10 @@ import {
 import { useNavigation } from '@react-navigation/native';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
+import { IosTopBar, IosTopBarTextAction } from '../components/IosTapBar';
 
 export const SpecialNeedsScreen = () => {
-  const { palettes, dark } = useTheme();
+  const { palettes, dark, colors } = useTheme();
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
@@ -91,32 +92,26 @@ export const SpecialNeedsScreen = () => {
   return (
     <SafeAreaView style={styles.root} edges={['bottom']}>
       {Platform.OS === 'ios' ? (
-        <View style={styles.iosHeaderContainer}>
-          <View style={[styles.iosGrabber, dark && styles.iosGrabberDark]} />
-          <View style={[styles.iosHeader, dark && styles.iosHeaderDark]}>
-            <TouchableOpacity
+        <IosTopBar
+          backgroundColor={colors.surface}
+          grabberColor={dark ? palettes.gray[500] : palettes.gray[400]}
+          dividerColor={dark ? palettes.gray[500] : palettes.gray[300]}
+          left={
+            <IosTopBarTextAction
+              label={t('common.close', { defaultValue: 'Close' })}
               onPress={() => navigation.goBack()}
-              style={styles.closeButton}
-              accessibilityRole="button"
-            >
-              <Text
-                style={[styles.closeButtonText, { color: palettes.gray[500] }]}
-              >
-                {t('common.close', { defaultValue: 'Close' })}
-              </Text>
-            </TouchableOpacity>
-            <View style={styles.iosHeaderTitleWrap} pointerEvents="none">
-              <Text
-                style={[styles.iosHeaderTitle, { color: sectionTitleColor }]}
-                numberOfLines={2}
-              >
-                {t('specialNeeds.title', {
-                  defaultValue: 'Compensative measures',
-                })}
-              </Text>
-            </View>
-          </View>
-        </View>
+              color={palettes.gray[500]}
+              align="left"
+            />
+          }
+          center={
+            <Text style={[styles.iosHeaderTitle, { color: sectionTitleColor }]}>
+              {t('specialNeeds.title', {
+                defaultValue: 'Compensative measures',
+              })}
+            </Text>
+          }
+        />
       ) : (
         <View
           style={[
@@ -285,52 +280,6 @@ const createStyles = ({
       padding: spacing[5],
       gap: 22,
       paddingBottom: spacing[2],
-    },
-    iosHeader: {
-      position: 'relative',
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: spacing[5],
-      paddingVertical: spacing[0.5],
-      minHeight: 44,
-      backgroundColor: colors.surface,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: palettes.gray[300],
-    },
-    iosHeaderDark: {
-      borderBottomColor: palettes.gray[500],
-    },
-    iosHeaderContainer: {
-      backgroundColor: colors.surface,
-    },
-    iosGrabber: {
-      width: 36,
-      height: 5,
-      borderRadius: 2.5,
-      backgroundColor: palettes.gray[600],
-      alignSelf: 'center',
-      marginTop: spacing[1.5],
-    },
-    iosGrabberDark: {
-      backgroundColor: palettes.gray[500],
-    },
-    iosHeaderTitleWrap: {
-      ...StyleSheet.absoluteFillObject,
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingHorizontal: spacing[16],
-    },
-    closeButton: {
-      zIndex: 1,
-      flexShrink: 0,
-      paddingVertical: spacing[1],
-    },
-    closeButtonText: {
-      fontFamily: fontFamilies.body,
-      fontSize: 17,
-      fontWeight: fontWeights.normal,
-      lineHeight: 22,
-      letterSpacing: -0.43,
     },
     iosHeaderTitle: {
       color: palettes.primary[700],

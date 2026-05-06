@@ -12,6 +12,8 @@ import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import { faEnvelope, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
+  CtaButton,
+  CtaButtonContainer,
   IndentedDivider,
   ListItem,
   OverviewList,
@@ -32,6 +34,7 @@ import {
 import { CourseFilesMenu } from '../../../core/components/CourseFilesMenu';
 import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
+import { TeachingStackParamList } from '../../../screens/Teaching/TeachingNavigator';
 import { StudentsStackParamList } from '../types/navigation';
 
 const AddStudentButton = ({
@@ -43,11 +46,11 @@ const AddStudentButton = ({
   onPress: () => void;
   bottomOffset: number;
 }) => {
-  const { palettes, fontSizes } = useTheme();
   const styles = useStylesheet(createAddStudentCtaStyles);
 
   return (
-    <View
+    <CtaButtonContainer
+      absolute={false}
       style={[
         styles.ctaWrapper,
         {
@@ -55,28 +58,15 @@ const AddStudentButton = ({
         },
       ]}
     >
-      <TouchableOpacity
-        onPress={onPress}
-        accessibilityRole="button"
-        style={[
-          styles.ctaButton,
-          {
-            backgroundColor: palettes.primary[500],
-          },
-        ]}
-      >
-        <View style={styles.ctaIconWrapper}>
-          <FontAwesomeIcon
-            icon={faPlus}
-            size={fontSizes.md}
-            color={palettes.gray[50]}
-          />
-        </View>
-        <Text style={[styles.ctaText, { color: palettes.gray[50] }]}>
-          {title}
-        </Text>
-      </TouchableOpacity>
-    </View>
+      <CtaButton
+        title={title}
+        icon={faPlus}
+        action={onPress}
+        absolute={false}
+        style={styles.ctaButton}
+        containerStyle={styles.ctaButtonContainer}
+      />
+    </CtaButtonContainer>
   );
 };
 
@@ -320,6 +310,17 @@ export const CourseStudentsTab = () => {
                 <ListItem
                   onPress={() => {
                     setSelectedStudent(student);
+                    const parentStackNavigation = navigation
+                      .getParent()
+                      ?.getParent() as
+                      | NativeStackNavigationProp<TeachingStackParamList>
+                      | undefined;
+
+                    if (parentStackNavigation) {
+                      parentStackNavigation.navigate('StudentContact');
+                      return;
+                    }
+
                     navigation.navigate('StudentContact');
                   }}
                   title={`${student.name} ${student.surname}`}
@@ -389,40 +390,18 @@ export const CourseStudentsTab = () => {
   );
 };
 
-const createAddStudentCtaStyles = ({
-  spacing,
-  shapes,
-  fontFamilies,
-  fontSizes,
-  fontWeights,
-}: Theme) =>
+const createAddStudentCtaStyles = (_: Theme) =>
   StyleSheet.create({
     ctaWrapper: {
-      paddingHorizontal: spacing[5],
+      paddingHorizontal: 18,
+      paddingTop: 0,
+      paddingBottom: 0,
+    },
+    ctaButtonContainer: {
+      padding: 0,
     },
     ctaButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
       width: '100%',
-      borderRadius: shapes.lg,
-      paddingHorizontal: 21,
-      paddingVertical: spacing[3],
-      gap: spacing[2],
-      alignSelf: 'stretch',
-    },
-    ctaIconWrapper: {
-      height: 16,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    ctaText: {
-      textAlign: 'center',
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontStyle: 'normal',
-      fontWeight: fontWeights.semibold,
-      lineHeight: 21,
     },
   });
 
@@ -451,7 +430,7 @@ const createStyles = ({
       flexDirection: 'column',
       alignItems: 'flex-start',
       alignSelf: 'stretch',
-      backgroundColor: palettes.primary[100],
+      backgroundColor: palettes.info[100],
       borderWidth: 1,
       borderColor: palettes.primary[500],
       borderRadius: 12,

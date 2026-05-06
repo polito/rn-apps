@@ -60,8 +60,21 @@ const CourseTopTabBar = ({
     focusedTopRoute?.name === 'CourseFilesScreen' &&
     focusedNestedRoute != null &&
     focusedNestedRoute !== 'CourseFilesScreen';
+  const hideTabsInNestedStudentsScreen =
+    focusedTopRoute?.name === 'CourseStudentsScreen' &&
+    focusedNestedRoute != null &&
+    focusedNestedRoute !== 'CourseStudentsScreen';
+  const shouldHideParentHeader =
+    hideTabsOnAndroid || hideTabsInNestedStudentsScreen;
 
-  if (hideTabsOnAndroid) {
+  useEffect(() => {
+    const parentStackNavigation = navigation.getParent();
+    parentStackNavigation?.setOptions?.({
+      headerShown: !shouldHideParentHeader,
+    });
+  }, [navigation, shouldHideParentHeader]);
+
+  if (shouldHideParentHeader) {
     return null;
   }
 

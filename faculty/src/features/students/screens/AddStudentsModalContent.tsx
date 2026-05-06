@@ -21,6 +21,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
+  CtaButton,
+  CtaButtonContainer,
   Text,
   Theme,
   useBottomBarAwareStyles,
@@ -31,6 +33,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
+import { IosTopBar, IosTopBarTextAction } from '../components/IosTapBar';
 
 const mockStudents = [
   { id: 's123456', name: 'Paolo', surname: 'Serra' },
@@ -109,7 +112,7 @@ type Props = {
 export const AddStudentsModalContent = ({ close }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { palettes, fontSizes, dark } = useTheme();
+  const { palettes, dark, colors } = useTheme();
   const insets = useSafeAreaInsets();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const { addStudentsToCourse, selectedCourse } = useCourses();
@@ -164,22 +167,19 @@ export const AddStudentsModalContent = ({ close }: Props) => {
   return (
     <SafeAreaView style={styles.root} edges={['bottom']}>
       {Platform.OS === 'ios' ? (
-        <View style={styles.iosHeaderContainer}>
-          <View style={[styles.iosGrabber, dark && styles.iosGrabberDark]} />
-          <View style={[styles.iosHeader, dark && styles.iosHeaderDark]}>
-            <TouchableOpacity
+        <IosTopBar
+          backgroundColor={colors.surface}
+          grabberColor={dark ? palettes.gray[500] : palettes.gray[400]}
+          dividerColor={dark ? palettes.gray[500] : palettes.gray[300]}
+          left={
+            <IosTopBarTextAction
+              label={t('common.close', { defaultValue: 'Close' })}
               onPress={handleClose}
-              style={styles.closeButton}
-              accessibilityRole="button"
-            >
-              <Text
-                style={[styles.closeButtonText, { color: palettes.gray[500] }]}
-              >
-                {t('common.close', { defaultValue: 'Close' })}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+              color={palettes.gray[500]}
+              align="left"
+            />
+          }
+        />
       ) : (
         <View
           style={[
@@ -313,39 +313,21 @@ export const AddStudentsModalContent = ({ close }: Props) => {
         </View>
       </ScrollView>
 
-      <View style={styles.footer}>
-        <TouchableOpacity
-          onPress={handleConfirm}
-          accessibilityRole="button"
+      <CtaButtonContainer absolute={false} style={styles.footer}>
+        <CtaButton
+          title={t('other.confirm', { defaultValue: 'Confirm' })}
+          action={handleConfirm}
+          icon={faCheck}
           disabled={!isConfirmEnabled}
-          style={[
-            styles.confirmButton,
-            !isConfirmEnabled && styles.confirmButtonDisabled,
-          ]}
-        >
-          <View style={styles.confirmIconWrapper}>
-            <FontAwesomeIcon
-              icon={faCheck}
-              size={fontSizes.md}
-              color={
-                !isConfirmEnabled && dark
-                  ? palettes.gray[700]
-                  : palettes.gray[50]
-              }
-            />
-          </View>
-          <Text
-            style={[
-              styles.confirmButtonText,
-              !isConfirmEnabled && dark
-                ? styles.confirmButtonTextDisabledDark
-                : undefined,
-            ]}
-          >
-            {t('other.confirm', { defaultValue: 'Confirm' })}
-          </Text>
-        </TouchableOpacity>
-      </View>
+          absolute={false}
+          containerStyle={styles.confirmButtonContainer}
+          textStyle={
+            !isConfirmEnabled && dark
+              ? styles.confirmButtonTextDisabledDark
+              : undefined
+          }
+        />
+      </CtaButtonContainer>
     </SafeAreaView>
   );
 };
@@ -371,46 +353,6 @@ const createStyles = ({
       paddingHorizontal: 18,
       paddingTop: spacing[2],
       paddingBottom: spacing[3],
-    },
-    iosHeader: {
-      position: 'relative',
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: spacing[5],
-      paddingVertical: spacing[0.5],
-      minHeight: 44,
-      backgroundColor: colors.surface,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: palettes.gray[300],
-    },
-    iosHeaderDark: {
-      borderBottomColor: palettes.gray[500],
-    },
-    iosHeaderContainer: {
-      backgroundColor: colors.surface,
-    },
-    iosGrabber: {
-      width: 36,
-      height: 5,
-      borderRadius: 2.5,
-      backgroundColor: palettes.gray[600],
-      alignSelf: 'center',
-      marginTop: spacing[1.5],
-    },
-    iosGrabberDark: {
-      backgroundColor: palettes.gray[500],
-    },
-    closeButton: {
-      zIndex: 1,
-      flexShrink: 0,
-      paddingVertical: spacing[1],
-    },
-    closeButtonText: {
-      fontFamily: fontFamilies.body,
-      fontSize: 17,
-      fontWeight: fontWeights.normal,
-      lineHeight: 22,
-      letterSpacing: -0.43,
     },
     topBar: {
       flexDirection: 'row',
@@ -514,39 +456,16 @@ const createStyles = ({
       backgroundColor: palettes.gray[500],
     },
     footer: {
-      paddingHorizontal: 18,
+      paddingHorizontal: 0,
       paddingBottom: spacing[4],
-      paddingTop: spacing[2],
-    },
-    confirmButton: {
-      flexDirection: 'row',
-      width: '100%',
-      borderRadius: shapes.lg,
-      backgroundColor: palettes.primary[500],
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingHorizontal: 21,
-      paddingVertical: spacing[3],
-      alignSelf: 'stretch',
-      gap: spacing[2],
-    },
-    confirmButtonDisabled: {
-      backgroundColor: palettes.gray[500],
-    },
-    confirmButtonText: {
-      textAlign: 'center',
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 21,
-      color: palettes.gray[50],
+      paddingTop: 0,
     },
     confirmButtonTextDisabledDark: {
       color: palettes.gray[700],
     },
-    confirmIconWrapper: {
-      height: 16,
-      justifyContent: 'center',
-      alignItems: 'center',
+    confirmButtonContainer: {
+      paddingTop: 0,
+      paddingHorizontal: 18,
+      paddingBottom: 0,
     },
   });

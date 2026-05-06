@@ -21,6 +21,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
+  CtaButton,
+  CtaButtonContainer,
   Text,
   Theme,
   useBottomBarAwareStyles,
@@ -31,6 +33,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
+import { IosTopBar, IosTopBarTextAction } from '../components/IosTapBar';
 import { StudentsStackParamList } from '../types/navigation';
 
 type Props = {
@@ -44,7 +47,7 @@ export const SelectStudentsModalContent = ({
 }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { palettes, fontSizes, dark } = useTheme();
+  const { palettes, dark, colors } = useTheme();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const route = useRoute<RouteProp<StudentsStackParamList, 'SelectStudents'>>();
@@ -113,29 +116,29 @@ export const SelectStudentsModalContent = ({
   return (
     <SafeAreaView style={styles.root} edges={['bottom']}>
       {Platform.OS === 'ios' ? (
-        <View style={styles.iosHeaderContainer}>
-          <View style={[styles.iosGrabber, dark && styles.iosGrabberDark]} />
-          <View style={[styles.iosHeader, dark && styles.iosHeaderDark]}>
-            <TouchableOpacity
+        <IosTopBar
+          backgroundColor={colors.surface}
+          grabberColor={dark ? palettes.gray[500] : palettes.gray[400]}
+          dividerColor={dark ? palettes.gray[500] : palettes.gray[300]}
+          left={
+            <IosTopBarTextAction
+              label={t('common.close')}
               onPress={handleClose}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-              accessibilityRole="button"
-            >
-              <Text style={styles.headerClose}>{t('common.close')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+              color={palettes.gray[500]}
+              align="left"
+            />
+          }
+          right={
+            <IosTopBarTextAction
+              label={
+                isAllSelected ? t('common.deselectAll') : t('common.selectAll')
+              }
               onPress={handleToggleAll}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-              accessibilityRole="button"
-            >
-              <Text style={styles.headerSelectAll}>
-                {isAllSelected
-                  ? t('common.deselectAll')
-                  : t('common.selectAll')}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+              color={palettes.primary[500]}
+              align="right"
+            />
+          }
+        />
       ) : (
         <View
           style={[
@@ -222,39 +225,23 @@ export const SelectStudentsModalContent = ({
         <View style={styles.scrollSpacer} />
       </ScrollView>
 
-      <View style={styles.ctaContainer}>
-        <TouchableOpacity
-          style={[
-            styles.ctaButton,
-            selectedIds.size === 0 && styles.ctaButtonDisabled,
-          ]}
+      <CtaButtonContainer absolute={false} style={styles.ctaContainer}>
+        <CtaButton
+          title={t('other.contactSelected', {
+            defaultValue: 'Contact selected',
+          })}
+          action={handleContact}
+          icon={faEnvelope}
           disabled={selectedIds.size === 0}
-          onPress={handleContact}
-          accessibilityRole="button"
-        >
-          <View style={styles.ctaIconWrapper}>
-            <FontAwesomeIcon
-              icon={faEnvelope}
-              size={fontSizes.md}
-              color={
-                selectedIds.size === 0 && dark
-                  ? palettes.gray[700]
-                  : palettes.gray[50]
-              }
-            />
-          </View>
-          <Text
-            style={[
-              styles.ctaText,
-              selectedIds.size === 0 && dark
-                ? styles.ctaTextDisabledDark
-                : undefined,
-            ]}
-          >
-            {t('other.contactSelected', { defaultValue: 'Contact selected' })}
-          </Text>
-        </TouchableOpacity>
-      </View>
+          absolute={false}
+          containerStyle={styles.ctaButtonContainer}
+          textStyle={
+            selectedIds.size === 0 && dark
+              ? styles.ctaTextDisabledDark
+              : undefined
+          }
+        />
+      </CtaButtonContainer>
     </SafeAreaView>
   );
 };
@@ -272,34 +259,6 @@ const createStyles = ({
     root: {
       flex: 1,
       backgroundColor: colors.background,
-    },
-    iosHeaderContainer: {
-      backgroundColor: colors.surface,
-    },
-    iosGrabber: {
-      width: 36,
-      height: 5,
-      borderRadius: 2.5,
-      backgroundColor: palettes.gray[600],
-      alignSelf: 'center',
-      marginTop: spacing[1.5],
-    },
-    iosGrabberDark: {
-      backgroundColor: palettes.gray[500],
-    },
-    iosHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      minHeight: 44,
-      paddingHorizontal: spacing[5],
-      paddingVertical: spacing[0.5],
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: palettes.gray[300],
-      backgroundColor: colors.surface,
-    },
-    iosHeaderDark: {
-      borderBottomColor: palettes.gray[500],
     },
     topBar: {
       flexDirection: 'row',
@@ -403,39 +362,16 @@ const createStyles = ({
       height: spacing[4],
     },
     ctaContainer: {
-      paddingHorizontal: 18,
-      paddingTop: spacing[2],
+      paddingHorizontal: 0,
+      paddingTop: 0,
       paddingBottom: spacing[4],
-    },
-    ctaButton: {
-      flexDirection: 'row',
-      width: '100%',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: palettes.primary[500],
-      borderRadius: shapes.lg,
-      paddingHorizontal: 21,
-      paddingVertical: spacing[3],
-      alignSelf: 'stretch',
-      gap: spacing[2],
-    },
-    ctaButtonDisabled: {
-      backgroundColor: palettes.gray[500],
-    },
-    ctaText: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 21,
-      color: palettes.gray[50],
-      textAlign: 'center',
     },
     ctaTextDisabledDark: {
       color: palettes.gray[700],
     },
-    ctaIconWrapper: {
-      height: 16,
-      justifyContent: 'center',
-      alignItems: 'center',
+    ctaButtonContainer: {
+      paddingTop: 0,
+      paddingHorizontal: 18,
+      paddingBottom: 0,
     },
   });

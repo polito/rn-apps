@@ -243,7 +243,9 @@ export const TeachingNavigator = () => {
         name="StudentContact"
         component={StudentContact}
         options={{
-          animation: 'none',
+          presentation: 'card',
+          animation: 'slide_from_right',
+          fullScreenGestureEnabled: true,
           headerShown: false,
         }}
       />
