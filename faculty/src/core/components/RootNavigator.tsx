@@ -109,9 +109,10 @@ export const RootNavigator = () => {
         //   hide: instantAnimation,
         // },
         tabBarStyle: [styles.tabBarStyle, androidTabBarBottom],
-        tabBarBackground: () => (
-          <TranslucentView blurAmount={20} fallbackOpacity={0.85} />
-        ),
+        tabBarBackground:
+          Platform.OS === 'ios'
+            ? () => <TranslucentView blurAmount={20} fallbackOpacity={0.85} />
+            : undefined,
         tabBarItemStyle: styles.tabBarItemStyle,
         tabBarLabelStyle: [styles.tabBarLabelStyle],
         tabBarInactiveTintColor: colors.tabBarInactive,
@@ -323,6 +324,7 @@ const createStyles = ({
       ...tabBarStyle,
       position: 'absolute',
       borderTopColor: colors.divider,
+      ...(Platform.OS === 'android' ? { backgroundColor: colors.surface } : {}),
     },
     tabBarItemStyle: {
       paddingVertical: 3,

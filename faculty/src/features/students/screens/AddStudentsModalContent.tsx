@@ -14,6 +14,7 @@ import {
 
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import {
+  faArrowLeft,
   faCheck,
   faChevronLeft,
   faMinus,
@@ -29,6 +30,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -72,6 +74,7 @@ export const AddStudentsModalContent = ({ close }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { palettes, dark, colors } = useTheme();
+  const bottomTabBarHeight = useBottomTabBarHeight();
   const insets = useSafeAreaInsets();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const { addStudentsToCourse, selectedCourse } = useCourses();
@@ -157,7 +160,7 @@ export const AddStudentsModalContent = ({ close }: Props) => {
             accessibilityRole="button"
           >
             <FontAwesomeIcon
-              icon={faChevronLeft}
+              icon={Platform.OS === 'android' ? faArrowLeft : faChevronLeft}
               size={18}
               color={palettes.primary[500]}
             />
@@ -276,7 +279,15 @@ export const AddStudentsModalContent = ({ close }: Props) => {
         </View>
       </ScrollView>
 
-      <CtaButtonContainer absolute={false} style={styles.footer}>
+      <CtaButtonContainer
+        absolute={false}
+        style={[
+          styles.footer,
+          Platform.OS === 'android'
+            ? { paddingBottom: bottomTabBarHeight }
+            : undefined,
+        ]}
+      >
         <CtaButton
           title={t('other.confirm', { defaultValue: 'Confirm' })}
           action={handleConfirm}
@@ -322,7 +333,7 @@ const createStyles = ({
       alignItems: 'center',
       justifyContent: 'space-between',
       marginBottom: spacing[1],
-      backgroundColor: palettes.gray[100],
+      backgroundColor: colors.surface,
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: palettes.gray[300],
     },

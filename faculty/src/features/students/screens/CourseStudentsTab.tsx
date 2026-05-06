@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
+  Platform,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -291,7 +292,18 @@ export const CourseStudentsTab = () => {
           </View>
 
           {/* Student list */}
-          <OverviewList indented emptyStateText={t('other.noStudentsFound')}>
+          <OverviewList
+            indented
+            rounded={Platform.OS === 'android' ? true : undefined}
+            emptyStateText={t('other.noStudentsFound')}
+            style={Platform.select({
+              android: {
+                marginLeft: infoCardMarginLeft,
+                marginRight: infoCardMarginRight,
+                elevation: 0,
+              },
+            })}
+          >
             {filteredStudents.map((student, index) => (
               <View key={student.id}>
                 <ListItem
@@ -320,23 +332,26 @@ export const CourseStudentsTab = () => {
                     />
                   }
                   trailingItem={
-                    <TouchableOpacity
-                      onPress={e => {
-                        e.stopPropagation();
-                        Alert.alert('Info', t('other.renderingToMail'));
-                      }}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                      accessibilityRole="button"
-                      accessibilityLabel={t('other.contactStudent', {
-                        defaultValue: 'Contact student by email',
-                      })}
-                    >
-                      <FontAwesomeIcon
-                        icon={faEnvelope}
-                        size={16}
-                        color={dark ? palettes.gray[50] : palettes.primary[700]}
-                      />
-                    </TouchableOpacity>
+                    <View onStartShouldSetResponder={() => true}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          Alert.alert('Info', t('other.renderingToMail'));
+                        }}
+                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('other.contactStudent', {
+                          defaultValue: 'Contact student by email',
+                        })}
+                      >
+                        <FontAwesomeIcon
+                          icon={faEnvelope}
+                          size={16}
+                          color={
+                            dark ? palettes.gray[50] : palettes.primary[700]
+                          }
+                        />
+                      </TouchableOpacity>
+                    </View>
                   }
                 />
                 {index < filteredStudents.length - 1 ? (

@@ -1,9 +1,16 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import {
+  faArrowLeft,
   faBook,
   faCalendarCheck,
   faChevronLeft,
@@ -97,7 +104,7 @@ export const StudentContact = () => {
           accessibilityRole="button"
         >
           <FontAwesomeIcon
-            icon={faChevronLeft}
+            icon={Platform.OS === 'android' ? faArrowLeft : faChevronLeft}
             size={22}
             color={palettes.primary[500]}
           />

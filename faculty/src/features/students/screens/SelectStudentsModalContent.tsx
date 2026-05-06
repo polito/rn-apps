@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -15,7 +15,9 @@ import {
 
 import { faSquare } from '@fortawesome/free-regular-svg-icons';
 import {
+  faArrowLeft,
   faChevronLeft,
+  faEllipsisVertical,
   faEnvelope,
   faSquareCheck,
 } from '@fortawesome/free-solid-svg-icons';
@@ -29,9 +31,14 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import {
+  ContextMenuItem,
+  CourseFilesContextMenu,
+} from '../../../core/components/CourseFilesContextMenu';
 import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { HighlightedName } from '../components/HighlightedName';
@@ -57,12 +64,19 @@ export const SelectStudentsModalContent = ({
     useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
   const route = useRoute<RouteProp<StudentsStackParamList, 'SelectStudents'>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const bottomTabBarHeight = useBottomTabBarHeight();
   const { selectedCourse } = useCourses();
 
   const students = selectedCourse?.students ?? [];
   const resolvedInitialSelectAll =
     initialSelectAll ?? route.params?.initialSelectAll ?? false;
   const [searchText, setSearchText] = useState('');
+  const [isEllipsisMenuVisible, setEllipsisMenuVisible] = useState(false);
+  const [ellipsisAnchorPosition, setEllipsisAnchorPosition] = useState<{
+    top: number;
+    left: number;
+  }>({ top: 170, left: SCREEN_HORIZONTAL_PADDING });
+  const ellipsisButtonRef = useRef<View>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(
     () => new Set(resolvedInitialSelectAll ? students.map(s => s.id) : []),
   );
@@ -92,6 +106,19 @@ export const SelectStudentsModalContent = ({
       return next;
     });
   };
+
+  const ellipsisMenuItems: ContextMenuItem[] = [
+    {
+      label: isAllSelected
+        ? t('common.deselectAll', { defaultValue: 'Deselect all' })
+        : t('common.selectAll', { defaultValue: 'Select all' }),
+      checked: false,
+      onPress: () => {
+        setEllipsisMenuVisible(false);
+        handleToggleAll();
+      },
+    },
+  ];
 
   const handleToggleStudent = (id: string) => {
     setSelectedIds(prev => {
@@ -153,24 +180,43 @@ export const SelectStudentsModalContent = ({
             accessibilityLabel={t('common.close', { defaultValue: 'Close' })}
           >
             <FontAwesomeIcon
-              icon={faChevronLeft}
+              icon={Platform.OS === 'android' ? faArrowLeft : faChevronLeft}
               size={18}
               color={palettes.primary[500]}
             />
           </TouchableOpacity>
+          <Text style={[styles.topBarTitle, dark && styles.topBarTitleDark]}>
+            {t('common.selectAll', { defaultValue: 'Select all' })}
+          </Text>
           <TouchableOpacity
-            onPress={handleToggleAll}
+            ref={ellipsisButtonRef}
+            onPress={() => {
+              const node = ellipsisButtonRef.current;
+              if (node?.measureInWindow) {
+                node.measureInWindow(
+                  (x: number, y: number, w: number, h: number) => {
+                    setEllipsisAnchorPosition({
+                      top: y + h - 2,
+                      left: Math.max(SCREEN_HORIZONTAL_PADDING, x + w - 250),
+                    });
+                    setEllipsisMenuVisible(true);
+                  },
+                );
+              } else {
+                setEllipsisMenuVisible(true);
+              }
+            }}
             style={styles.topBarAction}
             accessibilityRole="button"
-            accessibilityLabel={
-              isAllSelected
-                ? t('common.deselectAll', { defaultValue: 'Deselect all' })
-                : t('common.selectAll', { defaultValue: 'Select all' })
-            }
+            accessibilityLabel={t('common.moreOptions', {
+              defaultValue: 'More options',
+            })}
           >
-            <Text style={styles.headerSelectAll}>
-              {isAllSelected ? t('common.deselectAll') : t('common.selectAll')}
-            </Text>
+            <FontAwesomeIcon
+              icon={faEllipsisVertical}
+              size={18}
+              color={palettes.primary[400]}
+            />
           </TouchableOpacity>
         </View>
       )}
@@ -234,7 +280,15 @@ export const SelectStudentsModalContent = ({
         <View style={styles.scrollSpacer} />
       </ScrollView>
 
-      <CtaButtonContainer absolute={false} style={styles.ctaContainer}>
+      <CtaButtonContainer
+        absolute={false}
+        style={[
+          styles.ctaContainer,
+          Platform.OS === 'android'
+            ? { paddingBottom: bottomTabBarHeight }
+            : undefined,
+        ]}
+      >
         <CtaButton
           title={t('other.contactSelected', {
             defaultValue: 'Contact selected',
@@ -251,6 +305,12 @@ export const SelectStudentsModalContent = ({
           }
         />
       </CtaButtonContainer>
+      <CourseFilesContextMenu
+        visible={isEllipsisMenuVisible}
+        onClose={() => setEllipsisMenuVisible(false)}
+        items={ellipsisMenuItems}
+        anchorPosition={ellipsisAnchorPosition}
+      />
     </SafeAreaView>
   );
 };
@@ -274,7 +334,7 @@ const createStyles = ({
       alignItems: 'center',
       justifyContent: 'space-between',
       marginBottom: spacing[1],
-      backgroundColor: palettes.gray[100],
+      backgroundColor: colors.surface,
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: palettes.gray[300],
       paddingHorizontal: spacing[4],
@@ -289,8 +349,10 @@ const createStyles = ({
       alignItems: 'flex-start',
     },
     topBarAction: {
+      width: 44,
       minHeight: 44,
       justifyContent: 'center',
+      alignItems: 'flex-end',
     },
     headerClose: {
       fontFamily: fontFamilies.body,
@@ -300,13 +362,17 @@ const createStyles = ({
       lineHeight: 22,
       letterSpacing: -0.43,
     },
-    headerSelectAll: {
+    topBarTitle: {
       fontFamily: fontFamilies.body,
       fontSize: 17,
-      fontWeight: fontWeights.normal,
-      color: palettes.primary[500],
+      fontWeight: fontWeights.semibold,
+      color: palettes.primary[700],
       lineHeight: 22,
       letterSpacing: -0.43,
+      textAlign: 'center',
+    },
+    topBarTitleDark: {
+      color: palettes.gray[50],
     },
     searchWrapper: {
       paddingHorizontal: SCREEN_HORIZONTAL_PADDING,

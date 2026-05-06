@@ -14,6 +14,7 @@ import {
 
 import { faFile } from '@fortawesome/free-regular-svg-icons';
 import {
+  faArrowLeft,
   faArrowUpRightFromSquare,
   faChevronLeft,
   faChevronRight,
@@ -129,12 +130,12 @@ export const SpecialNeedsScreen = () => {
             accessibilityLabel={t('common.close', { defaultValue: 'Close' })}
           >
             <FontAwesomeIcon
-              icon={faChevronLeft}
+              icon={Platform.OS === 'android' ? faArrowLeft : faChevronLeft}
               size={18}
               color={palettes.primary[500]}
             />
           </TouchableOpacity>
-          <Text style={styles.topBarTitle}>
+          <Text style={[styles.topBarTitle, dark && styles.topBarTitleDark]}>
             {t('other.specialNeedsTitle', {
               defaultValue: 'Compensative measures',
             })}
@@ -316,7 +317,7 @@ const createStyles = ({
       alignItems: 'center',
       justifyContent: 'space-between',
       marginBottom: spacing[1],
-      backgroundColor: palettes.gray[100],
+      backgroundColor: colors.surface,
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: palettes.gray[300],
     },
@@ -337,6 +338,9 @@ const createStyles = ({
       lineHeight: 22,
       color: palettes.primary[700],
       textAlign: 'center',
+    },
+    topBarTitleDark: {
+      color: palettes.gray[50],
     },
     topBarRightSpacer: {
       width: 44,

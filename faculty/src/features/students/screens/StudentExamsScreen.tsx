@@ -12,7 +12,7 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   IndentedDivider,
@@ -206,12 +206,12 @@ export const StudentExamsScreen = () => {
             accessibilityRole="button"
           >
             <FontAwesomeIcon
-              icon={faChevronLeft}
+              icon={Platform.OS === 'android' ? faArrowLeft : faChevronLeft}
               size={18}
               color={palettes.primary[500]}
             />
           </TouchableOpacity>
-          <Text style={styles.topBarTitle}>
+          <Text style={[styles.topBarTitle, dark && styles.topBarTitleDark]}>
             {t('other.exams', { defaultValue: 'Exams' })}
           </Text>
           <View style={styles.topBarRightSpacer} />
@@ -317,7 +317,7 @@ const createStyles = ({
       alignItems: 'center',
       justifyContent: 'space-between',
       marginBottom: spacing[1],
-      backgroundColor: palettes.gray[100],
+      backgroundColor: colors.surface,
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: palettes.gray[300],
     },
@@ -338,6 +338,9 @@ const createStyles = ({
       lineHeight: 22,
       color: palettes.primary[700],
       textAlign: 'center',
+    },
+    topBarTitleDark: {
+      color: palettes.gray[50],
     },
     topBarRightSpacer: {
       width: 44,
