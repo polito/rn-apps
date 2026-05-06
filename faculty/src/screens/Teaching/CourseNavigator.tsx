@@ -68,8 +68,9 @@ const CourseTopTabBar = ({
     hideTabsOnAndroid || hideTabsInNestedStudentsScreen;
 
   useEffect(() => {
-    const parentStackNavigation = navigation.getParent();
-    parentStackNavigation?.setOptions?.({
+    const parentStackNavigation =
+      navigation.getParent<NativeStackNavigationProp<TeachingStackParamList>>();
+    parentStackNavigation?.setOptions({
       headerShown: !shouldHideParentHeader,
     });
   }, [navigation, shouldHideParentHeader]);
