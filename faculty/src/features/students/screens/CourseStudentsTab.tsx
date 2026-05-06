@@ -352,8 +352,6 @@ export const CourseStudentsTab = () => {
         {/* Add Student CTA (keep it above bottom tab bar) */}
         <View
           style={{
-            // Counteract the screen safe-area horizontal padding for the CTA itself,
-            // to match the "file/folder" button behavior.
             marginLeft: -safeHorizontal.paddingLeft,
             marginRight: -safeHorizontal.paddingRight,
           }}

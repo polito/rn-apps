@@ -90,7 +90,6 @@ const createStyles = ({
       height: 5,
       borderRadius: 999,
       marginTop: spacing[1.5],
-      // Keep light theme handle subtle per latest design.
       backgroundColor: palettes.gray[400],
     },
     headerRow: {
