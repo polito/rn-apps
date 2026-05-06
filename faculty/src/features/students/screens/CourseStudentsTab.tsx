@@ -43,8 +43,6 @@ export const CourseStudentsTab = () => {
   const { selectedCourse, setSelectedStudent } = useCourses();
   const { paddingHorizontal } = useSafeAreaSpacing();
   const bottomBarHeight = useBottomTabBarHeight();
-  // We want the Info Card to be exactly 18px from screen left/right edges.
-  // Root container already applies safe-area horizontal padding, so we counteract it via margins.
   const safeHorizontal = paddingHorizontal as unknown as {
     paddingLeft: number;
     paddingRight: number;
@@ -182,7 +180,6 @@ export const CourseStudentsTab = () => {
           <View
             style={[
               styles.infoCard,
-              // Keep dark theme aligned with --info-info-100 token.
               dark && { backgroundColor: palettes.info[100] },
               {
                 marginLeft: infoCardMarginLeft,

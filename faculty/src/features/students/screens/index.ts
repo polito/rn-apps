@@ -1,5 +1,4 @@
-export { StudentsHomeScreen } from './StudentsHomeScreen';
-export { StudentContactScreen } from './StudentContactScreen';
+export { StudentContact } from './StudentContact';
 export { CourseStudentsTab } from './CourseStudentsTab';
 export { SpecialNeedsScreen } from './SpecialNeedsScreen';
 export { StudentExamsScreen } from './StudentExamsScreen';

@@ -7,7 +7,7 @@ import {
   CourseStudentsTab,
   SelectStudentsScreen,
   SpecialNeedsScreen,
-  StudentContactScreen,
+  StudentContact,
   StudentExamsScreen,
 } from '../screens';
 import { StudentsStackParamList } from '../types/navigation';
@@ -21,7 +21,7 @@ export const StudentsNavigator = () => {
       <Stack.Screen name="CourseStudentsScreen" component={CourseStudentsTab} />
       <Stack.Screen
         name="StudentContact"
-        component={StudentContactScreen}
+        component={StudentContact}
         options={{
           presentation: 'card',
           animation: 'slide_from_right',
