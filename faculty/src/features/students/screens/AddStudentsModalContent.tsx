@@ -30,10 +30,14 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { IosTopBar, IosTopBarTextAction } from '../components/IosTapBar';
+import { HighlightedName } from '../components/HighlightedName';
+import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
+import { CURRENT_ACADEMIC_YEAR, SCREEN_HORIZONTAL_PADDING } from '../constants';
+import { StudentsStackParamList } from '../types/navigation';
 
 const mockStudents = [
   { id: 's123456', name: 'Paolo', surname: 'Serra' },
@@ -58,53 +62,6 @@ const generateStudentId = (): string => {
 
 type MockStudent = (typeof mockStudents)[0];
 
-const HighlightedName = ({
-  name,
-  surname,
-  query,
-  nameStyle,
-  highlightStyle,
-}: {
-  name: string;
-  surname: string;
-  query: string;
-  nameStyle: object;
-  highlightStyle: object;
-}) => {
-  if (!query) {
-    return (
-      <Text style={nameStyle} numberOfLines={1}>
-        {name} {surname}
-      </Text>
-    );
-  }
-
-  const full = `${name} ${surname}`;
-  const lowerFull = full.toLowerCase();
-  const lowerQuery = query.toLowerCase();
-  const matchIndex = lowerFull.indexOf(lowerQuery);
-
-  if (matchIndex === -1) {
-    return (
-      <Text style={nameStyle} numberOfLines={1}>
-        {full}
-      </Text>
-    );
-  }
-
-  const before = full.slice(0, matchIndex);
-  const match = full.slice(matchIndex, matchIndex + query.length);
-  const after = full.slice(matchIndex + query.length);
-
-  return (
-    <Text style={nameStyle} numberOfLines={1}>
-      {before}
-      <Text style={highlightStyle}>{match}</Text>
-      {after}
-    </Text>
-  );
-};
-
 type Props = {
   close?: () => void;
 };
@@ -116,7 +73,8 @@ export const AddStudentsModalContent = ({ close }: Props) => {
   const insets = useSafeAreaInsets();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const { addStudentsToCourse, selectedCourse } = useCourses();
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
   const [searchText, setSearchText] = useState('');
   const [selectedStudents, setSelectedStudents] = useState<MockStudent[]>([]);
   const isConfirmEnabled = selectedStudents.length > 0;
@@ -149,17 +107,18 @@ export const AddStudentsModalContent = ({ close }: Props) => {
 
   const handleConfirm = () => {
     if (!selectedCourse) return;
-    const newStudents = selectedStudents.map(s => ({
-      id: generateStudentId(),
-      name: s.name,
-      surname: s.surname,
-      year: '2025',
-      exam: 'no',
-      cityOfBirth: 'Torino',
-      degreeCourse: 'Informatica',
-      passedExams: [],
-      passedExamsDate: [],
-    }));
+    const newStudents: Parameters<typeof addStudentsToCourse>[1] =
+      selectedStudents.map(s => ({
+        id: generateStudentId(),
+        name: s.name,
+        surname: s.surname,
+        year: CURRENT_ACADEMIC_YEAR,
+        exam: 'no',
+        cityOfBirth: 'Torino',
+        degreeCourse: 'Informatica',
+        passedExams: [],
+        passedExamsDate: [],
+      }));
     addStudentsToCourse(selectedCourse.id, newStudents);
     handleClose();
   };
@@ -350,7 +309,7 @@ const createStyles = ({
       flex: 1,
     },
     contentContainer: {
-      paddingHorizontal: 18,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingTop: spacing[2],
       paddingBottom: spacing[3],
     },
@@ -465,7 +424,7 @@ const createStyles = ({
     },
     confirmButtonContainer: {
       paddingTop: 0,
-      paddingHorizontal: 18,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingBottom: 0,
     },
   });

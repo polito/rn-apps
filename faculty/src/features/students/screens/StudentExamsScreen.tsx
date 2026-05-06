@@ -23,9 +23,12 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { IosTopBar, IosTopBarTextAction } from '../components/IosTapBar';
+import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
+import { SCREEN_HORIZONTAL_PADDING } from '../constants';
+import { StudentsStackParamList } from '../types/navigation';
 
 type LessonCatalogEntry = { title: string; code: string; cfu: number };
 
@@ -110,7 +113,8 @@ const formatExamDate = (dateValue?: string): string => {
 
 export const StudentExamsScreen = () => {
   const { palettes, dark, colors } = useTheme();
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
   const insets = useSafeAreaInsets();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
@@ -227,7 +231,7 @@ export const StudentExamsScreen = () => {
         {exams.length > 0 && (
           <View style={styles.card}>
             {exams.map((exam, index) => (
-              <View key={index}>
+              <View key={exam.name}>
                 <View style={styles.listItem}>
                   <View style={styles.listItemContent}>
                     <Text
@@ -290,14 +294,14 @@ const createStyles = ({
       flex: 1,
     },
     contentContainer: {
-      paddingHorizontal: spacing[4],
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingTop: spacing[2],
       gap: spacing[4],
     },
     scrollContentIos: {
       flexGrow: 1,
       padding: spacing[5],
-      gap: 22,
+      gap: spacing[4],
       paddingBottom: spacing[2],
     },
     iosHeaderTitle: {
@@ -330,7 +334,7 @@ const createStyles = ({
     topBarTitle: {
       fontFamily: fontFamilies.body,
       fontSize: 17,
-      fontWeight: '600',
+      fontWeight: fontWeights.semibold,
       lineHeight: 22,
       color: palettes.primary[700],
       textAlign: 'center',

@@ -1,0 +1,2 @@
+export const SCREEN_HORIZONTAL_PADDING = 18;
+export const CURRENT_ACADEMIC_YEAR = '2025';

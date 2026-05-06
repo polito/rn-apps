@@ -30,10 +30,13 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { IosTopBar, IosTopBarTextAction } from '../components/IosTapBar';
+import { HighlightedName } from '../components/HighlightedName';
+import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
+import { SCREEN_HORIZONTAL_PADDING } from '../constants';
 import { StudentsStackParamList } from '../types/navigation';
 
 type Props = {
@@ -49,7 +52,8 @@ export const SelectStudentsModalContent = ({
   const styles = useStylesheet(createStyles);
   const { palettes, dark, colors } = useTheme();
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
   const route = useRoute<RouteProp<StudentsStackParamList, 'SelectStudents'>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const { selectedCourse } = useCourses();
@@ -151,6 +155,7 @@ export const SelectStudentsModalContent = ({
             onPress={handleClose}
             style={styles.backButton}
             accessibilityRole="button"
+            accessibilityLabel={t('common.close', { defaultValue: 'Close' })}
           >
             <FontAwesomeIcon
               icon={faChevronLeft}
@@ -162,6 +167,11 @@ export const SelectStudentsModalContent = ({
             onPress={handleToggleAll}
             style={styles.topBarAction}
             accessibilityRole="button"
+            accessibilityLabel={
+              isAllSelected
+                ? t('common.deselectAll', { defaultValue: 'Deselect all' })
+                : t('common.selectAll', { defaultValue: 'Select all' })
+            }
           >
             <Text style={styles.headerSelectAll}>
               {isAllSelected ? t('common.deselectAll') : t('common.selectAll')}
@@ -192,17 +202,21 @@ export const SelectStudentsModalContent = ({
                   style={styles.row}
                   onPress={() => handleToggleStudent(student.id)}
                   activeOpacity={0.6}
+                  accessibilityRole="checkbox"
+                  accessibilityState={{ checked: selectedIds.has(student.id) }}
+                  accessibilityLabel={`${student.name} ${student.surname} (${student.id})`}
                 >
                   <View style={styles.rowContent}>
-                    <Text
-                      style={[
+                    <HighlightedName
+                      name={student.name}
+                      surname={student.surname}
+                      query={searchText}
+                      nameStyle={[
                         styles.studentName,
                         dark && styles.studentNameDark,
                       ]}
-                      numberOfLines={1}
-                    >
-                      {student.name} {student.surname}
-                    </Text>
+                      highlightStyle={styles.studentNameHighlight}
+                    />
                     <Text style={styles.studentId}>{student.id}</Text>
                   </View>
                   <View style={styles.checkboxContainer}>
@@ -300,7 +314,7 @@ const createStyles = ({
       letterSpacing: -0.43,
     },
     searchWrapper: {
-      paddingHorizontal: 18,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       marginTop: spacing[3],
       paddingVertical: spacing[2],
     },
@@ -311,7 +325,7 @@ const createStyles = ({
       backgroundColor: colors.surface,
       borderRadius: shapes.lg,
       overflow: 'hidden',
-      marginHorizontal: 18,
+      marginHorizontal: SCREEN_HORIZONTAL_PADDING,
       marginTop: spacing[2.5],
     },
     row: {
@@ -336,6 +350,9 @@ const createStyles = ({
     },
     studentNameDark: {
       color: palettes.gray[50],
+    },
+    studentNameHighlight: {
+      color: palettes.secondary[600],
     },
     studentId: {
       fontFamily: fontFamilies.body,
@@ -371,7 +388,7 @@ const createStyles = ({
     },
     ctaButtonContainer: {
       paddingTop: 0,
-      paddingHorizontal: 18,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingBottom: 0,
     },
   });

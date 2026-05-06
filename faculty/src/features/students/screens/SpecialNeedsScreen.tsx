@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import {
+  Alert,
   Platform,
   ScrollView,
   StyleSheet,
@@ -30,7 +31,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { IosTopBar, IosTopBarTextAction } from '../components/IosTapBar';
+import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
+import { SCREEN_HORIZONTAL_PADDING } from '../constants';
 
 export const SpecialNeedsScreen = () => {
   const { palettes, dark, colors } = useTheme();
@@ -47,47 +49,45 @@ export const SpecialNeedsScreen = () => {
 
   const measures = [
     {
-      bold: t('specialNeeds.calculator', { defaultValue: 'Calculator' }),
-      rest: ` ${t('specialNeeds.calculatorSuffix', { defaultValue: 'allowed' })}`,
+      bold: t('other.specialNeedsCalculator', { defaultValue: 'Calculator' }),
+      rest: ` ${t('other.specialNeedsCalculatorSuffix', { defaultValue: 'allowed' })}`,
     },
     {
-      bold: t('specialNeeds.readabilityCriteria', {
+      bold: t('other.specialNeedsReadabilityCriteria', {
         defaultValue: 'Readability criteria',
       }),
-      rest: ` ${t('specialNeeds.readabilityCriteriaDetail', {
+      rest: ` ${t('other.specialNeedsReadabilityCriteriaDetail', {
         defaultValue:
           '(Arial, 12-point font, 1.5 line spacing, non-justified text, expanded spacing)',
       })}`,
     },
     {
-      bold: t('specialNeeds.cheatSheet', {
+      bold: t('other.specialNeedsCheatSheet', {
         defaultValue: 'Cheat sheet for formulas',
       }),
-      rest: ` ${t('specialNeeds.cheatSheetSuffix', {
+      rest: ` ${t('other.specialNeedsCheatSheetSuffix', {
         defaultValue: 'for written and oral exams',
       })}`,
     },
     {
-      bold: t('specialNeeds.additionalTime', {
+      bold: t('other.specialNeedsAdditionalTime', {
         defaultValue: '30% additional time for completing exams',
       }),
-      rest: `. ${t('specialNeeds.additionalTimeSuffix', {
+      rest: `. ${t('other.specialNeedsAdditionalTimeSuffix', {
         defaultValue:
           'Alternatively, for written exams, consider a quantitative (but not qualitative) reduction of the test itself',
       })}`,
     },
     {
-      bold: t('specialNeeds.contentAssessment', {
+      bold: t('other.specialNeedsContentAssessment', {
         defaultValue: 'Assessment of content vs. form',
       }),
-      rest: `: ${t('specialNeeds.contentAssessmentSuffix', {
+      rest: `: ${t('other.specialNeedsContentAssessmentSuffix', {
         defaultValue:
           'prioritize content over form and spelling in the evaluation of tests',
       })}`,
     },
   ];
-
-  const sectionTitleColor = dark ? palettes.gray[50] : palettes.primary[700];
 
   return (
     <SafeAreaView style={styles.root} edges={['bottom']}>
@@ -105,8 +105,10 @@ export const SpecialNeedsScreen = () => {
             />
           }
           center={
-            <Text style={[styles.iosHeaderTitle, { color: sectionTitleColor }]}>
-              {t('specialNeeds.title', {
+            <Text
+              style={[styles.iosHeaderTitle, dark && styles.iosHeaderTitleDark]}
+            >
+              {t('other.specialNeedsTitle', {
                 defaultValue: 'Compensative measures',
               })}
             </Text>
@@ -124,6 +126,7 @@ export const SpecialNeedsScreen = () => {
             onPress={() => navigation.goBack()}
             style={styles.backButton}
             accessibilityRole="button"
+            accessibilityLabel={t('common.close', { defaultValue: 'Close' })}
           >
             <FontAwesomeIcon
               icon={faChevronLeft}
@@ -132,7 +135,7 @@ export const SpecialNeedsScreen = () => {
             />
           </TouchableOpacity>
           <Text style={styles.topBarTitle}>
-            {t('specialNeeds.title', {
+            {t('other.specialNeedsTitle', {
               defaultValue: 'Compensative measures',
             })}
           </Text>
@@ -159,7 +162,7 @@ export const SpecialNeedsScreen = () => {
           ]}
         >
           <Text style={styles.infoCardHeader}>
-            {t('specialNeeds.infoCardHeader', {
+            {t('other.specialNeedsInfoCardHeader', {
               defaultValue: 'List of compensatory measures granted to',
             })}{' '}
             <Text style={styles.infoCardHeaderBold}>{studentFullName}</Text>
@@ -182,8 +185,16 @@ export const SpecialNeedsScreen = () => {
         <View style={styles.detailsCard}>
           <TouchableOpacity
             style={styles.listItem}
-            onPress={() => {}}
+            onPress={() =>
+              Alert.alert(
+                t('common.info', { defaultValue: 'Info' }),
+                t('other.comingSoon', { defaultValue: 'Coming soon.' }),
+              )
+            }
             accessibilityRole="button"
+            accessibilityLabel={t('other.specialNeedsMoreDetails', {
+              defaultValue: 'More Details',
+            })}
           >
             <View style={styles.leadingIcon}>
               <FontAwesomeIcon
@@ -197,12 +208,12 @@ export const SpecialNeedsScreen = () => {
                 style={[styles.listItemTitle, dark && styles.listItemTitleDark]}
                 numberOfLines={1}
               >
-                {t('specialNeeds.moreDetails', {
+                {t('other.specialNeedsMoreDetails', {
                   defaultValue: 'More Details',
                 })}
               </Text>
               <Text style={styles.listItemSubtitle}>
-                {t('specialNeeds.moreDetailsSubtitle', {
+                {t('other.specialNeedsMoreDetailsSubtitle', {
                   defaultValue:
                     'Click here to view the list of requests for this course',
                 })}
@@ -221,8 +232,16 @@ export const SpecialNeedsScreen = () => {
 
           <TouchableOpacity
             style={styles.listItem}
-            onPress={() => {}}
+            onPress={() =>
+              Alert.alert(
+                t('common.info', { defaultValue: 'Info' }),
+                t('other.comingSoon', { defaultValue: 'Coming soon.' }),
+              )
+            }
             accessibilityRole="button"
+            accessibilityLabel={t('other.specialNeedsHandbook', {
+              defaultValue: 'Reporting procedure handbook',
+            })}
           >
             <View style={styles.leadingIcon}>
               <FontAwesomeIcon
@@ -236,7 +255,7 @@ export const SpecialNeedsScreen = () => {
                 style={[styles.listItemTitle, dark && styles.listItemTitleDark]}
                 numberOfLines={1}
               >
-                {t('specialNeeds.handbook', {
+                {t('other.specialNeedsHandbook', {
                   defaultValue: 'Reporting procedure handbook',
                 })}
               </Text>
@@ -271,14 +290,14 @@ const createStyles = ({
       flex: 1,
     },
     contentContainer: {
-      paddingHorizontal: spacing[4],
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingTop: spacing[2],
       gap: spacing[4],
     },
     scrollContentIos: {
       flexGrow: 1,
       padding: spacing[5],
-      gap: 22,
+      gap: spacing[4],
       paddingBottom: spacing[2],
     },
     iosHeaderTitle: {
@@ -289,6 +308,9 @@ const createStyles = ({
       fontWeight: fontWeights.semibold,
       lineHeight: 22,
       letterSpacing: -0.43,
+    },
+    iosHeaderTitleDark: {
+      color: palettes.gray[50],
     },
     topBar: {
       flexDirection: 'row',
@@ -312,7 +334,7 @@ const createStyles = ({
     topBarTitle: {
       fontFamily: fontFamilies.body,
       fontSize: 17,
-      fontWeight: '600',
+      fontWeight: fontWeights.semibold,
       lineHeight: 22,
       color: palettes.primary[700],
       textAlign: 'center',
@@ -339,7 +361,7 @@ const createStyles = ({
     infoCardHeaderBold: {
       fontFamily: fontFamilies.body,
       fontSize: fontSizes.sm,
-      fontWeight: fontWeights.medium,
+      fontWeight: fontWeights.semibold,
       color: palettes.text[800],
       lineHeight: fontSizes.sm * 1.5,
     },

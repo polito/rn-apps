@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -35,40 +35,8 @@ import { CourseFilesMenu } from '../../../core/components/CourseFilesMenu';
 import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { TeachingStackParamList } from '../../../screens/Teaching/TeachingNavigator';
+import { CURRENT_ACADEMIC_YEAR, SCREEN_HORIZONTAL_PADDING } from '../constants';
 import { StudentsStackParamList } from '../types/navigation';
-
-const AddStudentButton = ({
-  title,
-  onPress,
-  bottomOffset,
-}: {
-  title: string;
-  onPress: () => void;
-  bottomOffset: number;
-}) => {
-  const styles = useStylesheet(createAddStudentCtaStyles);
-
-  return (
-    <CtaButtonContainer
-      absolute={false}
-      style={[
-        styles.ctaWrapper,
-        {
-          paddingBottom: bottomOffset + 18,
-        },
-      ]}
-    >
-      <CtaButton
-        title={title}
-        icon={faPlus}
-        action={onPress}
-        absolute={false}
-        style={styles.ctaButton}
-        containerStyle={styles.ctaButtonContainer}
-      />
-    </CtaButtonContainer>
-  );
-};
 
 export const CourseStudentsTab = () => {
   const { selectedCourse, setSelectedStudent } = useCourses();
@@ -80,21 +48,24 @@ export const CourseStudentsTab = () => {
     paddingLeft: number;
     paddingRight: number;
   };
-  const infoCardMarginLeft = 18 - safeHorizontal.paddingLeft;
-  const infoCardMarginRight = 18 - safeHorizontal.paddingRight;
+  const infoCardMarginLeft =
+    SCREEN_HORIZONTAL_PADDING - safeHorizontal.paddingLeft;
+  const infoCardMarginRight =
+    SCREEN_HORIZONTAL_PADDING - safeHorizontal.paddingRight;
   const [searchText, setSearchText] = useState('');
   const styles = useStylesheet(createStyles);
+  const ctaStyles = useStylesheet(createAddStudentCtaStyles);
   const { palettes, spacing, dark } = useTheme();
   const [isFilterMenuVisible, setFilterMenuVisible] = useState(false);
   const [isEllipsisMenuVisible, setEllipsisMenuVisible] = useState(false);
   const [filterAnchorPosition, setFilterAnchorPosition] = useState<{
     top: number;
     left: number;
-  }>({ top: 170, left: 18 });
+  }>({ top: 170, left: SCREEN_HORIZONTAL_PADDING });
   const [ellipsisAnchorPosition, setEllipsisAnchorPosition] = useState<{
     top: number;
     left: number;
-  }>({ top: 170, left: 18 });
+  }>({ top: 170, left: SCREEN_HORIZONTAL_PADDING });
   const [filterType, setFilterType] = useState<
     'all' | 'currentYear' | 'notExamined' | 'examined'
   >('all');
@@ -104,83 +75,99 @@ export const CourseStudentsTab = () => {
   const filterButtonRef = useRef<View>(null);
   const ellipsisButtonRef = useRef<View>(null);
 
-  if (!selectedCourse) return null;
-  const { students } = selectedCourse;
+  const students = selectedCourse?.students;
   const query = searchText.toLowerCase();
 
-  const studentPassesFilter = (student: (typeof students)[0]) => {
-    if (filterType === 'all') return true;
-    if (filterType === 'currentYear') return student.year === '2025';
-    if (filterType === 'notExamined') return student.exam === 'no';
-    if (filterType === 'examined') return student.exam === 'yes';
-    return true;
-  };
-  const filteredStudents = students.filter(student => {
-    const matchesSearch =
-      student.id.toLowerCase().includes(query) ||
-      student.name.toLowerCase().includes(query) ||
-      student.surname.toLowerCase().includes(query);
-    return matchesSearch && studentPassesFilter(student);
-  });
+  const filteredStudents = useMemo(
+    () =>
+      (students ?? []).filter(student => {
+        const matchesSearch =
+          student.id.toLowerCase().includes(query) ||
+          student.name.toLowerCase().includes(query) ||
+          student.surname.toLowerCase().includes(query);
 
-  const totalEnrolled = students.length;
-  const takenExam = students.filter(s => s.exam === 'yes').length;
-  const eligible = students.filter(s => s.exam === 'no').length;
-  const firstTime = students.filter(s => s.year === '2025').length;
+        const passesFilter =
+          filterType === 'all' ||
+          (filterType === 'currentYear' &&
+            student.year === CURRENT_ACADEMIC_YEAR) ||
+          (filterType === 'notExamined' && student.exam === 'no') ||
+          (filterType === 'examined' && student.exam === 'yes');
 
-  const filterLabel = (() => {
+        return matchesSearch && passesFilter;
+      }),
+    [filterType, query, students],
+  );
+
+  const totalEnrolled = (students ?? []).length;
+  const takenExam = (students ?? []).filter(s => s.exam === 'yes').length;
+  const eligible = (students ?? []).filter(s => s.exam === 'no').length;
+  const firstTime = (students ?? []).filter(
+    s => s.year === CURRENT_ACADEMIC_YEAR,
+  ).length;
+
+  const filterLabel = useMemo(() => {
     switch (filterType) {
       case 'currentYear':
         return t('other.currentY', { defaultValue: 'Current Year' });
       case 'examined':
-        return t('other.Examinated', { defaultValue: 'Examined' });
+        return t('other.examined', { defaultValue: 'Examined' });
       case 'notExamined':
         return t('other.notExaminated', { defaultValue: 'Not Examined' });
       case 'all':
       default:
         return t('other.noFilters', { defaultValue: 'No filter' });
     }
-  })();
-  const filterMenuItems: ContextMenuItem[] = [
-    {
-      label: t('other.noFilters', { defaultValue: 'No filter' }),
-      checked: filterType === 'all',
-      onPress: () => setFilterType('all'),
-    },
-    {
-      label: t('other.currentY', { defaultValue: 'Current Year' }),
-      checked: filterType === 'currentYear',
-      onPress: () => setFilterType('currentYear'),
-    },
-    {
-      label: t('other.Examinated', { defaultValue: 'Examined' }),
-      checked: filterType === 'examined',
-      onPress: () => setFilterType('examined'),
-    },
-    {
-      label: t('other.notExaminated', { defaultValue: 'Not Examined' }),
-      checked: filterType === 'notExamined',
-      onPress: () => setFilterType('notExamined'),
-    },
-  ];
-  const ellipsisMenuItems: ContextMenuItem[] = [
-    {
-      label: t('courseFilesTab.select', { defaultValue: 'Select' }),
-      checked: true,
-      onPress: () => {
-        setEllipsisMenuVisible(false);
-        navigation.navigate('SelectStudents', { initialSelectAll: false });
+  }, [filterType, t]);
+
+  const filterMenuItems: ContextMenuItem[] = useMemo(
+    () => [
+      {
+        label: t('other.noFilters', { defaultValue: 'No filter' }),
+        checked: filterType === 'all',
+        onPress: () => setFilterType('all'),
       },
-    },
-    {
-      label: t('courseFilesTab.selectAll', { defaultValue: 'Select All' }),
-      checked: false,
-      onPress: () => {
-        setEllipsisMenuVisible(false);
-        navigation.navigate('SelectStudents', { initialSelectAll: true });
+      {
+        label: t('other.currentY', { defaultValue: 'Current Year' }),
+        checked: filterType === 'currentYear',
+        onPress: () => setFilterType('currentYear'),
       },
-    },
-  ];
+      {
+        label: t('other.examined', { defaultValue: 'Examined' }),
+        checked: filterType === 'examined',
+        onPress: () => setFilterType('examined'),
+      },
+      {
+        label: t('other.notExaminated', { defaultValue: 'Not Examined' }),
+        checked: filterType === 'notExamined',
+        onPress: () => setFilterType('notExamined'),
+      },
+    ],
+    [filterType, t],
+  );
+
+  const ellipsisMenuItems: ContextMenuItem[] = useMemo(
+    () => [
+      {
+        label: t('courseFilesTab.select', { defaultValue: 'Select' }),
+        checked: true,
+        onPress: () => {
+          setEllipsisMenuVisible(false);
+          navigation.navigate('SelectStudents', { initialSelectAll: false });
+        },
+      },
+      {
+        label: t('courseFilesTab.selectAll', { defaultValue: 'Select All' }),
+        checked: false,
+        onPress: () => {
+          setEllipsisMenuVisible(false);
+          navigation.navigate('SelectStudents', { initialSelectAll: true });
+        },
+      },
+    ],
+    [navigation, t],
+  );
+
+  if (!selectedCourse) return null;
 
   return (
     <>
@@ -272,7 +259,7 @@ export const CourseStudentsTab = () => {
                     (x: number, y: number, w: number, h: number) => {
                       setFilterAnchorPosition({
                         top: y + h - 2,
-                        left: 18,
+                        left: SCREEN_HORIZONTAL_PADDING,
                       });
                       setFilterMenuVisible(true);
                     },
@@ -289,7 +276,7 @@ export const CourseStudentsTab = () => {
                     (x: number, y: number, w: number, h: number) => {
                       setEllipsisAnchorPosition({
                         top: y + h - 2,
-                        left: Math.max(18, x + w - 250),
+                        left: Math.max(SCREEN_HORIZONTAL_PADDING, x + w - 250),
                       });
                       setEllipsisMenuVisible(true);
                     },
@@ -339,6 +326,10 @@ export const CourseStudentsTab = () => {
                         Alert.alert('Info', t('other.renderingToMail'));
                       }}
                       hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      accessibilityRole="button"
+                      accessibilityLabel={t('other.contactStudent', {
+                        defaultValue: 'Contact student by email',
+                      })}
                     >
                       <FontAwesomeIcon
                         icon={faEnvelope}
@@ -367,11 +358,24 @@ export const CourseStudentsTab = () => {
             marginRight: -safeHorizontal.paddingRight,
           }}
         >
-          <AddStudentButton
-            title={t('other.addStudent')}
-            bottomOffset={bottomBarHeight}
-            onPress={() => navigation.navigate('AddStudents')}
-          />
+          <CtaButtonContainer
+            absolute={false}
+            style={[
+              ctaStyles.ctaWrapper,
+              {
+                paddingBottom: bottomBarHeight + SCREEN_HORIZONTAL_PADDING,
+              },
+            ]}
+          >
+            <CtaButton
+              title={t('other.addStudent')}
+              icon={faPlus}
+              action={() => navigation.navigate('AddStudents')}
+              absolute={false}
+              style={ctaStyles.ctaButton}
+              containerStyle={ctaStyles.ctaButtonContainer}
+            />
+          </CtaButtonContainer>
         </View>
       </View>
       <CourseFilesContextMenu
@@ -393,7 +397,7 @@ export const CourseStudentsTab = () => {
 const createAddStudentCtaStyles = (_: Theme) =>
   StyleSheet.create({
     ctaWrapper: {
-      paddingHorizontal: 18,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingTop: 0,
       paddingBottom: 0,
     },
@@ -426,7 +430,7 @@ const createStyles = ({
     // Info Card
     infoCard: {
       display: 'flex',
-      padding: 18,
+      padding: SCREEN_HORIZONTAL_PADDING,
       flexDirection: 'column',
       alignItems: 'flex-start',
       alignSelf: 'stretch',
@@ -487,6 +491,6 @@ const createStyles = ({
       fontSize: fontSizes.md,
     },
     studentDivider: {
-      marginLeft: 18,
+      marginLeft: SCREEN_HORIZONTAL_PADDING,
     },
   });

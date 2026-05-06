@@ -1039,7 +1039,7 @@
     "noFilters": "Nessun filtro",
     "currentY": "Anno corrente",
     "notExaminated": "Non esaminati",
-    "Examinated": "Esaminati",
+    "examined": "Esaminati",
     "delete": "Elimina",
     "download": "Scarica",
     "owner": "Titolare",
@@ -1144,6 +1144,21 @@
     "studentsTakenExam": "Studenti che hanno sostenuto l'esame",
     "studentsExamDebts": "Studenti con debiti d'esame",
     "studentsEligible": "Studenti idonei all'esame",
-    "studentsFirstTime": "Studenti al primo anno accademico"
+    "studentsFirstTime": "Studenti al primo anno accademico",
+    "specialNeedsTitle": "Misure compensative",
+    "specialNeedsInfoCardHeader": "Elenco delle misure compensative concesse a",
+    "specialNeedsCalculator": "Calcolatrice",
+    "specialNeedsCalculatorSuffix": "consentita",
+    "specialNeedsReadabilityCriteria": "Criteri di leggibilità",
+    "specialNeedsReadabilityCriteriaDetail": "(Arial, carattere 12, interlinea 1.5, testo non giustificato, spaziatura espansa)",
+    "specialNeedsCheatSheet": "Formulario",
+    "specialNeedsCheatSheetSuffix": "per esami scritti e orali",
+    "specialNeedsAdditionalTime": "30% di tempo aggiuntivo per lo svolgimento degli esami",
+    "specialNeedsAdditionalTimeSuffix": "In alternativa, per le prove scritte, considerare una riduzione quantitativa (ma non qualitativa) della prova",
+    "specialNeedsContentAssessment": "Valutazione del contenuto rispetto alla forma",
+    "specialNeedsContentAssessmentSuffix": "privilegiare il contenuto rispetto alla forma e all'ortografia nella valutazione delle prove",
+    "specialNeedsMoreDetails": "Maggiori dettagli",
+    "specialNeedsMoreDetailsSubtitle": "Clicca qui per visualizzare l'elenco delle richieste per questo corso",
+    "specialNeedsHandbook": "Manuale della procedura di segnalazione"
   }
 }

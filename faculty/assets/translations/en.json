@@ -1012,7 +1012,7 @@
     "noFilters": "No filter",
     "currentY": "Current Year",
     "notExaminated": "Not Examined",
-    "Examinated": "Examined",
+    "examined": "Examined",
     "delete": "Delete",
     "download": "Download",
     "owner": "Owner",
@@ -1117,6 +1117,21 @@
     "studentsTakenExam": "Students who have taken the exam",
     "studentsExamDebts": "Students with exam debts",
     "studentsEligible": "Students eligible to take the exam",
-    "studentsFirstTime": "First-time students in the academic year"
+    "studentsFirstTime": "First-time students in the academic year",
+    "specialNeedsTitle": "Compensative measures",
+    "specialNeedsInfoCardHeader": "List of compensatory measures granted to",
+    "specialNeedsCalculator": "Calculator",
+    "specialNeedsCalculatorSuffix": "allowed",
+    "specialNeedsReadabilityCriteria": "Readability criteria",
+    "specialNeedsReadabilityCriteriaDetail": "(Arial, 12-point font, 1.5 line spacing, non-justified text, expanded spacing)",
+    "specialNeedsCheatSheet": "Cheat sheet for formulas",
+    "specialNeedsCheatSheetSuffix": "for written and oral exams",
+    "specialNeedsAdditionalTime": "30% additional time for completing exams",
+    "specialNeedsAdditionalTimeSuffix": "Alternatively, for written exams, consider a quantitative (but not qualitative) reduction of the test itself",
+    "specialNeedsContentAssessment": "Assessment of content vs. form",
+    "specialNeedsContentAssessmentSuffix": "prioritize content over form and spelling in the evaluation of tests",
+    "specialNeedsMoreDetails": "More Details",
+    "specialNeedsMoreDetailsSubtitle": "Click here to view the list of requests for this course",
+    "specialNeedsHandbook": "Reporting procedure handbook"
   }
 }
