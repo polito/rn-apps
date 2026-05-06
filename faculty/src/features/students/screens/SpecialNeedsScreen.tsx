@@ -157,8 +157,7 @@ export const SpecialNeedsScreen = () => {
         <View
           style={[
             styles.infoCard,
-            // Keep the info card's dark-theme background aligned with design token --info-info-100.
-            dark && { backgroundColor: palettes.primary[100] },
+            dark && { backgroundColor: palettes.info[100] },
           ]}
         >
           <Text style={styles.infoCardHeader}>

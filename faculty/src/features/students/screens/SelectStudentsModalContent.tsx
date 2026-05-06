@@ -37,6 +37,7 @@ import { useCourses } from '../../../core/contexts/CoursesContext';
 import { HighlightedName } from '../components/HighlightedName';
 import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
 import { SCREEN_HORIZONTAL_PADDING } from '../constants';
+import { useFilteredStudents } from '../hooks';
 import { StudentsStackParamList } from '../types/navigation';
 
 type Props = {
@@ -74,13 +75,7 @@ export const SelectStudentsModalContent = ({
     navigation.goBack();
   };
 
-  const query = searchText.toLowerCase();
-  const filteredStudents = students.filter(
-    s =>
-      s.id.toLowerCase().includes(query) ||
-      s.name.toLowerCase().includes(query) ||
-      s.surname.toLowerCase().includes(query),
-  );
+  const filteredStudents = useFilteredStudents(students, searchText);
 
   const isAllSelected =
     filteredStudents.length > 0 &&

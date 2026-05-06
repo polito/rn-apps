@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Platform,
@@ -37,6 +37,8 @@ import { useCourses } from '../../../core/contexts/CoursesContext';
 import { HighlightedName } from '../components/HighlightedName';
 import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
 import { CURRENT_ACADEMIC_YEAR, SCREEN_HORIZONTAL_PADDING } from '../constants';
+import { StudentsFeatureError, studentsErrorCodes } from '../errors';
+import { useFilteredStudents } from '../hooks';
 import { StudentsStackParamList } from '../types/navigation';
 
 const mockStudents = [
@@ -86,16 +88,10 @@ export const AddStudentsModalContent = ({ close }: Props) => {
     navigation.goBack();
   };
 
-  const filteredStudents = useMemo(() => {
-    const query = searchText.toLowerCase();
-    return mockStudents.filter(
-      s =>
-        !selectedStudents.some(sel => sel.id === s.id) &&
-        (s.name.toLowerCase().includes(query) ||
-          s.surname.toLowerCase().includes(query) ||
-          s.id.toLowerCase().includes(query)),
-    );
-  }, [searchText, selectedStudents]);
+  const selectedIds = new Set(selectedStudents.map(student => student.id));
+  const filteredStudents = useFilteredStudents(mockStudents, searchText, {
+    excludedIds: selectedIds,
+  });
 
   const handleAdd = (student: MockStudent) => {
     setSelectedStudents(prev => [...prev, student]);
@@ -106,7 +102,15 @@ export const AddStudentsModalContent = ({ close }: Props) => {
   };
 
   const handleConfirm = () => {
-    if (!selectedCourse) return;
+    if (!selectedCourse) {
+      console.warn(
+        new StudentsFeatureError(
+          'Cannot add students without a selected course',
+          studentsErrorCodes.COURSE_NOT_SELECTED,
+        ),
+      );
+      return;
+    }
     const newStudents: Parameters<typeof addStudentsToCourse>[1] =
       selectedStudents.map(s => ({
         id: generateStudentId(),
