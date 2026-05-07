@@ -103,7 +103,7 @@ export const ModifyFileScreen = () => {
       <View style={styles.container}>
         <Card style={styles.card}>
           <Text variant="heading" style={styles.sectionTitle}>
-            {t('common.title', { defaultValue: 'Title' })}
+            {t('courseFilesTab.fileTitle', { defaultValue: 'File title' })}
           </Text>
           <TextField
             label={
@@ -119,10 +119,10 @@ export const ModifyFileScreen = () => {
 
         <Card style={styles.card}>
           <Text variant="heading" style={styles.sectionTitle}>
-            {t('other.folder', { defaultValue: 'Folder' })}
+            {t('courseFilesTab.folder', { defaultValue: 'Folder' })}
           </Text>
           <Select
-            label={t('other.selectDirectory', {
+            label={t('courseFilesTab.selectDirectory', {
               defaultValue: 'Select directory',
             })}
             value={selectedDirectory}
@@ -143,7 +143,9 @@ export const ModifyFileScreen = () => {
             noPadding
             size={40}
           />
-          <Text>{t('other.uploadFile', { defaultValue: 'Upload file' })}</Text>
+          <Text>
+            {t('courseFilesTab.uploadFile', { defaultValue: 'Upload file' })}
+          </Text>
         </Card>
       </View>
       <CtaButton

@@ -1,3 +1,5 @@
+import { formatFileSize } from './files';
+
 export const formatFolderDetails = (
   totalBytes: number,
   fileCount: number,
@@ -7,11 +9,7 @@ export const formatFolderDetails = (
     return undefined;
   }
 
-  const sizeInMb = totalBytes / (1024 * 1024);
-  const sizeLabel =
-    sizeInMb >= 1
-      ? `${Math.round(sizeInMb)} MB`
-      : `${(totalBytes / 1024).toFixed(1)} KB`;
+  const sizeLabel = formatFileSize(totalBytes);
   const filesLabel = `${fileCount} ${fileCount === 1 ? 'file' : 'files'}`;
   if (folderCount <= 0) {
     return `${sizeLabel} - ${filesLabel}`;

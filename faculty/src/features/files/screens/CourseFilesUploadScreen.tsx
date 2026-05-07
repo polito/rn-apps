@@ -42,6 +42,10 @@ import { SelectableRadioRow } from '../components/SelectableRadioRow';
 
 export type UploadType = 'file' | 'folder';
 const DEFAULT_FOLDER_NAME = 'New Folder';
+type UploadedFile = {
+  id: string;
+  name: string;
+};
 const MOCKED_UPLOADED_FILES = [
   'Lecture_01_Introduction.pdf',
   'Assignment_01_Guidelines.pdf',
@@ -56,7 +60,7 @@ type Props = NativeStackScreenProps<
 >;
 
 export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
-  const { courseId } = route.params;
+  const { courseId, path } = route.params;
   const { colors, dark, fontSizes, palettes } = useTheme();
   const iosGrabberColor = dark ? palettes.gray[500] : palettes.gray[300];
   const { t } = useTranslation();
@@ -65,11 +69,12 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
     useCourses();
 
   const [uploadType, setUploadType] = useState<UploadType>('file');
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [folderName, setFolderName] = useState(DEFAULT_FOLDER_NAME);
   const [isFolderNameFocused, setIsFolderNameFocused] = useState(false);
   const folderNameInputRef = useRef<TextInput>(null);
   const allowScreenExitRef = useRef(false);
+  const uploadedFileIdRef = useRef(0);
   const isCreateFolderSelected = uploadType === 'folder';
   const normalizedFolderName = folderName.trim();
   const hasEditedFolderName = normalizedFolderName !== DEFAULT_FOLDER_NAME;
@@ -115,7 +120,14 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
     // Mocked selection used until the native picker flow is re-enabled.
     const mockedFiles = MOCKED_UPLOADED_FILES.slice(0, count);
     if (!mockedFiles.length) return;
-    setUploadedFiles(prev => [...prev, ...mockedFiles]);
+    const nextFiles = mockedFiles.map(fileName => {
+      uploadedFileIdRef.current += 1;
+      return {
+        id: `mock-upload-${uploadedFileIdRef.current}`,
+        name: fileName,
+      };
+    });
+    setUploadedFiles(prev => [...prev, ...nextFiles]);
   };
 
   const focusFolderNameInput = () => {
@@ -150,7 +162,22 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
       return;
     }
 
-    const selectedDirectoryId = course.directories[0]?.id;
+    const normalizedPath = path?.trim();
+    const targetSegment = normalizedPath
+      ? normalizedPath
+          .replace(/^\/+|\/+$/g, '')
+          .split('/')
+          .pop()
+      : undefined;
+    const selectedDirectoryId =
+      course.directories.find(directory => {
+        if (!targetSegment) return false;
+        const decodedSegment = decodeURIComponent(targetSegment);
+        return (
+          String(directory.id) === decodedSegment ||
+          directory.name === decodedSegment
+        );
+      })?.id ?? course.directories[0]?.id;
     if (!selectedDirectoryId) return;
 
     const allFiles = course.directories.flatMap(directory => directory.files);
@@ -158,10 +185,10 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
       ? Math.max(...allFiles.map(file => file.id))
       : 0;
 
-    uploadedFiles.forEach((fileName, index) => {
+    uploadedFiles.forEach((file, index) => {
       addMaterialToCourse(courseId, selectedDirectoryId, {
         id: lastFileId + index + 1,
-        name: fileName || title,
+        name: file.name || title,
         date: formatDate(new Date()),
         size: 100,
         mimeType: 'pdf',
@@ -279,7 +306,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
               {
                 backgroundColor: shouldMuteUploadMethodStyles
                   ? dark
-                    ? 'rgba(0, 109, 185, 0.22)'
+                    ? palettes.primary[700]
                     : palettes.gray[50]
                   : colors.surface,
                 borderColor: shouldMuteUploadMethodStyles
@@ -326,7 +353,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
               {
                 backgroundColor: shouldMuteUploadMethodStyles
                   ? dark
-                    ? 'rgba(0, 109, 185, 0.22)'
+                    ? palettes.primary[700]
                     : palettes.gray[50]
                   : colors.surface,
                 borderColor:
@@ -375,9 +402,11 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                 { color: dark ? palettes.gray[50] : palettes.primary[800] },
               ]}
             >
-              ({uploadedFiles.length}{' '}
+              (
               {t('courseFilesTab.filesUploaded', {
-                defaultValue: 'files uploaded',
+                count: uploadedFiles.length,
+                defaultValue_one: '{{count}} file uploaded',
+                defaultValue_other: '{{count}} files uploaded',
               })}
               )
             </Text>
@@ -390,11 +419,8 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                 },
               ]}
             >
-              {uploadedFiles.map((fileName, index) => (
-                <View
-                  key={`${fileName}-${index}`}
-                  style={styles.uploadedFileRow}
-                >
+              {uploadedFiles.map((file, index) => (
+                <View key={file.id} style={styles.uploadedFileRow}>
                   <View style={styles.uploadedFileIcon}>
                     <FontAwesomeIcon
                       icon={faFilePdf}
@@ -408,7 +434,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                       { color: dark ? palettes.gray[50] : palettes.text[900] },
                     ]}
                   >
-                    {fileName}
+                    {file.name}
                   </Text>
                   {index !== uploadedFiles.length - 1 ? (
                     <IndentedDivider style={styles.uploadedFileDivider} />
@@ -530,7 +556,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
       </ScrollView>
 
       <CtaButton
-        title={t('other.publish', { defaultValue: 'Publish' })}
+        title={t('courseFilesTab.publish', { defaultValue: 'Publish' })}
         action={handleConfirmPublish}
         absolute={false}
         icon={faPaperPlane}
@@ -598,10 +624,10 @@ const createStyles = ({
     uploadZone: {
       borderRadius: 6,
       minHeight: 112,
-      padding: 18,
+      padding: spacing[4] + spacing[0.5],
       alignItems: 'center',
       justifyContent: 'center',
-      gap: 8,
+      gap: spacing[2],
       overflow: 'hidden',
     },
     uploadedFilesContainer: {
@@ -694,7 +720,7 @@ const createStyles = ({
       fontFamily: fontFamilies.body,
       fontSize: fontSizes.xs,
       fontWeight: fontWeights.normal,
-      lineHeight: 18,
+      lineHeight: spacing[4] + spacing[0.5],
       textAlign: 'center',
     },
     ctaWrapper: {

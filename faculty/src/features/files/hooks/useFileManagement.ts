@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Directory } from '../types/Directory';
 import { FileEntry } from '../types/FileEntry';
 
-/** Compare two names according to the given sort mode. */
 const compareByName = (
   a: string,
   b: string,
@@ -31,7 +30,6 @@ interface UseFileManagementOptions {
   storageKey?: string;
 }
 
-/** Encapsulate sorting/filtering/view/download-state helpers for file screens. */
 export const useFileManagement = ({
   files,
   directories,
@@ -124,9 +122,7 @@ export const useFileManagement = ({
 
   const sortedFiles = useMemo(() => {
     const filtered = normalizedSearch
-      ? files.filter(file =>
-          file.name.toLowerCase().startsWith(normalizedSearch),
-        )
+      ? files.filter(file => file.name.toLowerCase().includes(normalizedSearch))
       : files;
 
     return [...filtered].sort((a, b) => {
@@ -151,7 +147,7 @@ export const useFileManagement = ({
   const sortedDirectories = useMemo(() => {
     const filtered = normalizedSearch
       ? directories.filter(directory =>
-          directory.name.toLowerCase().startsWith(normalizedSearch),
+          directory.name.toLowerCase().includes(normalizedSearch),
         )
       : directories;
 

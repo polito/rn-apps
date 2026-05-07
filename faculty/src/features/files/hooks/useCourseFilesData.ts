@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { CourseFileEntry } from '../types/CourseFileEntry';
 import { Directory } from '../types/Directory';
 import { FileEntry } from '../types/FileEntry';
 import { mapFileEntry } from '../utils/mapFileEntry';
@@ -24,22 +23,13 @@ type CourseLike = {
   directories: CourseDirectoryLike[];
 } | null;
 
-/** Build canonical files/directories view models from selected course data. */
 export const useCourseFilesData = (course: CourseLike) => {
-  const fileEntries = useMemo<CourseFileEntry[]>(
+  const files = useMemo<FileEntry[]>(
     () =>
       (course?.directories.flatMap(directory => directory.files) ?? []).map(
-        file => ({
-          file: mapFileEntry(file),
-          status: 'idle',
-        }),
+        mapFileEntry,
       ),
     [course],
-  );
-
-  const files = useMemo<FileEntry[]>(
-    () => fileEntries.map(entry => entry.file),
-    [fileEntries],
   );
 
   const directories = useMemo<Directory[]>(
@@ -52,5 +42,5 @@ export const useCourseFilesData = (course: CourseLike) => {
     [course],
   );
 
-  return { files, directories, fileEntries };
+  return { files, directories };
 };

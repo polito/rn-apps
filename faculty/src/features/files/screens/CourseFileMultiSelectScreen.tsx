@@ -33,14 +33,11 @@ import { Checkbox } from '../../../core/components/Checkbox';
 import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { FileStackParamList } from '../../../core/types/navigation';
-import {
-  CourseFileEntry as CourseFileListEntry,
-  CourseFilesList,
-} from '../components/CourseFilesList';
+import { CourseFilesList, FileListItem } from '../components/CourseFilesList';
 import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
-import { CourseFileEntry } from '../types/CourseFileEntry';
+import { CourseFileEntry as CourseFileDataEntry } from '../types/CourseFileEntry';
 import { mapFileEntry } from '../utils/mapFileEntry';
-import { MoveFilesScreen } from './MoveFilesScreen';
+import { MoveFilesModal } from './MoveFilesScreen';
 
 type Props = NativeStackScreenProps<
   FileStackParamList,
@@ -66,7 +63,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
     [fakeCourses, courseId],
   );
 
-  const flatFiles: CourseFileEntry[] = useMemo(() => {
+  const flatFiles: CourseFileDataEntry[] = useMemo(() => {
     if (!course) return [];
     return course.directories.flatMap(dir =>
       dir.files.map(file => ({
@@ -117,7 +114,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
     flatFiles.length > 0 &&
     flatFiles.every(entry => selectedFileIds.has(entry.file.id));
 
-  const handleToggleFile = useCallback((entry: CourseFileEntry) => {
+  const handleToggleFile = useCallback((entry: CourseFileDataEntry) => {
     setSelectedFileIds(prev => {
       const next = new Set(prev);
       if (next.has(entry.file.id)) next.delete(entry.file.id);
@@ -202,21 +199,15 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
     if (toRemove.length === 0) return;
 
     const fileCount = toRemove.length;
-    const message =
-      fileCount === 1
-        ? t('courseFilesTab.removeFileConfirmation', {
-            defaultValue: 'Are you sure you want to delete the selected files?',
-          })
-        : t('courseFilesTab.removeFilesConfirmation', {
-            count: fileCount,
-            defaultValue: `Remove ${fileCount} files?`,
-          });
+    const message = t('courseFilesTab.removeFileConfirmation', {
+      count: fileCount,
+      defaultValue_one: 'Are you sure you want to delete the selected file?',
+      defaultValue_other: 'Are you sure you want to delete the selected files?',
+    });
 
     const showRemoveAlert = () =>
       Alert.alert(
-        t('courseFilesTab.removeFilesTitle', {
-          defaultValue: 'Confirm',
-        }),
+        t('common.confirm', { defaultValue: 'Confirm' }),
         message,
         [
           {
@@ -296,7 +287,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
 
   const checkboxIconColor = palettes.gray[500];
 
-  const fileEntries: CourseFileListEntry[] = useMemo(
+  const fileEntries: FileListItem[] = useMemo(
     () =>
       listData.map(entry => ({
         id: entry.file.id,
@@ -425,7 +416,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
         </View>
       </KeyboardAvoidingView>
 
-      <MoveFilesScreen
+      <MoveFilesModal
         visible={isMoveModalVisible}
         directories={course?.directories ?? []}
         onClose={() => setIsMoveModalVisible(false)}
@@ -458,7 +449,7 @@ const createStyles = ({ colors, spacing, fontFamilies, fontWeights }: Theme) =>
     },
     searchBarWrap: {
       overflow: 'hidden',
-      paddingHorizontal: 18,
+      paddingHorizontal: spacing[4] + spacing[0.5],
       paddingTop: spacing[6],
     },
     keyboardAvoiding: {
@@ -470,7 +461,7 @@ const createStyles = ({ colors, spacing, fontFamilies, fontWeights }: Theme) =>
     listOuter: {
       flex: 1,
       minHeight: 0,
-      marginHorizontal: 18,
+      marginHorizontal: spacing[4] + spacing[0.5],
     },
     ctaRowWrapper: {
       overflow: 'hidden',
@@ -480,9 +471,9 @@ const createStyles = ({ colors, spacing, fontFamilies, fontWeights }: Theme) =>
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'stretch',
-      paddingHorizontal: 18,
-      paddingVertical: 18,
-      gap: 8,
+      paddingHorizontal: spacing[4] + spacing[0.5],
+      paddingVertical: spacing[4] + spacing[0.5],
+      gap: spacing[2],
     },
     ctaPairButtonContainer: {
       flexGrow: 1,

@@ -14,10 +14,7 @@ import { CourseFilesMenu } from '../../../core/components/CourseFilesMenu';
 import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { FileStackParamList } from '../../../core/types/navigation';
-import {
-  CourseFileEntry,
-  CourseFilesList,
-} from '../components/CourseFilesList';
+import { CourseFilesList, FileListItem } from '../components/CourseFilesList';
 import { useAnchoredMenu } from '../hooks/useAnchoredMenu';
 import { useCourseFilesData } from '../hooks/useCourseFilesData';
 import { useFileManagement } from '../hooks/useFileManagement';
@@ -78,7 +75,7 @@ export const CourseDirectoryScreen = () => {
     },
   ];
 
-  const folderEntries: CourseFileEntry[] = useMemo(
+  const folderEntries: FileListItem[] = useMemo(
     () =>
       sortedDirectories.map(folder => {
         const totalBytes = folder.files.reduce(

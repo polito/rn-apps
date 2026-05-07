@@ -1,5 +1,4 @@
 export { useAnchoredMenu } from './useAnchoredMenu';
-export { useCourseFilesCachePath } from './useCourseFilesCachePath';
 export { useCourseFilesData } from './useCourseFilesData';
 export {
   useFileManagement,

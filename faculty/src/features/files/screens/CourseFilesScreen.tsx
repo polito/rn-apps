@@ -1,25 +1,15 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Alert,
-  FlatList,
-  Modal,
-  Platform,
-  Pressable,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Alert, FlatList, Platform, StyleSheet, View } from 'react-native';
 
 import {
   IndentedDivider,
   ManagedFileListItem,
   OverviewList,
-  Text,
   Theme,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { BlurView } from '@react-native-community/blur';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -32,9 +22,9 @@ import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { FileStackParamList } from '../../../core/types/navigation';
 import { AddFileButton } from '../components/AddFileButton';
-import { AlertActionRow } from '../components/AlertActionRow';
-import { CourseFileEntry } from '../components/CourseFilesList';
-import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
+import { CourseDirectoryTopBar } from '../components/CourseDirectoryTopBar';
+import { FileListItem } from '../components/CourseFilesList';
+import { DownloadOverwriteModal } from '../components/DownloadOverwriteModal';
 import { useAnchoredMenu } from '../hooks/useAnchoredMenu';
 import { useCourseFilesData } from '../hooks/useCourseFilesData';
 import { FileSortMode, useFileManagement } from '../hooks/useFileManagement';
@@ -47,14 +37,7 @@ type Props = NativeStackScreenProps<
 
 export const CourseFilesScreen = ({ route, navigation }: Props) => {
   const styles = useStylesheet(createStyles);
-  const { colors, dark, palettes, spacing } = useTheme();
-  const iosGrabberColor = dark ? palettes.gray[500] : palettes.gray[300];
-  const alertSeparatorColor = dark
-    ? 'rgba(255, 255, 255, 0.22)'
-    : 'rgba(128, 128, 128, 0.55)';
-  const alertCardBackground = dark
-    ? `${palettes.gray[800]}D9`
-    : 'rgba(179,179,179,0.82)';
+  const { spacing } = useTheme();
   const bottomTabBarHeight = useBottomTabBarHeight();
   const { selectedCourse } = useCourses();
   const { t } = useTranslation();
@@ -243,7 +226,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     return sortedFiles.filter(file => activeFileIds.has(file.id));
   }, [activeDirectory, sortedFiles]);
 
-  const fileEntries: CourseFileEntry[] = useMemo(() => {
+  const fileEntries: FileListItem[] = useMemo(() => {
     return visibleFiles.map(file => {
       const fileId = file.id;
       const status = getFileStatus(fileId);
@@ -280,7 +263,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     startDownload,
     promptOverwriteDownload,
   ]);
-  const folderEntries: CourseFileEntry[] = useMemo(
+  const folderEntries: FileListItem[] = useMemo(
     () =>
       sortedDirectories.map(folder => {
         const totalBytes = folder.files.reduce(
@@ -314,24 +297,10 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
   return (
     <View style={styles.screen}>
       {activeDirectory && Platform.OS === 'ios' ? (
-        <IosTopBar
-          backgroundColor={dark ? colors.surface : colors.white}
-          grabberColor={iosGrabberColor}
-          dividerColor={dark ? palettes.gray[600] : colors.divider}
-          left={
-            <IosTopBarTextAction
-              label={t('common.back', { defaultValue: 'Back' })}
-              onPress={() => navigation.goBack()}
-              color={palettes.gray[500]}
-              containerStyle={styles.directoryBackButton}
-            />
-          }
-          center={
-            <Text numberOfLines={1} style={styles.directoryTitle}>
-              {activeDirectory.name}
-            </Text>
-          }
-          right={<View style={styles.directoryHeaderRightSpacer} />}
+        <CourseDirectoryTopBar
+          title={activeDirectory.name}
+          backLabel={t('common.back', { defaultValue: 'Back' })}
+          onBackPress={() => navigation.goBack()}
         />
       ) : null}
       <View style={styles.controlsContainer}>
@@ -343,7 +312,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
             moreMenu.close();
             sortMenu.openFromRef({
               verticalOffset: menuVerticalOffset,
-              strategy: { align: 'left', left: 18 },
+              strategy: { align: 'left', left: spacing[4] + spacing[0.5] },
             });
           }}
           sortButtonRef={sortMenu.buttonRef}
@@ -352,7 +321,11 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
             sortMenu.close();
             moreMenu.openFromRef({
               verticalOffset: menuVerticalOffset,
-              strategy: { align: 'right', minLeft: 18, menuWidth: 250 },
+              strategy: {
+                align: 'right',
+                minLeft: spacing[4] + spacing[0.5],
+                menuWidth: 250,
+              },
             });
           }}
         />
@@ -399,7 +372,9 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
           <View style={styles.emptyStateContainer}>
             <OverviewList
               style={styles.emptyStateCard}
-              emptyStateText={t('courseFilesTab.empty')}
+              emptyStateText={t('courseFilesTab.empty', {
+                defaultValue: 'No files yet',
+              })}
             />
           </View>
         }
@@ -417,55 +392,20 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
         items={sortMenuItems}
         anchorPosition={sortMenu.anchorPosition}
       />
-      <Modal
+      <DownloadOverwriteModal
         visible={Boolean(confirmDownloadFileId)}
-        transparent
-        animationType="none"
-        statusBarTranslucent
-        onRequestClose={() => setConfirmDownloadFileId(undefined)}
-      >
-        <Pressable
-          style={[
-            styles.confirmBackdrop,
-            { backgroundColor: `${colors.black}40` },
-          ]}
-          onPress={() => setConfirmDownloadFileId(undefined)}
-        >
-          <Pressable
-            style={[
-              styles.confirmCard,
-              { backgroundColor: alertCardBackground },
-            ]}
-            onPress={() => {}}
-          >
-            <BlurView
-              style={StyleSheet.absoluteFill}
-              blurType={dark ? 'dark' : 'xlight'}
-              blurAmount={25}
-              reducedTransparencyFallbackColor={
-                dark ? palettes.gray[800] : palettes.gray[200]
-              }
-            />
-            <View style={styles.confirmContent}>
-              <Text style={styles.confirmTitle}>{downloadTitle}</Text>
-              <Text style={styles.confirmBody}>{downloadOverwriteMessage}</Text>
-            </View>
-            <AlertActionRow
-              cancelLabel={cancelLabel}
-              confirmLabel={confirmLabel}
-              textColor={colors.readMore}
-              separatorColor={alertSeparatorColor}
-              onCancel={() => setConfirmDownloadFileId(undefined)}
-              onConfirm={() => {
-                if (confirmDownloadFileId) {
-                  startDownload(confirmDownloadFileId);
-                }
-                setConfirmDownloadFileId(undefined);
-              }}
-            />
-          </Pressable>
-        </Pressable>
-      </Modal>
+        title={downloadTitle}
+        message={downloadOverwriteMessage}
+        cancelLabel={cancelLabel}
+        confirmLabel={confirmLabel}
+        onCancel={() => setConfirmDownloadFileId(undefined)}
+        onConfirm={() => {
+          if (confirmDownloadFileId) {
+            startDownload(confirmDownloadFileId);
+          }
+          setConfirmDownloadFileId(undefined);
+        }}
+      />
 
       {!activeDirectory ? (
         <AddFileButton
@@ -484,13 +424,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
   );
 };
 
-const createStyles = ({
-  colors,
-  spacing,
-  shapes,
-  fontFamilies,
-  fontWeights,
-}: Theme) =>
+const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
     screen: {
       flex: 1,
@@ -540,67 +474,8 @@ const createStyles = ({
       paddingTop: spacing[5],
       gap: spacing[2.5],
     },
-    directoryBackButton: {
-      minWidth: 56,
-    },
-    directoryTitle: {
-      flex: 1,
-      textAlign: 'center',
-      color: colors.heading,
-      fontFamily: fontFamilies.body,
-      fontSize: 17,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 22,
-      letterSpacing: -0.43,
-      marginTop: 6,
-      marginHorizontal: spacing[1],
-    },
-    directoryHeaderRightSpacer: {
-      minWidth: 56,
-      minHeight: 28,
-    },
     staticTrailing: {
       width: 24,
       height: 24,
-    },
-    confirmBackdrop: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingHorizontal: spacing[8],
-    },
-    confirmCard: {
-      width: 270,
-      borderRadius: shapes.xl,
-      overflow: 'hidden',
-    },
-    confirmContent: {
-      paddingHorizontal: spacing[4],
-      paddingTop: 19,
-      paddingBottom: 15,
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      gap: 2,
-    },
-    confirmTitle: {
-      color: colors.heading,
-      textAlign: 'center',
-      fontFamily: fontFamilies.body,
-      fontSize: 17,
-      fontStyle: 'normal',
-      fontWeight: '600',
-      lineHeight: 22,
-      letterSpacing: -0.43,
-    },
-    confirmBody: {
-      color: colors.heading,
-      textAlign: 'center',
-      fontFamily: fontFamilies.body,
-      fontSize: 13,
-      fontStyle: 'normal',
-      fontWeight: fontWeights.normal,
-      lineHeight: 18,
-      letterSpacing: -0.08,
     },
   });

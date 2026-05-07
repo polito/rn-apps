@@ -26,7 +26,9 @@ export const AddFileButton = ({
       ]}
     >
       <CtaButton
-        title={t('courseFilesTab.addFileOrFolder')}
+        title={t('courseFilesTab.addFileOrFolder', {
+          defaultValue: 'Add file or folder',
+        })}
         action={onPress}
         absolute={false}
         icon={faPlus}

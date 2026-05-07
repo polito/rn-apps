@@ -36,8 +36,8 @@ type Props = {
   onAddFolder?: (name: string) => number | undefined;
 };
 
-/** Modal-like screen used for move destination selection. */
-export const MoveFilesScreen = ({
+/** Modal used for move destination selection. */
+export const MoveFilesModal = ({
   visible = false,
   directories = [],
   onClose = () => {},
@@ -45,7 +45,7 @@ export const MoveFilesScreen = ({
   onAddFolder = () => undefined,
 }: Props) => {
   const { t } = useTranslation();
-  const { palettes, colors, dark } = useTheme();
+  const { palettes, colors, dark, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
 
   const [view, setView] = useState<MoveView>('choose-folder');
@@ -64,8 +64,6 @@ export const MoveFilesScreen = ({
   const handleClose = () => {
     Keyboard.dismiss();
     onClose();
-    // Delay reset until after modal animation finishes
-    setTimeout(resetState, 350);
   };
 
   const handleBack = () => {
@@ -93,7 +91,6 @@ export const MoveFilesScreen = ({
       onConfirm(selectedDirId);
     }
     onClose();
-    setTimeout(resetState, 350);
   };
 
   const isConfirmEnabled =
@@ -116,6 +113,7 @@ export const MoveFilesScreen = ({
       backdropColor="black"
       onBackdropPress={handleClose}
       onBackButtonPress={handleClose}
+      onModalHide={resetState}
       avoidKeyboard={true}
       useNativeDriver={false}
       useNativeDriverForBackdrop
@@ -132,7 +130,7 @@ export const MoveFilesScreen = ({
               onPress={handleBack}
               accessibilityRole="button"
               noPadding
-              iconPadding={8}
+              iconPadding={spacing[2]}
             />
           ) : (
             <View style={styles.headerIconButton} />
@@ -155,7 +153,7 @@ export const MoveFilesScreen = ({
             onPress={handleClose}
             accessibilityRole="button"
             noPadding
-            iconPadding={8}
+            iconPadding={spacing[2]}
           />
         </View>
 
@@ -340,7 +338,7 @@ const createStyles = ({
     header: {
       flexDirection: 'row',
       alignItems: 'center',
-      height: 57,
+      height: spacing[12] + spacing[2],
       paddingHorizontal: spacing[5],
       gap: spacing[2.5],
       overflow: 'hidden',
@@ -389,7 +387,7 @@ const createStyles = ({
     },
     buttons: {
       flexDirection: 'row',
-      gap: 11,
+      gap: spacing[3],
       paddingVertical: spacing[3],
     },
     buttonSlot: {

@@ -8,7 +8,7 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 
-export interface CourseFileEntry {
+export interface FileListItem {
   id: string;
   name: string;
   subtitle?: string;
@@ -17,12 +17,11 @@ export interface CourseFileEntry {
   isFolder?: boolean;
   onLongPress?: () => void;
   onActionPress?: () => void;
-  /** When set, replaces the download/sync trailing control (e.g. multi-select checkbox). */
   trailing?: ReactNode;
 }
 
 interface Props {
-  files: CourseFileEntry[];
+  files: FileListItem[];
   fillHeight?: boolean;
 }
 
