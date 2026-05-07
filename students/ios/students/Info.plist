@@ -58,8 +58,6 @@
 	<string>Access to current position to check-in bookings</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Scan documents and pick images for assignments and ticket attachments</string>
-	<key>RCTNewArchEnabled</key>
-	<true/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Montserrat-Bold.ttf</string>

@@ -33,8 +33,6 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
-	<key>RCTNewArchEnabled</key>
-	<true/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Montserrat-Medium.ttf</string>
