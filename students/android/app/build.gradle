@@ -47,14 +47,6 @@ def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
 apply from: new File(["node", "--print", "require.resolve('@sentry/react-native/package.json')"].execute().text.trim(), "../sentry.gradle")
 
-// @d11/react-native-fast-image pulls com.caverock:androidsvg (JAR); other deps (e.g. coil-svg) pull
-// com.caverock:androidsvg-aar. Both contain the same classes → checkDebugDuplicateClasses fails.
-configurations.configureEach {
-    resolutionStrategy.dependencySubstitution {
-        substitute(module('com.caverock:androidsvg')).using(module('com.caverock:androidsvg-aar:1.4'))
-    }
-}
-
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
