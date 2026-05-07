@@ -403,11 +403,18 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
               ]}
             >
               (
-              {t('courseFilesTab.filesUploaded', {
-                count: uploadedFiles.length,
-                defaultValue_one: '{{count}} file uploaded',
-                defaultValue_other: '{{count}} files uploaded',
-              })}
+              {t(
+                uploadedFiles.length === 1
+                  ? 'courseFilesTab.filesUploaded_one'
+                  : 'courseFilesTab.filesUploaded_other',
+                {
+                  count: uploadedFiles.length,
+                  defaultValue:
+                    uploadedFiles.length === 1
+                      ? '{{count}} file uploaded'
+                      : '{{count}} files uploaded',
+                },
+              )}
               )
             </Text>
             <View

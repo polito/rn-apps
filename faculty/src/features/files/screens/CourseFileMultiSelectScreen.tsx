@@ -198,11 +198,8 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
     );
     if (toRemove.length === 0) return;
 
-    const fileCount = toRemove.length;
-    const message = t('courseFilesTab.removeFileConfirmation', {
-      count: fileCount,
-      defaultValue_one: 'Are you sure you want to delete the selected file?',
-      defaultValue_other: 'Are you sure you want to delete the selected files?',
+    const message = t('courseFilesTab.removeFileConfirmation_other', {
+      defaultValue: 'Are you sure want to delete the selected files?',
     });
 
     const showRemoveAlert = () =>
