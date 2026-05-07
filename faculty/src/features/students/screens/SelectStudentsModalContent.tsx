@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -8,15 +8,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faSquare } from '@fortawesome/free-regular-svg-icons';
 import {
-  faArrowLeft,
-  faChevronLeft,
   faEllipsisVertical,
   faEnvelope,
   faSquareCheck,
@@ -41,6 +36,7 @@ import {
 } from '../../../core/components/CourseFilesContextMenu';
 import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
+import { AndroidTopBar } from '../components/AndroidTopBar';
 import { HighlightedName } from '../components/HighlightedName';
 import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
 import { SCREEN_HORIZONTAL_PADDING } from '../constants';
@@ -59,7 +55,6 @@ export const SelectStudentsModalContent = ({
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { palettes, dark, colors } = useTheme();
-  const insets = useSafeAreaInsets();
   const navigation =
     useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
   const route = useRoute<RouteProp<StudentsStackParamList, 'SelectStudents'>>();
@@ -95,7 +90,7 @@ export const SelectStudentsModalContent = ({
     filteredStudents.length > 0 &&
     filteredStudents.every(s => selectedIds.has(s.id));
 
-  const handleToggleAll = () => {
+  const handleToggleAll = useCallback(() => {
     setSelectedIds(prev => {
       const next = new Set(prev);
       if (isAllSelected) {
@@ -105,20 +100,23 @@ export const SelectStudentsModalContent = ({
       }
       return next;
     });
-  };
+  }, [filteredStudents, isAllSelected]);
 
-  const ellipsisMenuItems: ContextMenuItem[] = [
-    {
-      label: isAllSelected
-        ? t('common.deselectAll', { defaultValue: 'Deselect all' })
-        : t('common.selectAll', { defaultValue: 'Select all' }),
-      checked: false,
-      onPress: () => {
-        setEllipsisMenuVisible(false);
-        handleToggleAll();
+  const ellipsisMenuItems: ContextMenuItem[] = useMemo(
+    () => [
+      {
+        label: isAllSelected
+          ? t('common.deselectAll', { defaultValue: 'Deselect all' })
+          : t('common.selectAll', { defaultValue: 'Select all' }),
+        checked: false,
+        onPress: () => {
+          setEllipsisMenuVisible(false);
+          handleToggleAll();
+        },
       },
-    },
-  ];
+    ],
+    [handleToggleAll, isAllSelected, t],
+  );
 
   const handleToggleStudent = (id: string) => {
     setSelectedIds(prev => {
@@ -166,59 +164,43 @@ export const SelectStudentsModalContent = ({
           }
         />
       ) : (
-        <View
-          style={[
-            styles.topBar,
-            dark && styles.topBarDark,
-            { height: insets.top + 44, paddingTop: insets.top },
-          ]}
-        >
-          <TouchableOpacity
-            onPress={handleClose}
-            style={styles.backButton}
-            accessibilityRole="button"
-            accessibilityLabel={t('common.close', { defaultValue: 'Close' })}
-          >
-            <FontAwesomeIcon
-              icon={Platform.OS === 'android' ? faArrowLeft : faChevronLeft}
-              size={18}
-              color={palettes.primary[500]}
-            />
-          </TouchableOpacity>
-          <Text style={[styles.topBarTitle, dark && styles.topBarTitleDark]}>
-            {t('common.selectAll', { defaultValue: 'Select all' })}
-          </Text>
-          <TouchableOpacity
-            ref={ellipsisButtonRef}
-            onPress={() => {
-              const node = ellipsisButtonRef.current;
-              if (node?.measureInWindow) {
-                node.measureInWindow(
-                  (x: number, y: number, w: number, h: number) => {
-                    setEllipsisAnchorPosition({
-                      top: y + h - 2,
-                      left: Math.max(SCREEN_HORIZONTAL_PADDING, x + w - 250),
-                    });
-                    setEllipsisMenuVisible(true);
-                  },
-                );
-              } else {
-                setEllipsisMenuVisible(true);
-              }
-            }}
-            style={styles.topBarAction}
-            accessibilityRole="button"
-            accessibilityLabel={t('common.moreOptions', {
-              defaultValue: 'More options',
-            })}
-          >
-            <FontAwesomeIcon
-              icon={faEllipsisVertical}
-              size={18}
-              color={palettes.primary[400]}
-            />
-          </TouchableOpacity>
-        </View>
+        <AndroidTopBar
+          onBack={handleClose}
+          backAccessibilityLabel={t('common.close', { defaultValue: 'Close' })}
+          title={t('common.selectAll', { defaultValue: 'Select all' })}
+          right={
+            <TouchableOpacity
+              ref={ellipsisButtonRef}
+              onPress={() => {
+                const node = ellipsisButtonRef.current;
+                if (node?.measureInWindow) {
+                  node.measureInWindow(
+                    (x: number, y: number, w: number, h: number) => {
+                      setEllipsisAnchorPosition({
+                        top: y + h - 2,
+                        left: Math.max(SCREEN_HORIZONTAL_PADDING, x + w - 250),
+                      });
+                      setEllipsisMenuVisible(true);
+                    },
+                  );
+                } else {
+                  setEllipsisMenuVisible(true);
+                }
+              }}
+              style={styles.topBarAction}
+              accessibilityRole="button"
+              accessibilityLabel={t('common.moreOptions', {
+                defaultValue: 'More options',
+              })}
+            >
+              <FontAwesomeIcon
+                icon={faEllipsisVertical}
+                size={18}
+                color={palettes.primary[400]}
+              />
+            </TouchableOpacity>
+          }
+        />
       )}
 
       <View style={styles.searchWrapper}>
@@ -329,50 +311,12 @@ const createStyles = ({
       flex: 1,
       backgroundColor: colors.background,
     },
-    topBar: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: spacing[1],
-      backgroundColor: colors.surface,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: palettes.gray[300],
-      paddingHorizontal: spacing[4],
-    },
-    topBarDark: {
-      borderBottomColor: palettes.gray[500],
-    },
-    backButton: {
-      width: 44,
-      height: 44,
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-    },
     topBarAction: {
       width: 44,
       minHeight: 44,
       justifyContent: 'center',
       alignItems: 'flex-end',
-    },
-    headerClose: {
-      fontFamily: fontFamilies.body,
-      fontSize: 17,
-      fontWeight: fontWeights.normal,
-      color: palettes.gray[500],
-      lineHeight: 22,
-      letterSpacing: -0.43,
-    },
-    topBarTitle: {
-      fontFamily: fontFamilies.body,
-      fontSize: 17,
-      fontWeight: fontWeights.semibold,
-      color: palettes.primary[700],
-      lineHeight: 22,
-      letterSpacing: -0.43,
-      textAlign: 'center',
-    },
-    topBarTitleDark: {
-      color: palettes.gray[50],
+      paddingRight: spacing[4],
     },
     searchWrapper: {
       paddingHorizontal: SCREEN_HORIZONTAL_PADDING,

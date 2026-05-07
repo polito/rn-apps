@@ -35,8 +35,12 @@ import {
 import { CourseFilesMenu } from '../../../core/components/CourseFilesMenu';
 import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { TeachingStackParamList } from '../../../screens/Teaching/TeachingNavigator';
+import {
+  TeachingNavigatorID,
+  TeachingStackParamList,
+} from '../../../screens/Teaching/TeachingNavigator';
 import { CURRENT_ACADEMIC_YEAR, SCREEN_HORIZONTAL_PADDING } from '../constants';
+import { StudentsFeatureError, studentsErrorCodes } from '../errors';
 import { StudentsStackParamList } from '../types/navigation';
 
 export const CourseStudentsTab = () => {
@@ -306,18 +310,28 @@ export const CourseStudentsTab = () => {
                 <ListItem
                   onPress={() => {
                     setSelectedStudent(student);
-                    const parentStackNavigation = navigation
-                      .getParent()
-                      ?.getParent() as
+                    // Look up the Teaching stack by id rather than counting
+                    // `getParent()` hops, so route changes in the navigator
+                    // tree don't silently land us on the wrong navigator.
+                    const getParentById = navigation.getParent as unknown as (
+                      id: typeof TeachingNavigatorID,
+                    ) =>
                       | NativeStackNavigationProp<TeachingStackParamList>
                       | undefined;
+                    const teachingNavigation =
+                      getParentById(TeachingNavigatorID);
 
-                    if (parentStackNavigation) {
-                      parentStackNavigation.navigate('StudentContact');
+                    if (!teachingNavigation) {
+                      console.warn(
+                        new StudentsFeatureError(
+                          `Could not find ancestor navigator with id "${TeachingNavigatorID}"; cannot navigate to StudentContact.`,
+                          studentsErrorCodes.PARENT_NAVIGATOR_NOT_FOUND,
+                        ),
+                      );
                       return;
                     }
 
-                    navigation.navigate('StudentContact');
+                    teachingNavigation.navigate('StudentContact');
                   }}
                   title={`${student.name} ${student.surname}`}
                   subtitle={student.id}
@@ -361,7 +375,7 @@ export const CourseStudentsTab = () => {
           <View style={{ height: spacing[20] }} />
         </ScrollView>
 
-        {/* Add Student CTA (keep it above bottom tab bar) */}
+        {/* Add Student CTA*/}
         <View
           style={{
             marginLeft: -safeHorizontal.paddingLeft,
@@ -494,11 +508,6 @@ const createStyles = ({
       color: palettes.gray[800],
       textAlign: 'right',
       fontFamily: fontFamilies.body,
-    },
-    menuItem: {
-      paddingVertical: spacing[2.5],
-      paddingRight: spacing[4],
-      fontSize: fontSizes.md,
     },
     studentDivider: {
       marginLeft: SCREEN_HORIZONTAL_PADDING,

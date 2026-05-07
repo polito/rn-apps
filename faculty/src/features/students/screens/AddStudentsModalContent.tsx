@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Platform,
@@ -7,19 +7,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
-import {
-  faArrowLeft,
-  faCheck,
-  faChevronLeft,
-  faMinus,
-  faPlus,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   CtaButton,
@@ -36,6 +27,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
+import { AndroidTopBar } from '../components/AndroidTopBar';
 import { HighlightedName } from '../components/HighlightedName';
 import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
 import { CURRENT_ACADEMIC_YEAR, SCREEN_HORIZONTAL_PADDING } from '../constants';
@@ -56,14 +48,6 @@ const mockStudents = [
   { id: 's123465', name: 'Federica', surname: 'Chiari' },
 ];
 
-let studentCounter = 100;
-const generateStudentId = (): string => {
-  const prefix = 'S32';
-  const padded = studentCounter.toString().padStart(4, '0');
-  studentCounter++;
-  return `${prefix}${padded}`;
-};
-
 type MockStudent = (typeof mockStudents)[0];
 
 type Props = {
@@ -75,13 +59,20 @@ export const AddStudentsModalContent = ({ close }: Props) => {
   const styles = useStylesheet(createStyles);
   const { palettes, dark, colors } = useTheme();
   const bottomTabBarHeight = useBottomTabBarHeight();
-  const insets = useSafeAreaInsets();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const { addStudentsToCourse, selectedCourse } = useCourses();
   const navigation =
     useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
   const [searchText, setSearchText] = useState('');
   const [selectedStudents, setSelectedStudents] = useState<MockStudent[]>([]);
+  // TODO: replace with server-issued IDs once the API is available.
+  const studentCounterRef = useRef(100);
+  const generateStudentId = (): string => {
+    const prefix = 'S32';
+    const padded = studentCounterRef.current.toString().padStart(4, '0');
+    studentCounterRef.current++;
+    return `${prefix}${padded}`;
+  };
   const isConfirmEnabled = selectedStudents.length > 0;
   const handleClose = () => {
     if (close) {
@@ -91,7 +82,10 @@ export const AddStudentsModalContent = ({ close }: Props) => {
     navigation.goBack();
   };
 
-  const selectedIds = new Set(selectedStudents.map(student => student.id));
+  const selectedIds = useMemo(
+    () => new Set(selectedStudents.map(student => student.id)),
+    [selectedStudents],
+  );
   const filteredStudents = useFilteredStudents(mockStudents, searchText, {
     excludedIds: selectedIds,
   });
@@ -121,6 +115,7 @@ export const AddStudentsModalContent = ({ close }: Props) => {
         surname: s.surname,
         year: CURRENT_ACADEMIC_YEAR,
         exam: 'no',
+        // TODO: replace mock defaults with API-provided student profile fields.
         cityOfBirth: 'Torino',
         degreeCourse: 'Informatica',
         passedExams: [],
@@ -147,26 +142,7 @@ export const AddStudentsModalContent = ({ close }: Props) => {
           }
         />
       ) : (
-        <View
-          style={[
-            styles.topBar,
-            dark && styles.topBarDark,
-            { height: insets.top + 44, paddingTop: insets.top },
-          ]}
-        >
-          <TouchableOpacity
-            onPress={handleClose}
-            style={styles.backButton}
-            accessibilityRole="button"
-          >
-            <FontAwesomeIcon
-              icon={Platform.OS === 'android' ? faArrowLeft : faChevronLeft}
-              size={18}
-              color={palettes.primary[500]}
-            />
-          </TouchableOpacity>
-          <View style={styles.topBarRightSpacer} />
-        </View>
+        <AndroidTopBar onBack={handleClose} />
       )}
 
       <ScrollView
@@ -327,29 +303,6 @@ const createStyles = ({
       paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
       paddingTop: spacing[2],
       paddingBottom: spacing[3],
-    },
-    topBar: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: spacing[1],
-      backgroundColor: colors.surface,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: palettes.gray[300],
-    },
-    topBarDark: {
-      borderBottomColor: palettes.gray[500],
-    },
-    backButton: {
-      width: 44,
-      height: 44,
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      paddingLeft: spacing[4],
-    },
-    topBarRightSpacer: {
-      width: 44,
-      height: 44,
     },
     searchWrapper: {
       paddingVertical: spacing[2],

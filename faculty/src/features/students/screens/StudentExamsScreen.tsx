@@ -1,19 +1,8 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Platform,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { faArrowLeft, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   IndentedDivider,
   Text,
@@ -26,9 +15,11 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
+import { AndroidTopBar } from '../components/AndroidTopBar';
 import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
 import { SCREEN_HORIZONTAL_PADDING } from '../constants';
 import { StudentsStackParamList } from '../types/navigation';
+import { formatExamDate } from '../utils';
 
 type LessonCatalogEntry = { title: string; code: string; cfu: number };
 
@@ -78,44 +69,10 @@ const lessonMetaForPassedExam = (
   return null;
 };
 
-const shortYear = (y: string | number): string => String(y).slice(-2);
-
-const formatExamDate = (dateValue?: string): string => {
-  if (!dateValue) return '-';
-  const trimmed = dateValue.trim();
-  if (!trimmed) return '-';
-
-  const slashParts = trimmed.split('/');
-  if (slashParts.length === 3) {
-    const [first, second, third] = slashParts;
-    if (first.length === 4) {
-      return `${second.padStart(2, '0')}/${shortYear(first)}/${third}`;
-    }
-    return `${first.padStart(2, '0')}/${second.padStart(2, '0')}/${shortYear(third)}`;
-  }
-
-  const dashParts = trimmed.split('-');
-  if (dashParts.length === 3) {
-    const [year, month, day] = dashParts;
-    return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${shortYear(year)}`;
-  }
-
-  const parsedDate = new Date(trimmed);
-  if (!Number.isNaN(parsedDate.getTime())) {
-    const day = String(parsedDate.getDate()).padStart(2, '0');
-    const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
-    const year = parsedDate.getFullYear();
-    return `${day}/${month}/${shortYear(year)}`;
-  }
-
-  return trimmed;
-};
-
 export const StudentExamsScreen = () => {
   const { palettes, dark, colors } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
-  const insets = useSafeAreaInsets();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
   const { selectedStudent, fakeCourses, managedCourses, selectedCourse } =
@@ -166,7 +123,10 @@ export const StudentExamsScreen = () => {
         : null;
     return {
       name,
-      date: formatExamDate(selectedStudent.passedExamsDate?.[index]),
+      date: formatExamDate(selectedStudent.passedExamsDate?.[index], {
+        shortYear: true,
+        placeholder: '-',
+      }),
       lessonSubtitle,
     };
   });
@@ -193,29 +153,10 @@ export const StudentExamsScreen = () => {
           }
         />
       ) : (
-        <View
-          style={[
-            styles.topBar,
-            dark && styles.topBarDark,
-            { height: insets.top + 44, paddingTop: insets.top },
-          ]}
-        >
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-            accessibilityRole="button"
-          >
-            <FontAwesomeIcon
-              icon={Platform.OS === 'android' ? faArrowLeft : faChevronLeft}
-              size={18}
-              color={palettes.primary[500]}
-            />
-          </TouchableOpacity>
-          <Text style={[styles.topBarTitle, dark && styles.topBarTitleDark]}>
-            {t('other.exams', { defaultValue: 'Exams' })}
-          </Text>
-          <View style={styles.topBarRightSpacer} />
-        </View>
+        <AndroidTopBar
+          onBack={() => navigation.goBack()}
+          title={t('other.exams', { defaultValue: 'Exams' })}
+        />
       )}
 
       <ScrollView
@@ -231,7 +172,7 @@ export const StudentExamsScreen = () => {
         {exams.length > 0 && (
           <View style={styles.card}>
             {exams.map((exam, index) => (
-              <View key={exam.name}>
+              <View key={`${exam.name}-${index}`}>
                 <View style={styles.listItem}>
                   <View style={styles.listItemContent}>
                     <Text
@@ -311,40 +252,6 @@ const createStyles = ({
       fontWeight: fontWeights.semibold,
       lineHeight: 22,
       letterSpacing: -0.43,
-    },
-    topBar: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: spacing[1],
-      backgroundColor: colors.surface,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: palettes.gray[300],
-    },
-    topBarDark: {
-      borderBottomColor: palettes.gray[500],
-    },
-    backButton: {
-      width: 44,
-      height: 44,
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      paddingLeft: spacing[4],
-    },
-    topBarTitle: {
-      fontFamily: fontFamilies.body,
-      fontSize: 17,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 22,
-      color: palettes.primary[700],
-      textAlign: 'center',
-    },
-    topBarTitleDark: {
-      color: palettes.gray[50],
-    },
-    topBarRightSpacer: {
-      width: 44,
-      height: 44,
     },
     card: {
       backgroundColor: colors.surface,

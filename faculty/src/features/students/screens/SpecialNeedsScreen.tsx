@@ -7,16 +7,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faFile } from '@fortawesome/free-regular-svg-icons';
 import {
-  faArrowLeft,
   faArrowUpRightFromSquare,
-  faChevronLeft,
   faChevronRight,
   faCircleInfo,
 } from '@fortawesome/free-solid-svg-icons';
@@ -32,13 +27,13 @@ import {
 import { useNavigation } from '@react-navigation/native';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
+import { AndroidTopBar } from '../components/AndroidTopBar';
 import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
 import { SCREEN_HORIZONTAL_PADDING } from '../constants';
 
 export const SpecialNeedsScreen = () => {
   const { palettes, dark, colors } = useTheme();
   const navigation = useNavigation();
-  const insets = useSafeAreaInsets();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
   const { selectedStudent } = useCourses();
@@ -116,32 +111,13 @@ export const SpecialNeedsScreen = () => {
           }
         />
       ) : (
-        <View
-          style={[
-            styles.topBar,
-            dark && styles.topBarDark,
-            { height: insets.top + 44, paddingTop: insets.top },
-          ]}
-        >
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-            accessibilityRole="button"
-            accessibilityLabel={t('common.close', { defaultValue: 'Close' })}
-          >
-            <FontAwesomeIcon
-              icon={Platform.OS === 'android' ? faArrowLeft : faChevronLeft}
-              size={18}
-              color={palettes.primary[500]}
-            />
-          </TouchableOpacity>
-          <Text style={[styles.topBarTitle, dark && styles.topBarTitleDark]}>
-            {t('other.specialNeedsTitle', {
-              defaultValue: 'Compensative measures',
-            })}
-          </Text>
-          <View style={styles.topBarRightSpacer} />
-        </View>
+        <AndroidTopBar
+          onBack={() => navigation.goBack()}
+          backAccessibilityLabel={t('common.close', { defaultValue: 'Close' })}
+          title={t('other.specialNeedsTitle', {
+            defaultValue: 'Compensative measures',
+          })}
+        />
       )}
 
       <ScrollView
@@ -311,40 +287,6 @@ const createStyles = ({
     },
     iosHeaderTitleDark: {
       color: palettes.gray[50],
-    },
-    topBar: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: spacing[1],
-      backgroundColor: colors.surface,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: palettes.gray[300],
-    },
-    topBarDark: {
-      borderBottomColor: palettes.gray[500],
-    },
-    backButton: {
-      width: 44,
-      height: 44,
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      paddingLeft: spacing[4],
-    },
-    topBarTitle: {
-      fontFamily: fontFamilies.body,
-      fontSize: 17,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 22,
-      color: palettes.primary[700],
-      textAlign: 'center',
-    },
-    topBarTitleDark: {
-      color: palettes.gray[50],
-    },
-    topBarRightSpacer: {
-      width: 44,
-      height: 44,
     },
     infoCard: {
       backgroundColor: palettes.info[100],

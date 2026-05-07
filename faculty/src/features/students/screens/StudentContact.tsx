@@ -1,19 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import {
-  Platform,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import {
-  faArrowLeft,
   faBook,
   faCalendarCheck,
-  faChevronLeft,
   faChevronRight,
   faEnvelope,
   faFlag,
@@ -33,46 +24,15 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
+import { AndroidTopBar } from '../components/AndroidTopBar';
 import { BooksIcon } from '../components/BooksIcon';
 import type { StudentsStackParamList } from '../types/navigation';
-
-const formatExamDate = (dateValue?: string) => {
-  if (!dateValue) return '—';
-
-  const trimmed = dateValue.trim();
-  if (!trimmed) return '—';
-
-  const slashParts = trimmed.split('/');
-  if (slashParts.length === 3) {
-    const [first, second, third] = slashParts;
-    if (first.length === 4) {
-      return `${second.padStart(2, '0')}/${first.padStart(2, '0')}/${third}`;
-    }
-    return `${first.padStart(2, '0')}/${second.padStart(2, '0')}/${third}`;
-  }
-
-  const dashParts = trimmed.split('-');
-  if (dashParts.length === 3) {
-    const [year, month, day] = dashParts;
-    return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
-  }
-
-  const parsedDate = new Date(trimmed);
-  if (!Number.isNaN(parsedDate.getTime())) {
-    const day = String(parsedDate.getDate()).padStart(2, '0');
-    const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
-    const year = parsedDate.getFullYear();
-    return `${day}/${month}/${year}`;
-  }
-
-  return trimmed;
-};
+import { formatExamDate } from '../utils';
 
 export const StudentContact = () => {
   const { palettes, dark } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
-  const insets = useSafeAreaInsets();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
   const { selectedStudent, selectedCourse } = useCourses();
@@ -91,29 +51,13 @@ export const StudentContact = () => {
 
   return (
     <View style={styles.root}>
-      <View
-        style={[
-          styles.topBar,
-          dark && styles.topBarDark,
-          { height: insets.top + 44, paddingTop: insets.top },
-        ]}
-      >
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-          accessibilityRole="button"
-        >
-          <FontAwesomeIcon
-            icon={Platform.OS === 'android' ? faArrowLeft : faChevronLeft}
-            size={22}
-            color={palettes.primary[500]}
-          />
-        </TouchableOpacity>
-        <Text style={[styles.topBarTitle, dark && styles.topBarTitleDark]}>
-          {t('other.student', { defaultValue: 'Student' })}
-        </Text>
-        <View style={styles.topBarRightSpacer} />
-      </View>
+      <AndroidTopBar
+        onBack={() => navigation.goBack()}
+        title={t('other.student', { defaultValue: 'Student' })}
+        iconSize={22}
+        containerStyle={styles.topBar}
+        titleStyle={styles.topBarTitle}
+      />
 
       <ScrollView
         style={styles.scroll}
@@ -438,46 +382,20 @@ const createStyles = ({
       paddingBottom: spacing[5],
     },
     topBar: {
-      height: 44,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
       backgroundColor: colors.background,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: palettes.gray[300],
       marginBottom: spacing[3],
     },
-    topBarDark: {
-      borderBottomColor: palettes.gray[500],
-    },
-    backButton: {
-      width: 44,
-      height: 44,
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      paddingLeft: spacing[4],
-    },
     topBarTitle: {
-      fontFamily: 'Montserrat',
+      fontFamily: fontFamilies.body,
       fontSize: 16,
-      fontStyle: 'normal',
       fontWeight: '500',
       lineHeight: 24,
-      color: palettes.primary[700],
-      textAlign: 'center',
-    },
-    topBarTitleDark: {
-      color: palettes.gray[50],
-    },
-    topBarRightSpacer: {
-      width: 44,
-      height: 44,
     },
     titleSection: {
       marginBottom: spacing[4],
     },
     studentName: {
-      fontFamily: 'Montserrat',
+      fontFamily: fontFamilies.body,
       fontSize: 20,
       fontStyle: 'normal',
       fontWeight: '600',
@@ -488,7 +406,7 @@ const createStyles = ({
       color: palettes.gray[50],
     },
     studentId: {
-      fontFamily: 'Montserrat',
+      fontFamily: fontFamilies.body,
       fontSize: 14,
       fontStyle: 'normal',
       fontWeight: '700',
@@ -522,7 +440,7 @@ const createStyles = ({
       gap: 2,
     },
     metricLabel: {
-      fontFamily: 'Montserrat',
+      fontFamily: fontFamilies.body,
       fontSize: 14,
       fontStyle: 'normal',
       fontWeight: '400',
@@ -533,7 +451,7 @@ const createStyles = ({
       color: palettes.gray[50],
     },
     metricValue: {
-      fontFamily: 'Montserrat',
+      fontFamily: fontFamilies.body,
       fontSize: 14,
       fontStyle: 'normal',
       fontWeight: '700',
@@ -589,7 +507,7 @@ const createStyles = ({
     },
     listItemTitle: {
       overflow: 'hidden',
-      fontFamily: 'Montserrat',
+      fontFamily: fontFamilies.body,
       fontSize: 16,
       fontStyle: 'normal',
       fontWeight: '500',
@@ -601,7 +519,7 @@ const createStyles = ({
     },
     listItemSubtitle: {
       overflow: 'hidden',
-      fontFamily: 'Montserrat',
+      fontFamily: fontFamilies.body,
       fontSize: 14,
       fontStyle: 'normal',
       fontWeight: '400',
