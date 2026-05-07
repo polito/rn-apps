@@ -20,7 +20,6 @@
     "update": "node ../tools/scripts/manageDeps.js"
   },
   "dependencies": {
-    "@d11/react-native-fast-image": "^8.11.1",
     "@formatjs/intl-datetimeformat": "^6.16.5",
     "@formatjs/intl-getcanonicallocales": "^2.5.3",
     "@formatjs/intl-locale": "^4.2.5",
@@ -61,6 +60,7 @@
     "expo": "~54.0.0",
     "expo-asset": "~12.0.12",
     "expo-constants": "~18.0.13",
+    "expo-image": "~3.0.11",
     "expo-modules-core": "^3.0.29",
     "expo-sqlite": "~16.0.10",
     "expo-web-browser": "~15.0.10",

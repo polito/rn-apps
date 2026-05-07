@@ -13,7 +13,6 @@
     "update": "node ../tools/scripts/manageDeps.js"
   },
   "peerDependencies": {
-    "@d11/react-native-fast-image": "^8.11.1",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
@@ -30,6 +29,7 @@
     "@rnmapbox/maps": "^10.1.45",
     "@sentry/react-native": "~7.2.0",
     "@tanstack/react-query": "^5.90.6",
+    "expo-image": "~3.0.11",
     "i18next": "^23.16.4",
     "react": "19.1.4",
     "react-i18next": "^15.0.2",
@@ -61,6 +61,7 @@
     "dom-serializer": "^2.0.0",
     "domhandler": "^5.0.3",
     "domutils": "^3.2.2",
+    "expo-image": "~3.0.11",
     "htmlparser2": "^10.1.0",
     "lodash": "^4.17.23",
     "luxon": "^3.7.2",

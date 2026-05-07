@@ -6,7 +6,6 @@ import {
   TouchableHighlight,
 } from 'react-native';
 
-import FastImage from '@d11/react-native-fast-image';
 import {
   faCalendarAlt,
   faFileAlt,
@@ -89,7 +88,7 @@ export const NewsItemScreen = ({ route }: Props) => {
                   source={{ uri: logo.url }}
                   imageStyle={{ height: 200 }}
                   containerStyle={{ height: 200, margin: spacing[3] }}
-                  resizeMode={FastImage.resizeMode.cover}
+                  resizeMode="cover"
                 />
               </Card>
             )}
