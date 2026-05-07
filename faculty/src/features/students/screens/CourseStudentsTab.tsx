@@ -239,7 +239,7 @@ export const CourseStudentsTab = () => {
             <SearchBar
               value={searchText}
               onChangeText={setSearchText}
-              placeholder="Search students"
+              placeholder={t('other.searchForStudent')}
             />
           </View>
 
@@ -346,7 +346,10 @@ export const CourseStudentsTab = () => {
                     <View onStartShouldSetResponder={() => true}>
                       <TouchableOpacity
                         onPress={() => {
-                          Alert.alert('Info', t('other.renderingToMail'));
+                          Alert.alert(
+                            t('other.info', { defaultValue: 'Info' }),
+                            t('other.renderingToMail'),
+                          );
                         }}
                         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                         accessibilityRole="button"

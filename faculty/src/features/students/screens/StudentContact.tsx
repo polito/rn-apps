@@ -318,7 +318,8 @@ export const StudentContact = () => {
                   {t('other.citizenship', { defaultValue: 'Citizenship' })}
                 </Text>
                 <Text style={styles.listItemSubtitle} numberOfLines={1}>
-                  {selectedStudent.countryOfBirth || 'Italy'}
+                  {selectedStudent.countryOfBirth ||
+                    t('other.countryFallback', { defaultValue: 'Italy' })}
                 </Text>
               </View>
             </View>
