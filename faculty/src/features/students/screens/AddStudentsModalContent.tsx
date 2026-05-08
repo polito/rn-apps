@@ -163,48 +163,65 @@ export const AddStudentsModalContent = ({ close }: Props) => {
         </View>
 
         <View style={styles.listContainer}>
-          {selectedStudents.map(student => (
+          {selectedStudents.length > 0 && (
             <View
-              key={student.id}
-              style={[styles.selectedRow, dark && styles.selectedRowDark]}
+              style={[styles.selectedCard, dark && styles.selectedCardDark]}
             >
-              <View style={styles.leadingIconContainer}>
-                <FontAwesomeIcon
-                  icon={faCircleUser}
-                  size={20}
-                  color={dark ? palettes.gray[50] : palettes.primary[700]}
-                />
-              </View>
-              <View style={styles.studentContent}>
-                <HighlightedName
-                  name={student.name}
-                  surname={student.surname}
-                  query={searchText}
-                  nameStyle={[
-                    styles.studentName,
-                    dark && styles.studentNameDark,
-                  ]}
-                  highlightStyle={styles.studentNameHighlight}
-                />
-                <Text style={styles.studentId}>{student.id}</Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => handleRemove(student)}
-                style={styles.trailingIconContainer}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                accessibilityRole="button"
-              >
-                <FontAwesomeIcon
-                  icon={faMinus}
-                  size={16}
-                  color={dark ? palettes.gray[400] : palettes.primary[600]}
-                />
-              </TouchableOpacity>
+              {selectedStudents.map((student, index) => (
+                <View key={student.id}>
+                  <View style={styles.selectedRow}>
+                    <View style={styles.leadingIconContainer}>
+                      <FontAwesomeIcon
+                        icon={faCircleUser}
+                        size={20}
+                        color={dark ? palettes.gray[50] : palettes.primary[700]}
+                      />
+                    </View>
+                    <View style={styles.studentContent}>
+                      <HighlightedName
+                        name={student.name}
+                        surname={student.surname}
+                        query={searchText}
+                        nameStyle={[
+                          styles.studentName,
+                          dark && styles.studentNameDark,
+                        ]}
+                        highlightStyle={styles.studentNameHighlight}
+                      />
+                      <Text style={styles.studentId}>{student.id}</Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => handleRemove(student)}
+                      style={styles.trailingIconContainer}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      accessibilityRole="button"
+                    >
+                      <FontAwesomeIcon
+                        icon={faMinus}
+                        size={16}
+                        color={
+                          dark ? palettes.gray[400] : palettes.primary[600]
+                        }
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  {index < selectedStudents.length - 1 && (
+                    <View
+                      style={[styles.divider, dark && styles.dividerDark]}
+                    />
+                  )}
+                </View>
+              ))}
             </View>
-          ))}
+          )}
 
           {filteredStudents.length > 0 && (
-            <View style={styles.availableCard}>
+            <View
+              style={[
+                styles.availableCard,
+                selectedStudents.length > 0 && styles.availableCardWithSelected,
+              ]}
+            >
               {filteredStudents.map((student, index) => (
                 <View key={student.id}>
                   <View style={styles.availableRow}>
@@ -311,21 +328,27 @@ const createStyles = ({
     listContainer: {
       gap: spacing[2],
     },
+    selectedCard: {
+      backgroundColor: palettes.gray[200],
+      borderRadius: shapes.lg,
+      overflow: 'hidden',
+    },
+    selectedCardDark: {
+      backgroundColor: palettes.gray[600],
+    },
     selectedRow: {
       flexDirection: 'row',
       alignItems: 'center',
       height: 60,
-      backgroundColor: palettes.gray[200],
-      borderRadius: shapes.lg,
       paddingRight: spacing[2],
-    },
-    selectedRowDark: {
-      backgroundColor: palettes.gray[600],
     },
     availableCard: {
       backgroundColor: colors.surface,
       borderRadius: shapes.lg,
       overflow: 'hidden',
+    },
+    availableCardWithSelected: {
+      marginTop: spacing[3],
     },
     availableRow: {
       flexDirection: 'row',
