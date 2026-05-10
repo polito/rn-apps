@@ -4,7 +4,7 @@ import { initReactI18next } from 'react-i18next';
 import { LogBox } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { APP_VERSION, BUILD_NO, SENTRY_DSN } from '@env';
+import { APP_VERSION, BUILD_NO } from '@env';
 import { PreferencesProvider, Sentry, initSentry } from '@polito/lib/core';
 import { FeedbackProvider, SplashProvider, UiProvider } from '@polito/lib/ui';
 import Mapbox from '@rnmapbox/maps';
@@ -45,7 +45,7 @@ i18n.use(initReactI18next).init({
 });
 
 initSentry({
-  dsn: SENTRY_DSN,
+  dsn: '', // TODO: add SENTRY_DSN when available
   enabled: isEnvProduction,
   appName: 'faculty',
   version: APP_VERSION,

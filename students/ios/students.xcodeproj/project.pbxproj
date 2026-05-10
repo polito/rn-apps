@@ -350,7 +350,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"$CONFIGURATION\" != \"Debug\" ]; then\n  /bin/sh ../node_modules/@sentry/react-native/scripts/sentry-xcode-debug-files.sh\nelse\n  echo \"--- LOG: Debug mode, skipping Sentry build phase\"\nfi\n\n\n";
+			shellScript = "if [ \"$CONFIGURATION\" != \"Debug\" ]; then\n    /bin/sh ../../node_modules/@sentry/react-native/scripts/sentry-xcode-debug-files.sh #Updated path for monorepo\nelse\n  echo \"--- LOG: Debug mode, skipping Sentry build phase\"\nfi\n\n\n";
 		};
 		DB37362F8A1015FE818B562C /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;

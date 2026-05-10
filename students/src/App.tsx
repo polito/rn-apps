@@ -1,7 +1,7 @@
 import { initReactI18next } from 'react-i18next';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { APP_VERSION, BUILD_NO, SENTRY_DSN } from '@env';
+import { APP_VERSION, BUILD_NO } from '@env';
 import {
   PreferencesProvider,
   Sentry,
@@ -45,7 +45,7 @@ i18n.use(initReactI18next).init({
 });
 
 initSentry({
-  dsn: SENTRY_DSN,
+  dsn: 'https://0b3fe6c2fc0bd91481a14b1ad5c6b00d@sentry.k8s.polito.it/3',
   enabled: isEnvProduction,
   appName: 'students',
   version: APP_VERSION,
