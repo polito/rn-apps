@@ -621,6 +621,9 @@
   },
   "notificationsScreen": {
     "title": "Notifiche",
+    "general": "Generali",
+    "ticket": "Ticket",
+    "reservations": "Prenotazioni",
     "perCourseTitle": "Corsi",
     "globalTitle": "Globali",
     "globalSubtitle": "Le notifiche importanti sono sempre attive"

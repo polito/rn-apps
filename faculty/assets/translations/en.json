@@ -605,6 +605,9 @@
   },
   "notificationsScreen": {
     "title": "Notifications",
+    "general": "General",
+    "ticket": "Ticket",
+    "reservations": "Reservations",
     "perCourseTitle": "Courses",
     "globalTitle": "Global",
     "globalSubtitle": "Important notifications are always active"

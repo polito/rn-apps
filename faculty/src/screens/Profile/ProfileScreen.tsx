@@ -4,30 +4,25 @@ import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { Platform } from 'react-native';
 
 import {
-  faBank,
-  faBookOpen,
   faEnvelope,
   faFileAlt,
   faGear,
-  faHome,
-  faPhone,
+  faLock,
 } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import {
-  Icon,
-  IconButton,
-  ListItem,
-  Row,
-  SectionHeader,
-  Text,
-  Theme,
-  useBottomBarAwareStyles,
-  useStylesheet,
-  useTheme,
-} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { Icon } from '../../../../lib/src/ui/components/Icon';
+import { IconButton } from '../../../../lib/src/ui/components/IconButton';
+import { ListItem } from '../../../../lib/src/ui/components/ListItem';
+import { Row } from '../../../../lib/src/ui/components/Row';
+import { SectionHeader } from '../../../../lib/src/ui/components/SectionHeader';
+import { Text } from '../../../../lib/src/ui/components/Text';
+import { useBottomBarAwareStyles } from '../../../../lib/src/ui/hooks/useBottomBarAwareStyles';
+import { useStylesheet } from '../../../../lib/src/ui/hooks/useStylesheet';
+import { useTheme } from '../../../../lib/src/ui/hooks/useTheme';
+import { Theme } from '../../../../lib/src/ui/types/Theme';
 import { Logo } from '../../core/components/Logo';
 import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
@@ -35,13 +30,13 @@ import { ProfileStackParamList } from './ProfileNavigator';
 
 export const ProfileScreen = () => {
   const { t } = useTranslation();
-  const { spacing, palettes } = useTheme();
+  const { spacing, colors } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
   const { fontSizes } = useTheme();
-  const { user, fakeCourses, managedCourses } = useCourses();
+  const { user } = useCourses();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -64,7 +59,7 @@ export const ProfileScreen = () => {
 
           <IconButton
             icon={faPenToSquare}
-            color={palettes.primary[400]}
+            color={colors.link}
             size={fontSizes.lg}
             accessibilityLabel={t('common.preferences')}
             hitSlop={{ left: spacing[3], right: spacing[3] }}
@@ -73,7 +68,7 @@ export const ProfileScreen = () => {
 
           <IconButton
             icon={faBell}
-            color={palettes.primary[400]}
+            color={colors.link}
             size={fontSizes.lg}
             accessibilityLabel={t('common.preferences')}
             hitSlop={{ left: spacing[3], right: spacing[3] }}
@@ -81,7 +76,7 @@ export const ProfileScreen = () => {
         </Row>
       ),
     });
-  }, [navigation, t, palettes, fontSizes, spacing]);
+  }, [navigation, t, colors, fontSizes, spacing]);
 
   return (
     <ScrollView
@@ -105,64 +100,27 @@ export const ProfileScreen = () => {
       <SectionHeader title={t('other.personalInfo')} />
       <SectionList>
         <ListItem
-          title={t('other.residence')}
-          subtitle={user.domicilie}
-          leadingItem={<Icon icon={faHome} size={fontSizes.xl} />}
+          title={t('other.personalInfo')}
+          leadingItem={<Icon icon={faLock} size={fontSizes.xl} />}
+          onPress={() => {
+            navigation.navigate('PersonalInfo');
+          }}
         />
         <ListItem
-          title={t('other.fiscalResidence')}
-          subtitle={user.taxDomicilie}
-          leadingItem={<Icon icon={faHome} size={fontSizes.xl} />}
-        />
-        <ListItem
-          title={t('IBAN')}
-          subtitle={user.IBAN}
-          leadingItem={<Icon icon={faBank} size={fontSizes.xl} />}
-        />
-      </SectionList>
-      <View style={{ paddingBottom: spacing[5] }} />
-
-      <SectionHeader title={t('contactsScreen.title')} />
-      <SectionList>
-        <ListItem
-          title={t('other.telephone')}
-          subtitle={user.phone}
-          leadingItem={<Icon icon={faPhone} size={fontSizes.xl} />}
-        />
-        <ListItem
-          title="Email"
-          subtitle={user.email}
+          title={t('contactsScreen.title')}
           leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
+          onPress={() => {
+            navigation.navigate('Contacts');
+          }}
         />
         <ListItem
-          title={t('other.privateMail')}
-          subtitle={user.privateMail}
-          leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
+          title={t('common.notifications')}
+          leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
+          onPress={() => {
+            navigation.navigate('Notifications');
+          }}
         />
       </SectionList>
-
-      <View style={{ paddingBottom: spacing[5] }} />
-
-      <SectionHeader title={t('other.currentCourses')} />
-      <SectionList>
-        {fakeCourses.map((course, index) => (
-          <ListItem
-            key={index}
-            title={course.title}
-            leadingItem={<Icon icon={faBookOpen} size={fontSizes.xl} />}
-            multilineTitle={true}
-          />
-        ))}
-        {managedCourses.map((course, index) => (
-          <ListItem
-            key={index}
-            title={course.title}
-            leadingItem={<Icon icon={faBookOpen} size={fontSizes.xl} />}
-            multilineTitle={true}
-          />
-        ))}
-      </SectionList>
-      <View style={{ paddingBottom: spacing[5] }} />
 
       {user.publications && user.publications.length > 0 && (
         <>
@@ -187,7 +145,7 @@ export const ProfileScreen = () => {
           title={t('other.settings')}
           leadingItem={<Icon icon={faGear} size={fontSizes.xl} />}
           onPress={() => {
-            navigation.navigate('Impostazioni');
+            navigation.navigate('Settings');
           }}
         />
       </SectionList>

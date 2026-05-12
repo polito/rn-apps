@@ -1,61 +1,86 @@
-import { useLayoutEffect, useState } from 'react';
+import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
-import {
-  faBookOpen,
-  faEnvelope,
-  faFileAlt,
-  faPhone,
-  faStar,
-  faUser,
-  faUserTie,
-} from '@fortawesome/free-solid-svg-icons';
-import {
-  Col,
-  Icon,
-  IconButton,
-  ListItem,
-  Row,
-  SectionHeader,
-  Text,
-  Theme,
-  useBottomBarAwareStyles,
-  useStylesheet,
-  useTheme,
-} from '@polito/lib/ui';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { RoleListItem } from '../../core/components/RoleListItem';
-import { SectionList } from '../../core/components/SectionList';
+import i18next from 'i18next';
+
+import { Card } from '../../../../lib/src/ui/components/Card';
+import { Col } from '../../../../lib/src/ui/components/Col';
+import { IconButton } from '../../../../lib/src/ui/components/IconButton';
+import { Row } from '../../../../lib/src/ui/components/Row';
+import { Text } from '../../../../lib/src/ui/components/Text';
+import { useBottomBarAwareStyles } from '../../../../lib/src/ui/hooks/useBottomBarAwareStyles';
+import { useStylesheet } from '../../../../lib/src/ui/hooks/useStylesheet';
+import { useTheme } from '../../../../lib/src/ui/hooks/useTheme';
+import { Theme } from '../../../../lib/src/ui/types/Theme';
+import { ProfileStackParamList } from '../../../src/screens/Profile/ProfileNavigator';
 import { useCourses } from '../../core/contexts/CoursesContext';
 
-export const ContactScreen = () => {
+interface InfoCardProps {
+  title: string;
+  value: string;
+  onEdit?: () => void;
+}
+
+const InfoCard = ({ title, value, onEdit }: InfoCardProps) => {
+  const { colors, spacing, fontSizes } = useTheme();
+  const styles = useStylesheet(createCardStyles);
+
+  return (
+    <Card rounded style={styles.card}>
+      <Row justify="space-between" align="flex-start">
+        <Col flex={1} gap={1}>
+          <Text
+            variant="heading"
+            style={[styles.title, { color: colors.heading }]}
+          >
+            {title}
+          </Text>
+          <Text
+            variant="secondaryText"
+            style={[styles.value, { color: colors.prose }]}
+            numberOfLines={2}
+          >
+            {value || '-'}
+          </Text>
+        </Col>
+        {onEdit && (
+          <IconButton
+            icon={faPen}
+            size={fontSizes.md}
+            color={colors.secondaryText}
+            onPress={onEdit}
+            accessibilityLabel="Modifica"
+            hitSlop={{ left: spacing[2], right: spacing[2] }}
+          />
+        )}
+      </Row>
+    </Card>
+  );
+};
+
+export const ContactsScreen = () => {
   const { t } = useTranslation();
-  const { spacing } = useTheme();
-  const navigation = useNavigation();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
-  const { fontSizes } = useTheme();
-  const { selectedProfile, toggleFavoriteProfile } = useCourses();
-
-  const [isFavorite, setIsFavorite] = useState(selectedProfile?.preferred);
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
+  const { user } = useCourses();
 
   useLayoutEffect(() => {
+    const marginLeft = i18next.language === 'en' ? 80 : 65;
     navigation.setOptions({
       headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{ textAlign: 'center', width: '100%', marginLeft: -25 }}
-        >
-          {t('common.contact')}
+        <Text variant="heading" style={{ marginLeft }}>
+          {t('contactsScreen.title')}
         </Text>
       ),
     });
   }, [navigation, t]);
-
-  if (!selectedProfile) return null;
 
   return (
     <ScrollView
@@ -64,161 +89,55 @@ export const ContactScreen = () => {
       contentInsetAdjustmentBehavior="automatic"
       bounces={false}
     >
-      <Row
-        style={{
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginHorizontal: spacing[4],
-          marginTop: spacing[4],
-        }}
-      >
-        <Text variant="title">
-          {selectedProfile.name + ' ' + selectedProfile.surname}
-        </Text>
-        <IconButton
-          icon={isFavorite ? faStar : faStarRegular}
-          size={22}
-          onPress={() => {
-            setIsFavorite(prev => !prev);
-            toggleFavoriteProfile();
+      <View style={styles.container}>
+        <InfoCard
+          title={t('other.telephone')}
+          value={user.phone}
+          onEdit={() => {
+            // TODO: Navigate to edit screen
           }}
         />
-      </Row>
-      <View style={{ paddingBottom: spacing[5] }} />
-      <Row style={styles.profileRow}>
-        <View style={styles.avatarCircle}>
-          <Icon icon={faUser} size={48} color="#fff" />
-        </View>
-        <Col style={styles.infoColumn}>
-          <Text variant="heading" style={{ marginBottom: 4, marginLeft: 20 }}>
-            {' '}
-            {t('personScreen.role')}{' '}
-          </Text>
-          <Text style={{ marginBottom: 4, marginLeft: 24 }}>
-            {selectedProfile.role}
-          </Text>
-          <Text variant="heading" style={{ marginBottom: 4, marginLeft: 20 }}>
-            {' '}
-            {t('common.department')}
-          </Text>
-
-          <Text style={{ marginBottom: 4, marginLeft: 24 }}>
-            {selectedProfile.department}
-          </Text>
-        </Col>
-      </Row>
-      <View style={{ paddingBottom: spacing[5] }} />
-      {selectedProfile.role2 ? (
-        <>
-          <SectionHeader title={t('other.otherInfo')} />
-          <SectionList>
-            <RoleListItem
-              title="Altri ruoli istituzionali"
-              subtitle={selectedProfile.role2}
-              leadingItem={<Icon icon={faUserTie} size={fontSizes.xl} />}
-            />
-            {selectedProfile.role3 && (
-              <RoleListItem
-                subtitle={selectedProfile.role3}
-                leadingItem={<Icon icon={faUserTie} size={fontSizes.xl} />}
-              />
-            )}
-            <ListItem
-              title="Settore scientifico disciplinare"
-              subtitle={selectedProfile.sector}
-              leadingItem={<Icon icon={faUserTie} size={fontSizes.xl} />}
-            />
-          </SectionList>
-        </>
-      ) : null}
-      <View style={{ paddingBottom: spacing[5] }} />
-
-      <SectionHeader title={t('contactsScreen.title')} />
-      <SectionList>
-        <ListItem
-          title={t('other.telephone')}
-          subtitle={selectedProfile.phoneNumber.toString()}
-          leadingItem={<Icon icon={faPhone} size={fontSizes.xl} />}
+        <InfoCard
+          title={t('other.academicEmail')}
+          value={user.email}
+          onEdit={() => {
+            // TODO: Navigate to edit screen
+          }}
         />
-        <ListItem
-          title="Email"
-          subtitle={selectedProfile.mail}
-          leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
+        <InfoCard
+          title={t('other.privateMail')}
+          value={user.privateMail}
+          onEdit={() => {
+            // TODO: Navigate to edit screen
+          }}
         />
-      </SectionList>
-      <View style={{ paddingBottom: spacing[5] }} />
-
-      <SectionHeader title={t('other.currentYearCourses')} />
-      <SectionList>
-        {selectedProfile.heldCourses.map((course, index) => (
-          <ListItem
-            key={index}
-            title={course}
-            leadingItem={<Icon icon={faBookOpen} size={fontSizes.xl} />}
-            multilineTitle={true}
-          />
-        ))}
-        {selectedProfile.collaboratingCourses.map((course, index) => (
-          <ListItem
-            key={index}
-            title={course}
-            leadingItem={<Icon icon={faBookOpen} size={fontSizes.xl} />}
-            multilineTitle={true}
-          />
-        ))}
-      </SectionList>
-
-      {selectedProfile.publications &&
-        selectedProfile.publications.length > 0 && (
-          <>
-            <SectionHeader title={t('other.publications')} />
-            <SectionList>
-              {selectedProfile.publications.map((pub, index) => (
-                <ListItem
-                  key={index}
-                  title={pub}
-                  leadingItem={<Icon icon={faFileAlt} size={fontSizes.xl} />}
-                  multilineTitle={true}
-                />
-              ))}
-            </SectionList>
-          </>
-        )}
+      </View>
     </ScrollView>
   );
 };
 
-const createStyles = ({ palettes, spacing }: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
-    heading: {
-      paddingTop: spacing[5],
+    container: {
       paddingHorizontal: spacing[4],
-      alignItems: 'center',
-      justifyContent: 'space-between',
+      paddingTop: spacing[3],
+      paddingBottom: spacing[5],
     },
-    smartcardImage: {
-      width: '100%',
-      height: 200,
-      marginVertical: spacing[3],
-      alignSelf: 'center',
-    },
-    avatarCircle: {
-      width: 120,
-      height: 120,
-      borderRadius: 60,
-      backgroundColor: palettes.gray[400],
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginVertical: spacing[4],
-      marginLeft: spacing[4],
-    },
-    profileRow: {
-      marginHorizontal: spacing[4],
-      marginBottom: spacing[4],
-      alignItems: 'center',
-    },
+  });
 
-    infoColumn: {
-      marginLeft: spacing[3],
+const createCardStyles = ({ spacing, fontSizes }: Theme) =>
+  StyleSheet.create({
+    card: {
+      marginBottom: spacing[3],
+      paddingHorizontal: spacing[4],
+      paddingVertical: spacing[3],
+    },
+    title: {
+      fontSize: fontSizes.sm,
+      marginBottom: spacing[1],
+    },
+    value: {
+      fontSize: fontSizes.md,
+      lineHeight: fontSizes.md * 1.4,
     },
   });
