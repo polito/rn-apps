@@ -1,0 +1,421 @@
+import { useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
+import { faCheck, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
+  CtaButton,
+  CtaButtonContainer,
+  Text,
+  Theme,
+  useBottomBarAwareStyles,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { SearchBar } from '../../../core/components/SearchBar';
+import { useCourses } from '../../../core/contexts/CoursesContext';
+import { AndroidTopBar } from '../components/AndroidTopBar';
+import { HighlightedName } from '../components/HighlightedName';
+import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
+import { CURRENT_ACADEMIC_YEAR, SCREEN_HORIZONTAL_PADDING } from '../constants';
+import { StudentsFeatureError, studentsErrorCodes } from '../errors';
+import { useFilteredStudents } from '../hooks';
+import { StudentsStackParamList } from '../types/navigation';
+
+const mockStudents = [
+  { id: 's123456', name: 'Paolo', surname: 'Serra' },
+  { id: 's123457', name: 'Angela', surname: 'Vitale' },
+  { id: 's123458', name: 'Riccardo', surname: 'Pini' },
+  { id: 's123459', name: 'Beatrice', surname: 'Leone' },
+  { id: 's123460', name: 'Tommaso', surname: 'Riva' },
+  { id: 's123461', name: 'Camilla', surname: 'Marchi' },
+  { id: 's123462', name: 'Federica', surname: 'Bianchi' },
+  { id: 's123463', name: 'Federica', surname: 'Rossi' },
+  { id: 's123464', name: 'Federica', surname: 'Verdi' },
+  { id: 's123465', name: 'Federica', surname: 'Chiari' },
+];
+
+type MockStudent = (typeof mockStudents)[0];
+
+type Props = {
+  close?: () => void;
+};
+
+export const AddStudentsModalContent = ({ close }: Props) => {
+  const { t } = useTranslation();
+  const styles = useStylesheet(createStyles);
+  const { palettes, dark, colors } = useTheme();
+  const bottomTabBarHeight = useBottomTabBarHeight();
+  const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const { addStudentsToCourse, selectedCourse } = useCourses();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
+  const [searchText, setSearchText] = useState('');
+  const [selectedStudents, setSelectedStudents] = useState<MockStudent[]>([]);
+  // TODO: replace with server-issued IDs once the API is available.
+  const studentCounterRef = useRef(100);
+  const generateStudentId = (): string => {
+    const prefix = 'S32';
+    const padded = studentCounterRef.current.toString().padStart(4, '0');
+    studentCounterRef.current++;
+    return `${prefix}${padded}`;
+  };
+  const isConfirmEnabled = selectedStudents.length > 0;
+  const handleClose = () => {
+    if (close) {
+      close();
+      return;
+    }
+    navigation.goBack();
+  };
+
+  const selectedIds = useMemo(
+    () => new Set(selectedStudents.map(student => student.id)),
+    [selectedStudents],
+  );
+  const filteredStudents = useFilteredStudents(mockStudents, searchText, {
+    excludedIds: selectedIds,
+  });
+
+  const handleAdd = (student: MockStudent) => {
+    setSelectedStudents(prev => [...prev, student]);
+  };
+
+  const handleRemove = (student: MockStudent) => {
+    setSelectedStudents(prev => prev.filter(s => s.id !== student.id));
+  };
+
+  const handleConfirm = () => {
+    if (!selectedCourse) {
+      console.warn(
+        new StudentsFeatureError(
+          'Cannot add students without a selected course',
+          studentsErrorCodes.COURSE_NOT_SELECTED,
+        ),
+      );
+      return;
+    }
+    const newStudents: Parameters<typeof addStudentsToCourse>[1] =
+      selectedStudents.map(s => ({
+        id: generateStudentId(),
+        name: s.name,
+        surname: s.surname,
+        year: CURRENT_ACADEMIC_YEAR,
+        exam: 'no',
+        // TODO: replace mock defaults with API-provided student profile fields.
+        cityOfBirth: 'Torino',
+        degreeCourse: 'Informatica',
+        passedExams: [],
+        passedExamsDate: [],
+      }));
+    addStudentsToCourse(selectedCourse.id, newStudents);
+    handleClose();
+  };
+
+  return (
+    <SafeAreaView style={styles.root} edges={['bottom']}>
+      {Platform.OS === 'ios' ? (
+        <IosTopBar
+          backgroundColor={colors.surface}
+          grabberColor={dark ? palettes.gray[500] : palettes.gray[400]}
+          dividerColor={dark ? palettes.gray[500] : palettes.gray[300]}
+          left={
+            <IosTopBarTextAction
+              label={t('common.close', { defaultValue: 'Close' })}
+              onPress={handleClose}
+              color={palettes.gray[500]}
+              align="left"
+            />
+          }
+        />
+      ) : (
+        <AndroidTopBar onBack={handleClose} />
+      )}
+
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={[
+          styles.contentContainer,
+          bottomBarAwareStyles,
+          { paddingBottom: 0 },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.searchWrapper}>
+          <SearchBar
+            value={searchText}
+            onChangeText={setSearchText}
+            placeholder={t('other.lookForStudent')}
+          />
+        </View>
+
+        <View style={styles.listContainer}>
+          {selectedStudents.length > 0 && (
+            <View
+              style={[styles.selectedCard, dark && styles.selectedCardDark]}
+            >
+              {selectedStudents.map((student, index) => (
+                <View key={student.id}>
+                  <View style={styles.selectedRow}>
+                    <View style={styles.leadingIconContainer}>
+                      <FontAwesomeIcon
+                        icon={faCircleUser}
+                        size={20}
+                        color={dark ? palettes.gray[50] : palettes.primary[700]}
+                      />
+                    </View>
+                    <View style={styles.studentContent}>
+                      <HighlightedName
+                        name={student.name}
+                        surname={student.surname}
+                        query={searchText}
+                        nameStyle={[
+                          styles.studentName,
+                          dark && styles.studentNameDark,
+                        ]}
+                        highlightStyle={styles.studentNameHighlight}
+                      />
+                      <Text style={styles.studentId}>{student.id}</Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => handleRemove(student)}
+                      style={styles.trailingIconContainer}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      accessibilityRole="button"
+                    >
+                      <FontAwesomeIcon
+                        icon={faMinus}
+                        size={16}
+                        color={
+                          dark ? palettes.gray[400] : palettes.primary[600]
+                        }
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  {index < selectedStudents.length - 1 && (
+                    <View
+                      style={[styles.divider, dark && styles.dividerDark]}
+                    />
+                  )}
+                </View>
+              ))}
+            </View>
+          )}
+
+          {filteredStudents.length > 0 && (
+            <View
+              style={[
+                styles.availableCard,
+                selectedStudents.length > 0 && styles.availableCardWithSelected,
+              ]}
+            >
+              {filteredStudents.map((student, index) => (
+                <View key={student.id}>
+                  <View style={styles.availableRow}>
+                    <View style={styles.leadingIconContainer}>
+                      <FontAwesomeIcon
+                        icon={faCircleUser}
+                        size={20}
+                        color={dark ? palettes.gray[50] : palettes.primary[700]}
+                      />
+                    </View>
+                    <View style={styles.studentContent}>
+                      <HighlightedName
+                        name={student.name}
+                        surname={student.surname}
+                        query={searchText}
+                        nameStyle={[
+                          styles.studentName,
+                          dark && styles.studentNameDark,
+                        ]}
+                        highlightStyle={styles.studentNameHighlight}
+                      />
+                      <Text style={styles.studentId}>{student.id}</Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => handleAdd(student)}
+                      style={styles.trailingIconContainer}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      accessibilityRole="button"
+                    >
+                      <FontAwesomeIcon
+                        icon={faPlus}
+                        size={16}
+                        color={
+                          dark ? palettes.gray[400] : palettes.primary[600]
+                        }
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  {index < filteredStudents.length - 1 && (
+                    <View
+                      style={[styles.divider, dark && styles.dividerDark]}
+                    />
+                  )}
+                </View>
+              ))}
+            </View>
+          )}
+        </View>
+      </ScrollView>
+
+      <CtaButtonContainer
+        absolute={false}
+        style={[
+          styles.footer,
+          Platform.OS === 'android'
+            ? { paddingBottom: bottomTabBarHeight }
+            : undefined,
+        ]}
+      >
+        <CtaButton
+          title={t('other.confirm', { defaultValue: 'Confirm' })}
+          action={handleConfirm}
+          icon={faCheck}
+          disabled={!isConfirmEnabled}
+          absolute={false}
+          containerStyle={styles.confirmButtonContainer}
+          textStyle={
+            !isConfirmEnabled && dark
+              ? styles.confirmButtonTextDisabledDark
+              : undefined
+          }
+        />
+      </CtaButtonContainer>
+    </SafeAreaView>
+  );
+};
+
+const createStyles = ({
+  colors,
+  spacing,
+  palettes,
+  fontFamilies,
+  fontSizes,
+  fontWeights,
+  shapes,
+}: Theme) =>
+  StyleSheet.create({
+    root: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    scroll: {
+      flex: 1,
+    },
+    contentContainer: {
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+      paddingTop: spacing[2],
+      paddingBottom: spacing[3],
+    },
+    searchWrapper: {
+      paddingVertical: spacing[2],
+      marginBottom: spacing[3],
+    },
+    listContainer: {
+      gap: spacing[2],
+    },
+    selectedCard: {
+      backgroundColor: palettes.gray[200],
+      borderRadius: shapes.lg,
+      overflow: 'hidden',
+    },
+    selectedCardDark: {
+      backgroundColor: palettes.gray[600],
+    },
+    selectedRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: 60,
+      paddingRight: spacing[2],
+    },
+    availableCard: {
+      backgroundColor: colors.surface,
+      borderRadius: shapes.lg,
+      overflow: 'hidden',
+    },
+    availableCardWithSelected: {
+      marginTop: spacing[3],
+    },
+    availableRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: 60,
+      paddingRight: spacing[2],
+    },
+    leadingIconContainer: {
+      width: 30,
+      height: 30,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft: spacing[4],
+      flexShrink: 0,
+    },
+    studentContent: {
+      flex: 1,
+      flexDirection: 'column',
+      justifyContent: 'center',
+      paddingLeft: spacing[4],
+      overflow: 'hidden',
+    },
+    studentName: {
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.medium,
+      color: palettes.text[800],
+      lineHeight: 24,
+    },
+    studentNameDark: {
+      color: palettes.gray[50],
+    },
+    studentNameHighlight: {
+      color: palettes.secondary[600],
+    },
+    studentId: {
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.normal,
+      color: palettes.gray[500],
+      lineHeight: 21,
+    },
+    trailingIconContainer: {
+      width: 24,
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+    },
+    divider: {
+      height: 1,
+      backgroundColor: palettes.gray[300],
+      marginLeft: spacing[4],
+    },
+    dividerDark: {
+      backgroundColor: palettes.gray[500],
+    },
+    footer: {
+      paddingHorizontal: 0,
+      paddingBottom: spacing[4],
+      paddingTop: 0,
+    },
+    confirmButtonTextDisabledDark: {
+      color: palettes.gray[700],
+    },
+    confirmButtonContainer: {
+      paddingTop: 0,
+      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+      paddingBottom: 0,
+    },
+  });

@@ -1422,6 +1422,30 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-document-picker (12.0.1):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-menu (1.2.4):
     - DoubleConversion
     - glog
@@ -2422,6 +2446,7 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - "react-native-blur (from `../../node_modules/@react-native-community/blur`)"
+  - "react-native-document-picker (from `../../node_modules/@react-native-documents/picker`)"
   - "react-native-menu (from `../../node_modules/@react-native-menu/menu`)"
   - react-native-override-color-scheme (from `../../node_modules/react-native-override-color-scheme`)
   - react-native-pager-view (from `../../node_modules/react-native-pager-view`)
@@ -2573,6 +2598,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
   react-native-blur:
     :path: "../../node_modules/@react-native-community/blur"
+  react-native-document-picker:
+    :path: "../../node_modules/@react-native-documents/picker"
   react-native-menu:
     :path: "../../node_modules/@react-native-menu/menu"
   react-native-override-color-scheme:
@@ -2724,6 +2751,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 70a29536f84ddffca4a91097651d2b8f194f7c67
   React-microtasksnativemodule: ff05e894231c44c21135d1d23a82b87656d98eeb
   react-native-blur: 06d0f9906ecd6cde3a42de16c6cd829a2bf0710c
+  react-native-document-picker: 686c62761cf3bbb914588c252eca45fc1991436c
   react-native-menu: 9efed55ad478c20b85bbd5c376f15b2cc5e41181
   react-native-override-color-scheme: 53dc74663e03040074efbfb81cfb35b97d9bbaa5
   react-native-pager-view: f79b095ad2f207028f17626dd7aaf8411c42accc

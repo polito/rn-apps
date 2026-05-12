@@ -1,0 +1,558 @@
+import { useTranslation } from 'react-i18next';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+
+import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
+import {
+  faBook,
+  faCalendarCheck,
+  faChevronRight,
+  faEnvelope,
+  faFlag,
+  faMagnifyingGlass,
+  faPersonHalfDress,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
+  IndentedDivider,
+  Text,
+  Theme,
+  useBottomBarAwareStyles,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { useCourses } from '../../../core/contexts/CoursesContext';
+import { AndroidTopBar } from '../components/AndroidTopBar';
+import { BooksIcon } from '../components/BooksIcon';
+import type { StudentsStackParamList } from '../types/navigation';
+import { formatExamDate } from '../utils';
+
+export const StudentContact = () => {
+  const { palettes, dark } = useTheme();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
+  const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const styles = useStylesheet(createStyles);
+  const { selectedStudent, selectedCourse } = useCourses();
+  const { t } = useTranslation();
+
+  if (!selectedStudent) return null;
+
+  const courseCode = selectedCourse
+    ? `${selectedCourse.code} - ${selectedCourse.cfu} CFU`
+    : '—';
+  const studentEmail = `${selectedStudent.id}@studenti.polito.it`;
+  const latestExamDate = formatExamDate(selectedStudent.passedExamsDate[0]);
+  const subscriptionYear = selectedStudent.year
+    ? `${selectedStudent.year}/${String(Number(selectedStudent.year) + 1)}`
+    : '—';
+
+  return (
+    <View style={styles.root}>
+      <AndroidTopBar
+        onBack={() => navigation.goBack()}
+        title={t('other.student', { defaultValue: 'Student' })}
+        iconSize={22}
+        containerStyle={styles.topBar}
+        titleStyle={styles.topBarTitle}
+      />
+
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={[bottomBarAwareStyles, styles.contentContainer]}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Name + ID */}
+        <View style={styles.titleSection}>
+          <Text style={[styles.studentName, dark && styles.studentNameDark]}>
+            {selectedStudent.name} {selectedStudent.surname}
+          </Text>
+          <Text style={styles.studentId}>{selectedStudent.id}</Text>
+        </View>
+
+        {/* Profile card */}
+        <View style={styles.profileCard}>
+          <View style={styles.photoContainer}>
+            <FontAwesomeIcon
+              icon={faCircleUser}
+              size={80}
+              color={dark ? palettes.gray[50] : palettes.primary[700]}
+            />
+          </View>
+          <View style={styles.profileDetails}>
+            <View style={styles.metricRow}>
+              <Text
+                style={[styles.metricLabel, dark && styles.metricLabelDark]}
+              >
+                {t('other.course', { defaultValue: 'Course' })}
+              </Text>
+              <Text style={styles.metricValue}>{courseCode}</Text>
+            </View>
+            <View style={styles.metricRow}>
+              <Text
+                style={[styles.metricLabel, dark && styles.metricLabelDark]}
+              >
+                {t('other.cds', { defaultValue: 'Cds' })}
+              </Text>
+              <Text style={styles.metricValue}>
+                {selectedStudent.degreeCourse}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Info Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <View style={styles.sectionAccent} />
+            <Text
+              style={[styles.sectionTitle, dark && styles.sectionTitleDark]}
+            >
+              {t('other.info', { defaultValue: 'Info' })}
+            </Text>
+          </View>
+
+          <View style={styles.infoCard}>
+            {/* Special Needs */}
+            <TouchableOpacity
+              style={styles.listItem}
+              onPress={() => navigation.navigate('SpecialNeeds')}
+            >
+              <View style={styles.leadingIcon}>
+                <FontAwesomeIcon
+                  icon={faMagnifyingGlass}
+                  size={20}
+                  color={dark ? palettes.gray[50] : palettes.primary[700]}
+                />
+              </View>
+              <View style={styles.listItemContent}>
+                <Text
+                  style={[
+                    styles.listItemTitle,
+                    dark && styles.listItemTitleDark,
+                  ]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {t('other.specialNeeds', { defaultValue: 'Special Needs' })}
+                </Text>
+                <Text style={styles.listItemSubtitle} numberOfLines={1}>
+                  {t('other.specialNeedsSubtitle', {
+                    defaultValue: 'List of all compensative measures',
+                  })}
+                </Text>
+              </View>
+              <FontAwesomeIcon
+                icon={faChevronRight}
+                size={16}
+                color={palettes.gray[500]}
+              />
+            </TouchableOpacity>
+
+            <IndentedDivider
+              style={[styles.infoDivider, dark && styles.infoDividerDark]}
+            />
+
+            {/* Exams */}
+            <TouchableOpacity
+              style={styles.listItem}
+              onPress={() => navigation.navigate('StudentExams')}
+            >
+              <View style={styles.leadingIcon}>
+                <BooksIcon
+                  color={dark ? palettes.gray[50] : palettes.primary[700]}
+                />
+              </View>
+              <View style={styles.listItemContent}>
+                <Text
+                  style={[
+                    styles.listItemTitle,
+                    dark && styles.listItemTitleDark,
+                  ]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {t('other.exams', { defaultValue: 'Exams' })}
+                </Text>
+                <Text style={styles.listItemSubtitle} numberOfLines={1}>
+                  {t('other.examsSubtitle', {
+                    defaultValue: "View the student's plan",
+                  })}
+                </Text>
+              </View>
+              <FontAwesomeIcon
+                icon={faChevronRight}
+                size={16}
+                color={palettes.gray[500]}
+              />
+            </TouchableOpacity>
+
+            <IndentedDivider
+              style={[styles.infoDivider, dark && styles.infoDividerDark]}
+            />
+
+            {/* Email */}
+            <View style={styles.listItem}>
+              <View style={styles.leadingIcon}>
+                <FontAwesomeIcon
+                  icon={faEnvelope}
+                  size={20}
+                  color={dark ? palettes.gray[50] : palettes.primary[700]}
+                />
+              </View>
+              <View style={styles.listItemContent}>
+                <Text
+                  style={[
+                    styles.listItemTitle,
+                    dark && styles.listItemTitleDark,
+                  ]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {t('other.email', { defaultValue: 'Email' })}
+                </Text>
+                <Text style={styles.listItemSubtitle} numberOfLines={1}>
+                  {studentEmail}
+                </Text>
+              </View>
+            </View>
+
+            <IndentedDivider
+              style={[styles.infoDivider, dark && styles.infoDividerDark]}
+            />
+
+            {/* Exam result */}
+            <View style={styles.listItem}>
+              <View style={styles.leadingIcon}>
+                <FontAwesomeIcon
+                  icon={faBook}
+                  size={20}
+                  color={dark ? palettes.gray[50] : palettes.primary[700]}
+                />
+              </View>
+              <View style={styles.listItemContent}>
+                <Text
+                  style={[
+                    styles.listItemTitle,
+                    dark && styles.listItemTitleDark,
+                  ]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {t('other.examResult', { defaultValue: 'Exam result' })}
+                </Text>
+                <Text style={styles.listItemSubtitle} numberOfLines={1}>
+                  {latestExamDate}
+                </Text>
+              </View>
+              {selectedStudent.exam === 'yes' && (
+                <View
+                  style={[styles.gradeBadge, dark && styles.gradeBadgeDark]}
+                >
+                  <Text
+                    style={[
+                      styles.gradeBadgeText,
+                      dark && styles.gradeBadgeTextDark,
+                    ]}
+                  >
+                    30L
+                  </Text>
+                </View>
+              )}
+            </View>
+
+            <IndentedDivider
+              style={[styles.infoDivider, dark && styles.infoDividerDark]}
+            />
+
+            {/* Subscription */}
+            <View style={styles.listItem}>
+              <View style={styles.leadingIcon}>
+                <FontAwesomeIcon
+                  icon={faCalendarCheck}
+                  size={20}
+                  color={dark ? palettes.gray[50] : palettes.primary[700]}
+                />
+              </View>
+              <View style={styles.listItemContent}>
+                <Text
+                  style={[
+                    styles.listItemTitle,
+                    dark && styles.listItemTitleDark,
+                  ]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {t('other.subscription', { defaultValue: 'Subscription' })}
+                </Text>
+                <Text style={styles.listItemSubtitle} numberOfLines={1}>
+                  {subscriptionYear}
+                </Text>
+              </View>
+            </View>
+
+            <IndentedDivider
+              style={[styles.infoDivider, dark && styles.infoDividerDark]}
+            />
+
+            {/* Citizenship */}
+            <View style={styles.listItem}>
+              <View style={styles.leadingIcon}>
+                <FontAwesomeIcon
+                  icon={faFlag}
+                  size={20}
+                  color={dark ? palettes.gray[50] : palettes.primary[700]}
+                />
+              </View>
+              <View style={styles.listItemContent}>
+                <Text
+                  style={[
+                    styles.listItemTitle,
+                    dark && styles.listItemTitleDark,
+                  ]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {t('other.citizenship', { defaultValue: 'Citizenship' })}
+                </Text>
+                <Text style={styles.listItemSubtitle} numberOfLines={1}>
+                  {selectedStudent.countryOfBirth ||
+                    t('other.countryFallback', { defaultValue: 'Italy' })}
+                </Text>
+              </View>
+            </View>
+
+            <IndentedDivider
+              style={[styles.infoDivider, dark && styles.infoDividerDark]}
+            />
+
+            {/* Gender */}
+            <View style={styles.listItem}>
+              <View style={styles.leadingIcon}>
+                <FontAwesomeIcon
+                  icon={faPersonHalfDress}
+                  size={20}
+                  color={dark ? palettes.gray[50] : palettes.primary[700]}
+                />
+              </View>
+              <View style={styles.listItemContent}>
+                <Text
+                  style={[
+                    styles.listItemTitle,
+                    dark && styles.listItemTitleDark,
+                  ]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {t('other.gender', { defaultValue: 'Gender' })}
+                </Text>
+                <Text style={styles.listItemSubtitle} numberOfLines={1}>
+                  {selectedStudent.gender || '—'}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    </View>
+  );
+};
+
+const createStyles = ({
+  colors,
+  spacing,
+  palettes,
+  fontSizes,
+  fontWeights,
+  fontFamilies,
+  shapes,
+}: Theme) =>
+  StyleSheet.create({
+    root: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    scroll: {
+      flex: 1,
+    },
+    contentContainer: {
+      paddingHorizontal: spacing[4],
+      paddingTop: spacing[1],
+      paddingBottom: spacing[5],
+    },
+    topBar: {
+      backgroundColor: colors.background,
+      marginBottom: spacing[3],
+    },
+    topBarTitle: {
+      fontFamily: fontFamilies.body,
+      fontSize: 16,
+      fontWeight: '500',
+      lineHeight: 24,
+    },
+    titleSection: {
+      marginBottom: spacing[4],
+    },
+    studentName: {
+      fontFamily: fontFamilies.body,
+      fontSize: 20,
+      fontStyle: 'normal',
+      fontWeight: '600',
+      lineHeight: 25,
+      color: palettes.primary[700],
+    },
+    studentNameDark: {
+      color: palettes.gray[50],
+    },
+    studentId: {
+      fontFamily: fontFamilies.body,
+      fontSize: 14,
+      fontStyle: 'normal',
+      fontWeight: '700',
+      lineHeight: 17.5,
+      color: palettes.gray[600],
+      textTransform: 'uppercase',
+    },
+    profileCard: {
+      backgroundColor: colors.surface,
+      borderRadius: 12,
+      padding: spacing[3],
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing[4],
+      marginTop: spacing[1.5],
+      marginBottom: spacing[5],
+    },
+    photoContainer: {
+      width: 123,
+      height: 123,
+      borderRadius: 61.5,
+      backgroundColor: colors.background,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    profileDetails: {
+      flex: 1,
+      gap: spacing[2],
+    },
+    metricRow: {
+      gap: 2,
+    },
+    metricLabel: {
+      fontFamily: fontFamilies.body,
+      fontSize: 14,
+      fontStyle: 'normal',
+      fontWeight: '400',
+      color: palettes.primary[700],
+      lineHeight: 21,
+    },
+    metricLabelDark: {
+      color: palettes.gray[50],
+    },
+    metricValue: {
+      fontFamily: fontFamilies.body,
+      fontSize: 14,
+      fontStyle: 'normal',
+      fontWeight: '700',
+      color: palettes.info[700],
+      textTransform: 'uppercase',
+      lineHeight: 21,
+    },
+    section: {
+      gap: spacing[2],
+    },
+    sectionHeader: {
+      gap: spacing[2],
+      marginBottom: spacing[1],
+    },
+    sectionAccent: {
+      width: 32,
+      height: 4,
+      backgroundColor: palettes.secondary[600],
+    },
+    sectionTitle: {
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.semibold,
+      color: palettes.primary[700],
+      lineHeight: fontSizes.md * 1.25,
+    },
+    sectionTitleDark: {
+      color: palettes.gray[50],
+    },
+    infoCard: {
+      backgroundColor: colors.surface,
+      borderRadius: shapes.md,
+      overflow: 'hidden',
+    },
+    listItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: 60,
+      paddingRight: spacing[3],
+    },
+    leadingIcon: {
+      width: 30,
+      height: 30,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginLeft: spacing[4],
+    },
+    listItemContent: {
+      flex: 1,
+      justifyContent: 'center',
+      paddingLeft: spacing[4],
+      height: 60,
+    },
+    listItemTitle: {
+      overflow: 'hidden',
+      fontFamily: fontFamilies.body,
+      fontSize: 16,
+      fontStyle: 'normal',
+      fontWeight: '500',
+      color: palettes.text[800],
+      lineHeight: 24,
+    },
+    listItemTitleDark: {
+      color: palettes.gray[50],
+    },
+    listItemSubtitle: {
+      overflow: 'hidden',
+      fontFamily: fontFamilies.body,
+      fontSize: 14,
+      fontStyle: 'normal',
+      fontWeight: '400',
+      color: palettes.gray[500],
+      lineHeight: 21,
+    },
+    infoDivider: {
+      alignSelf: 'stretch',
+      marginLeft: spacing[4],
+      minHeight: 1,
+    },
+    infoDividerDark: {
+      backgroundColor: palettes.gray[500],
+    },
+    gradeBadge: {
+      backgroundColor: colors.background,
+      borderRadius: 8,
+      paddingHorizontal: spacing[2.5],
+      paddingVertical: spacing[1.5],
+      marginRight: spacing[1],
+    },
+    gradeBadgeDark: {
+      backgroundColor: palettes.gray[500],
+    },
+    gradeBadgeText: {
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.semibold,
+      color: palettes.gray[700],
+      textAlign: 'center',
+    },
+    gradeBadgeTextDark: {
+      color: palettes.gray[800],
+    },
+  });

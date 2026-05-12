@@ -28,6 +28,7 @@ interface Props extends TouchableHighlightProps {
   icon?: any;
   absolute?: boolean;
   title?: string;
+  leftExtra?: ReactElement;
   rightExtra?: ReactElement;
   loading?: boolean;
   action: () => unknown | Promise<unknown>;
@@ -52,6 +53,7 @@ export const CtaButton = ({
   success = false,
   action,
   icon,
+  leftExtra,
   rightExtra,
   hint,
   containerStyle,
@@ -70,29 +72,12 @@ export const CtaButton = ({
 
   const outlined = variant === 'outlined';
 
-  const underlayColor = useMemo(() => {
-    if (variant === 'outlined') {
-      if (dark) return shadeColor(colors.background, 20);
-      else return shadeColor(colors.background, -10);
-    } else {
-      if (destructive) return palettes.danger[700];
-      return palettes.primary[500];
-    }
-  }, [
-    colors.background,
-    dark,
-    destructive,
-    palettes.danger,
-    palettes.primary,
-    variant,
-  ]);
-
   const color = useMemo(() => {
     if (success) {
       return dark ? palettes.success[400] : palettes.success[700];
     }
     if (destructive) return palettes.danger[600];
-    return palettes.primary[400];
+    return palettes.primary[500];
   }, [
     dark,
     destructive,
@@ -100,6 +85,39 @@ export const CtaButton = ({
     palettes.primary,
     palettes.success,
     success,
+  ]);
+
+  const outlinedColors = useMemo(
+    () => ({
+      border: dark ? palettes.primary[400] : palettes.primary[500],
+      background: dark
+        ? 'rgba(0, 109, 185, 0.22)'
+        : `${palettes.lightBlue[50]}80`,
+      text: dark ? palettes.primary[200] : palettes.primary[500],
+    }),
+    [dark, palettes.lightBlue, palettes.primary],
+  );
+
+  const disabledForegroundColor = useMemo(
+    () =>
+      dark && variant === 'filled' ? palettes.gray[700] : colors.disableTitle,
+    [colors.disableTitle, dark, palettes.gray, variant],
+  );
+
+  const underlayColor = useMemo(() => {
+    if (variant === 'outlined') {
+      if (dark) return shadeColor(colors.background, 20);
+      return shadeColor(colors.background, -10);
+    }
+    if (destructive) return palettes.danger[700];
+    return palettes.primary[600];
+  }, [
+    colors.background,
+    dark,
+    destructive,
+    palettes.danger,
+    palettes.primary,
+    variant,
   ]);
 
   return (
@@ -131,16 +149,16 @@ export const CtaButton = ({
         style={[
           styles.button,
           variant === 'outlined' && {
-            borderColor: color,
+            borderColor: outlinedColors.border,
             borderWidth: 1,
-            backgroundColor: colors.background,
+            backgroundColor: outlinedColors.background,
           },
           variant === 'filled' && {
             borderColor: color,
             borderWidth: 1,
             backgroundColor: color,
           },
-          disabled && variant === 'filled' && styles.disabledButton,
+          disabled && styles.disabledButton,
           style,
         ]}
         accessibilityLabel={title}
@@ -184,23 +202,42 @@ export const CtaButton = ({
                 >
                   <IconWithProgress
                     icon={icon}
-                    size={fontSizes.xl}
-                    color={variant === 'filled' ? colors.white : color}
+                    size={fontSizes.md}
+                    color={
+                      disabled
+                        ? disabledForegroundColor
+                        : variant === 'filled'
+                          ? colors.white
+                          : outlinedColors.text
+                    }
                     progress={progress}
-                    progressColor={variant === 'filled' ? colors.white : color}
+                    progressColor={
+                      disabled
+                        ? disabledForegroundColor
+                        : variant === 'filled'
+                          ? colors.white
+                          : outlinedColors.text
+                    }
                   />
                 </View>
               ) : (
                 <Icon
                   icon={icon}
-                  size={fontSizes.xl}
-                  color={variant === 'filled' ? colors.white : color}
+                  size={fontSizes.md}
+                  color={
+                    disabled
+                      ? disabledForegroundColor
+                      : variant === 'filled'
+                        ? colors.white
+                        : outlinedColors.text
+                  }
                   style={{
                     marginRight: title ? spacing[2] : 0,
                     paddingHorizontal: spacing[1],
                   }}
                 />
               ))}
+            {title ? leftExtra : null}
             {title ? (
               <TextWithLinks
                 style={[
@@ -209,18 +246,20 @@ export const CtaButton = ({
                     borderColor: palettes.primary[400],
                   },
                   {
-                    color: variant === 'filled' ? colors.white : color,
+                    color:
+                      variant === 'filled' ? colors.white : outlinedColors.text,
                   },
                   disabled
-                    ? { color: success ? color : colors.disableTitle }
+                    ? { color: success ? color : disabledForegroundColor }
                     : undefined,
                   textStyle,
                 ]}
                 baseStyle={{
-                  fontWeight: fontWeights.medium,
-                  color: variant === 'filled' ? colors.white : color,
+                  fontWeight: fontWeights.semibold,
+                  color:
+                    variant === 'filled' ? colors.white : outlinedColors.text,
                   ...(disabled && {
-                    color: success ? color : colors.disableTitle,
+                    color: success ? color : disabledForegroundColor,
                   }),
                 }}
                 isCta={true}
@@ -252,13 +291,9 @@ const createStyles = ({ colors, shapes, spacing, fontSizes }: Theme) =>
     },
     button: {
       paddingHorizontal: spacing[5],
-      paddingVertical: spacing[4],
-      borderRadius: Platform.select({
-        ios: shapes.lg,
-        android: 60,
-      }),
+      paddingVertical: spacing[3],
+      borderRadius: shapes.lg,
       alignItems: 'center',
-      elevation: 9,
     },
     disabledButton: {
       backgroundColor: colors.secondaryText,
@@ -270,7 +305,9 @@ const createStyles = ({ colors, shapes, spacing, fontSizes }: Theme) =>
       justifyContent: 'center',
     },
     textStyle: {
-      fontSize: fontSizes.md,
+      fontSize: fontSizes.sm,
+      fontWeight: '600',
+      lineHeight: 21,
       textAlign: 'center',
       color: colors.white,
     },
