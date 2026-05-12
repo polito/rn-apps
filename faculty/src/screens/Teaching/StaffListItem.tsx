@@ -19,7 +19,7 @@ type Props = {
 export const StaffListItem = ({ staff, onPress }: Props) => {
   const { t } = useTranslation();
   const { getProfileById, user } = useCourses();
-  const { palettes } = useTheme();
+  const { palettes, fontSizes } = useTheme();
   const holder = isHolderStaff(staff);
 
   const profile = staff.idProfile ? getProfileById(staff.idProfile) : undefined;
@@ -40,7 +40,7 @@ export const StaffListItem = ({ staff, onPress }: Props) => {
       title={fullName}
       subtitle={!holder ? accessLabel : undefined}
       titleStyle={{
-        color: holder ? palettes.gray[700] : palettes.gray[900],
+        color: holder ? palettes.gray[600] : palettes.text[800],
       }}
       subtitleStyle={{
         color: palettes.gray[500],
@@ -49,14 +49,14 @@ export const StaffListItem = ({ staff, onPress }: Props) => {
         <Icon
           icon={faCircleUser}
           size={26}
-          color={holder ? palettes.gray[500] : palettes.primary[800]}
+          color={holder ? palettes.text[600] : palettes.primary[700]}
         />
       }
       trailingItem={
         !holder ? (
           <Icon
             icon={faPencil}
-            size={16}
+            size={fontSizes.md}
             color={palettes.primary[600]}
             style={{ width: 16, flexShrink: 0, alignItems: 'center' }}
           />

@@ -1,6 +1,5 @@
-import { ReactElement, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import {
-  Platform,
   StyleSheet,
   TextStyle,
   TouchableHighlight,
@@ -10,25 +9,21 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { TextWithLinks } from '@polito/lib/ui';
+import { useSafeBottomBarHeight } from '@polito/lib/ui';
+import { shadeColor } from '@polito/lib/ui';
+import { Icon, Row, Text } from '@polito/lib/ui';
+import { Theme, useStylesheet, useTheme } from '@polito/lib/ui';
+
 import { useFeedbackContext } from '../../core/contexts/FeedbackContext';
-import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
-import { useSafeBottomBarHeight } from '../hooks/useSafeBottomBarHeight';
-import { useStylesheet } from '../hooks/useStylesheet';
-import { useTheme } from '../hooks/useTheme';
-import { Theme } from '../types/Theme';
-import { shadeColor } from '../utils/colors';
-import { ActivityIndicator } from './ActivityIndicator';
-import { Icon } from './Icon';
-import { IconWithProgress } from './IconWithProgress';
-import { Text } from './Text';
-import { TextWithLinks } from './TextWithLinks';
+import { ActivityIndicator } from '../../ui/components/ActivityIndicator';
 
 interface Props extends TouchableHighlightProps {
   containerStyle?: ViewStyle;
   icon?: any;
   absolute?: boolean;
   title?: string;
-  rightExtra?: ReactElement;
+  rightExtra?: ReactNode;
   loading?: boolean;
   action: () => unknown | Promise<unknown>;
   variant?: 'filled' | 'outlined';
@@ -57,7 +52,6 @@ export const CtaButton = ({
   containerStyle,
   variant = 'filled',
   textStyle,
-  progress,
   ...rest
 }: Props) => {
   const { palettes, colors, fontSizes, spacing, dark, fontWeights } =
@@ -66,13 +60,13 @@ export const CtaButton = ({
   const { left, right } = useSafeAreaInsets();
   const bottomBarHeight = useSafeBottomBarHeight();
   const { isFeedbackVisible } = useFeedbackContext();
-  const { accessibility } = usePreferencesContext();
 
   const outlined = variant === 'outlined';
 
   const underlayColor = useMemo(() => {
     if (variant === 'outlined') {
       if (dark) return shadeColor(colors.background, 20);
+      else if (destructive) return '#FFF1F2';
       else return shadeColor(colors.background, -10);
     } else {
       if (destructive) return palettes.danger[700];
@@ -92,7 +86,7 @@ export const CtaButton = ({
       return dark ? palettes.success[400] : palettes.success[700];
     }
     if (destructive) return palettes.danger[600];
-    return palettes.primary[400];
+    return palettes.primary[500];
   }, [
     dark,
     destructive,
@@ -108,7 +102,7 @@ export const CtaButton = ({
         styles.container,
         absolute && {
           position: 'absolute',
-          left: Platform.select({ ios: left }),
+          left,
           right,
           bottom: bottomBarHeight + (isFeedbackVisible ? spacing[20] : 0),
         },
@@ -131,13 +125,15 @@ export const CtaButton = ({
         style={[
           styles.button,
           variant === 'outlined' && {
+            backgroundColor: underlayColor,
+            borderWidth: StyleSheet.hairlineWidth,
             borderColor: color,
-            borderWidth: 1,
-            backgroundColor: colors.background,
           },
+          disabled &&
+            variant === 'outlined' && {
+              borderWidth: 0,
+            },
           variant === 'filled' && {
-            borderColor: color,
-            borderWidth: 1,
             backgroundColor: color,
           },
           disabled && variant === 'filled' && styles.disabledButton,
@@ -161,75 +157,47 @@ export const CtaButton = ({
               />
             )}
           </View>
-          {/* {!loading && ( */}
-          {/*   <View style={{ marginHorizontal: spacing[1] }}>{icon}</View> */}
-          {/* )} */}
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: title ? undefined : 'center',
-            }}
-          >
-            {icon &&
-              Number(accessibility?.fontSize) < 150 &&
-              (progress !== undefined ? (
-                <View
-                  style={{
-                    marginRight: title ? spacing[2] : 0,
-                    paddingHorizontal: spacing[1],
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <IconWithProgress
-                    icon={icon}
-                    size={fontSizes.xl}
-                    color={variant === 'filled' ? colors.white : color}
-                    progress={progress}
-                    progressColor={variant === 'filled' ? colors.white : color}
-                  />
-                </View>
-              ) : (
+          <Row style={{ opacity: loading ? 0 : 1 }}>
+            {/* {!loading && ( */}
+            {/*   <View style={{ marginHorizontal: spacing[1] }}>{icon}</View> */}
+            {/* )} */}
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {icon && (
                 <Icon
                   icon={icon}
-                  size={fontSizes.xl}
-                  color={variant === 'filled' ? colors.white : color}
-                  style={{
-                    marginRight: title ? spacing[2] : 0,
-                    paddingHorizontal: spacing[1],
-                  }}
+                  size={fontSizes.md}
+                  color={
+                    variant === 'filled' ? (palettes.gray[50] as string) : color
+                  }
+                  style={{ marginRight: spacing[2] }}
                 />
-              ))}
-            {title ? (
+              )}
               <TextWithLinks
+                isCta={true}
                 style={[
                   styles.textStyle,
                   variant === 'outlined' && {
                     borderColor: palettes.primary[400],
                   },
                   {
-                    color: variant === 'filled' ? colors.white : color,
+                    color: variant === 'filled' ? palettes.gray[50] : color,
                   },
                   disabled
-                    ? { color: success ? color : colors.disableTitle }
+                    ? {
+                        color: success
+                          ? color
+                          : (colors.disableTitle as string),
+                      }
                     : undefined,
                   textStyle,
                 ]}
-                baseStyle={{
-                  fontWeight: fontWeights.medium,
-                  color: variant === 'filled' ? colors.white : color,
-                  ...(disabled && {
-                    color: success ? color : colors.disableTitle,
-                  }),
-                }}
-                isCta={true}
+                baseStyle={{ fontWeight: fontWeights.medium }}
               >
                 {title}
               </TextWithLinks>
-            ) : null}
-            {rightExtra && rightExtra}
-          </View>
+              {rightExtra && rightExtra}
+            </View>
+          </Row>
         </View>
       </TouchableHighlight>
     </View>
@@ -245,20 +213,23 @@ export const CtaButtonSpacer = () => {
   return <View style={{ height: spacing[20] }} />;
 };
 
-const createStyles = ({ colors, shapes, spacing, fontSizes }: Theme) =>
+const createStyles = ({
+  colors,
+  shapes,
+  spacing,
+  fontSizes,
+  fontWeights,
+  palettes,
+}: Theme) =>
   StyleSheet.create({
     container: {
-      padding: spacing[4],
+      padding: spacing[5],
     },
     button: {
-      paddingHorizontal: spacing[5],
-      paddingVertical: spacing[4],
-      borderRadius: Platform.select({
-        ios: shapes.lg,
-        android: 60,
-      }),
+      paddingHorizontal: spacing[5] + 3,
+      paddingVertical: spacing[3],
+      borderRadius: shapes.lg,
       alignItems: 'center',
-      elevation: 9,
     },
     disabledButton: {
       backgroundColor: colors.secondaryText,
@@ -270,9 +241,11 @@ const createStyles = ({ colors, shapes, spacing, fontSizes }: Theme) =>
       justifyContent: 'center',
     },
     textStyle: {
-      fontSize: fontSizes.md,
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.semibold,
       textAlign: 'center',
-      color: colors.white,
+      color: palettes.gray[50],
+      fontFamily: 'Montserrat-SemiBold',
     },
     icon: {
       marginVertical: -2,

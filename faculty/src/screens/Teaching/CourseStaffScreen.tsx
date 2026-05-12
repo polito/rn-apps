@@ -8,6 +8,7 @@ import {
   CtaButton,
   EmptyState,
   GlobalStyles,
+  IndentedDivider,
   Theme,
   useBottomBarAwareStyles,
   useBottomModal,
@@ -78,7 +79,7 @@ export const StaffScreen = () => {
               }
             />
           )}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          ItemSeparatorComponent={() => <IndentedDivider />}
           ListEmptyComponent={() => {
             if (!staffData || staffData.length === 0) {
               return (
@@ -122,21 +123,17 @@ const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
     screen: {
       flex: 1,
-      marginTop: spacing[4],
+      marginTop: spacing[5],
     },
     listContainer: {
       marginHorizontal: spacing[5],
       borderRadius: spacing[4],
       backgroundColor: colors.surface,
       overflow: 'hidden',
+      elevation: 0,
     },
     emptyListContainer: {
       minHeight: 160,
       justifyContent: 'center',
-    },
-    separator: {
-      height: StyleSheet.hairlineWidth,
-      marginLeft: spacing[10],
-      backgroundColor: colors.divider,
     },
   });

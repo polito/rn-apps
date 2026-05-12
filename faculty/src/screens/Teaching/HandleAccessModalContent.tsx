@@ -9,10 +9,13 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import {
+  Col,
   CtaButton,
+  CtaButtonContainer,
   Icon,
   ListItem,
-  ModalContent,
+  Overlay,
+  Row,
   Text,
   Theme,
   useStylesheet,
@@ -37,7 +40,7 @@ export const HandleAccessModalContent = ({ close, staff }: Props) => {
   const styles = useStylesheet(createStyles);
   const { selectedCourse, updateStaffAccess, removeStaffFromCourse } =
     useCourses();
-  const { colors, palettes, fontSizes, spacing, fontWeights } = useTheme();
+  const { colors, palettes, fontSizes, spacing } = useTheme();
 
   const [selectedAccess, setSelectedAccess] = useState<StaffAccessValue>(
     normalizeStaffAccess(staff.access),
@@ -89,10 +92,40 @@ export const HandleAccessModalContent = ({ close, staff }: Props) => {
   ];
 
   return (
-    <ModalContent
+    <Overlay
       title={t('other.handleAccess')}
       close={close}
-      closeIconColor={palettes.primary[500]}
+      footer={
+        <CtaButtonContainer absolute={false} style={styles.ctaContainer}>
+          <Row gap={2.5}>
+            {canRemoveMember ? (
+              <Col flex={1}>
+                <CtaButton
+                  title={t('other.deleteMember')}
+                  action={handleDelete}
+                  icon={faTrash}
+                  variant="outlined"
+                  absolute={false}
+                  destructive
+                  containerStyle={{ padding: 0 }}
+                  style={{
+                    backgroundColor: colors.white as string,
+                  }}
+                />
+              </Col>
+            ) : null}
+            <Col flex={1}>
+              <CtaButton
+                title={t('common.save')}
+                action={handleSave}
+                icon={faCheck}
+                absolute={false}
+                containerStyle={{ padding: 0 }}
+              />
+            </Col>
+          </Row>
+        </CtaButtonContainer>
+      }
     >
       <View style={styles.container}>
         <Text style={styles.headerText}>
@@ -100,7 +133,7 @@ export const HandleAccessModalContent = ({ close, staff }: Props) => {
           {t('other.willBeAbleTo')}
         </Text>
 
-        <View>
+        <View style={{ gap: spacing[3] }}>
           {accessOptions.map(option => {
             const isSelected = selectedAccess === option.id;
             return (
@@ -109,10 +142,6 @@ export const HandleAccessModalContent = ({ close, staff }: Props) => {
                 onPress={() => setSelectedAccess(option.id)}
                 title={option.label}
                 subtitle={option.description}
-                subtitleStyle={{
-                  color: colors.secondaryText,
-                  lineHeight: fontSizes.sm * 1.5,
-                }}
                 containerStyle={[
                   styles.listItemContainer,
                   isSelected && styles.listItemContainerSelected,
@@ -128,75 +157,28 @@ export const HandleAccessModalContent = ({ close, staff }: Props) => {
             );
           })}
         </View>
-
-        <View style={styles.buttonContainer}>
-          {canRemoveMember ? (
-            <View style={styles.buttonWrapper}>
-              <CtaButton
-                title={t('other.deleteMember')}
-                action={handleDelete}
-                icon={faTrash}
-                variant="outlined"
-                absolute={false}
-                destructive={true}
-                containerStyle={{ padding: 0 }}
-                style={{
-                  paddingHorizontal: spacing[3],
-                  backgroundColor: colors.white as string,
-                  borderRadius: 12,
-                  borderWidth: 1,
-                  borderColor: palettes.danger[600],
-                }}
-                textStyle={{
-                  fontSize: 14,
-                  fontWeight: fontWeights.semibold,
-                  color: palettes.danger[600],
-                }}
-              />
-            </View>
-          ) : null}
-          <View style={styles.buttonWrapper}>
-            <CtaButton
-              title={t('common.save')}
-              action={handleSave}
-              icon={faCheck}
-              variant="filled"
-              absolute={false}
-              containerStyle={{ padding: 0 }}
-              style={{
-                paddingHorizontal: 4,
-                backgroundColor: palettes.primary[500],
-                borderColor: palettes.primary[500],
-              }}
-              textStyle={{ fontWeight: fontWeights.semibold }}
-            />
-          </View>
-        </View>
       </View>
-    </ModalContent>
+    </Overlay>
   );
 };
 
-const createStyles = ({ palettes }: Theme) =>
+const createStyles = ({ palettes, spacing }: Theme) =>
   StyleSheet.create({
     container: {
-      paddingHorizontal: 16,
-      paddingTop: 16,
-      paddingBottom: 32,
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[3],
+      gap: spacing[3],
     },
     headerText: {
       fontSize: 16,
       color: palettes.gray[800],
-      marginBottom: 16,
     },
     boldText: {
       fontWeight: 'bold',
     },
-    buttonContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      marginTop: 8,
-      gap: 8,
+    ctaContainer: {
+      paddingHorizontal: spacing[5],
+      paddingTop: spacing[3],
     },
     buttonWrapper: {
       flex: 1,
@@ -204,8 +186,7 @@ const createStyles = ({ palettes }: Theme) =>
     listItemContainer: {
       backgroundColor: palettes.gray[100],
       borderRadius: 12,
-      marginBottom: 12,
-      borderWidth: 1.5,
+      borderWidth: 1,
       borderColor: palettes.gray[100],
     },
     listItemContainerSelected: {
