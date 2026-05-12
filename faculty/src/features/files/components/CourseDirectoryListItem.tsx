@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { TouchableHighlightProps } from 'react-native';
 
 import { DirectoryListItem } from '@polito/lib/ui';
@@ -20,10 +21,16 @@ export const CourseDirectoryListItem = ({
   setDirId,
   ...rest
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
+  const { t } = useTranslation();
+
   return (
     <DirectoryListItem
       title={name}
-      subtitle={`${length} files`}
+      subtitle={t('courseDirectoryScreen.fileCount', {
+        count: length,
+        defaultValue_one: '{{count}} file',
+        defaultValue_other: '{{count}} files',
+      })}
       onPress={() => {
         setShowDirFiles(true);
         setDirId(dirId);

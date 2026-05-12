@@ -13,3 +13,22 @@ export type RootParamList = {
   // ServicesTab: NavigatorScreenParams<ServiceStackParamList>;
   // ProfileTab: NavigatorScreenParams<UserStackParamList>;
 };
+
+export type FileStackParamList = {
+  CourseFilesScreen: { courseId: number; path?: string; directoryId?: number };
+  CourseFolderFilesScreen: {
+    courseId: number;
+    path?: string;
+    directoryId: number;
+  };
+  CourseDirectoryScreen: { courseId: number; path?: string };
+  CourseFilesUploadScreen: { courseId: number; path?: string };
+  CourseFileMultiSelectScreen: {
+    courseId: number;
+    path?: string;
+    action?: 'move' | 'delete';
+    initialSelectedIds?: string[];
+  };
+  ModifyFileScreen: { courseId: number; fileId: string };
+  MoveFilesScreen: { courseId?: number; fileIds?: string[] };
+};
