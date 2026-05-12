@@ -2,10 +2,14 @@ import { Platform, TouchableOpacity } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { useTheme } from '../../../../lib/src/ui/hooks/useTheme';
+import { useTitlesStyles } from '../../../../lib/src/ui/hooks/useTitlesStyles';
+import { NotificationsScreen } from '../NotificationsScreen';
+import { ContactsScreen } from '../Servizi/ContactScreen';
+import { PersonalInfoScreen } from './PersonalInfoScreen';
 import { ProfileForm } from './ProfileForm';
 import { ProfileScreen } from './ProfileScreen';
 import { SettingsScreen } from './SettingsScreen';
@@ -14,7 +18,10 @@ export type ProfileStackParamList = {
   Profilo: undefined;
   Form: undefined;
   ProfileForm: undefined;
-  Impostazioni: undefined;
+  Settings: undefined;
+  PersonalInfo: undefined;
+  Contacts: undefined;
+  Notifications: undefined;
 };
 
 const CustomBackButton2 = () => {
@@ -59,8 +66,32 @@ export const ProfileNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="Impostazioni"
+        name="Settings"
         component={SettingsScreen}
+        options={{
+          headerLeft: () => <CustomBackButton2 />,
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="PersonalInfo"
+        component={PersonalInfoScreen}
+        options={{
+          headerLeft: () => <CustomBackButton2 />,
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="Contacts"
+        component={ContactsScreen}
+        options={{
+          headerLeft: () => <CustomBackButton2 />,
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="Notifications"
+        component={NotificationsScreen}
         options={{
           headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
