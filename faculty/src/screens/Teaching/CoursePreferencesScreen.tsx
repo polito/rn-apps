@@ -146,7 +146,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                     />
                   }
                 />
-                <IndentedDivider style={styles.indentedDivider} />
+                <IndentedDivider />
                 <ListItem
                   title={t('common.icon')}
                   subtitle={t('coursePreferencesScreen.iconSubtitle')}
@@ -161,7 +161,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                     <Icon icon={faCircleRegular} size={fontSizes['2xl']} />
                   }
                 />
-                <IndentedDivider style={styles.indentedDivider} />
+                <IndentedDivider />
                 <SwitchListItem
                   title={t('coursePreferencesScreen.showInExtracts')}
                   subtitle={t('coursePreferencesScreen.showInExtractsSubtitle')}
@@ -185,7 +185,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                     // });
                   }}
                 />
-                <IndentedDivider style={styles.indentedDivider} />
+                <IndentedDivider />
                 <SwitchListItem
                   title={t('coursePreferencesScreen.showExamCalls')}
                   value={!coursePrefs?.isExamCallsHidden}
@@ -223,7 +223,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   //     });
                   //   }}
                 />
-                <IndentedDivider style={styles.indentedDivider} />
+                <IndentedDivider />
                 <SwitchListItem
                   title={t('common.file_plural')}
                   subtitle={t('coursePreferencesScreen.filesSubtitle')}
@@ -239,7 +239,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   //     });
                   //   }}
                 />
-                <IndentedDivider style={styles.indentedDivider} />
+                <IndentedDivider />
                 <SwitchListItem
                   title={t('common.lecture_plural')}
                   subtitle={t('coursePreferencesScreen.lecturesSubtitle')}
@@ -282,7 +282,7 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                     });
                   }}
                 />
-                <IndentedDivider style={styles.indentedDivider} />
+                <IndentedDivider />
                 <ListItem
                   title={t('common.hiddenEvents')}
                   isAction
@@ -328,9 +328,6 @@ const createStyles = ({ spacing, shapes, colors }: Theme) =>
       borderRadius: shapes.lg,
       marginHorizontal: spacing[4],
       elevation: 0,
-    },
-    indentedDivider: {
-      marginLeft: spacing[12] + spacing[2.5],
     },
     headerDivider: {
       height: StyleSheet.hairlineWidth,
