@@ -20,7 +20,7 @@ export const useTitlesStyles: (
   },
   headerLargeTitleStyle: {
     fontFamily: fontFamilies.heading,
-    fontWeight: fontWeights.bold as string,
+    fontWeight: fontWeights.semibold as string,
     color: colors.title,
   },
   headerBlurEffect: dark

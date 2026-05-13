@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import {
   DisclosureIndicator,
@@ -73,11 +73,9 @@ export const CourseListItem = ({ course, color, icon, accessible }: Props) => {
     );
   }, [styles, course.code, isOwner, tagColors]);
 
-  const listItem = (
-    <View>
-      <ListItem
-        key={course.code}
-        /*
+  return (
+    <ListItem
+      /*
 
         ***** THIS SHOULD BE THE WAY TO NAVIGATE INSTEAD OF USING onPress AS DONE FOR STUDENTS APP ******
         ** maintain onPress for now to keep existing behavior **
@@ -90,20 +88,17 @@ export const CourseListItem = ({ course, color, icon, accessible }: Props) => {
         }}
         */
 
-        accessible={accessible}
-        title={course.title}
-        subtitle={subtitle}
-        leadingItem={<CourseIndicator color={color} icon={icon} />}
-        trailingItem={<DisclosureIndicator />}
-        onPress={() => {
-          setSelectedCourse(course);
-          navigation.navigate('Course', { from: 'MyCourses' });
-        }}
-      />
-    </View>
+      accessible={accessible}
+      title={course.title}
+      subtitle={subtitle}
+      leadingItem={<CourseIndicator color={color} icon={icon} />}
+      trailingItem={<DisclosureIndicator />}
+      onPress={() => {
+        setSelectedCourse(course);
+        navigation.navigate('Course', { from: 'MyCourses' });
+      }}
+    />
   );
-
-  return listItem;
 };
 
 const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>

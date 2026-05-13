@@ -17,7 +17,7 @@ export const SectionList = ({
   children,
   loading = false,
   dividers,
-  dividerSize,
+  dividerSize = 1,
 }: Props) => {
   const { spacing } = useTheme();
 

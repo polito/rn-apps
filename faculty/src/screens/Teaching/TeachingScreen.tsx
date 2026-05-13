@@ -69,7 +69,7 @@ export const TeachingScreen = () => {
           linkTo="MyCourses"
           linkToMoreCount={extraCourses}
         />
-        <SectionList dividerSize={1}>
+        <SectionList>
           {fakeCourses.slice(0, MAX_SECTION_ITEMS).map((course, index) => (
             <CourseListItem
               key={course.id}
@@ -86,7 +86,7 @@ export const TeachingScreen = () => {
           linkTo="ExamsCalls"
           linkToMoreCount={extraExams}
         />
-        <SectionList dividerSize={1}>
+        <SectionList>
           {fakeExams.slice(0, MAX_SECTION_ITEMS).map((exam, index) => (
             <ListItem
               key={exam.id}
