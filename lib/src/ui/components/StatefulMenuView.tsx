@@ -10,15 +10,17 @@ export const StatefulMenuView = ({
   children,
   ...props
 }: MenuComponentProps) => {
+  // Android maps `state` to checkable menu items (checkbox appearance). Strip
+  // `state` from every action and mark selection in the title instead.
   const mapAction = useCallback((action: MenuAction) => {
-    if (action.state === 'on') {
+    const { state, ...withoutState } = action;
+    if (state === 'on') {
       return {
-        ...action,
-        state: undefined,
+        ...withoutState,
         title: `✓ ${action.title}`,
       };
     }
-    return action;
+    return withoutState;
   }, []);
 
   const effectiveActions = useMemo(() => {
@@ -26,8 +28,10 @@ export const StatefulMenuView = ({
 
     return actions.map(action => {
       if (action.subactions) {
+        const parentWithoutState = { ...action };
+        delete parentWithoutState.state;
         return {
-          ...action,
+          ...parentWithoutState,
           subactions: action.subactions.map(mapAction),
         };
       }
