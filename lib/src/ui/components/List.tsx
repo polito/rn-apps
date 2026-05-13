@@ -8,6 +8,7 @@ import { IndentedDivider } from './IndentedDivider';
 interface Props {
   dividers?: boolean;
   indented?: boolean;
+  dividerSize?: number;
 }
 
 /**
@@ -17,6 +18,7 @@ interface Props {
 export const List = ({
   dividers = Platform.select({ ios: true, android: false }),
   indented = false,
+  dividerSize,
   children,
 }: PropsWithChildren<Props>) => {
   const { spacing } = useTheme();
@@ -42,10 +44,15 @@ export const List = ({
                 {c}
                 {i < Children.count(children) - 1 &&
                   (indented ? (
-                    <IndentedDivider key={`div-${i}`} indent={indent} />
+                    <IndentedDivider
+                      key={`div-${i}`}
+                      indent={indent}
+                      {...(dividerSize != null ? { size: dividerSize } : {})}
+                    />
                   ) : (
                     <Divider
                       key={`div-${i}`}
+                      {...(dividerSize != null ? { size: dividerSize } : {})}
                       style={{
                         marginStart: spacing[5],
                       }}

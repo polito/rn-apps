@@ -6,13 +6,19 @@ import { Card, List, useTheme } from '@polito/lib/ui';
 type Props = PropsWithChildren<{
   dividers?: boolean;
   loading?: boolean;
+  dividerSize?: number;
 }>;
 
 /**
  * Displays a list of items with automatic dividers inside a card.
  * (Only suitable for short non virtual-scrolled lists)
  */
-export const SectionList = ({ children, loading = false, dividers }: Props) => {
+export const SectionList = ({
+  children,
+  loading = false,
+  dividers,
+  dividerSize,
+}: Props) => {
   const { spacing } = useTheme();
 
   return (
@@ -30,7 +36,9 @@ export const SectionList = ({ children, loading = false, dividers }: Props) => {
           }}
         />
       ) : (
-        <List dividers={dividers}>{children}</List>
+        <List dividers={dividers} dividerSize={dividerSize}>
+          {children}
+        </List>
       )}
     </Card>
   );

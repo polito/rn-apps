@@ -372,7 +372,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
           id: 2,
           title: 'Avviso',
           content: 'Lezione di Matematica sospesa per il ponte del 1 Maggio.',
-          startDate: '2024-25-04',
+          startDate: '2024-04-25',
           visible: true,
         },
       ],
@@ -388,7 +388,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
         {
           id: 2,
           name: 'Laboratorio 1',
-          date: '2024-25-04',
+          date: '2024-04-25',
           size: 100,
           student: 'S317658',
           mimeType: 'pdf',
@@ -2730,10 +2730,10 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     {
       id: 1,
       subject: 'Matematica',
-      date: 'Oggi',
+      date: '2025-01-18',
       endDate: 'Chiuse',
       period: 1,
-      where: 'Aula 3',
+      where: 'Lab 4',
       modality: 'Scritto',
       booked: 89,
       students: [
@@ -2981,7 +2981,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
       date: '2025-10-05',
       endDate: '2025-30-04',
       period: 2,
-      where: 'Aula 3',
+      where: 'Lab 1',
       modality: 'Scritto',
       booked: 89,
       students: [
@@ -3226,10 +3226,10 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     {
       id: 3,
       subject: 'Fisica',
-      date: '2025-20-04',
+      date: '2025-04-20',
       endDate: '2025-10-04',
       period: 1,
-      where: 'Aula 3',
+      where: 'Room 2T',
       modality: 'Scritto',
       booked: 89,
       students: [
@@ -3474,7 +3474,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     {
       id: 4,
       subject: 'Fisica',
-      date: '2025-20-05',
+      date: '2025-05-20',
       endDate: '2025-10-05',
       period: 2,
       where: 'Aula 3',
@@ -3722,7 +3722,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     {
       id: 5,
       subject: 'Programmazione',
-      date: '2025-20-04',
+      date: '2025-04-20',
       endDate: '2025-10-04',
       period: 1,
       where: 'Aula 3',
@@ -3970,7 +3970,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     {
       id: 6,
       subject: 'Programmazione',
-      date: '2025-20-05',
+      date: '2025-05-20',
       endDate: '2025-10-05',
       period: 2,
       where: 'Aula 3',
@@ -4218,7 +4218,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     {
       id: 7,
       subject: 'Chimica',
-      date: '2025-20-04',
+      date: '2025-04-20',
       endDate: '2025-10-04',
       period: 1,
       where: 'Aula 3',
@@ -4466,7 +4466,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     {
       id: 8,
       subject: 'Chimica',
-      date: '2025-20-05',
+      date: '2025-05-20',
       endDate: '2025-10-05',
       period: 2,
       where: 'Aula 3',
@@ -4714,7 +4714,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     {
       id: 9,
       subject: 'Informatica Teorica',
-      date: '2025-20-04',
+      date: '2025-04-20',
       endDate: '2025-10-04',
       period: 1,
       where: 'Aula 3',
@@ -4962,7 +4962,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     {
       id: 10,
       subject: 'Informatica Teorica',
-      date: '2025-20-05',
+      date: '2025-05-20',
       endDate: '2025-10-05',
       period: 2,
       where: 'Aula 3',
@@ -5210,7 +5210,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     {
       id: 11,
       subject: 'Intelligenza Artificiale',
-      date: '2025-20-04',
+      date: '2025-04-20',
       endDate: '2025-10-04',
       period: 1,
       where: 'Aula 3',
@@ -5458,7 +5458,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     {
       id: 12,
       subject: 'Intelligenza Artificiale',
-      date: '2025-20-05',
+      date: '2025-05-20',
       endDate: '2025-10-05',
       period: 2,
       where: 'Aula 3',

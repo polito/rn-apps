@@ -8,11 +8,14 @@ import {
   Text,
   Theme,
   useStylesheet,
+  useTheme,
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Tag } from '~/core/components/Tag';
+
+import Color from 'color';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { CourseIndicator } from '../../screens/Teaching/CourseIndicator';
@@ -20,6 +23,8 @@ import { TeachingStackParamList } from './TeachingNavigator';
 
 interface Props {
   course: any;
+  color?: string;
+  icon?: string;
   accessible?: boolean;
   accessibilityLabel?: string;
   badge?: number;
@@ -31,8 +36,9 @@ interface Props {
  * elements. If a linkTo is provided, a forward icon is automatically
  * displayed as a trailing element on iOS.
  */
-export const CourseListItem = ({ course, accessible }: Props) => {
+export const CourseListItem = ({ course, color, icon, accessible }: Props) => {
   const styles = useStylesheet(createStyles);
+  const { dark, palettes } = useTheme();
   const { setSelectedCourse } = useCourses();
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
@@ -42,20 +48,30 @@ export const CourseListItem = ({ course, accessible }: Props) => {
     return 'Owner';
   }, []);
 
+  const tagColors = useMemo(
+    () => ({
+      background: Color(palettes.primary[dark ? 600 : 50])
+        .alpha(0.4)
+        .toString(),
+      text: dark ? palettes.primary[400] : palettes.primary[500],
+    }),
+    [dark, palettes],
+  );
+
   const subtitle = useMemo(() => {
     return (
-      <Row style={styles.subtitle}>
+      <Row style={styles.subtitle} pt={1}>
         <Tag
           text={isOwner()}
-          backgroundColor={styles.tag.backgroundColor}
-          foregroundColor={styles.tag.color}
+          backgroundColor={tagColors.background}
+          foregroundColor={tagColors.text}
         />
         <Text style={styles.subtitleText} numberOfLines={1}>
           {course.code}
         </Text>
       </Row>
     );
-  }, [styles, course.code, isOwner]);
+  }, [styles, course.code, isOwner, tagColors]);
 
   const listItem = (
     <View>
@@ -77,7 +93,7 @@ export const CourseListItem = ({ course, accessible }: Props) => {
         accessible={accessible}
         title={course.title}
         subtitle={subtitle}
-        leadingItem={<CourseIndicator />}
+        leadingItem={<CourseIndicator color={color} icon={icon} />}
         trailingItem={<DisclosureIndicator />}
         onPress={() => {
           setSelectedCourse(course);
@@ -92,10 +108,6 @@ export const CourseListItem = ({ course, accessible }: Props) => {
 
 const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
   StyleSheet.create({
-    tag: {
-      backgroundColor: palettes.info[50],
-      color: palettes.info[600],
-    },
     subtitle: {
       display: 'flex',
       alignItems: 'center',

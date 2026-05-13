@@ -8,5 +8,5 @@ interface IndentedDividerProps extends DividerProps {
  * A divider element to separate list items with indentation
  */
 export const IndentedDivider = ({ style, ...props }: IndentedDividerProps) => {
-  return <Divider {...props} style={style} />;
+  return <Divider {...props} style={[{ height: 1 }, style]} />;
 };
