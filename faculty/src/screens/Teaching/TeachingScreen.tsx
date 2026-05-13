@@ -1,15 +1,13 @@
-import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
-import { faBell, faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { formatDateFromString } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   DisclosureIndicator,
   Icon,
-  IconButton,
   ListItem,
   Row,
   Section,
@@ -17,6 +15,7 @@ import {
   Text,
   useTheme,
 } from '@polito/lib/ui';
+import { useHeaderHeight } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -33,7 +32,8 @@ export const TeachingScreen = () => {
   const { fakeCourses, fakeExams, setSelectedExam } = useCourses();
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-  const { colors, palettes, spacing, dark } = useTheme();
+  const { colors, palettes } = useTheme();
+  const headerHeight = useHeaderHeight();
 
   const courseColors = [
     palettes.error[600],
@@ -41,27 +41,16 @@ export const TeachingScreen = () => {
     palettes.green[600],
   ];
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <IconButton
-          icon={faBell}
-          color={dark ? colors.title : palettes.primary[700]}
-          size={20}
-          accessibilityLabel={t('common.notifications')}
-          style={{ marginRight: -spacing[2] }}
-          onPress={() => {}}
-        />
-      ),
-    });
-  }, [navigation, palettes, spacing, dark, colors, t]);
-
   const extraCourses = Math.max(0, fakeCourses.length - MAX_SECTION_ITEMS);
   const extraExams = Math.max(0, fakeExams.length - MAX_SECTION_ITEMS);
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <View style={{ paddingTop: 10 }} />
+    <ScrollView
+      contentInsetAdjustmentBehavior="never"
+      contentInset={{ top: headerHeight }}
+      scrollIndicatorInsets={{ top: headerHeight }}
+    >
+      <View style={{ paddingTop: 20 }} />
 
       <Section>
         <SectionHeader

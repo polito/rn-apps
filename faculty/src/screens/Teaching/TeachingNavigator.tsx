@@ -11,12 +11,7 @@ import Popover from 'react-native-popover-view';
 
 import { faArrowLeft, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import {
-  HeaderLogoNoProps,
-  Text,
-  useTheme,
-  useTitlesStyles,
-} from '@polito/lib/ui';
+import { Text, useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import {
   NativeStackNavigationProp,
@@ -44,6 +39,7 @@ import { ModifyNoticeScreen } from './ModifyNoticeScreen';
 import { NoticeFormScreen } from './NoticeFormScreen';
 import { NoticeScreen } from './NoticeScreen';
 import { StudentContact } from './StudentContact';
+import { TeachingAppBar } from './TeachingAppBar';
 import { TeachingScreen } from './TeachingScreen';
 
 export type TeachingStackParamList = {
@@ -107,7 +103,6 @@ const Stack = createNativeStackNavigator<
 export const TeachingNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { colors } = theme;
 
   return (
     <Stack.Navigator
@@ -116,7 +111,7 @@ export const TeachingNavigator = () => {
         headerLargeTitle: true,
         headerTransparent: Platform.select({ ios: true }),
         headerLargeStyle: {
-          backgroundColor: colors.background,
+          backgroundColor: 'transparent',
         },
         ...useTitlesStyles(theme),
       }}
@@ -125,8 +120,8 @@ export const TeachingNavigator = () => {
         name="Home"
         component={TeachingScreen}
         options={{
-          headerLeft: HeaderLogoNoProps,
-          headerTitle: t('teachingScreen.title'),
+          headerLargeTitle: false,
+          header: () => <TeachingAppBar />,
         }}
       />
       <Stack.Screen
