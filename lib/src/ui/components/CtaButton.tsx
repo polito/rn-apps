@@ -10,7 +10,6 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { TextWithLinks } from '@polito/lib/ui';
-import { useSafeBottomBarHeight } from '@polito/lib/ui';
 import { shadeColor } from '@polito/lib/ui';
 import { Icon, Row, Text } from '@polito/lib/ui';
 import { Theme, useStylesheet, useTheme } from '@polito/lib/ui';
@@ -58,8 +57,8 @@ export const CtaButton = ({
     useTheme();
   const styles = useStylesheet(createStyles);
   const { left, right } = useSafeAreaInsets();
-  const bottomBarHeight = useSafeBottomBarHeight();
   const { isFeedbackVisible } = useFeedbackContext();
+  const hasTitle = Boolean(title?.trim());
 
   const outlined = variant === 'outlined';
 
@@ -104,7 +103,7 @@ export const CtaButton = ({
           position: 'absolute',
           left,
           right,
-          bottom: bottomBarHeight + (isFeedbackVisible ? spacing[20] : 0),
+          bottom: isFeedbackVisible ? spacing[20] : 0,
         },
         !!hint && { paddingTop: spacing[3] },
         containerStyle,
@@ -124,6 +123,7 @@ export const CtaButton = ({
         disabled={disabled || loading}
         style={[
           styles.button,
+          !hasTitle && styles.iconOnlyButton,
           variant === 'outlined' && {
             backgroundColor: underlayColor,
             borderWidth: StyleSheet.hairlineWidth,
@@ -169,32 +169,34 @@ export const CtaButton = ({
                   color={
                     variant === 'filled' ? (palettes.gray[50] as string) : color
                   }
-                  style={{ marginRight: spacing[2] }}
+                  style={{ marginRight: hasTitle ? spacing[2] : 0 }}
                 />
               )}
-              <TextWithLinks
-                isCta={true}
-                style={[
-                  styles.textStyle,
-                  variant === 'outlined' && {
-                    borderColor: palettes.primary[400],
-                  },
-                  {
-                    color: variant === 'filled' ? palettes.gray[50] : color,
-                  },
-                  disabled
-                    ? {
-                        color: success
-                          ? color
-                          : (colors.disableTitle as string),
-                      }
-                    : undefined,
-                  textStyle,
-                ]}
-                baseStyle={{ fontWeight: fontWeights.medium }}
-              >
-                {title}
-              </TextWithLinks>
+              {hasTitle && (
+                <TextWithLinks
+                  isCta={true}
+                  style={[
+                    styles.textStyle,
+                    variant === 'outlined' && {
+                      borderColor: palettes.primary[400],
+                    },
+                    {
+                      color: variant === 'filled' ? palettes.gray[50] : color,
+                    },
+                    disabled
+                      ? {
+                          color: success
+                            ? color
+                            : (colors.disableTitle as string),
+                        }
+                      : undefined,
+                    textStyle,
+                  ]}
+                  baseStyle={{ fontWeight: fontWeights.medium }}
+                >
+                  {title}
+                </TextWithLinks>
+              )}
               {rightExtra && rightExtra}
             </View>
           </Row>
@@ -230,6 +232,9 @@ const createStyles = ({
       paddingVertical: spacing[3],
       borderRadius: shapes.lg,
       alignItems: 'center',
+    },
+    iconOnlyButton: {
+      paddingHorizontal: 21,
     },
     disabledButton: {
       backgroundColor: colors.secondaryText,

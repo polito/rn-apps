@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 import { Image, StyleSheet, TouchableHighlightProps } from 'react-native';
 
-import { faUser } from '@fortawesome/free-regular-svg-icons';
+import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import { Person } from '@polito/student-api-client';
 
 import { useTheme } from '../hooks/useTheme';
@@ -12,14 +12,18 @@ interface Props {
   person: Person | undefined;
   subtitle?: string | ReactElement;
   navigateEnabled?: boolean;
+  trailingItem?: ReactElement;
+  holder?: boolean;
 }
 
 export const PersonListItem = ({
   person,
   subtitle,
   navigateEnabled = true,
+  holder = false,
+  trailingItem,
 }: TouchableHighlightProps & Props) => {
-  const { fontSizes } = useTheme();
+  const { fontSizes, palettes } = useTheme();
 
   return (
     <ListItem
@@ -27,7 +31,11 @@ export const PersonListItem = ({
         person?.picture ? (
           <Image source={{ uri: person.picture }} style={styles.picture} />
         ) : (
-          <Icon icon={faUser} size={fontSizes['2xl']} />
+          <Icon
+            icon={faCircleUser}
+            size={fontSizes['2xl']}
+            color={holder ? palettes.text[600] : palettes.primary[700]}
+          />
         )
       }
       title={person ? `${person.firstName} ${person.lastName}` : ''}
@@ -45,6 +53,13 @@ export const PersonListItem = ({
           : undefined
       }
       subtitle={subtitle}
+      titleStyle={{
+        color: holder ? palettes.gray[600] : palettes.text[800],
+      }}
+      subtitleStyle={{
+        color: palettes.gray[500],
+      }}
+      trailingItem={trailingItem}
     />
   );
 };

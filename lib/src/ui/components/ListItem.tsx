@@ -9,14 +9,13 @@ import {
   ViewStyle,
 } from 'react-native';
 
+import { To, resolveLinkTo } from '@polito/lib/core';
+import { GlobalStyles } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { IS_IOS } from '../../core/constants';
 import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
-import { To, resolveLinkTo } from '../../core/utils/resolveLinkTo';
 import { useTheme } from '../hooks/useTheme';
-import { GlobalStyles } from '../styles/GlobalStyles';
 import { Col } from './Col';
 import { DisclosureIndicator } from './DisclosureIndicator';
 import { Row } from './Row';
@@ -68,7 +67,6 @@ export const ListItem = ({
   multilineTitle = false,
   titleProps,
   unread = false,
-  onLongPress,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, fontWeights, colors, spacing } = useTheme();
@@ -84,6 +82,8 @@ export const ListItem = ({
             GlobalStyles.grow,
             {
               fontSize: fontSizes.md,
+              fontFamily: 'Montserrat-Medium',
+              fontWeight: fontWeights.medium,
               lineHeight:
                 accessibility?.fontSize && accessibility.fontSize <= 125
                   ? fontSizes.sm * 1.4
@@ -121,6 +121,7 @@ export const ListItem = ({
               accessibility?.fontSize && accessibility.fontSize <= 125
                 ? fontSizes.sm * 1.4
                 : fontSizes.sm * 2.5,
+            fontFamily: 'Montserrat-Regular',
           },
           subtitleStyle,
         ]}
@@ -154,9 +155,6 @@ export const ListItem = ({
       ]}
       disabled={disabled}
       {...rest}
-      // These two added due to the issue #60 indicated in react-native-context-menu-view
-      // https://github.com/mpiannucci/react-native-context-menu-view/issues/60
-      {...(onLongPress != null ? { onLongPress, delayLongPress: 100 } : {})}
     >
       <View
         style={[
@@ -190,11 +188,7 @@ export const ListItem = ({
           {subtitleElement}
         </Col>
         {!card &&
-          (!trailingItem && (linkTo || isAction) && IS_IOS ? (
-            <DisclosureIndicator />
-          ) : (
-            trailingItem
-          ))}
+          (!trailingItem && isAction ? <DisclosureIndicator /> : trailingItem)}
       </View>
     </TouchableHighlight>
   );
