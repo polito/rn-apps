@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { ActivityIndicator, Platform } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 
 import { Card, List, useTheme } from '@polito/lib/ui';
 
@@ -16,17 +16,17 @@ type Props = PropsWithChildren<{
 export const SectionList = ({
   children,
   loading = false,
-  dividers,
+  dividers = true,
   dividerSize = 1,
 }: Props) => {
   const { spacing } = useTheme();
 
   return (
     <Card
-      rounded={Platform.select({ android: false })}
+      rounded
       style={{
         marginVertical: spacing[2],
-        marginHorizontal: Platform.select({ ios: spacing[4] }),
+        marginHorizontal: spacing[4],
       }}
     >
       {loading ? (
