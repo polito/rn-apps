@@ -12,6 +12,7 @@ interface Props {
   person: Person | undefined;
   subtitle?: string | ReactElement;
   navigateEnabled?: boolean;
+  onPress?: () => void;
   trailingItem?: ReactElement;
   holder?: boolean;
 }
@@ -21,6 +22,7 @@ export const PersonListItem = ({
   subtitle,
   navigateEnabled = true,
   holder = false,
+  onPress,
   trailingItem,
 }: TouchableHighlightProps & Props) => {
   const { fontSizes, palettes } = useTheme();
@@ -60,6 +62,7 @@ export const PersonListItem = ({
         color: palettes.gray[500],
       }}
       trailingItem={trailingItem}
+      onPress={onPress}
     />
   );
 };
