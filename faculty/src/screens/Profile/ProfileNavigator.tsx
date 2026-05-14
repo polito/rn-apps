@@ -9,9 +9,11 @@ import { useTheme } from '../../../../lib/src/ui/hooks/useTheme';
 import { useTitlesStyles } from '../../../../lib/src/ui/hooks/useTitlesStyles';
 import { NotificationsScreen } from '../NotificationsScreen';
 import { ContactsScreen } from '../Servizi/ContactScreen';
+import { AccessibilitySettingsScreen } from './AccessibilityFontSettingsScreen';
 import { PersonalInfoScreen } from './PersonalInfoScreen';
 import { ProfileForm } from './ProfileForm';
 import { ProfileScreen } from './ProfileScreen';
+import { PublicationsScreen } from './PublicationsScreen';
 import { SettingsScreen } from './SettingsScreen';
 
 export type ProfileStackParamList = {
@@ -22,6 +24,8 @@ export type ProfileStackParamList = {
   PersonalInfo: undefined;
   Contacts: undefined;
   Notifications: undefined;
+  Publications: undefined;
+  AccessibilitySettings: undefined;
 };
 
 const CustomBackButton2 = () => {
@@ -61,7 +65,7 @@ export const ProfileNavigator = () => {
         name="ProfileForm"
         component={ProfileForm}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
+          presentation: 'modal',
           headerShown: true,
         }}
       />
@@ -92,6 +96,22 @@ export const ProfileNavigator = () => {
       <Stack.Screen
         name="Notifications"
         component={NotificationsScreen}
+        options={{
+          headerLeft: () => <CustomBackButton2 />,
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="Publications"
+        component={PublicationsScreen}
+        options={{
+          headerLeft: () => <CustomBackButton2 />,
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="AccessibilitySettings"
+        component={AccessibilitySettingsScreen}
         options={{
           headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
