@@ -5,6 +5,7 @@ import { Alert, StyleSheet, View } from 'react-native';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import {
   faCheck,
+  faChevronRight,
   faCircleDot as faCircleDotSolid,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -33,9 +34,21 @@ import {
 type Props = {
   close: () => void;
   staff: Staff;
+  current?: number;
+  total?: number;
+  onNext?: () => void;
+  onPrevious?: () => void;
+  onAccessSaved?: (access: StaffAccessValue) => void;
 };
 
-export const HandleAccessModalContent = ({ close, staff }: Props) => {
+export const HandleAccessModalContent = ({
+  close,
+  staff,
+  current,
+  total,
+  onNext,
+  onAccessSaved,
+}: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { selectedCourse, updateStaffAccess, removeStaffFromCourse } =
@@ -46,6 +59,10 @@ export const HandleAccessModalContent = ({ close, staff }: Props) => {
     normalizeStaffAccess(staff.access),
   );
   const canRemoveMember = !isHolderStaff(staff);
+  const isMultipleStaff = current && total && total > 1;
+  const title = isMultipleStaff
+    ? `${t('other.handleAccess')} ${current}/${total}`
+    : t('other.handleAccess');
 
   const handleDelete = () => {
     Alert.alert(
@@ -71,11 +88,54 @@ export const HandleAccessModalContent = ({ close, staff }: Props) => {
     );
   };
 
-  const handleSave = () => {
+  const commitSelectedAccess = () => {
     if (selectedCourse) {
       updateStaffAccess(selectedCourse.id, staff.id, selectedAccess);
     }
+    onAccessSaved?.(selectedAccess);
+  };
+
+  const confirmFullAccess = (onConfirm: () => void) => {
+    Alert.alert(
+      t('other.confirm'),
+      t('other.confirmFullAccessAssignment', {
+        name: staff.name,
+      }),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('other.confirm'),
+          style: 'destructive',
+          onPress: onConfirm,
+        },
+      ],
+    );
+  };
+
+  const handleSave = () => {
+    if (selectedAccess === STAFF_ACCESS_VALUES.full) {
+      confirmFullAccess(() => {
+        commitSelectedAccess();
+        close();
+      });
+      return;
+    }
+
+    commitSelectedAccess();
     close();
+  };
+
+  const handleNext = () => {
+    if (selectedAccess === STAFF_ACCESS_VALUES.full) {
+      confirmFullAccess(() => {
+        commitSelectedAccess();
+        onNext?.();
+      });
+      return;
+    }
+
+    commitSelectedAccess();
+    onNext?.();
   };
 
   const accessOptions = [
@@ -93,7 +153,7 @@ export const HandleAccessModalContent = ({ close, staff }: Props) => {
 
   return (
     <Overlay
-      title={t('other.handleAccess')}
+      title={title}
       close={close}
       footer={
         <CtaButtonContainer absolute={false} style={styles.ctaContainer}>
@@ -116,9 +176,21 @@ export const HandleAccessModalContent = ({ close, staff }: Props) => {
             ) : null}
             <Col flex={1}>
               <CtaButton
-                title={t('common.save')}
-                action={handleSave}
-                icon={faCheck}
+                title={
+                  isMultipleStaff && onNext && current !== total
+                    ? t('common.next')
+                    : t('common.save')
+                }
+                action={
+                  isMultipleStaff && onNext && current !== total
+                    ? handleNext
+                    : handleSave
+                }
+                icon={
+                  isMultipleStaff && onNext && current !== total
+                    ? faChevronRight
+                    : faCheck
+                }
                 absolute={false}
                 containerStyle={{ padding: 0 }}
               />
@@ -180,9 +252,7 @@ const createStyles = ({ palettes, spacing }: Theme) =>
       paddingHorizontal: spacing[5],
       paddingTop: spacing[3],
     },
-    buttonWrapper: {
-      flex: 1,
-    },
+
     listItemContainer: {
       backgroundColor: palettes.gray[100],
       borderRadius: 12,

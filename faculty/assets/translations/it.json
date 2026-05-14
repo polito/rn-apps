@@ -371,7 +371,9 @@
   },
   "courseStaffTab": {
     "emptyState": "Non ci sono ancora collaboratori",
-    "title": "Docenti"
+    "title": "Docenti",
+    "typeInfoMessage": "Assegna il tipo di insegnamento al tuo staff per completare la selezione del staff",
+    "accessInfoMessage": "Assegna l'accesso al tuo staff per completare la selezione del staff"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
@@ -1019,6 +1021,7 @@
     "areYouSure": "Sei sicuro?",
     "deleteConfirmText": "Eliminando {{name}} non avrà più accesso",
     "confirm": "Conferma",
+    "continue": "Continua",
     "createNewNotice": "Crea nuovo avviso",
     "title": "Titolo",
     "description": "Descrizione",

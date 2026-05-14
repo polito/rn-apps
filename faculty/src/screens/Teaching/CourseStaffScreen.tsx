@@ -15,18 +15,23 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Staff, useCourses } from '../../core/contexts/CoursesContext';
 import { AddStaffModalContent } from './AddStaffModalContent';
 import { HandleAccessModalContent } from './HandleAccessModalContent';
 import { StaffListItem } from './StaffListItem';
+import { TeachingStackParamList } from './TeachingNavigator';
 
 export const StaffScreen = () => {
-  const { selectedCourse } = useCourses();
+  const { fakeProfiles, selectedCourse, setSelectedProfile } = useCourses();
   const course = selectedCourse;
   const styles = useStylesheet(createStyles);
   const { palettes, spacing } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
 
   const { t } = useTranslation();
   const {
@@ -47,6 +52,17 @@ export const StaffScreen = () => {
       return a.name.localeCompare(b.name);
     });
   }, [course]);
+
+  const openStaffProfile = (staff: Staff) => {
+    const profile =
+      fakeProfiles.find(item => item.id === (staff.idProfile ?? staff.id)) ??
+      null;
+
+    if (!profile) return;
+
+    setSelectedProfile(profile);
+    navigation.navigate('Contatto');
+  };
 
   if (!course) {
     return null;
@@ -69,6 +85,8 @@ export const StaffScreen = () => {
           renderItem={({ item: staff }) => (
             <StaffListItem
               staff={staff}
+              navigateEnabled={false}
+              onRowPress={() => openStaffProfile(staff)}
               onPress={() =>
                 showBottomModal(
                   <HandleAccessModalContent

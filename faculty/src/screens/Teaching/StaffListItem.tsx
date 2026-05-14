@@ -1,8 +1,9 @@
+import { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
+import { TouchableHighlightProps } from 'react-native';
 
-import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import { faPencil } from '@fortawesome/free-solid-svg-icons';
-import { Icon, ListItem, useTheme } from '@polito/lib/ui';
+import { IconButton, ListItem, PersonListItem, useTheme } from '@polito/lib/ui';
 
 import { Staff, useCourses } from '../../core/contexts/CoursesContext';
 import {
@@ -11,23 +12,44 @@ import {
   normalizeStaffAccess,
 } from './staffAccess';
 
-type Props = {
+type Props = TouchableHighlightProps & {
   staff: Staff;
-  onPress: (staff: Staff) => void;
+  subtitle?: string | ReactElement;
+  navigateEnabled?: boolean;
+  onRowPress?: () => void;
+  trailingItem?: ReactElement;
 };
 
-export const StaffListItem = ({ staff, onPress }: Props) => {
+export const StaffListItem = ({
+  staff,
+  subtitle,
+  navigateEnabled = true,
+  onRowPress,
+  trailingItem,
+  onPress,
+  ...touchableProps
+}: Props) => {
   const { t } = useTranslation();
-  const { getProfileById, user } = useCourses();
+  const { user } = useCourses();
   const { palettes, fontSizes } = useTheme();
   const holder = isHolderStaff(staff);
 
-  const profile = staff.idProfile ? getProfileById(staff.idProfile) : undefined;
-  const fullName = holder
-    ? `${t('other.you')}${user?.name ? ` (${user.name})` : ''}`
-    : profile
-      ? `${profile.name} ${profile.surname}`
-      : staff.name;
+  const staffPerson = {
+    id: staff.id,
+    role: staff.role,
+    firstName: holder
+      ? `${t('other.you')}${user?.name ? ` (${user.name.split(' ')[0]}` : ''}`
+      : staff.name.split(' ')[0],
+    lastName: holder
+      ? `${user?.name ? `${user.name.split(' ').slice(1).join(' ')})` : ''}`
+      : staff.name.split(' ').slice(1).join(' '),
+    picture: '',
+    email: '',
+    phoneNumbers: [],
+    facilityShortName: '',
+    profileUrl: '',
+    courses: [],
+  };
 
   const normalizedAccess = normalizeStaffAccess(staff.access);
   const accessLabel =
@@ -35,34 +57,30 @@ export const StaffListItem = ({ staff, onPress }: Props) => {
       ? t('other.fullAccess')
       : t('other.partialAccess');
 
-  return (
-    <ListItem
-      title={fullName}
-      subtitle={!holder ? accessLabel : undefined}
-      titleStyle={{
-        color: holder ? palettes.gray[600] : palettes.text[800],
-      }}
-      subtitleStyle={{
-        color: palettes.gray[500],
-      }}
-      leadingItem={
-        <Icon
-          icon={faCircleUser}
-          size={26}
-          color={holder ? palettes.text[600] : palettes.primary[700]}
-        />
-      }
+  const displaySubtitle = subtitle ?? (!holder ? accessLabel : undefined);
+
+  return staff ? (
+    <PersonListItem
+      person={staffPerson}
+      subtitle={displaySubtitle}
+      navigateEnabled={navigateEnabled && !onRowPress}
+      onPress={onRowPress}
       trailingItem={
-        !holder ? (
-          <Icon
+        trailingItem ||
+        (!holder ? (
+          <IconButton
             icon={faPencil}
             size={fontSizes.md}
             color={palettes.primary[600]}
             style={{ width: 16, flexShrink: 0, alignItems: 'center' }}
+            onPress={!holder ? onPress : undefined}
           />
-        ) : undefined
+        ) : undefined)
       }
-      onPress={!holder ? () => onPress(staff) : undefined}
+      holder={holder}
+      {...touchableProps}
     />
+  ) : (
+    <ListItem title=" - " subtitle={displaySubtitle} />
   );
 };

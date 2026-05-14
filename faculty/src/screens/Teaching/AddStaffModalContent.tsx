@@ -1,46 +1,34 @@
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Alert,
-  FlatList,
-  Platform,
-  Pressable,
-  StyleSheet,
-  TextInput,
-  View,
-  useWindowDimensions,
-} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import {
-  faCheck,
-  faCircleInfo,
-  faCircleXmark,
+  faMagnifyingGlass,
   faMinus,
-  faPencil,
   faPlus,
-  faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   BottomModal,
   CtaButton,
+  CtaButtonContainer,
+  CtaButtonSpacer,
   Icon,
+  IndentedDivider,
   ListItem,
   ModalContent,
+  OverviewList,
   Text,
   Theme,
+  TranslucentTextField,
   useBottomModal,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
 
-import { useCourses } from '../../core/contexts/CoursesContext';
-import { AssignStaffAccessModalContent } from './AssignStaffAccessModalContent';
-import {
-  STAFF_ACCESS_VALUES,
-  StaffAccessValue,
-  getStaffIdentityKey,
-} from './staffAccess';
+import { personToStaff, useCourses } from '../../core/contexts/CoursesContext';
+import { DefineAccessModal } from './DefineAccessModal';
+import { StaffAccessValue, getStaffIdentityKey } from './staffAccess';
 
 type Props = {
   close: () => void;
@@ -53,11 +41,6 @@ type StaffAccessDraft = {
   access?: StaffAccessValue;
 };
 
-type SearchRow = {
-  profile: SelectableProfile;
-  isSelected: boolean;
-};
-
 type Mode = 'search' | 'review';
 
 const getProfileName = (profile: Pick<SelectableProfile, 'name' | 'surname'>) =>
@@ -68,10 +51,9 @@ const getProfileCode = (id: number) => `D${id.toString().padStart(5, '0')}`;
 export const AddStaffModalContent = ({ close }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { palettes } = useTheme();
-  const { height: windowHeight } = useWindowDimensions();
-  const { addStaffToCourse, fakeProfiles, selectedCourse } = useCourses();
-  const [mode, setMode] = useState<Mode>('search');
+  const { palettes, fontSizes } = useTheme();
+  const { fakeProfiles, selectedCourse } = useCourses();
+  const [mode] = useState<Mode>('search');
   const [searchText, setSearchText] = useState('');
   const [selectedStaff, setSelectedStaff] = useState<StaffAccessDraft[]>([]);
   const {
@@ -168,127 +150,12 @@ export const AddStaffModalContent = ({ close }: Props) => {
       ? selectedStaff.length === 0
       : selectedStaff.length === 0 || unassignedStaffCount > 0;
 
-  const searchModalHeight = useMemo(() => {
-    const maxHeight = Math.max(420, windowHeight - 28);
-    const targetHeight = Math.max(520, windowHeight * 0.82);
-    return Math.round(Math.min(maxHeight, targetHeight));
-  }, [windowHeight]);
-
   const toggleSelection = (profileId: number) => {
     setSelectedStaff(prev =>
       prev.some(item => item.profileId === profileId)
         ? prev.filter(item => item.profileId !== profileId)
         : [...prev, { profileId }],
     );
-  };
-
-  const removeSelectionAt = (index: number) => {
-    setSelectedStaff(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const setAccessAt = (index: number, access: StaffAccessValue) => {
-    setSelectedStaff(prev =>
-      prev.map((item, i) => (i === index ? { ...item, access } : item)),
-    );
-  };
-
-  const openRoleSelectionAt = (index: number) => {
-    const selected = selectedStaff[index];
-    if (!selected) return;
-    const profile = profilesById.get(selected.profileId);
-    if (!profile) return;
-    const total = selectedStaff.length;
-    const collaboratorName = getProfileName(profile);
-
-    openAccessModal(
-      <AssignStaffAccessModalContent
-        close={closeAccessModal}
-        collaboratorName={collaboratorName}
-        current={index + 1}
-        total={total}
-        initialAccess={selected.access}
-        onDelete={() => {
-          removeSelectionAt(index);
-          closeAccessModal();
-        }}
-        onSubmit={(access, advance) => {
-          const applyAccess = () => {
-            setAccessAt(index, access);
-            closeAccessModal();
-            if (advance && index + 1 < total) {
-              setTimeout(() => openRoleSelectionAt(index + 1), 220);
-            }
-          };
-
-          if (access === STAFF_ACCESS_VALUES.full) {
-            Alert.alert(
-              t('other.confirm'),
-              t('other.confirmFullAccessAssignment', {
-                name: collaboratorName,
-              }),
-              [
-                { text: t('common.cancel'), style: 'cancel' },
-                {
-                  text: t('other.confirm'),
-                  style: 'destructive',
-                  onPress: applyAccess,
-                },
-              ],
-            );
-            return;
-          }
-
-          applyAccess();
-        }}
-      />,
-    );
-  };
-
-  const submitSelectedStaff = () => {
-    if (!selectedCourse || selectedProfiles.length === 0) return;
-
-    const unresolvedAccess = selectedProfiles.some(item => !item.access);
-    if (unresolvedAccess) return;
-
-    const nextStaffId =
-      selectedCourse.staff.length > 0
-        ? Math.max(...selectedCourse.staff.map(staff => staff.id)) + 1
-        : 1;
-
-    const newStaff = selectedProfiles.map((item, index) => ({
-      id: nextStaffId + index,
-      name: getProfileName(item.profile),
-      role: 'Collaboratore',
-      access: item.access!,
-      idProfile: item.profile.id,
-    }));
-
-    const hasFullAccess = newStaff.some(
-      item => item.access === STAFF_ACCESS_VALUES.full,
-    );
-
-    const commit = () => {
-      addStaffToCourse(selectedCourse.id, newStaff);
-      close();
-    };
-
-    if (hasFullAccess) {
-      Alert.alert(
-        t('other.confirm'),
-        t('other.confirmFullAccessAssignmentFinal'),
-        [
-          { text: t('common.cancel'), style: 'cancel' },
-          {
-            text: t('other.confirm'),
-            style: 'destructive',
-            onPress: commit,
-          },
-        ],
-      );
-      return;
-    }
-
-    commit();
   };
 
   const highlightMatch = (fullName: string) => {
@@ -322,232 +189,145 @@ export const AddStaffModalContent = ({ close }: Props) => {
     );
   };
 
-  const renderSearchItem = (
-    item: SearchRow,
-    index: number,
-    totalCount: number,
-  ) => (
-    <View key={item.profile.id}>
-      <ListItem
-        onPress={() => toggleSelection(item.profile.id)}
-        title={highlightMatch(getProfileName(item.profile))}
-        subtitle={getProfileCode(item.profile.id)}
-        leadingItem={
-          <Icon icon={faCircleUser} size={24} color={palettes.primary[700]} />
-        }
-        trailingItem={
-          <Icon
-            icon={item.isSelected ? faMinus : faPlus}
-            size={16}
-            color={palettes.primary[600]}
-            style={styles.addRemoveIcon}
-          />
-        }
-        containerStyle={item.isSelected ? styles.selectedRow : undefined}
-      />
-      {index < totalCount - 1 ? <View style={styles.divider} /> : null}
-    </View>
-  );
-
   return (
-    <>
-      <BottomModal dismissable {...accessModal} />
-      <View
-        style={[
-          styles.modalFrame,
-          mode === 'search' && { height: searchModalHeight },
-        ]}
-      >
-        <ModalContent
-          close={close}
-          fill={mode === 'search'}
-          headerMode="closeOnly"
-          containerStyle={styles.modalContentContainer}
-          headerStyle={styles.modalContentHeader}
-        >
-          <View style={styles.content}>
-            {mode === 'search' ? (
-              <>
-                <View style={styles.searchContainer}>
-                  <View style={styles.searchIconContainer}>
-                    <Icon
-                      icon={faSearch}
-                      size={16}
-                      color={palettes.gray[500]}
-                      style={styles.searchIcon}
-                    />
-                  </View>
-                  <View style={styles.searchTextContainer}>
-                    <TextInput
-                      placeholder={t('common.search')}
-                      value={searchText}
-                      onChangeText={setSearchText}
-                      style={styles.searchInput}
-                      placeholderTextColor={palettes.gray[500]}
-                      selectionColor={palettes.secondary[600]}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                    />
-                  </View>
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={t('common.clear')}
-                    onPress={() => setSearchText('')}
-                    disabled={searchText.length === 0}
-                    style={styles.searchClearButtonSlot}
-                    hitSlop={6}
-                  >
-                    {searchText.length > 0 ? (
-                      <Icon
-                        icon={faCircleXmark}
-                        size={16}
-                        color={palettes.gray[500]}
-                        style={styles.searchClearIcon}
-                      />
-                    ) : null}
-                  </Pressable>
-                </View>
-
-                {normalizedSearch.length === 0 ? (
-                  <Text style={styles.sectionTitle}>
-                    {t('other.basedOnPreviousCourses')}
-                  </Text>
-                ) : null}
-
-                {selectedRows.length > 0 ? (
-                  <View
-                    style={[
-                      styles.selectedCardContainer,
-                      unselectedRowsToDisplay.length > 0 &&
-                        styles.selectedCardContainerWithGap,
-                    ]}
-                  >
-                    <FlatList
-                      keyboardShouldPersistTaps="handled"
-                      data={selectedRows}
-                      keyExtractor={item => `${item.profile.id}`}
-                      renderItem={({ item, index }) =>
-                        renderSearchItem(item, index, selectedRows.length)
-                      }
-                    />
-                  </View>
-                ) : null}
-
-                {unselectedRowsToDisplay.length > 0 ? (
-                  <View style={styles.cardContainer}>
-                    <FlatList
-                      keyboardShouldPersistTaps="handled"
-                      data={unselectedRowsToDisplay}
-                      keyExtractor={item => `${item.profile.id}`}
-                      renderItem={({ item, index }) =>
-                        renderSearchItem(
-                          item,
-                          index,
-                          unselectedRowsToDisplay.length,
-                        )
-                      }
-                    />
-                  </View>
-                ) : null}
-
-                {selectedRows.length === 0 &&
-                unselectedRowsToDisplay.length === 0 ? (
-                  <View style={styles.emptyContainer}>
-                    <Text variant="secondaryText">{t('other.noPersona')}</Text>
-                  </View>
-                ) : null}
-              </>
-            ) : (
-              <>
-                <View style={styles.cardContainer}>
-                  <FlatList
-                    data={selectedProfiles}
-                    keyExtractor={item => `${item.profile.id}`}
-                    renderItem={({ item, index }) => (
-                      <>
-                        <ListItem
-                          title={getProfileName(item.profile)}
-                          subtitle={
-                            item.access
-                              ? item.access === STAFF_ACCESS_VALUES.full
-                                ? t('other.fullAccess')
-                                : t('other.partialAccess')
-                              : t('other.noRoleSelected')
-                          }
-                          leadingItem={
-                            <Icon
-                              icon={faCircleUser}
-                              size={24}
-                              color={palettes.primary[700]}
-                            />
-                          }
-                          trailingItem={
-                            <Icon
-                              icon={faPencil}
-                              size={16}
-                              color={palettes.primary[600]}
-                              style={styles.editIcon}
-                            />
-                          }
-                          onPress={() => openRoleSelectionAt(index)}
-                        />
-                        {index < selectedProfiles.length - 1 ? (
-                          <View style={styles.divider} />
-                        ) : null}
-                      </>
+    <ModalContent
+      close={close}
+      title={t('other.addCourseStaff')}
+      footer={
+        selectedRows.length > 0 && (
+          <CtaButtonContainer modal absolute>
+            <CtaButton
+              disabled={isConfirmDisabled}
+              title={t('other.continue')}
+              style={
+                isConfirmDisabled
+                  ? styles.confirmButtonDisabled
+                  : styles.confirmButtonActive
+              }
+              textStyle={styles.confirmButtonText}
+              action={() => {
+                openAccessModal(
+                  <DefineAccessModal
+                    addeddStaff={selectedProfiles.map(({ profile, access }) =>
+                      personToStaff(profile, undefined, access ?? ''),
                     )}
-                    ListEmptyComponent={
-                      <View style={styles.emptyContainer}>
-                        <Text variant="secondaryText">
-                          {t('other.noPersona')}
-                        </Text>
-                      </View>
-                    }
-                  />
-                </View>
+                    close={close}
+                    onBack={closeAccessModal}
+                  />,
+                );
+              }}
+            />
+          </CtaButtonContainer>
+        )
+      }
+    >
+      <View style={styles.content}>
+        <BottomModal dismissable {...accessModal} />
+        {/* {mode === 'search' ? ( */}
+        <React.Fragment>
+          <TranslucentTextField
+            type="text"
+            label={t('common.search')}
+            leadingIcon={faMagnifyingGlass}
+            containerStyle={styles.searchContainer}
+            isClearable
+            value={searchText}
+            onChangeText={setSearchText}
+            onClear={() => setSearchText('')}
+          />
 
-                {unassignedStaffCount > 0 ? (
-                  <View style={styles.warningContainer}>
-                    <Icon
-                      icon={faCircleInfo}
-                      size={16}
-                      color={palettes.warning[600]}
-                      style={styles.warningInfoIcon}
+          {normalizedSearch.length === 0 && selectedRows.length === 0 && (
+            <Text style={styles.sectionTitle}>
+              {t('other.basedOnPreviousCourses')}
+            </Text>
+          )}
+
+          {selectedRows.length > 0 && (
+            <OverviewList indented style={styles.listContainer}>
+              {selectedRows.map((item, index) => {
+                return (
+                  <React.Fragment key={item.profile.id}>
+                    <ListItem
+                      title={highlightMatch(getProfileName(item.profile))}
+                      subtitle={searchText && getProfileCode(item.profile.id)}
+                      onPress={() => toggleSelection(item.profile.id)}
+                      titleStyle={{
+                        color: palettes.text[800],
+                      }}
+                      subtitleStyle={{
+                        color: palettes.gray[600],
+                      }}
+                      containerStyle={styles.selectedRow}
+                      leadingItem={
+                        <Icon
+                          icon={faCircleUser}
+                          size={24}
+                          color={palettes.primary[700]}
+                        />
+                      }
+                      trailingItem={
+                        <Icon
+                          icon={faMinus}
+                          size={fontSizes.md}
+                          color={palettes.primary[600]}
+                        />
+                      }
                     />
-                    <Text style={styles.warningText}>
-                      {t('other.assignAccessToComplete')}
-                    </Text>
-                  </View>
-                ) : null}
-              </>
-            )}
-          </View>
-        </ModalContent>
+                    {index < selectedRows.length - 1 && <IndentedDivider />}
+                  </React.Fragment>
+                );
+              })}
+            </OverviewList>
+          )}
 
-        <CtaButton
-          absolute={false}
-          disabled={isConfirmDisabled}
-          title={t('other.confirm')}
-          icon={faCheck}
-          variant="filled"
-          containerStyle={styles.confirmButtonContainer}
-          style={[
-            styles.confirmButton,
-            isConfirmDisabled
-              ? styles.confirmButtonDisabled
-              : styles.confirmButtonActive,
-          ]}
-          textStyle={styles.confirmButtonText}
-          action={() => {
-            if (mode === 'search') {
-              setMode('review');
-              return;
-            }
-            submitSelectedStaff();
-          }}
-        />
+          {unselectedRowsToDisplay.length > 0 && (
+            <OverviewList indented style={styles.listContainer}>
+              {unselectedRowsToDisplay.map((item, index) => {
+                return (
+                  <React.Fragment key={item.profile.id}>
+                    <ListItem
+                      title={highlightMatch(getProfileName(item.profile))}
+                      subtitle={searchText && getProfileCode(item.profile.id)}
+                      onPress={() => toggleSelection(item.profile.id)}
+                      titleStyle={{
+                        color: palettes.text[800],
+                      }}
+                      subtitleStyle={{
+                        color: palettes.gray[600],
+                      }}
+                      leadingItem={
+                        <Icon
+                          icon={faCircleUser}
+                          size={24}
+                          color={palettes.primary[700]}
+                        />
+                      }
+                      trailingItem={
+                        <Icon
+                          icon={faPlus}
+                          size={fontSizes.md}
+                          color={palettes.primary[600]}
+                        />
+                      }
+                    />
+                    {index < unselectedRowsToDisplay.length - 1 && (
+                      <IndentedDivider />
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </OverviewList>
+          )}
+
+          {selectedRows.length === 0 && unselectedRowsToDisplay.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text variant="secondaryText">{t('other.noPersona')}</Text>
+            </View>
+          ) : null}
+        </React.Fragment>
+        <CtaButtonSpacer />
       </View>
-    </>
+    </ModalContent>
   );
 };
 
@@ -556,80 +336,23 @@ const createStyles = ({
   palettes,
   spacing,
   fontSizes,
-  fontFamilies,
   fontWeights,
+  shapes,
 }: Theme) =>
   StyleSheet.create({
-    modalFrame: {
-      backgroundColor: colors.background,
-    },
-    modalContentContainer: {
-      backgroundColor: colors.background,
-    },
-    modalContentHeader: {
-      backgroundColor: colors.background,
-    },
     content: {
-      paddingHorizontal: spacing[4],
-      paddingVertical: spacing[3],
-      gap: spacing[3],
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[5],
+      // flex: 1,
+      height: 700,
+
+      backgroundColor: colors.background,
     },
     searchContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      alignSelf: 'stretch',
-      backgroundColor: palettes.gray[200],
-      borderRadius: 6,
       borderWidth: 1,
       borderColor: palettes.gray[300],
-      paddingHorizontal: 6,
-      paddingVertical: 4,
-      gap: 6,
-      height: 34,
-      overflow: 'hidden',
     },
-    searchIconContainer: {
-      width: 24,
-      height: 24,
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'row',
-    },
-    searchIcon: {
-      width: 16,
-      flexShrink: 0,
-      textAlign: 'center',
-    },
-    searchTextContainer: {
-      flex: 1,
-      alignSelf: 'stretch',
-      alignItems: 'center',
-      flexDirection: 'row',
-    },
-    searchInput: {
-      flex: 1,
-      fontSize: fontSizes.md,
-      fontFamily: fontFamilies.body,
-      color: palettes.gray[800],
-      lineHeight: fontSizes.md * 1.25,
-      paddingTop: 0,
-      paddingBottom: 0,
-      paddingHorizontal: 0,
-      margin: 0,
-      textAlignVertical: Platform.OS === 'android' ? 'center' : undefined,
-    },
-    searchClearButtonSlot: {
-      width: 24,
-      height: 24,
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'row',
-    },
-    searchClearIcon: {
-      width: 16,
-      flexShrink: 0,
-      textAlign: 'center',
-    },
+
     searchTitleText: {
       fontSize: fontSizes.md,
       lineHeight: fontSizes.sm * 1.4,
@@ -639,26 +362,21 @@ const createStyles = ({
       fontSize: fontSizes.md,
       lineHeight: fontSizes.sm * 1.4,
     },
-    addRemoveIcon: {
-      width: 16,
-      flexShrink: 0,
-      textAlign: 'center',
-    },
+
     sectionTitle: {
       color: palettes.primary[700],
       fontSize: fontSizes.md,
       lineHeight: fontSizes.md * 1.25,
       fontWeight: fontWeights.semibold,
-      marginTop: spacing[1],
+      fontFamily: 'Montserrat-SemiBold',
+      marginTop: spacing[5],
     },
     selectedCardContainer: {
       borderRadius: 18,
       backgroundColor: palettes.gray[200],
       overflow: 'hidden',
     },
-    selectedCardContainerWithGap: {
-      marginBottom: spacing[3],
-    },
+
     selectedRow: {
       backgroundColor: palettes.gray[200],
     },
@@ -677,40 +395,7 @@ const createStyles = ({
       padding: 16,
       alignItems: 'center',
     },
-    warningContainer: {
-      borderRadius: 14,
-      borderWidth: 1,
-      borderColor: palettes.warning[600],
-      paddingHorizontal: spacing[4],
-      paddingVertical: spacing[3],
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing[2],
-      backgroundColor: `${palettes.warning[50]}80`,
-    },
-    warningText: {
-      color: palettes.warning[700],
-      flex: 1,
-      fontSize: fontSizes.md,
-      lineHeight: fontSizes.md * 1.4,
-    },
-    warningInfoIcon: {
-      marginBottom: 22,
-    },
-    editIcon: {
-      width: 16,
-      flexShrink: 0,
-      alignItems: 'center',
-    },
-    confirmButtonContainer: {
-      paddingTop: spacing[2],
-      paddingHorizontal: spacing[4],
-      paddingBottom: spacing[6],
-      backgroundColor: colors.background,
-    },
-    confirmButton: {
-      borderRadius: 18,
-    },
+
     confirmButtonActive: {
       backgroundColor: palettes.primary[500],
       borderColor: palettes.primary[500],
@@ -721,5 +406,11 @@ const createStyles = ({
     },
     confirmButtonText: {
       color: colors.white,
+    },
+    listContainer: {
+      borderRadius: shapes.lg,
+      elevation: 0,
+      marginTop: spacing[5],
+      marginBottom: 0,
     },
   });

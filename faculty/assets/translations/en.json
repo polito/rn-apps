@@ -360,7 +360,9 @@
   },
   "courseStaffTab": {
     "emptyState": "There are no collaborators yet",
-    "title": "Staff"
+    "title": "Staff",
+    "typeInfoMessage": "Assign type of teaching to your staff to complete your staff selection",
+    "accessInfoMessage": "Assign access to your staff to complete your staff selection"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
@@ -992,6 +994,7 @@
     "areYouSure": "Are you sure?",
     "deleteConfirmText": "By deleting {{name}} they will no longer have access",
     "confirm": "Confirm",
+    "continue": "Continue",
     "createNewNotice": "Create New Notice",
     "title": "Title",
     "description": "Description",
