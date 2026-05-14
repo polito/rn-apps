@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { createContext, memo, useContext, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -41,6 +41,13 @@ import { NoticeScreen } from './NoticeScreen';
 import { StudentContact } from './StudentContact';
 import { TeachingAppBar } from './TeachingAppBar';
 import { TeachingScreen } from './TeachingScreen';
+
+export const TeachingScrollContext = createContext({
+  isScrolled: false,
+  setIsScrolled: (_: boolean) => {},
+});
+
+export const useTeachingScroll = () => useContext(TeachingScrollContext);
 
 export type TeachingStackParamList = {
   Home: undefined;
@@ -100,7 +107,9 @@ const Stack = createNativeStackNavigator<
   typeof TeachingNavigatorID
 >();
 
-export const TeachingNavigator = () => {
+const HomeHeader = () => <TeachingAppBar />;
+
+const TeachingNavigatorStack = memo(() => {
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -121,7 +130,7 @@ export const TeachingNavigator = () => {
         component={TeachingScreen}
         options={{
           headerLargeTitle: false,
-          header: () => <TeachingAppBar />,
+          header: HomeHeader,
         }}
       />
       <Stack.Screen
@@ -285,6 +294,15 @@ export const TeachingNavigator = () => {
 
       {CourseSharedScreens()}
     </Stack.Navigator>
+  );
+});
+
+export const TeachingNavigator = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  return (
+    <TeachingScrollContext.Provider value={{ isScrolled, setIsScrolled }}>
+      <TeachingNavigatorStack />
+    </TeachingScrollContext.Provider>
   );
 };
 

@@ -1,5 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
+import {
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+  View,
+} from 'react-native';
 
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
@@ -23,7 +28,7 @@ import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { CourseIndicator } from './CourseIndicator';
 import { CourseListItem } from './CourseListItem';
-import { TeachingStackParamList } from './TeachingNavigator';
+import { TeachingStackParamList, useTeachingScroll } from './TeachingNavigator';
 
 const MAX_SECTION_ITEMS = 3;
 
@@ -34,6 +39,11 @@ export const TeachingScreen = () => {
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
   const { colors, palettes } = useTheme();
   const headerHeight = useHeaderHeight();
+  const { setIsScrolled } = useTeachingScroll();
+
+  const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    setIsScrolled(e.nativeEvent.contentOffset.y > -headerHeight + 10);
+  };
 
   const courseColors = [
     palettes.error[600],
@@ -49,6 +59,8 @@ export const TeachingScreen = () => {
       contentInsetAdjustmentBehavior="never"
       contentInset={{ top: headerHeight }}
       scrollIndicatorInsets={{ top: headerHeight }}
+      onScroll={handleScroll}
+      scrollEventThrottle={16}
     >
       <View style={{ paddingTop: 20 }} />
 

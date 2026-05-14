@@ -12,16 +12,21 @@ import {
 } from '@polito/lib/ui';
 import type { Theme } from '@polito/lib/ui';
 
+import { useTeachingScroll } from './TeachingNavigator';
+
 export const TeachingAppBar = () => {
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
   const { palettes, spacing, dark, colors } = useTheme();
   const styles = useStylesheet(createStyles);
+  const { isScrolled } = useTeachingScroll();
+
+  const showGlass = !dark || isScrolled;
 
   return (
     <View>
-      <TranslucentView blurAmount={10} />
-      <View style={styles.overlay} />
+      {showGlass && <TranslucentView blurAmount={10} />}
+      <View style={[styles.overlay, !showGlass && styles.overlayOpaque]} />
       <View style={{ height: top }} />
       <View style={styles.navRow}>
         <HeaderLogo />
@@ -37,7 +42,7 @@ export const TeachingAppBar = () => {
       <View style={styles.titleContainer}>
         <Text style={styles.title}>{t('teachingScreen.title')}</Text>
       </View>
-      <View style={styles.separator} />
+      <View style={[styles.separator, !isScrolled && { opacity: 0 }]} />
     </View>
   );
 };
@@ -50,6 +55,9 @@ const createStyles = ({ colors, fontFamilies, fontWeights }: Theme) =>
       ...StyleSheet.absoluteFillObject,
       backgroundColor: colors.background,
       opacity: 0.31,
+    },
+    overlayOpaque: {
+      opacity: 1,
     },
     navRow: {
       flexDirection: 'row',
