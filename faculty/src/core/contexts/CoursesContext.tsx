@@ -6424,6 +6424,11 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
       'Architetture efficienti per microservizi cloud-native',
       'Sicurezza nelle piattaforme containerizzate',
       'Ottimizzazione della programmazione concorrente',
+      'Osservabilità e tracing distribuito nei sistemi a eventi',
+      'Energy-aware scheduling per workload su cluster Kubernetes',
+      'Verifica formale di protocolli di consenso in ambienti Byzantine',
+      'Graph neural networks per il rilevamento di anomalie nei log applicativi',
+      'Dal monolite al dominio: pattern di decomposizione in sistemi legacy',
     ],
     sector: 'INF/01 - Informatica',
   });

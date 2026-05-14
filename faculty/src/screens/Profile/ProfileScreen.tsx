@@ -28,6 +28,8 @@ import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { ProfileStackParamList } from './ProfileNavigator';
 
+const MAX_PUBLICATIONS_PREVIEW = 3;
+
 export const ProfileScreen = () => {
   const { t } = useTranslation();
   const { spacing, colors } = useTheme();
@@ -37,6 +39,12 @@ export const ProfileScreen = () => {
   const styles = useStylesheet(createStyles);
   const { fontSizes } = useTheme();
   const { user } = useCourses();
+  const publications = user.publications ?? [];
+  const visiblePublications = publications.slice(0, MAX_PUBLICATIONS_PREVIEW);
+  const publicationsMoreCount = Math.max(
+    0,
+    publications.length - MAX_PUBLICATIONS_PREVIEW,
+  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -122,11 +130,19 @@ export const ProfileScreen = () => {
         />
       </SectionList>
 
-      {user.publications && user.publications.length > 0 && (
+      {publications.length > 0 && (
         <>
-          <SectionHeader title={t('other.publications')} />
+          <SectionHeader
+            title={t('other.publications')}
+            {...(publicationsMoreCount > 0
+              ? {
+                  linkTo: { screen: 'Publications' } as const,
+                  linkToMoreCount: publicationsMoreCount,
+                }
+              : {})}
+          />
           <SectionList>
-            {user.publications.map((pub, index) => (
+            {visiblePublications.map((pub, index) => (
               <ListItem
                 key={index}
                 title={pub}

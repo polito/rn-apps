@@ -197,7 +197,7 @@ export const ProfileForm = () => {
         </Card>
       </View>
       <CtaButton
-        title={t('other.refreshProfile')}
+        title={t('other.saveAndExit')}
         action={() => {
           handlePublish();
         }}

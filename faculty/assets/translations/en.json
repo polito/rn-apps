@@ -1,4 +1,16 @@
 {
+  "accessibilitySettingsScreen": {
+    "customFontSectionTitle": "Long-text spacing",
+    "customFontSizeTitle": "Font size",
+    "exampleText": "Sample text",
+    "fontSettingsTitle": "Text",
+    "lineHeightTitle": "Line height",
+    "lineHeightSubtitle": "Enhance vertical spacing between lines",
+    "paragraphSpacingTitle": "Paragraph spacing",
+    "paragraphSpacingSubtitle": "Add extra space between paragraphs",
+    "wordSpacingTitle": "Word spacing",
+    "wordSpacingSubtitle": "Increase distance between words"
+  },
   "agendaScreen": {
     "backToToday": "Back to today",
     "dailyLayout": "Daily layout",
@@ -72,6 +84,7 @@
     "yellow": "Yellow"
   },
   "common": {
+    "accessibility": "Accessibility",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
@@ -866,6 +879,7 @@
     "modifyProfile": "Modify Profile",
     "contacts": "Contacts",
     "refreshProfile": "Refresh Profile",
+    "saveAndExit": "Save and exit",
     "services": "Services",
     "digitalSignature": "Digital Signature",
     "reportsFault": "Report Fault",

@@ -4,9 +4,10 @@ import { useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faFont } from '@fortawesome/free-solid-svg-icons';
 import { useOfflineDisabled, usePreferencesContext } from '@polito/lib/core';
 import {
+  Icon,
   IconButton,
   ListItem,
   SectionHeader,
@@ -15,6 +16,7 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';
 
@@ -22,6 +24,7 @@ import i18next from 'i18next';
 import { Settings } from 'luxon';
 
 import { SectionList } from '../../core/components/SectionList';
+import { ProfileStackParamList } from './ProfileNavigator';
 
 // Componente Select per la lingua (rimane uguale)
 const LanguageSelect = () => {
@@ -65,7 +68,8 @@ const LanguageSelect = () => {
 
 // Schermata delle Impostazioni con tema gestito dal contesto
 export const SettingsScreen = () => {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const { t } = useTranslation();
   const { spacing } = useTheme();
 
@@ -118,6 +122,19 @@ export const SettingsScreen = () => {
         <SectionHeader title={t('common.language')} />
         <SectionList>
           <LanguageSelect />
+        </SectionList>
+        <View style={{ paddingBottom: spacing[5] }} />
+
+        <SectionHeader title={t('common.accessibility')} />
+        <SectionList>
+          <ListItem
+            isAction
+            title={t('accessibilitySettingsScreen.fontSettingsTitle')}
+            leadingItem={<Icon icon={faFont} size={20} />}
+            onPress={() => {
+              navigation.navigate('AccessibilitySettings');
+            }}
+          />
         </SectionList>
         <View style={{ paddingBottom: spacing[5] }} />
 
