@@ -36,7 +36,7 @@ import { TeachingStackParamList } from './TeachingNavigator';
 import { STAFF_ACCESS_VALUES } from './staffAccess';
 
 type Props = {
-  addeddStaff?: Staff[];
+  addeddStaff?: Staff[]; // If provided, the modal will use this staff list instead of the one from the selected lecture, and it will handle access types instead of teaching types
   close: () => void;
   onBack?: () => void;
 };
@@ -170,6 +170,9 @@ export const DefineAccessModal = ({ addeddStaff, close, onBack }: Props) => {
         onAccessSaved={access => {
           handleSelectStaffType(selectedStaff.id, access);
         }}
+        onPrevious={() => {
+          openAccessStaffModal(staffIndex - 1);
+        }}
         onNext={() => {
           openAccessStaffModal(staffIndex + 1);
         }}
@@ -270,20 +273,20 @@ export const DefineAccessModal = ({ addeddStaff, close, onBack }: Props) => {
                           : selectedTeachingTypeTitle
                       }
                       trailingItem={
-                        <DropDownIcon
-                          style={styles.dropDownIcon}
-                          onPress={() => {
-                            if (addeddStaff) {
-                              const staffIndex = addeddStaff.findIndex(
-                                s => s.id === staff.id,
-                              );
-                              if (staffIndex >= 0) {
-                                openAccessStaffModal(staffIndex);
-                              }
-                            }
-                          }}
-                        />
+                        !addeddStaff ? (
+                          <DropDownIcon style={styles.dropDownIcon} />
+                        ) : undefined
                       }
+                      onPress={() => {
+                        if (addeddStaff) {
+                          const staffIndex = addeddStaff.findIndex(
+                            s => s.id === staff.id,
+                          );
+                          if (staffIndex >= 0) {
+                            openAccessStaffModal(staffIndex);
+                          }
+                        }
+                      }}
                     />
                   </StatefulMenuView>
                   {index < staffList.length - 1 && (

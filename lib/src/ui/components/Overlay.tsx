@@ -1,7 +1,7 @@
 import { PropsWithChildren, ReactNode, useCallback } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { faArrowLeft, faClose } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faClose } from '@fortawesome/free-solid-svg-icons';
 import { IconButton } from '@polito/lib/ui';
 
 import { HeaderAccessory } from '../../ui/components/HeaderAccessory';
@@ -16,6 +16,7 @@ type Props = {
   scrollViewRef?: any;
   setScrollOffset?: (value: number) => void;
   backButton?: boolean;
+  backButtonAction?: () => void;
   footer?: ReactNode;
 };
 
@@ -26,10 +27,11 @@ export const Overlay = ({
   scrollViewRef,
   setScrollOffset,
   backButton = false,
+  backButtonAction,
   footer,
 }: PropsWithChildren<Props>) => {
   const styles = useStylesheet(createStyles);
-  const { palettes } = useTheme();
+  const { palettes, spacing } = useTheme();
   const handleOnScroll = useCallback(
     (event: any) => {
       if (setScrollOffset) {
@@ -45,9 +47,12 @@ export const Overlay = ({
         <View style={styles.headerRow}>
           {backButton && (
             <IconButton
-              icon={faArrowLeft}
+              icon={faChevronLeft}
               style={styles.headerSideLeft}
+              color={palettes.primary[500]}
+              size={spacing[4]}
               noPadding
+              onPress={backButtonAction}
             />
           )}
 
@@ -120,7 +125,7 @@ const createStyles = ({
     },
     modalTitle: {
       fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
+      fontWeight: fontWeights.medium,
       fontFamily: 'Montserrat-Medium',
       color: palettes.primary[700],
     },

@@ -230,7 +230,7 @@ export const AddStaffModalContent = ({ close }: Props) => {
             label={t('common.search')}
             leadingIcon={faMagnifyingGlass}
             containerStyle={styles.searchContainer}
-            isClearable
+            isClearable={searchText ? true : false}
             value={searchText}
             onChangeText={setSearchText}
             onClear={() => setSearchText('')}

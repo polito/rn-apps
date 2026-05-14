@@ -373,7 +373,8 @@
     "emptyState": "Non ci sono ancora collaboratori",
     "title": "Docenti",
     "typeInfoMessage": "Assegna il tipo di insegnamento al tuo staff per completare la selezione del staff",
-    "accessInfoMessage": "Assegna l'accesso al tuo staff per completare la selezione del staff"
+    "accessInfoMessage": "Assegna il tipo di accesso al tuo staff per completare la selezione del staff",
+    "willBeAbleToHave": "potrà avere:"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
@@ -1113,7 +1114,6 @@
     "partialAccessDesc": "Può accedere a file e aula virtuale",
     "handleAccess": "Gestisci accesso",
     "handleAccessStep": "Gestisci accesso {{current}}/{{total}}",
-    "willBeAbleTo": "avrà il seguente livello di accesso:",
     "noRoleSelected": "Nessun ruolo selezionato",
     "assignAccessToComplete": "Assegna il tipo di accesso ai collaboratori per completare la selezione",
     "save": "Salva",

@@ -362,7 +362,8 @@
     "emptyState": "There are no collaborators yet",
     "title": "Staff",
     "typeInfoMessage": "Assign type of teaching to your staff to complete your staff selection",
-    "accessInfoMessage": "Assign access to your staff to complete your staff selection"
+    "accessInfoMessage": "Assign type of access to your staff to complete your staff selection",
+    "willBeAbleToHave": "will be able to have:"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
@@ -1086,7 +1087,6 @@
     "partialAccessDesc": "Can access files and virtual classroom",
     "handleAccess": "Handle Access",
     "handleAccessStep": "Handle Access {{current}}/{{total}}",
-    "willBeAbleTo": "will have the following access:",
     "noRoleSelected": "No role selected",
     "assignAccessToComplete": "Assign type of access to your staff to complete your staff selection",
     "save": "Save",

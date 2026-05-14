@@ -47,6 +47,7 @@ export const HandleAccessModalContent = ({
   current,
   total,
   onNext,
+  onPrevious,
   onAccessSaved,
 }: Props) => {
   const { t } = useTranslation();
@@ -63,6 +64,7 @@ export const HandleAccessModalContent = ({
   const title = isMultipleStaff
     ? `${t('other.handleAccess')} ${current}/${total}`
     : t('other.handleAccess');
+  const showBackButton = Boolean(current && current > 1 && onPrevious);
 
   const handleDelete = () => {
     Alert.alert(
@@ -155,6 +157,8 @@ export const HandleAccessModalContent = ({
     <Overlay
       title={title}
       close={close}
+      backButton={showBackButton}
+      backButtonAction={onPrevious}
       footer={
         <CtaButtonContainer absolute={false} style={styles.ctaContainer}>
           <Row gap={2.5}>
@@ -200,10 +204,12 @@ export const HandleAccessModalContent = ({
       }
     >
       <View style={styles.container}>
-        <Text style={styles.headerText}>
-          <Text style={styles.boldText}>{staff.name}</Text>{' '}
-          {t('other.willBeAbleTo')}
-        </Text>
+        <Row>
+          <Text style={styles.boldText}>{staff.name} </Text>
+          <Text style={styles.headerText}>
+            {t('courseStaffTab.willBeAbleToHave')}
+          </Text>
+        </Row>
 
         <View style={{ gap: spacing[3] }}>
           {accessOptions.map(option => {
@@ -234,7 +240,7 @@ export const HandleAccessModalContent = ({
   );
 };
 
-const createStyles = ({ palettes, spacing }: Theme) =>
+const createStyles = ({ palettes, spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     container: {
       paddingHorizontal: spacing[5],
@@ -242,11 +248,13 @@ const createStyles = ({ palettes, spacing }: Theme) =>
       gap: spacing[3],
     },
     headerText: {
-      fontSize: 16,
+      fontSize: fontSizes.md,
       color: palettes.gray[800],
+      fontFamily: 'Montserrat-Medium',
     },
     boldText: {
-      fontWeight: 'bold',
+      fontSize: fontSizes.md,
+      fontFamily: 'Montserrat-Bold',
     },
     ctaContainer: {
       paddingHorizontal: spacing[5],
