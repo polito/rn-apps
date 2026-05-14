@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import {
   Card,
+  Col,
   GlobalStyles,
   Grid,
   Icon,
@@ -51,18 +52,25 @@ export const CourseStatisticsFilters = ({
               actions={years}
             >
               <Row justify="flex-start" align="center" style={styles.filterRow}>
-                <View style={styles.filterValueWrap}>
+                <View style={styles.filterMetricWrap}>
                   <Metric
                     title={t('courseStatisticsScreen.period')}
                     value={currentYear?.title ?? '--'}
                     accessibilityLabel={`${t('courseStatisticsScreen.period')}: ${
                       currentYear?.title ?? '--'
                     }`}
-                    valueStyle={styles.dropdownText}
+                    style={styles.filterMetric}
                     valueNumberOfLines={1}
                   />
                 </View>
-                <Icon icon={faChevronDown} style={styles.chevronIcon} />
+                <Col align="center">
+                  <Icon
+                    icon={faAngleDown}
+                    size={14}
+                    color={styles.periodDropdownIcon.color}
+                    style={styles.periodDropdownChevron}
+                  />
+                </Col>
               </Row>
             </StatefulMenuView>
           ) : (
@@ -73,7 +81,6 @@ export const CourseStatisticsFilters = ({
                 accessibilityLabel={`${t('courseStatisticsScreen.period')}: ${
                   currentYear?.title ?? '--'
                 }`}
-                valueStyle={styles.dropdownText}
               />
             </Row>
           )}
@@ -87,19 +94,26 @@ export const CourseStatisticsFilters = ({
               }}
               actions={teachers}
             >
-              <Row align="center" style={styles.filterRow}>
-                <View style={styles.filterValueWrap}>
+              <Row justify="flex-start" align="center" style={styles.filterRow}>
+                <View style={styles.filterMetricWrap}>
                   <Metric
                     title={t('courseStatisticsScreen.teacher')}
                     value={currentTeacher?.title ?? '--'}
                     accessibilityLabel={`${t('courseStatisticsScreen.teacher')}: ${
                       currentTeacher?.title ?? '--'
                     }`}
-                    valueStyle={styles.dropdownText}
+                    style={styles.filterMetric}
                     valueNumberOfLines={1}
                   />
                 </View>
-                <Icon icon={faChevronDown} style={styles.chevronIcon} />
+                <Col align="center">
+                  <Icon
+                    icon={faAngleDown}
+                    size={14}
+                    color={styles.periodDropdownIcon.color}
+                    style={styles.periodDropdownChevron}
+                  />
+                </Col>
               </Row>
             </StatefulMenuView>
           ) : (
@@ -110,7 +124,6 @@ export const CourseStatisticsFilters = ({
                 accessibilityLabel={`${t('courseStatisticsScreen.teacher')}: ${
                   currentTeacher?.title ?? '--'
                 }`}
-                valueStyle={styles.dropdownText}
               />
             </Row>
           )}
@@ -120,7 +133,7 @@ export const CourseStatisticsFilters = ({
   );
 };
 
-const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
+const createStyles = ({ spacing, palettes }: Theme) =>
   StyleSheet.create({
     metricsCard: {
       flexDirection: 'row',
@@ -134,17 +147,17 @@ const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
       flex: 1,
       minWidth: 0,
     },
-    filterValueWrap: {
+    filterMetricWrap: {
       flex: 1,
       minWidth: 0,
+    },
+    filterMetric: {
       marginRight: spacing[2],
     },
-    dropdownText: {
-      color: colors.prose,
-      fontSize: fontSizes.lg,
+    periodDropdownIcon: {
+      color: palettes.secondary['500'],
     },
-    chevronIcon: {
-      flexShrink: 0,
-      alignSelf: 'center',
+    periodDropdownChevron: {
+      marginTop: spacing[4],
     },
   });
