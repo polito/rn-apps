@@ -130,6 +130,7 @@ export const SettingsScreen = () => {
           <ListItem
             isAction
             title={t('accessibilitySettingsScreen.fontSettingsTitle')}
+            accessibilityRole="button"
             leadingItem={<Icon icon={faFont} size={20} />}
             onPress={() => {
               navigation.navigate('AccessibilitySettings');

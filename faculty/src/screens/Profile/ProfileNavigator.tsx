@@ -2,14 +2,16 @@ import { Platform, TouchableOpacity } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
+  AccessibilitySettingsScreen,
+  useTheme,
+  useTitlesStyles,
+} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { useTheme } from '../../../../lib/src/ui/hooks/useTheme';
-import { useTitlesStyles } from '../../../../lib/src/ui/hooks/useTitlesStyles';
 import { NotificationsScreen } from '../NotificationsScreen';
 import { ContactsScreen } from '../Servizi/ContactScreen';
-import { AccessibilitySettingsScreen } from './AccessibilityFontSettingsScreen';
 import { PersonalInfoScreen } from './PersonalInfoScreen';
 import { ProfileForm } from './ProfileForm';
 import { ProfileScreen } from './ProfileScreen';
