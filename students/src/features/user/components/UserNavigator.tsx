@@ -2,13 +2,17 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import { UserNavigatorID } from '@polito/lib/core';
-import { HeaderLogoNoProps, useTheme, useTitlesStyles } from '@polito/lib/ui';
+import {
+  AccessibilitySettingsScreen,
+  HeaderLogoNoProps,
+  useTheme,
+  useTitlesStyles,
+} from '@polito/lib/ui';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { SharedScreens } from '../../../shared/navigation/SharedScreens';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
-import { AccessibilitySettingsScreen } from '../screens/AccessibilityFontSettingsScreen.tsx';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
@@ -87,10 +91,6 @@ export const UserNavigator = () => {
       <Stack.Screen
         name="AccessibilitySettings"
         component={AccessibilitySettingsScreen}
-        options={{
-          headerTitle: t('accessibilitySettingsScreen.fontSettingsTitle'),
-          headerBackButtonDisplayMode: 'minimal',
-        }}
       />
       <Stack.Screen
         name="Messages"
