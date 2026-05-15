@@ -1,34 +1,49 @@
-import { useMemo } from 'react';
+import { useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { Platform, SafeAreaView, ScrollView } from 'react-native';
 
-import { usePreferencesContext } from '@polito/lib/core';
-import {
-  BottomBarSpacer,
-  Col,
-  ListItem,
-  OverviewList,
-  Section,
-  SectionHeader,
-  SwitchListItem,
-  Text,
-} from '@polito/lib/ui';
 import { MenuAction, MenuView } from '@react-native-menu/menu';
-
-import { AppPreferences } from '~/core/types/preferences';
+import { useNavigation } from '@react-navigation/native';
 
 import { TFunction } from 'i18next';
+
+import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { Accessibility } from '../../core/types/Accessibility';
+import { BottomBarSpacer } from './BottomBarSpacer';
+import { Col } from './Col';
+import { ListItem } from './ListItem';
+import { OverviewList } from './OverviewList';
+import { Section } from './Section';
+import { SectionHeader } from './SectionHeader';
+import { SwitchListItem } from './SwitchListItem';
+import { Text } from './Text';
 
 interface AccessibilityItemProps {
   t: TFunction;
   value?: string;
-  onUpdate: (event: any) => void;
+  onUpdate: (event: string) => void;
 }
+
+const FONT_SIZE_CHOICES = [100, 125, 150, 175, 200] as const;
+
+const isFontSizeChoice = (
+  n: number,
+): n is NonNullable<Accessibility['fontSize']> =>
+  FONT_SIZE_CHOICES.includes(n as NonNullable<Accessibility['fontSize']>);
 
 export const AccessibilitySettingsScreen = () => {
   const { t } = useTranslation();
-  const { accessibility, updatePreference } =
-    usePreferencesContext<AppPreferences>();
+  const navigation = useNavigation();
+  const { accessibility, updatePreference } = usePreferencesContext();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: t('accessibilitySettingsScreen.fontSettingsTitle'),
+      ...(Platform.OS === 'ios' && {
+        headerBackButtonDisplayMode: 'minimal',
+      }),
+    });
+  }, [navigation, t]);
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -77,18 +92,14 @@ export const AccessibilitySettingsScreen = () => {
               <CustomFontSizeListItem
                 t={t}
                 value={accessibility?.fontSize?.toString() ?? '100'}
-                onUpdate={e => {
-                  if (
-                    Number(e) === 100 ||
-                    Number(e) === 125 ||
-                    Number(e) === 150 ||
-                    Number(e) === 175 ||
-                    Number(e) === 200
-                  )
-                    return updatePreference('accessibility', {
+                onUpdate={event => {
+                  const n = Number(event);
+                  if (isFontSizeChoice(n)) {
+                    updatePreference('accessibility', {
                       ...accessibility,
-                      fontSize: e,
+                      fontSize: n,
                     });
+                  }
                 }}
               />
             </OverviewList>
@@ -183,10 +194,6 @@ const CustomFontSizeListItem = ({
         isAction
         title={t(`accessibilitySettingsScreen.customFontSizeTitle`)}
         subtitle={effectiveLabel}
-        // // subtitleProps={{ capitalize: true }}
-        /* TODO accessibilityLabel={`${t('common.language')}: ${t(
-          `common.${language}`,
-        )}. ${t('settingsScreen.openLanguageMenu')}`}*/
       />
     </MenuView>
   );
