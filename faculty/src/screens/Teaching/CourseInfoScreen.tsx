@@ -31,7 +31,7 @@ import { MoodleStatusBadge } from './MoodleStatusBagde';
 
 export const CourseInfoScreen = () => {
   const { t } = useTranslation();
-  const { palettes, spacing } = useTheme();
+  const { palettes, spacing, fontFamilies } = useTheme();
   const { selectedCourse } = useCourses();
   const styles = useStylesheet(createStyles);
   const { setOptions } = useNavigation();
@@ -84,6 +84,7 @@ export const CourseInfoScreen = () => {
                   selectedCourse?.year.split('/')[selectedCourse?.period - 1] ??
                   '--'
                 }`}
+                valueStyle={{ fontFamily: fontFamilies.heading }}
                 accessibilityLabel={`${t('degreeCourseScreen.period')}: ${
                   selectedCourse?.period ?? '--'
                 } - ${selectedCourse?.year.split('/')[selectedCourse?.period - 1] ?? '--'}`}

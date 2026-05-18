@@ -58,6 +58,7 @@ export interface Theme {
   fontFamilies: {
     heading: string;
     body: string;
+    title: string;
   };
   fontWeights: {
     normal: TextStyle['fontWeight'];
