@@ -69,7 +69,7 @@ export const ListItem = ({
   unread = false,
   ...rest
 }: ListItemProps) => {
-  const { fontSizes, fontWeights, colors, spacing } = useTheme();
+  const { fontSizes, fontFamilies, fontWeights, colors, spacing } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { accessibility } = usePreferencesContext();
   const titleElement =
@@ -82,6 +82,7 @@ export const ListItem = ({
             GlobalStyles.grow,
             {
               fontSize: fontSizes.md,
+              fontFamily: fontFamilies.title,
               lineHeight:
                 accessibility?.fontSize && accessibility.fontSize <= 125
                   ? fontSizes.sm * 1.4
