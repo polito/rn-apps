@@ -1,6 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -367,7 +373,10 @@ export const DefineAccessModal = () => {
         </Section>
       </ScrollView>
 
-      <CtaButtonContainer absolute={true} style={styles.ctaContainer}>
+      <CtaButtonContainer
+        absolute={Platform.OS === 'android'}
+        style={styles.ctaContainer}
+      >
         <View style={styles.messageContainer}>
           {!canConfirm && (
             <InfoMessage
@@ -382,7 +391,7 @@ export const DefineAccessModal = () => {
           )}
         </View>
         <CtaButton
-          absolute={true}
+          absolute={false}
           title={t('common.confirm')}
           action={handleConfirmSelection}
           disabled={!canConfirm}
@@ -403,11 +412,7 @@ const createStyles = ({ spacing, colors, shapes, fontSizes }: Theme) =>
       gap: spacing[5],
       backgroundColor: colors.background,
     },
-    ctaContainer: {
-      paddingBottom: spacing[12], // spazio per safe area / bottone
-      alignItems: 'center',
-      gap: spacing[2],
-    },
+    ctaContainer: {},
     section: {
       marginTop: 0,
       paddingTop: 0,
@@ -436,7 +441,7 @@ const createStyles = ({ spacing, colors, shapes, fontSizes }: Theme) =>
       fontSize: fontSizes.sm,
     },
     messageContainer: {
-      marginBottom: spacing[3] + spacing[5],
-      paddingHorizontal: spacing[5],
+      marginBottom: spacing[5],
+      margin: -spacing[5],
     },
   });

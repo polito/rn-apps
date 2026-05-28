@@ -193,14 +193,14 @@ export const LessonScreen = () => {
         <CtaButtonSpacer />
       </ScrollView>
 
-      <CtaButtonContainer absolute style={styles.ctaContainer}>
+      <CtaButtonContainer absolute={true} style={styles.ctaContainer}>
         <Row gap={2.5}>
           <Col flex={1}>
             <CtaButton
               title={t('common.delete')}
               action={handleDeleteLecture}
               icon={faTrash}
-              absolute={false}
+              absolute={true}
               containerStyle={styles.ctaButtonContainer}
               destructive
               variant="outlined"
@@ -213,7 +213,7 @@ export const LessonScreen = () => {
                 navigation.navigate('AddOrEditLectureContent');
               }}
               icon={faPencil}
-              absolute={false}
+              absolute={true}
               containerStyle={styles.ctaButtonContainer}
             />
           </Col>
@@ -272,7 +272,7 @@ const createStyles = ({ spacing, fontSizes, fontWeights }: Theme) =>
       marginLeft: spacing[4],
     },
     ctaContainer: {
-      paddingHorizontal: spacing[4],
+      paddingBottom: spacing[5],
     },
     ctaButtonContainer: {
       padding: 0,

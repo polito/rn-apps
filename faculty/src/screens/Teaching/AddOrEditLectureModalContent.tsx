@@ -2,6 +2,7 @@ import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -9,9 +10,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import DatePicker from 'react-native-date-picker';
 
 import {
   faCalendar,
+  faChevronDown,
   faClock,
   faLanguage,
   faLocationDot,
@@ -19,9 +22,10 @@ import {
   faPeopleGroup,
 } from '@fortawesome/free-solid-svg-icons';
 import {
-  formatDate,
+  APP_TIMEZONE,
   formatDateTimeAccessibility,
   formatMachineDate,
+  usePreferencesContext,
 } from '@polito/lib/core';
 import {
   BottomBarSpacer,
@@ -45,12 +49,13 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from '@react-native-community/datetimepicker';
 import { MenuAction } from '@react-native-menu/menu';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { AppPreferences } from '~/core/types/preferences';
+
+import { DateTime } from 'luxon';
 
 import { getTeachingTypeTitle } from '../../core/constants/teachingTypes';
 import { Staff, useCourses } from '../../core/contexts/CoursesContext';
@@ -92,9 +97,15 @@ export const AddOrEditLectureModalContent = () => {
     setSelectedLecture,
     updateCourseLecture,
   } = useCourses(); // Recupero i corsi dal context
-  const { fontSizes, palettes } = useTheme();
+  const { fontSizes, palettes, spacing } = useTheme();
   const { t } = useTranslation();
   const { fakeProfiles } = useCourses();
+  const { language } = usePreferencesContext<AppPreferences>();
+  const today = useMemo(
+    () => DateTime.now().setZone(APP_TIMEZONE).toJSDate(),
+    [],
+  );
+
   const [date, setDate] = useState<Date | null>(
     selectedLecture?.date ? new Date(selectedLecture.date) : null,
   );
@@ -106,7 +117,7 @@ export const AddOrEditLectureModalContent = () => {
       : null,
   );
   const [activeField, setActiveField] = useState<'date' | 'time' | null>(null);
-  const [title, setTitle] = useState<string>(selectedLecture?.title ?? '');
+  const [title, _setTitle] = useState<string>(selectedLecture?.title ?? '');
   const [topic, setTopic] = useState<string>(selectedLecture?.content ?? '');
 
   const [selectedStaff, setSelectedStaff] = useState<Staff[]>(() => {
@@ -162,30 +173,32 @@ export const AddOrEditLectureModalContent = () => {
     selectedLecture?.time ? true : false,
   );
 
+  const formatDate = (newdate: Date) => {
+    const day = String(newdate.getDate()).padStart(2, '0');
+    const month = String(newdate.getMonth() + 1).padStart(2, '0');
+    const year = newdate.getFullYear().toString().slice(-2);
+
+    return `${day}/${month}/${year}`;
+  };
+
   const navigation =
     useNavigation<NativeStackNavigationProp<CourseSharedScreensParamList>>();
 
-  const handleDateChange = (
-    event: DateTimePickerEvent,
-    selectedDate?: Date,
-  ) => {
-    if (event.type === 'dismissed') {
-      setActiveField(null);
-      return;
-    }
-
-    if (event.type === 'set' && selectedDate && activeField) {
-      if (activeField === 'date') {
-        setDate(selectedDate);
-        setIsDateSelected(true);
-      } else {
-        setTime(selectedDate);
-        setIsTimeSelected(true);
+  const handleDateChange = useCallback(
+    (selectedDate: Date) => {
+      if (selectedDate && activeField) {
+        if (activeField === 'date') {
+          setDate(selectedDate);
+          setIsDateSelected(true);
+        } else {
+          setTime(selectedDate);
+          setIsTimeSelected(true);
+        }
+        setActiveField(null);
       }
-      setActiveField(null);
-    }
-  };
-
+    },
+    [activeField],
+  );
   const handleSaveAndExit = () => {
     Alert.alert(
       t('common.confirm'),
@@ -427,12 +440,11 @@ export const AddOrEditLectureModalContent = () => {
   ]);
 
   useLayoutEffect(() => {
+    const isTemporary = selectedLecture ? selectedLecture.id < 0 : false;
+    const canShowSaveDraft =
+      !selectedLecture || selectedLecture.status === 'draft' || isTemporary;
     navigation.setOptions({
       headerRight: () => {
-        const isTemporary = selectedLecture ? selectedLecture.id < 0 : false;
-        const canShowSaveDraft =
-          !selectedLecture || selectedLecture.status === 'draft' || isTemporary;
-
         return (
           canShowSaveDraft && (
             <TextButton onPress={handleSaveDraft}>
@@ -441,6 +453,7 @@ export const AddOrEditLectureModalContent = () => {
           )
         );
       },
+      ...(!canShowSaveDraft && { unstable_headerRightItems: () => [] }),
     });
   }, [navigation, t, handleSaveDraft, selectedLecture]);
 
@@ -505,7 +518,7 @@ export const AddOrEditLectureModalContent = () => {
   ]);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
         <Section style={styles.section}>
           <View style={styles.cardsContainer}>
@@ -522,7 +535,7 @@ export const AddOrEditLectureModalContent = () => {
                     color={
                       isDateSelected
                         ? palettes.primary[700]
-                        : palettes.gray[500]
+                        : palettes.gray[400]
                     }
                   />
                   <Col>
@@ -536,9 +549,12 @@ export const AddOrEditLectureModalContent = () => {
                     >
                       {t('other.date')}
                     </Text>
-                    <Text style={styles.cardSubtitle}>
-                      {date ? formatDate(date) : t('common.datePlaceholder')}
-                    </Text>
+                    <Row style={{ gap: spacing[1.5] }} align="center">
+                      <Text style={styles.cardSubtitle}>
+                        {date ? formatDate(date) : t('common.datePlaceholder')}
+                      </Text>
+                      <Icon icon={faChevronDown} size={fontSizes.sm} />
+                    </Row>
                   </Col>
                 </Row>
               </Card>
@@ -556,7 +572,7 @@ export const AddOrEditLectureModalContent = () => {
                     color={
                       isTimeSelected
                         ? palettes.primary[700]
-                        : palettes.gray[500]
+                        : palettes.gray[400]
                     }
                   />
                   <Col>
@@ -570,31 +586,19 @@ export const AddOrEditLectureModalContent = () => {
                     >
                       {t('common.time')}
                     </Text>
-                    <Text style={styles.cardSubtitle}>
-                      {time
-                        ? formatDateTimeAccessibility(time).time
-                        : t('common.timePlaceholder')}
-                    </Text>
+                    <Row style={{ gap: spacing[1.5] }} align="center">
+                      <Text style={styles.cardSubtitle}>
+                        {time
+                          ? formatDateTimeAccessibility(time).time
+                          : t('common.timePlaceholder')}
+                      </Text>
+                      <Icon icon={faChevronDown} size={fontSizes.sm} />
+                    </Row>
                   </Col>
                 </Row>
               </Card>
             </TouchableOpacity>
           </View>
-        </Section>
-
-        <Section style={styles.section}>
-          <Card rounded padded style={styles.card}>
-            <Text variant="heading" style={styles.TitleText}>
-              {t('other.title')}
-            </Text>
-
-            <TextInput
-              style={styles.ContentText}
-              placeholder={t('common.titlePlaceholder')}
-              value={title}
-              onChangeText={setTitle}
-            />
-          </Card>
         </Section>
 
         <Section style={styles.section}>
@@ -742,9 +746,9 @@ export const AddOrEditLectureModalContent = () => {
         <CtaButtonSpacer />
       </ScrollView>
 
-      <CtaButtonContainer absolute={true}>
+      <CtaButtonContainer absolute={Platform.OS === 'android'}>
         <CtaButton
-          absolute={true}
+          absolute={false}
           icon={!selectedLecture && faPaperPlane}
           title={selectedLecture ? t('common.saveAndExit') : t('other.publish')}
           action={handleSaveAndExit}
@@ -752,14 +756,20 @@ export const AddOrEditLectureModalContent = () => {
         />
       </CtaButtonContainer>
 
-      {activeField && (
-        <DateTimePicker
-          value={date ?? new Date()}
-          mode={activeField === 'date' ? 'date' : 'time'}
-          //   display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleDateChange}
-        />
-      )}
+      <DatePicker
+        modal
+        locale={language}
+        date={activeField === 'date' ? date || today : time || today}
+        mode={activeField === 'date' ? 'date' : 'time'}
+        open={activeField !== null}
+        onConfirm={handleDateChange}
+        onCancel={() => setActiveField(null)}
+        title={
+          activeField === 'date' ? t('other.selectDate') : t('other.selectTime')
+        }
+        confirmText={t('common.confirm')}
+        cancelText={t('common.cancel')}
+      />
     </SafeAreaView>
   );
 };
@@ -770,15 +780,15 @@ const createStyles = ({
   fontWeights,
   colors,
   palettes,
+  fontFamilies,
 }: Theme) =>
   StyleSheet.create({
     container: {
       paddingTop: spacing[5],
-      backgroundColor: colors.background,
     },
     cardsContainer: {
       flexDirection: 'row',
-      gap: spacing[5],
+      gap: spacing[2],
       alignItems: 'center',
       display: 'flex',
       alignSelf: 'stretch',
@@ -799,15 +809,13 @@ const createStyles = ({
     },
     cardTitle: {
       color: palettes.gray[500],
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      fontFamily: 'Montserrat-SemiBold',
+      fontSize: fontSizes.sm,
+      fontFamily: fontFamilies.body,
     },
     cardSubtitle: {
       color: palettes.gray[500],
       fontSize: fontSizes.md,
-      fontWeight: fontWeights.normal,
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: fontFamilies.heading,
     },
     dateContainer: {
       flexDirection: 'row',

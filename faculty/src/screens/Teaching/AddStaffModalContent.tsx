@@ -1,6 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -326,9 +332,9 @@ export const AddStaffModalContent = () => {
       </ScrollView>
 
       {selectedRows.length > 0 && (
-        <CtaButtonContainer absolute={true}>
+        <CtaButtonContainer absolute={Platform.OS === 'android'}>
           <CtaButton
-            absolute={true}
+            absolute={false}
             disabled={isConfirmDisabled}
             title={t('other.continue')}
             style={

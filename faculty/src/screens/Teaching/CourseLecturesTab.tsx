@@ -226,14 +226,14 @@ export const CourseLecturesTab = () => {
           <CtaButtonSpacer />
         </ScrollView>
       </SafeAreaView>
-      <CtaButtonContainer absolute={true}>
+      <CtaButtonContainer absolute={true} style={styles.ctaContainer}>
         <CtaButton
           title={t('courseLecturesScreen.addLecture')}
           action={() => {
             navigation.navigate('AddOrEditLectureContent');
           }}
           icon={faPlus}
-          absolute={true}
+          absolute={false}
         />
       </CtaButtonContainer>
     </React.Fragment>
@@ -249,5 +249,8 @@ const createStyles = ({ spacing, shapes }: Theme) =>
     },
     container: {
       marginTop: spacing[5],
+    },
+    ctaContainer: {
+      paddingBottom: spacing[5],
     },
   });

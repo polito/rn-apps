@@ -77,10 +77,7 @@ const HeaderTextButton = ({ text, onPress }: HeaderTextButtonProps) => {
   const { palettes, fontSizes, spacing } = useTheme();
 
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={{ padding: spacing[2], marginRight: -spacing[2] }}
-    >
+    <TouchableOpacity onPress={onPress} style={{ padding: spacing[2] }}>
       <Text
         style={{
           fontSize: fontSizes.md,
@@ -153,6 +150,7 @@ export const CourseSharedScreens = () => {
           headerTitleAlign: 'center',
           headerShown: true,
           headerShadowVisible: false,
+          headerLargeTitleEnabled: false,
         }}
       />
 
@@ -226,7 +224,6 @@ export const CourseSharedScreens = () => {
           presentation: 'modal',
           headerShadowVisible: false,
           headerBackVisible: false,
-
           headerLeft: () => (
             <HeaderTextButton
               onPress={() => navigation.goBack()}
@@ -259,13 +256,19 @@ export const CourseSharedScreens = () => {
       <Stack.Screen
         name="DefineAccess"
         component={DefineAccessModal}
-        options={() => ({
+        options={({ navigation }) => ({
           headerTitle: '',
           headerLargeTitle: false,
           headerTransparent: false,
           presentation: 'modal',
           headerShadowVisible: false,
           headerBackVisible: true,
+          headerLeft: () => (
+            <HeaderTextButton
+              onPress={() => navigation.goBack()}
+              text={t('common.close')}
+            />
+          ),
         })}
       />
 

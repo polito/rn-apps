@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { faCheck, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -143,9 +143,9 @@ export const ChooseRoomModal = () => {
         <BottomBarSpacer />
       </ScrollView>
 
-      <CtaButtonContainer absolute>
+      <CtaButtonContainer absolute={Platform.OS === 'android'}>
         <CtaButton
-          absolute={true}
+          absolute={false}
           title={t('common.confirmSelection')}
           action={handleConfirmSelection}
           disabled={!selectedRoomKey}

@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -245,9 +245,9 @@ export const EditLectureStaffModalContent = () => {
         <CtaButtonSpacer />
       </ScrollView>
 
-      <CtaButtonContainer absolute={true}>
+      <CtaButtonContainer absolute={Platform.OS === 'android'}>
         <CtaButton
-          absolute={true}
+          absolute={false}
           title={t('common.addNewPerson')}
           action={() => {
             navigation.navigate('AddStaff', { from: 'lectureScreen' });
