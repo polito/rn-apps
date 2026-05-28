@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { View, useWindowDimensions } from 'react-native';
 
 import { faSliders } from '@fortawesome/free-solid-svg-icons';
-import { IconButton, Text, TopTabBar } from '@polito/lib/ui';
 import { useTheme, useTitlesStyles } from '@polito/lib/ui';
+import { IconButton, Text, TopTabBar } from '@polito/lib/ui';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ParamListBase } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -64,6 +64,7 @@ export const CourseNavigator = ({ navigation }: Props) => {
           {t('common.course')}
         </Text>
       ),
+
       headerRight: () =>
         tab === 'Info' ? (
           <IconButton
@@ -89,14 +90,13 @@ export const CourseNavigator = ({ navigation }: Props) => {
     tab,
     selectedCourse,
     showPlusButton, // 🔥 Trigga il re-render dell'header
-    fontSizes.lg,
+    fontSizes,
     navigation,
     spacing,
     t,
     palettes.primary,
     titleStyles.headerTitleStyle,
     width,
-    fontSizes,
   ]);
 
   return (
@@ -141,7 +141,7 @@ export const CourseNavigator = ({ navigation }: Props) => {
           tabPress: () => {
             setShowPlusButton(false);
             setFormPage('');
-            setTab('Notices');
+            setTab(t('common.notice_plural'));
           },
           focus: () => {
             setShowPlusButton(false);
@@ -157,7 +157,7 @@ export const CourseNavigator = ({ navigation }: Props) => {
           tabPress: () => {
             setShowPlusButton(true);
             setFormPage('Files');
-            setTab('Files');
+            setTab(t('courseFilesTab.title'));
           },
           focus: () => {
             setShowPlusButton(true);
@@ -173,7 +173,7 @@ export const CourseNavigator = ({ navigation }: Props) => {
           tabPress: () => {
             setShowPlusButton(true);
             setFormPage('Lecture');
-            setTab('Lectures');
+            setTab(t('common.lecture_plural'));
           },
           focus: () => {
             setShowPlusButton(true);
@@ -189,7 +189,7 @@ export const CourseNavigator = ({ navigation }: Props) => {
           tabPress: () => {
             setShowPlusButton(false);
             setFormPage('Students');
-            setTab('Students');
+            setTab(t('other.students'));
           },
           focus: () => {
             setShowPlusButton(false);
@@ -205,7 +205,7 @@ export const CourseNavigator = ({ navigation }: Props) => {
           tabPress: () => {
             setShowPlusButton(false);
             setFormPage('');
-            setTab('Assignments');
+            setTab(t('courseAssignmentsTab.title'));
           },
           focus: () => {
             setShowPlusButton(false);

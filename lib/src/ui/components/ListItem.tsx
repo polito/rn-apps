@@ -83,6 +83,7 @@ export const ListItem = ({
             {
               fontSize: fontSizes.md,
               fontFamily: fontFamilies.title,
+              fontWeight: fontWeights.medium,
               lineHeight:
                 accessibility?.fontSize && accessibility.fontSize <= 125
                   ? fontSizes.sm * 1.4
@@ -186,21 +187,7 @@ export const ListItem = ({
           {subtitleElement}
         </Col>
         {!card &&
-          (!trailingItem && (linkTo || isAction) ? (
-            <DisclosureIndicator />
-          ) : (
-            <View
-              style={{
-                marginRight: -10,
-                width: 51,
-                height: 31,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              {trailingItem}
-            </View>
-          ))}
+          (!trailingItem && isAction ? <DisclosureIndicator /> : trailingItem)}
       </View>
     </TouchableHighlight>
   );

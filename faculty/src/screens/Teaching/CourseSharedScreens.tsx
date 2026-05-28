@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next';
+import { TouchableOpacity } from 'react-native';
 
+import { Text } from '@polito/lib/ui';
 import { useTheme } from '@polito/lib/ui';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { AddNoticeContent } from './AddNoticeContent';
 // import { CourseAssignmentPdfCreationScreen } from '../CourseAssignmentPdfCreationScreen';
 // import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
 // import { CourseAssignmentUploadScreen } from './CourseAssignmentUploadScreen';
@@ -15,10 +18,10 @@ import { CourseNavigator } from './CourseNavigator';
 // import { CourseHideEventScreen } from '../screens/CourseHideEventScreen';
 // import { CourseIconPickerScreen } from '../screens/CourseIconPickerScreen';
 import { CoursePreferencesScreen } from './CoursePreferencesScreen';
-
+import { EditNoticeContent } from './EditNoticeContent';
 // import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
 // import { CourseVirtualClassroomScreen } from './CourseVirtualClassroomScreen';
-// import { NoticeScreen } from './NoticeScreen';
+import { NoticeScreen } from './NoticeScreen';
 
 export interface CourseSharedScreensParamList extends ParamListBase {
   Course: {
@@ -27,7 +30,6 @@ export interface CourseSharedScreensParamList extends ParamListBase {
     title?: string;
     uniqueShortcode?: string;
   };
-  Notice: { noticeId: number; courseId: number };
   CoursePreferences: { courseId: number; uniqueShortcode: string };
   CourseGuide: { courseId: number };
   CourseDirectory: {
@@ -55,10 +57,31 @@ export interface CourseSharedScreensParamList extends ParamListBase {
 
 const Stack = createNativeStackNavigator<CourseSharedScreensParamList>();
 
-export const CourseSharedScreens = () => {
-  const { colors, palettes, fontSizes, fontFamilies } = useTheme();
-  const { t } = useTranslation();
+type HeaderTextButtonProps = {
+  text: string;
+  onPress: () => void;
+};
 
+const HeaderTextButton = ({ text, onPress }: HeaderTextButtonProps) => {
+  const { palettes, fontSizes, spacing } = useTheme();
+
+  return (
+    <TouchableOpacity onPress={onPress} style={{ padding: spacing[2] }}>
+      <Text
+        style={{
+          fontSize: fontSizes.md,
+          color: palettes.gray[600],
+        }}
+      >
+        {text}
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
+export const CourseSharedScreens = () => {
+  const { colors, fontSizes, fontWeights, fontFamilies, palettes } = useTheme();
+  const { t } = useTranslation();
   return (
     <>
       <Stack.Screen
@@ -69,6 +92,7 @@ export const CourseSharedScreens = () => {
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
+          headerTitleAlign: 'center',
           headerTransparent: false,
           headerLargeTitle: false,
           headerShadowVisible: false,
@@ -94,19 +118,69 @@ export const CourseSharedScreens = () => {
           },
         }}
       />
-
-      {/* <Stack.Screen
-        name="Notice"
+      <Stack.Screen
+        name="NoticeScreen"
         component={NoticeScreen}
-        getId={({ params }: { params: any }) =>
-          `${params.courseId}${params.noticeId}`
-        }
         options={{
+          headerTitle: () => (
+            <Text
+              variant="heading"
+              style={{
+                fontSize: fontSizes.md,
+                textAlign: 'center',
+                fontWeight: fontWeights.medium,
+                width: 110,
+              }}
+              numberOfLines={1}
+            >
+              {t('common.notice_plural')}
+            </Text>
+          ),
           headerBackTitle: t('common.course'),
-          headerTitle: t('common.notice'),
+          headerShadowVisible: false,
+          headerTransparent: false,
+          headerLargeTitle: false,
         }}
       />
-      
+      <Stack.Screen
+        name="AddNoticeContent"
+        component={AddNoticeContent}
+        options={({ navigation }) => ({
+          headerTitle: '',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          presentation: 'modal',
+          headerShadowVisible: false,
+          headerBackVisible: false,
+          unstable_headerRightItems: () => [],
+          headerLeft: () => (
+            <HeaderTextButton
+              onPress={() => navigation.goBack()}
+              text={t('common.close')}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="EditNoticeContent"
+        component={EditNoticeContent}
+        options={({ navigation }) => ({
+          headerTitle: '',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          presentation: 'modal',
+          headerShadowVisible: false,
+          headerBackVisible: false,
+          unstable_headerRightItems: () => [],
+          headerLeft: () => (
+            <HeaderTextButton
+              onPress={() => navigation.goBack()}
+              text={t('common.close')}
+            />
+          ),
+        })}
+      />
+      {/* 
       <Stack.Screen
         name="CourseIconPicker"
         component={CourseIconPickerScreen}

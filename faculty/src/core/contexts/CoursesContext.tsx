@@ -23,7 +23,8 @@ export interface Notice {
   id: number;
   title: string;
   content: string;
-  startDate: string;
+  alwaysVisible?: boolean;
+  startDate: string; // startDate is the date when the notice becomes visible or if the notice is always visible, it is the date when the notice was published
   endDate?: string;
   visible: boolean;
 }
@@ -298,12 +299,7 @@ interface CoursesContextType {
   updateCourseNotice: (
     courseId: number,
     noticeId: number,
-    updatedNotice: {
-      title: string;
-      content: string;
-      startDate: string;
-      endDate: string;
-    },
+    updatedNotice: Notice,
   ) => void;
   updateCourseFile: (
     courseId: number,
@@ -365,14 +361,32 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
           title: 'Cambio aula per lezione di domani',
           content:
             'Gentili studenti e studentesse,si comunica che, a partire dalla data di lunedì 22 aprile 2025, le lezioni del corso di [Nome del Corso] tenute dal Prof. [Cognome Docente] non si svolgeranno più nell’aula originariamente prevista (Aula [vecchia]) bensì in Aula [nuova], situata presso il [nome edificio / piano].',
-          startDate: '2024-10-04',
+          startDate: '2024-04-10',
+          endDate: '2024-04-22',
           visible: true,
         },
         {
           id: 2,
           title: 'Avviso',
           content: 'Lezione di Matematica sospesa per il ponte del 1 Maggio.',
-          startDate: '2024-25-04',
+          alwaysVisible: true,
+          startDate: '2024-04-15',
+          visible: true,
+        },
+        {
+          id: 3,
+          title: 'Lezione annullata',
+          content: 'Lezione di Matematica annullata per motivi organizzativi.',
+          startDate: '2024-04-20',
+          visible: false,
+        },
+        {
+          id: 4,
+          title: 'Cambio aula dal 18/04/2026',
+          content:
+            'A partire dal 18/04/2026, la lezione del corso di Matematica si svolgerà in aula 5.',
+          startDate: '2026-04-18',
+          alwaysVisible: true,
           visible: true,
         },
       ],
@@ -7067,12 +7081,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
   const updateCourseNotice = (
     courseId: number,
     noticeId: number,
-    updatedNotice: {
-      title: string;
-      content: string;
-      startDate: string;
-      endDate: string;
-    },
+    updatedNotice: Notice,
   ) => {
     setFakeCourses(prevCourses =>
       prevCourses.map(course =>
@@ -7087,6 +7096,8 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
                       content: updatedNotice.content,
                       startDate: updatedNotice.startDate,
                       endDate: updatedNotice.endDate,
+                      alwaysVisible: updatedNotice.alwaysVisible,
+                      visible: updatedNotice.visible,
                     }
                   : notice,
               ),
@@ -7109,6 +7120,8 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
                       content: updatedNotice.content,
                       startDate: updatedNotice.startDate,
                       endDate: updatedNotice.endDate,
+                      alwaysVisible: updatedNotice.alwaysVisible,
+                      visible: updatedNotice.visible,
                     }
                   : notice,
               ),

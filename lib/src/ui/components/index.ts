@@ -74,3 +74,7 @@ export * from './UnreadBadge';
 export * from './VerticalDashedLine';
 export * from './VisuallyHidden';
 export * from './calendar';
+export * from './SegmentedControl';
+export * from './ToggleFilter';
+export * from './TextArea';
+export * from './StatusBadge';
