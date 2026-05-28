@@ -42,7 +42,7 @@ import { AddStudentsModalContent } from './AddStudentsModalContent';
 import { TeachingStackParamList } from './TeachingNavigator';
 
 export const CourseStudentsTab = () => {
-  const { selectedCourse, addGroupToCourse, setSelectedStudent } = useCourses();
+  const { selectedCourse, addTeamToCourse, setSelectedStudent } = useCourses();
   const { paddingHorizontal } = useSafeAreaSpacing();
   const [searchText, setSearchText] = useState('');
   const styles = useStylesheet(createStyles);
@@ -71,7 +71,7 @@ export const CourseStudentsTab = () => {
   } = useBottomModal();
 
   if (!selectedCourse) return null;
-  const { students, groups } = selectedCourse;
+  const { students, teams } = selectedCourse;
   const query = searchText.toLowerCase();
 
   const studentPassesFilter = (student: (typeof students)[0]) => {
@@ -93,7 +93,7 @@ export const CourseStudentsTab = () => {
 
   const doesGroupExist = () => {
     if (!newGroupStudents.length) return false;
-    return groups.some(group => {
+    return teams.some(group => {
       const groupIds = group.students.map(s => s.id).sort();
       const newIds = [...newGroupStudents].sort();
       return JSON.stringify(groupIds) === JSON.stringify(newIds);
@@ -483,7 +483,7 @@ export const CourseStudentsTab = () => {
                   const selectedStudents = selectedCourse.students.filter(s =>
                     newGroupStudents.includes(s.id),
                   );
-                  addGroupToCourse(selectedCourse.id, {
+                  addTeamToCourse(selectedCourse.id, {
                     id: Math.floor(Math.random() * 1000000),
                     title: newGroupTitle,
                     students: selectedStudents,

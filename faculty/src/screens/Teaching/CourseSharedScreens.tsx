@@ -1,9 +1,16 @@
 import { useTranslation } from 'react-i18next';
+import { TouchableOpacity } from 'react-native';
 
-import { useTheme } from '@polito/lib/ui';
+import { Text, useTheme } from '@polito/lib/ui';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { Staff } from '~/core/contexts/CoursesContext';
+
+import { AddOrEditLectureModalContent } from './AddOrEditLectureModalContent';
+import { AddStaffModalContent } from './AddStaffModalContent';
+import { ChooseRoomModal } from './ChooseRoomModal';
+import { CourseLectureMultiSelectScreen } from './CourseLectureMultiSelectScreen';
 // import { CourseAssignmentPdfCreationScreen } from '../CourseAssignmentPdfCreationScreen';
 // import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
 // import { CourseAssignmentUploadScreen } from './CourseAssignmentUploadScreen';
@@ -15,6 +22,9 @@ import { CourseNavigator } from './CourseNavigator';
 // import { CourseHideEventScreen } from '../screens/CourseHideEventScreen';
 // import { CourseIconPickerScreen } from '../screens/CourseIconPickerScreen';
 import { CoursePreferencesScreen } from './CoursePreferencesScreen';
+import { DefineAccessModal } from './DefineAccessModal';
+import { EditLectureStaffModalContent } from './EditLectureStaffModalContent';
+import { LessonScreen } from './LessonScreen';
 
 // import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
 // import { CourseVirtualClassroomScreen } from './CourseVirtualClassroomScreen';
@@ -27,7 +37,6 @@ export interface CourseSharedScreensParamList extends ParamListBase {
     title?: string;
     uniqueShortcode?: string;
   };
-  Notice: { noticeId: number; courseId: number };
   CoursePreferences: { courseId: number; uniqueShortcode: string };
   CourseGuide: { courseId: number };
   CourseDirectory: {
@@ -45,6 +54,10 @@ export interface CourseSharedScreensParamList extends ParamListBase {
     lectureId: number;
     teacherId: number;
   };
+  EditRoom: { onConfirm?: (roomLabel: string) => void };
+  AddStaff: { from: 'lectureScreen' | 'staffScreen' };
+  DefineAccess: { addeddStaff: Staff[]; from: 'staffScreen' | 'lectureScreen' };
+  MultiSelectLectures: { initialSelectedIds?: number[] };
   // CourseAssignmentPdfCreation: { courseId: number; firstImageUri: string };
   // CourseAssignmentUpload: { courseId: number };
   // CourseAssignmentUploadConfirmation: { courseId: number; file: Assignment };
@@ -55,8 +68,30 @@ export interface CourseSharedScreensParamList extends ParamListBase {
 
 const Stack = createNativeStackNavigator<CourseSharedScreensParamList>();
 
+type HeaderTextButtonProps = {
+  text: string;
+  onPress: () => void;
+};
+
+const HeaderTextButton = ({ text, onPress }: HeaderTextButtonProps) => {
+  const { palettes, fontSizes, spacing } = useTheme();
+
+  return (
+    <TouchableOpacity onPress={onPress} style={{ padding: spacing[2] }}>
+      <Text
+        style={{
+          fontSize: fontSizes.md,
+          color: palettes.gray[600],
+        }}
+      >
+        {text}
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
 export const CourseSharedScreens = () => {
-  const { colors, palettes, fontSizes, fontFamilies } = useTheme();
+  const { colors, fontSizes, fontWeights, fontFamilies, palettes } = useTheme();
   const { t } = useTranslation();
 
   return (
@@ -93,6 +128,148 @@ export const CourseSharedScreens = () => {
             color: palettes.primary[700],
           },
         }}
+      />
+
+      <Stack.Screen
+        name="Lecture"
+        component={LessonScreen}
+        options={{
+          headerTitle: () => (
+            <Text
+              variant="heading"
+              style={{
+                fontSize: fontSizes.md,
+                textAlign: 'center',
+                fontWeight: fontWeights.medium,
+              }}
+              numberOfLines={1}
+            >
+              {t('common.lecture')}
+            </Text>
+          ),
+          headerTitleAlign: 'center',
+          headerShown: true,
+          headerShadowVisible: false,
+          headerLargeTitleEnabled: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="AddOrEditLectureContent"
+        component={AddOrEditLectureModalContent}
+        options={({ navigation }) => ({
+          headerTitle: '',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          presentation: 'modal',
+          headerShadowVisible: false,
+          headerBackVisible: false,
+
+          headerLeft: () => (
+            <HeaderTextButton
+              onPress={() => navigation.goBack()}
+              text={t('common.close')}
+            />
+          ),
+        })}
+      />
+
+      <Stack.Screen
+        name="EditLectureStaff"
+        component={EditLectureStaffModalContent}
+        options={({ navigation }) => ({
+          headerTitle: '',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          presentation: 'modal',
+          headerShadowVisible: false,
+          headerBackVisible: false,
+
+          headerLeft: () => (
+            <HeaderTextButton
+              onPress={() => navigation.goBack()}
+              text={t('common.close')}
+            />
+          ),
+        })}
+      />
+
+      <Stack.Screen
+        name="EditRoom"
+        component={ChooseRoomModal}
+        options={({ navigation }) => ({
+          headerTitle: '',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          presentation: 'modal',
+          headerShadowVisible: false,
+          headerBackVisible: false,
+
+          headerLeft: () => (
+            <HeaderTextButton
+              onPress={() => navigation.goBack()}
+              text={t('common.close')}
+            />
+          ),
+        })}
+      />
+
+      <Stack.Screen
+        name="AddStaff"
+        component={AddStaffModalContent}
+        options={({ navigation }) => ({
+          headerTitle: '',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          presentation: 'modal',
+          headerShadowVisible: false,
+          headerBackVisible: false,
+          headerLeft: () => (
+            <HeaderTextButton
+              onPress={() => navigation.goBack()}
+              text={t('common.close')}
+            />
+          ),
+        })}
+      />
+
+      <Stack.Screen
+        name="MultiSelectLectures"
+        component={CourseLectureMultiSelectScreen}
+        options={({ navigation }) => ({
+          headerTitle: '',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          presentation: 'modal',
+          headerShadowVisible: false,
+          headerBackVisible: false,
+
+          headerLeft: () => (
+            <HeaderTextButton
+              onPress={() => navigation.goBack()}
+              text={t('common.close')}
+            />
+          ),
+        })}
+      />
+
+      <Stack.Screen
+        name="DefineAccess"
+        component={DefineAccessModal}
+        options={({ navigation }) => ({
+          headerTitle: '',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          presentation: 'modal',
+          headerShadowVisible: false,
+          headerBackVisible: true,
+          headerLeft: () => (
+            <HeaderTextButton
+              onPress={() => navigation.goBack()}
+              text={t('common.close')}
+            />
+          ),
+        })}
       />
 
       {/* <Stack.Screen
