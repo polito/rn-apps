@@ -71,6 +71,11 @@
     "violet": "Violet",
     "yellow": "Yellow"
   },
+  "AgendaPreferences": {
+    "hideInAgenda": "Hide in agenda",
+    "hideEvent": "Hide event",
+    "showInAgenda": "Show in agenda"
+  },
   "common": {
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
@@ -162,7 +167,6 @@
     "grade": "Grade",
     "hiddenEvents": "Hidden events",
     "hide": "Hide",
-    "hideInAgenda": "Hide in Agenda",
     "hour": "Hour",
     "hours": "Hour",
     "icon": "Icon",
@@ -183,6 +187,7 @@
     "newItems": "New item",
     "newItems_plural": "New items",
     "next": "Next",
+    "news": "News",
     "noInternet": "You are offline, some features may not be available",
     "noValue": "No value",
     "notFound": "Not found",
@@ -364,12 +369,15 @@
     "cleanCacheFeedback": "Files were successfully deleted",
     "cleanCourseFiles": "Clean course files",
     "cleanCourseFilesSubtitle": "This will free approximately {{size}} of memory",
-    "filesSubtitle": "New material available",
+    "colorSubtitle": "Select a color for the course",
+    "iconSubtitle": "Select an icon for the course",
+    "filesSubtitle": "New material added by collaborators",
     "hideInExtracts": "Hide in extracts",
-    "lecturesSubtitle": "New lectures available",
-    "noticesSubtitle": "Notices sent by the professor",
+    "lecturesSubtitle": "New lectures added by collaborators",
+    "newsSubtitle": "Activities from collaborators",
     "showInExtracts": "Show in extracts",
-    "showInExtractsSubtitle": "In home screen and agenda"
+    "showInExtractsSubtitle": "In home screen and agenda",
+    "showExamCalls": "Show exam calls"
   },
   "courseScreen": {
     "fileDownloadFailed": "The download failed. Please try again later."
@@ -591,12 +599,12 @@
     "takePhoto": "Take photo",
     "takePhotoHint": "Take one or more photos and generate a file"
   },
-  "newsScreen": {
+  "noticesScreen": {
     "createdAt": "Published on ",
     "eventStartTime": "Starts on ",
     "information": "Information",
     "logo": "Logo",
-    "title": "News & Events"
+    "title": "Notices & Events"
   },
   "notifications": {
     "events": "Events",

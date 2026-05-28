@@ -9,14 +9,13 @@ import {
   ViewStyle,
 } from 'react-native';
 
+import { To, resolveLinkTo } from '@polito/lib/core';
+import { GlobalStyles } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { IS_IOS } from '../../core/constants';
 import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
-import { To, resolveLinkTo } from '../../core/utils/resolveLinkTo';
 import { useTheme } from '../hooks/useTheme';
-import { GlobalStyles } from '../styles/GlobalStyles';
 import { Col } from './Col';
 import { DisclosureIndicator } from './DisclosureIndicator';
 import { Row } from './Row';
@@ -68,10 +67,9 @@ export const ListItem = ({
   multilineTitle = false,
   titleProps,
   unread = false,
-  onLongPress,
   ...rest
 }: ListItemProps) => {
-  const { fontSizes, fontWeights, colors, spacing } = useTheme();
+  const { fontSizes, fontFamilies, fontWeights, colors, spacing } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { accessibility } = usePreferencesContext();
   const titleElement =
@@ -84,6 +82,7 @@ export const ListItem = ({
             GlobalStyles.grow,
             {
               fontSize: fontSizes.md,
+              fontFamily: fontFamilies.title,
               lineHeight:
                 accessibility?.fontSize && accessibility.fontSize <= 125
                   ? fontSizes.sm * 1.4
@@ -154,9 +153,6 @@ export const ListItem = ({
       ]}
       disabled={disabled}
       {...rest}
-      // These two added due to the issue #60 indicated in react-native-context-menu-view
-      // https://github.com/mpiannucci/react-native-context-menu-view/issues/60
-      {...(onLongPress != null ? { onLongPress, delayLongPress: 100 } : {})}
     >
       <View
         style={[
@@ -190,10 +186,20 @@ export const ListItem = ({
           {subtitleElement}
         </Col>
         {!card &&
-          (!trailingItem && (linkTo || isAction) && IS_IOS ? (
+          (!trailingItem && (linkTo || isAction) ? (
             <DisclosureIndicator />
           ) : (
-            trailingItem
+            <View
+              style={{
+                marginRight: -10,
+                width: 51,
+                height: 31,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {trailingItem}
+            </View>
           ))}
       </View>
     </TouchableHighlight>

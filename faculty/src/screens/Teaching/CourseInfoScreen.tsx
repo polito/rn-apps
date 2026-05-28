@@ -19,10 +19,8 @@ import {
   Section,
   SectionHeader,
   Text,
-  Theme,
-  useStylesheet,
-  useTheme,
 } from '@polito/lib/ui';
+import { Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
@@ -31,7 +29,7 @@ import { MoodleStatusBadge } from './MoodleStatusBagde';
 
 export const CourseInfoScreen = () => {
   const { t } = useTranslation();
-  const { palettes, spacing } = useTheme();
+  const { palettes, spacing, fontFamilies } = useTheme();
   const { selectedCourse } = useCourses();
   const styles = useStylesheet(createStyles);
   const { setOptions } = useNavigation();
@@ -84,6 +82,7 @@ export const CourseInfoScreen = () => {
                   selectedCourse?.year.split('/')[selectedCourse?.period - 1] ??
                   '--'
                 }`}
+                valueStyle={{ fontFamily: fontFamilies.heading }}
                 accessibilityLabel={`${t('degreeCourseScreen.period')}: ${
                   selectedCourse?.period ?? '--'
                 } - ${selectedCourse?.year.split('/')[selectedCourse?.period - 1] ?? '--'}`}
@@ -95,11 +94,10 @@ export const CourseInfoScreen = () => {
           </View>
         </Card>
 
-        <Section style={styles.sectionStyle}>
+        <Section>
           <SectionHeader
             title={t('courseInfoTab.staffSectionTitle')}
             linkTo="#"
-            // linkname="Edit" TODO: fix link behavior and uncomment this
           />
           <OverviewList indented style={styles.listContainer}>
             {selectedCourse.staff.map((member, index) => {
@@ -135,7 +133,7 @@ export const CourseInfoScreen = () => {
           </OverviewList>
         </Section>
 
-        <Section style={styles.sectionStyle}>
+        <Section>
           <SectionHeader title={t('examsScreen.title')} />
           <OverviewList indented style={styles.listContainer}>
             {selectedCourse.examcalls.map((call, index) => (
@@ -241,8 +239,5 @@ const createStyles = ({ colors, spacing, shapes, palettes }: Theme) =>
       alignItems: 'center',
       gap: spacing[2.5],
       justifyContent: 'space-between',
-    },
-    sectionStyle: {
-      marginBottom: spacing[2.5], // This sums up with the default margin of Card in ListItem of PersonListItem
     },
   });

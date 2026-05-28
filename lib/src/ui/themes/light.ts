@@ -187,8 +187,9 @@ export const lightTheme: Theme = {
     tertiary: tertiary,
   },
   fontFamilies: {
-    heading: 'Montserrat',
-    body: 'Montserrat',
+    heading: 'Montserrat-SemiBold',
+    body: 'Montserrat-Regular',
+    title: 'Montserrat-Medium',
   },
   fontSizes: {
     '2xs': 10,

@@ -3,27 +3,25 @@ import { useTranslation } from 'react-i18next';
 import { View, useWindowDimensions } from 'react-native';
 
 import { faSliders } from '@fortawesome/free-solid-svg-icons';
-import {
-  IconButton,
-  Text,
-  TopTabBar,
-  useTheme,
-  useTitlesStyles,
-} from '@polito/lib/ui';
+import { IconButton, Text, TopTabBar } from '@polito/lib/ui';
+import { useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { ParamListBase, useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { ParamListBase } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { useCourses } from '../../core/contexts/CoursesContext';
 import { CourseAssignmentsTab } from './CourseAssignmentsTab';
 import { CourseFilesTab } from './CourseFilesTab';
 import { CourseInfoScreen } from './CourseInfoScreen';
 import { CourseLecturesTab } from './CourseLecturesTab';
 import { CourseNoticesTab } from './CourseNoticesTab';
+import { CourseSharedScreensParamList } from './CourseSharedScreens';
 import { StaffScreen } from './CourseStaffScreen';
 import { CourseStudentsTab } from './CourseStudentsTab';
 import { TeachingStackParamList } from './TeachingNavigator';
 
-interface CourseTabsParamList extends ParamListBase, TeachingStackParamList {
+export interface CourseTabsParamList
+  extends ParamListBase, TeachingStackParamList {
   CourseInfoScreen: undefined;
   CourseStaffScreen: undefined;
   CourseNoticesScreen: undefined;
@@ -35,13 +33,15 @@ interface CourseTabsParamList extends ParamListBase, TeachingStackParamList {
 
 const TopTabs = createMaterialTopTabNavigator<CourseTabsParamList>();
 
-export const CourseNavigator = () => {
+type Props = NativeStackScreenProps<CourseSharedScreensParamList, 'Course'>;
+
+export const CourseNavigator = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { palettes, fontSizes, spacing } = theme;
   const { width } = useWindowDimensions();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
+
+  const { selectedCourse } = useCourses();
 
   const [showPlusButton, setShowPlusButton] = useState<boolean>(false); // <--- Stato
   const [_formPage, setFormPage] = useState('');
@@ -54,9 +54,11 @@ export const CourseNavigator = () => {
         <Text
           variant="heading"
           style={{
-            fontSize: 17,
+            fontSize: fontSizes.md,
             textAlign: 'center',
+            fontStyle: 'normal',
           }}
+          weight="semibold"
           numberOfLines={1}
         >
           {t('common.course')}
@@ -70,6 +72,14 @@ export const CourseNavigator = () => {
             size={fontSizes.lg}
             accessibilityLabel={t('common.preferences')}
             hitSlop={{ left: spacing[3], right: spacing[3] }}
+            onPress={() => {
+              if (selectedCourse) {
+                navigation.navigate('CoursePreferences', {
+                  courseId: selectedCourse?.id,
+                  uniqueShortcode: selectedCourse.code,
+                });
+              }
+            }}
           />
         ) : (
           <View style={{ width: width * 0.1 }} />
@@ -77,6 +87,7 @@ export const CourseNavigator = () => {
     });
   }, [
     tab,
+    selectedCourse,
     showPlusButton, // 🔥 Trigga il re-render dell'header
     fontSizes.lg,
     navigation,
@@ -85,6 +96,7 @@ export const CourseNavigator = () => {
     palettes.primary,
     titleStyles.headerTitleStyle,
     width,
+    fontSizes,
   ]);
 
   return (
