@@ -308,7 +308,7 @@ export const AddNoticeContent = () => {
 
       <CtaButtonContainer absolute={Platform.OS === 'android'}>
         <CtaButton
-          absolute={Platform.OS === 'ios'}
+          absolute={false}
           title={t('other.publish')}
           action={handlePublishPress}
           disabled={!canPublish}

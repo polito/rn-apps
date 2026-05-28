@@ -122,6 +122,7 @@ export const TeachingNavigator = () => {
         component={TeachingScreen}
         options={{
           headerLeft: HeaderLogoNoProps,
+          unstable_headerRightItems: () => [],
           headerTitle: t('teachingScreen.title'),
         }}
       />

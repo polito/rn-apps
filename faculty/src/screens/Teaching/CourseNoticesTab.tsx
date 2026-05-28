@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { formatDateFromString } from '@polito/lib/core';
@@ -125,14 +125,14 @@ export const CourseNoticesTab = () => {
         </SafeAreaView>
         <BottomBarSpacer />
       </ScrollView>
-      <CtaButtonContainer absolute={Platform.OS === 'android'}>
+      <CtaButtonContainer absolute={true} style={styles.ctaContainer}>
         <CtaButton
           title={t('courseNoticesTab.newNotice')}
           action={() => {
             navigation.navigate('AddNoticeContent');
           }}
           icon={faPlus}
-          absolute={Platform.OS === 'ios'}
+          absolute={false}
         />
       </CtaButtonContainer>
     </React.Fragment>
@@ -148,5 +148,8 @@ const createStyles = ({ spacing, shapes }: Theme) =>
     },
     container: {
       marginVertical: spacing[5],
+    },
+    ctaContainer: {
+      paddingBottom: spacing[5],
     },
   });

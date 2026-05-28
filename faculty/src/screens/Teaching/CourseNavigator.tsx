@@ -61,7 +61,7 @@ export const CourseNavigator = ({ navigation }: Props) => {
           weight="semibold"
           numberOfLines={1}
         >
-          {tab === 'Info' ? 'Course' : `${tab}`}
+          {t('common.course')}
         </Text>
       ),
 

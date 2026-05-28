@@ -265,7 +265,7 @@
     "virtualClassroom_plural": "Virtual classrooms",
     "visualization": "Visualization",
     "textAreaPlaceholder": "Write something",
-    "datePlaceholder": "dd/mm/yyyy",
+    "datePlaceholder": "dd/mm/yy",
     "year": "year",
     "yesterday": "Yesterday"
   },

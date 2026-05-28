@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, ScrollView, StyleSheet } from 'react-native';
+import { Alert, ScrollView, StyleSheet } from 'react-native';
 
 import {
   faEye,
@@ -191,18 +191,14 @@ export const NoticeScreen = () => {
         <CtaButtonSpacer />
       </ScrollView>
 
-      <CtaButtonContainer
-        absolute={Platform.OS === 'android'}
-        style={styles.ctaContainer}
-      >
+      <CtaButtonContainer absolute={true} style={styles.ctaContainer}>
         <Row gap={2.5}>
           <Col flex={1}>
             <CtaButton
-              absolute={Platform.OS === 'ios'}
+              absolute={true}
               title={t('common.delete')}
               action={handleDeleteNotice}
               icon={faTrash}
-              containerStyle={styles.ctaButtonContainer}
               destructive
               variant="outlined"
             />
@@ -214,8 +210,7 @@ export const NoticeScreen = () => {
                 navigation.navigate('EditNoticeContent');
               }}
               icon={faPencil}
-              absolute={false}
-              containerStyle={styles.ctaButtonContainer}
+              absolute={true}
               disabled={isExpired}
             />
           </Col>
@@ -236,11 +231,9 @@ const createStyles = ({
       padding: spacing[5],
     },
     ctaContainer: {
-      paddingHorizontal: spacing[4],
+      paddingBottom: spacing[5],
     },
-    ctaButtonContainer: {
-      padding: 0,
-    },
+
     sectionTitle: {
       fontSize: fontSizes.md,
       fontWeight: fontWeights.semibold,

@@ -66,10 +66,7 @@ const HeaderTextButton = ({ text, onPress }: HeaderTextButtonProps) => {
   const { palettes, fontSizes, spacing } = useTheme();
 
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={{ padding: spacing[2], marginRight: -spacing[2] }}
-    >
+    <TouchableOpacity onPress={onPress} style={{ padding: spacing[2] }}>
       <Text
         style={{
           fontSize: fontSizes.md,
@@ -95,6 +92,7 @@ export const CourseSharedScreens = () => {
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
+          headerTitleAlign: 'center',
           headerTransparent: false,
           headerLargeTitle: false,
           headerShadowVisible: false,
@@ -121,7 +119,7 @@ export const CourseSharedScreens = () => {
         }}
       />
       <Stack.Screen
-        name="Notice"
+        name="NoticeScreen"
         component={NoticeScreen}
         options={{
           headerTitle: () => (
@@ -154,6 +152,7 @@ export const CourseSharedScreens = () => {
           presentation: 'modal',
           headerShadowVisible: false,
           headerBackVisible: false,
+          unstable_headerRightItems: () => [],
           headerLeft: () => (
             <HeaderTextButton
               onPress={() => navigation.goBack()}
@@ -172,6 +171,7 @@ export const CourseSharedScreens = () => {
           presentation: 'modal',
           headerShadowVisible: false,
           headerBackVisible: false,
+          unstable_headerRightItems: () => [],
           headerLeft: () => (
             <HeaderTextButton
               onPress={() => navigation.goBack()}
@@ -180,18 +180,6 @@ export const CourseSharedScreens = () => {
           ),
         })}
       />
-
-      <Stack.Screen
-        name="CoursePreferences"
-        component={CoursePreferencesScreen}
-        getId={({ params }: { params: any }) => `${params.courseId}`}
-        options={{
-          title: t('common.preferences'),
-          headerLargeTitle: false,
-          headerBackTitle: t('common.course'),
-        }}
-      />
-
       {/* 
       <Stack.Screen
         name="CourseIconPicker"

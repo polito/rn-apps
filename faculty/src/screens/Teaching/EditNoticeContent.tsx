@@ -18,7 +18,7 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 
-import { faCalendarDay } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { APP_TIMEZONE, usePreferencesContext } from '@polito/lib/core';
 import {
   BottomBarSpacer,
@@ -50,7 +50,7 @@ export const EditNoticeContent = () => {
 
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { fontSizes, palettes } = useTheme();
+  const { fontSizes, palettes, spacing } = useTheme();
   const { selectedNotice, selectedCourse, updateCourseNotice } = useCourses();
   const [selectedMode, setSelectedMode] = useState<'text' | 'preview'>('text');
   const [description, setDescription] = useState(selectedNotice?.content ?? '');
@@ -109,7 +109,7 @@ export const EditNoticeContent = () => {
   const formatDate = (date: Date) => {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
+    const year = date.getFullYear().toString().slice(-2);
 
     return `${day}/${month}/${year}`;
   };
@@ -243,12 +243,12 @@ export const EditNoticeContent = () => {
                   <Card rounded style={styles.card}>
                     <Row style={styles.cardContent}>
                       <Icon
-                        icon={faCalendarDay}
+                        icon={faCalendar}
                         size={fontSizes['2xl']}
                         color={
                           isStartDateSelected
                             ? cardIconSelectedColor
-                            : palettes.gray[500]
+                            : palettes.gray[400]
                         }
                       />
                       <Col>
@@ -260,9 +260,12 @@ export const EditNoticeContent = () => {
                         >
                           {t('other.startDate')}
                         </Text>
-                        <Text style={styles.cardSubtitle}>
-                          {renderDateLabel(startDate)}
-                        </Text>
+                        <Row style={{ gap: spacing[1.5] }} align="center">
+                          <Text style={styles.cardSubtitle}>
+                            {renderDateLabel(startDate)}
+                          </Text>
+                          <Icon icon={faChevronDown} size={fontSizes.sm} />
+                        </Row>
                       </Col>
                     </Row>
                   </Card>
@@ -275,12 +278,12 @@ export const EditNoticeContent = () => {
                   <Card rounded style={styles.card}>
                     <Row style={styles.cardContent}>
                       <Icon
-                        icon={faCalendarDay}
+                        icon={faCalendar}
                         size={fontSizes['2xl']}
                         color={
                           isEndDateSelected
                             ? cardIconSelectedColor
-                            : palettes.gray[500]
+                            : palettes.gray[400]
                         }
                       />
                       <Col>
@@ -292,9 +295,12 @@ export const EditNoticeContent = () => {
                         >
                           {t('other.endDate')}
                         </Text>
-                        <Text style={styles.cardSubtitle}>
-                          {renderDateLabel(endDate)}
-                        </Text>
+                        <Row style={{ gap: spacing[1.5] }} align="center">
+                          <Text style={styles.cardSubtitle}>
+                            {renderDateLabel(endDate)}
+                          </Text>
+                          <Icon icon={faChevronDown} size={fontSizes.sm} />
+                        </Row>
                       </Col>
                     </Row>
                   </Card>
@@ -327,7 +333,7 @@ export const EditNoticeContent = () => {
 
       <CtaButtonContainer absolute={Platform.OS === 'android'}>
         <CtaButton
-          absolute={Platform.OS === 'ios'}
+          absolute={false}
           title={t('other.saveAndExit')}
           disabled={!canPublish}
           action={handlePublishPress}
@@ -364,6 +370,7 @@ const createStyles = ({
   shapes,
   fontSizes,
   fontWeights,
+  fontFamilies,
 }: Theme) =>
   StyleSheet.create({
     container: {
@@ -387,7 +394,7 @@ const createStyles = ({
     },
     cardsContainer: {
       flexDirection: 'row',
-      gap: spacing[5],
+      gap: spacing[2],
       alignItems: 'center',
       display: 'flex',
       alignSelf: 'stretch',
@@ -409,15 +416,14 @@ const createStyles = ({
     },
     cardTitle: {
       color: palettes.gray[500],
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      fontFamily: 'Montserrat-SemiBold',
+      fontSize: fontSizes.sm,
+      // fontWeight: fontWeights.semibold,
+      fontFamily: fontFamilies.body,
     },
     cardSubtitle: {
       color: palettes.gray[500],
       fontSize: fontSizes.md,
-      fontWeight: fontWeights.normal,
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: fontFamilies.heading,
     },
     textAreaInput: {
       color: palettes.gray[500],
