@@ -281,6 +281,10 @@
     "recentSearch": "Ricerca recente",
     "recentSearches": "Ricerche recenti",
     "search": "Cerca contatti",
+    "usefulContacts": "Contatti utili",
+    "preferredContacts": "Contatti preferiti",
+    "addPreferred": "Aggiungi ai preferiti",
+    "removePreferred": "Rimuovi dai preferiti",
     "title": "Contatti"
   },
   "courseAssignmentPdfCreationScreen": {

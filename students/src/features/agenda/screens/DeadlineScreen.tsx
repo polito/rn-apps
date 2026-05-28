@@ -3,6 +3,7 @@ import { SafeAreaView, ScrollView } from 'react-native';
 
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { convertMachineDateToFormatDate } from '@polito/lib/core';
+import { useOpenInAppLink } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   Icon,
@@ -13,7 +14,6 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { EventDetails } from '../../../core/components/EventDetails';
-import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Deadline'>;

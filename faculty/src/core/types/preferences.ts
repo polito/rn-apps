@@ -1,4 +1,4 @@
-import { PersonOverview } from '@polito/api-client';
+import { PersonOverview } from '@polito/student-api-client';
 
 import { AgendaTypesFilterState } from '../../screens/Agenda/types/AgendaTypesFilterState';
 import { HiddenRecurrence } from './Recurrence';
@@ -15,6 +15,7 @@ export const editablePreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
+  'peoplePreferred',
   'onboardingStep',
   'emailGuideRead',
   'placesSearched',
@@ -30,6 +31,7 @@ export const objectPreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
+  'peoplePreferred',
   'onboardingStep',
   'emailGuideRead',
   'placesSearched',
@@ -66,6 +68,7 @@ export type AppPreferences = {
   };
   favoriteServices: string[];
   peopleSearched: PersonOverview[];
+  peoplePreferred: PersonOverview[];
   onboardingStep?: number;
   emailGuideRead?: boolean;
   agendaScreen: {
@@ -82,6 +85,7 @@ export const initialAppPreferences: AppPreferences = {
   courses: {},
   favoriteServices: [],
   peopleSearched: [],
+  peoplePreferred: [],
   agendaScreen: {
     layout: 'daily',
     filters: {
