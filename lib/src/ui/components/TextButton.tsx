@@ -15,7 +15,7 @@ export const TextButton = ({
       style={[
         {
           padding: spacing[2],
-          marginRight: -spacing[2],
+          // marginRight: -spacing[2],
         },
         style,
       ]}

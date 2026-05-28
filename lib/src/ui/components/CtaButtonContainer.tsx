@@ -15,7 +15,6 @@ interface Props {
 export const CtaButtonContainer = ({
   absolute = true,
   children,
-  modal = false,
   style,
 }: PropsWithChildren<Props>) => {
   const { left, right } = useSafeAreaInsets();
@@ -29,7 +28,8 @@ export const CtaButtonContainer = ({
         {
           display: 'flex',
           flexDirection: 'column',
-          paddingVertical: modal ? 0 : spacing[5],
+          padding: spacing[5],
+          paddingBottom: Platform.OS === 'ios' ? 0 : spacing[5],
         },
         absolute && {
           position: 'absolute',
@@ -37,7 +37,7 @@ export const CtaButtonContainer = ({
           left: Platform.select({ ios: left }),
           right,
           bottom:
-            (modal ? 0 : bottomBarHeight) +
+            bottomBarHeight +
             (isFeedbackVisible ? spacing[10] * Children.count(children) : 0),
         },
         style,

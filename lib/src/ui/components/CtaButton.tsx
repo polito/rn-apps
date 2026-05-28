@@ -225,7 +225,7 @@ const createStyles = ({
 }: Theme) =>
   StyleSheet.create({
     container: {
-      padding: spacing[5],
+      // padding: spacing[5],
     },
     button: {
       paddingHorizontal: spacing[5] + 3,
