@@ -116,6 +116,8 @@ export const ListItem = ({
         style={[
           {
             fontSize: fontSizes.sm,
+            fontFamily: 'Montserrat-Regular',
+            fontWeight: fontWeights.normal,
             lineHeight:
               accessibility?.fontSize && accessibility.fontSize <= 125
                 ? fontSizes.sm * 1.4

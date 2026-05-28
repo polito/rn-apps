@@ -1,38 +1,59 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, Platform, ScrollView, StyleSheet } from 'react-native';
 
 import {
   faEye,
   faEyeSlash,
   faHourglassEnd,
   faHourglassStart,
+  faPencil,
+  faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { formatDateFromString } from '@polito/lib/core';
 import {
   Card,
-  ListItem,
-  OverviewList,
+  Col,
+  CtaButton,
+  CtaButtonContainer,
+  CtaButtonSpacer,
+  Row,
   Section,
+  Separator,
   Switch,
   Text,
-  Theme,
-  useStylesheet,
 } from '@polito/lib/ui';
+import { Theme, useStylesheet } from '@polito/lib/ui';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { CourseSharedScreensParamList } from './CourseSharedScreens';
 
 export const NoticeScreen = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<CourseSharedScreensParamList>>();
+
   const styles = useStylesheet(createStyles);
   const {
-    selectedNotice: originalNotice,
     setVisibilityOfNotice,
+    setSelectedNotice,
+    selectedNotice: selectedNoticeInContext,
     selectedCourse,
+    deleteNoticeFromCourse,
   } = useCourses();
 
-  const selectedNotice = selectedCourse?.notices.find(
-    notice => notice.id === originalNotice?.id,
+  const selectedNotice =
+    selectedCourse?.notices.find(
+      (n: any) => n.id === selectedNoticeInContext?.id,
+    ) ?? selectedNoticeInContext;
+  const isExpired = Boolean(
+    selectedNotice?.endDate &&
+    selectedNotice.endDate < new Date().toISOString(),
   );
+  const description = selectedNotice?.content || '';
+
   const [noticeVisibility, setNoticeVisibility] = useState(
     selectedNotice?.visible || false,
   );
@@ -43,130 +64,222 @@ export const NoticeScreen = () => {
     }
   }, [selectedNotice]);
 
-  const [expanded, setExpanded] = useState(false);
-  const toggleExpanded = () => setExpanded(prev => !prev);
+  useEffect(() => {
+    setSelectedNotice(selectedNotice ?? null);
+  }, [selectedNotice, setSelectedNotice]);
 
-  if (!selectedCourse || !selectedNotice) return null;
+  const handleToggle = useMemo(() => {
+    return (value: boolean) => {
+      if (!selectedCourse || !selectedNotice) return;
+      setVisibilityOfNotice(selectedCourse.id, selectedNotice.id, value);
+      setNoticeVisibility(value);
+    };
+  }, [
+    selectedCourse,
+    selectedNotice,
+    setVisibilityOfNotice,
+    setNoticeVisibility,
+  ]);
 
-  const handleToggle = (value: boolean) => {
-    setVisibilityOfNotice(selectedCourse.id, selectedNotice.id, value);
-    setNoticeVisibility(value);
+  const handleDeleteNotice = () => {
+    Alert.alert(t('common.confirm'), t('other.alertDeleteNotice'), [
+      {
+        text: t('common.no'),
+        style: 'cancel',
+      },
+      {
+        text: t('common.yes'),
+        onPress: () => {
+          if (selectedCourse && selectedNotice) {
+            deleteNoticeFromCourse(selectedCourse.id, selectedNotice.id);
+            navigation.goBack();
+          }
+        },
+      },
+    ]);
   };
 
-  const settings = [
-    {
-      id: 1,
-      content: t('newsScreen.createdAt'),
-      subtitle: `${selectedNotice.startDate}`,
-      icon: <FontAwesomeIcon icon={faHourglassStart} size={24} />,
-      trailingItem: null,
-    },
-    {
-      id: 2,
-      content: t('other.expiresOn'),
-      subtitle: selectedNotice.endDate
-        ? `${selectedNotice.endDate}`
-        : t('other.never'),
-      icon: <FontAwesomeIcon icon={faHourglassEnd} size={24} />,
-      trailingItem: null,
-    },
-    {
-      id: 3,
-      content: t('other.visibility'),
-      subtitle: noticeVisibility
-        ? t('other.visibleToAll')
-        : t('other.hiddenFromStudents'),
-      icon: (
-        <FontAwesomeIcon
-          icon={noticeVisibility ? faEye : faEyeSlash}
-          size={24}
-        />
-      ),
-      trailingItem: (
-        <Switch value={noticeVisibility} onValueChange={handleToggle} />
-      ),
-    },
-  ];
+  const settings = useMemo(
+    () => [
+      {
+        id: 1,
+        content: t('other.publicationDate'),
+        subtitle: (
+          <Text style={styles.subtitle}>
+            {selectedNotice!.startDate
+              ? formatDateFromString(selectedNotice!.startDate)
+              : t('other.notAvailable')}
+          </Text>
+        ),
+        icon: <FontAwesomeIcon icon={faHourglassStart} style={styles.icon} />,
+        trailingItem: null,
+      },
+      {
+        id: 2,
+        content: t('other.expirationDate'),
+        subtitle: (
+          <Text style={styles.subtitle}>
+            {selectedNotice?.alwaysVisible
+              ? t('other.never')
+              : selectedNotice!.endDate &&
+                formatDateFromString(selectedNotice!.endDate)}
+          </Text>
+        ),
+        icon: <FontAwesomeIcon icon={faHourglassEnd} style={styles.icon} />,
+        trailingItem: null,
+      },
+      {
+        id: 3,
+        content: t('other.visibility'),
+        subtitle: (
+          <Text style={styles.subtitle}>
+            {selectedNotice?.visible ? t('other.everyone') : t('other.onlyYou')}
+          </Text>
+        ),
+        icon: (
+          <FontAwesomeIcon
+            icon={selectedNotice?.visible ? faEye : faEyeSlash}
+            style={styles.icon}
+          />
+        ),
+        trailingItem: (
+          <Switch value={noticeVisibility} onValueChange={handleToggle} />
+        ),
+      },
+    ],
+    [
+      selectedNotice,
+      noticeVisibility,
+      t,
+      styles.subtitle,
+      styles.icon,
+      handleToggle,
+    ],
+  );
+
+  if (!selectedCourse || !selectedNotice) {
+    return null;
+  }
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <View style={{ marginTop: 10 }} />
-
-      <Section>
-        <Text variant="heading" style={styles.TitleText}>
-          {selectedNotice.title}
-        </Text>
-        <Card>
-          {!expanded ? (
-            <Text style={styles.ContentText}>
-              {selectedNotice.content.slice(0, 150)}...
-              <Text onPress={toggleExpanded} style={styles.inlineShowMore}>
-                {' '}
-                Altro
-              </Text>
-            </Text>
-          ) : (
-            <>
-              <Text style={styles.ContentText}>{selectedNotice.content}</Text>
-              <TouchableOpacity onPress={toggleExpanded}>
-                <Text style={styles.ShowMore}>Mostra meno</Text>
-              </TouchableOpacity>
-            </>
-          )}
+    <React.Fragment>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={styles.container}
+      >
+        <Card style={styles.card}>
+          <Col style={styles.cardContent}>
+            {settings.map(setting => (
+              <Row key={`${setting.id}`} style={styles.cardElement}>
+                {setting.icon}
+                <Text style={styles.title}>
+                  {setting.content}: {setting.subtitle}
+                </Text>
+              </Row>
+            ))}
+          </Col>
         </Card>
 
         <Section>
-          <OverviewList indented>
-            {settings.map(setting => (
-              <ListItem
-                key={`${setting.id}`}
-                title={setting.content}
-                subtitle={setting.subtitle}
-                leadingItem={setting.icon}
-                trailingItem={setting.trailingItem || <View />}
-              />
-            ))}
-          </OverviewList>
+          <Separator />
+          <Text variant="heading" style={styles.sectionTitle}>
+            {t('other.noticeTextTitle')}
+          </Text>
+          <Text style={styles.sectionContent}>{description}</Text>
         </Section>
-      </Section>
-    </ScrollView>
+
+        <CtaButtonSpacer />
+      </ScrollView>
+
+      <CtaButtonContainer
+        absolute={Platform.OS === 'android'}
+        style={styles.ctaContainer}
+      >
+        <Row gap={2.5}>
+          <Col flex={1}>
+            <CtaButton
+              absolute={Platform.OS === 'ios'}
+              title={t('common.delete')}
+              action={handleDeleteNotice}
+              icon={faTrash}
+              containerStyle={styles.ctaButtonContainer}
+              destructive
+              variant="outlined"
+            />
+          </Col>
+          <Col flex={1}>
+            <CtaButton
+              title={t('common.edit')}
+              action={() => {
+                navigation.navigate('EditNoticeContent');
+              }}
+              icon={faPencil}
+              absolute={false}
+              containerStyle={styles.ctaButtonContainer}
+              disabled={isExpired}
+            />
+          </Col>
+        </Row>
+      </CtaButtonContainer>
+    </React.Fragment>
   );
 };
-const createStyles = ({ palettes, spacing }: Theme) =>
+const createStyles = ({
+  palettes,
+  spacing,
+  fontSizes,
+  fontWeights,
+  shapes,
+}: Theme) =>
   StyleSheet.create({
     container: {
-      marginVertical: spacing[5],
+      padding: spacing[5],
     },
-    buttonContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      marginTop: spacing[4],
+    ctaContainer: {
+      paddingHorizontal: spacing[4],
     },
-    dateText: {
-      fontSize: 16,
-      color: palettes.gray[500],
-      marginTop: spacing[1],
-      marginLeft: spacing[4],
+    ctaButtonContainer: {
+      padding: 0,
     },
-    ContentText: {
-      fontSize: 16,
-      marginTop: spacing[4],
-      marginLeft: spacing[4],
-      marginBottom: spacing[4],
+    sectionTitle: {
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.semibold,
+      fontFamily: 'Montserrat-SemiBold',
+      color: palettes.primary[700],
     },
-    TitleText: {
-      fontSize: 16,
-      marginLeft: spacing[4],
+    sectionContent: {
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.normal,
+      fontFamily: 'Montserrat-Regular',
+      color: palettes.gray[800],
     },
-    ShowMore: {
-      marginLeft: spacing[4],
-      marginBottom: spacing[4],
-      marginTop: 8,
-      color: palettes.lightBlue[500], // blu tipo link
-      fontWeight: '500',
+    card: {
+      padding: spacing[5],
+      elevation: 0,
+      borderRadius: shapes.lg,
+      marginBottom: spacing[5],
     },
-    inlineShowMore: {
-      color: palettes.lightBlue[500],
-      fontWeight: '500',
+    cardContent: {
+      gap: spacing[3],
+    },
+    cardElement: {
+      alignItems: 'center',
+    },
+    icon: {
+      color: palettes.gray[600],
+      fontSize: fontSizes['2xl'],
+      marginRight: spacing[1],
+    },
+    title: {
+      color: palettes.gray[600],
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.normal,
+      fontFamily: 'Montserrat-Regular',
+    },
+    subtitle: {
+      color: palettes.text[800],
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.semibold,
+      fontFamily: 'Montserrat-SemiBold',
     },
   });

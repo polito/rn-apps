@@ -1,31 +1,27 @@
 import { PropsWithChildren, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-
-import { useStylesheet } from '../hooks/useStylesheet';
-import { Theme } from '../types/Theme';
-import { HeaderAccessory } from './HeaderAccessory';
-import { IconButton } from './IconButton';
-import { Text } from './Text';
+import { HeaderAccessory } from '../../ui/components/HeaderAccessory';
+import { Text } from '../../ui/components/Text';
+import { useStylesheet } from '../../ui/hooks/useStylesheet';
+import { Theme } from '../../ui/types/Theme';
 
 type Props = {
   title: string;
   close: () => void;
   scrollViewRef?: any;
   setScrollOffset?: (value: number) => void;
+  rightItemTitle?: string;
 };
 
 export const ModalContent = ({
   children,
   close,
-  title,
   scrollViewRef,
   setScrollOffset,
+  rightItemTitle,
 }: PropsWithChildren<Props>) => {
   const styles = useStylesheet(createStyles);
-  const { t } = useTranslation();
 
   const handleOnScroll = useCallback(
     (event: any) => {
@@ -43,15 +39,13 @@ export const ModalContent = ({
         align="center"
         style={styles.header}
       >
-        <View style={styles.headerLeft} />
-        <Text style={styles.modalTitle}>{title}</Text>
-        <IconButton
-          accessibilityLabel={t('common.close')}
-          accessibilityRole="button"
-          icon={faTimes}
-          onPress={close}
-          adjustSpacing="left"
-        />
+        <Text style={styles.headerLeft} onPress={close}>
+          Close
+        </Text>
+
+        {rightItemTitle && (
+          <Text style={styles.headerRight}>{rightItemTitle}</Text>
+        )}
       </HeaderAccessory>
       <ScrollView
         onScroll={handleOnScroll}
@@ -70,25 +64,34 @@ const createStyles = ({
   shapes,
   fontSizes,
   fontWeights,
-  dark,
+  palettes,
 }: Theme) =>
   StyleSheet.create({
     container: {
-      backgroundColor: colors.surface,
+      backgroundColor: palettes.gray[300],
       borderTopRightRadius: shapes.md,
       borderTopLeftRadius: shapes.md,
       maxHeight: '100%',
     },
     header: {
+      paddingVertical: 11,
       borderTopRightRadius: shapes.md,
       borderTopLeftRadius: shapes.md,
-      paddingVertical: spacing[1],
-      backgroundColor: dark ? colors.background : colors.surface,
     },
-    headerLeft: { padding: spacing[3] },
+    headerLeft: {
+      padding: spacing[4],
+      paddingVertical: 0,
+      fontFamily: 'Montserrat-Regular',
+    },
     modalTitle: {
       fontSize: fontSizes.md,
       fontWeight: fontWeights.semibold,
       color: colors.prose,
+    },
+    headerRight: {
+      padding: spacing[4],
+      paddingVertical: 0,
+      color: palettes.lightBlue[500],
+      fontFamily: 'Montserrat-Regular',
     },
   });
