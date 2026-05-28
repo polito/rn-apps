@@ -18,8 +18,11 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { faCalendarDay } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCalendar,
+  faChevronDown,
+  faPaperPlane,
+} from '@fortawesome/free-solid-svg-icons';
 import { APP_TIMEZONE, usePreferencesContext } from '@polito/lib/core';
 import {
   BottomBarSpacer,
@@ -51,8 +54,7 @@ export const AddNoticeContent = () => {
   const { addNoticeToCourse, selectedCourse } = useCourses();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { fontSizes } = useTheme();
-  const { palettes } = useTheme();
+  const { fontSizes, palettes, spacing } = useTheme();
   const [selectedMode, setSelectedMode] = useState<'text' | 'preview'>('text');
   const [description, setDescription] = useState('');
   const { language } = usePreferencesContext<AppPreferences>();
@@ -82,7 +84,7 @@ export const AddNoticeContent = () => {
   const formatDate = (date: Date) => {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
+    const year = date.getFullYear().toString().slice(-2);
 
     return `${day}/${month}/${year}`;
   };
@@ -220,12 +222,12 @@ export const AddNoticeContent = () => {
                   <Card rounded style={styles.card}>
                     <Row style={styles.cardContent}>
                       <Icon
-                        icon={faCalendarDay}
+                        icon={faCalendar}
                         size={fontSizes['2xl']}
                         color={
                           isStartDateSelected
                             ? palettes.primary[700]
-                            : palettes.gray[500]
+                            : palettes.gray[400]
                         }
                       />
                       <Col>
@@ -239,9 +241,12 @@ export const AddNoticeContent = () => {
                         >
                           {t('other.startDate')}
                         </Text>
-                        <Text style={styles.cardSubtitle}>
-                          {renderDateLabel(startDate)}
-                        </Text>
+                        <Row style={{ gap: spacing[1.5] }} align="center">
+                          <Text style={styles.cardSubtitle}>
+                            {renderDateLabel(startDate)}
+                          </Text>
+                          <Icon icon={faChevronDown} size={fontSizes.sm} />
+                        </Row>
                       </Col>
                     </Row>
                   </Card>
@@ -254,12 +259,12 @@ export const AddNoticeContent = () => {
                   <Card rounded style={styles.card}>
                     <Row style={styles.cardContent}>
                       <Icon
-                        icon={faCalendarDay}
+                        icon={faCalendar}
                         size={fontSizes['2xl']}
                         color={
                           isEndDateSelected
                             ? palettes.primary[700]
-                            : palettes.gray[500]
+                            : palettes.gray[400]
                         }
                       />
                       <Col>
@@ -273,9 +278,12 @@ export const AddNoticeContent = () => {
                         >
                           {t('other.endDate')}
                         </Text>
-                        <Text style={styles.cardSubtitle}>
-                          {renderDateLabel(endDate)}
-                        </Text>
+                        <Row style={{ gap: spacing[1.5] }} align="center">
+                          <Text style={styles.cardSubtitle}>
+                            {renderDateLabel(endDate)}
+                          </Text>
+                          <Icon icon={faChevronDown} size={fontSizes.sm} />
+                        </Row>
                       </Col>
                     </Row>
                   </Card>
@@ -345,6 +353,7 @@ const createStyles = ({
   shapes,
   fontSizes,
   fontWeights,
+  fontFamilies,
 }: Theme) =>
   StyleSheet.create({
     container: {
@@ -390,15 +399,13 @@ const createStyles = ({
     },
     cardTitle: {
       color: palettes.gray[500],
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      fontFamily: 'Montserrat-SemiBold',
+      fontSize: fontSizes.sm,
+      fontFamily: fontFamilies.body,
     },
     cardSubtitle: {
       color: palettes.gray[500],
       fontSize: fontSizes.md,
-      fontWeight: fontWeights.normal,
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: fontFamilies.heading,
     },
     textAreaInput: {
       color: palettes.gray[500],

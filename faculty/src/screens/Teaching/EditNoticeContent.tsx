@@ -83,7 +83,6 @@ export const EditNoticeContent = () => {
     { label: 'Preview', value: 'preview' },
   ] as const;
   const cardTitleSelectedStyle = { color: palettes.primary[700] };
-  const cardIconSelectedColor = palettes.primary[700];
 
   useEffect(() => {
     if (selectedMode === 'preview') {
@@ -247,7 +246,7 @@ export const EditNoticeContent = () => {
                         size={fontSizes['2xl']}
                         color={
                           isStartDateSelected
-                            ? cardIconSelectedColor
+                            ? palettes.primary[700]
                             : palettes.gray[400]
                         }
                       />
@@ -282,7 +281,7 @@ export const EditNoticeContent = () => {
                         size={fontSizes['2xl']}
                         color={
                           isEndDateSelected
-                            ? cardIconSelectedColor
+                            ? palettes.primary[700]
                             : palettes.gray[400]
                         }
                       />
@@ -417,7 +416,6 @@ const createStyles = ({
     cardTitle: {
       color: palettes.gray[500],
       fontSize: fontSizes.sm,
-      // fontWeight: fontWeights.semibold,
       fontFamily: fontFamilies.body,
     },
     cardSubtitle: {
