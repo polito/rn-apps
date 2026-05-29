@@ -1,15 +1,21 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useDebounceValue } from '../../../core/hooks/useDebounceValue';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
 import { BottomBarSpacer } from '../../../ui/components/BottomBarSpacer';
+import { HeaderAccessory } from '../../../ui/components/HeaderAccessory';
 import { OverviewList } from '../../../ui/components/OverviewList';
+import { Row } from '../../../ui/components/Row';
+import { Section } from '../../../ui/components/Section';
 import { TranslucentTextField } from '../../../ui/components/TranslucentTextField';
 import { useStylesheet } from '../../../ui/hooks/useStylesheet';
+import { useTheme } from '../../../ui/hooks/useTheme';
+import { GlobalStyles } from '../../../ui/styles/GlobalStyles';
 import { Theme } from '../../../ui/types/Theme';
 import { PersonOverviewListItem } from '../components/PersonOverviewListItem';
 import { PreferredContactsSection } from '../components/PreferredContactsSection';
@@ -33,6 +39,7 @@ export const ContactsScreen = ({
 }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+  const { spacing } = useTheme();
   const { peoplePreferred = [] } = usePreferencesContext<PeoplePreferences>();
   const [search, setSearch] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -40,6 +47,7 @@ export const ContactsScreen = ({
   const enabled = debounceSearch.length >= 2;
   const peopleQuery = useGetPeople(debounceSearch, enabled);
   const hasUsefulContacts = (usefulContacts?.length ?? 0) > 0;
+  const isInputDisabled = useOfflineDisabled();
 
   const showUsefulAlways =
     !enabled && hasUsefulContacts && usefulContactsVisibility === 'always';
@@ -62,17 +70,26 @@ export const ContactsScreen = ({
   );
 
   return (
-    <View style={styles.container}>
-      <TranslucentTextField
-        autoFocus
-        label={t('contactsScreen.search')}
-        icon={faMagnifyingGlass}
-        value={search}
-        onChangeText={setSearch}
-        onFocus={() => setIsSearchFocused(true)}
-        onBlur={() => setIsSearchFocused(false)}
-        style={styles.searchBar}
-      />
+    <>
+      <HeaderAccessory style={styles.searchBar}>
+        <Row align="center" style={GlobalStyles.grow}>
+          <TranslucentTextField
+            autoFocus
+            autoCorrect={false}
+            leadingIcon={faSearch}
+            value={search}
+            onChangeText={setSearch}
+            onFocus={() => setIsSearchFocused(true)}
+            onBlur={() => setIsSearchFocused(false)}
+            style={[GlobalStyles.grow, styles.textField]}
+            label={t('contactsScreen.search')}
+            editable={!isInputDisabled}
+            isClearable={!!search}
+            onClear={() => setSearch('')}
+            onClearLabel={t('contactsScreen.clearSearch')}
+          />
+        </Row>
+      </HeaderAccessory>
       {!enabled && (
         <RecentSearch
           showRecents={isSearchFocused}
@@ -80,38 +97,47 @@ export const ContactsScreen = ({
         />
       )}
       {enabled && (
-        <>
-          <OverviewList
-            loading={peopleQuery.isLoading}
-            emptyStateText={t('contactsScreen.emptyState')}
-            indented
-          >
-            {peopleQuery.data?.map((item, index) => (
-              <PersonOverviewListItem
-                key={item.id}
-                person={item}
-                index={index}
-                totalData={peopleQuery.data?.length ?? 0}
-                searchString={debounceSearch}
-              />
-            ))}
-          </OverviewList>
-          <BottomBarSpacer />
-        </>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={{ paddingBottom: spacing[4] }}
+          keyboardShouldPersistTaps="handled"
+        >
+          <SafeAreaView>
+            <Section>
+              <OverviewList
+                loading={peopleQuery.isLoading}
+                style={{ marginTop: spacing[4] }}
+                emptyStateText={t('contactsScreen.emptyState')}
+                indented
+              >
+                {peopleQuery.data?.map((item, index) => (
+                  <PersonOverviewListItem
+                    key={item.id}
+                    person={item}
+                    index={index}
+                    totalData={peopleQuery.data?.length ?? 0}
+                    searchString={debounceSearch}
+                  />
+                ))}
+              </OverviewList>
+            </Section>
+            <BottomBarSpacer />
+          </SafeAreaView>
+        </ScrollView>
       )}
-    </View>
+    </>
   );
 };
 
-const createStyles = ({ colors, spacing }: Theme) =>
+const createStyles = ({ spacing, shapes }: Theme) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
+    textField: {
+      paddingLeft: spacing[4],
+      borderRadius: shapes.lg,
+      marginLeft: spacing[3],
     },
     searchBar: {
-      marginHorizontal: spacing[5],
-      marginTop: spacing[2],
-      marginBottom: spacing[2],
+      paddingBottom: spacing[2],
+      paddingTop: spacing[2],
     },
   });
