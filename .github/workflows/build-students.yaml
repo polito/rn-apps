@@ -163,6 +163,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          android: false
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
       - name: Set .env
         run: echo "MAPBOX_TOKEN=${{ secrets.MAPBOX_TOKEN }}" >> .env
       - name: Gradle Wrapper Validation
@@ -175,32 +185,25 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-      - name: Cache node modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
-      - name: Cache Gradle artifacts
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('students/**/*.gradle*', 'students/**/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-
+          cache: npm
+          cache-dependency-path: package-lock.json
       - name: Setup build cache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
           max-size: 1G
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-cleanup: always
       - name: Setup .npmrc
-        working-directory: ${{github.workspace}}
+        working-directory: ${{ github.workspace }}
         run: printf '@polito:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}\n' > .npmrc
       - name: Enforce version
         if: ${{ env.APP_VERSION != '' }}
         run: npm version "$APP_VERSION" --no-git-tag-version
       - name: Install npm dependencies
-        working-directory: ${{github.workspace}}
-        run: npm install
+        working-directory: ${{ github.workspace }}
+        run: npm ci
       - name: Prepare fastlane
         run: |
           cd android
