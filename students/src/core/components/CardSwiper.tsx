@@ -12,7 +12,6 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 
-import FastImage from '@d11/react-native-fast-image';
 import { useDeviceOrientation } from '@polito/lib/core';
 import {
   CtaButton,
@@ -25,6 +24,7 @@ import { EuropeanStudentCard, Student } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { Image } from 'expo-image';
 import { DateTime } from 'luxon';
 
 import { UserStackParamList } from '../../features/user/components/UserNavigator.tsx';
@@ -131,13 +131,11 @@ const SlideItem = ({
       ]}
     >
       {!item.card.isESC ? (
-        <FastImage
+        <Image
           style={styles.smartCard}
-          source={{
-            uri: item.card.uri,
-            priority: FastImage.priority.high,
-          }}
-          resizeMode={FastImage.resizeMode.contain}
+          source={{ uri: item.card.uri }}
+          priority="high"
+          contentFit="contain"
         />
       ) : (
         <View>

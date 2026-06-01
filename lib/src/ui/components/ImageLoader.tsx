@@ -1,39 +1,57 @@
 import { useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import FastImage, {
-  FastImageProps,
-  FastImageStaticProperties,
-  ImageStyle,
-  ResizeMode,
-} from '@d11/react-native-fast-image';
+import {
+  Image,
+  type ImageContentFit,
+  type ImageProps,
+  type ImageStyle,
+} from 'expo-image';
 
 import { ActivityIndicator } from './ActivityIndicator';
 
-type Props = Partial<Omit<FastImageStaticProperties, 'resizeMode'>> &
-  FastImageProps & {
-    containerStyle?: StyleProp<ViewStyle>;
-    source: { uri: string };
-    resizeMode: ResizeMode;
-    imageStyle?: StyleProp<ImageStyle>;
-  };
+type Props = Omit<
+  ImageProps,
+  'style' | 'source' | 'contentFit' | 'onLoadStart' | 'onLoadEnd' | 'onLoad'
+> & {
+  containerStyle?: StyleProp<ViewStyle>;
+  source: { uri: string };
+  resizeMode: ImageContentFit;
+  imageStyle?: StyleProp<ImageStyle>;
+  onLoad?: ImageProps['onLoad'];
+  onLoadStart?: ImageProps['onLoadStart'];
+  onLoadEnd?: ImageProps['onLoadEnd'];
+};
 
-export const ImageLoader = ({ resizeMode, imageStyle, ...rest }: Props) => {
+export const ImageLoader = ({
+  resizeMode,
+  imageStyle,
+  containerStyle,
+  source,
+  onLoadStart,
+  onLoadEnd,
+  onLoad,
+  ...rest
+}: Props) => {
   const [loading, setLoading] = useState(true);
-  const [src, setSrc] = useState(rest.source);
-
-  const onLoadEnd = () => setLoading(false);
-  const onLoadStart = () => setLoading(true);
+  const [src, setSrc] = useState(source);
 
   return (
-    <View style={rest.containerStyle} onLayout={() => setSrc(rest.source)}>
-      <FastImage
+    <View style={containerStyle} onLayout={() => setSrc(source)}>
+      <Image
         {...rest}
-        style={imageStyle}
-        resizeMode={resizeMode}
-        onLoadEnd={onLoadEnd}
-        onLoadStart={onLoadStart}
         source={src}
+        style={imageStyle}
+        contentFit={resizeMode}
+        onLoadStart={() => {
+          setLoading(true);
+          onLoadStart?.();
+        }}
+        onLoad={onLoad}
+        onLoadEnd={() => {
+          setLoading(false);
+          onLoadEnd?.();
+        }}
       />
       {loading && <ActivityIndicator style={styles.activityIndicator} />}
     </View>

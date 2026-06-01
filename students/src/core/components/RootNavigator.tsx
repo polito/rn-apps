@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import FastImage from '@d11/react-native-fast-image';
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import {
   faBookOpen,
@@ -29,6 +28,8 @@ import {
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { UnreadMessagesModal } from '~/features/user/screens/UnreadMessagesModal';
+
+import { Image } from 'expo-image';
 
 import { filterUnread } from '../../../src/utils/messages';
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
@@ -73,11 +74,7 @@ export const RootNavigator = ({
 
   useEffect(() => {
     if (student?.smartCardPicture) {
-      FastImage.preload([
-        {
-          uri: student?.smartCardPicture,
-        },
-      ]);
+      Image.prefetch(student.smartCardPicture).catch(() => {});
     }
   }, [student]);
 

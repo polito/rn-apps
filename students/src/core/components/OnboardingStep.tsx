@@ -6,7 +6,6 @@ import {
   useWindowDimensions,
 } from 'react-native';
 
-import FastImage from '@d11/react-native-fast-image';
 import {
   CtaButtonSpacer,
   HtmlView,
@@ -15,6 +14,8 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+
+import { Image } from 'expo-image';
 
 interface Props {
   title: string;
@@ -58,17 +59,17 @@ export const OnboardingStep = ({
     >
       {cover && (
         <View style={styles.coverImageContainer}>
-          <FastImage
+          <Image
             source={{ uri: cover }}
             style={{
               borderRadius: shapes.lg,
               width: coverWidth,
               aspectRatio: coverAspectRatio ?? 16 / 9,
             }}
-            resizeMode={FastImage.resizeMode.cover}
+            contentFit="cover"
             onLoad={e => {
-              const { width: w, height: h } = e.nativeEvent;
-              if (w > 0) setCoverAspectRatio(w / h);
+              const { width: w, height: h } = e.source;
+              if (w > 0 && h > 0) setCoverAspectRatio(w / h);
             }}
           />
         </View>

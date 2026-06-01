@@ -19,8 +19,9 @@ gem 'logger'
 gem 'benchmark'
 gem 'mutex_m'
 
-plugins_path = File.join(File.dirname(__FILE__), 'ios', 'fastlane', 'Pluginfile')
+# TODO: Migrate to a monorepo approach and move these plugins in the root Gemfile
+plugins_path = File.join(File.dirname(__FILE__), 'students', 'ios', 'fastlane', 'Pluginfile')
 eval_gemfile(plugins_path) if File.exist?(plugins_path)
 
-plugins_path = File.join(File.dirname(__FILE__), 'android', 'fastlane', 'Pluginfile')
+plugins_path = File.join(File.dirname(__FILE__), 'students', 'android', 'fastlane', 'Pluginfile')
 eval_gemfile(plugins_path) if File.exist?(plugins_path)
