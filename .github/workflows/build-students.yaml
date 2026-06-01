@@ -195,6 +195,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
         with:
           cache-cleanup: always
+          cache-read-only: false
       - name: Setup .npmrc
         working-directory: ${{ github.workspace }}
         run: printf '@polito:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}\n' > .npmrc
