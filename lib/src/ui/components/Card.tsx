@@ -54,7 +54,7 @@ export const Card = ({
           borderRadius: rounded ? shapes.lg : undefined,
           backgroundColor:
             IS_IOS && translucent ? colors.translucentSurface : colors.surface,
-          elevation: 2,
+          elevation: rounded ? 0 : 2,
           marginHorizontal: spaced ? spacing[4] : undefined,
           marginVertical: spacing[2],
           overflow: 'hidden',

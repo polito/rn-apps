@@ -1,5 +1,5 @@
 import { Children, PropsWithChildren, isValidElement } from 'react';
-import { Platform } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
 import { Divider } from './Divider';
@@ -8,6 +8,7 @@ import { IndentedDivider } from './IndentedDivider';
 interface Props {
   dividers?: boolean;
   indented?: boolean;
+  dividerSize?: number;
 }
 
 /**
@@ -17,9 +18,12 @@ interface Props {
 export const List = ({
   dividers = Platform.select({ ios: true, android: false }),
   indented = false,
+  dividerSize,
   children,
 }: PropsWithChildren<Props>) => {
   const { spacing } = useTheme();
+  const lineThickness = dividerSize ?? StyleSheet.hairlineWidth;
+
   return (
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <>
@@ -42,10 +46,16 @@ export const List = ({
                 {c}
                 {i < Children.count(children) - 1 &&
                   (indented ? (
-                    <IndentedDivider key={`div-${i}`} indent={indent} />
+                    <IndentedDivider
+                      key={`div-${i}`}
+                      indent={indent}
+                      size={lineThickness}
+                    />
                   ) : (
                     <Divider
                       key={`div-${i}`}
+                      horizontal
+                      size={lineThickness}
                       style={{
                         marginStart: spacing[5],
                       }}

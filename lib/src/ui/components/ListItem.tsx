@@ -191,7 +191,7 @@ export const ListItem = ({
           ) : (
             <View
               style={{
-                marginRight: -10,
+                marginRight: -18,
                 width: 51,
                 height: 31,
                 alignItems: 'center',

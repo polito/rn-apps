@@ -2,8 +2,13 @@ import { useTheme } from '@polito/lib/ui';
 
 import { CourseIcon } from './CourseIcon';
 
-export const CourseIndicator = () => {
+interface Props {
+  color?: string;
+  icon?: string;
+}
+
+export const CourseIndicator = ({ color, icon = 'faVial' }: Props) => {
   const { palettes } = useTheme();
 
-  return <CourseIcon color={palettes.primary[500]} />;
+  return <CourseIcon color={color ?? palettes.primary[500]} icon={icon} />;
 };

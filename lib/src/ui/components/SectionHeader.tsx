@@ -123,7 +123,7 @@ export const SectionHeader = ({
               }
             }}
           >
-            <Text variant="link">
+            <Text variant="link" style={styles.linkCta}>
               {t('sectionHeader.cta')}
               {(linkToMoreCount ?? 0) > 0 &&
                 ' ' +
@@ -171,7 +171,7 @@ export const SectionHeader = ({
   );
 };
 
-const createStyles = ({ spacing, colors }: Theme) =>
+const createStyles = ({ spacing, colors, fontSizes, fontWeights }: Theme) =>
   StyleSheet.create({
     container: {
       paddingHorizontal: spacing[4],
@@ -182,6 +182,9 @@ const createStyles = ({ spacing, colors }: Theme) =>
     },
     title: {
       color: colors.heading,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.semibold,
+      lineHeight: fontSizes.md * 1.25,
       marginEnd: spacing[5],
     },
     titleContainer: {
@@ -192,5 +195,10 @@ const createStyles = ({ spacing, colors }: Theme) =>
       flexDirection: 'row',
       padding: 0,
       margin: 0,
+    },
+    linkCta: {
+      fontSize: fontSizes.xs,
+      fontWeight: fontWeights.normal,
+      lineHeight: fontSizes.xs * 1.5,
     },
   });

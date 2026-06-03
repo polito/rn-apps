@@ -1,55 +1,81 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
+import {
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+  View,
+} from 'react-native';
 
+import { faCalendar } from '@fortawesome/free-regular-svg-icons';
+import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
+import { formatDateFromString } from '@polito/lib/core';
 import {
   BottomBarSpacer,
+  DisclosureIndicator,
+  Icon,
   ListItem,
+  Row,
   Section,
   SectionHeader,
+  Text,
+  useTheme,
 } from '@polito/lib/ui';
+import { useHeaderHeight } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { TeachingStackParamList } from './TeachingNavigator';
+import { CourseIndicator } from './CourseIndicator';
+import { CourseListItem } from './CourseListItem';
+import { TeachingStackParamList, useTeachingScroll } from './TeachingNavigator';
+
+const MAX_SECTION_ITEMS = 3;
 
 export const TeachingScreen = () => {
   const { t } = useTranslation();
-  const {
-    fakeCourses,
-    fakeExams,
-    setSelectedCourse,
-    managedCourses,
-    setSelectedExam,
-  } = useCourses(); // Usa il hook per ottenere i dati
+  const { fakeCourses, fakeExams, setSelectedExam } = useCourses();
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
+  const { colors, palettes } = useTheme();
+  const headerHeight = useHeaderHeight();
+  const { setIsScrolled } = useTeachingScroll();
+
+  const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    setIsScrolled(e.nativeEvent.contentOffset.y > -headerHeight + 10);
+  };
+
+  const courseColors = [
+    palettes.error[600],
+    palettes.orange[600],
+    palettes.green[600],
+  ];
+
+  const extraCourses = Math.max(0, fakeCourses.length - MAX_SECTION_ITEMS);
+  const extraExams = Math.max(0, fakeExams.length - MAX_SECTION_ITEMS);
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <View style={{ paddingTop: 10 }} />
+    <ScrollView
+      contentInsetAdjustmentBehavior="never"
+      contentInset={{ top: headerHeight }}
+      scrollIndicatorInsets={{ top: headerHeight }}
+      onScroll={handleScroll}
+      scrollEventThrottle={16}
+    >
+      <View style={{ paddingTop: 20 }} />
 
       <Section>
-        <SectionHeader title={t('other.myCourses')} linkTo="MyCourses" />
+        <SectionHeader
+          title={t('other.myCourses')}
+          linkTo="MyCourses"
+          linkToMoreCount={extraCourses}
+        />
         <SectionList>
-          {fakeCourses.map(course => (
-            <ListItem
+          {fakeCourses.slice(0, MAX_SECTION_ITEMS).map((course, index) => (
+            <CourseListItem
               key={course.id}
-              title={course.title}
-              subtitle={(() => {
-                const parts = course.subtitle.split(' - ');
-                const enrolled = parts[0].replace(
-                  'Iscritti',
-                  t('other.enrolledStudents'),
-                );
-                const period = parts[1].replace('Periodo', t('other.period'));
-                return `${enrolled} - ${period}`;
-              })()}
-              onPress={() => {
-                setSelectedCourse(course);
-                navigation.navigate('Course', { from: 'Incarichi' });
-              }}
+              course={course}
+              color={courseColors[index % courseColors.length]}
             />
           ))}
         </SectionList>
@@ -57,50 +83,52 @@ export const TeachingScreen = () => {
 
       <Section>
         <SectionHeader
-          title={t('other.managedCourses')}
-          linkTo="CorsiInGestione"
+          title={t('other.appeals')}
+          linkTo="ExamsCalls"
+          linkToMoreCount={extraExams}
         />
         <SectionList>
-          {managedCourses.map(course => (
+          {fakeExams.slice(0, MAX_SECTION_ITEMS).map((exam, index) => (
             <ListItem
-              key={course.id}
-              title={course.title}
-              subtitle={(() => {
-                const parts = course.subtitle.split(' - ');
-                const enrolled = parts[0].replace(
-                  'Iscritti',
-                  t('other.enrolledStudents'),
-                );
-                const period = parts[1].replace('Periodo', t('other.period'));
-                return `${enrolled} - ${period}`;
-              })()}
+              key={exam.id}
+              title={exam.subject}
+              leadingItem={
+                <CourseIndicator
+                  color={courseColors[index % courseColors.length]}
+                />
+              }
+              trailingItem={<DisclosureIndicator size={16} />}
+              subtitle={
+                <Row gap={2} pt={1} align="center">
+                  <Row gap={1} align="center">
+                    <Icon icon={faCalendar} color={colors.secondaryText} />
+                    <Text variant="secondaryText">
+                      {exam.date === 'Oggi'
+                        ? t('other.today')
+                        : formatDateFromString(exam.date)}
+                    </Text>
+                  </Row>
+                  {exam.where ? (
+                    <Row gap={1} flexShrink={1} align="center">
+                      <Icon icon={faLocationDot} color={colors.secondaryText} />
+                      <Text
+                        variant="secondaryText"
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                        style={{ flexShrink: 1 }}
+                      >
+                        {exam.where}
+                      </Text>
+                    </Row>
+                  ) : null}
+                </Row>
+              }
               onPress={() => {
-                setSelectedCourse(course);
-                navigation.navigate('Course', { from: 'Incarichi' });
+                setSelectedExam(exam);
+                navigation.navigate('Exam', { id: exam.id });
               }}
             />
           ))}
-        </SectionList>
-      </Section>
-
-      <Section>
-        <SectionHeader title={t('other.appeals')} linkTo="Appelli" />
-        <SectionList>
-          {fakeExams.slice(0, 3).map(exam => {
-            return (
-              <ListItem
-                key={exam.id}
-                title={exam.subject}
-                subtitle={exam.date === 'Oggi' ? t('other.today') : exam.date}
-                onPress={() => {
-                  navigation.navigate('Exam', {
-                    id: exam.id,
-                  });
-                  setSelectedExam(exam);
-                }}
-              />
-            );
-          })}
         </SectionList>
       </Section>
 
@@ -108,29 +136,3 @@ export const TeachingScreen = () => {
     </ScrollView>
   );
 };
-
-// const _createStyles = ({ spacing }: Theme) =>
-//   StyleSheet.create({
-//     container: {
-//       marginVertical: spacing[5],
-//     },
-//     sectionsContainer: {
-//       paddingVertical: spacing[5],
-//       minHeight: '100%',
-//     },
-//     section: {
-//       marginBottom: spacing[5],
-//     },
-//     cardContainer: {
-//       flexDirection: 'column',
-//       gap: spacing[3],
-//       paddingHorizontal: spacing[4],
-//     },
-//     card: {
-//       padding: spacing[3],
-//     },
-//     paddingView: {
-//       height: 200, // Aggiungi uno spazio extra, modifica a piacere
-//       backgroundColor: undefined, // Componente trasparente
-//     },
-//   });

@@ -4,6 +4,11 @@ import { useTheme } from '../hooks/useTheme';
 
 export interface DividerProps extends ViewProps {
   size?: number;
+  /**
+   * Full-width (in the parent) horizontal hairline; `size` is line thickness only.
+   * Default is square min bounds for legacy vertical / square dividers.
+   */
+  horizontal?: boolean;
 }
 
 /**
@@ -11,6 +16,7 @@ export interface DividerProps extends ViewProps {
  */
 export const Divider = ({
   size = StyleSheet.hairlineWidth,
+  horizontal = false,
   style,
   ...props
 }: DividerProps) => {
@@ -19,11 +25,17 @@ export const Divider = ({
     <View
       {...props}
       style={[
-        {
-          minWidth: size,
-          minHeight: size,
-          backgroundColor: colors.divider,
-        },
+        horizontal
+          ? {
+              alignSelf: 'stretch',
+              minHeight: size,
+              backgroundColor: colors.divider,
+            }
+          : {
+              minWidth: size,
+              minHeight: size,
+              backgroundColor: colors.divider,
+            },
         style,
       ]}
     />
