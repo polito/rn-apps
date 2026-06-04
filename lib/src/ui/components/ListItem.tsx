@@ -189,17 +189,7 @@ export const ListItem = ({
           (!trailingItem && (linkTo || isAction) ? (
             <DisclosureIndicator />
           ) : (
-            <View
-              style={{
-                marginRight: -10,
-                width: 51,
-                height: 31,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              {trailingItem}
-            </View>
+            trailingItem
           ))}
       </View>
     </TouchableHighlight>
