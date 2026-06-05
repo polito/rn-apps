@@ -107,7 +107,7 @@ export const ServiceCard = ({
           hitSlop={uniformInsets(16)}
         />
       </Row>
-      <Row justify="space-between" align="baseline">
+      <Row justify="space-between" align="flex-end">
         <Text variant="title" style={styles.title}>
           {name}
         </Text>
