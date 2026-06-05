@@ -4,16 +4,7 @@ import { useTheme } from '../hooks/useTheme';
 import { Icon } from './Icon';
 
 export const DisclosureIndicator = () => {
-  const { colors, spacing } = useTheme();
+  const { colors } = useTheme();
 
-  return (
-    <Icon
-      icon={faChevronRight}
-      color={colors.secondaryText}
-      style={{
-        marginLeft: spacing[1],
-        marginRight: -spacing[1],
-      }}
-    />
-  );
+  return <Icon icon={faChevronRight} color={colors.secondaryText} />;
 };

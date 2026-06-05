@@ -184,7 +184,7 @@ export const ServicesScreen = () => {
       },
       {
         id: 'mail',
-        name: 'WebMail',
+        name: 'Web\nMail',
         icon: faEnvelope,
         disabled: isOffline,
         unReadCount: unreadEmailsQuery.data

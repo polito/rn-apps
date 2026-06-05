@@ -310,7 +310,7 @@ export const CourseListItem = ({
               android: (
                 <Menu course={course}>
                   <IconButton
-                    style={styles.menuButton}
+                    noPadding
                     icon={faEllipsisVertical}
                     color={colors.secondaryText}
                     size={fontSizes.xl}
@@ -479,7 +479,7 @@ export const CourseListItem = ({
                             }}
                           >
                             <IconButton
-                              style={styles.menuButton}
+                              noPadding
                               icon={faEllipsisVertical}
                               color={colors.secondaryText}
                               size={fontSizes.xl}
@@ -530,13 +530,9 @@ const createStyles = (theme: Theme) => {
       display: 'flex' as const,
       alignItems: 'center' as const,
       marginTop: 0,
-      marginRight: Platform.OS === 'ios' ? -spacing[4] : 0,
     },
     spacer: {
       width: 20,
-    },
-    menuButton: {
-      padding: spacing[3],
     },
     moduleItem: {
       overflow: 'hidden' as const,
