@@ -40,7 +40,7 @@ export const Card = ({
   style,
   translucent = false,
   spaced = Platform.select({ ios: true, android: false }),
-  rounded = Platform.select({ ios: true, android: false }),
+  rounded = true,
   gapped = false,
   padded = false,
   ...rest
