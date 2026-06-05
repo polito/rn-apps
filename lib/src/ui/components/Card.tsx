@@ -1,4 +1,4 @@
-import { Platform, View, ViewProps } from 'react-native';
+import { View, ViewProps } from 'react-native';
 
 import { IS_IOS } from '../../core/constants';
 import { useTheme } from '../hooks/useTheme';
@@ -39,7 +39,7 @@ export const Card = ({
   children,
   style,
   translucent = false,
-  spaced = Platform.select({ ios: true, android: false }),
+  spaced = true,
   rounded = true,
   gapped = false,
   padded = false,
