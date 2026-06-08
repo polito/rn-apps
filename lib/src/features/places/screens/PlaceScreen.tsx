@@ -6,7 +6,7 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Linking, Platform, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 
 import {
   faDiamondTurnRight,
@@ -47,7 +47,6 @@ import { Theme } from '../../../ui/types/Theme';
 import { MapScreenProps } from '../components/MapNavigator';
 import { MarkersLayer } from '../components/MarkersLayer';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
-import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
 import { PlacesContext } from '../contexts/PlacesContext';
 import { useSearchPlaces } from '../hooks/useSearchPlaces';
 import { useGetPlace, useGetSites } from '../queries/placesHooks';
@@ -61,7 +60,13 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const { placesSearched, updatePreference } = usePreferencesContext();
-  const { floorId, setFloorId } = useContext(PlacesContext);
+  const {
+    floorId,
+    setFloorId,
+    setSelectionMode,
+    setNavSelectorRoom,
+    setAvoidStairs,
+  } = useContext(PlacesContext);
   const { fontSizes, spacing } = useTheme();
   const headerHeight = useHeaderHeight();
   const { placeId, isCrossNavigation, long, lat, name } = route.params;
@@ -122,7 +127,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
 
   const siteId = placeSiteId ?? fallbackSite?.id;
   const effectiveFloorId = placeFloorId ?? fallbackFloorId;
-  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
+  //const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
   const { data: places, isLoading: isLoadingPlaces } = useSearchPlaces({
     siteId: siteId,
     floorId: effectiveFloorId,
@@ -196,8 +201,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
               categoryId={place?.category?.id}
               subCategoryId={place?.category?.subCategory?.id}
               isCrossNavigation={isCrossNavigation}
-              selectedId={selectedId}
-              setSelectedId={setSelectedId}
+              //selectedId={selectedId}
+              //setSelectedId={setSelectedId}
             />
             {place.geoJson != null && (
               <ShapeSource
@@ -251,8 +256,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                 places={places}
                 isCrossNavigation={isCrossNavigation}
                 categoryId="OTHER"
-                selectedId={selectedId}
-                setSelectedId={setSelectedId}
+                //selectedId={selectedId}
+                //setSelectedId={setSelectedId}
               />
               <ShapeSource id="placeHighlightSource">
                 <LineLayer
@@ -309,6 +314,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                   inverted
                   multilineTitle
                   title={t('placeScreen.getDirections')}
+                  subtitle={t('placeScreen.path')}
                   trailingItem={
                     <IconButton
                       icon={faDiamondTurnRight}
@@ -316,17 +322,16 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                       adjustSpacing="right"
                       accessibilityLabel={t('common.navigate')}
                       onPress={() => {
-                        const scheme = Platform.select({
-                          ios: 'maps://0,0?q=',
-                          android: 'geo:0,0?q=',
+                        setSelectionMode(true);
+                        setNavSelectorRoom(null);
+                        setAvoidStairs(false);
+                        setNavSelectorRoom(null);
+                        navigation.navigate('Indications', {
+                          toPlace: {
+                            placeId: placeId,
+                            namePlace: placeName,
+                          },
                         });
-                        const latLng = [lat, long].join(',');
-                        const label = name;
-                        const url = Platform.select({
-                          ios: `${scheme}${label}@${latLng}`,
-                          android: `${scheme}${latLng}(${label})`,
-                        })!;
-                        Linking.openURL(url);
                       }}
                     />
                   }
@@ -379,7 +384,6 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
         middleSnapPoint={50}
         handleStyle={{ paddingVertical: undefined }}
         index={1}
-        onAnimate={() => {}} // trigger animation with index = 1 when clicked
       >
         <BottomSheetScrollView>
           <Col ph={5} mb={5}>
@@ -398,8 +402,8 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
               <ListItem
                 inverted
                 multilineTitle
-                title={(place && place.site.name) ?? ''}
-                subtitle={t('common.campus')}
+                title={t('placeScreen.getDirections')}
+                subtitle={t('placeScreen.path')}
                 trailingItem={
                   <IconButton
                     icon={faDiamondTurnRight}
@@ -407,20 +411,17 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                     adjustSpacing="right"
                     accessibilityLabel={t('common.navigate')}
                     onPress={() => {
-                      const scheme = Platform.select({
-                        ios: 'maps://0,0?q=',
-                        android: 'geo:0,0?q=',
+                      setSelectionMode(true);
+                      setNavSelectorRoom(null);
+                      setAvoidStairs(false);
+                      setNavSelectorRoom(null);
+                      navigation.navigate('Indications', {
+                        toPlace: {
+                          placeId: place?.id || '',
+                          namePlace:
+                            place?.room.name || place?.category.name || '',
+                        },
                       });
-                      const latLng = [
-                        place?.latitude || lat,
-                        place?.longitude || long,
-                      ].join(',');
-                      const label = place?.room.name ?? name;
-                      const url = Platform.select({
-                        ios: `${scheme}${label}@${latLng}`,
-                        android: `${scheme}${latLng}(${label})`,
-                      })!;
-                      Linking.openURL(url);
                     }}
                   />
                 }

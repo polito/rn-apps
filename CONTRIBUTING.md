@@ -40,7 +40,45 @@ $ npm install # Install root dependencies
 ```
 
 See [Running on Device](https://reactnative.dev/docs/running-on-device) for guidance on how to prepare your
-environment to run the app.
+environment to run the app (see the [WSL setup for Android](./WSL_SETUP_ANDROID.md) if you want to run the app on Android using Windows with WSL).
+
+### Android with Windows using WSL
+
+In order to build and run a React Native application locally using [WSL](https://learn.microsoft.com/it-it/windows/wsl/install) (Windows Subsystem for Linux), it's important to understand the architecture:
+
+> [!IMPORTANT]
+> The Android emulator does NOT run inside WSL.<br>
+> It runs on Windows and communicates through ADB.
+
+---
+
+First, download and install [Android Studio](https://developer.android.com/studio). During installation, make sure to install:
+
+- Android SDK Platform
+- Android SDK Build Tools
+- Android Emulator
+
+Then, you can use the following script for setting up Adb environment on Windows using WSL.
+
+Open Windows Run box (WIN+R), then enter:
+`wsl --cd %LOCALAPPDATA%\Android\Sdk`. This starts a WSL terminal in the newly installed Android SDK location. (Change it if for any reason you installed it elsewhere). Then run the following scripts (or the parts of it you need).
+
+```shell
+#set this to ~/.bashrc or ~/.zshrc or whatever other shell config file you generally use
+export MY_SHELL_CONF_FILE=~/.pipporc
+
+# save environment variables in shell config
+echo "export ANDROID_HOME=$PWD" >> $MY_SHELL_CONF_FILE
+echo 'export PATH=$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/Platform-tools' >> $MY_SHELL_CONF_FILE
+echo 'export ADB_SERVER_SOCKET=tcp:127.0.0.1:5037' >> $MY_SHELL_CONF_FILE
+
+# prepare adb stub for windows/wsl interop
+echo '#!/bin/bash
+exec "$ANDROID_HOME/platform-tools/adb.exe" "$@"' > $PWD/platform-tools/adb
+chmod +x $PWD/platform-tools/adb
+
+source $MY_SHELL_CONF_FILE
+```
 
 ## Dependency Management
 

@@ -1,0 +1,184 @@
+import { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Platform, StyleSheet, View } from 'react-native';
+
+import {
+  faChevronLeft,
+  faChevronRight,
+} from '@fortawesome/free-solid-svg-icons';
+import { IconButton } from '@polito/lib/ui';
+import { Text } from '@polito/lib/ui';
+import { useTheme } from '@polito/lib/ui';
+import { TranslucentView } from '@polito/lib/ui';
+import { useStylesheet } from '@polito/lib/ui';
+import { NavigationResponseFeature } from '@polito/student-api-client';
+
+import { PlacesContext } from '../contexts/PlacesContext';
+import { useGetSite } from '../queries/placesHooks';
+
+type Props = {
+  lineId?: number;
+  pathFeatureCollection: NavigationResponseFeature[];
+};
+
+export const SubPathSelector = (props: Props) => {
+  const styles = useStylesheet(createStyles);
+
+  const { handleSelectSegment } = useContext(PlacesContext);
+  const numSegments = props.pathFeatureCollection
+    ? props.pathFeatureCollection.length - 1
+    : 0;
+
+  const floorMapNames = useGetSite('TO_CENCIT')?.floors;
+
+  const [currentSegmentIndex, setCurrentSegmentIndex] = useState<number>(
+    props.lineId || 0,
+  );
+  const { colors, palettes, spacing, dark } = useTheme();
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <TranslucentView
+        fallbackOpacity={1}
+        style={[
+          styles.subPathTransView,
+          { backgroundColor: Platform.select({ android: colors.background }) },
+        ]}
+      />
+      <View style={styles.subPathSelector}>
+        <IconButton
+          icon={faChevronLeft}
+          size={spacing[6]}
+          style={[styles.icon, { backgroundColor: colors.background }]}
+          disabled={currentSegmentIndex === 0}
+          onPress={() => {
+            setCurrentSegmentIndex(prev => prev - 1);
+            handleSelectSegment?.(
+              currentSegmentIndex - 1,
+              props.pathFeatureCollection[currentSegmentIndex - 1].features
+                .properties.fn_fl_id || '',
+            );
+          }}
+        />
+        <View style={styles.container}>
+          <Text
+            style={[
+              styles.floorIndicator,
+              { color: dark ? palettes.text[200] : palettes.text[900] },
+            ]}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {
+              floorMapNames?.find(
+                floor =>
+                  floor.id ===
+                  props.pathFeatureCollection[currentSegmentIndex].features
+                    .properties.fn_fl_id,
+              )?.name
+            }
+          </Text>
+          {props.pathFeatureCollection[currentSegmentIndex].isPrivate && (
+            <Text
+              style={[
+                styles.privateIndicator,
+                { color: dark ? palettes.text[200] : palettes.text[900] },
+              ]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {t('itineraryScreen.privateSection')}
+            </Text>
+          )}
+          <Text
+            style={[
+              styles.instruction,
+              { color: dark ? palettes.text[400] : palettes.text[700] },
+            ]}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {currentSegmentIndex < numSegments
+              ? t('itineraryScreen.continueTo') +
+                `${floorMapNames?.find(floor => floor.id === props.pathFeatureCollection[currentSegmentIndex + 1].features.properties.fn_fl_id)?.name}`
+              : t('itineraryScreen.continuteToDestination')}
+            {currentSegmentIndex < numSegments &&
+              props.pathFeatureCollection[currentSegmentIndex + 1].isPrivate &&
+              ` ${t('itineraryScreen.toPrivate')}`}
+          </Text>
+        </View>
+        <IconButton
+          icon={faChevronRight}
+          size={spacing[6]}
+          style={[styles.icon, { backgroundColor: colors.background }]}
+          disabled={currentSegmentIndex === numSegments}
+          onPress={() => {
+            setCurrentSegmentIndex(prev => prev + 1);
+            handleSelectSegment?.(
+              currentSegmentIndex + 1,
+              props.pathFeatureCollection[currentSegmentIndex + 1].features
+                .properties.fn_fl_id || '',
+            );
+          }}
+        />
+      </View>
+    </>
+  );
+};
+
+const createStyles = () =>
+  StyleSheet.create({
+    subPathTransView: {
+      position: 'absolute',
+      borderRadius: 12,
+      top: '35%',
+    },
+    subPathSelector: {
+      display: 'flex',
+      flexDirection: 'row',
+      paddingHorizontal: '5%',
+      paddingVertical: '3%',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      alignSelf: 'stretch',
+      borderRadius: 12,
+      height: 'auto',
+    },
+    container: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      maxWidth: '60%',
+    },
+    floorIndicator: {
+      textAlign: 'center',
+      fontFamily: 'Montserrat',
+      fontSize: 16,
+      fontStyle: 'normal',
+      fontWeight: 600,
+    },
+    privateIndicator: {
+      textAlign: 'center',
+      fontFamily: 'Montserrat',
+      fontSize: 13,
+      fontStyle: 'normal',
+      fontWeight: 600,
+    },
+    instruction: {
+      alignSelf: 'stretch',
+      textAlign: 'center',
+      fontFamily: 'Montserrat',
+      fontSize: 16,
+      fontStyle: 'normal',
+      fontWeight: 400,
+    },
+    icon: {
+      display: 'flex',
+      padding: '5%',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 6,
+    },
+  });

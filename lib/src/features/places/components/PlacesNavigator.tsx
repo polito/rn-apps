@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ImageURISource, Platform, StyleSheet, View } from 'react-native';
 import { PERMISSIONS, request } from 'react-native-permissions';
 
+import { NavigationResponse, PlaceOverview } from '@polito/student-api-client';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
   Images,
@@ -23,8 +24,12 @@ import { usePlaceCategoriesMap } from '../hooks/usePlaceCategoriesMap';
 import { BuildingScreen } from '../screens/BuildingScreen';
 import { EventPlacesScreen } from '../screens/EventPlacesScreen';
 import { FreeRoomsScreen } from '../screens/FreeRoomsScreen';
+import { IndicationsScreen } from '../screens/IndicationsScreen';
+import { ItineraryScreen } from '../screens/ItineraryScreen';
+import { MapSelectionScreen } from '../screens/MapSelectionScreen';
 import { PlaceScreen } from '../screens/PlaceScreen';
 import { PlacesScreen } from '../screens/PlacesScreen';
+import { NavField, NavigationPlaceType } from '../types';
 import { createMapNavigator } from './MapNavigator';
 
 export type PlacesStackParamList = {
@@ -48,6 +53,16 @@ export type PlacesStackParamList = {
   Building: {
     siteId: string;
     buildingId: string;
+  };
+  Indications: {
+    fromPlace?: NavigationPlaceType;
+    toPlace?: NavigationPlaceType;
+  };
+  MapSelection: {};
+  Itinerary: {
+    pathFeat: NavigationResponse;
+    startRoom: string;
+    destRoom: string;
   };
   PlaceCategories: undefined;
   MessagesModal: undefined;
@@ -137,12 +152,35 @@ export const PlacesNavigator = ({
   const { t } = useTranslation();
   const theme = useTheme();
   const [floorId, setFloorId] = useState<string>();
+  const [selectedSegmentId, setSelectedSegmentId] = useState<number>();
+  const [selectionMode, setSelectionMode] = useState<boolean>(false);
+  const [selectedPlace, setSelectedPlace] = useState<PlaceOverview | null>(
+    null,
+  );
+  const [navSelectorRoom, setNavSelectorRoom] = useState<NavField | null>(null);
+  const [avoidStairs, setAvoidStairs] = useState<boolean>(false);
 
   const checkAndSetFloorId = (id?: string) => {
     if (id) {
       setFloorId(id);
     }
   };
+
+  const handleSelectSegment = (index: number, floor: string) => {
+    if (selectedSegmentId === index) {
+      setSelectedSegmentId(index);
+    } else {
+      setSelectedSegmentId(index);
+      checkAndSetFloorId(floor);
+    }
+  };
+
+  const handleSelectedPlace = (place: PlaceOverview | null) => {
+    if (place) {
+      setSelectedPlace(place);
+    } else setSelectedPlace(null);
+  };
+
   useEffect(() => {
     const perm = Platform.select({
       ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
@@ -152,7 +190,23 @@ export const PlacesNavigator = ({
   }, []);
 
   return (
-    <PlacesContext.Provider value={{ floorId, setFloorId: checkAndSetFloorId }}>
+    <PlacesContext.Provider
+      value={{
+        floorId,
+        setFloorId: checkAndSetFloorId,
+        selectedSegmentId,
+        setSelectedSegmentId,
+        selectionMode,
+        setSelectionMode,
+        handleSelectSegment,
+        selectedPlace,
+        setSelectedPlace: handleSelectedPlace,
+        navSelectorRoom,
+        setNavSelectorRoom,
+        avoidStairs,
+        setAvoidStairs,
+      }}
+    >
       <Map.Navigator
         id="PlacesTabNavigator"
         screenOptions={{
@@ -230,6 +284,27 @@ export const PlacesNavigator = ({
             headerLeft: HeaderLogoNoProps,
             headerRight: createHeaderCloseButton(navigation),
           })}
+        />
+        <Map.Screen
+          name="Indications"
+          component={IndicationsScreen}
+          options={{
+            title: t('indicationsScreen.title'),
+          }}
+        />
+        <Map.Screen
+          name="MapSelection"
+          component={MapSelectionScreen}
+          options={{
+            title: t('mapSelectionScreen.title'),
+          }}
+        />
+        <Map.Screen
+          name="Itinerary"
+          component={ItineraryScreen}
+          options={{
+            title: t('itineraryScreen.title'),
+          }}
         />
         <Map.Screen
           name="FreeRooms"

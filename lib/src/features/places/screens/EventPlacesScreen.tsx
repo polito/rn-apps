@@ -101,8 +101,8 @@ export const EventPlacesScreen = ({ navigation, route }: Props) => {
           places={places.map(p => ({ type: 'place', ...p }))}
           categoryId={places[0]?.category?.id}
           subCategoryId={places[0]?.category?.subCategory?.id}
-          selectedId={selectedId}
-          setSelectedId={setSelectedId}
+          //selectedId={selectedId}
+          //setSelectedId={setSelectedId}
         />
         {eventsFloorId != null &&
           places.map(place => {

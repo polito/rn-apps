@@ -2,16 +2,20 @@ import { CameraStop } from '@rnmapbox/maps';
 
 export const getCoordinatesBounds = (
   coordinates: [number, number][],
-  padding = 0.0001,
 ): NonNullable<CameraStop['bounds']> => {
   const lons = coordinates.map(([l]) => l);
   const lats = coordinates.map(([_, l]) => l);
-  const n = Math.min(...lats) - padding;
-  const s = Math.max(...lats) + padding;
-  const w = Math.min(...lons) - padding;
-  const e = Math.max(...lons) + padding;
+
+  const minLon = Math.min(...lons);
+  const maxLon = Math.max(...lons);
+  const minLat = Math.min(...lats);
+  const maxLat = Math.max(...lats);
+
+  const lonPadding = Math.max((maxLon - minLon) * 0.15, 0.00025);
+  const latPadding = Math.max((maxLat - minLat) * 0.15, 0.00025);
+
   return {
-    ne: [e, n],
-    sw: [w, s],
+    ne: [maxLon + lonPadding, maxLat + latPadding],
+    sw: [minLon - lonPadding, minLat - latPadding],
   };
 };

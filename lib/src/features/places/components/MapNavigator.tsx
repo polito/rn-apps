@@ -10,11 +10,13 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Image, Platform, SafeAreaView, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Image, Platform, StyleSheet, View } from 'react-native';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import {
   Header,
   HeaderBackButton,
@@ -44,13 +46,14 @@ import {
 } from '@react-navigation/native-stack';
 import { BackgroundLayer, Camera, MapView } from '@rnmapbox/maps';
 
+import { useKeyboardVisibile } from '../../../core';
 import { IS_ANDROID, IS_IOS } from '../../../core/constants';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useDeviceOrientation } from '../../../core/hooks/useDeviceOrientation';
-import { useKeyboardVisibile } from '../../../core/hooks/useKeyboardVisibile';
 import { ActivityIndicator } from '../../../ui/components/ActivityIndicator';
 import { GlobalStyles } from '../../../ui/styles/GlobalStyles';
 import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
+import { PlacesContext } from '../contexts/PlacesContext';
 
 interface Insets {
   top?: number;
@@ -64,15 +67,26 @@ interface RouteProps {
 }
 
 const Route = ({ renderRoute }: RouteProps) => {
-  const headerHeight = useHeaderHeight();
   const keyboardVisible = useKeyboardVisibile();
-  const tabBarHeight = useBottomTabBarHeight();
+  const tabBarHeight = useHeaderHeight();
+
+  const insets = useSafeAreaInsets();
+
   return (
     <SafeAreaView
       style={{
         position: 'absolute',
-        top: headerHeight,
-        bottom: IS_ANDROID && keyboardVisible ? 0 : tabBarHeight,
+        top: IS_ANDROID
+          ? tabBarHeight
+          : parseInt(String(Platform.Version), 10) < 26
+            ? tabBarHeight * 0.8
+            : tabBarHeight * 0.7, //check IOS VERSION IF version < 26 0.8, otherwise 0.7
+        bottom:
+          IS_ANDROID && keyboardVisible
+            ? 0
+            : IS_ANDROID
+              ? tabBarHeight - insets.top
+              : tabBarHeight / 2,
         left: 0,
         right: 0,
       }}
@@ -135,6 +149,7 @@ const MapNavigator = ({
   const MapDefaultContent = currentRoute.options?.mapDefaultContent;
   const MapContent = currentRoute.options?.mapContent;
   const [selectedId, setSelectedId] = useState<string>('');
+  const { setSelectedPlace, setNavSelectorRoom } = useContext(PlacesContext);
 
   useEffect(() => {
     if (IS_IOS) {
@@ -262,7 +277,12 @@ const MapNavigator = ({
                                       )
                                     : undefined
                                 }
-                                onPress={navigation.goBack}
+                                onPress={() => {
+                                  setNavSelectorRoom(null);
+                                  setSelectedPlace(null);
+                                  setSelectedId('');
+                                  navigation.goBack();
+                                }}
                                 label={
                                   headerBackTitle ??
                                   previousDescriptor?.options.title

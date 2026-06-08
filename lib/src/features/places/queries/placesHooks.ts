@@ -19,6 +19,7 @@ const PLACES_QUERY_KEY = 'places';
 const PLACE_QUERY_KEY = 'place';
 const PLACE_CATEGORIES_QUERY_KEY = 'place-categories';
 const FREE_ROOMS_QUERY_KEY = 'free-rooms';
+export const PATH_QUERY_KEY = 'path';
 
 const usePlacesClient = (): PlacesApi => {
   return new PlacesApi();
@@ -171,5 +172,44 @@ export const useGetMultiplePlaces = (placeIds?: string[]) => {
         enabled: placeId != null,
         staleTime: Infinity,
       })) ?? [],
+  });
+};
+
+export const useGetPath = (params: {
+  startPlaceId: string | null;
+  destPlaceId: string | null;
+  avoidStairs: boolean;
+  generateFeedback: () => void;
+}) => {
+  const placesClient = usePlacesClient();
+
+  return useQuery({
+    queryKey: [
+      PATH_QUERY_KEY,
+      params.startPlaceId,
+      params.destPlaceId,
+      params.avoidStairs,
+    ],
+    queryFn: () =>
+      (params.startPlaceId &&
+        params.destPlaceId &&
+        placesClient
+          .getDirections({
+            startPlaceId: params.startPlaceId,
+            endPlaceId: params.destPlaceId,
+            avoidStairs: params.avoidStairs,
+          })
+          .then(pluckData)
+          .catch(error => {
+            // Custom handling for 404 errors to return a more descriptive message
+            if (error.response?.status === 404) {
+              params.generateFeedback();
+
+              return null;
+            }
+            throw error;
+          })) ||
+      Promise.resolve(null),
+    staleTime: Infinity,
   });
 };

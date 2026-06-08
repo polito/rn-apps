@@ -94,8 +94,12 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
   const campus = useGetCurrentCampus();
   const { placesSearched, accessibility } = usePreferencesContext();
   const { cameraRef } = useContext(MapNavigatorContext);
-  const { floorId: mapFloorId, setFloorId: setMapFloorId } =
-    useContext(PlacesContext);
+  const {
+    floorId: mapFloorId,
+    setFloorId: setMapFloorId,
+    selectionMode,
+    setSelectionMode,
+  } = useContext(PlacesContext);
   const searchPlaceToListItem = useSearchPlaceToListItem();
   const [search, setSearch] = useState('');
   const [floorId, setFloorId] = useState<string>();
@@ -191,8 +195,8 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       setMapFloorId(displayFloorId);
     }
   }, [displayFloorId, floorId, isLoadingPlaces, mapFloorId, setMapFloorId]);
-  const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
-  const renderMapContent = useCallback(
+  //const { selectedId, setSelectedId } = useContext(MapNavigatorContext);
+  const mapContent = useCallback(
     () => (
       <MarkersLayer
         search={debouncedSearch}
@@ -200,8 +204,8 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         displayFloor={!displayFloorId}
         categoryId={categoryId}
         subCategoryId={subCategoryId}
-        selectedId={selectedId}
-        setSelectedId={setSelectedId}
+        //selectedId={selectedId}
+        //setSelectedId={setSelectedId}
       />
     ),
     [
@@ -210,23 +214,15 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
       displayFloorId,
       categoryId,
       subCategoryId,
-      selectedId,
-      setSelectedId,
+      //selectedId,
+      //setSelectedId,
     ],
   );
+
   useLayoutEffect(() => {
-    navigation.setOptions({
-      mapContent: renderMapContent,
-    });
-  }, [
-    categoryId,
-    debouncedSearch,
-    displayFloorId,
-    navigation,
-    places,
-    subCategoryId,
-    renderMapContent,
-  ]);
+    if (selectionMode) setSelectionMode(false);
+    navigation.setOptions({ mapContent });
+  }, [navigation, mapContent, selectionMode, setSelectionMode]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -271,13 +267,13 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     return places;
   }, [categoryId, debouncedSearch, places, subCategoryId]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const triggerSearch = useCallback(
-    debounce(
-      (searchTerm: string) =>
-        setDebouncedSearch(searchTerm.trim().toLowerCase()),
-      300,
-    ),
+  const triggerSearch = useMemo(
+    () =>
+      debounce(
+        (searchTerm: string) =>
+          setDebouncedSearch(searchTerm.trim().toLowerCase()),
+        300,
+      ),
     [],
   );
 
@@ -289,6 +285,15 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     if (campus)
       setFloorId(campus.floors[campus?.floors.findIndex(f => f.level >= 0)].id);
   }, [campus]);
+
+  useEffect(() => {
+    const unsuscribe = navigation.addListener('focus', () => {
+      setSelectionMode(false);
+    });
+
+    return unsuscribe;
+  }, [navigation, setSelectionMode]);
+
   const floorSelectorButton = (
     <TranslucentCard
       {...(accessibility?.fontSize && Number(accessibility?.fontSize) >= 150
@@ -352,6 +357,7 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
         <Tabs
           style={{
             minWidth: '100%',
+            bottom: '4%',
           }}
           onLayout={({
             nativeEvent: {

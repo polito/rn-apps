@@ -1,0 +1,170 @@
+import React, { useContext, useEffect, useState } from 'react';
+
+import { lightTheme } from '@polito/lib/ui';
+import { NavigationResponseFeature } from '@polito/student-api-client';
+import { LineLayer, ShapeSource, SymbolLayer } from '@rnmapbox/maps';
+import bbox from '@turf/bbox';
+
+import { PlacesContext } from '../contexts/PlacesContext';
+import { useGetSite } from '../queries/placesHooks';
+import { getIcon } from '../utils/getIconPath';
+
+type Props = {
+  handleSegmentChange: (segment: any) => void;
+  pathFeatureCollection: NavigationResponseFeature[];
+};
+
+export const PathLayer = ({
+  handleSegmentChange,
+  pathFeatureCollection,
+}: Props) => {
+  const [selectedFloor] = useState<string | undefined>(undefined);
+
+  const { setFloorId: setMapFloorId, selectedSegmentId } =
+    useContext(PlacesContext);
+  const floorMapNames = useGetSite('TO_CENCIT')?.floors;
+
+  useEffect(() => {
+    if (selectedSegmentId !== undefined && selectedSegmentId !== null) {
+      const pathBox = bbox({
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            geometry: {
+              type: 'LineString',
+              coordinates:
+                pathFeatureCollection.find(
+                  p => p.segmentId === selectedSegmentId,
+                )?.features.geometry.coordinates || [],
+            },
+            properties: {},
+          },
+        ],
+      });
+      handleSegmentChange(pathBox);
+      setMapFloorId(selectedFloor);
+    }
+  }, [
+    selectedSegmentId,
+    selectedFloor,
+    setMapFloorId,
+    handleSegmentChange,
+    pathFeatureCollection,
+  ]);
+
+  const handleOpacity = (segmentId: number) =>
+    selectedSegmentId === segmentId ? 1 : 0.3;
+
+  return pathFeatureCollection?.length > 0 ? (
+    <React.Fragment>
+      {pathFeatureCollection.map(
+        ({
+          features,
+          startPoint: { coordinates: startP },
+          endPoint: { coordinates: endP },
+          segmentId,
+          isPrivate: privateSegment,
+        }: NavigationResponseFeature) => (
+          <React.Fragment key={`path-fragment-${segmentId}`}>
+            <ShapeSource id={`line-source-${segmentId}`} shape={features}>
+              <LineLayer
+                id={`line-layer-${segmentId}`}
+                style={{
+                  ...styles.line,
+                  lineOpacity: handleOpacity(segmentId),
+                  ...(privateSegment && { lineDasharray: [2, 2] }),
+                }}
+              />
+            </ShapeSource>
+            {selectedSegmentId === segmentId && (
+              <>
+                <ShapeSource
+                  id={`start-point-source-${segmentId}`}
+                  shape={{
+                    type: 'FeatureCollection',
+                    features: [
+                      {
+                        type: 'Feature',
+                        geometry: { type: 'Point', coordinates: startP },
+                        properties: {},
+                      },
+                    ],
+                  }}
+                >
+                  <SymbolLayer
+                    id={`start-point-layer-${segmentId}`}
+                    style={
+                      segmentId === 0
+                        ? styles.startIcon
+                        : privateSegment
+                          ? { ...styles.icon, iconImage: 'private_access' }
+                          : styles.startIcon
+                    }
+                  />
+                </ShapeSource>
+
+                <ShapeSource
+                  id={`end-point-source-${segmentId}`}
+                  shape={{
+                    type: 'FeatureCollection',
+                    features: [
+                      {
+                        type: 'Feature',
+                        geometry: { type: 'Point', coordinates: endP },
+                        properties: {},
+                      },
+                    ],
+                  }}
+                >
+                  <SymbolLayer
+                    id={`end-point-layer-${segmentId}`}
+                    style={
+                      !privateSegment
+                        ? {
+                            ...styles.icon,
+                            iconImage: getIcon(
+                              segmentId || 0,
+                              floorMapNames || [],
+                              pathFeatureCollection,
+                            ),
+                          }
+                        : segmentId === pathFeatureCollection.length - 1
+                          ? {
+                              ...styles.icon,
+                              iconImage: getIcon(
+                                segmentId || 0,
+                                floorMapNames || [],
+                                pathFeatureCollection,
+                              ),
+                            }
+                          : styles.icon
+                    }
+                  />
+                </ShapeSource>
+              </>
+            )}
+          </React.Fragment>
+        ),
+      )}
+    </React.Fragment>
+  ) : null;
+};
+
+const styles = {
+  line: {
+    lineColor: lightTheme.palettes.orange[600],
+    lineWidth: 8,
+    lineCap: 'round' as const,
+    lineJoin: 'round' as const,
+  },
+  startIcon: {
+    iconImage: 'start',
+    iconSize: 0.35,
+    iconAllowOverlap: true,
+  },
+  icon: {
+    iconSize: 0.45,
+    iconAllowOverlap: true,
+  },
+};

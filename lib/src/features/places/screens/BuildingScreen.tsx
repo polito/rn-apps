@@ -7,6 +7,21 @@ import {
   faSignsPost,
 } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { useScreenTitle } from '@polito/lib/core';
+import { useTheme } from '@polito/lib/ui';
+import {
+  ActivityIndicator,
+  BottomSheet,
+  Col,
+  EmptyState,
+  IconButton,
+  ListItem,
+  OverviewList,
+  Section,
+  SectionHeader,
+  Text,
+} from '@polito/lib/ui';
+import { useStylesheet } from '@polito/lib/ui';
 import { ResponseError } from '@polito/student-api-client';
 import { useHeaderHeight } from '@react-navigation/elements';
 import {
@@ -19,21 +34,6 @@ import {
 
 import { Polygon } from 'geojson';
 
-import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
-import {
-  ActivityIndicator,
-  BottomSheet,
-  Col,
-  EmptyState,
-  IconButton,
-  ListItem,
-  OverviewList,
-  Section,
-  SectionHeader,
-  Text,
-} from '../../../ui/components';
-import { useStylesheet } from '../../../ui/hooks/useStylesheet';
-import { useTheme } from '../../../ui/hooks/useTheme';
 import { GlobalStyles } from '../../../ui/styles/GlobalStyles';
 import { Theme } from '../../../ui/types/Theme';
 import { MapScreenProps } from '../components/MapNavigator';
@@ -115,8 +115,8 @@ export const BuildingScreen = ({ navigation, route }: Props) => {
             <MarkersLayer
               selectedPoiId={buildingId}
               places={places}
-              selectedId={selectedId}
-              setSelectedId={setSelectedId}
+              //selectedId={selectedId}
+              //setSelectedId={setSelectedId}
             />
             {building?.geoJson != null && (
               <ShapeSource

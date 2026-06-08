@@ -1,0 +1,330 @@
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  Dimensions,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { faCrosshairs, faExpand } from '@fortawesome/free-solid-svg-icons';
+import { useScreenTitle } from '@polito/lib/core';
+import { Col } from '@polito/lib/ui';
+import { Divider } from '@polito/lib/ui';
+import { IconButton } from '@polito/lib/ui';
+import { TranslucentCard } from '@polito/lib/ui';
+import { useStylesheet } from '@polito/lib/ui';
+import { useTheme } from '@polito/lib/ui';
+import { GlobalStyles } from '@polito/lib/ui';
+import { Theme } from '@polito/lib/ui';
+import { displayTabBar } from '@polito/lib/ui';
+import Mapbox from '@rnmapbox/maps';
+import bbox from '@turf/bbox';
+
+import { BBox } from 'geojson';
+
+import { MapScreenProps } from '../components/MapNavigator';
+import { MarkersLayer } from '../components/MarkersLayer';
+import { PathLayer } from '../components/PathLayer';
+import { PlacesStackParamList } from '../components/PlacesNavigator';
+import { SubPathSelector } from '../components/SubPathSelector';
+import { MapNavigatorContext } from '../contexts/MapNavigatorContext';
+import { PlacesContext } from '../contexts/PlacesContext';
+import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
+import { useNavigationPlaces } from '../hooks/useSearchPlaces';
+
+type Props = MapScreenProps<PlacesStackParamList, 'Itinerary'>;
+
+const windowHeight = Dimensions.get('window').height;
+
+export const ItineraryScreen = ({ navigation, route }: Props) => {
+  const { pathFeat, startRoom, destRoom } = route.params;
+  const styles = useStylesheet(createStyles);
+  const { spacing, colors } = useTheme();
+  const { t } = useTranslation();
+  const campus = useGetCurrentCampus();
+  const { cameraRef } = useContext(MapNavigatorContext);
+  // const searchPlaceToListItem = useSearchPlaceToListItem();
+  const {
+    floorId: floorId,
+    setFloorId: setFloorId,
+    selectedSegmentId,
+    setSelectionMode,
+  } = useContext(PlacesContext);
+  const bottomSheetPosition = useSharedValue(0);
+  const [screenHeight, setScreenHeight] = useState(windowHeight);
+
+  const insets = useSafeAreaInsets();
+
+  const initialBbox = useMemo<BBox | null>(() => {
+    if (selectedSegmentId !== 0 || !pathFeat?.features?.length) {
+      return null;
+    }
+
+    const allCoordinates =
+      pathFeat.features[0].features.geometry.coordinates.flatMap(
+        (coord: any) => coord,
+      );
+
+    //setFloorId(pathFeat?.features[0].features.properties?.fn_fl_id);
+
+    if (!allCoordinates?.length) {
+      return null;
+    }
+
+    return bbox({
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: allCoordinates,
+          },
+          properties: {},
+        },
+      ],
+    }) as BBox;
+  }, [selectedSegmentId, pathFeat /*setFloorId*/]);
+
+  useEffect(() => {
+    // Only update if the conditions are met to avoid infinite loops
+    if (
+      selectedSegmentId === 0 &&
+      pathFeat?.features?.[0]?.features?.properties?.fn_fl_id
+    )
+      setFloorId(pathFeat.features[0].features.properties.fn_fl_id);
+  }, [selectedSegmentId, pathFeat, setFloorId]);
+
+  const [chosenBbox, setChosenBbox] = useState<BBox | null>(initialBbox);
+
+  const headerRight = useCallback(
+    () => (
+      <TouchableOpacity
+        onPress={() => {
+          setSelectionMode(true);
+          navigation.goBack();
+        }}
+        style={styles.modifyButton}
+      >
+        <View>
+          <Animated.Text
+            style={{
+              ...styles.modifyButtonText,
+              color: colors.link,
+            }}
+          >
+            {t('itineraryScreen.backTitle')}
+          </Animated.Text>
+        </View>
+      </TouchableOpacity>
+    ),
+    [navigation, t, styles, colors, setSelectionMode],
+  );
+
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerRight });
+  }, [navigation, headerRight, t]);
+
+  const filteredPlacesParams = useMemo(
+    () => ({
+      siteId: campus?.id,
+      floorId: floorId,
+      startRoom: startRoom,
+      destRoom: destRoom,
+    }),
+    [campus?.id, floorId, startRoom, destRoom],
+  );
+
+  const { filteredPlaces: places } = useNavigationPlaces(filteredPlacesParams);
+
+  const centerToUserLocation = useCallback(async () => {
+    const location = await Mapbox.locationManager.getLastKnownLocation();
+    if (location) {
+      const { latitude, longitude } = location.coords;
+      cameraRef.current?.flyTo([longitude, latitude]);
+    }
+  }, [cameraRef]);
+
+  const centerToCurrentCampus = useCallback(async () => {
+    if (!campus || !cameraRef.current) {
+      return;
+    }
+    const { latitude, longitude, extent } = campus;
+    cameraRef.current.fitBounds(
+      [longitude - extent, latitude - extent],
+      [longitude + extent, latitude + extent],
+      undefined,
+      2000,
+    );
+  }, [cameraRef, campus]);
+  const renderMapContent = useCallback(
+    () => (
+      <>
+        <PathLayer
+          handleSegmentChange={setChosenBbox}
+          pathFeatureCollection={pathFeat.features}
+        />
+        <MarkersLayer
+          places={places}
+          //selectedId={selectedId}
+          //setSelectedId={setSelectedId}
+        />
+      </>
+    ),
+    [places, /*selectedId, setSelectedId,*/ pathFeat],
+  );
+
+  useLayoutEffect(() => {
+    const isValidGeometry =
+      chosenBbox?.length === 4 &&
+      chosenBbox.every(
+        coord => !isNaN(coord) && typeof coord === 'number' && isFinite(coord),
+      );
+
+    if (isValidGeometry) {
+      const [minLon, minLat, maxLon, maxLat] = chosenBbox;
+
+      navigation.setOptions({
+        mapOptions: {
+          camera: {
+            bounds: {
+              ne: [maxLon, maxLat],
+              sw: [minLon, minLat],
+              paddingTop: 40,
+              paddingLeft: 40,
+              paddingRight: 40,
+              paddingBottom: 40,
+            },
+            animationDuration: 1200,
+          },
+        },
+      });
+    }
+  }, [chosenBbox, navigation, screenHeight]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      mapContent: renderMapContent,
+    });
+  }, [navigation, renderMapContent]);
+
+  useEffect(() => {
+    const rootNav = navigation.getParent()!;
+    return () => displayTabBar(rootNav);
+  }, [navigation]);
+
+  const controlsAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: 1,
+      transform: [
+        {
+          translateY:
+            Math.max(0.8 * screenHeight, bottomSheetPosition.value) -
+            (Platform.OS === 'android' ? insets.bottom : 0),
+        },
+      ],
+    };
+  });
+
+  useLayoutEffect(() => {
+    const parent = navigation.getParent();
+    if (!parent) return;
+
+    parent.setOptions({
+      tabBarStyle: { display: 'none' },
+    });
+
+    return () =>
+      parent.setOptions({
+        tabBarStyle: undefined,
+      });
+  }, [navigation]);
+
+  useScreenTitle(t('itineraryScreen.title'));
+
+  return (
+    <SafeAreaView
+      style={GlobalStyles.grow}
+      pointerEvents="box-none"
+      onLayout={({
+        nativeEvent: {
+          layout: { height },
+        },
+      }) => setScreenHeight(height)}
+    >
+      <Animated.View style={[styles.controls, controlsAnimatedStyle]}>
+        <Col gap={3} align="stretch" justify="space-between">
+          <TranslucentCard>
+            <IconButton
+              icon={faCrosshairs}
+              size={spacing[6]}
+              style={styles.icon}
+              accessibilityLabel={t('itineraryScreen.goToMyPosition')}
+              onPress={centerToUserLocation}
+            />
+            <Divider style={styles.divider} size={1} />
+            <IconButton
+              icon={faExpand}
+              size={spacing[6]}
+              style={styles.icon}
+              accessibilityLabel={t('itineraryScreen.viewWholeCampus')}
+              onPress={centerToCurrentCampus}
+            />
+          </TranslucentCard>
+        </Col>
+        {pathFeat && pathFeat.features.length > 0 && (
+          <SubPathSelector
+            lineId={0}
+            pathFeatureCollection={pathFeat.features}
+          />
+        )}
+      </Animated.View>
+    </SafeAreaView>
+  );
+};
+
+const createStyles = ({ spacing }: Theme) =>
+  StyleSheet.create({
+    controls: {
+      position: 'absolute',
+      left: spacing[5],
+      right: spacing[5],
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      gap: 12,
+      alignSelf: 'stretch',
+    },
+    modifyButton: {
+      paddingHorizontal: 10,
+    },
+    modifyButtonText: {
+      fontSize: 17,
+    },
+    divider: {
+      alignSelf: 'stretch',
+    },
+    loadingIcon: {
+      marginBottom: spacing[2],
+    },
+    icon: {
+      alignItems: 'center',
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[2],
+    },
+  });

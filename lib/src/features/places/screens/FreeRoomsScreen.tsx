@@ -241,8 +241,8 @@ export const FreeRoomsScreen = ({ navigation }: Props) => {
         <MarkersLayer
           places={places ?? []}
           displayFloor={!displayFloorId}
-          selectedId={selectedId}
-          setSelectedId={setSelectedId}
+          //selectedId={selectedId}
+          //setSelectedId={setSelectedId}
         />
       ),
     });

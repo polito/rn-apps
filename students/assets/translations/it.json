@@ -907,7 +907,8 @@
     "placeNotFound": "Questo luogo non esiste",
     "title": "Luogo",
     "placeDetail": "Dettaglio luogo",
-    "getDirections": "Ottieni indicazioni"
+    "getDirections": "Ottieni indicazioni ",
+    "path": "Percorso"
   },
   "placesScreen": {
     "changeFloor": "Cambia piano",
@@ -918,6 +919,35 @@
     "searchCategories": "Cerca categorie",
     "title": "Luoghi",
     "viewWholeCampus": "Vedi tutta la sede"
+  },
+  "indicationsScreen": {
+    "title": "Indicazioni",
+    "mapSelectorItem": "Seleziona dalla mappa",
+    "fromPlaceLabel": "Scegli punto di partenza",
+    "toPlaceLabel": "Scegli la destinazione",
+    "avoidStairs": "Evita scale",
+    "computePath": "Calcola percorso",
+    "showIndications": "Avvia itinerario",
+    "pathNotFound": "Nessun percorso disponibile.",
+    "stepsInfo": "Il percorso include scalini",
+    "privateInfo": "Il percorso attraversa aree private"
+  },
+  "mapSelectionScreen": {
+    "title": "Seleziona dalla mappa",
+    "selectionLabel": "Seleziona un punto di interesse dalla mappa",
+    "fromPlaceSelected": "Punto di partenza selezionato:",
+    "toPlaceSelected": "Punto di arrivo selezionato:",
+    "placeSelected": "Luogo selezionato:",
+    "confirmSelection": "Conferma selezione"
+  },
+  "itineraryScreen": {
+    "title": "Itinerario",
+    "backTitle": "Modifica",
+    "privateSection": "Tratto privato",
+    "itineraryError": "Si è verificato un errore durante il tentativo di avviare l'itinerario per questo percorso.",
+    "continueTo": "prosegui al ",
+    "toPrivate": "accesso privato al varco",
+    "continuteToDestination": "prosegui fino alla destinazione"
   },
   "placesSearchScreen": {
     "searchPlaceholder": "Prova con \"Aula 1\""

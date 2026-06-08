@@ -42,3 +42,42 @@ export const useSearchPlaces = ({
     isLoading: buildingsQuery.isLoading || placesQuery.isLoading,
   };
 };
+
+const excludedNavigationPOICategories = ['SCALA', 'ASCEN'];
+
+interface UseNavigationPlacesOptions {
+  search?: string;
+  siteId?: string;
+  floorId?: string;
+  startRoom?: string;
+  destRoom?: string;
+}
+
+export const useNavigationPlaces = ({
+  siteId,
+  search,
+  floorId,
+  startRoom,
+  destRoom,
+}: UseNavigationPlacesOptions) => {
+  const { data: places, isLoading } = useSearchPlaces({
+    siteId,
+    search,
+    floorId,
+  });
+
+  const filteredPlaces = useMemo(() => {
+    let filtered = places.filter(
+      p => !excludedNavigationPOICategories.includes(p.category?.id),
+    );
+    if (startRoom && destRoom) {
+      filtered = filtered.filter(p => p.id !== startRoom && p.id !== destRoom);
+    }
+    return filtered;
+  }, [places, startRoom, destRoom]);
+
+  return {
+    filteredPlaces,
+    isLoading,
+  };
+};

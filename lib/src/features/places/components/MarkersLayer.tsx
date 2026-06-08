@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
+import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { PlaceCategory, PlaceOverview } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
-import { ShapeSource, SymbolLayer } from '@rnmapbox/maps';
+import { Images, ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 
 import { capitalize } from 'lodash';
 
@@ -11,8 +12,17 @@ import { usePreferencesContext } from '../../../core/contexts/PreferencesContext
 import { notNullish } from '../../../core/utils/predicates';
 import { useTheme } from '../../../ui/hooks/useTheme';
 import { DEFAULT_CATEGORY_MARKER } from '../constants';
+import { PlacesContext } from '../contexts/PlacesContext';
 import { usePlaceCategoriesMap } from '../hooks/usePlaceCategoriesMap';
-import { SearchPlace, isPlace } from '../types';
+import { NavField, SearchPlace, isPlace } from '../types';
+
+const start_selection = require('assets/icons/start_selection.png');
+const destination_selection = require('assets/icons/destination_selection.png');
+const up = require('assets/icons/up.png');
+const down = require('assets/icons/down.png');
+const start = require('assets/icons/start.png');
+const destination = require('assets/icons/destination.png');
+const private_access = require('assets/icons/private.png');
 
 interface MarkersLayerProps {
   selectedPoiId?: string;
@@ -22,8 +32,7 @@ interface MarkersLayerProps {
   categoryId?: string;
   subCategoryId?: string;
   isCrossNavigation?: boolean;
-  selectedId: string;
-  setSelectedId: (id: string) => void;
+  directSelection?: NavField;
 }
 
 export const MarkersLayer = ({
@@ -34,14 +43,23 @@ export const MarkersLayer = ({
   subCategoryId,
   search,
   isCrossNavigation = false,
-  selectedId,
-  setSelectedId,
+  directSelection,
 }: MarkersLayerProps) => {
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
   const { dark, fontSizes, colors } = useTheme();
   const placeCategoriesMap = usePlaceCategoriesMap();
   const { accessibility } = usePreferencesContext();
+  const {
+    selectedPlace,
+    setSelectedPlace,
+    navSelectorRoom,
+    setNavSelectorRoom,
+    selectionMode,
+  } = useContext(PlacesContext);
+
+  const selectedId = selectedPlace?.id ?? '';
+  //const [selectedId, setSelectedId] = useState<string>('');
 
   const pois = useMemo((): (SearchPlace &
     PlaceCategory & { siteId: string })[] => {
@@ -168,9 +186,64 @@ export const MarkersLayer = ({
           accessibility?.fontSize && accessibility.fontSize >= 150;
 
         if (selectedPoi) {
-          if (isAccessibleFont) {
-            // If already selected, navigate to the detail page
+          if (selectionMode && isPlace(selectedPoi)) {
             if (selectedId === selectedPoi.id) {
+              setSelectedPlace(null);
+              //setSelectedId('');
+            } else {
+              if (directSelection) {
+                const screen = 'MapSelection';
+                const params = {};
+
+                const stackName = isCrossNavigation
+                  ? navigation.getId() === 'AgendaTabNavigator'
+                    ? 'PlacesAgendaStack'
+                    : 'PlacesTeachingStack'
+                  : 'PlacesTab';
+
+                setNavSelectorRoom(directSelection);
+
+                setSelectedPlace(selectedPoi);
+                //setSelectedId(selectedPoi.id);
+
+                navigation.navigate(stackName, {
+                  screen,
+                  params,
+                });
+              } else {
+                setSelectedPlace(selectedPoi);
+                //setSelectedId(selectedPoi.id);
+              }
+            }
+          } else {
+            if (isAccessibleFont) {
+              // If already selected, navigate to the detail page
+              if (selectedId === selectedPoi.id) {
+                const screen = isPlace(selectedPoi) ? 'Place' : 'Building';
+                const params =
+                  screen === 'Place'
+                    ? {
+                        placeId: selectedPoi.id,
+                        ...(isCrossNavigation && { isCrossNavigation: true }),
+                      }
+                    : {
+                        siteId: selectedPoi.siteId,
+                        buildingId: selectedPoi.id,
+                      };
+
+                const stackName = isCrossNavigation
+                  ? navigation.getId() === 'AgendaTabNavigator'
+                    ? 'PlacesAgendaStack'
+                    : 'PlacesTeachingStack'
+                  : 'PlacesTab';
+                navigation.navigate(stackName, {
+                  screen,
+                  params,
+                });
+              } else {
+                //setSelectedId(selectedPoi.id);
+              }
+            } else {
               const screen = isPlace(selectedPoi) ? 'Place' : 'Building';
               const params =
                 screen === 'Place'
@@ -188,49 +261,48 @@ export const MarkersLayer = ({
                   ? 'PlacesAgendaStack'
                   : 'PlacesTeachingStack'
                 : 'PlacesTab';
+
               navigation.navigate(stackName, {
                 screen,
                 params,
               });
-            } else {
-              setSelectedId(selectedPoi.id);
             }
-          } else {
-            const screen = isPlace(selectedPoi) ? 'Place' : 'Building';
-            const params =
-              screen === 'Place'
-                ? {
-                    placeId: selectedPoi.id,
-                    ...(isCrossNavigation && { isCrossNavigation: true }),
-                  }
-                : {
-                    siteId: selectedPoi.siteId,
-                    buildingId: selectedPoi.id,
-                  };
-
-            const stackName = isCrossNavigation
-              ? navigation.getId() === 'AgendaTabNavigator'
-                ? 'PlacesAgendaStack'
-                : 'PlacesTeachingStack'
-              : 'PlacesTab';
-
-            navigation.navigate(stackName, {
-              screen,
-              params,
-            });
           }
         } else if (isAccessibleFont) {
-          setSelectedId('');
+          //setSelectedId('');
         }
       }}
     >
+      <Images
+        images={{
+          start_selection,
+          destination_selection,
+          up,
+          down,
+          start,
+          destination,
+          private_access,
+        }}
+      />
       <SymbolLayer
         id={`markers-${selectedId}`}
         key={`markers-${selectedId}`}
         aboveLayerID="indoor"
         style={{
-          iconImage: ['get', 'markerUrl'],
-          iconSize: 0.35,
+          iconImage: [
+            'case',
+            ['==', ['get', 'id'], selectedId],
+            (navSelectorRoom === 'start' || directSelection === 'start') &&
+            selectionMode
+              ? 'start_selection'
+              : (navSelectorRoom === 'destination' ||
+                    directSelection === 'destination') &&
+                  selectionMode
+                ? 'destination_selection'
+                : ['get', 'markerUrl'],
+            ['get', 'markerUrl'],
+          ],
+          iconSize: ['case', ['==', ['get', 'id'], selectedId], 0.3, 0.35],
           symbolSortKey: ['get', 'priority'],
           textField:
             accessibility?.fontSize && Number(accessibility?.fontSize) >= 150

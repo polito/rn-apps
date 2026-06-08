@@ -670,7 +670,9 @@
     "capacity_plural": "{{count}} seats",
     "placeNotFound": "Place not found",
     "title": "Place",
-    "placeDetail": "Place details"
+    "placeDetail": "Place details",
+    "getDirections": "Obtain directions",
+    "path": "Path"
   },
   "placesScreen": {
     "changeFloor": "Change floor",

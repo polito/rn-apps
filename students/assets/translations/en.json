@@ -889,7 +889,8 @@
     "placeNotFound": "Place not found",
     "title": "Place",
     "placeDetail": "Place detail",
-    "getDirections": "Obtain directions"
+    "getDirections": "Obtain directions",
+    "path": "Path"
   },
   "placesScreen": {
     "changeFloor": "Change floor",
@@ -900,6 +901,35 @@
     "searchCategories": "Search categories",
     "title": "Places",
     "viewWholeCampus": "View the whole campus"
+  },
+  "indicationsScreen": {
+    "title": "Indications",
+    "mapSelectorItem": "Select on map",
+    "fromPlaceLabel": "Choose starting point",
+    "toPlaceLabel": "Choose destination",
+    "avoidStairs": "Avoid stairs",
+    "computePath": "Compute path",
+    "showIndications": "Start itinerary",
+    "pathNotFound": "No drivable path available.",
+    "stepsInfo": "The route includes steps",
+    "privateInfo": "The route includes private areas"
+  },
+  "mapSelectionScreen": {
+    "title": "Select from map",
+    "selectionLabel": "Select a point of interest from the map",
+    "fromPlaceSelected": "Starting point selected:",
+    "toPlaceSelected": "Destination point selected:",
+    "placeSelected": "Place selected:",
+    "confirmSelection": "Confirm selection"
+  },
+  "itineraryScreen": {
+    "title": "Itinerary",
+    "backTitle": "Edit",
+    "privateSection": "Private section",
+    "itineraryError": "There was an error attempting to start the navigation for this route.",
+    "continueTo": "continue to ",
+    "toPrivate": "private access at gate",
+    "continuteToDestination": "continue to the destination"
   },
   "placesSearchScreen": {
     "searchPlaceholder": "Try with \"Room 1\""
