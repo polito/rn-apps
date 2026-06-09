@@ -140,6 +140,11 @@ export const ServicesNavigator = () => {
           headerLargeTitle: false,
           headerTitle: t('ticketScreen.title'),
           headerBackTitle: t('ticketScreen.headerBackTitle'), // TODO wrong with direct navigation
+          headerTransparent: false,
+          headerShadowVisible: false,
+          headerLargeStyle: {
+            backgroundColor: colors.headersBackground,
+          },
         }}
       />
       <Stack.Screen
