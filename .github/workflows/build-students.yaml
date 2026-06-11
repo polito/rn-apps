@@ -11,6 +11,7 @@ on:
     paths:
       - 'students/**'
       - 'package-lock.json'
+      - '.github/workflows/build-students.yaml'
   workflow_dispatch: # allow manual run
     inputs:
       push_to_testflight:
@@ -263,7 +264,7 @@ jobs:
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '16.4'
+          xcode-version: '26.3'
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set .env
