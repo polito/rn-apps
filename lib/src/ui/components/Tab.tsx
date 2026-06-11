@@ -47,8 +47,6 @@ export const Tab = ({
     [selected, palettes],
   );
 
-  const borderWidth = useMemo(() => (selected ? 0 : 1), [selected]);
-
   return (
     <PillButton
       accessibilityRole="tab"
@@ -60,7 +58,7 @@ export const Tab = ({
         {
           backgroundColor,
           borderColor,
-          borderWidth,
+          borderWidth: 1,
         },
         style,
       ]}
