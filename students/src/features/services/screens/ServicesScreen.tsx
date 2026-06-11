@@ -35,8 +35,8 @@ import { AppPreferences } from '~/core/types/preferences.ts';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import {
-  GetWebmailLink,
   WEBMAIL_LINK_QUERY_KEY,
+  useGetWebmailLink,
 } from '../../../core/queries/authHooks.ts';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import { useGetUnreadEmails } from '../../../core/queries/studentHooks.ts';
@@ -63,18 +63,19 @@ export const ServicesScreen = () => {
     setFontSize(Number(accessibility?.fontSize) ?? 0);
   }, [accessibility?.fontSize]);
   const openInAppLink = useOpenInAppLink();
+  const getWebmailLink = useGetWebmailLink();
 
   const openWebmailLink = useCallback(async () => {
     queryClient
       .fetchQuery({
         queryKey: WEBMAIL_LINK_QUERY_KEY,
-        queryFn: GetWebmailLink,
+        queryFn: getWebmailLink,
         staleTime: 55 * 1000, // 55 seconds
         gcTime: 55 * 1000, // 55 seconds
         persister: undefined, // disable persister
       })
       .then(res => openInAppLink(res.url));
-  }, [openInAppLink, queryClient]);
+  }, [openInAppLink, queryClient, getWebmailLink]);
 
   const services = useMemo(() => {
     return [
@@ -183,7 +184,7 @@ export const ServicesScreen = () => {
       },
       {
         id: 'mail',
-        name: 'WebMail',
+        name: 'Web\nMail',
         icon: faEnvelope,
         disabled: isOffline,
         unReadCount: unreadEmailsQuery.data

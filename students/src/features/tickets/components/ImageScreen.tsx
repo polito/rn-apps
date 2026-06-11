@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { PixelRatio, Platform, StyleSheet, View } from 'react-native';
 
-import FastImage from '@d11/react-native-fast-image';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import { ImageLoader, type Theme, useStylesheet } from '@polito/lib/ui';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
@@ -67,7 +66,7 @@ export const ImageScreen = ({ route }: Props) => {
                   height: imageProps.imageHeight,
                   width: imageProps.imageWidth,
                 }}
-                resizeMode={FastImage.resizeMode.contain}
+                resizeMode="contain"
               />
             </ReactNativeZoomableView>
           )}

@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import {
   GetBuildingsRequest,
   GetFreeRoomsRequest,
+  ResponseError,
 } from '@polito/student-api-client';
 import { GetPlacesRequest, PlacesApi } from '@polito/student-api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
@@ -133,12 +134,27 @@ export const useGetPlaceSubCategory = (subCategoryId?: string) => {
   }, [subCategoryId, categories?.data]);
 };
 
-export const useGetPlace = (placeId?: string) => {
+export const useGetPlace = (placeId?: string, fallbackLocation = false) => {
   const placesClient = usePlacesClient();
 
   return useQuery({
     queryKey: [PLACE_QUERY_KEY, placeId],
-    queryFn: () => placesClient.getPlace({ placeId: placeId! }).then(pluckData),
+    queryFn: async () => {
+      try {
+        return await placesClient
+          .getPlace({ placeId: placeId! })
+          .then(pluckData);
+      } catch (e) {
+        if (
+          fallbackLocation &&
+          e instanceof ResponseError &&
+          e.response.status === 404
+        ) {
+          return null;
+        }
+        throw e;
+      }
+    },
     enabled: placeId != null,
     staleTime: Infinity,
   });

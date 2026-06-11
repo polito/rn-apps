@@ -76,6 +76,11 @@
     "violet": "Lilla",
     "yellow": "Giallo"
   },
+  "AgendaPreferences": {
+    "hideInAgenda": "Nascondi in agenda",
+    "hideEvent": "Nascondi evento",
+    "showInAgenda": "Mostra in agenda"
+  },
   "common": {
     "active": "Attivo",
     "academicYearShort": "A.A.",
@@ -169,7 +174,6 @@
     "grade": "Voto",
     "hiddenEvents": "Eventi nascosti",
     "hide": "Nascondi",
-    "hideInAgenda": "Nascondi in agenda",
     "hour": "Orario",
     "hours": "Ore",
     "icon": "Icona",
@@ -190,6 +194,7 @@
     "newItems": "Nuovo elemento",
     "newItems_plural": "Nuovi elementi",
     "next": "Avanti",
+    "news": "News",
     "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
     "noValue": "Nessun valore",
     "notFound": "Luogo inesistente",
@@ -375,12 +380,15 @@
     "cleanCacheFeedback": "I file sono stati rimossi correttamente",
     "cleanCourseFiles": "Rimuovi file del corso",
     "cleanCourseFilesSubtitle": "Libera circa {{size}} di memoria",
-    "filesSubtitle": "Nuovi materiali disponibili",
+    "colorSubtitle": "Seleziona un colore per il corso",
+    "iconSubtitle": "Seleziona un'icona per il corso",
+    "filesSubtitle": "Nuovi materiali aggiunti dai professori",
     "hideInExtracts": "Nascondi negli estratti",
-    "lecturesSubtitle": "Nuove lezioni disponibili",
-    "noticesSubtitle": "Avvisi mandati dai professori",
+    "lecturesSubtitle": "Nuove lezioni aggiunte dai professori",
+    "noticesSubtitle": "Avvisi dai professori",
     "showInExtracts": "Mostra negli estratti",
-    "showInExtractsSubtitle": "In home screen e agenda"
+    "showInExtractsSubtitle": "In home screen e agenda",
+    "showExamCalls": "Mostra appelli d'esame"
   },
   "courseScreen": {
     "fileDownloadFailed": "C'è stato un errore durante il download del file. Riprova più tardi."
