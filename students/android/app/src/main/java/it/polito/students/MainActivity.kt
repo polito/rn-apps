@@ -6,6 +6,7 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnable
 import com.facebook.react.defaults.DefaultReactActivityDelegate
 import android.os.Bundle
 import com.zoontek.rnbootsplash.RNBootSplash
+import com.swmansion.rnscreens.fragment.restoration.RNScreensFragmentFactory
 
 class MainActivity : ReactActivity() {
 
@@ -28,6 +29,7 @@ class MainActivity : ReactActivity() {
   * https://github.com/software-mansion/react-native-screens?tab=readme-ov-file#android
   */
   override fun onCreate(savedInstanceState: Bundle?) {
+        supportFragmentManager.fragmentFactory = RNScreensFragmentFactory()
         RNBootSplash.init(this, R.style.BootTheme);
         super.onCreate(savedInstanceState);
   }

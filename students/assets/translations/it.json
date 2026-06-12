@@ -1006,9 +1006,34 @@
     "toBeCompiledEmptyState": "Non ci sono questionari da compilare",
     "toBeCompiledTitle": "Questionari da compilare"
   },
+  "graduationCodeScreen": {
+    "dateTime": "Data e ora",
+    "entries": "Ingressi utilizzati",
+    "entriesValue": "{{used}}/{{max}} ingressi utilizzati",
+    "instruction": "Mostra questo QR code per ogni partecipante al tuo gruppo compreso te stesso (massimo {{max}} accessi)",
+    "location": "Luogo",
+    "openMap": "Mostra in Luoghi",
+    "pdf": {
+      "admissions": "N. ingressi:",
+      "codeId": "ID Codice:",
+      "date": "Data:",
+      "description": "Descrizione:",
+      "event": "Evento:",
+      "instruction": "Mostra questo QR code all'ingresso dell'evento per ogni partecipante al tuo gruppo compreso te stesso (massimo {{max}} accessi)",
+      "map": "Dove si svolge l'evento:",
+      "maxAdmissions": "{{max}} partecipanti massimo",
+      "qrTitle": "Il tuo QR Code di ingresso"
+    },
+    "qrCode": "QR code",
+    "share": "Condividi",
+    "shareFailure": "Impossibile condividere il PDF: {{reason}}",
+    "title": "Sessione di laurea",
+    "validUntil": "Valido fino al {{date}} ore {{time}}"
+  },
   "teachingScreen": {
     "allCoursesHidden": "Hai nascosto tutti i tuoi corsi",
     "cpdTitle": "Questionari CPD",
+    "eventTitle": "Pass Eventi con QR Code",
     "title": "Didattica"
   },
   "theme": {

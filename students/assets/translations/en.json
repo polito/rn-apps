@@ -985,9 +985,34 @@
     "toBeCompiledEmptyState": "There are no surveys to be compiled",
     "toBeCompiledTitle": "Surveys to be compiled"
   },
+  "graduationCodeScreen": {
+    "dateTime": "Date and time",
+    "entries": "Entries used",
+    "entriesValue": "{{used}}/{{max}} entries used",
+    "instruction": "Show this QR code for each participant in your group including yourself (maximum {{max}} accesses)",
+    "location": "Location",
+    "openMap": "Show in Places",
+    "pdf": {
+      "admissions": "Entries:",
+      "codeId": "Code ID:",
+      "date": "Date:",
+      "description": "Description:",
+      "event": "Event:",
+      "instruction": "Show this QR code at the event entrance for each participant in your group including yourself (maximum {{max}} accesses)",
+      "map": "Event location:",
+      "maxAdmissions": "Maximum {{max}} participants",
+      "qrTitle": "Your entry QR code"
+    },
+    "qrCode": "QR code",
+    "share": "Share",
+    "shareFailure": "Unable to share the PDF: {{reason}}",
+    "title": "Graduation session",
+    "validUntil": "Valid until {{date}} at {{time}}"
+  },
   "teachingScreen": {
     "allCoursesHidden": "You've hidden all your courses",
     "cpdTitle": "CPD Surveys",
+    "eventTitle": "QR Code Event Passes",
     "title": "Teaching"
   },
   "theme": {

@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { Row, Text, useStylesheet, useTheme } from '@polito/lib/ui';
-import { StudentStatusEnum } from '@polito/student-api-client';
+import { StudentCareerStatusEnum } from '@polito/student-api-client';
 
 type Props = {
-  status: StudentStatusEnum;
+  status: StudentCareerStatusEnum;
 };
 export const CareerStatus = ({ status }: Props) => {
   const styles = useStylesheet(createStyles);
@@ -15,13 +15,13 @@ export const CareerStatus = ({ status }: Props) => {
   const { dark, palettes } = useTheme();
   const [color, backgroundColor] = useMemo(() => {
     switch (status) {
-      case StudentStatusEnum.Active:
+      case StudentCareerStatusEnum.Active:
         return [palettes.success[dark ? 300 : 600], palettes.success[500]];
-      case StudentStatusEnum.Closed:
-      case StudentStatusEnum.Cancelled:
-      case StudentStatusEnum.CareerClosed:
+      case StudentCareerStatusEnum.Closed:
+      case StudentCareerStatusEnum.Cancelled:
+      case StudentCareerStatusEnum.CareerClosed:
         return [palettes.danger[dark ? 400 : 600], palettes.danger[600]];
-      case StudentStatusEnum.Graduated:
+      case StudentCareerStatusEnum.Graduated:
         return [
           palettes.primary[dark ? 300 : 600],
           palettes.primary[dark ? 400 : 500],

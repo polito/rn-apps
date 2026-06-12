@@ -2,12 +2,13 @@ import { useMemo } from 'react';
 
 import { pluckData, toOASTruncable } from '@polito/lib/core';
 import {
+  AuthApi,
   ExamGrade,
   Message,
   MessageType,
   ProvisionalGradeState,
-  Student,
   StudentApi,
+  StudentCareer,
   UpdateDevicePreferencesRequest,
 } from '@polito/student-api-client';
 import * as Sentry from '@sentry/react-native';
@@ -26,6 +27,8 @@ import { useMfaChallengeHandler } from './authHooks.ts';
 import { COURSE_QUERY_PREFIX } from './courseHooks';
 
 export const STUDENT_QUERY_KEY = ['student'];
+export const PROFILE_QUERY_KEY = ['profile'];
+export const SMART_CARD_QUERY_KEY = ['smartCard'];
 const GRADES_QUERY_KEY = ['grades'];
 const PROVISIONAL_GRADES_QUERY_KEY = ['provisionalGrades'];
 const PROVISIONAL_GRADE_STATES_QUERY_KEY = ['provisionalGradeStates'];
@@ -42,7 +45,21 @@ const useStudentClient = (): StudentApi => {
   return new StudentApi();
 };
 
-const handleAcquiredCredits = (student: Student) => {
+export const useGetProfile = () =>
+  useQuery({
+    queryKey: PROFILE_QUERY_KEY,
+    queryFn: () => new AuthApi().getProfile().then(pluckData),
+    gcTime: Infinity,
+  });
+
+export const useGetSmartCard = () =>
+  useQuery({
+    queryKey: SMART_CARD_QUERY_KEY,
+    queryFn: () => new AuthApi().getSmartCardLink().then(pluckData),
+    gcTime: Infinity,
+  });
+
+const handleAcquiredCredits = (student: StudentCareer) => {
   if (student.totalCredits < student.totalAttendedCredits) {
     student.totalCredits = student.totalAttendedCredits;
   }
@@ -57,7 +74,7 @@ export const useGetStudent = () => {
     queryKey: STUDENT_QUERY_KEY,
     queryFn: () =>
       studentClient
-        .getStudent()
+        .getStudentCareer()
         .then(pluckData)
         .then(handleAcquiredCredits)
         .then(s => {
