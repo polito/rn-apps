@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { FlatList, Keyboard, Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
-  useAnimatedKeyboard,
   useAnimatedStyle,
+  useSharedValue,
+  withTiming,
 } from 'react-native-reanimated';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
@@ -186,9 +187,35 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     changeStyle();
   }, [accessibility, fontSizes]);
 
-  const keyboard = useAnimatedKeyboard();
+  const keyboardHeight = useSharedValue(0);
+
+  useEffect(() => {
+    const showEvent = IS_IOS ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = IS_IOS ? 'keyboardWillHide' : 'keyboardDidHide';
+    const show = Keyboard.addListener(showEvent, e => {
+      keyboardHeight.value = withTiming(e.endCoordinates.height, {
+        duration: e.duration || 150,
+      });
+    });
+    const hide = Keyboard.addListener(hideEvent, e => {
+      keyboardHeight.value = withTiming(0, { duration: e.duration || 150 });
+    });
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, [keyboardHeight]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      Keyboard.dismiss();
+      keyboardHeight.value = 0;
+    });
+    return unsubscribe;
+  }, [navigation, keyboardHeight]);
+
   const animatedBottomPadding = useAnimatedStyle(() => ({
-    paddingBottom: Math.max(keyboard.height.value, bottomBarHeight),
+    paddingBottom: Math.max(keyboardHeight.value, bottomBarHeight),
   }));
 
   const ItemsSeparator = useCallback(
