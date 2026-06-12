@@ -20,7 +20,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { EuropeanStudentCard, Student } from '@polito/student-api-client';
+import { EuropeanStudentCard } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -31,7 +31,11 @@ import { UserStackParamList } from '../../features/user/components/UserNavigator
 import { EscCard } from './EscCard.tsx';
 
 interface CardSwiperProps {
-  student: Student;
+  firstName: string;
+  lastName: string;
+  username: string;
+  smartCardUrl?: string;
+  europeanStudentCard?: EuropeanStudentCard;
   firstRequest?: boolean;
 }
 
@@ -182,7 +186,14 @@ const SlideItem = ({
   );
 };
 
-export const CardSwiper = ({ student, firstRequest }: CardSwiperProps) => {
+export const CardSwiper = ({
+  firstName,
+  lastName,
+  username,
+  smartCardUrl,
+  europeanStudentCard,
+  firstRequest,
+}: CardSwiperProps) => {
   const styles = useStylesheet(createStyles);
   const scrollX = useSharedValue(0);
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
@@ -200,22 +211,13 @@ export const CardSwiper = ({ student, firstRequest }: CardSwiperProps) => {
   const { colors } = useTheme();
 
   const items: Item[] = [
-    ...(student.smartCardPicture
-      ? [
-          {
-            isESC: false,
-            uri: student.smartCardPicture,
-          } as UrlItem,
-        ]
-      : []),
-    ...(student.europeanStudentCard.canBeRequested ||
-    student.europeanStudentCard.details
+    ...(smartCardUrl ? [{ isESC: false, uri: smartCardUrl } as UrlItem] : []),
+    ...(europeanStudentCard &&
+    (europeanStudentCard.canBeRequested || europeanStudentCard.details)
       ? [
           {
             isESC: true,
-            ESC: {
-              ...student.europeanStudentCard,
-            },
+            ESC: { ...europeanStudentCard },
             firstRender: isFirstRequest,
           } as EscItem,
         ]
@@ -260,9 +262,9 @@ export const CardSwiper = ({ student, firstRequest }: CardSwiperProps) => {
           renderItem={({ item, index }) => (
             <SlideItem
               item={{
-                name: student?.firstName,
-                username: student?.username,
-                lastname: student?.lastName,
+                name: firstName,
+                username,
+                lastname: lastName,
                 card: item,
               }}
               index={index}

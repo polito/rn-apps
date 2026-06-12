@@ -31,6 +31,7 @@ import { ExamRequestScreen } from '../screens/ExamRequestScreen';
 import { ExamRescheduleScreen } from '../screens/ExamRescheduleScreen';
 import { ExamScreen } from '../screens/ExamScreen';
 import { ExamsScreen } from '../screens/ExamsScreen';
+import { GraduationCodeScreen } from '../screens/GraduationCodeScreen';
 import { TeachingScreen } from '../screens/TeachingScreen';
 
 export type TeachingStackParamList = CourseSharedScreensParamList &
@@ -48,6 +49,7 @@ export type TeachingStackParamList = CourseSharedScreensParamList &
     RecordedGrade: { grade: ExamGrade };
     PlacesTeachingStack: NavigatorScreenParams<PlacesStackParamList>;
     CpdSurveys: { categoryId: string; typeId: string; typeName: string };
+    GraduationCode: { id: string };
   };
 
 const Stack = createNativeStackNavigator<
@@ -176,6 +178,15 @@ export const TeachingNavigator = () => {
         component={CpdSurveysScreen}
         options={{
           title: t('teachingScreen.cpdTitle'),
+          headerLargeTitle: false,
+          headerBackButtonDisplayMode: 'minimal',
+        }}
+      />
+      <Stack.Screen
+        name="GraduationCode"
+        component={GraduationCodeScreen}
+        options={{
+          headerTitle: '',
           headerLargeTitle: false,
           headerBackButtonDisplayMode: 'minimal',
         }}

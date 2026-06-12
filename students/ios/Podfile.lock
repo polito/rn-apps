@@ -76,6 +76,8 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
+  - ExpoSharing (14.0.8):
+    - ExpoModulesCore
   - ExpoSQLite (16.0.10):
     - ExpoModulesCore
   - ExpoWebBrowser (15.0.10):
@@ -3525,6 +3527,7 @@ DEPENDENCIES:
   - ExpoFileSystem (from `../../node_modules/expo/node_modules/expo-file-system/ios`)
   - ExpoImage (from `../../node_modules/expo-image/ios`)
   - ExpoModulesCore (from `../../node_modules/expo-modules-core`)
+  - ExpoSharing (from `../../node_modules/expo-sharing/ios`)
   - ExpoSQLite (from `../../node_modules/expo-sqlite/ios`)
   - ExpoWebBrowser (from `../../node_modules/expo-web-browser/ios`)
   - fast_float (from `../../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
@@ -3688,6 +3691,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/expo-image/ios"
   ExpoModulesCore:
     :path: "../../node_modules/expo-modules-core"
+  ExpoSharing:
+    :path: "../../node_modules/expo-sharing/ios"
   ExpoSQLite:
     :path: "../../node_modules/expo-sqlite/ios"
   ExpoWebBrowser:
@@ -3914,6 +3919,7 @@ SPEC CHECKSUMS:
   ExpoFileSystem: 858a44267a3e6e9057e0888ad7c7cfbf55d52063
   ExpoImage: 686f972bff29525733aa13357f6691dc90aa03d8
   ExpoModulesCore: d86dab8a6c8f1184f9b0b0503ace93919882aa15
+  ExpoSharing: 0d983394ed4a80334bab5a0d5384f75710feb7e8
   ExpoSQLite: 7eedbe476870a5f18d6b89c817c4ac6f299830ad
   ExpoWebBrowser: 17b064c621789e41d4816c95c93f429b84971f52
   fast_float: b32c788ed9c6a8c584d114d0047beda9664e7cc6
