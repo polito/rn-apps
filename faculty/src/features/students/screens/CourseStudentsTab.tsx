@@ -152,7 +152,6 @@ export const CourseStudentsTab = () => {
     () => [
       {
         label: t('courseFilesTab.select', { defaultValue: 'Select' }),
-        checked: true,
         onPress: () => {
           setEllipsisMenuVisible(false);
           navigation.navigate('SelectStudents', { initialSelectAll: false });
@@ -160,7 +159,6 @@ export const CourseStudentsTab = () => {
       },
       {
         label: t('courseFilesTab.selectAll', { defaultValue: 'Select All' }),
-        checked: false,
         onPress: () => {
           setEllipsisMenuVisible(false);
           navigation.navigate('SelectStudents', { initialSelectAll: true });

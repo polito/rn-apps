@@ -5,10 +5,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
   AddStudentsScreen,
   CourseStudentsTab,
+  EmailComposeScreen,
+  NotifyComposeScreen,
+  SelectContactMethodScreen,
   SelectStudentsScreen,
   SpecialNeedsScreen,
   StudentContact,
-  StudentExamsScreen,
 } from '../screens';
 import { StudentsStackParamList } from '../types/navigation';
 
@@ -45,16 +47,33 @@ export const StudentsNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="SpecialNeeds"
-        component={SpecialNeedsScreen}
+        name="SelectContactMethod"
+        component={SelectContactMethodScreen}
+        options={{
+          presentation: 'transparentModal',
+          animation: 'fade',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="EmailCompose"
+        component={EmailComposeScreen}
         options={{
           presentation: Platform.OS === 'android' ? 'card' : 'modal',
           animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
         }}
       />
       <Stack.Screen
-        name="StudentExams"
-        component={StudentExamsScreen}
+        name="NotifyCompose"
+        component={NotifyComposeScreen}
+        options={{
+          presentation: Platform.OS === 'android' ? 'card' : 'modal',
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
+        }}
+      />
+      <Stack.Screen
+        name="SpecialNeeds"
+        component={SpecialNeedsScreen}
         options={{
           presentation: Platform.OS === 'android' ? 'card' : 'modal',
           animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',

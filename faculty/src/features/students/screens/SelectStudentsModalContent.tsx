@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Alert,
   Platform,
   ScrollView,
   StyleSheet,
@@ -37,6 +36,10 @@ import {
 import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { AndroidTopBar } from '../components/AndroidTopBar';
+import {
+  ContactMethod,
+  ContactMethodOverlay,
+} from '../components/ContactMethodOverlay';
 import { HighlightedName } from '../components/HighlightedName';
 import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
 import { SCREEN_HORIZONTAL_PADDING } from '../constants';
@@ -75,6 +78,7 @@ export const SelectStudentsModalContent = ({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(
     () => new Set(resolvedInitialSelectAll ? students.map(s => s.id) : []),
   );
+  const [isContactMethodVisible, setContactMethodVisible] = useState(false);
 
   const handleClose = () => {
     if (close) {
@@ -108,7 +112,6 @@ export const SelectStudentsModalContent = ({
         label: isAllSelected
           ? t('common.deselectAll', { defaultValue: 'Deselect all' })
           : t('common.selectAll', { defaultValue: 'Select all' }),
-        checked: false,
         onPress: () => {
           setEllipsisMenuVisible(false);
           handleToggleAll();
@@ -131,10 +134,19 @@ export const SelectStudentsModalContent = ({
   };
 
   const handleContact = () => {
-    Alert.alert(
-      t('other.contactSelectedStudents'),
-      `${selectedIds.size} ${t('other.students', { defaultValue: 'students' })}`,
-    );
+    setContactMethodVisible(true);
+  };
+
+  const handleContactMethodContinue = (method: ContactMethod) => {
+    setContactMethodVisible(false);
+    const ids = Array.from(selectedIds);
+    if (method === 'email') {
+      navigation.navigate('EmailCompose', { selectedIds: ids });
+      return;
+    }
+    if (method === 'notify') {
+      navigation.navigate('NotifyCompose', { selectedIds: ids });
+    }
   };
 
   return (
@@ -292,6 +304,12 @@ export const SelectStudentsModalContent = ({
         onClose={() => setEllipsisMenuVisible(false)}
         items={ellipsisMenuItems}
         anchorPosition={ellipsisAnchorPosition}
+      />
+      <ContactMethodOverlay
+        visible={isContactMethodVisible}
+        selectedCount={selectedIds.size}
+        onClose={() => setContactMethodVisible(false)}
+        onContinue={handleContactMethodContinue}
       />
     </SafeAreaView>
   );

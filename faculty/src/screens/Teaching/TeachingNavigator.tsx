@@ -26,8 +26,10 @@ import {
 import { useCourses } from '../../core/contexts/CoursesContext';
 import {
   AddStudentsScreen,
+  EmailComposeScreen,
+  NotifyComposeScreen,
+  SelectContactMethodScreen,
   SelectStudentsScreen,
-  StudentExamsScreen,
 } from '../../features/students';
 import { SpecialNeedsScreen } from '../../features/students/screens/SpecialNeedsScreen';
 import { StudentContact } from '../../features/students/screens/StudentContact';
@@ -88,8 +90,10 @@ export type TeachingStackParamList = {
   StudentContact: undefined;
   AddStudents: undefined;
   SelectStudents: { initialSelectAll?: boolean } | undefined;
+  SelectContactMethod: { selectedIds: string[] };
+  EmailCompose: { selectedIds: string[] };
+  NotifyCompose: { selectedIds: string[] };
   SpecialNeeds: undefined;
-  StudentExams: undefined;
   NoticeForm: undefined;
   LectureForm: undefined;
   StudentsForm: undefined;
@@ -281,8 +285,28 @@ export const TeachingNavigator = () => {
       />
 
       <Stack.Screen
-        name="StudentExams"
-        component={StudentExamsScreen}
+        name="SelectContactMethod"
+        component={SelectContactMethodScreen}
+        options={{
+          presentation: 'transparentModal',
+          animation: 'fade',
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="EmailCompose"
+        component={EmailComposeScreen}
+        options={{
+          presentation: Platform.OS === 'android' ? 'card' : 'modal',
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="NotifyCompose"
+        component={NotifyComposeScreen}
         options={{
           presentation: Platform.OS === 'android' ? 'card' : 'modal',
           animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',

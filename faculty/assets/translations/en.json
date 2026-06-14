@@ -17,7 +17,8 @@
       "available": "Available",
       "booked": "Booked",
       "full": "Full",
-      "notAvailable": "Not available"
+      "notAvailable": "Not available",
+      "notAvailableBooking": "Not bookable"
     },
     "cancelBooking": "Cancel booking",
     "cancelBookingText": "Are you sure you want to cancel this booking?",
@@ -28,17 +29,21 @@
     "locationType": {
       "place": "Place",
       "virtualPlace": "Link virtual place"
-    }
+    },
+    "nextWeek": "Next week",
+    "previousWeek": "Previous week"
   },
   "bookingSeatScreen": {
     "confirm": "Confirm booking",
+    "confirmSuccess": "Booking confirmed",
     "deadlineExpired": "We're sorry,\nthe deadline to book for this round has passed",
     "noSeatSelected": "No seat",
     "noSeatsAvailable": "We're sorry,\nthere are no places available",
     "seatStatus": {
       "available": "Available",
       "booked": "Booked",
-      "notAvailable": "Non bookable"
+      "notAvailable": "Non bookable",
+      "unavailable": "Not bookable"
     },
     "slotBookableFrom": "This slot will be bookable starting from ",
     "title": "Select a seat",
@@ -72,6 +77,7 @@
     "yellow": "Yellow"
   },
   "common": {
+    "active": "Active",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
@@ -118,6 +124,8 @@
     "deselectAll": "Deselect all",
     "department": "Department",
     "desk": "Desk",
+    "disabledPreviousValue": "Disabled because previous values were not entered",
+    "document": "Attachment",
     "done": "Done",
     "doubleClickToSeeLinks": "Tap twice to see links",
     "doubleTapToActive": "Tap twice to activate",
@@ -202,6 +210,7 @@
     "no": "No",
     "openSettings": "Open settings",
     "openSource": "Open Source",
+    "openSourceAccessibilityLabel": "Open Source, tap to go to the app GitHub repository",
     "openedStatus": {
       "false": "Closed",
       "true": "Open"
@@ -261,7 +270,9 @@
     "virtualClassroom_plural": "Virtual classrooms",
     "visualization": "Visualization",
     "year": "year",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "fromTime": "from",
+    "toTime": "to"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Remove",
@@ -431,6 +442,7 @@
     "total": "There are {{ total }} surveys"
   },
   "createTicketScreen": {
+    "addFile": "Add file",
     "insert": "Insert ticket",
     "messageLabel": "Describe your problem and, if you want, attach a file",
     "sendTicket": "Send ticket",
@@ -439,10 +451,12 @@
     "subtitle": "Enter your request",
     "subtopicDescription": "Select the subtopic",
     "subtopicDropdownLabel": "Subtopic",
+    "subtopicDropdownLabelAccessibility": "Subtopic, open and choose from the options",
     "subtopicDropdownPlaceholder": "Pick a subtopic",
     "title": "Create ticket",
     "topicDescription": "Select topic",
     "topicDropdownLabel": "Topic",
+    "topicDropdownLabelAccessibility": "Topic, open and choose from the options",
     "topicDropdownPlaceholder": "Pick a topic"
   },
   "degreeCourseScreen": {
@@ -597,6 +611,7 @@
     "title": "Library"
   },
   "loginScreen": {
+    "onboarding": "Onboarding",
     "authnError": "Authentication error",
     "authnErrorDescription": "The credentials you provided may be wrong.",
     "cta": "Login",
@@ -626,6 +641,7 @@
     "youHaveUnreadMessages": "You have {{total}} unread messages"
   },
   "messagingView": {
+    "activeReplay": "Active, (double tap to activate)",
     "pickFile": "Pick file",
     "pickFileHint": "From your device or from the cloud",
     "pickPhoto": "Pick image",
@@ -762,7 +778,10 @@
   "servicesScreen": {
     "subTitleOne": "Information services",
     "subTitleTwo": "Operational services",
-    "title": "Services"
+    "title": "Services",
+    "newElement": ", you have a new item to view",
+    "favoriteActive": "Set favorite, Active",
+    "favoriteInactive": "Set favorite, Inactive"
   },
   "settingsScreen": {
     "appVersion": "Version {{version}}",
@@ -792,9 +811,11 @@
     "headerBackTitle": "New",
     "noResultFound": "Didn't find what you are looking for?",
     "title": "FAQ",
-    "writeTicket": "Open ticket"
+    "writeTicket": "Open ticket",
+    "writeTicketMessage": "Open a ticket if you didn't find what you're looking for"
   },
   "ticketFaqsScreen": {
+    "searchButton": "Activate to search the keywords entered among the FAQs",
     "emptyState": "No results found",
     "findFAQ": "Search the FAQs",
     "findFAQSubtitle": "Before posting a ticket, look for an answer in the FAQs.",
@@ -805,6 +826,10 @@
     "writeTicket": "Write ticket"
   },
   "ticketScreen": {
+    "incomingMessage": "your reply",
+    "outgoingMessage": "Reply from operator number",
+    "yourQuestion": "Your question",
+    "send": "Send",
     "headerBackTitle": "Tickets",
     "new": "New ticket",
     "pickFileTitle": "You can include one attachment per message",
@@ -828,7 +853,9 @@
     "addNew": "Add ticket",
     "closed": "Closed tickets",
     "closedEmptyState": "There are no closed tickets",
+    "noClosedTickets": "There are no closed tickets",
     "openEmptyState": "There are no open tickets",
+    "noOpenTickets": "There are no open tickets",
     "opened": "Open tickets",
     "title": "Ticket"
   },
@@ -1120,6 +1147,18 @@
     "renderingToMail": "Rendering to mail...",
     "contactSelected": "Contact selected",
     "contactStudent": "Contact student by email",
+    "willBeContactedBy": "will be contacted by:",
+    "notify": "Notify",
+    "notifySubtitle": "If the student has not installed the app, they will be sent an SMS",
+    "continue": "Continue",
+    "newEmail": "New email",
+    "newNotify": "New notify",
+    "notifyMaxCharacters": "You have reached the maximum character limit of 4000",
+    "emailTitle": "Title",
+    "message": "Message",
+    "writeTitleHere": "Write your title here",
+    "writeMessageHere": "Write your message here",
+    "send": "Send",
     "student": "Student",
     "cds": "CDS",
     "specialNeeds": "Special Needs",

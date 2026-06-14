@@ -3,12 +3,12 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import {
-  faBook,
+  faAward,
   faCalendarCheck,
   faChevronRight,
   faEnvelope,
   faFlag,
-  faMagnifyingGlass,
+  faHandHoldingHeart,
   faPersonHalfDress,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -25,7 +25,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { AndroidTopBar } from '../components/AndroidTopBar';
-import { BooksIcon } from '../components/BooksIcon';
 import type { StudentsStackParamList } from '../types/navigation';
 import { formatExamDate } from '../utils';
 
@@ -61,7 +60,7 @@ export const StudentContact = () => {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={[bottomBarAwareStyles, styles.contentContainer]}
+        contentContainerStyle={[styles.contentContainer, bottomBarAwareStyles]}
         showsVerticalScrollIndicator={false}
       >
         {/* Name + ID */}
@@ -122,7 +121,7 @@ export const StudentContact = () => {
             >
               <View style={styles.leadingIcon}>
                 <FontAwesomeIcon
-                  icon={faMagnifyingGlass}
+                  icon={faHandHoldingHeart}
                   size={20}
                   color={dark ? palettes.gray[50] : palettes.primary[700]}
                 />
@@ -141,44 +140,6 @@ export const StudentContact = () => {
                 <Text style={styles.listItemSubtitle} numberOfLines={1}>
                   {t('other.specialNeedsSubtitle', {
                     defaultValue: 'List of all compensative measures',
-                  })}
-                </Text>
-              </View>
-              <FontAwesomeIcon
-                icon={faChevronRight}
-                size={16}
-                color={palettes.gray[500]}
-              />
-            </TouchableOpacity>
-
-            <IndentedDivider
-              style={[styles.infoDivider, dark && styles.infoDividerDark]}
-            />
-
-            {/* Exams */}
-            <TouchableOpacity
-              style={styles.listItem}
-              onPress={() => navigation.navigate('StudentExams')}
-            >
-              <View style={styles.leadingIcon}>
-                <BooksIcon
-                  color={dark ? palettes.gray[50] : palettes.primary[700]}
-                />
-              </View>
-              <View style={styles.listItemContent}>
-                <Text
-                  style={[
-                    styles.listItemTitle,
-                    dark && styles.listItemTitleDark,
-                  ]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {t('other.exams', { defaultValue: 'Exams' })}
-                </Text>
-                <Text style={styles.listItemSubtitle} numberOfLines={1}>
-                  {t('other.examsSubtitle', {
-                    defaultValue: "View the student's plan",
                   })}
                 </Text>
               </View>
@@ -227,7 +188,7 @@ export const StudentContact = () => {
             <View style={styles.listItem}>
               <View style={styles.leadingIcon}>
                 <FontAwesomeIcon
-                  icon={faBook}
+                  icon={faAward}
                   size={20}
                   color={dark ? palettes.gray[50] : palettes.primary[700]}
                 />
@@ -380,7 +341,6 @@ const createStyles = ({
     contentContainer: {
       paddingHorizontal: spacing[4],
       paddingTop: spacing[1],
-      paddingBottom: spacing[5],
     },
     topBar: {
       backgroundColor: colors.background,

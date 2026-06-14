@@ -1,5 +1,13 @@
 export const SCREEN_HORIZONTAL_PADDING = 18;
 
+export const NOTIFY_MAX_CHARACTERS = 4000;
+
+/** warning-warning-600 */
+export const NOTIFY_WARNING_COLOR = '#EA580C';
+
+/** warning-background */
+export const NOTIFY_WARNING_BACKGROUND_COLOR = 'rgba(255, 247, 237, 0.5)';
+
 /**
  * Month index (0 = January) at which a new academic year begins. Italian
  * universities typically roll over on September 1, so anything in September or

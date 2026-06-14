@@ -1,4 +1,5 @@
 export { AndroidTopBar } from './AndroidTopBar';
-export { BooksIcon } from './BooksIcon';
+export { ContactMethodOverlay } from './ContactMethodOverlay';
+export type { ContactMethod } from './ContactMethodOverlay';
 export { HighlightedName } from './HighlightedName';
 export { IosTopBar, IosTopBarTextAction } from './IosTopBar';
