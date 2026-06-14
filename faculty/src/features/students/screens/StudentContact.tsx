@@ -155,7 +155,14 @@ export const StudentContact = () => {
             />
 
             {/* Email */}
-            <View style={styles.listItem}>
+            <TouchableOpacity
+              style={styles.listItem}
+              onPress={() =>
+                navigation.navigate('EmailCompose', {
+                  selectedIds: [selectedStudent.id],
+                })
+              }
+            >
               <View style={styles.leadingIcon}>
                 <FontAwesomeIcon
                   icon={faEnvelope}
@@ -178,7 +185,7 @@ export const StudentContact = () => {
                   {studentEmail}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
 
             <IndentedDivider
               style={[styles.infoDivider, dark && styles.infoDividerDark]}

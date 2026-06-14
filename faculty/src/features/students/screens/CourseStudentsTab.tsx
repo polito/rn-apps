@@ -1,7 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Alert,
   Platform,
   ScrollView,
   StyleSheet,
@@ -343,12 +342,11 @@ export const CourseStudentsTab = () => {
                   trailingItem={
                     <View onStartShouldSetResponder={() => true}>
                       <TouchableOpacity
-                        onPress={() => {
-                          Alert.alert(
-                            t('other.info', { defaultValue: 'Info' }),
-                            t('other.renderingToMail'),
-                          );
-                        }}
+                        onPress={() =>
+                          navigation.navigate('EmailCompose', {
+                            selectedIds: [student.id],
+                          })
+                        }
                         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                         accessibilityRole="button"
                         accessibilityLabel={t('other.contactStudent', {
