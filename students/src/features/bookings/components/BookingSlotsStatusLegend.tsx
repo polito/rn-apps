@@ -1,65 +1,38 @@
 import { useTranslation } from 'react-i18next';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 
 import { PillButton, Text, useTheme } from '@polito/lib/ui';
-import { MenuView } from '@react-native-menu/menu';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-export const BookingSlotsStatusLegend = () => {
+import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
+
+type Props = {
+  onPress?: () => void;
+};
+
+export const BookingSlotsStatusLegend = ({ onPress }: Props) => {
   const { t } = useTranslation();
-  const { spacing, palettes } = useTheme();
+  const { spacing } = useTheme();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ServiceStackParamList>>();
+
   return (
-    <MenuView
-      actions={[
-        {
-          title: t('bookingScreen.bookingStatus.available'),
-          id: 'available',
-          image: Platform.select({
-            ios: 'circle.fill',
-            android: 'circle',
-          }),
-          imageColor: palettes.primary['400'],
-        },
-        {
-          title: t('bookingScreen.bookingStatus.booked'),
-          id: 'booked',
-          image: Platform.select({
-            ios: 'circle.fill',
-            android: 'circle',
-          }),
-          imageColor: palettes.tertiary['500'],
-        },
-        {
-          title: t('bookingScreen.bookingStatus.full'),
-          id: 'full',
-          image: Platform.select({
-            ios: 'circle.fill',
-            android: 'circle',
-          }),
-          imageColor: palettes.danger['500'],
-        },
-        {
-          title: t('bookingScreen.bookingStatus.notAvailable'),
-          id: 'notAvailable',
-          image: Platform.select({
-            ios: 'circle.fill',
-            android: 'circle',
-          }),
-          imageColor: palettes.secondary['400'],
-        },
-      ]}
+    <PillButton
+      variant="neutral"
+      accessibilityLabel={t('common.legend')}
+      onPress={onPress ?? (() => navigation.navigate('BookingSlotsLegend'))}
     >
-      <PillButton variant="neutral" accessibilityLabel={t('common.legend')}>
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            gap: spacing[2],
-            alignItems: 'center',
-          }}
-        >
-          <Text key="events">{t('common.legend')}</Text>
-        </View>
-      </PillButton>
-    </MenuView>
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          gap: spacing[2],
+          alignItems: 'center',
+        }}
+      >
+        <Text key="events">{t('common.legend')}</Text>
+      </View>
+    </PillButton>
   );
 };
