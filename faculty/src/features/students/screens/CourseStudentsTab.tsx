@@ -13,12 +13,12 @@ import { faEnvelope, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   CtaButton,
-  CtaButtonContainer,
   IndentedDivider,
   ListItem,
   OverviewList,
   Text,
   Theme,
+  TranslucentView,
   useSafeAreaSpacing,
   useStylesheet,
   useTheme,
@@ -58,6 +58,7 @@ export const CourseStudentsTab = () => {
   const styles = useStylesheet(createStyles);
   const ctaStyles = useStylesheet(createAddStudentCtaStyles);
   const { palettes, spacing, dark } = useTheme();
+  const addStudentFooterHeight = SCREEN_HORIZONTAL_PADDING * 2 + 48;
   const [isFilterMenuVisible, setFilterMenuVisible] = useState(false);
   const [isEllipsisMenuVisible, setEllipsisMenuVisible] = useState(false);
   const [filterAnchorPosition, setFilterAnchorPosition] = useState<{
@@ -174,7 +175,13 @@ export const CourseStudentsTab = () => {
       <View style={[styles.root, paddingHorizontal]}>
         <ScrollView
           style={styles.scroll}
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[
+            styles.scrollContent,
+            {
+              paddingBottom:
+                addStudentFooterHeight + bottomBarHeight + spacing[2],
+            },
+          ]}
           showsVerticalScrollIndicator={false}
         >
           {/* Info Card */}
@@ -370,35 +377,27 @@ export const CourseStudentsTab = () => {
               </View>
             ))}
           </OverviewList>
-
-          <View style={{ height: spacing[20] }} />
         </ScrollView>
 
-        {/* Add Student CTA*/}
         <View
-          style={{
-            marginLeft: -safeHorizontal.paddingLeft,
-            marginRight: -safeHorizontal.paddingRight,
-          }}
+          style={[
+            ctaStyles.blurFooter,
+            {
+              marginLeft: -safeHorizontal.paddingLeft,
+              marginRight: -safeHorizontal.paddingRight,
+              bottom: bottomBarHeight,
+            },
+          ]}
         >
-          <CtaButtonContainer
+          <TranslucentView blurAmount={10} fallbackOpacity={0.1} />
+          <CtaButton
+            title={t('other.addStudent')}
+            icon={faPlus}
+            action={() => navigation.navigate('AddStudents')}
             absolute={false}
-            style={[
-              ctaStyles.ctaWrapper,
-              {
-                paddingBottom: bottomBarHeight + SCREEN_HORIZONTAL_PADDING,
-              },
-            ]}
-          >
-            <CtaButton
-              title={t('other.addStudent')}
-              icon={faPlus}
-              action={() => navigation.navigate('AddStudents')}
-              absolute={false}
-              style={ctaStyles.ctaButton}
-              containerStyle={ctaStyles.ctaButtonContainer}
-            />
-          </CtaButtonContainer>
+            style={ctaStyles.ctaButton}
+            containerStyle={ctaStyles.ctaButtonContainer}
+          />
         </View>
       </View>
       <CourseFilesContextMenu
@@ -417,15 +416,18 @@ export const CourseStudentsTab = () => {
   );
 };
 
-const createAddStudentCtaStyles = (_: Theme) =>
+const createAddStudentCtaStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
-    ctaWrapper: {
-      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-      paddingTop: 0,
-      paddingBottom: 0,
+    blurFooter: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      padding: SCREEN_HORIZONTAL_PADDING,
+      overflow: 'hidden',
     },
     ctaButtonContainer: {
       padding: 0,
+      marginTop: -spacing[5],
     },
     ctaButton: {
       width: '100%',
