@@ -85,8 +85,8 @@ const HeaderRightDropdown = ({
   const { palettes, spacing } = useTheme();
   const username = profile?.username || '';
   const allCareerIds = useMemo(
-    () => profile?.allusernames ?? [],
-    [profile?.allusernames],
+    () => profile?.allUsernames ?? [],
+    [profile?.allUsernames],
   );
   const canSwitchCareer = allCareerIds.length > 1 && !isOffline;
   const actions = useMemo((): MenuAction[] => {

@@ -296,9 +296,13 @@ const createGraduationCodePdfFileUri = async (
   content: GraduationCodePdfContent,
 ) => {
   const html = buildGraduationCodePdfHtml(content);
+  const sanitize = (value: string) => value.replace(/[\\/:*?"<>|]/g, '').trim();
+  const fileName = `${sanitize(content.fullName).replace(/\s+/g, '-')}_${sanitize(
+    content.eventTitle,
+  )}`;
   const pdf = await RNHTMLtoPDF.convert({
     html,
-    fileName: 'graduation-session',
+    fileName,
     width: 497,
     height: 842,
     padding: 0,

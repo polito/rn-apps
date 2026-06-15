@@ -2,7 +2,7 @@ import { pluckData } from '@polito/lib/core';
 import {
   AuthApi,
   EventAdmissionsApi,
-  GetTokenQrAcceptEnum,
+  GetAccessTokenAcceptEnum,
   TokenType,
 } from '@polito/student-api-client';
 import { useQuery } from '@tanstack/react-query';
@@ -33,10 +33,10 @@ export const useGetEventQrCode = (eventId?: string) =>
   useQuery({
     queryKey: [EVENT_QR_CODE_QUERY_PREFIX, eventId],
     queryFn: async () => {
-      const svg = await new AuthApi().getTokenQr({
+      const svg = await new AuthApi().getAccessToken({
         type: TokenType.Event,
         id: eventId,
-        accept: GetTokenQrAcceptEnum.ImageSvgxml,
+        accept: GetAccessTokenAcceptEnum.ImageSvgxml,
       });
 
       return isSvg(svg) ? svg : '';
