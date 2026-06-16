@@ -218,7 +218,7 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
       <SafeAreaView>
         <View style={styles.screen}>
           <Card rounded spaced gapped style={styles.card}>
-            <Text variant="heading" weight="bold" style={styles.name}>
+            <Text variant="prose" style={styles.name}>
               {fullName}
             </Text>
             <Col gap={1}>
@@ -288,8 +288,9 @@ const createStyles = ({ spacing, fontSizes, palettes }: Theme) =>
       gap: spacing[4],
     },
     name: {
+      fontFamily: 'Montserrat-Bold',
       fontSize: fontSizes['2xl'],
-      lineHeight: fontSizes['2xl'] * 1.2,
+      lineHeight: fontSizes['2xl'] * 1.25,
     },
     instruction: {
       textAlign: 'center',
