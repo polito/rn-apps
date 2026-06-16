@@ -1,5 +1,3 @@
-import { createContext, useContext } from 'react';
-
 import {
   AuthApi,
   BookingsApi,
@@ -15,15 +13,13 @@ import {
   TicketsApi,
 } from '@polito/student-api-client';
 
-export interface Credentials {
-  username: string;
-  token: string;
-}
-
-export interface ApiContextProps extends Credentials {
-  isLogged: boolean;
-  refreshContext: (credentials?: Credentials) => void;
-}
+// The ApiContext (credentials, login state, refresh) is shared across apps
+export {
+  ApiContext,
+  useApiContext,
+  type ApiContextProps,
+  type Credentials,
+} from '@polito/lib/core';
 
 export interface ApiContextClientsProps {
   auth: AuthApi;
@@ -39,12 +35,3 @@ export interface ApiContextClientsProps {
   jobOffers: JobOffersApi;
   offering: OfferingApi;
 }
-
-export const ApiContext = createContext<ApiContextProps | undefined>(undefined);
-
-export const useApiContext = () => {
-  const apiContext = useContext(ApiContext);
-  if (!apiContext)
-    throw new Error('No ApiContext.Provider found when calling useApiContext.');
-  return apiContext;
-};
