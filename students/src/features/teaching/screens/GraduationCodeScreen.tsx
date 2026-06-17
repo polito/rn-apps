@@ -124,6 +124,11 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
 
   const locationLabel = event?.placeName ?? event?.place ?? '';
 
+  const hasValidPlace = useMemo(
+    () => parsePlace(event?.place) !== null,
+    [event?.place],
+  );
+
   const { dateTime, entriesUsed } = useMemo(() => {
     if (!event) {
       return {
@@ -322,7 +327,7 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
                   disabled={!qrCodeQuery.data}
                   containerStyle={styles.buttonContainer}
                 />
-                {!!event.place && (
+                {hasValidPlace && (
                   <CtaButton
                     absolute={false}
                     variant="outlined"
