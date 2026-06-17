@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import {
+  faDiamondTurnRight,
   faLocationDot,
   faShare,
   faUsers,
@@ -15,9 +16,9 @@ import {
   formatDateTimeAccessibility,
   useFeedbackContext,
 } from '@polito/lib/core';
+import { resolvePlaceId } from '@polito/lib/features/places';
 import {
   ActivityIndicator,
-  BottomBarSpacer,
   Card,
   Col,
   CtaButton,
@@ -43,26 +44,40 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'GraduationCode'>;
 
 const formatHHmm = dateFormatter('HH:mm');
 
-const buildPlaceMapUrl = (placeId: string | null) => {
+const BACKDROP_COLOR = 'rgba(0, 0, 0, 0.5)';
+const CARD_SURFACE_DARK = '#212830';
+
+const parsePlace = (placeId?: string | null) => {
   if (!placeId) {
-    return '';
+    return null;
   }
 
   const parts = placeId.split('_');
   if (parts.length < 3) {
-    return '';
+    return null;
   }
 
   const roomId = parts.pop() ?? '';
   const floorId = parts.pop() ?? '';
   const buildingId = parts.join('_');
   if (!buildingId || !floorId || !roomId) {
+    return null;
+  }
+
+  return { buildingId, floorId, roomId };
+};
+
+const buildPlaceMapUrl = (placeId: string | null) => {
+  const place = parsePlace(placeId);
+  if (!place) {
     return '';
   }
 
   return `https://www.polito.it/mappe?bl_id=${encodeURIComponent(
-    buildingId,
-  )}&fl_id=${encodeURIComponent(floorId)}&rm_id=${encodeURIComponent(roomId)}`;
+    place.buildingId,
+  )}&fl_id=${encodeURIComponent(place.floorId)}&rm_id=${encodeURIComponent(
+    place.roomId,
+  )}`;
 };
 
 export const GraduationCodeScreen = ({ navigation, route }: Props) => {
@@ -172,16 +187,17 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
   }, [dateTime, event, locationLabel, pdfFullName, t]);
 
   const onPressLocation = useCallback(() => {
-    if (!event?.place) {
+    const place = parsePlace(event?.place);
+    if (!place) {
       return;
     }
 
     navigation.navigate('PlacesTeachingStack', {
       screen: 'Place',
       params: {
-        placeId: event.place,
+        placeId: resolvePlaceId({ ...place, siteId: '', name: '' }),
         isCrossNavigation: true,
-        name: event.placeName ?? event.place,
+        name: event?.placeName ?? event?.place ?? undefined,
       },
     });
   }, [event, navigation]);
@@ -214,78 +230,99 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
   }
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <SafeAreaView>
-        <View style={styles.screen}>
-          <Card rounded spaced gapped style={styles.card}>
-            <Text variant="prose" style={styles.name}>
-              {fullName}
-            </Text>
-            <Col gap={1}>
+    <Pressable
+      style={styles.backdrop}
+      accessibilityRole="button"
+      accessibilityLabel={t('common.close')}
+      onPress={() => navigation.goBack()}
+    >
+      <Pressable style={styles.cardWrapper} onPress={() => {}}>
+        <Card rounded gapped style={styles.card}>
+          <Text variant="prose" style={styles.name}>
+            {fullName}
+          </Text>
+          <Col gap={1}>
+            <GraduationCodeDetailRow
+              icon={faCalendar}
+              value={dateTime}
+              accessibilityLabel={`${t('graduationCodeScreen.dateTime')}: ${dateTime}`}
+            />
+            {!!locationLabel && (
               <GraduationCodeDetailRow
-                icon={faCalendar}
-                value={dateTime}
-                accessibilityLabel={`${t('graduationCodeScreen.dateTime')}: ${dateTime}`}
+                icon={faLocationDot}
+                value={locationLabel}
+                accessibilityLabel={`${t('graduationCodeScreen.location')}: ${locationLabel}`}
               />
-              {!!locationLabel && (
-                <GraduationCodeDetailRow
-                  icon={faLocationDot}
-                  value={locationLabel}
-                  accessibilityLabel={`${t('graduationCodeScreen.location')}: ${locationLabel}`}
-                  onPress={event.place ? onPressLocation : undefined}
-                />
-              )}
-              <GraduationCodeDetailRow
-                icon={faUsers}
-                value={entriesText}
-                accessibilityLabel={entriesText}
-              />
-            </Col>
-            <Text variant="caption" weight="medium" style={styles.instruction}>
-              {t('graduationCodeScreen.instruction', {
-                max: event.totalAdmissions,
-              })}
-            </Text>
-            <View
-              style={styles.qrContainer}
-              accessibilityLabel={t('graduationCodeScreen.qrCode')}
-            >
-              {qrCodeQuery.data?.includes('<svg') ? (
-                <SvgXml xml={qrCodeQuery.data} width={206} height={206} />
-              ) : (
-                <ActivityIndicator style={styles.qrLoader} />
-              )}
-            </View>
-            <Text variant="link" style={styles.validUntil}>
-              {validUntilLabel}
-            </Text>
+            )}
+            <GraduationCodeDetailRow
+              icon={faUsers}
+              value={entriesText}
+              accessibilityLabel={entriesText}
+            />
+          </Col>
+          <Text variant="caption" weight="medium" style={styles.instruction}>
+            {t('graduationCodeScreen.instruction', {
+              max: event.totalAdmissions,
+            })}
+          </Text>
+          <View
+            style={styles.qrContainer}
+            accessibilityLabel={t('graduationCodeScreen.qrCode')}
+          >
+            {qrCodeQuery.data?.includes('<svg') ? (
+              <SvgXml xml={qrCodeQuery.data} width={206} height={206} />
+            ) : (
+              <ActivityIndicator style={styles.qrLoader} />
+            )}
+          </View>
+          <Text variant="link" style={styles.validUntil}>
+            {validUntilLabel}
+          </Text>
+          <CtaButton
+            absolute={false}
+            variant="outlined"
+            title={t('graduationCodeScreen.share')}
+            icon={faShare}
+            action={onShare}
+            loading={isSharing}
+            disabled={!qrCodeQuery.data}
+            containerStyle={styles.buttonContainer}
+          />
+          {!!event.place && (
             <CtaButton
               absolute={false}
               variant="outlined"
-              title={t('graduationCodeScreen.share')}
-              icon={faShare}
-              action={onShare}
-              loading={isSharing}
-              disabled={!qrCodeQuery.data}
-              containerStyle={styles.shareContainer}
+              title={t('graduationCodeScreen.openMap')}
+              icon={faDiamondTurnRight}
+              action={onPressLocation}
+              containerStyle={styles.buttonContainer}
             />
-          </Card>
-        </View>
-        <BottomBarSpacer />
-      </SafeAreaView>
-    </ScrollView>
+          )}
+        </Card>
+      </Pressable>
+    </Pressable>
   );
 };
 
-const createStyles = ({ spacing, fontSizes, palettes }: Theme) =>
+const createStyles = ({ dark, spacing, fontSizes, palettes, colors }: Theme) =>
   StyleSheet.create({
-    screen: {
-      paddingTop: spacing[2],
+    backdrop: {
+      flex: 1,
+      backgroundColor: BACKDROP_COLOR,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: spacing[5],
+    },
+    cardWrapper: {
+      width: '100%',
+      maxWidth: 480,
     },
     card: {
+      marginVertical: 0,
       paddingHorizontal: spacing[5],
       paddingVertical: spacing[5],
       gap: spacing[4],
+      backgroundColor: dark ? CARD_SURFACE_DARK : colors.surface,
     },
     name: {
       fontFamily: 'Montserrat-Bold',
@@ -296,7 +333,7 @@ const createStyles = ({ spacing, fontSizes, palettes }: Theme) =>
       textAlign: 'center',
       lineHeight: fontSizes.sm * 1.5,
       textTransform: 'none',
-      color: palettes.warning[700],
+      color: dark ? palettes.warning[500] : palettes.warning[700],
     },
     qrContainer: {
       alignSelf: 'center',
@@ -310,7 +347,7 @@ const createStyles = ({ spacing, fontSizes, palettes }: Theme) =>
     validUntil: {
       textAlign: 'center',
     },
-    shareContainer: {
+    buttonContainer: {
       paddingTop: spacing[2],
       paddingBottom: 0,
     },

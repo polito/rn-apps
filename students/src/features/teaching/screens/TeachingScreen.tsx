@@ -279,9 +279,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                         title={t('transcriptMetricsScreen.averageLabel')}
                         value={formatFinalGrade(
                           !hideGrades
-                            ? studentQuery.data?.usePurgedAverageFinalGrade
-                              ? studentQuery.data?.estimatedFinalGradePurged
-                              : studentQuery.data?.estimatedFinalGrade
+                            ? studentQuery.data?.estimatedFinalGrade
                             : null,
                         )}
                         color={colors.title}

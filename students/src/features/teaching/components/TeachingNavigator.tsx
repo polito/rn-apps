@@ -186,9 +186,10 @@ export const TeachingNavigator = () => {
         name="GraduationCode"
         component={GraduationCodeScreen}
         options={{
-          headerTitle: '',
-          headerLargeTitle: false,
-          headerBackButtonDisplayMode: 'minimal',
+          headerShown: false,
+          presentation: 'transparentModal',
+          animation: 'fade',
+          contentStyle: { backgroundColor: 'transparent' },
         }}
       />
       {CourseSharedScreens()}

@@ -14,46 +14,45 @@ type Props = {
   icon: IconDefinition;
   value: string;
   accessibilityLabel: string;
-  onPress?: () => void;
+  trailingIcon?: IconDefinition;
+  onPressTrailing?: () => void;
+  trailingAccessibilityLabel?: string;
 };
 
 export const GraduationCodeDetailRow = ({
   icon,
   value,
   accessibilityLabel,
-  onPress,
+  trailingIcon,
+  onPressTrailing,
+  trailingAccessibilityLabel,
 }: Props) => {
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
 
-  const content = (
-    <Row
-      gap={3}
-      align="center"
-      style={styles.row}
-      accessible={!onPress}
-      accessibilityLabel={onPress ? undefined : accessibilityLabel}
-    >
+  return (
+    <Row gap={3} align="center" style={styles.row}>
       <Icon icon={icon} size={fontSizes.xl} color={colors.title} />
-      <Text variant="prose" style={styles.value} weight="medium">
+      <Text
+        variant="prose"
+        style={styles.value}
+        weight="medium"
+        accessibilityLabel={accessibilityLabel}
+      >
         {value}
       </Text>
+      {trailingIcon && onPressTrailing && (
+        <TouchableHighlight
+          onPress={onPressTrailing}
+          underlayColor={colors.touchableHighlight}
+          style={styles.trailingButton}
+          accessibilityRole="button"
+          accessibilityLabel={trailingAccessibilityLabel}
+        >
+          <Icon icon={trailingIcon} size={fontSizes.lg} color={colors.title} />
+        </TouchableHighlight>
+      )}
     </Row>
-  );
-
-  if (!onPress) {
-    return content;
-  }
-
-  return (
-    <TouchableHighlight
-      onPress={onPress}
-      underlayColor={colors.touchableHighlight}
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
-    >
-      {content}
-    </TouchableHighlight>
   );
 };
 
@@ -65,5 +64,9 @@ const createStyles = ({ spacing }: Theme) =>
     value: {
       flex: 1,
       flexShrink: 1,
+    },
+    trailingButton: {
+      padding: spacing[2],
+      borderRadius: spacing[2],
     },
   });

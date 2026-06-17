@@ -1012,6 +1012,7 @@
     "entriesValue": "{{used}}/{{max}} ingressi utilizzati",
     "instruction": "Mostra questo QR code per ogni partecipante al tuo gruppo compreso te stesso (massimo {{max}} accessi)",
     "location": "Luogo",
+    "openMap": "Mostra in Luoghi",
     "pdf": {
       "admissions": "N. ingressi:",
       "codeId": "ID Codice:",

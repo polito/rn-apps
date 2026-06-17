@@ -991,6 +991,7 @@
     "entriesValue": "{{used}}/{{max}} entries used",
     "instruction": "Show this QR code for each participant in your group including yourself (maximum {{max}} accesses)",
     "location": "Location",
+    "openMap": "Show in Places",
     "pdf": {
       "admissions": "Entries:",
       "codeId": "Code ID:",
