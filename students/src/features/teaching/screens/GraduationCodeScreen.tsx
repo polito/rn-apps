@@ -81,6 +81,9 @@ const buildPlaceMapUrl = (placeId: string | null) => {
   )}`;
 };
 
+const formatGraduationDisplayName = (firstName: string, lastName: string) =>
+  `${firstName.charAt(0).toUpperCase()}${firstName.slice(1).toLowerCase()} ${lastName.toUpperCase()}`;
+
 export const GraduationCodeScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
@@ -103,7 +106,7 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
       return '';
     }
 
-    return `${profile.firstName} ${profile.lastName}`.toUpperCase();
+    return formatGraduationDisplayName(profile.firstName, profile.lastName);
   }, [profileQuery.data]);
 
   const pdfFullName = useMemo(() => {
@@ -231,20 +234,20 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <View style={styles.backdrop}>
-        <Pressable
-          style={styles.backdropPressable}
-          accessibilityRole="button"
-          accessibilityLabel={t('common.close')}
-          onPress={onClose}
-        />
+      <Pressable
+        style={styles.backdrop}
+        accessibilityRole="button"
+        accessibilityLabel={t('common.close')}
+        onPress={onClose}
+      >
         <ScrollView
+          pointerEvents="box-none"
           style={styles.scroll}
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.scrollInner}>
+          <View pointerEvents="box-none" style={styles.scrollInner}>
             <Pressable style={styles.cardWrapper} onPress={() => {}}>
               <Card rounded gapped style={styles.card}>
                 <View style={styles.cardHeader}>
@@ -323,7 +326,7 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
             </Pressable>
           </View>
         </ScrollView>
-      </View>
+      </Pressable>
     </Modal>
   );
 };
@@ -333,9 +336,6 @@ const createStyles = ({ dark, spacing, fontSizes, palettes, colors }: Theme) =>
     backdrop: {
       flex: 1,
       backgroundColor: BACKDROP_COLOR,
-    },
-    backdropPressable: {
-      ...StyleSheet.absoluteFillObject,
     },
     scroll: {
       flex: 1,
