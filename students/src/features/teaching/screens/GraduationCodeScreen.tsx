@@ -377,7 +377,7 @@ const createStyles = ({ dark, spacing, fontSizes, palettes, colors }: Theme) =>
     closeButton: {
       position: 'absolute',
       right: spacing[5],
-      top: spacing[2],
+      top: spacing[5] + spacing[2] - spacing[3],
       zIndex: 1,
     },
     name: {
