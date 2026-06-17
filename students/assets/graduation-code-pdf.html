@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+
+      * {
+        box-sizing: border-box;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        font-family: Montserrat, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        color: #262626;
+        background: #ffffff;
+      }
+
+      .page {
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+      }
+
+      .header {
+        background: #002b49;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .logo {
+        width: 272px;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .header-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+      }
+
+      .header-context {
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 400;
+        text-align: center;
+      }
+
+      .header-name {
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .body {
+        flex: 1;
+        padding: 12px 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .details {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 3px 0;
+      }
+
+      .row-top {
+        align-items: flex-start;
+      }
+
+      .row-label {
+        color: #262626;
+        font-size: 14px;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      .row-value {
+        flex: 1;
+        color: #262626;
+        font-size: 14px;
+        font-weight: 400;
+        word-break: break-word;
+      }
+
+      .map-button {
+        flex-shrink: 0;
+        align-self: center;
+        background: #006db4;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        padding: 6px 12px;
+        border-radius: 6px;
+      }
+
+      .qr-card {
+        width: 100%;
+        background: #f1f5f9;
+        border-radius: 16px;
+        padding: 24px 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .qr-title {
+        width: 100%;
+        text-align: center;
+        color: #262626;
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      .qr-instruction {
+        width: 100%;
+        text-align: center;
+        color: #b94b04;
+        font-size: 10px;
+        font-weight: 500;
+        line-height: 1.25;
+      }
+
+      .qr-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 9px;
+        padding: 0 24px;
+      }
+
+      .qr-image {
+        width: 207px;
+        height: 207px;
+      }
+
+      .qr-image svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .code-id-label {
+        width: 100%;
+        text-align: center;
+        color: #262626;
+        font-size: 10px;
+        font-weight: 600;
+        line-height: 1.25;
+      }
+
+      .code-id-value {
+        width: 100%;
+        text-align: center;
+        color: #262626;
+        font-size: 10px;
+        font-weight: 500;
+        line-height: 1.25;
+        word-break: break-all;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <div class="logo">
+          <img src="{{LOGO_SRC}}" alt="Politecnico di Torino" />
+        </div>
+        <div class="header-text">
+          <div class="header-context">{{EVENT_TITLE}}</div>
+          <div class="header-name">{{FULL_NAME}}</div>
+        </div>
+      </div>
+      <div class="body">
+        <div class="details">{{DETAIL_ROWS}}</div>
+        <div class="qr-card">
+          <div class="qr-title">{{QR_TITLE}}</div>
+          <div class="qr-instruction">{{INSTRUCTION}}</div>
+          <div class="qr-block">
+            <div class="qr-image">{{QR_CODE_SVG}}</div>
+            <div class="code-id-label">{{CODE_ID_LABEL}}</div>
+            <div class="code-id-value">{{ADMISSION_CODE_ID}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

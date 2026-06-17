@@ -1,8 +1,17 @@
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 
+import { Asset } from 'expo-asset';
 import * as Sharing from 'expo-sharing';
 
-import { POLITO_PDF_LOGO_HTML } from './graduationCodePdfLogo';
+import {
+  EncodingType,
+  readAsStringAsync,
+} from '../../../core/storage/fileSystem';
+
+const graduationCodePdfLogo =
+  require('../../../../assets/graduation-code-pdf-logo.png') as number;
+const graduationCodePdfTemplate =
+  require('../../../../assets/graduation-code-pdf.html') as number;
 
 export type GraduationCodePdfLabels = {
   event: string;
@@ -58,7 +67,45 @@ const renderLocationRow = (
   </div>
 `;
 
-export const buildGraduationCodePdfHtml = ({
+let templatePromise: Promise<string> | null = null;
+let logoDataUriPromise: Promise<string> | null = null;
+
+const loadAssetUri = async (moduleId: number) => {
+  const asset = Asset.fromModule(moduleId);
+  await asset.downloadAsync();
+  if (!asset.localUri) {
+    throw new Error('Failed to load asset');
+  }
+  return asset.localUri;
+};
+
+const loadTemplate = () => {
+  if (!templatePromise) {
+    templatePromise = loadAssetUri(graduationCodePdfTemplate).then(uri =>
+      readAsStringAsync(uri, { encoding: EncodingType.UTF8 }),
+    );
+  }
+  return templatePromise;
+};
+
+const loadLogoDataUri = () => {
+  if (!logoDataUriPromise) {
+    logoDataUriPromise = loadAssetUri(graduationCodePdfLogo).then(uri =>
+      readAsStringAsync(uri, { encoding: EncodingType.Base64 }).then(
+        base64 => `data:image/png;base64,${base64}`,
+      ),
+    );
+  }
+  return logoDataUriPromise;
+};
+
+const fillTemplate = (template: string, values: Record<string, string>) =>
+  Object.entries(values).reduce(
+    (html, [key, value]) => html.replaceAll(`{{${key}}}`, value),
+    template,
+  );
+
+export const buildGraduationCodePdfHtml = async ({
   fullName,
   eventTitle,
   dateTime,
@@ -69,225 +116,33 @@ export const buildGraduationCodePdfHtml = ({
   admissionCodeId,
   qrCodeSvg,
   labels,
-}: GraduationCodePdfContent) => `
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+}: GraduationCodePdfContent) => {
+  const [template, logoSrc] = await Promise.all([
+    loadTemplate(),
+    loadLogoDataUri(),
+  ]);
 
-      * {
-        box-sizing: border-box;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
+  const detailRows = [
+    renderRow(labels.event, eventTitle),
+    renderRow(labels.date, dateTime),
+    renderRow(labels.admissions, maxAdmissionsText),
+    location
+      ? renderLocationRow(labels.location, location, labels.map, mapUrl)
+      : '',
+  ].join('');
 
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        font-family: Montserrat, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        color: #262626;
-        background: #ffffff;
-      }
-
-      .page {
-        display: flex;
-        flex-direction: column;
-        min-height: 100%;
-      }
-
-      .header {
-        background: #002b49;
-        padding: 18px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 24px;
-      }
-
-      .logo {
-        width: 272px;
-        height: 120px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .header-text {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0;
-      }
-
-      .header-context {
-        color: #ffffff;
-        font-size: 16px;
-        font-weight: 400;
-        text-align: center;
-      }
-
-      .header-name {
-        color: #ffffff;
-        font-size: 16px;
-        font-weight: 600;
-        text-align: center;
-      }
-
-      .body {
-        flex: 1;
-        padding: 12px 18px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 24px;
-      }
-
-      .details {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 3px 0;
-      }
-
-      .row-top {
-        align-items: flex-start;
-      }
-
-      .row-label {
-        color: #262626;
-        font-size: 14px;
-        font-weight: 500;
-        white-space: nowrap;
-      }
-
-      .row-value {
-        flex: 1;
-        color: #262626;
-        font-size: 14px;
-        font-weight: 400;
-        word-break: break-word;
-      }
-
-      .map-button {
-        flex-shrink: 0;
-        align-self: center;
-        background: #006db4;
-        color: #ffffff;
-        font-size: 12px;
-        font-weight: 600;
-        text-decoration: none;
-        white-space: nowrap;
-        padding: 6px 12px;
-        border-radius: 6px;
-      }
-
-      .qr-card {
-        width: 100%;
-        background: #f1f5f9;
-        border-radius: 16px;
-        padding: 24px 18px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 24px;
-      }
-
-      .qr-title {
-        width: 100%;
-        text-align: center;
-        color: #262626;
-        font-size: 20px;
-        font-weight: 600;
-      }
-
-      .qr-instruction {
-        width: 100%;
-        text-align: center;
-        color: #b94b04;
-        font-size: 10px;
-        font-weight: 500;
-        line-height: 1.25;
-      }
-
-      .qr-block {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 9px;
-        padding: 0 24px;
-      }
-
-      .qr-image {
-        width: 207px;
-        height: 207px;
-      }
-
-      .qr-image svg {
-        width: 100%;
-        height: 100%;
-      }
-
-      .code-id-label {
-        width: 100%;
-        text-align: center;
-        color: #262626;
-        font-size: 10px;
-        font-weight: 600;
-        line-height: 1.25;
-      }
-
-      .code-id-value {
-        width: 100%;
-        text-align: center;
-        color: #262626;
-        font-size: 10px;
-        font-weight: 500;
-        line-height: 1.25;
-        word-break: break-all;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="page">
-      <div class="header">
-        <div class="logo">${POLITO_PDF_LOGO_HTML}</div>
-        <div class="header-text">
-          <div class="header-context">${escapeHtml(eventTitle)}</div>
-          <div class="header-name">${escapeHtml(fullName)}</div>
-        </div>
-      </div>
-      <div class="body">
-        <div class="details">
-          ${renderRow(labels.event, eventTitle)}
-          ${renderRow(labels.date, dateTime)}
-          ${renderRow(labels.admissions, maxAdmissionsText)}
-          ${location ? renderLocationRow(labels.location, location, labels.map, mapUrl) : ''}
-        </div>
-        <div class="qr-card">
-          <div class="qr-title">${escapeHtml(labels.qrTitle)}</div>
-          <div class="qr-instruction">${escapeHtml(instruction)}</div>
-          <div class="qr-block">
-            <div class="qr-image">${qrCodeSvg}</div>
-            <div class="code-id-label">${escapeHtml(labels.codeId)}</div>
-            <div class="code-id-value">${escapeHtml(admissionCodeId)}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </body>
-</html>
-`;
+  return fillTemplate(template, {
+    LOGO_SRC: logoSrc,
+    FULL_NAME: escapeHtml(fullName),
+    EVENT_TITLE: escapeHtml(eventTitle),
+    DETAIL_ROWS: detailRows,
+    QR_TITLE: escapeHtml(labels.qrTitle),
+    INSTRUCTION: escapeHtml(instruction),
+    QR_CODE_SVG: qrCodeSvg,
+    CODE_ID_LABEL: escapeHtml(labels.codeId),
+    ADMISSION_CODE_ID: escapeHtml(admissionCodeId),
+  });
+};
 
 const toFileUri = (path: string) =>
   path.startsWith('file://') ? path : `file://${path}`;
@@ -295,7 +150,7 @@ const toFileUri = (path: string) =>
 const createGraduationCodePdfFileUri = async (
   content: GraduationCodePdfContent,
 ) => {
-  const html = buildGraduationCodePdfHtml(content);
+  const html = await buildGraduationCodePdfHtml(content);
   const sanitize = (value: string) => value.replace(/[\\/:*?"<>|]/g, '').trim();
   const fileName = `${sanitize(content.fullName).replace(/\s+/g, '-')}_${sanitize(
     content.eventTitle,
