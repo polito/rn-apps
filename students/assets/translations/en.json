@@ -1012,7 +1012,7 @@
   "teachingScreen": {
     "allCoursesHidden": "You've hidden all your courses",
     "cpdTitle": "CPD Surveys",
-    "eventTitle": "Event passes with QR Code",
+    "eventTitle": "QR Code Event Passes",
     "title": "Teaching"
   },
   "theme": {

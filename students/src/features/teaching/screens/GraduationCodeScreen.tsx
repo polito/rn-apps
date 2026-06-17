@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import {
-  faDiamondTurnRight,
+  faLocationArrow,
   faLocationDot,
-  faShare,
+  faShareSquare,
+  faTimes,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -22,6 +23,7 @@ import {
   Card,
   Col,
   CtaButton,
+  IconButton,
   Text,
   type Theme,
   useStylesheet,
@@ -101,7 +103,7 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
       return '';
     }
 
-    return `${profile.lastName} ${profile.firstName}`.toUpperCase();
+    return `${profile.firstName} ${profile.lastName}`.toUpperCase();
   }, [profileQuery.data]);
 
   const pdfFullName = useMemo(() => {
@@ -115,11 +117,10 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
 
   const locationLabel = event?.placeName ?? event?.place ?? '';
 
-  const { dateTime, validUntilParts, entriesUsed } = useMemo(() => {
+  const { dateTime, entriesUsed } = useMemo(() => {
     if (!event) {
       return {
         dateTime: '',
-        validUntilParts: { date: '', time: '' },
         entriesUsed: 0,
       };
     }
@@ -140,17 +141,6 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
         max: event.totalAdmissions,
       })
     : '';
-
-  const validUntilLabel = useMemo(
-    () =>
-      event
-        ? t('graduationCodeScreen.validUntil', {
-            ...validUntilParts,
-            interpolation: { escapeValue: false },
-          })
-        : '',
-    [event, t, validUntilParts],
-  );
 
   const pdfContent = useMemo<Omit<
     GraduationCodePdfContent,
@@ -191,6 +181,7 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
       return;
     }
 
+    navigation.goBack();
     navigation.navigate('PlacesTeachingStack', {
       screen: 'Place',
       params: {
@@ -224,82 +215,116 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
     }
   }, [pdfContent, qrCodeQuery.data, setFeedback, t]);
 
+  const onClose = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
   if (!event) {
     return null;
   }
 
   return (
-    <Pressable
-      style={styles.backdrop}
-      accessibilityRole="button"
-      accessibilityLabel={t('common.close')}
-      onPress={() => navigation.goBack()}
+    <Modal
+      visible
+      transparent
+      animationType="fade"
+      statusBarTranslucent
+      onRequestClose={onClose}
     >
-      <Pressable style={styles.cardWrapper} onPress={() => {}}>
-        <Card rounded gapped style={styles.card}>
-          <Text variant="prose" style={styles.name}>
-            {fullName}
-          </Text>
-          <Col gap={1}>
-            <GraduationCodeDetailRow
-              icon={faCalendar}
-              value={dateTime}
-              accessibilityLabel={`${t('graduationCodeScreen.dateTime')}: ${dateTime}`}
-            />
-            {!!locationLabel && (
-              <GraduationCodeDetailRow
-                icon={faLocationDot}
-                value={locationLabel}
-                accessibilityLabel={`${t('graduationCodeScreen.location')}: ${locationLabel}`}
-              />
-            )}
-            <GraduationCodeDetailRow
-              icon={faUsers}
-              value={entriesText}
-              accessibilityLabel={entriesText}
-            />
-          </Col>
-          <Text variant="caption" weight="medium" style={styles.instruction}>
-            {t('graduationCodeScreen.instruction', {
-              max: event.totalAdmissions,
-            })}
-          </Text>
-          <View
-            style={styles.qrContainer}
-            accessibilityLabel={t('graduationCodeScreen.qrCode')}
-          >
-            {qrCodeQuery.data?.includes('<svg') ? (
-              <SvgXml xml={qrCodeQuery.data} width={206} height={206} />
-            ) : (
-              <ActivityIndicator style={styles.qrLoader} />
-            )}
+      <View style={styles.backdrop}>
+        <Pressable
+          style={styles.backdropPressable}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.close')}
+          onPress={onClose}
+        />
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.scrollInner}>
+            <Pressable style={styles.cardWrapper} onPress={() => {}}>
+              <Card rounded gapped style={styles.card}>
+                <View style={styles.cardHeader}>
+                  <Text variant="prose" style={styles.name}>
+                    {fullName}
+                  </Text>
+                  <IconButton
+                    accessibilityLabel={t('common.close')}
+                    accessibilityRole="button"
+                    icon={faTimes}
+                    onPress={onClose}
+                    adjustSpacing="left"
+                  />
+                </View>
+                <Col gap={1}>
+                  <GraduationCodeDetailRow
+                    icon={faCalendar}
+                    value={dateTime}
+                    accessibilityLabel={`${t('graduationCodeScreen.dateTime')}: ${dateTime}`}
+                  />
+                  {!!locationLabel && (
+                    <GraduationCodeDetailRow
+                      icon={faLocationDot}
+                      value={locationLabel}
+                      accessibilityLabel={`${t('graduationCodeScreen.location')}: ${locationLabel}`}
+                    />
+                  )}
+                  <GraduationCodeDetailRow
+                    icon={faUsers}
+                    value={entriesText}
+                    accessibilityLabel={entriesText}
+                  />
+                </Col>
+                <Text
+                  variant="caption"
+                  weight="medium"
+                  style={styles.instruction}
+                >
+                  {t('graduationCodeScreen.instruction', {
+                    max: event.totalAdmissions,
+                  })}
+                </Text>
+                <View
+                  style={styles.qrContainer}
+                  accessibilityLabel={t('graduationCodeScreen.qrCode')}
+                >
+                  {qrCodeQuery.data?.includes('<svg') ? (
+                    <SvgXml xml={qrCodeQuery.data} width={206} height={206} />
+                  ) : (
+                    <ActivityIndicator style={styles.qrLoader} />
+                  )}
+                </View>
+                <Col gap={3} style={styles.buttons}>
+                  <CtaButton
+                    absolute={false}
+                    variant="outlined"
+                    title={t('graduationCodeScreen.share')}
+                    icon={faShareSquare}
+                    action={onShare}
+                    loading={isSharing}
+                    disabled={!qrCodeQuery.data}
+                    containerStyle={styles.buttonContainer}
+                  />
+                  {!!event.place && (
+                    <CtaButton
+                      absolute={false}
+                      variant="outlined"
+                      title={t('graduationCodeScreen.openMap')}
+                      icon={faLocationArrow}
+                      action={onPressLocation}
+                      containerStyle={styles.buttonContainer}
+                    />
+                  )}
+                </Col>
+              </Card>
+            </Pressable>
           </View>
-          <Text variant="link" style={styles.validUntil}>
-            {validUntilLabel}
-          </Text>
-          <CtaButton
-            absolute={false}
-            variant="outlined"
-            title={t('graduationCodeScreen.share')}
-            icon={faShare}
-            action={onShare}
-            loading={isSharing}
-            disabled={!qrCodeQuery.data}
-            containerStyle={styles.buttonContainer}
-          />
-          {!!event.place && (
-            <CtaButton
-              absolute={false}
-              variant="outlined"
-              title={t('graduationCodeScreen.openMap')}
-              icon={faDiamondTurnRight}
-              action={onPressLocation}
-              containerStyle={styles.buttonContainer}
-            />
-          )}
-        </Card>
-      </Pressable>
-    </Pressable>
+        </ScrollView>
+      </View>
+    </Modal>
   );
 };
 
@@ -308,9 +333,22 @@ const createStyles = ({ dark, spacing, fontSizes, palettes, colors }: Theme) =>
     backdrop: {
       flex: 1,
       backgroundColor: BACKDROP_COLOR,
+    },
+    backdropPressable: {
+      ...StyleSheet.absoluteFillObject,
+    },
+    scroll: {
+      flex: 1,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[5],
+    },
+    scrollInner: {
+      flexGrow: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      paddingHorizontal: spacing[5],
     },
     cardWrapper: {
       width: '100%',
@@ -323,7 +361,15 @@ const createStyles = ({ dark, spacing, fontSizes, palettes, colors }: Theme) =>
       gap: spacing[4],
       backgroundColor: colors.surface,
     },
+    cardHeader: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      justifyContent: 'space-between',
+      gap: spacing[2],
+    },
     name: {
+      flex: 1,
+      flexShrink: 1,
       fontFamily: 'Montserrat-Bold',
       fontSize: fontSizes['2xl'],
       lineHeight: fontSizes['2xl'] * 1.25,
@@ -346,8 +392,10 @@ const createStyles = ({ dark, spacing, fontSizes, palettes, colors }: Theme) =>
     validUntil: {
       textAlign: 'center',
     },
+    buttons: {
+      width: '100%',
+    },
     buttonContainer: {
-      paddingTop: spacing[2],
-      paddingBottom: 0,
+      padding: 0,
     },
   });
