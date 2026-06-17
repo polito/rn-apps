@@ -26,7 +26,9 @@ import {
   IconButton,
   Text,
   type Theme,
+  useSafeBottomBarHeight,
   useStylesheet,
+  useTheme,
 } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -87,6 +89,8 @@ const formatGraduationDisplayName = (firstName: string, lastName: string) =>
 export const GraduationCodeScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+  const { spacing, fontSizes, colors } = useTheme();
+  const bottomBarHeight = useSafeBottomBarHeight();
   const { setFeedback } = useFeedbackContext();
   const [isSharing, setIsSharing] = useState(false);
   const profileQuery = useGetProfile();
@@ -234,99 +238,105 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <Pressable
-        style={styles.backdrop}
-        accessibilityRole="button"
-        accessibilityLabel={t('common.close')}
-        onPress={onClose}
+      <View
+        style={[
+          styles.backdrop,
+          { paddingBottom: bottomBarHeight + spacing[5] },
+        ]}
       >
-        <ScrollView
-          pointerEvents="box-none"
-          style={styles.scroll}
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <View pointerEvents="box-none" style={styles.scrollInner}>
-            <Pressable style={styles.cardWrapper} onPress={() => {}}>
-              <Card rounded gapped style={styles.card}>
-                <View style={styles.cardHeader}>
-                  <Text variant="prose" style={styles.name}>
-                    {fullName}
-                  </Text>
-                  <IconButton
-                    accessibilityLabel={t('common.close')}
-                    accessibilityRole="button"
-                    icon={faTimes}
-                    onPress={onClose}
-                    adjustSpacing="left"
-                  />
-                </View>
-                <Col gap={1}>
+        <Pressable
+          style={styles.backdropTouchable}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.close')}
+          onPress={onClose}
+        />
+        <View style={styles.cardWrapper}>
+          <Card rounded gapped style={styles.card}>
+            <IconButton
+              accessibilityLabel={t('common.close')}
+              accessibilityRole="button"
+              icon={faTimes}
+              size={fontSizes.lg}
+              color={colors.title}
+              onPress={onClose}
+              adjustSpacing="right"
+              style={styles.closeButton}
+            />
+            <ScrollView
+              style={styles.scroll}
+              contentContainerStyle={styles.scrollContent}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+              nestedScrollEnabled
+              overScrollMode="always"
+            >
+              <Text variant="prose" style={styles.name}>
+                {fullName}
+              </Text>
+              <Col gap={1}>
+                <GraduationCodeDetailRow
+                  icon={faCalendar}
+                  value={dateTime}
+                  accessibilityLabel={`${t('graduationCodeScreen.dateTime')}: ${dateTime}`}
+                />
+                {!!locationLabel && (
                   <GraduationCodeDetailRow
-                    icon={faCalendar}
-                    value={dateTime}
-                    accessibilityLabel={`${t('graduationCodeScreen.dateTime')}: ${dateTime}`}
+                    icon={faLocationDot}
+                    value={locationLabel}
+                    accessibilityLabel={`${t('graduationCodeScreen.location')}: ${locationLabel}`}
                   />
-                  {!!locationLabel && (
-                    <GraduationCodeDetailRow
-                      icon={faLocationDot}
-                      value={locationLabel}
-                      accessibilityLabel={`${t('graduationCodeScreen.location')}: ${locationLabel}`}
-                    />
-                  )}
-                  <GraduationCodeDetailRow
-                    icon={faUsers}
-                    value={entriesText}
-                    accessibilityLabel={entriesText}
-                  />
-                </Col>
-                <Text
-                  variant="caption"
-                  weight="medium"
-                  style={styles.instruction}
-                >
-                  {t('graduationCodeScreen.instruction', {
-                    max: event.totalAdmissions,
-                  })}
-                </Text>
-                <View
-                  style={styles.qrContainer}
-                  accessibilityLabel={t('graduationCodeScreen.qrCode')}
-                >
-                  {qrCodeQuery.data?.includes('<svg') ? (
-                    <SvgXml xml={qrCodeQuery.data} width={206} height={206} />
-                  ) : (
-                    <ActivityIndicator style={styles.qrLoader} />
-                  )}
-                </View>
-                <Col gap={3} style={styles.buttons}>
+                )}
+                <GraduationCodeDetailRow
+                  icon={faUsers}
+                  value={entriesText}
+                  accessibilityLabel={entriesText}
+                />
+              </Col>
+              <Text
+                variant="caption"
+                weight="medium"
+                style={styles.instruction}
+              >
+                {t('graduationCodeScreen.instruction', {
+                  max: event.totalAdmissions,
+                })}
+              </Text>
+              <View
+                style={styles.qrContainer}
+                accessibilityLabel={t('graduationCodeScreen.qrCode')}
+              >
+                {qrCodeQuery.data?.includes('<svg') ? (
+                  <SvgXml xml={qrCodeQuery.data} width={206} height={206} />
+                ) : (
+                  <ActivityIndicator style={styles.qrLoader} />
+                )}
+              </View>
+              <Col gap={3} style={styles.buttons}>
+                <CtaButton
+                  absolute={false}
+                  variant="outlined"
+                  title={t('graduationCodeScreen.share')}
+                  icon={faShareSquare}
+                  action={onShare}
+                  loading={isSharing}
+                  disabled={!qrCodeQuery.data}
+                  containerStyle={styles.buttonContainer}
+                />
+                {!!event.place && (
                   <CtaButton
                     absolute={false}
                     variant="outlined"
-                    title={t('graduationCodeScreen.share')}
-                    icon={faShareSquare}
-                    action={onShare}
-                    loading={isSharing}
-                    disabled={!qrCodeQuery.data}
+                    title={t('graduationCodeScreen.openMap')}
+                    icon={faLocationArrow}
+                    action={onPressLocation}
                     containerStyle={styles.buttonContainer}
                   />
-                  {!!event.place && (
-                    <CtaButton
-                      absolute={false}
-                      variant="outlined"
-                      title={t('graduationCodeScreen.openMap')}
-                      icon={faLocationArrow}
-                      action={onPressLocation}
-                      containerStyle={styles.buttonContainer}
-                    />
-                  )}
-                </Col>
-              </Card>
-            </Pressable>
-          </View>
-        </ScrollView>
-      </Pressable>
+                )}
+              </Col>
+            </ScrollView>
+          </Card>
+        </View>
+      </View>
     </Modal>
   );
 };
@@ -336,40 +346,42 @@ const createStyles = ({ dark, spacing, fontSizes, palettes, colors }: Theme) =>
     backdrop: {
       flex: 1,
       backgroundColor: BACKDROP_COLOR,
-    },
-    scroll: {
-      flex: 1,
-    },
-    scrollContent: {
-      flexGrow: 1,
-      paddingHorizontal: spacing[5],
-      paddingVertical: spacing[5],
-    },
-    scrollInner: {
-      flexGrow: 1,
       justifyContent: 'center',
       alignItems: 'center',
+      paddingHorizontal: spacing[5],
+      paddingTop: spacing[5],
+    },
+    backdropTouchable: {
+      ...StyleSheet.absoluteFillObject,
+    },
+    scroll: {
+      flexGrow: 0,
+    },
+    scrollContent: {
+      gap: spacing[4],
+      paddingTop: spacing[2],
     },
     cardWrapper: {
       width: '100%',
       maxWidth: 480,
+      maxHeight: '100%',
     },
     card: {
+      flexShrink: 1,
       marginVertical: 0,
       paddingHorizontal: spacing[5],
       paddingVertical: spacing[5],
-      gap: spacing[4],
       backgroundColor: colors.surface,
+      overflow: 'hidden',
     },
-    cardHeader: {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
-      justifyContent: 'space-between',
-      gap: spacing[2],
+    closeButton: {
+      position: 'absolute',
+      right: spacing[5],
+      top: spacing[2],
+      zIndex: 1,
     },
     name: {
-      flex: 1,
-      flexShrink: 1,
+      paddingRight: spacing[8],
       fontFamily: 'Montserrat-Bold',
       fontSize: fontSizes['2xl'],
       lineHeight: fontSizes['2xl'] * 1.25,
