@@ -45,7 +45,6 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'GraduationCode'>;
 const formatHHmm = dateFormatter('HH:mm');
 
 const BACKDROP_COLOR = 'rgba(0, 0, 0, 0.5)';
-const CARD_SURFACE_DARK = '#212830';
 
 const parsePlace = (placeId?: string | null) => {
   if (!placeId) {
@@ -322,7 +321,7 @@ const createStyles = ({ dark, spacing, fontSizes, palettes, colors }: Theme) =>
       paddingHorizontal: spacing[5],
       paddingVertical: spacing[5],
       gap: spacing[4],
-      backgroundColor: dark ? CARD_SURFACE_DARK : colors.surface,
+      backgroundColor: colors.surface,
     },
     name: {
       fontFamily: 'Montserrat-Bold',
