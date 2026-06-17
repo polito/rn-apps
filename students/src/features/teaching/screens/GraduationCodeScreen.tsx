@@ -119,7 +119,7 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
       return '';
     }
 
-    return `${profile.lastName} ${profile.firstName}`;
+    return `${profile.firstName} ${profile.lastName}`;
   }, [profileQuery.data]);
 
   const locationLabel = event?.placeName ?? event?.place ?? '';
