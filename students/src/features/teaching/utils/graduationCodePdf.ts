@@ -1,17 +1,9 @@
 import { generatePDF } from 'react-native-html-to-pdf';
 
-import { Asset } from 'expo-asset';
 import * as Sharing from 'expo-sharing';
 
-import {
-  EncodingType,
-  readAsStringAsync,
-} from '../../../core/storage/fileSystem';
-
-const graduationCodePdfLogo =
-  require('../../../../assets/graduation-code-pdf-logo.png') as number;
-const graduationCodePdfTemplate =
-  require('../../../../assets/graduation-code-pdf.html') as number;
+import { GRADUATION_CODE_PDF_LOGO } from './graduationCodePdfLogo';
+import { GRADUATION_CODE_PDF_TEMPLATE } from './graduationCodePdfTemplate';
 
 export type GraduationCodePdfLabels = {
   event: string;
@@ -60,45 +52,13 @@ const renderMapSection = (label: string, mapUrl: string) =>
 `
     : '';
 
-let templatePromise: Promise<string> | null = null;
-let logoDataUriPromise: Promise<string> | null = null;
-
-const loadAssetUri = async (moduleId: number) => {
-  const asset = Asset.fromModule(moduleId);
-  await asset.downloadAsync();
-  if (!asset.localUri) {
-    throw new Error('Failed to load asset');
-  }
-  return asset.localUri;
-};
-
-const loadTemplate = () => {
-  if (!templatePromise) {
-    templatePromise = loadAssetUri(graduationCodePdfTemplate).then(uri =>
-      readAsStringAsync(uri, { encoding: EncodingType.UTF8 }),
-    );
-  }
-  return templatePromise;
-};
-
-const loadLogoDataUri = () => {
-  if (!logoDataUriPromise) {
-    logoDataUriPromise = loadAssetUri(graduationCodePdfLogo).then(uri =>
-      readAsStringAsync(uri, { encoding: EncodingType.Base64 }).then(
-        base64 => `data:image/png;base64,${base64}`,
-      ),
-    );
-  }
-  return logoDataUriPromise;
-};
-
 const fillTemplate = (template: string, values: Record<string, string>) =>
   Object.entries(values).reduce(
     (html, [key, value]) => html.replaceAll(`{{${key}}}`, value),
     template,
   );
 
-export const buildGraduationCodePdfHtml = async ({
+export const buildGraduationCodePdfHtml = ({
   fullName,
   eventTitle,
   dateTime,
@@ -110,11 +70,6 @@ export const buildGraduationCodePdfHtml = async ({
   qrCodeSvg,
   labels,
 }: GraduationCodePdfContent) => {
-  const [template, logoSrc] = await Promise.all([
-    loadTemplate(),
-    loadLogoDataUri(),
-  ]);
-
   const detailRows = [
     renderRow(labels.event, eventTitle),
     renderRow(labels.date, dateTime),
@@ -122,8 +77,8 @@ export const buildGraduationCodePdfHtml = async ({
     location ? renderRow(labels.location, location) : '',
   ].join('');
 
-  return fillTemplate(template, {
-    LOGO_SRC: logoSrc,
+  return fillTemplate(GRADUATION_CODE_PDF_TEMPLATE, {
+    LOGO_SRC: GRADUATION_CODE_PDF_LOGO,
     FULL_NAME: escapeHtml(fullName),
     EVENT_TITLE: escapeHtml(eventTitle),
     DETAIL_ROWS: detailRows,
@@ -142,7 +97,7 @@ const toFileUri = (path: string) =>
 const createGraduationCodePdfFileUri = async (
   content: GraduationCodePdfContent,
 ) => {
-  const html = await buildGraduationCodePdfHtml(content);
+  const html = buildGraduationCodePdfHtml(content);
   const sanitize = (value: string) =>
     value
       .trim()
