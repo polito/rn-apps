@@ -119,7 +119,7 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
       return '';
     }
 
-    return `${profile.firstName} ${profile.lastName}`;
+    return formatGraduationDisplayName(profile.firstName, profile.lastName);
   }, [profileQuery.data]);
 
   const locationLabel = event?.placeName ?? event?.place ?? '';
@@ -326,6 +326,7 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
                   loading={isSharing}
                   disabled={!qrCodeQuery.data}
                   containerStyle={styles.buttonContainer}
+                  style={styles.ctaButton}
                 />
                 {hasValidPlace && (
                   <CtaButton
@@ -335,6 +336,7 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
                     icon={faLocationArrow}
                     action={onPressLocation}
                     containerStyle={styles.buttonContainer}
+                    style={styles.ctaButton}
                   />
                 )}
               </Col>
@@ -414,5 +416,9 @@ const createStyles = ({ dark, spacing, fontSizes, palettes, colors }: Theme) =>
     },
     buttonContainer: {
       padding: 0,
+    },
+    ctaButton: {
+      elevation: 0,
+      shadowOpacity: 0,
     },
   });

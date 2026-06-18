@@ -1020,7 +1020,7 @@
       "description": "Descrizione:",
       "event": "Evento:",
       "instruction": "Mostra questo QR code all'ingresso dell'evento per ogni partecipante al tuo gruppo compreso te stesso (massimo {{max}} accessi)",
-      "map": "Mappa",
+      "map": "Dove si svolge l'evento:",
       "maxAdmissions": "{{max}} partecipanti massimo",
       "qrTitle": "Il tuo QR Code di ingresso"
     },

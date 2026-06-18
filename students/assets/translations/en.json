@@ -999,7 +999,7 @@
       "description": "Description:",
       "event": "Event:",
       "instruction": "Show this QR code at the event entrance for each participant in your group including yourself (maximum {{max}} accesses)",
-      "map": "Map",
+      "map": "Event location:",
       "maxAdmissions": "Maximum {{max}} participants",
       "qrTitle": "Your entry QR code"
     },

@@ -1,4 +1,4 @@
-import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import { generatePDF } from 'react-native-html-to-pdf';
 
 import { Asset } from 'expo-asset';
 import * as Sharing from 'expo-sharing';
@@ -50,22 +50,15 @@ const renderRow = (label: string, value: string, alignTop = false) => `
   </div>
 `;
 
-const renderLocationRow = (
-  label: string,
-  value: string,
-  mapLabel: string,
-  mapUrl: string,
-) => `
-  <div class="row">
-    <div class="row-label">${escapeHtml(label)}</div>
-    <div class="row-value">${escapeHtml(value)}</div>
-    ${
-      mapUrl
-        ? `<a class="map-button" href="${escapeHtml(mapUrl)}">${escapeHtml(mapLabel)}</a>`
-        : ''
-    }
+const renderMapSection = (label: string, mapUrl: string) =>
+  mapUrl
+    ? `
+  <div class="map-section">
+    <div class="map-section-label">${escapeHtml(label)}</div>
+    <a class="map-link" href="${escapeHtml(mapUrl)}">${escapeHtml(mapUrl)}</a>
   </div>
-`;
+`
+    : '';
 
 let templatePromise: Promise<string> | null = null;
 let logoDataUriPromise: Promise<string> | null = null;
@@ -126,9 +119,7 @@ export const buildGraduationCodePdfHtml = async ({
     renderRow(labels.event, eventTitle),
     renderRow(labels.date, dateTime),
     renderRow(labels.admissions, maxAdmissionsText),
-    location
-      ? renderLocationRow(labels.location, location, labels.map, mapUrl)
-      : '',
+    location ? renderRow(labels.location, location) : '',
   ].join('');
 
   return fillTemplate(template, {
@@ -136,6 +127,7 @@ export const buildGraduationCodePdfHtml = async ({
     FULL_NAME: escapeHtml(fullName),
     EVENT_TITLE: escapeHtml(eventTitle),
     DETAIL_ROWS: detailRows,
+    MAP_SECTION: renderMapSection(labels.map, mapUrl),
     QR_TITLE: escapeHtml(labels.qrTitle),
     INSTRUCTION: escapeHtml(instruction),
     QR_CODE_SVG: qrCodeSvg,
@@ -159,13 +151,14 @@ const createGraduationCodePdfFileUri = async (
   const fileName = `${sanitize(content.fullName)}_${sanitize(
     content.eventTitle,
   )}`;
-  const pdf = await RNHTMLtoPDF.convert({
+  const pdf = await generatePDF({
     html,
     fileName,
     width: 497,
     height: 842,
     padding: 0,
     bgColor: '#FFFFFF',
+    shouldPrintBackgrounds: true,
   });
 
   if (!pdf.filePath) {
