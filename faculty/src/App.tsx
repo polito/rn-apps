@@ -5,7 +5,13 @@ import { LogBox } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { APP_VERSION, BUILD_NO } from '@env';
-import { PreferencesProvider, Sentry, initSentry } from '@polito/lib/core';
+import {
+  PreferencesProvider,
+  Sentry,
+  createPolitoLinking,
+  initSentry,
+  isEnvProduction,
+} from '@polito/lib/core';
 import { FeedbackProvider, SplashProvider, UiProvider } from '@polito/lib/ui';
 import Mapbox from '@rnmapbox/maps';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -20,12 +26,10 @@ import {
   objectPreferenceKeys as appObjectPreferenceKeys,
   initialAppPreferences,
 } from '~/core/types/preferences';
-import { setDeepLink } from '~/utils/linking';
 
 import i18n from 'i18next';
 
 import { en, it } from '../assets/translations';
-import { isEnvProduction } from './utils/env';
 
 LogBox.ignoreLogs([
   'VirtualizedLists should never be nested inside plain ScrollViews',
@@ -71,7 +75,11 @@ const App = () => {
             extraObjectKeys={appObjectPreferenceKeys}
             initialPreferences={initialAppPreferences}
           >
-            <UiProvider<RootParamList> linking={setDeepLink()}>
+            <UiProvider<RootParamList>
+              linking={createPolitoLinking<any>('faculty', {
+                ssoRouteName: 'Login',
+              })}
+            >
               <QueryClientProvider client={queryClient}>
                 <CoursesProvider>
                   <FeedbackProvider>

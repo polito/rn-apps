@@ -3,10 +3,13 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { APP_VERSION, BUILD_NO } from '@env';
 import {
+  ApiProvider,
   PreferencesProvider,
   Sentry,
+  createPolitoLinking,
   extendSuperJSON,
   initSentry,
+  isEnvProduction,
 } from '@polito/lib/core';
 import { FeedbackProvider, SplashProvider, UiProvider } from '@polito/lib/ui';
 import Mapbox from '@rnmapbox/maps';
@@ -14,9 +17,9 @@ import Mapbox from '@rnmapbox/maps';
 import i18n from 'i18next';
 
 import { en, it } from '../assets/translations';
+import { updateGlobalApiConfiguration } from './config/api';
 import { AppContent } from './core/components/AppContent';
 import { DialogProvider } from './core/components/Dialog';
-import { ApiProvider } from './core/providers/ApiProvider';
 import { RootParamList } from './core/types/navigation';
 import {
   AppPreferences,
@@ -24,8 +27,6 @@ import {
   objectPreferenceKeys as appObjectPreferenceKeys,
   initialAppPreferences,
 } from './core/types/preferences';
-import { isEnvProduction } from './utils/env';
-import { setDeepLink } from './utils/linking';
 
 extendSuperJSON();
 
@@ -67,9 +68,14 @@ const App = () => {
           extraObjectKeys={appObjectPreferenceKeys}
           initialPreferences={initialAppPreferences}
         >
-          <UiProvider<RootParamList> linking={setDeepLink()}>
+          <UiProvider<RootParamList>
+            linking={createPolitoLinking<RootParamList>('students')}
+          >
             <FeedbackProvider>
-              <ApiProvider>
+              <ApiProvider<AppPreferences>
+                appId="students"
+                updateApiConfiguration={updateGlobalApiConfiguration}
+              >
                 <DialogProvider />
                 <AppContent />
               </ApiProvider>

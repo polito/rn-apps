@@ -10,61 +10,73 @@ import { Alert } from 'react-native';
 
 import NetInfo from '@react-native-community/netinfo';
 import * as Sentry from '@sentry/react-native';
+import { experimental_createQueryPersister } from '@tanstack/query-persist-client-core';
 import {
   QueryCache,
   QueryClient,
-  QueryClientConfig,
   QueryClientProvider,
   onlineManager,
 } from '@tanstack/react-query';
 
+import { SQLiteStorage } from 'expo-sqlite/kv-store';
+import SuperJSON from 'superjson';
+
+import { PolitoAppId, getPolitoAppConfig } from '../config';
 import {
   ApiContext,
   ApiContextProps,
   Credentials,
 } from '../contexts/ApiContext';
 import { useFeedbackContext } from '../contexts/FeedbackContext';
+import { PolitoAppContext } from '../contexts/PolitoAppContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
+import { isEnvProduction } from '../utils/env';
+import { createPolitoAppKeychainServices } from '../utils/keychain';
 
 const DATA_MAX_AGE = 1000 * 3600 * 24 * 7;
 
-/** Minimal shape of the api-client `ResponseError`, kept client-agnostic */
-export type ResponseErrorLike = { response: Response };
+const queryStorage = new SQLiteStorage('queryClient');
 
-/** Credentials as returned by the app keychain (token lives in `password`) */
-export type StoredCredentials = {
-  username: string;
-  password?: string | null;
+const queryPersister = experimental_createQueryPersister({
+  storage: queryStorage,
+  serialize: SuperJSON.stringify,
+  deserialize: SuperJSON.parse,
+  maxAge: DATA_MAX_AGE,
+  refetchOnRestore: 'always',
+});
+
+export const clearPersistedQueryCache = () => queryStorage.clear();
+
+/** Minimal shape of the api-client `ResponseError`, kept client-agnostic */
+export type ResponseErrorLike = { response: Response & { url?: string } };
+
+const isResponseError = (error: unknown): error is ResponseErrorLike => {
+  if (!error || typeof error !== 'object') return false;
+  const response = (error as { response?: unknown }).response;
+  if (!response || typeof response !== 'object') return false;
+
+  return (
+    (error as { name?: unknown }).name === 'ResponseError' &&
+    typeof (response as { status?: unknown }).status === 'number' &&
+    typeof (response as { json?: unknown }).json === 'function'
+  );
 };
 
-/** react-query persister option, derived from the public client config */
-type QueryPersisterFn = NonNullable<
-  NonNullable<QueryClientConfig['defaultOptions']>['queries']
->['persister'];
-
 type ApiProviderProps = PropsWithChildren<{
+  /** Identifies the app and derives shared app configuration */
+  appId: PolitoAppId;
   /** Configures the app-specific API client(s) with the token and language */
   updateApiConfiguration: (params: {
     token?: string;
     language?: string;
   }) => void;
-  /** Reads the stored credentials from the app keychain */
-  getCredentials: () => Promise<StoredCredentials | false>;
-  /** Clears the stored credentials in the app keychain */
-  resetCredentials: () => Promise<void>;
-  /** Type guard that detects the app api-client's `ResponseError` */
-  isResponseError: (error: unknown) => error is ResponseErrorLike;
-  /** Persister that backs react-query offline cache (app-owned storage) */
-  persisterFn?: QueryPersisterFn;
-  /** Whether the app runs in a production environment */
-  isEnvProduction?: boolean;
 }>;
 
 /**
  * Shared API provider: owns the react-query client, global 401/error handling
- * and connectivity feedback, while delegating app-specific concerns (api client
- * configuration, keychain access, error detection) to the props above.
+ * and connectivity feedback. App identity drives the shared keychain, SSO and
+ * persistence configuration; the app only plugs in its generated API clients.
  *
  * `Prefs` is the app-specific preferences shape (e.g. `ApiProvider<AppPreferences>`),
  * mirroring `PreferencesProvider<AppPreferences>`.
@@ -73,12 +85,8 @@ export const ApiProvider = <
   Prefs extends { username?: string } = { username?: string },
 >({
   children,
+  appId,
   updateApiConfiguration,
-  getCredentials,
-  resetCredentials,
-  isResponseError,
-  persisterFn,
-  isEnvProduction = false,
 }: ApiProviderProps) => {
   const { t } = useTranslation();
   const [apiContext, setApiContext] = useState<ApiContextProps>({
@@ -87,9 +95,21 @@ export const ApiProvider = <
     token: '',
     refreshContext: () => {},
   });
+  const [hasResolvedInitialCredentials, setHasResolvedInitialCredentials] =
+    useState(false);
   const { setFeedback } = useFeedbackContext();
   const { language, username } = usePreferencesContext<Prefs>();
   const splashContext = useSplashContext();
+  const appConfig = useMemo(() => getPolitoAppConfig(appId), [appId]);
+  const keychainServices = useMemo(
+    () => createPolitoAppKeychainServices(appConfig.id),
+    [appConfig.id],
+  );
+  const resetCredentials = useCallback(async () => {
+    await keychainServices.credentials.resetCredentials();
+    await keychainServices.mfaPrivateKey.resetPrivateKeyMFA();
+  }, [keychainServices]);
+
   const globalQueryErrorHandler = useCallback(
     async (error: unknown, client: QueryClient) => {
       if (isResponseError(error)) {
@@ -108,7 +128,7 @@ export const ApiProvider = <
         };
 
         // The login alert is handled in the login screen
-        if (!error.response.url.includes('/login'))
+        if (!error.response.url?.includes('/login'))
           Alert.alert(
             t('common.error'),
             message ?? t('common.somethingWentWrong'),
@@ -120,7 +140,7 @@ export const ApiProvider = <
         }
       }
     },
-    [isResponseError, resetCredentials, t, isEnvProduction],
+    [resetCredentials, t],
   );
 
   const queryClient = useMemo(() => {
@@ -134,12 +154,12 @@ export const ApiProvider = <
       }),
       defaultOptions: {
         queries: {
-          gcTime: DATA_MAX_AGE, // 3 days
+          gcTime: DATA_MAX_AGE,
           staleTime: 300000, // 5 minutes
           networkMode: 'online',
           retry: isEnvProduction ? 2 : 1,
           refetchOnWindowFocus: isEnvProduction,
-          persister: persisterFn,
+          persister: queryPersister.persisterFn,
         },
         mutations: {
           retry: 1,
@@ -152,7 +172,7 @@ export const ApiProvider = <
       },
     });
     return client;
-  }, [globalQueryErrorHandler, isResponseError, persisterFn, isEnvProduction]);
+  }, [globalQueryErrorHandler]);
 
   useEffect(() => {
     // Update ApiContext based on the provided token and selected language
@@ -177,7 +197,8 @@ export const ApiProvider = <
     };
 
     // Retrieve existing token from the keychain, if any
-    getCredentials()
+    keychainServices.credentials
+      .getCredentials()
       .then(keychainCredentials => {
         let credentials: Credentials | undefined;
 
@@ -188,12 +209,14 @@ export const ApiProvider = <
           };
         }
         refreshContext(credentials);
+        setHasResolvedInitialCredentials(true);
       })
       .catch(e => {
         console.warn("Keychain couldn't be accessed!", e);
         refreshContext();
+        setHasResolvedInitialCredentials(true);
       });
-  }, [language, username, queryClient, getCredentials, updateApiConfiguration]);
+  }, [keychainServices, language, username, updateApiConfiguration]);
 
   useEffect(() => {
     // Track connectivity and surface a persistent feedback when offline
@@ -221,18 +244,20 @@ export const ApiProvider = <
 
   // Initialization completed, splash can be hidden
   useEffect(() => {
-    if (!splashContext.isAppLoaded) {
+    if (hasResolvedInitialCredentials && !splashContext.isAppLoaded) {
       splashContext.setIsAppLoaded(true);
     }
-  }, [apiContext, splashContext]);
+  }, [hasResolvedInitialCredentials, splashContext]);
 
   return (
-    <ApiContext.Provider value={apiContext}>
-      {splashContext.isAppLoaded && (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      )}
-    </ApiContext.Provider>
+    <PolitoAppContext.Provider value={appConfig}>
+      <ApiContext.Provider value={apiContext}>
+        {splashContext.isAppLoaded && (
+          <QueryClientProvider client={queryClient}>
+            {children}
+          </QueryClientProvider>
+        )}
+      </ApiContext.Provider>
+    </PolitoAppContext.Provider>
   );
 };

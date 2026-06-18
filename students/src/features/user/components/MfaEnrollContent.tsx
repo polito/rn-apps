@@ -11,6 +11,7 @@ import {
   ApiError,
   resetNavigationStatusTo,
   useFeedbackContext,
+  usePolitoAppMfaPrivateKeyKeychain,
   usePreferencesContext,
 } from '@polito/lib/core';
 import {
@@ -33,10 +34,6 @@ import {
   useSSOLoginInitiator,
 } from '../../../core/queries/authHooks';
 import { generateSecp256k1KeyPair } from '../../../utils/crypto';
-import {
-  checkCanSavePrivateKeyMFA,
-  savePrivateKeyMFA,
-} from '../../../utils/keychain';
 import { UserStackParamList } from './UserNavigator';
 
 type Props = {
@@ -46,6 +43,8 @@ type Props = {
 export const MfaEnrollScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { mutateAsync: enrolMfa } = useMfaEnrol();
+  const { checkCanSavePrivateKeyMFA, savePrivateKeyMFA } =
+    usePolitoAppMfaPrivateKeyKeychain();
   const queryClient = useQueryClient();
   const handleSSO = useSSOLoginInitiator();
   const { setFeedback } = useFeedbackContext();
@@ -148,6 +147,7 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
     updatePreference,
     navigation,
     handleSSO,
+    savePrivateKeyMFA,
   ]);
 
   const onYes = useCallback(async () => {
@@ -162,7 +162,7 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
     }
 
     await executeEnrollment();
-  }, [step, t, navigation, executeEnrollment]);
+  }, [step, t, navigation, executeEnrollment, checkCanSavePrivateKeyMFA]);
 
   useEffect(() => {
     if (isAutoEnrollment && step === 0) {

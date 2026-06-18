@@ -3,7 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { usePreferencesContext } from '@polito/lib/core';
+import {
+  usePolitoAppMfaPrivateKeyKeychain,
+  usePreferencesContext,
+} from '@polito/lib/core';
 import {
   CtaButton,
   ListItem,
@@ -20,7 +23,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RTFTrans } from '~/core/components/RTFTrans';
 import { useCheckMfa, useLogout } from '~/core/queries/authHooks';
 import { AppPreferences } from '~/core/types/preferences';
-import { hasPrivateKeyMFA } from '~/utils/keychain';
 
 import { UserStackParamList } from './UserNavigator';
 
@@ -29,6 +31,7 @@ export const MfaSettings = () => {
   const styles = useStylesheet(createStyles);
   const { fontSizes, palettes, colors, spacing } = useTheme();
   const { data: mfa, refetch: refetchMfa } = useCheckMfa(true);
+  const { hasPrivateKeyMFA } = usePolitoAppMfaPrivateKeyKeychain();
   const { mutate: logout } = useLogout();
   const { politoAuthnEnrolmentStatus, updatePreference } =
     usePreferencesContext<AppPreferences>();
@@ -45,7 +48,7 @@ export const MfaSettings = () => {
 
   useEffect(() => {
     hasPrivateKeyMFA().then(res => setHasLocalMfaKey(res));
-  }, [mfa]);
+  }, [hasPrivateKeyMFA, mfa]);
 
   const buttonHeight = spacing[4] + bottom;
 
