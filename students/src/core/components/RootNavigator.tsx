@@ -10,7 +10,7 @@ import {
   faCompass,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@polito/lib/core';
+import { useApiContext, usePreferencesContext } from '@polito/lib/core';
 import {
   PlacesNavigator,
   useGetCurrentCampus,
@@ -36,7 +36,6 @@ import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigato
 import { ServicesNavigator } from '../../features/services/components/ServicesNavigator';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
-import { useApiContext } from '../contexts/ApiContext';
 import { useDownloadsContext } from '../contexts/DownloadsContext';
 import { useInitFirebaseMessaging } from '../hooks/messaging';
 import { useModalManager } from '../hooks/useModalManager';

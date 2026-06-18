@@ -24,6 +24,7 @@ import {
   PreferencesContextBase,
   useFeedbackContext,
   useOfflineDisabled,
+  usePolitoAppMfaPrivateKeyKeychain,
   usePreferencesContext,
 } from '@polito/lib/core';
 import {
@@ -50,7 +51,6 @@ import { useDownloadsContext } from '~/core/contexts/DownloadsContext';
 import { getFileDatabase } from '~/core/database/FileDatabase';
 import { useCheckMfa } from '~/core/queries/authHooks';
 import { AppPreferences } from '~/core/types/preferences';
-import { hasPrivateKeyMFA, resetPrivateKeyMFA } from '~/utils/keychain';
 
 import i18next from 'i18next';
 import { Settings } from 'luxon';
@@ -493,12 +493,14 @@ export const SettingsScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { data: mfaStatus } = useCheckMfa(true);
+  const { hasPrivateKeyMFA, resetPrivateKeyMFA } =
+    usePolitoAppMfaPrivateKeyKeychain();
   const { palettes } = useTheme();
 
   const [localMfaKey, setLocalMfaKey] = useState<boolean>(false);
   useEffect(() => {
     hasPrivateKeyMFA().then(res => setLocalMfaKey(res));
-  }, [mfaStatus]);
+  }, [hasPrivateKeyMFA, mfaStatus]);
 
   const handleKeyRemoval = useCallback(async () => {
     try {
@@ -512,7 +514,7 @@ export const SettingsScreen = () => {
     } catch (error) {
       console.error('Error removing MFA key:', error);
     }
-  }, [t]);
+  }, [resetPrivateKeyMFA, t]);
 
   const handleBadgeStatus = () => {
     if (mfaStatus?.status === 'active' && localMfaKey) {

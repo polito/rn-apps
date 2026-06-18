@@ -1,9 +1,38 @@
 import {
   CommonActions,
+  LinkingOptions,
   NavigationProp,
   NavigationState,
+  ParamListBase,
   Route,
 } from '@react-navigation/native';
+
+import { PolitoAppId, getPolitoAppConfig } from '../config';
+
+export const createPolitoLinking = <T extends ParamListBase = ParamListBase>(
+  appId: PolitoAppId,
+  options?: {
+    ssoRouteName?: string;
+  },
+): LinkingOptions<T> => {
+  const appConfig = getPolitoAppConfig(appId);
+  const ssoRouteName = options?.ssoRouteName ?? appConfig.ssoRouteName;
+
+  return {
+    prefixes: [appConfig.deepLinkPrefix],
+    config: {
+      screens: {
+        [ssoRouteName]: {
+          path: '/login',
+          parse: {
+            uid: (uid: string) => uid,
+            key: (key: string) => key,
+          },
+        },
+      },
+    },
+  } as unknown as LinkingOptions<T>;
+};
 
 export const findTabNavigator = (navigation: NavigationProp<any>) => {
   let navigator = navigation;

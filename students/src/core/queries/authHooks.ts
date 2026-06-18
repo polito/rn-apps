@@ -5,8 +5,15 @@ import uuid from 'react-native-uuid';
 
 import {
   ApiError,
+  CredentialsKeychainService,
+  clearPersistedQueryCache,
+  getPolitoChpassUrl,
+  getPolitoSsoLoginUrl,
   pluckData,
   rethrowApiError,
+  useApiContext,
+  usePolitoAppConfig,
+  usePolitoAppKeychainServices,
   usePreferencesContext,
 } from '@polito/lib/core';
 import {
@@ -26,16 +33,8 @@ import { UserStackParamList } from '~/features/user/components/UserNavigator.tsx
 
 import { t } from 'i18next';
 
-import {
-  getCredentials,
-  resetCredentials,
-  setCredentials,
-} from '../../utils/keychain.ts';
-import { DEFAULT_CHPASS_URL, DEFAULT_SSO_LOGIN_URL } from '../constants.ts';
-import { useApiContext } from '../contexts/ApiContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
 import { WebviewType, useOpenInAppLink } from '../hooks/useOpenInAppLink.ts';
-import { QueryStorage } from '../providers/ApiProvider.tsx';
 import { AppPreferences } from '../types/preferences.ts';
 
 export const WEBMAIL_LINK_QUERY_KEY = ['webmailLink'];
@@ -62,9 +61,11 @@ export async function getFcmToken(
   return undefined;
 }
 
-export const getClientId = async (): Promise<string> => {
+const getClientId = async (
+  credentialsKeychain: CredentialsKeychainService,
+): Promise<string> => {
   try {
-    const credentials = await getCredentials();
+    const credentials = await credentialsKeychain.getCredentials();
     if (credentials && credentials.username) {
       return credentials.username;
     }
@@ -72,7 +73,7 @@ export const getClientId = async (): Promise<string> => {
     console.warn("Keychain couldn't be accessed!", e);
   }
   const clientId = uuid.v4();
-  await setCredentials(clientId);
+  await credentialsKeychain.setCredentials(clientId);
   return clientId;
 };
 
@@ -81,11 +82,13 @@ export const useLogin = () => {
   const { refreshContext } = useApiContext();
   const { updatePreference } = usePreferencesContext<AppPreferences>();
   const queryClient = useQueryClient();
+  const appConfig = usePolitoAppConfig();
+  const { credentials: credentialsKeychain } = usePolitoAppKeychainServices();
 
   return useMutation({
     mutationFn: (dto: LoginRequest) => {
       return Promise.all([
-        getClientId(),
+        getClientId(credentialsKeychain),
         DeviceInfo.getDeviceName(),
         DeviceInfo.getModel(),
         DeviceInfo.getManufacturer(),
@@ -112,7 +115,7 @@ export const useLogin = () => {
               toothPicCompatible: true,
             };
             dto.client = {
-              name: 'students-app',
+              name: appConfig.clientName,
               buildNumber,
               appVersion,
               id,
@@ -141,7 +144,7 @@ export const useLogin = () => {
       and avoid waiting for the setCredentials & preferences update,
       since it's already refreshed upon username change in prefs */
       refreshContext({ username, token });
-      await setCredentials(clientId, token);
+      await credentialsKeychain.setCredentials(clientId, token);
       updatePreference('username', username);
     },
   });
@@ -152,6 +155,10 @@ export const useLogout = () => {
   const queryClient = useQueryClient();
   const { refreshContext } = useApiContext();
   const { updatePreference } = usePreferencesContext<AppPreferences>();
+  const {
+    credentials: credentialsKeychain,
+    mfaPrivateKey: mfaPrivateKeyKeychain,
+  } = usePolitoAppKeychainServices();
   return useMutation({
     mutationFn: () => {
       return authClient.logout();
@@ -159,11 +166,12 @@ export const useLogout = () => {
     onSuccess: async () => {
       updatePreference('politoAuthnEnrolmentStatus', {});
       refreshContext();
-      QueryStorage.clear().catch(e => {
+      clearPersistedQueryCache().catch(e => {
         console.error('Error clearing query storage:', e);
       });
       queryClient.removeQueries();
-      await resetCredentials();
+      await credentialsKeychain.resetCredentials();
+      await mfaPrivateKeyKeychain.resetPrivateKeyMFA();
     },
   });
 };
@@ -173,6 +181,7 @@ export const useSwitchCareer = () => {
   const { refreshContext } = useApiContext();
   const { updatePreference } = usePreferencesContext<AppPreferences>();
   const queryClient = useQueryClient();
+  const { credentials: credentialsKeychain } = usePolitoAppKeychainServices();
 
   return useMutation({
     mutationFn: (dto: SwitchCareerRequest) =>
@@ -185,7 +194,7 @@ export const useSwitchCareer = () => {
       refreshContext({ token, username });
       queryClient.invalidateQueries();
 
-      await setCredentials(clientId, token);
+      await credentialsKeychain.setCredentials(clientId, token);
       updatePreference('username', username);
     },
   });
@@ -307,6 +316,7 @@ export const useMfaChallengeHandler = () => {
 
 export const useSSOLoginInitiator = () => {
   const { updatePreference } = usePreferencesContext<AppPreferences>();
+  const appConfig = usePolitoAppConfig();
 
   const sessionOpener = useOpenInAppLink(WebviewType.LOGIN);
 
@@ -315,14 +325,14 @@ export const useSSOLoginInitiator = () => {
       const uid = uuid.v4();
       updatePreference('loginUid', uid);
 
-      const urlParts = [DEFAULT_SSO_LOGIN_URL, `uid=${uid}`];
+      const urlParts = [getPolitoSsoLoginUrl(appConfig.id), `uid=${uid}`];
       if (forceMfa) {
         urlParts.push('mfa');
       }
 
       await sessionOpener(urlParts.join('&')).catch(console.error);
     },
-    [sessionOpener, updatePreference],
+    [appConfig.id, sessionOpener, updatePreference],
   );
 };
 
@@ -330,6 +340,6 @@ export const useVisitChpass = () => {
   const sessionOpener = useOpenInAppLink(WebviewType.LOGIN);
 
   return useCallback(async () => {
-    await sessionOpener(DEFAULT_CHPASS_URL).catch(console.error);
+    await sessionOpener(getPolitoChpassUrl()).catch(console.error);
   }, [sessionOpener]);
 };

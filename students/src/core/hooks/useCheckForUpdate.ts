@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import { checkVersion } from 'react-native-check-version';
 
-import { useSplashContext } from '@polito/lib/core';
-
-import { isEnvProduction } from '~/utils/env.ts';
+import { isEnvProduction, useSplashContext } from '@polito/lib/core';
 
 import { GITHUB_URL } from '../constants.ts';
 import { getFcmToken, useUpdateAppInfo } from '../queries/authHooks.ts';

@@ -2,7 +2,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Text, View } from 'react-native';
 
-import { useAppState, useFeedbackContext } from '@polito/lib/core';
+import {
+  AuthenticatorPrivKey,
+  useAppState,
+  useFeedbackContext,
+  usePolitoAppMfaPrivateKeyKeychain,
+} from '@polito/lib/core';
 import { CtaButton, useStylesheet } from '@polito/lib/ui';
 import { MessageType, MfaChallenge } from '@polito/student-api-client';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -15,12 +20,6 @@ import {
   useMarkMessageAsRead,
 } from '../../../core/queries/studentHooks';
 import { signSecp256k1 } from '../../../utils/crypto';
-import {
-  AuthenticatorPrivKey,
-  getPrivateKeyMFA,
-  hasPrivateKeyMFA,
-  resetPrivateKeyMFA,
-} from '../../../utils/keychain';
 import { createStyles } from './MfaEnrollContent';
 import { UserStackParamList } from './UserNavigator';
 
@@ -51,6 +50,8 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
   }, [remainingSeconds]);
   const styles = useStylesheet(createStyles);
   const { mutateAsync: verifyMfa, isPending } = useMfaAuth();
+  const { getPrivateKeyMFA, hasPrivateKeyMFA, resetPrivateKeyMFA } =
+    usePolitoAppMfaPrivateKeyKeychain();
   const { mutate: markMessageAsRead } = useMarkMessageAsRead();
   const messagesQuery = useGetMessages();
   const appState = useAppState();
@@ -139,7 +140,15 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
       }
     };
     fetchPrivateKey().catch(console.error);
-  }, [t, authPk, navigation, appState]);
+  }, [
+    t,
+    authPk,
+    navigation,
+    appState,
+    getPrivateKeyMFA,
+    resetPrivateKeyMFA,
+    hasPrivateKeyMFA,
+  ]);
 
   const onNo = async () => {
     if (!authPk) return;

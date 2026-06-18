@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 
-import { pluckData, rethrowApiError } from '@polito/lib/core';
+import { pluckData, rethrowApiError, useApiContext } from '@polito/lib/core';
 import {
   BASE_PATH,
   CreateTicketRequest,
@@ -12,7 +12,6 @@ import {
 } from '@polito/student-api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { useApiContext } from '../contexts/ApiContext';
 import { cacheDirectory } from '../storage/fileSystem';
 
 export const TICKETS_QUERY_KEY = ['tickets'];
