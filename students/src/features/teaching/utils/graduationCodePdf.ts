@@ -151,8 +151,12 @@ const createGraduationCodePdfFileUri = async (
   content: GraduationCodePdfContent,
 ) => {
   const html = await buildGraduationCodePdfHtml(content);
-  const sanitize = (value: string) => value.replace(/[\\/:*?"<>|]/g, '').trim();
-  const fileName = `${sanitize(content.fullName).replace(/\s+/g, '-')}_${sanitize(
+  const sanitize = (value: string) =>
+    value
+      .trim()
+      .replace(/[\\/:*?"<>|]/g, '')
+      .replace(/\s+/g, '-');
+  const fileName = `${sanitize(content.fullName)}_${sanitize(
     content.eventTitle,
   )}`;
   const pdf = await RNHTMLtoPDF.convert({
