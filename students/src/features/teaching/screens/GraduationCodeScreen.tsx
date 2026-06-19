@@ -26,7 +26,6 @@ import {
   IconButton,
   Text,
   type Theme,
-  useSafeBottomBarHeight,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
@@ -89,8 +88,7 @@ const formatGraduationDisplayName = (firstName: string, lastName: string) =>
 export const GraduationCodeScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { spacing, fontSizes, colors } = useTheme();
-  const bottomBarHeight = useSafeBottomBarHeight();
+  const { fontSizes, colors } = useTheme();
   const { setFeedback } = useFeedbackContext();
   const [isSharing, setIsSharing] = useState(false);
   const profileQuery = useGetProfile();
@@ -243,12 +241,7 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <View
-        style={[
-          styles.backdrop,
-          { paddingBottom: bottomBarHeight + spacing[5] },
-        ]}
-      >
+      <View style={styles.backdrop}>
         <Pressable
           style={styles.backdropTouchable}
           accessibilityRole="button"
@@ -356,7 +349,7 @@ const createStyles = ({ dark, spacing, fontSizes, palettes, colors }: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
       paddingHorizontal: spacing[5],
-      paddingTop: spacing[5],
+      paddingVertical: spacing[5],
     },
     backdropTouchable: {
       ...StyleSheet.absoluteFillObject,
