@@ -368,18 +368,22 @@ export const CourseListItem = ({
                         key={module.id}
                         accessible={accessible}
                         disabled={isDisabled || module.isOverBooking}
-                        linkTo={{
-                          screen: 'Course',
-                          params: {
-                            id: module.id,
-                            title: course.name,
-                            uniqueShortcode: module.id
-                              ? getModuleUniqueShortcode(module.id)
-                              : course.uniqueShortcode,
-                          },
-                        }}
+                        linkTo={
+                          module.id
+                            ? {
+                                screen: 'Course',
+                                params: {
+                                  id: module.id,
+                                  title: course.name,
+                                  uniqueShortcode: getModuleUniqueShortcode(
+                                    module.id,
+                                  ),
+                                },
+                              }
+                            : undefined
+                        }
                         onPress={() => {
-                          if (!hasDetails) {
+                          if (!module.id) {
                             Alert.alert(
                               t(
                                 'courseListItem.courseWithoutDetailsAlertTitle',
@@ -429,18 +433,21 @@ export const CourseListItem = ({
                       key={module.id}
                       accessible={accessible}
                       disabled={isDisabled || module.isOverBooking}
-                      linkTo={{
-                        screen: 'Course',
-                        params: {
-                          id: module.id,
-                          title: course.name,
-                          uniqueShortcode: module.id
-                            ? getModuleUniqueShortcode(originalIndex)
-                            : course.uniqueShortcode,
-                        },
-                      }}
+                      linkTo={
+                        module.id
+                          ? {
+                              screen: 'Course',
+                              params: {
+                                id: module.id,
+                                title: course.name,
+                                uniqueShortcode:
+                                  getModuleUniqueShortcode(originalIndex),
+                              },
+                            }
+                          : undefined
+                      }
                       onPress={() => {
-                        if (!hasDetails) {
+                        if (!module.id) {
                           Alert.alert(
                             t('courseListItem.courseWithoutDetailsAlertTitle'),
                           );
