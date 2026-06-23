@@ -567,9 +567,6 @@ const createStyles = (theme: Theme) => {
       display: 'flex' as const,
       alignItems: 'center' as const,
       marginTop: 0,
-      paddingRight: Platform.select({
-        android: 0,
-      }),
       backgroundColor: dark ? colors.background : palettes.gray[100],
       borderTopLeftRadius: spacing[2],
       borderTopRightRadius: spacing[2],
