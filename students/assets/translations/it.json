@@ -1077,16 +1077,46 @@
     "feedbackQuestion": "La risposta ti soddisfa?",
     "ticketNumber": "Numero ticket",
     "title": "Ticket",
-    "youCanReopenTheTicket": "Puoi riaprire il ticket in qualsiasi momento, inviando una risposta"
+    "youCanReopenTheTicket": "Puoi riaprire il ticket in qualsiasi momento, inviando una risposta",
+    "resolveQuestion": "Questa risposta ti è stata utile?",
+    "resolveCta": "Sì, risolvi il ticket",
+    "resolveConfirmTitle": "Sei sicuro?",
+    "resolveConfirmMessage": "Confermando la tua scelta il ticket verrà risolto, e non sarà più possibile mandare ulteriori risposte.",
+    "rateBarTitle": "Inserisci un feedback",
+    "rateBarSubtitle": "Per favore valuta questo ticket",
+    "rateBarCta": "Valuta ticket",
+    "infoModalTitle": "Dettagli ticket",
+    "feedbackInfoTitle": "Feedback inserito",
+    "feedbackInfoRatingPrefix": "Hai inserito una valutazione di",
+    "feedbackInfoStars_one": "{{count}} stella",
+    "feedbackInfoStars_other": "{{count}} stelle",
+    "feedbackInfoOnDate": "in data",
+    "feedbackInfoAtTime": "alle ore",
+    "feedbackInfoThanks": "Grazie per il tuo feedback!"
+  },
+  "ticketResolvedScreen": {
+    "title": "Ticket risolto",
+    "rateQuestion": "Come valuteresti il nostro servizio?",
+    "rateValue": "{{value}} stelle",
+    "commentLabel": "Vuoi lasciarci un commento?",
+    "commentPlaceholder": "Scrivi qui il tuo commento",
+    "minCharsHint": "Inserisci almeno 100 caratteri",
+    "sendFeedback": "Invia feedback"
   },
   "tickets": {
     "close": "Chiudi ticket",
     "closeTip": "Sei sicuro di voler chiudere questo ticket?",
     "menuAction": "Azioni ticket",
     "status": {
+      "autoresolved": "Auto-risolto",
       "closed": "Chiuso",
+      "duplicate": "Duplicato",
+      "incoming": "In arrivo",
       "new": "Nuovo",
-      "pending": "In lavorazione"
+      "open": "Aperto",
+      "pending": "In lavorazione",
+      "resolved": "Risolto",
+      "waiting_user": "Attesa studente"
     }
   },
   "ticketsScreen": {

@@ -38,6 +38,7 @@ import { CreateTicketScreen } from '../../tickets/screens/CreateTicketScreen';
 import { TicketFaqScreen } from '../../tickets/screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../../tickets/screens/TicketFaqsScreen';
 import { TicketListScreen } from '../../tickets/screens/TicketListScreen';
+import { TicketResolvedScreen } from '../../tickets/screens/TicketResolvedScreen';
 import { TicketScreen } from '../../tickets/screens/TicketScreen';
 import { TicketsScreen } from '../../tickets/screens/TicketsScreen';
 import { BookingsScreen } from '../screens/BookingsScreen';
@@ -56,6 +57,7 @@ export type ServiceStackParamList = OfferingStackParamList & {
   Services: undefined;
   Tickets: undefined;
   Ticket: { id: number };
+  TicketResolved: { ticketId: number };
   CreateTicket: {
     topicId?: number;
     subtopicId?: number;
@@ -148,6 +150,17 @@ export const ServicesNavigator = () => {
           headerTitle: t('ticketScreen.title'),
           headerBackTitle: t('ticketScreen.headerBackTitle'), // TODO wrong with direct navigation
         }}
+      />
+      <Stack.Screen
+        name="TicketResolved"
+        component={TicketResolvedScreen}
+        options={({ route }) => ({
+          presentation: Platform.OS === 'ios' ? 'formSheet' : 'modal',
+          ...(Platform.OS === 'ios' ? { sheetGrabberVisible: true } : {}),
+          headerLargeTitle: false,
+          headerTitle: `${t('ticketScreen.title')} ${route.params.ticketId}`,
+          headerBackButtonDisplayMode: 'minimal',
+        })}
       />
       <Stack.Screen
         name="CreateTicket"

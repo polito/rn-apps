@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { Alert, FlatList, Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
   useAnimatedKeyboard,
   useAnimatedStyle,
 } from 'react-native-reanimated';
 
+import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import {
   IS_IOS,
@@ -13,16 +14,23 @@ import {
   useScreenTitle,
 } from '@polito/lib/core';
 import {
+  BottomModal,
   ChatBubble,
   GlobalStyles,
   IconButton,
   RefreshControl,
+  Row,
   type Theme,
+  useBottomModal,
   useSafeAreaSpacing,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { TicketOverview, TicketStatus } from '@polito/student-api-client';
+import {
+  TicketOverview,
+  TicketSpecialAgent,
+  TicketStatus,
+} from '@polito/student-api-client';
 import { MenuView } from '@react-native-menu/menu';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
@@ -37,6 +45,9 @@ import { AppPreferences } from '~/core/types/preferences';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import {
+  MOCK_TICKET_FEEDBACK,
+  MOCK_TICKET_RESOLVE,
+  MOCK_TICKET_STAGE,
   useGetTicket,
   useMarkTicketAsClosed,
   useMarkTicketAsRead,
@@ -45,8 +56,12 @@ import { ServiceStackParamList } from '../../services/components/ServicesNavigat
 import { ChatMessage } from '../components/ChatMessage';
 import { HtmlMessage } from '../components/HtmlMessage';
 import { TicketAttachmentChip } from '../components/TicketAttachmentChip';
+import { TicketFeedbackInfo } from '../components/TicketFeedbackInfo';
+import { TicketHeader } from '../components/TicketHeader';
+import { TicketInfoBottomModal } from '../components/TicketInfoBottomModal';
 import { TicketMessagingView } from '../components/TicketMessagingView';
-import { TicketStatusInfo } from '../components/TicketStatusInfo';
+import { TicketRateBar } from '../components/TicketRateBar';
+import { TicketResolvePromptBar } from '../components/TicketResolvePromptBar';
 import { VirtualOperatorFeedbackBar } from '../components/VirtualOperatorFeedbackBar';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'Ticket'>;
@@ -65,19 +80,17 @@ const HeaderRight = ({ ticket }: { ticket: TicketOverview }) => {
     message: t('tickets.closeTip'),
   });
 
-  const actions = useMemo(() => {
-    if (ticket.status !== TicketStatus.Closed) {
-      return [
-        {
-          title: t('tickets.close'),
-          color: 'red',
-          image: 'trash.fill',
-          imageColor: 'red',
-        },
-      ];
-    }
-    return [];
-  }, [t, ticket.status]);
+  const actions = useMemo(
+    () => [
+      {
+        title: t('tickets.close'),
+        color: 'red',
+        image: 'trash.fill',
+        imageColor: 'red',
+      },
+    ],
+    [t],
+  );
 
   const onPressCloseTicket = async () => {
     if (await confirm()) {
@@ -92,24 +105,20 @@ const HeaderRight = ({ ticket }: { ticket: TicketOverview }) => {
     }
   }, [isSuccess, navigation]);
 
-  if (ticket?.status !== TicketStatus.Closed) {
-    return (
-      <MenuView
-        title={t('tickets.menuAction')}
-        actions={actions}
-        onPressAction={onPressCloseTicket}
-      >
-        <IconButton
-          style={styles.icon}
-          icon={faEllipsisVertical}
-          color={colors.secondaryText}
-          size={fontSizes.xl}
-        />
-      </MenuView>
-    );
-  }
-
-  return <View />;
+  return (
+    <MenuView
+      title={t('tickets.menuAction')}
+      actions={actions}
+      onPressAction={onPressCloseTicket}
+    >
+      <IconButton
+        style={styles.icon}
+        icon={faEllipsisVertical}
+        color={colors.secondaryText}
+        size={fontSizes.xl}
+      />
+    </MenuView>
+  );
 };
 
 export const TicketScreen = ({ route, navigation }: Props) => {
@@ -117,7 +126,12 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const ticketQuery = useGetTicket(id);
   const { mutate: markAsRead } = useMarkTicketAsRead(id);
-  const { spacing } = useTheme();
+  const { spacing, palettes } = useTheme();
+  const {
+    open: showInfoModal,
+    close: closeInfoModal,
+    modal: infoModal,
+  } = useBottomModal();
   const headerHeight = useHeaderHeight();
   const bottomBarHeight = useBottomTabBarHeight();
   const ticket = ticketQuery.data;
@@ -149,12 +163,66 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     markAsReadIfNeeded();
   }, [markAsReadIfNeeded]);
 
-  const headerRight = useCallback(
-    () =>
-      ticket?.status &&
-      ticket?.status !== TicketStatus.Closed && <HeaderRight ticket={ticket} />,
-    [ticket],
-  );
+  const isResolved = useMemo(() => {
+    if (!ticket) {
+      return false;
+    }
+    if (MOCK_TICKET_RESOLVE) {
+      // TEMP: closed tickets act as resolved unless previewing the 'resolve' step
+      return (
+        (ticket.status as string) === 'closed' &&
+        MOCK_TICKET_STAGE !== 'resolve'
+      );
+    }
+    return ticket.status === TicketStatus.Closed;
+  }, [ticket]);
+
+  const feedbackInserted = useMemo(() => {
+    if (!isResolved || !ticket) {
+      return false;
+    }
+    if (MOCK_TICKET_RESOLVE) {
+      return MOCK_TICKET_STAGE === 'feedback';
+    }
+    return !!ticket.feedbackProvided;
+  }, [isResolved, ticket]);
+
+  const feedback = MOCK_TICKET_RESOLVE
+    ? MOCK_TICKET_FEEDBACK
+    : ticket?.feedbackProvided;
+
+  const headerRight = useCallback(() => {
+    if (!ticket?.status) {
+      return null;
+    }
+    return (
+      <Row align="center" gap={1}>
+        {!isResolved && <HeaderRight ticket={ticket} />}
+        <IconButton
+          icon={faCircleQuestion}
+          color={palettes.primary[500]}
+          size={fontSizes.xl}
+          accessibilityLabel={t('ticketScreen.infoModalTitle')}
+          onPress={() =>
+            showInfoModal(
+              <TicketInfoBottomModal
+                ticket={ticket}
+                onClose={closeInfoModal}
+              />,
+            )
+          }
+        />
+      </Row>
+    );
+  }, [
+    ticket,
+    isResolved,
+    palettes,
+    fontSizes,
+    t,
+    showInfoModal,
+    closeInfoModal,
+  ]);
 
   useEffect(() => {
     navigation.setOptions({ headerRight });
@@ -169,6 +237,42 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   );
 
   const lastReply = replies[0];
+
+  const canResolve = useMemo(() => {
+    if (!ticket || !lastReply || isResolved) {
+      return false;
+    }
+    const isHumanAgentReply =
+      lastReply.isFromAgent && lastReply.agentId !== TicketSpecialAgent.AiAgent;
+    if (MOCK_TICKET_RESOLVE) {
+      // TEMP: force the in-chat resolve CTA on any ticket in the 'resolve' step
+      return MOCK_TICKET_STAGE === 'resolve';
+    }
+    return ticket.status === TicketStatus.Pending && isHumanAgentReply;
+  }, [ticket, lastReply, isResolved]);
+
+  const onPressRate = useCallback(() => {
+    navigation.navigate('TicketResolved', { ticketId: id });
+  }, [navigation, id]);
+
+  const onPressResolve = useCallback(() => {
+    if (!lastReply) {
+      return;
+    }
+    Alert.alert(
+      t('ticketScreen.resolveConfirmTitle'),
+      t('ticketScreen.resolveConfirmMessage'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('common.confirm'),
+          onPress: () =>
+            navigation.navigate('TicketResolved', { ticketId: id }),
+        },
+      ],
+      { cancelable: true },
+    );
+  }, [lastReply, t, navigation, id]);
 
   useEffect(() => {
     const changeStyle = () => {
@@ -202,6 +306,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
 
   return (
     <Animated.View style={[GlobalStyles.grow, animatedBottomPadding]}>
+      {!!ticket && <TicketHeader ticket={ticket} />}
       <FlatList
         keyboardShouldPersistTaps="handled"
         inverted
@@ -217,38 +322,32 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         keyExtractor={item => item.id.toString()}
         ListFooterComponent={
           !ticketQuery?.isLoading && !!ticket ? (
-            <>
-              <TicketStatusInfo
-                ticket={ticket}
-                loading={ticketQuery?.isLoading}
-              />
-              <Pressable
+            <Pressable
+              accessibilityRole="text"
+              accessibilityLabel={accessibilityMessageText}
+            >
+              <ChatBubble
                 accessibilityRole="text"
                 accessibilityLabel={accessibilityMessageText}
+                style={styless.requestMessage}
               >
-                <ChatBubble
-                  accessibilityRole="text"
-                  accessibilityLabel={accessibilityMessageText}
-                  style={styless.requestMessage}
-                >
-                  <HtmlMessage
-                    message={ticket?.message}
-                    baseStyle={styless.text}
-                  />
-                  {ticket.hasAttachments && (
-                    <View>
-                      {ticket.attachments.map((item, index) => (
-                        <TicketAttachmentChip
-                          key={index}
-                          attachment={item}
-                          ticketId={ticket.id}
-                        />
-                      ))}
-                    </View>
-                  )}
-                </ChatBubble>
-              </Pressable>
-            </>
+                <HtmlMessage
+                  message={ticket?.message}
+                  baseStyle={styless.text}
+                />
+                {ticket.hasAttachments && (
+                  <View>
+                    {ticket.attachments.map((item, index) => (
+                      <TicketAttachmentChip
+                        key={index}
+                        attachment={item}
+                        ticketId={ticket.id}
+                      />
+                    ))}
+                  </View>
+                )}
+              </ChatBubble>
+            </Pressable>
           ) : undefined
         }
         renderItem={({ item: reply }) => (
@@ -260,11 +359,24 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         )}
         ItemSeparatorComponent={ItemsSeparator}
       />
-      {lastReply?.needsFeedback ? (
+      {feedbackInserted && feedback ? (
+        <TicketFeedbackInfo
+          rating={feedback.rating}
+          comment={
+            MOCK_TICKET_RESOLVE ? MOCK_TICKET_FEEDBACK.comment : undefined
+          }
+          createdAt={feedback.createdAt}
+        />
+      ) : lastReply?.needsFeedback ? (
         <VirtualOperatorFeedbackBar ticketId={id} replyId={lastReply.id} />
+      ) : isResolved ? (
+        <TicketRateBar onPress={onPressRate} />
+      ) : canResolve ? (
+        <TicketResolvePromptBar onPress={onPressResolve} />
       ) : (
         <TicketMessagingView ticketId={id} />
       )}
+      <BottomModal {...infoModal} />
     </Animated.View>
   );
 };
