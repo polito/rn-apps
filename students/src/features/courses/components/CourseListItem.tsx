@@ -6,7 +6,7 @@ import {
 
 import { Fragment, PropsWithChildren, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, View } from 'react-native';
+import { AccessibilityInfo, Alert, Platform, View } from 'react-native';
 import ContextMenu from 'react-native-context-menu-view';
 import Animated, {
   useAnimatedStyle,
@@ -37,6 +37,7 @@ import {
 } from '@polito/lib/ui';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { useAccessibility } from '~/core/hooks/useAccessibilty';
 import { useNotifications } from '~/core/hooks/useNotifications';
 import { useGetPersons } from '~/core/queries/peopleHooks';
 import { AppPreferences } from '~/core/types/preferences';
@@ -49,7 +50,18 @@ import { CourseIndicator } from './CourseIndicator';
 interface Props {
   course: CourseOverview;
   accessible?: boolean;
+  /**
+   * @deprecated Use index and total instead for proper translation support
+   */
   accessibilityLabel?: string;
+  /**
+   * Index of the item in the list (0-based). Used for accessibility.
+   */
+  index?: number;
+  /**
+   * Total number of items in the list. Used for accessibility.
+   */
+  total?: number;
   badge?: number;
   showAllModules?: boolean;
 }
@@ -85,7 +97,12 @@ const Menu = ({
         isHidden: !isHidden,
       },
     });
-  }, [preferences, course.uniqueShortcode, isHidden]);
+    AccessibilityInfo.announceForAccessibility(
+      !isHidden
+        ? t('courseListItem.courseHidden')
+        : t('courseListItem.courseShown'),
+    );
+  }, [preferences, course.uniqueShortcode, isHidden, t]);
 
   return (
     <ContextMenu
@@ -112,9 +129,12 @@ export const CourseListItem = ({
   accessible,
   badge,
   showAllModules = false,
+  index: itemIndex,
+  total: itemTotal,
 }: Props) => {
   const { colors, spacing, palettes, fontSizes, dark } = useTheme();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { accessibilityListLabel } = useAccessibility();
   const preferences = usePreferencesContext<AppPreferences>();
   const styles = useStylesheet(createStyles);
   const { getUnreadsCountPerCourse } = useNotifications();
@@ -250,6 +270,49 @@ export const CourseListItem = ({
     [moduleTeacherIds, teacherQueries],
   );
 
+  const coursePrefs = preferences.courses[course?.uniqueShortcode];
+  const isHidden = coursePrefs?.isHidden ?? false;
+
+  const accessibleExtraText = useMemo(() => {
+    return IS_ANDROID ? '' : t('coursesScreen.longPress');
+  }, [t]);
+
+  const accessibleText = useMemo(() => {
+    const positionLabel =
+      itemIndex !== undefined && itemTotal !== undefined
+        ? accessibilityListLabel(itemIndex, itemTotal)
+        : accessibilityLabel || '';
+
+    let badgeCount = 0;
+    if (hasModules) {
+      badgeCount = getTotalModuleBadges();
+    } else if (badge) {
+      badgeCount = badge;
+    }
+
+    const badgeText =
+      badgeCount > 0 ? `, ${t('common.newItems', { count: badgeCount })}` : '';
+
+    const baseText = `${course.name}, ${course.cfu} ${t(
+      'common.credits',
+    )}${badgeText}, ${isHidden ? t('coursesScreen.notVisible') : ''} ${accessibleExtraText}`;
+
+    return positionLabel ? `${positionLabel}. ${baseText}` : baseText;
+  }, [
+    course.name,
+    course.cfu,
+    isHidden,
+    accessibleExtraText,
+    accessibilityLabel,
+    itemIndex,
+    itemTotal,
+    accessibilityListLabel,
+    badge,
+    hasModules,
+    getTotalModuleBadges,
+    t,
+  ]);
+
   const courseListItem = (
     <ListItem
       accessible={accessible}
@@ -271,9 +334,9 @@ export const CourseListItem = ({
           Alert.alert(t('courseListItem.courseWithoutDetailsAlertTitle'));
         }
       }}
-      accessibilityLabel={`${accessibilityLabel} ${course.name}, ${
-        course.cfu
-      } ${t('common.credits')}`}
+      accessibilityLabel={accessibleText}
+      accessibilityRole="button"
+      accessibilityLanguage={i18n.language}
       title={course.name}
       subtitle={subtitle}
       leadingItem={
@@ -287,13 +350,19 @@ export const CourseListItem = ({
             if (hasModules) {
               const totalModuleBadges = getTotalModuleBadges();
               return totalModuleBadges > 0 ? (
-                <UnreadBadge
-                  text={totalModuleBadges}
-                  style={Platform.OS === 'android' ? styles.badge : undefined}
-                />
+                <View importantForAccessibility="no-hide-descendants">
+                  <UnreadBadge
+                    text={totalModuleBadges}
+                    style={Platform.OS === 'android' ? styles.badge : undefined}
+                  />
+                </View>
               ) : null;
             }
-            return badge ? <UnreadBadge text={badge} /> : null;
+            return badge ? (
+              <View importantForAccessibility="no-hide-descendants">
+                <UnreadBadge text={badge} />
+              </View>
+            ) : null;
           })()}
           {hasModules ? (
             <GestureDetector gesture={tap}>

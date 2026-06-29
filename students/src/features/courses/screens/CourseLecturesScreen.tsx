@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  AccessibilityInfo,
   Animated,
   Platform,
   Pressable,
@@ -32,6 +33,9 @@ import {
 } from '@polito/lib/ui';
 import { useFocusEffect } from '@react-navigation/native';
 
+import { every, some } from 'lodash';
+
+import { useAnnounceLoading } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useGetCourseLectures } from '../../../core/queries/courseHooks';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
@@ -49,6 +53,7 @@ export const CourseLecturesScreen = () => {
   const { spacing, colors } = useTheme();
   const scrollPosition = useRef(new Animated.Value(0));
   const courseLecturesQuery = useGetCourseLectures(courseId);
+  useAnnounceLoading(courseLecturesQuery.isLoading);
   const { clearNotificationScope } = useNotifications();
   const [lectures, setLectures] = useState<CourseLectureSection[]>([]);
   const sectionListRef =
@@ -110,6 +115,26 @@ export const CourseLecturesScreen = () => {
       });
     });
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      const hasExpandedWithData = some(
+        lectures,
+        item => item?.isExpanded && item?.data?.length > 0,
+      );
+      const hasAllNoExpanded = every(lectures, item => !item?.isExpanded);
+      if (
+        (!hasExpandedWithData && !hasAllNoExpanded) ||
+        lectures?.length === 0
+      ) {
+        setTimeout(() => {
+          AccessibilityInfo.announceForAccessibility(
+            t('courseLecturesTab.emptyState'),
+          );
+        }, 1000);
+      }
+    }, [lectures, t]),
+  );
 
   return (
     <SectionList

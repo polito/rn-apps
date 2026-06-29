@@ -258,7 +258,11 @@ export const HiddenEventsScreen = ({ navigation }: Props) => {
           {sections.map((section, idx) => (
             <View key={`${section.courseShortcode}-${idx}`}>
               <View style={styles.sectionHeader}>
-                <Text variant="heading" style={styles.sectionTitle}>
+                <Text
+                  variant="heading"
+                  style={styles.sectionTitle}
+                  accessibilityRole="header"
+                >
                   {section.title}
                 </Text>
               </View>
@@ -290,6 +294,8 @@ export const HiddenEventsScreen = ({ navigation }: Props) => {
         title={t('courseHideEventScreen.button')}
         action={handleRestore}
         disabled={!hasSelectedItems}
+        accessibilityHint={t('hiddenEventsScreen.restoreHint')}
+        accessibilityState={{ disabled: !hasSelectedItems }}
       />
       <CtaButtonSpacer />
       <BottomBarSpacer />

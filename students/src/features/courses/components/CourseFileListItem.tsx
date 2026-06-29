@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform } from 'react-native';
+import { AccessibilityInfo, Alert, Platform } from 'react-native';
 import ContextMenu, { ContextMenuProps } from 'react-native-context-menu-view';
 
 import {
@@ -279,6 +279,13 @@ export const CourseFileListItem = memo(
           return;
         }
         if (!isDownloaded) {
+          if (item?.sizeInKiloBytes > 3500) {
+            setTimeout(() => {
+              AccessibilityInfo.announceForAccessibility(
+                t('courseFileListItem.downloadPending'),
+              );
+            }, 500);
+          }
           const downloadSuccess = await startDownload();
           if (downloadSuccess && navigation.isFocused()) {
             openDownloadedFile(true);
@@ -295,6 +302,8 @@ export const CourseFileListItem = memo(
       openDownloadedFile,
       refreshDownload,
       startDownload,
+      t,
+      item.sizeInKiloBytes,
     ]);
 
     const handleToggleQueue = useCallback(() => {
@@ -397,20 +406,26 @@ export const CourseFileListItem = memo(
       ],
     );
 
+    const accessibilityLabel = [
+      stripIdInParentheses(item.name ?? '') || t('common.unnamedFile'),
+      metrics,
+      !isDownloaded
+        ? downloadProgress == null
+          ? t('common.download')
+          : t('common.stop')
+        : t('common.open'),
+      IS_IOS && isDownloaded ? t('courseFilesTab.longPress') : '',
+    ].join(', ');
     const showContextMenuOnLongPress = IS_IOS && isDownloaded;
     const listItem = (
       <FileListItem
         key={showContextMenuOnLongPress ? 'menu' : 'direct'}
         {...rest}
+        accessible
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel}
         disabled={disabled}
         onLongPress={showContextMenuOnLongPress ? undefined : onLongPress}
-        accessibilityLabel={
-          !isDownloaded
-            ? downloadProgress == null
-              ? t('common.download')
-              : t('common.stop')
-            : t('common.open')
-        }
         onPress={!enableMultiSelect ? downloadFile : handleToggleQueue}
         isDownloaded={isDownloaded && !isCheckingDownloadStatus}
         downloadProgress={downloadProgress}

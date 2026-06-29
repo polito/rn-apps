@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList } from 'react-native';
+import { AccessibilityInfo, FlatList } from 'react-native';
 
 import {
   APP_TIMEZONE,
@@ -18,10 +18,14 @@ import {
   useSafeAreaSpacing,
   useTheme,
 } from '@polito/lib/ui';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { DateTime } from 'luxon';
 
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import {
+  useAccessibility,
+  useAnnounceLoading,
+} from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';
@@ -32,7 +36,9 @@ export const CourseNoticesScreen = () => {
   const { spacing } = useTheme();
   const courseId = useCourseContext();
   const noticesQuery = useGetCourseNotices(courseId);
-  const { accessibilityListLabel } = useAccessibility();
+  useAnnounceLoading(noticesQuery.isLoading);
+  const { accessibilityListLabel, getListAccessibilityProps } =
+    useAccessibility();
   const { getUnreadsCount, clearNotificationScope } = useNotifications();
   const { paddingHorizontal } = useSafeAreaSpacing();
   const isCacheMissing = useOfflineDisabled(
@@ -55,8 +61,24 @@ export const CourseNoticesScreen = () => {
     clearNotificationScope(noticesNotificationScope);
   });
 
+  useFocusEffect(
+    useCallback(() => {
+      if (!notices || notices?.length === 0) {
+        setTimeout(() => {
+          AccessibilityInfo.announceForAccessibility(
+            t('courseNoticesTab.emptyState'),
+          );
+        }, 500);
+      }
+    }, [notices, t]),
+  );
+
   return (
     <FlatList
+      {...getListAccessibilityProps(
+        t('courseInfoTab.notices'),
+        notices?.length || 0,
+      )}
       contentInsetAdjustmentBehavior="automatic"
       initialNumToRender={15}
       style={GlobalStyles.grow}
@@ -67,7 +89,13 @@ export const CourseNoticesScreen = () => {
       renderItem={({ item: notice, index }) => (
         <ListItem
           title={notice.title}
-          accessibilityLabel={`${t(
+          accessibilityLabel={`${
+            getUnreadsCount([...noticesNotificationScope, `${notice.id}`])
+              ? `${t('common.unread')}, ${t(
+                  'courseNoticesTab.messageReadAfterGoBack',
+                )}`
+              : ''
+          } ${t(
             accessibilityListLabel(index, notices?.length || 0),
           )}. ${DateTime.fromJSDate(notice.publishedAt, {
             zone: APP_TIMEZONE,

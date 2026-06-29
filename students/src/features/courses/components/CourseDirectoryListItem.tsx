@@ -415,6 +415,14 @@ export const CourseDirectoryListItem = ({
 
   return (
     <DirectoryListItem
+      accessibilityRole="button"
+      accessible
+      accessibilityLabel={[
+        t('common.directory'),
+        stripIdInParentheses(item.name),
+        subtitle,
+        t('courseFilesTab.openDirectory'),
+      ].join(', ')}
       title={stripIdInParentheses(item.name)}
       subtitle={subtitle}
       onPress={() => {

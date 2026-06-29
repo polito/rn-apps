@@ -35,6 +35,10 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
+import {
+  useAccessibility,
+  useAnnounceLoading,
+} from '~/core/hooks/useAccessibilty.ts';
 import { BOOKINGS_QUERY_KEY } from '~/core/queries/bookingHooks.ts';
 import { EXAMS_QUERY_KEY } from '~/core/queries/examHooks.ts';
 import { DEADLINES_QUERY_PREFIX } from '~/core/queries/studentHooks.ts';
@@ -78,6 +82,8 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
   ]);
 
   const { isLoading, data } = useGetAgendaWeeks(weeks);
+  useAnnounceLoading(isLoading);
+  const { getListAccessibilityProps } = useAccessibility();
 
   const [dataPickerIsOpened, setDataPickerIsOpened] = useState<boolean>(false);
 
@@ -269,6 +275,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         <AgendaFilters />
       </HeaderAccessory>
       <DatePicker
+        accessible
         modal
         locale={language}
         date={today}
@@ -290,6 +297,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         ))}
       {!!data.length && !agendaState.isRefreshing && (
         <FlatList
+          {...getListAccessibilityProps(t('agendaScreen.title'), data.length)}
           ref={flatListRef}
           data={data}
           initialNumToRender={1}
