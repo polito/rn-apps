@@ -61,6 +61,7 @@
     "cancelBookingText": "Sei sicuro di voler annullare la prenotazione?",
     "cancelFeedback": "Prenotazione annullata",
     "cancelHint": "Annulla la prenotazione, l'azione non è reversibile",
+    "cancelDisabledHint": "Annullamento non disponibile offline",
     "checkIn": "Check-in",
     "checkInFeedback": "Check in eseguito!",
     "checkInHint": "Valida la tua presenza nella sede della prenotazione",
@@ -74,6 +75,9 @@
     "nextWeek": "Prossima settimana",
     "previousWeek": "Settimana precedente",
     "seatHint": "Naviga alla selezione del posto"
+  },
+  "bookingTopicScreen": {
+    "selectTopicHint": "Apre il calendario prenotazioni per questo argomento"
   },
   "bookingSeatScreen": {
     "confirm": "Conferma prenotazione",
@@ -873,7 +877,10 @@
     "usernameLabel": "Matricola",
     "usernameLabelAccessibility": "Inserisci qui il tuo username",
     "fcmUnsupported": "Si è verificato un errore durante l'attivazione delle notifiche push. Questo problema può essere causato dall'assenza dei servizi Google su questo dispositivo. È possibile continuare ad utilizzare l'app ma non si riceveranno notifiche push.",
-    "SSO": "oppure entra con SSO"
+    "SSO": "oppure entra con SSO",
+    "ctaDisabledHint": "Inserisci matricola e password per abilitare l'accesso",
+    "forgotPasswordHint": "Apre la pagina di recupero password",
+    "ssoHint": "Apre la pagina di accesso con single sign-on"
   },
   "messageScreen": {
     "backTitle": "Archivio",
@@ -956,6 +963,8 @@
     "eventStartTime": "Inizio evento",
     "information": "Informazioni",
     "logo": "Logo",
+    "openLink": "Apre il link nel browser",
+    "openFile": "Apre il file allegato",
     "title": "News & Eventi"
   },
   "notifications": {
@@ -1083,6 +1092,7 @@
     "appVersion": "Versione {{version}}",
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
     "openLanguageMenu": "Doppio click per aprire il menu di selezione lingua",
+    "openStorageMenu": "Doppio click per aprire il menu di selezione archiviazione",
     "openThemeMenu": "Doppio click per aprire il menu di selezione tema",
     "title": "Impostazioni",
     "securityTitle": "Sicurezza",
@@ -1225,7 +1235,8 @@
     "title": "Valutazioni",
     "total": "Sono presenti {{total}} valutazioni",
     "gradeValue": "Voto: {{grade}}",
-    "provisionalGradeItem": "{{courseName}}, {{state}}"
+    "provisionalGradeItem": "{{courseName}}, {{state}}",
+    "recordedGradeItem": "{{courseName}}, {{date}}, {{credits}}, {{grade}}"
   },
   "transcriptMetricsScreen": {
     "acquiredCreditsLabel": "Crediti acquisiti",

@@ -1,14 +1,8 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  AccessibilityInfo,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  View,
-} from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 
-import { IS_IOS, formatDateTime, useOfflineDisabled } from '@polito/lib/core';
+import { useOfflineDisabled } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   CtaButton,
@@ -18,8 +12,6 @@ import {
 } from '@polito/lib/ui';
 import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 import { useFocusEffect } from '@react-navigation/native';
-
-import { formatFileSize } from '~/utils/files';
 
 import {
   useAccessibility,
@@ -40,8 +32,7 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
   const courseId = useCourseContext();
   const assignmentsQuery = useGetCourseAssignments(courseId);
   useAnnounceLoading(assignmentsQuery.isLoading);
-  const { accessibilityListLabel, getListAccessibilityProps } =
-    useAccessibility();
+  const { getListAccessibilityProps, announceIfEnabled } = useAccessibility();
   const isDisabled = useOfflineDisabled();
   const isCacheMissing = useOfflineDisabled(
     () => assignmentsQuery.data === undefined,
@@ -54,12 +45,10 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
       }
       if (assignmentsQuery?.data?.length === 0) {
         setTimeout(() => {
-          AccessibilityInfo.announceForAccessibility(
-            t('courseAssignmentsTab.emptyState'),
-          );
+          announceIfEnabled(t('courseAssignmentsTab.emptyState'));
         }, 500);
       }
-    }, [assignmentsQuery, t]),
+    }, [assignmentsQuery, t, announceIfEnabled]),
   );
 
   return (
@@ -79,29 +68,13 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
               >
                 <List indented>
                   {assignmentsQuery.data.map((assignment, index) => (
-                    // this pressable is for ios accessibility
-                    <Pressable
+                    <CourseAssignmentListItem
                       key={assignment.id}
-                      accessibilityRole="button"
-                      accessibilityLabel={[
-                        accessibilityListLabel(
-                          index,
-                          assignmentsQuery.data.length,
-                        ),
-                        assignment.description,
-                        assignment.deletedAt ? t('common.retracted') : '',
-                        `${formatFileSize(
-                          assignment.sizeInKiloBytes,
-                        )} - ${formatDateTime(assignment.uploadedAt)}`,
-                        t('common.downloadClick'),
-                        IS_IOS ? t('courseAssignmentsTab.longPress') : '',
-                      ].join(', ')}
-                    >
-                      <CourseAssignmentListItem
-                        item={assignment}
-                        disabled={isDisabled}
-                      />
-                    </Pressable>
+                      item={assignment}
+                      index={index}
+                      total={assignmentsQuery.data.length}
+                      disabled={isDisabled}
+                    />
                   ))}
                 </List>
               </View>
@@ -125,6 +98,7 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
           })
         }
         disabled={isDisabled}
+        accessibilityState={{ disabled: isDisabled }}
       />
     </>
   );

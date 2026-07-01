@@ -104,7 +104,6 @@ export const JobOfferScreen = ({ route }: Props) => {
             <Text
               variant="longProse"
               weight="semibold"
-              accessibilityRole="text"
               accessibilityLabel={`${t('jobOfferScreen.contractType')}: ${contractType}`}
             >
               {t('jobOfferScreen.contractType')}
@@ -115,7 +114,6 @@ export const JobOfferScreen = ({ route }: Props) => {
             <Text
               variant="longProse"
               weight="semibold"
-              accessibilityRole="text"
               accessibilityLabel={`${t('jobOfferScreen.salary')}: ${salary}`}
             >
               {t('jobOfferScreen.salary')}
@@ -126,7 +124,6 @@ export const JobOfferScreen = ({ route }: Props) => {
             <Text
               variant="longProse"
               weight="semibold"
-              accessibilityRole="text"
               accessibilityLabel={`${t('jobOfferScreen.location')}: ${location}`}
             >
               {t('jobOfferScreen.location')}
@@ -137,7 +134,6 @@ export const JobOfferScreen = ({ route }: Props) => {
             <Text
               variant="longProse"
               weight="semibold"
-              accessibilityRole="text"
               accessibilityLabel={`${t('jobOfferScreen.endsAtDate')}: ${formatDate(endsAtDate)}`}
             >
               {t('jobOfferScreen.endsAtDate')}
@@ -148,7 +144,6 @@ export const JobOfferScreen = ({ route }: Props) => {
             <Text
               variant="longProse"
               weight="semibold"
-              accessibilityRole="text"
               accessibilityLabel={`${t('jobOfferScreen.freePositions')}: ${freePositions}`}
             >
               {t('jobOfferScreen.freePositions')}

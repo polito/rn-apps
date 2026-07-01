@@ -62,7 +62,8 @@
 
 ### `StaffListItem`
 
-- Position-aware label via `accessibilityListLabel`, `accessibilityRole="button"`, `accessibilityHint`.
+- Position-aware label: content first, then `accessibilityListLabel(index, total)` at the **end** (do not use the hook's `extraText` argument — it still prefixes position).
+- `accessibilityRole="button"`, `accessibilityHint` on `PersonListItem`.
 
 ### `DegreeTracksScreen`
 

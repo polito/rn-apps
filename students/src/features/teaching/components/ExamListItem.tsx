@@ -91,7 +91,7 @@ export const ExamListItem = ({
 
     return {
       accessibilityLabel: positionLabel
-        ? `${positionLabel}. ${baseLabel}`
+        ? [baseLabel, positionLabel].filter(Boolean).join(', ')
         : baseLabel,
     };
   }, [

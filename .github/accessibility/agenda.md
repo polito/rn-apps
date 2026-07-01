@@ -47,8 +47,12 @@
 ### `BookingField`
 
 - Single accessible `Col` with composite `accessibilityLabel` (`label: value`), `importantForAccessibility="no-hide-descendants"`.
-- Decorative icon wrapped with `importantForAccessibility` + `accessibilityElementsHidden={IS_IOS}`.
+- Decorative icon wrapped with shared `hideFromScreenReader`.
 - Inner `Text` nodes set to `accessible={false}`.
+
+### `BookingListItem` (Services → Bookings)
+
+- Documented in [services.md](./services.md) — `buildCompositeListLabel`, list wrapper on `BookingsScreen`.
 
 ### `LectureScreen`
 
@@ -123,6 +127,7 @@ Group label and value into one focus target; hide decorative icon and duplicate 
   >
     <Icon icon={icon} />
   </View>
+  {/* Prefer: <View {...hideFromScreenReader}><Icon icon={icon} /></View> */}
   <Text accessible={false}>{label}</Text>
   <Text accessible={false}>{fieldValue}</Text>
 </Col>

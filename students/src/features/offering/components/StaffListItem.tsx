@@ -33,7 +33,9 @@ export const StaffListItem = ({ staff, index, total }: StaffListItemProps) => {
 
   const accessibilityLabel =
     index !== undefined && total !== undefined
-      ? accessibilityListLabel(index, total, baseLabel)
+      ? [baseLabel, accessibilityListLabel(index, total)]
+          .filter(Boolean)
+          .join(', ')
       : baseLabel;
 
   return person ? (

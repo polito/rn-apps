@@ -18,8 +18,42 @@
 
 ### `NewsListItem`
 
-- `accessibilityRole="button"` with composite label: title + subtitle + position.
-- Position info from `accessibilityListLabel(index, totalData)` at the **end**.
+- `accessibilityRole="button"` with `buildCompositeListLabel` (title, unread, subtitle; position at end).
+- Decorative chevron hidden via `hideFromScreenReader`.
+
+### `NewsScreen`
+
+- `OverviewList` wrapped with `getListAccessibilityProps` for list semantics and item count.
+
+### `BookingsScreen` / `BookingListItem`
+
+- `BookingsScreen` wraps `OverviewList` with `getListAccessibilityProps`.
+- `BookingListItem` uses `buildCompositeListLabel` (title, date, time range; position at end), `accessibilityRole="button"`, and `accessibilityHint`.
+- Empty-state announcement uses SR-gated `setTimeoutAccessibilityInfoHelper`.
+
+### `BookingTopicScreen`
+
+- Expandable section headers: `accessibilityRole="button"`, `accessibilityState={{ expanded }}`, composite label with open/closed state.
+- Subtopic rows: `buildCompositeListLabel`, `accessibilityRole="button"`, `accessibilityHint`.
+
+### `BookingSlotScreen`
+
+- Calendar slot `Pressable`s and `AgendaCard` rows use status + time in `accessibilityLabel`.
+- Week navigation reuses `WeekFilter` patterns from [agenda.md](./agenda.md).
+
+### `BookingSeatScreen` / `BookingSeatSelectionScreen`
+
+- `ReactNativeZoomableView` set to `accessible={false}` — individual `BookingSeatCell` elements remain focusable.
+- `BookingSeatCell`: `accessibilityState={{ disabled }}` for unavailable seats.
+- `BookingDeskCell`: labeled desk landmark.
+- Cancel CTA: explicit `accessibilityState` and offline `accessibilityHint`.
+
+### `NewsItemScreen`
+
+- Removed invalid `accessibilityRole="text"` from event date row.
+- `HtmlView` body: `accessibilityLabel={getHtmlTextContent(...)}` with `importantForAccessibility="no-hide-descendants"`.
+- Information section heading: `accessibilityRole="header"`.
+- Link/file rows: `accessibilityRole="link"`, label, hint, decorative icons hidden via `hideFromScreenReader`.
 
 ### `TicketsScreen` (under Services navigation)
 
@@ -34,6 +68,9 @@
 - New keys added to `en.json` and `it.json`:
   - `servicesScreen.favoriteActive`
   - `servicesScreen.favoriteInactive`
+  - `newsScreen.openLink`, `newsScreen.openFile`
+  - `bookingTopicScreen.selectTopicHint`
+  - `bookingScreen.cancelDisabledHint`
 
 ---
 
@@ -82,8 +119,8 @@ accessibilityLabel={`${t('ticketsScreen.title')} ${
 
 ### List items under Services
 
-Use `accessibilityListLabel` at the **end** of composite labels:
+Prefer `buildCompositeListLabel`; otherwise put `accessibilityListLabel` at the **end**:
 
 ```tsx
-accessibilityLabel={[title, subTitle, accessibilityListLabel(index, total)].join(', ')}
+accessibilityLabel={buildCompositeListLabel([title, subTitle], index, total)}
 ```

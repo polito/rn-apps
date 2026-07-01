@@ -109,6 +109,11 @@ const CleanCacheListItem = () => {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
       })}
       accessibilityRole="button"
+      accessibilityState={{
+        disabled:
+          (cacheSize !== undefined && cacheSize === 0) ||
+          isAnyDownloadInProgress,
+      }}
       disabled={
         (cacheSize !== undefined && cacheSize === 0) || isAnyDownloadInProgress
       }
@@ -228,6 +233,7 @@ const VisualizationListItem = () => {
       <ListItem
         title={t(`theme.${colorScheme}`)}
         isAction
+        accessibilityRole="button"
         accessibilityLabel={`${t('common.theme')}: ${t(
           `theme.${colorScheme}`,
         )}. ${t('settingsScreen.openThemeMenu')}`}
@@ -272,6 +278,8 @@ const LanguageListItem = () => {
       <ListItem
         isAction
         disabled={isDisabled}
+        accessibilityRole="button"
+        accessibilityState={{ disabled: isDisabled }}
         title={t(`common.${language}`)}
         accessibilityLabel={`${t('common.language')}: ${t(
           `common.${language}`,
@@ -477,6 +485,13 @@ const StorageLocationListItem = () => {
       <ListItem
         isAction
         disabled={isMoving}
+        accessibilityRole="button"
+        accessibilityState={{ disabled: isMoving }}
+        accessibilityLabel={`${t('settingsScreen.storageTitle')}: ${
+          currentLocation === 'custom'
+            ? t('settingsScreen.storageCustom')
+            : t('settingsScreen.storageInternal')
+        }. ${t('settingsScreen.openStorageMenu')}`}
         title={
           currentLocation === 'custom'
             ? t('settingsScreen.storageCustom')
@@ -594,6 +609,7 @@ export const SettingsScreen = () => {
                 <ListItem
                   title={t('settingsScreen.authenticatorTitle')}
                   accessibilityRole="button"
+                  accessibilityHint={t('common.tapToNavigate')}
                   linkTo={{
                     screen: 'MfaSettings',
                   }}

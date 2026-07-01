@@ -19,7 +19,7 @@ interface Props {
 export const BookingListItem = ({ booking, index, totalData }: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
   const date = DateTime.fromJSDate(booking?.startsAt, {
     zone: APP_TIMEZONE,
   }).toFormat('dd MMMM');
@@ -29,9 +29,13 @@ export const BookingListItem = ({ booking, index, totalData }: Props) => {
   const endAtTime = DateTime.fromJSDate(booking?.endsAt, {
     zone: APP_TIMEZONE,
   }).toFormat('HH:mm');
-
-  const accessibilityLabel = accessibilityListLabel(index, totalData);
   const title = getHtmlTextContent(booking?.topic?.title ?? '');
+
+  const accessibilityLabel = buildCompositeListLabel(
+    [title, date, t('common.hour'), `${startsAtTime} - ${endAtTime}`],
+    index,
+    totalData,
+  );
 
   return (
     <ListItem
@@ -44,14 +48,9 @@ export const BookingListItem = ({ booking, index, totalData }: Props) => {
         },
       }}
       accessibilityRole="button"
+      accessibilityHint={t('common.tapToNavigate')}
       subtitle={<BookingDateTime booking={booking} inListItem={true} />}
-      accessibilityLabel={[
-        accessibilityLabel,
-        title,
-        date,
-        t('common.hour'),
-        `${startsAtTime} - ${endAtTime}`,
-      ].join(', ')}
+      accessibilityLabel={accessibilityLabel}
       subtitleStyle={styles.subtitle}
     />
   );

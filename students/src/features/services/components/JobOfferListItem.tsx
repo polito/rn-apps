@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { formatDate, getHtmlTextContent } from '@polito/lib/core';
@@ -14,6 +14,7 @@ import {
 } from '@polito/lib/ui';
 import { JobOfferOverview } from '@polito/student-api-client';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 
 interface Props {
@@ -26,7 +27,7 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
 
   const location = jobOffer?.location;
   const title = getHtmlTextContent(jobOffer?.title);
@@ -46,14 +47,11 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
           id: jobOffer?.id,
         },
       }}
-      accessibilityLabel={[
-        title,
-        location,
-        companyInfos,
-        accessibilityListLabel(index, totalData),
-      ]
-        .filter(Boolean)
-        .join(', ')}
+      accessibilityLabel={buildCompositeListLabel(
+        [title, location, companyInfos],
+        index,
+        totalData,
+      )}
       accessibilityHint={t('jobOfferListItem.tapToViewDetails')}
       subtitle={
         <Col>
@@ -76,11 +74,13 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
       }
       subtitleStyle={styles.subtitle}
       trailingItem={
-        <Icon
-          icon={faChevronRight}
-          color={colors.secondaryText}
-          style={styles.icon}
-        />
+        <View {...hideFromScreenReader}>
+          <Icon
+            icon={faChevronRight}
+            color={colors.secondaryText}
+            style={styles.icon}
+          />
+        </View>
       }
     />
   );

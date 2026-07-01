@@ -28,7 +28,7 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'Guides'>;
 export const GuidesScreen = (_props: Props) => {
   const guidesQuery = useGetGuides();
   const { t } = useTranslation();
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
 
   const { emailGuideRead } = usePreferencesContext<AppPreferences>();
 
@@ -74,13 +74,14 @@ export const GuidesScreen = (_props: Props) => {
                   title={guide.listTitle}
                   unread={isUnread(guide.id)}
                   accessible={true}
-                  accessibilityLabel={[
-                    guide.listTitle,
-                    isUnread(guide.id) ? t('guidesScreen.unreadGuide') : '',
-                    accessibilityListLabel(index, guidesQuery.data.length),
-                  ]
-                    .filter(Boolean)
-                    .join(', ')}
+                  accessibilityLabel={buildCompositeListLabel(
+                    [
+                      guide.listTitle,
+                      isUnread(guide.id) ? t('guidesScreen.unreadGuide') : '',
+                    ],
+                    index,
+                    guidesQuery.data.length,
+                  )}
                   accessibilityHint={t('guidesScreen.tapToOpenGuide')}
                   linkTo={{
                     screen: 'Guide',

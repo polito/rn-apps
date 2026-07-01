@@ -4,14 +4,18 @@ import { Linking, Platform, TouchableHighlightProps, View } from 'react-native';
 import ContextMenu from 'react-native-context-menu-view';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
-import { IS_ANDROID, formatDateTime } from '@polito/lib/core';
+import { IS_ANDROID, IS_IOS, formatDateTime } from '@polito/lib/core';
 import { FileListItem, IconButton, useTheme } from '@polito/lib/ui';
 import { CourseAssignment } from '@polito/student-api-client';
 
 import { formatFileSize } from '~/utils/files';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+
 interface Props {
   item: CourseAssignment;
+  index: number;
+  total: number;
 }
 
 const Menu = ({ children }: PropsWithChildren) => {
@@ -44,13 +48,27 @@ const Menu = ({ children }: PropsWithChildren) => {
 
 export const CourseAssignmentListItem = ({
   item,
+  index,
+  total,
   ...rest
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
   const { colors, spacing, fontSizes } = useTheme();
   const { t } = useTranslation();
+  const { buildCompositeListLabel } = useAccessibility();
   const subTitle = `${formatFileSize(item.sizeInKiloBytes)} - ${formatDateTime(
     item.uploadedAt,
   )}`;
+  const accessibilityLabel = buildCompositeListLabel(
+    [
+      item.description,
+      item.deletedAt ? t('common.retracted') : '',
+      subTitle,
+      t('common.downloadClick'),
+      IS_IOS ? t('courseAssignmentsTab.longPress') : '',
+    ].filter(Boolean),
+    index,
+    total,
+  );
   const listItem = useMemo(
     () => (
       <FileListItem
@@ -58,6 +76,8 @@ export const CourseAssignmentListItem = ({
           await Linking.openURL(item.url);
         }}
         title={item.description}
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel}
         titleStyle={{
           textDecorationLine:
             item.deletedAt != null ? 'line-through' : undefined,
@@ -96,7 +116,16 @@ export const CourseAssignmentListItem = ({
         {...rest}
       />
     ),
-    [item, subTitle, spacing, colors.secondaryText, fontSizes.xl, rest, t],
+    [
+      item,
+      subTitle,
+      spacing,
+      colors.secondaryText,
+      fontSizes.xl,
+      rest,
+      t,
+      accessibilityLabel,
+    ],
   );
 
   if (Platform.OS === 'ios') {

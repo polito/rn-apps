@@ -61,6 +61,7 @@
     "cancelBookingText": "Are you sure you want to cancel this booking?",
     "cancelFeedback": "Booking canceled",
     "cancelHint": "Cancels your booking, this action cannot be undone",
+    "cancelDisabledHint": "Cancel is unavailable while offline",
     "checkIn": "Check-in",
     "checkInFeedback": "Check in done!",
     "checkInHint": "Validates your presence at the booking location",
@@ -74,6 +75,9 @@
     "seatHint": "Navigate to seat selection",
     "nextWeek": "Next week",
     "previousWeek": "Previous week"
+  },
+  "bookingTopicScreen": {
+    "selectTopicHint": "Opens the booking calendar for this topic"
   },
   "bookingSeatScreen": {
     "confirm": "Confirm booking",
@@ -873,7 +877,10 @@
     "usernameLabelAccessibility": "Enter your username here",
     "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received.",
     "SSO": "Login with SSO",
-    "onboarding": "Onboarding"
+    "onboarding": "Onboarding",
+    "ctaDisabledHint": "Enter your student ID and password to enable login",
+    "forgotPasswordHint": "Opens the password recovery page",
+    "ssoHint": "Opens the single sign-on login page"
   },
   "messageScreen": {
     "backTitle": "Archive",
@@ -956,6 +963,8 @@
     "eventStartTime": "Starts on ",
     "information": "Information",
     "logo": "Logo",
+    "openLink": "Opens the link in your browser",
+    "openFile": "Opens the attached file",
     "title": "News & Events"
   },
   "notifications": {
@@ -1083,6 +1092,7 @@
     "appVersion": "Version {{version}}",
     "cleanCacheConfirmMessage": "You will need to download files again to be able to open them",
     "openLanguageMenu": "Tap twice to open the language selection menu",
+    "openStorageMenu": "Tap twice to open the storage location menu",
     "openThemeMenu": "Tap twice to open the theme selection menu",
     "title": "Settings",
     "securityTitle": "Security",
@@ -1225,7 +1235,8 @@
     "title": "Grades",
     "total": "There are {{total}} grades",
     "gradeValue": "Grade: {{grade}}",
-    "provisionalGradeItem": "{{courseName}}, {{state}}"
+    "provisionalGradeItem": "{{courseName}}, {{state}}",
+    "recordedGradeItem": "{{courseName}}, {{date}}, {{credits}}, {{grade}}"
   },
   "transcriptMetricsScreen": {
     "acquiredCreditsLabel": "Acquired credits",

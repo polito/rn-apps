@@ -4,18 +4,20 @@ This folder documents what has been implemented for assistive-technology accessi
 
 ## Sections
 
-| Section            | File                             |
-| ------------------ | -------------------------------- |
-| Teaching + Surveys | [teaching.md](./teaching.md)     |
-| Agenda             | [agenda.md](./agenda.md)         |
-| Offering           | [offering.md](./offering.md)     |
-| Contacts           | [contacts.md](./contacts.md)     |
-| Job Offers         | [job-offers.md](./job-offers.md) |
-| Guides             | [guides.md](./guides.md)         |
-| Services           | [services.md](./services.md)     |
-| Tickets            | [tickets.md](./tickets.md)       |
-| Transcript         | [transcript.md](./transcript.md) |
-| User / Profile     | [user.md](./user.md)             |
+| Section            | File                                     |
+| ------------------ | ---------------------------------------- |
+| Teaching + Surveys | [teaching.md](./teaching.md)             |
+| Agenda             | [agenda.md](./agenda.md)                 |
+| Offering           | [offering.md](./offering.md)             |
+| Contacts           | [contacts.md](./contacts.md)             |
+| Job Offers         | [job-offers.md](./job-offers.md)         |
+| Guides             | [guides.md](./guides.md)                 |
+| Services           | [services.md](./services.md)             |
+| Tickets            | [tickets.md](./tickets.md)               |
+| Transcript         | [transcript.md](./transcript.md)         |
+| User / Profile     | [user.md](./user.md)                     |
+| Courses            | [courses.md](./courses.md)               |
+| Login & Settings   | [login-settings.md](./login-settings.md) |
 
 ## Cross-cutting rules
 
@@ -77,20 +79,31 @@ Passing `disabled` to `TouchableHighlight` / `TouchableOpacity` does not reliabl
 
 ### 7. Position info at the end of composite labels
 
-`accessibilityListLabel` returns a string ending in `. `. Placing it first creates a `". ,"` double-pause cadence:
+`accessibilityListLabel` returns a string ending in `. `. Placing it first creates a `". ,"` double-pause cadence.
+
+**Prefer `buildCompositeListLabel`** from `useAccessibility` — it joins content parts and appends position at the end automatically:
+
+```tsx
+const { buildCompositeListLabel } = useAccessibility();
+
+const label = buildCompositeListLabel([title, subtitle], index, total);
+```
+
+Manual assembly is also valid:
 
 ```tsx
 // WRONG
 [accessibilityListLabel(index, total), title, subtitle]
   .join(', ')
-  [
-    // → "Element 1 of 5. , Title, Subtitle"
 
+  [
     // CORRECT — position at the end
     (title, subtitle, accessibilityListLabel(index, total))
   ].filter(Boolean)
   .join(', ');
 ```
+
+> **Do not use `accessibilityListLabel(index, total, extraText)`** to pass row content — the third argument is appended after the position string, which still puts position first.
 
 ### 8. Do not nest `accessibilityRole="button"` inside another button
 
@@ -98,15 +111,18 @@ Two nested button roles cause VoiceOver on iOS to misroute focus. Keep `accessib
 
 ## App-specific utilities quick reference
 
-| Need                          | Use                                                                                               |
-| ----------------------------- | ------------------------------------------------------------------------------------------------- |
-| List with item count          | `AccessibleFlatList` or wrap in `<View accessibilityRole="list" accessibilityLabel={...}>`        |
-| List item position ("X of Y") | `accessibilityListLabel(index, total)` from `useAccessibility` (import from `useAccessibilty.ts`) |
-| Badge count                   | `getBadgeAccessibilityLabel` from `useAccessibility`                                              |
-| Loading announcement          | `announceLoading` / `useAnnounceLoading` from `useAccessibility`                                  |
-| Conditional announcement      | `announceIfEnabled` from `useAccessibility`                                                       |
-| Screen reader detection       | `useScreenReader().isEnabled` — listens to `screenReaderChanged` for live updates                 |
-| Mixed IT/EN text              | `AccessibleText` / `MultiLingualText` from `students/src/core/components/AccessibleText.tsx`      |
-| Screen-reader-only content    | `VisuallyHidden` from `@polito/lib/ui`                                                            |
-| Platform conditionals         | `IS_IOS`, `IS_ANDROID` from `students/src/core/constants.ts`                                      |
-| Strip HTML for labels         | `getHtmlTextContent` from `src/utils/html`                                                        |
+| Need                          | Use                                                                                                             |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| List with item count          | `getListAccessibilityProps` from `useAccessibility`, `AccessibleFlatList`, or `<View accessibilityRole="list">` |
+| List item position ("X of Y") | `buildCompositeListLabel(parts, index, total)` or `accessibilityListLabel(index, total)` at the **end**         |
+| Hide decorative elements      | `hideFromScreenReader` from `students/src/core/accessibility/hideFromScreenReader.ts`                           |
+| Badge count                   | `getBadgeAccessibilityLabel` from `useAccessibility`                                                            |
+| Loading announcement          | `announceLoading` / `useAnnounceLoading` from `useAccessibility`                                                |
+| Conditional announcement      | `announceIfEnabled` from `useAccessibility` (or SR-gated `setTimeoutAccessibilityInfoHelper`)                   |
+| Screen reader detection       | `useScreenReader().isEnabled` — listens to `screenReaderChanged` for live updates                               |
+| Mixed IT/EN text              | `AccessibleText` / `MultiLingualText` from `students/src/core/components/AccessibleText.tsx`                    |
+| Screen-reader-only content    | `VisuallyHidden` from `@polito/lib/ui`                                                                          |
+| Platform conditionals         | `IS_IOS`, `IS_ANDROID` from `students/src/core/constants.ts`                                                    |
+| Strip HTML for labels         | `getHtmlTextContent` from `src/utils/html`                                                                      |
+
+Full guide: [`docs/Accessibility-best-practice.md`](../../docs/Accessibility-best-practice.md) (English) · [`docs/best-practise-accessibilita.md`](../../docs/best-practise-accessibilita.md) (Italian)

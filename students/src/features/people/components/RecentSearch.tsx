@@ -66,7 +66,7 @@ export const RecentSearch = () => {
   const styles = useStylesheet(createStyles);
   const { dark, palettes, colors, fontSizes } = useTheme();
   const { t } = useTranslation();
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
   const isDisabled = useOfflineDisabled();
 
   const infoColor = dark ? palettes.info[400] : palettes.info[700];
@@ -132,7 +132,13 @@ export const RecentSearch = () => {
               key={person.id}
               accessible={true}
               accessibilityRole="button"
-              accessibilityLabel={`${accessibilityListLabel(index, peopleSearched.length)}${person.firstName} ${person.lastName}, ${person.role || ''}`}
+              accessibilityLabel={buildCompositeListLabel(
+                [
+                  `${person.firstName} ${person.lastName}, ${person.role || ''}`,
+                ],
+                index,
+                peopleSearched.length,
+              )}
               accessibilityHint={t('common.tapToNavigate')}
               accessibilityState={{ disabled: isDisabled }}
               accessibilityActions={[

@@ -4,6 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableHighlight,
+  View,
 } from 'react-native';
 
 import {
@@ -11,7 +12,11 @@ import {
   faFileAlt,
   faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons';
-import { formatDate, formatDateFromString } from '@polito/lib/core';
+import {
+  formatDate,
+  formatDateFromString,
+  getHtmlTextContent,
+} from '@polito/lib/core';
 import {
   ActivityIndicator,
   BottomBarSpacer,
@@ -31,6 +36,7 @@ import {
 } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
 import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import { useGetNewsItem } from '../../../core/queries/newsHooks';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
@@ -71,8 +77,14 @@ export const NewsItemScreen = ({ route }: Props) => {
         {!isLoading && (
           <>
             {createdAt && (
-              <Card accessible padded>
-                <Text variant="heading" weight="semibold" numberOfLines={1}>
+              <Card padded>
+                <Text
+                  variant="heading"
+                  weight="semibold"
+                  numberOfLines={1}
+                  accessibilityRole="header"
+                  accessibilityLabel={`${t('newsScreen.createdAt')}${formatDate(createdAt)}`}
+                >
                   {t('newsScreen.createdAt')}
                   {formatDate(createdAt)}
                 </Text>
@@ -93,7 +105,11 @@ export const NewsItemScreen = ({ route }: Props) => {
               </Card>
             )}
             {htmlContent && (
-              <Card accessible>
+              <Card
+                accessible
+                accessibilityLabel={getHtmlTextContent(htmlContent)}
+                importantForAccessibility="no-hide-descendants"
+              >
                 <HtmlView
                   props={{ source: { html: htmlContent } }}
                   variant="longProse"
@@ -105,6 +121,7 @@ export const NewsItemScreen = ({ route }: Props) => {
                 variant="subHeading"
                 weight="semibold"
                 style={{ marginBottom: spacing[1] }}
+                accessibilityRole="header"
               >
                 {t('newsScreen.information')}
               </Text>
@@ -113,20 +130,16 @@ export const NewsItemScreen = ({ route }: Props) => {
                   <Row
                     style={styles.infoRow}
                     accessible
-                    accessibilityRole="text"
+                    accessibilityLabel={`${t('newsScreen.eventStartTime')}${formatDateFromString(eventStartTime)}`}
                   >
-                    <Icon
-                      icon={faCalendarAlt}
-                      style={styles.iconCalendar}
-                      color={palettes.secondary[600]}
-                    />
-                    <Text
-                      weight="normal"
-                      accessibilityLabel={[
-                        t('newsScreen.eventStartTime'),
-                        formatDateFromString(eventStartTime),
-                      ].join(' ')}
-                    >
+                    <View {...hideFromScreenReader}>
+                      <Icon
+                        icon={faCalendarAlt}
+                        style={styles.iconCalendar}
+                        color={palettes.secondary[600]}
+                      />
+                    </View>
+                    <Text weight="normal" accessible={false}>
                       {formatDateFromString(eventStartTime)}
                     </Text>
                   </Row>
@@ -138,14 +151,22 @@ export const NewsItemScreen = ({ route }: Props) => {
                     key={index}
                     accessible
                     accessibilityRole="link"
+                    accessibilityLabel={link.description}
+                    accessibilityHint={
+                      link.type === 'link'
+                        ? t('newsScreen.openLink')
+                        : t('newsScreen.openFile')
+                    }
                     style={styles.infoRow}
                   >
                     <Row align="center">
-                      <Icon
-                        icon={link.type === 'link' ? faInfoCircle : faFileAlt}
-                        style={styles.iconCalendar}
-                        color={palettes.secondary[600]}
-                      />
+                      <View {...hideFromScreenReader}>
+                        <Icon
+                          icon={link.type === 'link' ? faInfoCircle : faFileAlt}
+                          style={styles.iconCalendar}
+                          color={palettes.secondary[600]}
+                        />
+                      </View>
                       <Text weight="normal" variant="link" style={styles.link}>
                         {link.description}
                       </Text>

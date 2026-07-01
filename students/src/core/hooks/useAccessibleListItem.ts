@@ -36,7 +36,9 @@ export function useAccessibleListItem() {
       return {
         accessible: true,
         accessibilityRole: role,
-        accessibilityLabel: `${positionLabel}. ${label}`,
+        accessibilityLabel: [label, positionLabel.trim()]
+          .filter(Boolean)
+          .join(', '),
         ...(hint && { accessibilityHint: hint }),
       };
     },

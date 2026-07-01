@@ -48,7 +48,7 @@ export const PersonOverviewListItem = ({
   const { fontSizes, colors } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const styles = useStylesheet(createStyles);
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
   const { t } = useTranslation();
   const { updatePreference, peopleSearched } =
     usePreferencesContext<AppPreferences>();
@@ -99,13 +99,11 @@ export const PersonOverviewListItem = ({
         )
       }
       title={<HighlightedText text={title} highlight={searchString || ''} />}
-      accessibilityLabel={[
-        title,
-        subtitle,
-        accessibilityListLabel(index, totalData),
-      ]
-        .filter(Boolean)
-        .join(', ')}
+      accessibilityLabel={buildCompositeListLabel(
+        [title, subtitle],
+        index,
+        totalData,
+      )}
       accessibilityRole="button"
       accessibilityHint={t('common.tapToViewContact')}
       accessibilityState={{ disabled: isDisabled }}

@@ -12,6 +12,7 @@ import {
 } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetSurveys } from '../../../core/queries/surveysHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { SurveyListItem } from '../components/SurveyListItem';
@@ -24,6 +25,7 @@ export const SurveyListScreen = ({ route }: Props) => {
 
   const surveysQuery = useGetSurveys();
   const { paddingHorizontal } = useSafeAreaSpacing();
+  const { buildCompositeListLabel } = useAccessibility();
 
   const compiledSurveys = (surveysQuery.data || [])
     .filter(survey => survey.isCompiled === isCompiled)
@@ -56,20 +58,22 @@ export const SurveyListScreen = ({ route }: Props) => {
         count: compiledSurveys.length,
       })}
       data={compiledSurveys}
-      renderItem={({ item }) => <SurveyListItem survey={item} key={item.id} />}
+      renderItem={({ item, index }) => (
+        <SurveyListItem
+          survey={item}
+          key={item.id}
+          accessibilityLabel={buildCompositeListLabel(
+            [item.title, item.subtitle ?? undefined],
+            index,
+            compiledSurveys.length,
+          )}
+        />
+      )}
       ItemSeparatorComponent={Platform.select({
         ios: IndentedDivider,
       })}
       ListFooterComponent={<BottomBarSpacer />}
-      ListEmptyComponent={
-        <OverviewList
-          emptyStateText={
-            isCompiled
-              ? t('surveysScreen.compiledEmptyState')
-              : t('surveysScreen.toBeCompiledEmptyState')
-          }
-        />
-      }
+      ListEmptyComponent={<OverviewList emptyStateText={labels.emptyState} />}
     />
   );
 };

@@ -29,7 +29,7 @@ export const SurveyCategoryListItem = ({
 }: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
 
   return (
     <ListItem
@@ -37,13 +37,14 @@ export const SurveyCategoryListItem = ({
       title={type.name}
       accessibilityRole="button"
       accessibilityHint={t('common.tapToNavigate')}
-      accessibilityLabel={[
-        type.name,
-        t('surveysScreen.remainingCount', { count: type.incompleteCount }),
-        accessibilityListLabel(index, total),
-      ]
-        .filter(Boolean)
-        .join(', ')}
+      accessibilityLabel={buildCompositeListLabel(
+        [
+          type.name,
+          t('surveysScreen.remainingCount', { count: type.incompleteCount }),
+        ],
+        index,
+        total,
+      )}
       linkTo={{
         screen: 'CpdSurveys',
         params: {

@@ -12,6 +12,16 @@
 ### `MessagesScreen`
 
 - Swipe-to-delete action button has `accessibilityRole="button"` and `accessibilityLabel={t('messagesScreen.deleteMessage')}`.
+- List wrapped with `getListAccessibilityProps` for list semantics and item count.
+
+### `MessageListItem`
+
+- Composite `accessibilityLabel` with title and sent date; list position appended at the **end** via `buildCompositeListLabel`.
+- `accessibilityRole="button"` and `accessibilityHint={t('common.tapToNavigate')}`.
+
+### `ProfileScreen`
+
+- Career row uses `accessibilityRole="none"` (not invalid `"text"`) when switching careers is unavailable.
 
 ### Translations
 
@@ -44,6 +54,18 @@ useLayoutEffect(() => {
     <Text accessible={false}>…</Text>
   </View>
 </View>
+```
+
+### Composite list item labels
+
+```tsx
+const { buildCompositeListLabel } = useAccessibility();
+
+accessibilityLabel={buildCompositeListLabel(
+  [title, t('messagesScreen.sentAt') + ' ' + sentAt],
+  index,
+  totalData,
+)}
 ```
 
 ### No hardcoded accessibility strings

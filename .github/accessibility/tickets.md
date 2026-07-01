@@ -7,7 +7,7 @@
 - Composite `accessibilityLabel`: subject (`getHtmlTextContent`), date, unread count (when > 0), position via `accessibilityListLabel(index, total)` at the **end**.
 - `accessibilityRole="button"`, `accessibilityHint={t('common.tapToNavigate')}`, explicit `accessibilityState={{ disabled: isDisabled }}`.
 - Close-ticket action exposed via `accessibilityActions` + `onAccessibilityAction` (reachable without long-press on screen readers).
-- Decorative trailing elements (icons, unread badge, chevron) wrapped with `hideFromScreenReader` — both `importantForAccessibility="no-hide-descendants"` and `accessibilityElementsHidden={IS_IOS}`.
+- Decorative trailing elements (icons, unread badge, chevron) wrapped with shared `hideFromScreenReader` from `students/src/core/accessibility/hideFromScreenReader.ts`.
 - Android context-menu `IconButton` is decorative only (no nested `button` role); close is on the `ListItem` via `accessibilityActions`.
 - iOS: `ContextMenu` wraps the whole item for long-press close.
 
@@ -28,6 +28,21 @@
 ### `VirtualOperatorFeedbackBar`
 
 - Thumbs up/down `IconButton`s have localized `accessibilityLabel`, `accessibilityRole="button"`, and `accessibilityState={{ disabled: isPending }}`.
+
+### `TicketFaqsScreen`
+
+- FAQ results wrapped with `getListAccessibilityProps`; position at end of each row label.
+- Leading question icon wrapped with `hideFromScreenReader`.
+- Empty search results announced via `announceIfEnabled` (SR-gated).
+
+### `ChatMessage` / `TicketScreen` (request bubble)
+
+- Removed invalid `accessibilityRole="text"`; message content announced via `accessibilityLabel` on `ChatBubble` only.
+- Outer `Pressable` set to `accessible={false}` to avoid duplicate focus targets.
+
+### `TicketStatusInfo`
+
+- Removed invalid `accessibilityRole="text"` from metric rows; each `Metric` keeps its own `accessibilityLabel`.
 
 ### Translations
 
@@ -61,14 +76,14 @@ When a `ListItem` has `accessibilityLabel`, descendants are hidden. Expose secon
 
 ### Decorative subtree helper
 
-Reuse the same cross-platform hide props for every decorative icon inside a labelled `ListItem`:
+Import the shared constant — do not copy-paste inline props:
 
 ```tsx
-const hideFromScreenReader = {
-  accessible: false as const,
-  importantForAccessibility: 'no-hide-descendants' as const,
-  accessibilityElementsHidden: IS_IOS,
-};
+import { hideFromScreenReader } from '~/core/accessibility/hideFromScreenReader';
+
+<View {...hideFromScreenReader}>
+  <Icon icon={faPaperclip} />
+</View>;
 ```
 
 ### HTML subject lines

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 
 import {
   BottomBarSpacer,
@@ -10,6 +10,7 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
 import { CourseListItem } from '../components/CourseListItem';
@@ -18,6 +19,7 @@ export const CoursesScreen = () => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
   const coursesQuery = useGetCourses();
+  const { getListAccessibilityProps } = useAccessibility();
 
   return (
     <ScrollView
@@ -53,18 +55,26 @@ export const CoursesScreen = () => {
                       : t('coursesScreen.otherCoursesSectionTitle')
                   }. ${t('coursesScreen.total', { total: courses.length })}`}
                 />
-                <OverviewList indented>
-                  {courses.map((course, index) => (
-                    <CourseListItem
-                      key={course.shortcode + '' + course.id}
-                      course={course}
-                      accessible={true}
-                      index={index}
-                      total={courses.length}
-                      showAllModules={true}
-                    />
-                  ))}
-                </OverviewList>
+                <View
+                  {...getListAccessibilityProps(
+                    period !== 'undefined'
+                      ? `${t('common.period')} ${period}`
+                      : t('coursesScreen.otherCoursesSectionTitle'),
+                    courses.length,
+                  )}
+                >
+                  <OverviewList indented>
+                    {courses.map((course, index) => (
+                      <CourseListItem
+                        key={course.shortcode + '' + course.id}
+                        course={course}
+                        index={index}
+                        total={courses.length}
+                        showAllModules={true}
+                      />
+                    ))}
+                  </OverviewList>
+                </View>
               </Section>
             ))
           ) : (

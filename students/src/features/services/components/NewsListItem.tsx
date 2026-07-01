@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { formatDate, getHtmlTextContent } from '@polito/lib/core';
 import { Icon, ListItem, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 import { NewsItemOverview } from '@polito/student-api-client';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 
@@ -20,7 +21,7 @@ export const NewsListItem = ({ newsItem, index, totalData }: Props) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
 
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
   const { getUnreadsCount } = useNotifications();
 
   const title = getHtmlTextContent(newsItem?.title);
@@ -44,22 +45,22 @@ export const NewsListItem = ({ newsItem, index, totalData }: Props) => {
         },
       }}
       accessibilityRole="button"
-      accessibilityLabel={[
-        title,
-        isUnread ? t('common.unread') : '',
-        subTitle,
-        accessibilityListLabel(index, totalData),
-      ]
-        .filter(Boolean)
-        .join(', ')}
+      accessibilityLabel={buildCompositeListLabel(
+        [title, isUnread ? t('common.unread') : '', subTitle],
+        index,
+        totalData,
+      )}
+      accessibilityHint={t('common.tapToNavigate')}
       subtitle={subTitle}
       subtitleStyle={styles.subtitle}
       trailingItem={
-        <Icon
-          icon={faChevronRight}
-          color={colors.secondaryText}
-          style={styles.icon}
-        />
+        <View {...hideFromScreenReader}>
+          <Icon
+            icon={faChevronRight}
+            color={colors.secondaryText}
+            style={styles.icon}
+          />
+        </View>
       }
       unread={isUnread}
     />

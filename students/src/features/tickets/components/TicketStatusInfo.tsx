@@ -66,24 +66,20 @@ export const TicketStatusInfo = ({
       <Row style={styles.row}>
         <Pressable
           accessibilityLabel={accessibilityIdText}
-          accessibilityRole="text"
           style={GlobalStyles.grow}
         >
           <Metric
             accessibilityLabel={accessibilityIdText}
-            accessibilityRole="text"
             title={t('ticketScreen.ticketNumber')}
             value={ticket.id}
           />
         </Pressable>
         <Pressable
           accessibilityLabel={accessibilityCreatedAtText}
-          accessibilityRole="text"
           style={GlobalStyles.grow}
         >
           <Metric
             accessibilityLabel={accessibilityCreatedAtText}
-            accessibilityRole="text"
             title={t('common.createdAt')}
             value={formatDate(ticket.createdAt)}
           />
@@ -92,24 +88,20 @@ export const TicketStatusInfo = ({
       <Row style={styles.row}>
         <Pressable
           accessibilityLabel={accessibilityUpdatedAtText}
-          accessibilityRole="text"
           style={GlobalStyles.grow}
         >
           <Metric
             accessibilityLabel={accessibilityUpdatedAtText}
-            accessibilityRole="text"
             title={t('common.updatedAt')}
             value={formatDateTime(ticket.updatedAt)}
           />
         </Pressable>
         <Pressable
           accessibilityLabel={accessibilityStatusText}
-          accessibilityRole="text"
           style={GlobalStyles.grow}
         >
           <Metric
             accessibilityLabel={accessibilityStatusText}
-            accessibilityRole="text"
             title={t('common.status')}
             value={t(`tickets.status.${ticket.status}`)}
             valueStyle={{ textTransform: 'uppercase' }}

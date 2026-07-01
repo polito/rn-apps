@@ -30,18 +30,13 @@ import {
 import { TicketOverview, TicketStatus } from '@polito/student-api-client';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import {
   TICKET_QUERY_PREFIX,
   useMarkTicketAsClosed,
 } from '../../../core/queries/ticketHooks';
-
-const hideFromScreenReader = {
-  accessible: false as const,
-  importantForAccessibility: 'no-hide-descendants' as const,
-  accessibilityElementsHidden: IS_IOS,
-};
 
 interface TicketListItemProps extends Partial<ListItemProps> {
   ticket: TicketOverview;

@@ -16,7 +16,6 @@ export const SurveyListItem = ({ survey, ...props }: Props) => {
   return (
     <ListItem
       accessibilityRole="button"
-      accessibilityLabel={survey.title}
       accessibilityHint={t('surveysScreen.tapToOpenSurvey')}
       {...props}
       title={survey.title}

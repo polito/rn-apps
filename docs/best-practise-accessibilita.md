@@ -1,6 +1,6 @@
 # Guida all'Accessibilità — Students App PoliTo
 
-Questo documento è il **punto di ingresso obbligatorio** per qualunque sviluppatore che lavori sulla students app. Raccoglie tutte le best practice emerse durante le sessioni di accessibilità su Teaching, Agenda, Offering, Contacts, Job Offers, Guides, Services, Tickets, Transcript e User/Profile. Per ogni sezione è disponibile documentazione di dettaglio in [`.github/accessibility/`](../.github/accessibility/README.md).
+Questo documento è il **punto di ingresso obbligatorio** per qualunque sviluppatore che lavori sulla students app. Raccoglie tutte le best practice emerse durante le sessioni di accessibilità su Teaching, Agenda, Offering, Contacts, Job Offers, Guides, Services, Tickets, Transcript e User/Profile. Per ogni sezione è disponibile documentazione di dettaglio in [`.github/accessibility/`](../.github/accessibility/README.md). Versione inglese: [`Accessibility-best-practice.md`](./Accessibility-best-practice.md).
 
 ---
 
@@ -35,6 +35,7 @@ L'app è costruita in **React Native con Expo** e supporta VoiceOver (iOS), Talk
 | ------------------------------------------ | ------------------------------------------------------------------------------- |
 | `students/src/core/components/`            | Componenti condivisi (`AccessibleFlatList`, `AccessibleText`, `Checkbox`, …)    |
 | `students/src/core/hooks/`                 | Hook condivisi (`useAccessibility`, `useScreenReader`, `useAccessibleListItem`) |
+| `students/src/core/accessibility/`         | Costanti a11y condivise (`hideFromScreenReader`)                                |
 | `lib/src/ui/components/VisuallyHidden.tsx` | Wrapper zero-size per contenuto solo screen reader                              |
 | `students/src/core/constants.ts`           | `IS_IOS`, `IS_ANDROID` per conditionals di piattaforma                          |
 | `students/assets/translations/en.json`     | Stringhe i18n inglese — **sempre aggiornare** in coppia con it.json             |
@@ -143,7 +144,18 @@ Passare `disabled` a `TouchableHighlight` / `TouchableOpacity` non imposta in mo
 
 ### 2.7 Le informazioni di posizione vanno alla fine delle label composite
 
-`accessibilityListLabel` restituisce una stringa che termina con `. `. Metterla all'inizio crea una cadenza `". ,"` con doppia pausa:
+`accessibilityListLabel` restituisce una stringa che termina con `. `. Metterla all'inizio crea una cadenza `". ,"` con doppia pausa.
+
+**Preferire `buildCompositeListLabel`** da `useAccessibility` — unisce le parti del contenuto e appende la posizione alla fine automaticamente:
+
+```tsx
+const { buildCompositeListLabel } = useAccessibility();
+
+const label = buildCompositeListLabel([title, subtitle, status], index, total);
+// → "Titolo, Sottotitolo, Stato, Elemento 2 di 5."
+```
+
+L'assemblaggio manuale è valido:
 
 ```tsx
 // SBAGLIATO — produce "Elemento 1 di 5. , Titolo, Sottotitolo"
@@ -156,6 +168,8 @@ Passare `disabled` a `TouchableHighlight` / `TouchableOpacity` non imposta in mo
   ].filter(Boolean)
   .join(', ');
 ```
+
+> **Non usare `accessibilityListLabel(index, total, extraText)`** per passare il contenuto della riga — il terzo argomento viene appendato dopo la stringa di posizione, quindi la posizione resta comunque all'inizio. Passare il contenuto come parti separate e appendere la posizione per ultima.
 
 ### 2.8 Non annidare `accessibilityRole="button"` dentro un altro button
 
@@ -449,6 +463,25 @@ import { AccessibleFlatList } from '~/core/components/AccessibleFlatList';
   renderItem={({ item, index }) => (
     <MyListItem
       {...item}
+      accessibilityLabel={buildCompositeListLabel(
+        [item.title, item.subtitle],
+        index,
+        items.length,
+      )}
+    />
+  )}
+  accessibilityLabel={t('section.listLabel', { count: items.length })}
+/>;
+```
+
+Oppure manualmente:
+
+```tsx
+<AccessibleFlatList
+  data={items}
+  renderItem={({ item, index }) => (
+    <MyListItem
+      {...item}
       accessibilityLabel={[
         item.title,
         accessibilityListLabel(index, items.length),
@@ -458,7 +491,7 @@ import { AccessibleFlatList } from '~/core/components/AccessibleFlatList';
     />
   )}
   accessibilityLabel={t('section.listLabel', { count: items.length })}
-/>;
+/>
 ```
 
 ### 7.2 `FlatList` con `accessibilityRole="list"` manuale
@@ -622,14 +655,15 @@ Il titolo di ogni modal deve avere `accessibilityRole="header"`:
 
 ### Quando usare quale approccio
 
-| Scenario                              | Approccio corretto                                                  |
-| ------------------------------------- | ------------------------------------------------------------------- |
-| Caricamento dati                      | `announceLoading` / `useAnnounceLoading` da `useAccessibility`      |
-| Risultati di ricerca aggiornati       | `announceIfEnabled` da `useAccessibility`                           |
-| Errore di validazione inline          | `accessibilityLiveRegion="assertive"` + `accessibilityRole="alert"` |
-| Messaggio di stato non urgente        | `accessibilityLiveRegion="polite"` sul container                    |
-| Cambio di pagina/slide                | `AccessibilityInfo.announceForAccessibility` in callback            |
-| Conferma operazione (es. check-in ok) | `AccessibilityInfo.announceForAccessibility`                        |
+| Scenario                              | Approccio corretto                                                   |
+| ------------------------------------- | -------------------------------------------------------------------- |
+| Caricamento dati                      | `announceLoading` / `useAnnounceLoading` da `useAccessibility`       |
+| Risultati di ricerca aggiornati       | `announceIfEnabled` da `useAccessibility`                            |
+| Annuncio empty-state ritardato        | `setTimeoutAccessibilityInfoHelper` da `@polito/lib/core` (gated SR) |
+| Errore di validazione inline          | `accessibilityLiveRegion="assertive"` + `accessibilityRole="alert"`  |
+| Messaggio di stato non urgente        | `accessibilityLiveRegion="polite"` sul container                     |
+| Cambio di pagina/slide                | `AccessibilityInfo.announceForAccessibility` in callback             |
+| Conferma operazione (es. check-in ok) | `AccessibilityInfo.announceForAccessibility`                         |
 
 ```tsx
 // Check-in riuscito
@@ -847,17 +881,18 @@ I componenti SVG come `RNCKProgressChart` vengono attraversati da TalkBack anche
 
 ### Quick reference
 
-| Utility                 | Percorso                                              | Quando usarla                                                                       |
-| ----------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `useAccessibility`      | `students/src/core/hooks/useAccessibilty.ts`          | Hook centrale a11y. Nome file con typo intenzionale; importare `useAccessibility`   |
-| `useScreenReader`       | `students/src/core/hooks/useScreenReader.ts`          | Rileva stato screen reader (listener `screenReaderChanged`); espone `announce(msg)` |
-| `useAccessibleListItem` | `students/src/core/hooks/useAccessibleListItem.ts`    | Props list item con posizione, container props, annuncio lista                      |
-| `AccessibleFlatList`    | `students/src/core/components/AccessibleFlatList.tsx` | FlatList con count e posizione — preferire sempre al FlatList nudo                  |
-| `AccessibleText`        | `students/src/core/components/AccessibleText.tsx`     | Aggiunge `accessibilityLanguage` per testo IT/EN misto                              |
-| `MultiLingualText`      | `students/src/core/components/AccessibleText.tsx`     | Testo misto inline                                                                  |
-| `VisuallyHidden`        | `lib/src/ui/components/VisuallyHidden.tsx`            | Wrapper zero-size per contenuto solo screen reader                                  |
-| `Checkbox`              | `students/src/core/components/Checkbox.tsx`           | Già wrappa role, state e label — non reimplementare                                 |
-| `IS_IOS` / `IS_ANDROID` | `students/src/core/constants.ts`                      | Conditionals di piattaforma                                                         |
+| Utility                 | Percorso                                                  | Quando usarla                                                                       |
+| ----------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `useAccessibility`      | `students/src/core/hooks/useAccessibilty.ts`              | Hook centrale a11y. Nome file con typo intenzionale; importare `useAccessibility`   |
+| `hideFromScreenReader`  | `students/src/core/accessibility/hideFromScreenReader.ts` | Su icone, badge, chevron decorativi dentro righe etichettate — nessun cambio visivo |
+| `useScreenReader`       | `students/src/core/hooks/useScreenReader.ts`              | Rileva stato screen reader (listener `screenReaderChanged`); espone `announce(msg)` |
+| `useAccessibleListItem` | `students/src/core/hooks/useAccessibleListItem.ts`        | Props list item con posizione, container props, annuncio lista                      |
+| `AccessibleFlatList`    | `students/src/core/components/AccessibleFlatList.tsx`     | FlatList con count e posizione — preferire sempre al FlatList nudo                  |
+| `AccessibleText`        | `students/src/core/components/AccessibleText.tsx`         | Aggiunge `accessibilityLanguage` per testo IT/EN misto                              |
+| `MultiLingualText`      | `students/src/core/components/AccessibleText.tsx`         | Testo misto inline                                                                  |
+| `VisuallyHidden`        | `lib/src/ui/components/VisuallyHidden.tsx`                | Wrapper zero-size per contenuto solo screen reader                                  |
+| `Checkbox`              | `students/src/core/components/Checkbox.tsx`               | Già wrappa role, state e label — non reimplementare                                 |
+| `IS_IOS` / `IS_ANDROID` | `students/src/core/constants.ts`                          | Conditionals di piattaforma                                                         |
 
 ### `useAccessibility` — funzioni esposte
 
@@ -865,15 +900,77 @@ I componenti SVG come `RNCKProgressChart` vengono attraversati da TalkBack anche
 import { useAccessibility } from '~/core/hooks/useAccessibilty';
 
 const {
-  accessibilityListLabel, // (index, total) → "Elemento X di Y"
-  getListAccessibilityProps, // (label) → props per il contenitore lista
+  accessibilityListLabel, // (index, total) → "Elemento X di Y. "
+  buildCompositeListLabel, // (parts[], index?, total?) → contenuto + posizione alla fine
+  getListAccessibilityProps, // (nome, count) → props per il contenitore lista
   getTappableAccessibilityProps, // (label, hint?) → props per elementi tappabili
   getBadgeAccessibilityLabel, // (count, label) → "N nuovi label"
-  announceLoading, // (isLoading) → annuncia loading/caricato
+  announceLoading, // () → annuncia loading quando SR è attivo
   announceIfEnabled, // (msg) → annuncia solo se SR è attivo
-  useAnnounceLoading, // hook per gestire annunci loading
+  isScreenReaderEnabled, // boolean — stato SR live
 } = useAccessibility();
+
+// Hook standalone (import separato):
+// useAnnounceLoading(isLoading) — annuncia loading alla transizione a true
 ```
+
+### `buildCompositeListLabel` — label list item con posizione alla fine
+
+Usare al posto dell'unione manuale di `accessibilityListLabel` per evitare bug con posizione all'inizio (vedi [Sezione 2.7](#27-le-informazioni-di-posizione-vanno-alla-fine-delle-label-composite)):
+
+```tsx
+const { buildCompositeListLabel } = useAccessibility();
+
+<ListItem
+  accessibilityRole="button"
+  accessibilityLabel={buildCompositeListLabel(
+    [title, date, status],
+    index,
+    total,
+  )}
+  accessibilityHint={t('common.tapToNavigate')}
+/>;
+```
+
+Senza posizione in lista (es. gruppi di campi statici):
+
+```tsx
+buildCompositeListLabel([label, value]); // → "Label, Valore"
+```
+
+### `hideFromScreenReader` — elementi decorativi dentro righe etichettate
+
+Quando un `ListItem` (o altro contenitore etichettato) ha `accessibilityLabel`, il contenuto trailing decorativo non deve diventare un focus target separato. Spalmare `hideFromScreenReader` sul `View` wrapper — **nessun effetto sui visivi**:
+
+```tsx
+import { hideFromScreenReader } from '~/core/accessibility/hideFromScreenReader';
+
+<ListItem
+  accessibilityLabel={label}
+  trailingItem={
+    <Row align="center">
+      <View {...hideFromScreenReader}>
+        <Icon icon={faPaperclip} />
+      </View>
+      <View {...hideFromScreenReader}>
+        <DisclosureIndicator />
+      </View>
+    </Row>
+  }
+/>;
+```
+
+Props inline equivalenti (non copiare — importare la costante):
+
+```tsx
+{
+  accessible: false,
+  importantForAccessibility: 'no-hide-descendants',
+  accessibilityElementsHidden: IS_IOS,
+}
+```
+
+Implementazione di riferimento: `TicketListItem`, `RecordedGradeListItem`, `BookingField`.
 
 ### `VisuallyHidden` — contenuto solo screen reader
 
@@ -922,10 +1019,10 @@ Prima di chiudere qualsiasi sessione di accessibilità, verificare questi punti:
 - [ ] **`accessibilityRole="button"` annidati**: nessun `Row`/`View` con `button` dentro `TouchableCard` o altri pressable?
 - [ ] **`accessibilityRole="text"`**: rimosso ovunque? Sostituito con `"none"` o rimosso del tutto?
 - [ ] **`accessibilityState.disabled`**: impostato esplicitamente su tutti gli elementi che usano `disabled`?
-- [ ] **Label composite**: `accessibilityListLabel` è alla fine, non all'inizio?
+- [ ] **Label composite**: la posizione è alla fine? Preferire `buildCompositeListLabel` rispetto alle unioni manuali
 - [ ] **Guard `undefined`**: tutte le label usano `?? ''` o `.filter(Boolean)` prima di `.join()`?
 - [ ] **Guard loading**: le count label mostrano un testo di caricamento invece di "0 elementi"?
-- [ ] **Icone decorative**: tutte con `accessible={false}`?
+- [ ] **Icone decorative**: wrappate con `hideFromScreenReader` (o `accessible={false}`) dentro righe etichettate?
 - [ ] **Immagini di profilo**: `accessible={false}` quando il parent ListItem già descrive la persona?
 - [ ] **Long-press**: azioni long-press esposte via `accessibilityActions`?
 - [ ] **Sezioni espandibili**: `accessibilityState={{ expanded }}` aggiornato? Annuncio del cambio di stato?
@@ -937,7 +1034,8 @@ Prima di chiudere qualsiasi sessione di accessibilità, verificare questi punti:
 - [ ] **Testo misto IT/EN**: usa `AccessibleText` con `accessibilityLanguage`?
 - [ ] **`ProgressChart` / SVG**: wrappati con `importantForAccessibility="no-hide-descendants"` su Android?
 - [ ] **Slide/page changes**: `announceForAccessibility` chiamato in callback (non `useMemo`)?
-- [ ] **Annuncio caricamento**: usa `announceLoading` / `useAnnounceLoading` da `useAccessibility`?
+- [ ] **Annuncio caricamento**: usa `announceLoading` / `useAnnounceLoading` / `announceIfEnabled` da `useAccessibility`?
+- [ ] **Annunci ritardati**: `setTimeoutAccessibilityInfoHelper` si affida al gating SR (default in lib)?
 - [ ] **Stringhe hardcoded**: nessuna stringa a11y in inglese/italiano non in `en.json`/`it.json`?
 - [ ] **Chiavi i18n**: aggiunte a **entrambi** `en.json` e `it.json`?
 - [ ] **Touch target**: tutti gli elementi interattivi ≥ 44×44 pt (iOS) / 48×48 dp (Android)? `hitSlop` usato dove necessario?
@@ -950,18 +1048,20 @@ Prima di chiudere qualsiasi sessione di accessibilità, verificare questi punti:
 
 Ogni sezione ha documentazione completa con problemi trovati, soluzioni applicate e pattern specifici:
 
-| Documento                                                                       | Sezione coperta    | Temi principali                                                                                   |
-| ------------------------------------------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------- |
-| [`.github/accessibility/teaching.md`](../.github/accessibility/teaching.md)     | Teaching + Surveys | Checkbox, ProgressChart, RadioGroup, ExamCTA, BottomModal, SurveyListItem, SurveyCategoryListItem |
-| [`.github/accessibility/agenda.md`](../.github/accessibility/agenda.md)         | Agenda             | AgendaCard, WeekFilter, Calendar/HourGuideCell, BookingScreen, BookingField, LectureScreen        |
-| [`.github/accessibility/offering.md`](../.github/accessibility/offering.md)     | Offering           | Sezioni espandibili, DegreeCourseScreen, HTML content, StaffListItem                              |
-| [`.github/accessibility/contacts.md`](../.github/accessibility/contacts.md)     | Contacts           | Search con announcements, RecentSearch long-press, PersonScreen                                   |
-| [`.github/accessibility/job-offers.md`](../.github/accessibility/job-offers.md) | Job Offers         | Card con figli navigabili, link email/URL, section heading                                        |
-| [`.github/accessibility/guides.md`](../.github/accessibility/guides.md)         | Guides             | GuideFieldListItem copy action, HtmlView, guard undefined                                         |
-| [`.github/accessibility/services.md`](../.github/accessibility/services.md)     | Services           | ServiceCard nested buttons, NewsListItem, ServicesScreen labels                                   |
-| [`.github/accessibility/tickets.md`](../.github/accessibility/tickets.md)       | Tickets            | TicketListItem, AccessibleFlatList, accessibilityActions, attachment chips                        |
-| [`.github/accessibility/transcript.md`](../.github/accessibility/transcript.md) | Transcript         | ProvisionalGradeListItem, grade screens, gestione item rifiutati                                  |
-| [`.github/accessibility/user.md`](../.github/accessibility/user.md)             | User / Profile     | UserQrModal focus trapping, azione elimina MessagesScreen                                         |
+| Documento                                                                               | Sezione coperta    | Temi principali                                                               |
+| --------------------------------------------------------------------------------------- | ------------------ | ----------------------------------------------------------------------------- |
+| [`.github/accessibility/teaching.md`](../.github/accessibility/teaching.md)             | Teaching + Surveys | Checkbox, ExamListItem, SurveyListScreen, `buildCompositeListLabel`           |
+| [`.github/accessibility/agenda.md`](../.github/accessibility/agenda.md)                 | Agenda             | AgendaCard, BookingField, `hideFromScreenReader`, Calendar/HourGuideCell      |
+| [`.github/accessibility/offering.md`](../.github/accessibility/offering.md)             | Offering           | Sezioni espandibili, StaffListItem ordine label, HTML content                 |
+| [`.github/accessibility/contacts.md`](../.github/accessibility/contacts.md)             | Contacts           | Annunci ricerca, RecentSearch ordine label, `accessibilityActions`            |
+| [`.github/accessibility/job-offers.md`](../.github/accessibility/job-offers.md)         | Job Offers         | Card con figli, rimozione role `"text"` invalido, link email/URL              |
+| [`.github/accessibility/guides.md`](../.github/accessibility/guides.md)                 | Guides             | GuideFieldListItem copy action, HtmlView, guard undefined                     |
+| [`.github/accessibility/services.md`](../.github/accessibility/services.md)             | Services           | ServiceCard, NewsScreen, BookingsScreen, `getListAccessibilityProps`          |
+| [`.github/accessibility/tickets.md`](../.github/accessibility/tickets.md)               | Tickets            | TicketListItem, `hideFromScreenReader`, TicketFaqsScreen, label messaggi chat |
+| [`.github/accessibility/transcript.md`](../.github/accessibility/transcript.md)         | Transcript         | Provisional/Recorded grade list items, CareerScreen, `recordedGradeItem`      |
+| [`.github/accessibility/user.md`](../.github/accessibility/user.md)                     | User / Profile     | UserQrModal, wrapper lista MessagesScreen, `buildCompositeListLabel`          |
+| [`.github/accessibility/courses.md`](../.github/accessibility/courses.md)               | Courses            | CourseListItem, avvisi, consegne, file, `getListAccessibilityProps`           |
+| [`.github/accessibility/login-settings.md`](../.github/accessibility/login-settings.md) | Login & Settings   | Form login, menu impostazioni, hint CTA disabilitato, stato offline           |
 
 ---
 

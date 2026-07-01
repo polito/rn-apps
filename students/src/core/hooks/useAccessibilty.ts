@@ -91,9 +91,26 @@ export function useAccessibility() {
     [isEnabled, announce],
   );
 
+  /**
+   * Builds a composite label with list position appended at the end.
+   */
+  const buildCompositeListLabel = useCallback(
+    (parts: (string | undefined | false)[], index?: number, total?: number) => {
+      const content = parts.filter(Boolean).join(', ');
+      if (index !== undefined && total !== undefined) {
+        return [content, accessibilityListLabel(index, total)]
+          .filter(Boolean)
+          .join(', ');
+      }
+      return content;
+    },
+    [accessibilityListLabel],
+  );
+
   return {
     isScreenReaderEnabled: isEnabled,
     accessibilityListLabel,
+    buildCompositeListLabel,
     getListAccessibilityProps,
     getTappableAccessibilityProps,
     getBadgeAccessibilityLabel,

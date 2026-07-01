@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  AccessibilityInfo,
   Alert,
   Keyboard,
   SafeAreaView,
@@ -35,6 +34,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useSearchTicketFaqs } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
@@ -58,18 +58,27 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
 
   const canSearch = search?.length > 2;
 
-  const { accessibilityListLabel } = useAccessibility();
+  const {
+    buildCompositeListLabel,
+    announceIfEnabled,
+    getListAccessibilityProps,
+  } = useAccessibility();
 
   useEffect(() => {
     if (!ticketFaqsQuery?.data) {
       return;
     }
     if (ticketFaqs?.length === 0 && canSearch && hasSearchedOnce) {
-      AccessibilityInfo.announceForAccessibility(
-        t('ticketFaqsScreen.emptyState'),
-      );
+      announceIfEnabled(t('ticketFaqsScreen.emptyState'));
     }
-  }, [ticketFaqs, canSearch, hasSearchedOnce, ticketFaqsQuery.data, t]);
+  }, [
+    ticketFaqs,
+    canSearch,
+    hasSearchedOnce,
+    ticketFaqsQuery.data,
+    t,
+    announceIfEnabled,
+  ]);
 
   const triggerSearch = () => {
     if (!canSearch) {
@@ -127,33 +136,46 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
           </OverviewList>
           {hasSearchedOnce &&
             (ticketFaqs.length > 0 ? (
-              <OverviewList indented>
-                {ticketFaqs.map((faq, index) => {
-                  const dom = parseDocument(
-                    faq.question.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
-                  ) as Document;
-                  const title = innerText(dom.children as any[]);
-                  const accessibilityLabel = [
-                    accessibilityListLabel(index, ticketFaqs?.length || 0),
-                    title,
-                  ].join(', ');
-                  return (
-                    <ListItem
-                      accessibilityLabel={accessibilityLabel}
-                      key={faq.id}
-                      leadingItem={
-                        <Icon icon={faQuestionCircle} size={fontSizes['2xl']} />
-                      }
-                      linkTo={{
-                        screen: 'TicketFaq',
-                        params: { faq },
-                      }}
-                      title={<Text numberOfLines={3}>{title}</Text>}
-                      accessibilityRole="button"
-                    />
-                  );
-                })}
-              </OverviewList>
+              <View
+                {...getListAccessibilityProps(
+                  t('ticketFaqsScreen.findFAQ'),
+                  ticketFaqs.length,
+                )}
+              >
+                <OverviewList indented>
+                  {ticketFaqs.map((faq, index) => {
+                    const dom = parseDocument(
+                      faq.question.replace(/\\r+/g, ' ').replace(/\\"/g, '"'),
+                    ) as Document;
+                    const title = innerText(dom.children as any[]);
+                    const accessibilityLabel = buildCompositeListLabel(
+                      [title],
+                      index,
+                      ticketFaqs?.length || 0,
+                    );
+                    return (
+                      <ListItem
+                        accessibilityLabel={accessibilityLabel}
+                        key={faq.id}
+                        leadingItem={
+                          <View {...hideFromScreenReader}>
+                            <Icon
+                              icon={faQuestionCircle}
+                              size={fontSizes['2xl']}
+                            />
+                          </View>
+                        }
+                        linkTo={{
+                          screen: 'TicketFaq',
+                          params: { faq },
+                        }}
+                        title={<Text numberOfLines={3}>{title}</Text>}
+                        accessibilityRole="button"
+                      />
+                    );
+                  })}
+                </OverviewList>
+              </View>
             ) : (
               !ticketFaqsQuery.isFetching && (
                 <OverviewList

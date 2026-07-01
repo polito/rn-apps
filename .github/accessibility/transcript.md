@@ -6,8 +6,19 @@
 
 - Composite `accessibilityLabel` via `transcriptGradesScreen.provisionalGradeItem` (course name + state) with `accessibilityListLabel(index, total)` at the **end**.
 - `accessibilityRole="button"` and `accessibilityHint={t('common.tapToNavigate')}` for navigable items; rejected items use `accessibilityRole="none"` and `accessibilityState={{ disabled: true }}`.
-- `ProvisionalGradeStatusBadge` wrapped as decorative (`importantForAccessibility` + `accessibilityElementsHidden` on iOS).
+- `ProvisionalGradeStatusBadge` wrapped with shared `hideFromScreenReader`.
 - `GradesScreen` passes `index` and `total` for each provisional grade.
+- Both provisional and recorded lists wrapped with `getListAccessibilityProps` (`accessibilityRole="list"`).
+
+### `RecordedGradeListItem`
+
+- Mirrors `ProvisionalGradeListItem`: composite label via `transcriptGradesScreen.recordedGradeItem` (course, date, credits, grade) with position at the **end**.
+- Grade digit and chevron hidden from screen readers via shared `hideFromScreenReader`.
+- `GradesScreen` passes `index` and `total` for each recorded grade.
+
+### `CareerScreen`
+
+- Removed `accessible={true}` from metric `Card` containers so individual `Metric` and chart elements remain traversable on iOS.
 
 ### `ProvisionalGradeScreen` / `RecordedGradeScreen`
 
@@ -16,7 +27,7 @@
 ### Translations
 
 - New keys added to `en.json` and `it.json`:
-  - `transcriptGradesScreen.gradeValue`, `transcriptGradesScreen.provisionalGradeItem`
+  - `transcriptGradesScreen.gradeValue`, `transcriptGradesScreen.provisionalGradeItem`, `transcriptGradesScreen.recordedGradeItem`
   - `recordedGradeScreen.gradeValue`
 
 ---
@@ -56,11 +67,12 @@ Non-navigable items must not announce as buttons:
 
 ### State in the accessibility label
 
-Build a plain-text `stateLabel` (countdown, rejected date/time, provisional title) and pass it to the i18n composite key — do not rely on visual subtitle JSX alone:
+Build labels with `buildCompositeListLabel` or manual join — position last:
 
 ```tsx
-accessibilityLabel={[
-  t('transcriptGradesScreen.provisionalGradeItem', { courseName, state: stateLabel }),
-  accessibilityListLabel(index, total),
-].filter(Boolean).join(', ')}
+accessibilityLabel={buildCompositeListLabel(
+  [t('transcriptGradesScreen.provisionalGradeItem', { courseName, state: stateLabel })],
+  index,
+  total,
+)}
 ```

@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { IS_IOS } from '@polito/lib/core';
 import {
   Col,
   Icon,
@@ -12,6 +11,8 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
 
 type BookingDetailProps = {
   icon: IconProp;
@@ -39,11 +40,7 @@ export const BookingField = ({
       accessibilityLabel={`${label}: ${fieldValue}`}
     >
       <Row align="center">
-        <View
-          accessible={false}
-          importantForAccessibility="no-hide-descendants"
-          accessibilityElementsHidden={IS_IOS}
-        >
+        <View {...hideFromScreenReader}>
           <Icon icon={icon} color={palettes.primary['500']} size={16} />
         </View>
         <Text style={styles.text} accessible={false}>

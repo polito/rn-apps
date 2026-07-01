@@ -22,7 +22,7 @@
 - `FlatList accessible={true}` removed; list semantics moved to a wrapping `<View accessibilityRole="list">`.
 - Android ellipsis `IconButton` has `accessibilityLabel` and `accessibilityHint`.
 - iOS item hint fixed: now describes navigation (not deletion).
-- iOS items include position info via `accessibilityListLabel`.
+- iOS item wrapper: composite label with person name and role first, then `accessibilityListLabel(index, total)` at the **end** (not prefixed).
 - iOS item wrapper has `accessibilityState={{ disabled: isDisabled }}` when offline.
 - Long-press delete action exposed to VoiceOver via `accessibilityActions`.
 
@@ -102,11 +102,12 @@ useEffect(() => {
 
 ```tsx
 // WRONG — position prefix creates ". ," cadence
-[accessibilityListLabel(index, total), name, role]
-  .join(', ')
+`${accessibilityListLabel(index, total)}${name}, ${role}`;
 
+// CORRECT — prefer buildCompositeListLabel
+buildCompositeListLabel([`${name}, ${role}`], index, total)
   [
-    // CORRECT — position at the end
+    // Or manual — position at the end
     (name, role, accessibilityListLabel(index, total))
   ].filter(Boolean)
   .join(', ');

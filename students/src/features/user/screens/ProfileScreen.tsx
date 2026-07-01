@@ -110,7 +110,7 @@ const HeaderRightDropdown = ({
     <View
       style={{ padding: spacing[2] }}
       accessible={true}
-      accessibilityRole={canSwitchCareer ? 'button' : 'text'}
+      accessibilityRole={canSwitchCareer ? 'button' : 'none'}
       accessibilityLabel={`${t('common.username')} ${username} ${
         canSwitchCareer ? t('common.switchCareerLabel') : ''
       }`}

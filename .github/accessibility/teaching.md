@@ -32,6 +32,7 @@
 
 - Small-font path: date and location rows have `accessible={true}` and composite `accessibilityLabel`.
 - Large-font path (fontSize ≥ 175): same grouping now applied — date row and location/status row both have `accessibilityLabel`.
+- When `index` and `total` are provided, list position is appended at the **end** of the composite label (not prefixed).
 
 ### `RadioGroup` (shared component)
 
@@ -48,7 +49,8 @@
 ### `SurveyListItem` / `SurveyListItemByTypeName`
 
 - `accessibilityRole="button"` and `accessibilityHint={t('surveysScreen.tapToOpenSurvey')}`.
-- `accessibilityLabel` on `SurveyListItemByTypeName` combines survey's own title with type name so items are distinguishable.
+- `SurveyListScreen` passes composite `accessibilityLabel` via `buildCompositeListLabel` (title, subtitle, position at end).
+- `SurveyListItemByTypeName` combines survey title with type name so items are distinguishable.
 
 ### `CpdSurveysScreen`
 
@@ -62,7 +64,9 @@
 ### `SurveyListScreen`
 
 - `FlatList` has `accessibilityRole="list"` and count label.
-- `ListEmptyComponent` uses the correct i18n key based on `isCompiled`: `surveysScreen.compiledEmptyState` vs `surveysScreen.toBeCompiledEmptyState`.
+- Each row receives `accessibilityLabel` from `buildCompositeListLabel([title, subtitle], index, total)`.
+
+> **Note:** empty-state copy still uses legacy `ticketsScreen.*` keys — fixing that is a separate non-a11y bug fix.
 
 ### `ExamCpdModalContent`
 
@@ -129,15 +133,15 @@ useLayoutEffect(() => {
 
 ### Survey list items
 
-Every `SurveyListItem` and `SurveyCategoryListItem` gets role, hint, and a label that includes the item's own title — never replace the title with a position-only string. Position always goes at the **end**:
+Every `SurveyListItem` and `SurveyCategoryListItem` gets role, hint, and a label that includes the item's own title — never replace the title with a position-only string. Prefer `buildCompositeListLabel`; position always goes at the **end**:
 
 ```tsx
 // SurveyCategoryListItem — position at the end
-accessibilityLabel={[
-  type.name,
-  t('surveysScreen.remainingCount', { count: type.incompleteCount }),
-  accessibilityListLabel(index, total),
-].filter(Boolean).join(', ')}
+accessibilityLabel={buildCompositeListLabel(
+  [type.name, t('surveysScreen.remainingCount', { count: type.incompleteCount })],
+  index,
+  total,
+)}
 ```
 
 ### RadioGroup

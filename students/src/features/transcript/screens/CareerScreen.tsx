@@ -182,7 +182,7 @@ export const CareerScreen = () => {
         <SafeAreaView>
           <Section>
             <SectionHeader title={t('transcriptMetricsScreen.yourCareer')} />
-            <Card style={styles.chartCard} accessible={true}>
+            <Card style={styles.chartCard}>
               <View style={GlobalStyles.grow}>
                 <Metric
                   title={t('transcriptMetricsScreen.acquiredCreditsLabel')}
@@ -225,7 +225,7 @@ export const CareerScreen = () => {
 
           <Section>
             <SectionHeader title={t('transcriptMetricsScreen.thisYear')} />
-            <Card style={styles.chartCard} accessible={true}>
+            <Card style={styles.chartCard}>
               <View style={GlobalStyles.grow}>
                 <Metric
                   title={t('transcriptMetricsScreen.acquiredCreditsLabel')}
@@ -275,7 +275,7 @@ export const CareerScreen = () => {
                 color: colors.link,
               }}
             />
-            <Card style={styles.metricsCard} accessible={true}>
+            <Card style={styles.metricsCard}>
               <Col>
                 <>
                   <Row>
@@ -338,7 +338,7 @@ export const CareerScreen = () => {
                   color: colors.link,
                 }}
               />
-              <Card style={styles.metricsCard} accessible={true}>
+              <Card style={styles.metricsCard}>
                 <Metric
                   title={t('transcriptMetricsScreen.onTimeScores')}
                   value={formatExamOnTime(

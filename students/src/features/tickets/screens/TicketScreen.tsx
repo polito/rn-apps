@@ -222,12 +222,8 @@ export const TicketScreen = ({ route, navigation }: Props) => {
                 ticket={ticket}
                 loading={ticketQuery?.isLoading}
               />
-              <Pressable
-                accessibilityRole="text"
-                accessibilityLabel={accessibilityMessageText}
-              >
+              <Pressable accessible={false}>
                 <ChatBubble
-                  accessibilityRole="text"
                   accessibilityLabel={accessibilityMessageText}
                   style={styless.requestMessage}
                 >

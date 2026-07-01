@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AccessibilityInfo, FlatList } from 'react-native';
+import { FlatList } from 'react-native';
 
 import {
   APP_TIMEZONE,
@@ -37,8 +37,11 @@ export const CourseNoticesScreen = () => {
   const courseId = useCourseContext();
   const noticesQuery = useGetCourseNotices(courseId);
   useAnnounceLoading(noticesQuery.isLoading);
-  const { accessibilityListLabel, getListAccessibilityProps } =
-    useAccessibility();
+  const {
+    buildCompositeListLabel,
+    getListAccessibilityProps,
+    announceIfEnabled,
+  } = useAccessibility();
   const { getUnreadsCount, clearNotificationScope } = useNotifications();
   const { paddingHorizontal } = useSafeAreaSpacing();
   const isCacheMissing = useOfflineDisabled(
@@ -65,12 +68,10 @@ export const CourseNoticesScreen = () => {
     useCallback(() => {
       if (!notices || notices?.length === 0) {
         setTimeout(() => {
-          AccessibilityInfo.announceForAccessibility(
-            t('courseNoticesTab.emptyState'),
-          );
+          announceIfEnabled(t('courseNoticesTab.emptyState'));
         }, 500);
       }
-    }, [notices, t]),
+    }, [notices, t, announceIfEnabled]),
   );
 
   return (
@@ -86,34 +87,42 @@ export const CourseNoticesScreen = () => {
       refreshControl={<RefreshControl manual queries={[noticesQuery]} />}
       data={notices}
       keyExtractor={item => item.id.toString()}
-      renderItem={({ item: notice, index }) => (
-        <ListItem
-          title={notice.title}
-          accessibilityLabel={`${
-            getUnreadsCount([...noticesNotificationScope, `${notice.id}`])
-              ? `${t('common.unread')}, ${t(
-                  'courseNoticesTab.messageReadAfterGoBack',
-                )}`
-              : ''
-          } ${t(
-            accessibilityListLabel(index, notices?.length || 0),
-          )}. ${DateTime.fromJSDate(notice.publishedAt, {
-            zone: APP_TIMEZONE,
-          }).toFormat('dd/MM/yyyy')}, ${notice.title}`}
-          subtitle={formatDate(notice.publishedAt)}
-          linkTo={{
-            screen: 'Notice',
-            params: {
-              noticeId: notice.id,
-              courseId,
-              date: formatDate(notice.publishedAt),
-            },
-          }}
-          unread={
-            !!getUnreadsCount([...noticesNotificationScope, `${notice.id}`])
-          }
-        />
-      )}
+      renderItem={({ item: notice, index }) => {
+        const unreadPrefix = getUnreadsCount([
+          ...noticesNotificationScope,
+          `${notice.id}`,
+        ])
+          ? `${t('common.unread')}, ${t('courseNoticesTab.messageReadAfterGoBack')}`
+          : '';
+        const dateLabel = DateTime.fromJSDate(notice.publishedAt, {
+          zone: APP_TIMEZONE,
+        }).toFormat('dd/MM/yyyy');
+
+        return (
+          <ListItem
+            title={notice.title}
+            accessibilityRole="button"
+            accessibilityHint={t('common.tapToNavigate')}
+            accessibilityLabel={buildCompositeListLabel(
+              [unreadPrefix, notice.title, dateLabel].filter(Boolean),
+              index,
+              notices?.length || 0,
+            )}
+            subtitle={formatDate(notice.publishedAt)}
+            linkTo={{
+              screen: 'Notice',
+              params: {
+                noticeId: notice.id,
+                courseId,
+                date: formatDate(notice.publishedAt),
+              },
+            }}
+            unread={
+              !!getUnreadsCount([...noticesNotificationScope, `${notice.id}`])
+            }
+          />
+        );
+      }}
       ListFooterComponent={<BottomBarSpacer />}
       ItemSeparatorComponent={() => <IndentedDivider indent={spacing[5]} />}
       ListEmptyComponent={() => {

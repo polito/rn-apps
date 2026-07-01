@@ -17,6 +17,7 @@ import {
   ProvisionalGradeStateEnum,
 } from '@polito/student-api-client';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetRejectionTime } from '../hooks/useGetRejectionTime';
 import { ProvisionalGradeStatusBadge } from './ProvisionalGradeStatusBadge';
@@ -29,7 +30,7 @@ type Props = {
 
 export const ProvisionalGradeListItem = ({ grade, index, total }: Props) => {
   const { t } = useTranslation();
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
 
   const styles = useStylesheet(createStyles);
   const isRejected = grade.state === ProvisionalGradeStateEnum.Rejected;
@@ -99,16 +100,17 @@ export const ProvisionalGradeListItem = ({ grade, index, total }: Props) => {
 
   const accessibilityLabel = useMemo(
     () =>
-      [
-        t('transcriptGradesScreen.provisionalGradeItem', {
-          courseName: grade.courseName,
-          state: stateLabel,
-        }),
-        accessibilityListLabel(index, total),
-      ]
-        .filter(Boolean)
-        .join(', '),
-    [grade.courseName, stateLabel, index, total, t, accessibilityListLabel],
+      buildCompositeListLabel(
+        [
+          t('transcriptGradesScreen.provisionalGradeItem', {
+            courseName: grade.courseName,
+            state: stateLabel,
+          }),
+        ],
+        index,
+        total,
+      ),
+    [grade.courseName, stateLabel, index, total, t, buildCompositeListLabel],
   );
 
   return (
@@ -135,11 +137,7 @@ export const ProvisionalGradeListItem = ({ grade, index, total }: Props) => {
       }
       trailingItem={
         <Row align="center" pl={2}>
-          <View
-            accessible={false}
-            importantForAccessibility="no-hide-descendants"
-            accessibilityElementsHidden={IS_IOS}
-          >
+          <View {...hideFromScreenReader}>
             <ProvisionalGradeStatusBadge grade={grade} />
           </View>
           {IS_IOS && !isRejected ? <DisclosureIndicator /> : undefined}
