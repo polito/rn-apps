@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { IS_IOS } from '@polito/lib/core';
 import {
   Col,
   Icon,
@@ -28,19 +29,38 @@ export const BookingField = ({
   const { palettes } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+  const fieldValue = value ?? (emptyText || t('common.noValue'));
   return (
-    <Col flex={1} style={styles.container} accessible>
+    <Col
+      flex={1}
+      style={styles.container}
+      accessible
+      importantForAccessibility="no-hide-descendants"
+      accessibilityLabel={`${label}: ${fieldValue}`}
+    >
       <Row align="center">
-        <Icon icon={icon} color={palettes.primary['500']} size={16} />
-        <Text style={styles.text}>{label}</Text>
+        <View
+          accessible={false}
+          importantForAccessibility="no-hide-descendants"
+          accessibilityElementsHidden={IS_IOS}
+        >
+          <Icon icon={icon} color={palettes.primary['500']} size={16} />
+        </View>
+        <Text style={styles.text} accessible={false}>
+          {label}
+        </Text>
       </Row>
       <Row mt={0.5}>
         {value ? (
-          <Text style={StyleSheet.compose(styles.value, styles.withValue)}>
+          <Text
+            accessible={false}
+            style={StyleSheet.compose(styles.value, styles.withValue)}
+          >
             {value}
           </Text>
         ) : (
           <Text
+            accessible={false}
             numberOfLines={1}
             style={StyleSheet.compose(styles.empty, styles.value)}
           >

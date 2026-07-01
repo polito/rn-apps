@@ -1,0 +1,61 @@
+# Accessibility — User / Profile section
+
+## What has been implemented
+
+### `UserQrModal`
+
+- Modal title wrapped in accessible `View` with `accessibilityRole="header"` and i18n label `userQrModal.studentIdentity` (first name, last name, student ID).
+- Child `Text` nodes set to `accessible={false}` so iOS reads one composite heading.
+- Focus moves to the header on open (`setAccessibilityFocus` after 100 ms animation delay).
+- `accessibilityViewIsModal={IS_ANDROID}` on the modal container for TalkBack focus trapping.
+
+### `MessagesScreen`
+
+- Swipe-to-delete action button has `accessibilityRole="button"` and `accessibilityLabel={t('messagesScreen.deleteMessage')}`.
+
+### Translations
+
+- New keys added to `en.json` and `it.json`:
+  - `userQrModal.studentIdentity`
+  - `messagesScreen.deleteMessage`
+
+---
+
+## Best practices for this section
+
+### Custom modal — focus and Android trapping
+
+`UserQrModal` uses `react-native-modal`, not `BottomModal`. Apply both patterns manually:
+
+```tsx
+const headerRef = useRef<View>(null);
+
+useLayoutEffect(() => {
+  if (!visible) return;
+  const timer = setTimeout(() => {
+    const node = findNodeHandle(headerRef.current);
+    if (node) AccessibilityInfo.setAccessibilityFocus(node);
+  }, 100);
+  return () => clearTimeout(timer);
+}, [visible]);
+
+<View accessibilityViewIsModal={IS_ANDROID} /* modal content */>
+  <View ref={headerRef} accessible accessibilityRole="header" accessibilityLabel={t('userQrModal.studentIdentity', { ... })}>
+    <Text accessible={false}>…</Text>
+  </View>
+</View>
+```
+
+### No hardcoded accessibility strings
+
+```tsx
+// WRONG
+accessibilityLabel={`${student.nome} ${student.cognome}, ${student.matricola}`}
+
+// CORRECT
+accessibilityLabel={t('userQrModal.studentIdentity', {
+  firstName: student?.nome ?? '',
+  lastName: student?.cognome ?? '',
+  studentId: student?.matricola ?? '',
+})}
+```

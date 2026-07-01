@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import ContextMenu from 'react-native-context-menu-view';
 
 import { faComments } from '@fortawesome/free-regular-svg-icons';
@@ -30,20 +30,35 @@ import {
 import { TicketOverview, TicketStatus } from '@polito/student-api-client';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import {
   TICKET_QUERY_PREFIX,
   useMarkTicketAsClosed,
 } from '../../../core/queries/ticketHooks';
 
+const hideFromScreenReader = {
+  accessible: false as const,
+  importantForAccessibility: 'no-hide-descendants' as const,
+  accessibilityElementsHidden: IS_IOS,
+};
+
 interface TicketListItemProps extends Partial<ListItemProps> {
   ticket: TicketOverview;
+  index: number;
+  total: number;
 }
 
-export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
+export const TicketListItem = ({
+  ticket,
+  index,
+  total,
+  ...props
+}: TicketListItemProps) => {
   const { fontSizes, colors, palettes, spacing, dark } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
+  const { accessibilityListLabel } = useAccessibility();
   const { mutateAsync: markTicketAsClosed } = useMarkTicketAsClosed(ticket?.id);
   const confirm = useConfirmationDialog({
     message: t('tickets.closeTip'),
@@ -75,7 +90,12 @@ export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
 
   const UnReadCount = useCallback(
     () => (
-      <Col justify="center" align="center" style={styles.unreadCount}>
+      <Col
+        justify="center"
+        align="center"
+        style={styles.unreadCount}
+        {...hideFromScreenReader}
+      >
         <Text style={styles.unreadCountText}>{ticket?.unreadCount || 0}</Text>
       </Col>
     ),
@@ -89,44 +109,81 @@ export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
     return Promise.reject();
   }, [confirm, markTicketAsClosed]);
 
+  const ticketSubject = getHtmlTextContent(ticket?.subject);
+  const ticketDate = formatDateTime(ticket.updatedAt);
+  const ticketAccessibilityLabel = useMemo(() => {
+    const parts = [ticketSubject, ticketDate];
+    if (ticket.unreadCount > 0) {
+      parts.push(t('ticketsScreen.unreadCount', { count: ticket.unreadCount }));
+    }
+    parts.push(accessibilityListLabel(index, total));
+    return parts.filter(Boolean).join(', ');
+  }, [
+    ticketSubject,
+    ticketDate,
+    ticket.unreadCount,
+    index,
+    total,
+    t,
+    accessibilityListLabel,
+  ]);
+
+  const handleAccessibilityAction = useCallback(
+    ({ nativeEvent }: { nativeEvent: { actionName: string } }) => {
+      if (nativeEvent.actionName === 'close') {
+        onPressCloseTicket();
+      }
+    },
+    [onPressCloseTicket],
+  );
+
   const Item = useCallback(
     () => (
       <ListItem
         {...props}
         accessibilityRole="button"
         accessible={true}
+        accessibilityLabel={ticketAccessibilityLabel}
+        accessibilityHint={t('common.tapToNavigate')}
+        accessibilityState={{ disabled: isDisabled }}
+        accessibilityActions={
+          markTicketAsClosedEnabled
+            ? [{ name: 'close', label: t('tickets.close') }]
+            : undefined
+        }
+        onAccessibilityAction={handleAccessibilityAction}
         linkTo={{
           screen: 'Ticket',
           params: { id: ticket.id },
         }}
         disabled={isDisabled}
-        title={getHtmlTextContent(ticket?.subject)}
-        subtitle={`${formatDateTime(ticket.updatedAt)} - ${getHtmlTextContent(
-          ticket?.message,
-        )}`}
+        title={ticketSubject}
+        subtitle={`${ticketDate} - ${getHtmlTextContent(ticket?.message)}`}
         subtitleStyle={styles.listItemSubtitle}
-        leadingItem={<Icon icon={faComments} size={20} />}
+        leadingItem={
+          <View {...hideFromScreenReader}>
+            <Icon icon={faComments} size={20} />
+          </View>
+        }
         trailingItem={
           <Row align="center">
             {ticket?.hasAttachments && (
-              <Icon
-                icon={faPaperclip}
-                size={20}
-                color={palettes.text[400]}
+              <View
+                {...hideFromScreenReader}
                 style={
-                  ticket.unreadCount === 0 && {
-                    marginHorizontal: spacing[2],
-                  }
+                  ticket.unreadCount === 0
+                    ? { marginHorizontal: spacing[2] }
+                    : undefined
                 }
-              />
+              >
+                <Icon icon={faPaperclip} size={20} color={palettes.text[400]} />
+              </View>
             )}
             {ticket.unreadCount > 0 && <UnReadCount />}
             {IS_IOS && (
-              <Icon
-                icon={faChevronRight}
-                color={colors.secondaryText}
-                style={styles.icon}
-              />
+              <View {...hideFromScreenReader} style={styles.icon}>
+                <Icon icon={faChevronRight} color={colors.secondaryText} />
+              </View>
             )}
             {!IS_IOS && markTicketAsClosedEnabled && (
               <ContextMenu
@@ -135,12 +192,14 @@ export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
                 onPress={onPressCloseTicket}
                 dropdownMenuMode
               >
-                <IconButton
-                  style={styles.icon}
-                  icon={faEllipsisVertical}
-                  color={colors.secondaryText}
-                  size={fontSizes.xl}
-                />
+                <View {...hideFromScreenReader}>
+                  <IconButton
+                    style={styles.icon}
+                    icon={faEllipsisVertical}
+                    color={colors.secondaryText}
+                    size={fontSizes.xl}
+                  />
+                </View>
               </ContextMenu>
             )}
           </Row>
@@ -151,13 +210,17 @@ export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
       props,
       ticket,
       isDisabled,
+      ticketSubject,
+      ticketDate,
+      ticketAccessibilityLabel,
+      markTicketAsClosedEnabled,
+      handleAccessibilityAction,
       styles,
       palettes,
       spacing,
       colors,
       fontSizes,
       UnReadCount,
-      markTicketAsClosedEnabled,
       actions,
       onPressCloseTicket,
       t,

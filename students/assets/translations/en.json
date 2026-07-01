@@ -16,7 +16,8 @@
     "paragraphSpacingSubtitle": "Add extra space between paragraphs",
     "themeCustomizationTitle": "Theme customization",
     "wordSpacingTitle": "Word spacing",
-    "wordSpacingSubtitle": "Increase distance between words"
+    "wordSpacingSubtitle": "Increase distance between words",
+    "customFontDefault": "No custom font"
   },
   "agendaScreen": {
     "backToToday": "Back to today",
@@ -70,7 +71,9 @@
       "place": "Place",
       "virtualPlace": "Link virtual place"
     },
-    "seatHint": "Navigate to seat selection"
+    "seatHint": "Navigate to seat selection",
+    "nextWeek": "Next week",
+    "previousWeek": "Previous week"
   },
   "bookingSeatScreen": {
     "confirm": "Confirm booking",
@@ -80,11 +83,13 @@
     "seatStatus": {
       "available": "Available",
       "booked": "Booked",
-      "notAvailable": "Non bookable"
+      "notAvailable": "Non bookable",
+      "unavailable": "Not bookable"
     },
     "slotBookableFrom": "This slot will be bookable starting from ",
     "title": "Select a seat",
-    "zoomInToEnableSeatSelection": "Zoom in to enable seat selection"
+    "zoomInToEnableSeatSelection": "Zoom in to enable seat selection",
+    "confirmSuccess": "Booking confirmed"
   },
   "bookingsScreen": {
     "emptyState": "You have no active bookings",
@@ -360,7 +365,28 @@
     "warning": "Warning",
     "year": "year",
     "yes": "Yes",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "on": "out of",
+    "notAvailable": "Not yet available",
+    "and": "and",
+    "activated": "Activated",
+    "active": "Active",
+    "areYouSureColorAccessibility": "Are you sure? The selected color has not been tested for accessibility.",
+    "clickForChange": "Tap to change state",
+    "deactivated": "Deactivated",
+    "directory": "Folder",
+    "disabledPreviousValue": "Disabled because previous values were not entered",
+    "document": "Attachment",
+    "downloadClick": "Double tap to download",
+    "fromTime": "from",
+    "hiddenEvent": "Hide event",
+    "note": "Notes",
+    "openSourceAccessibilityLabel": "Open Source, tap to go to the app GitHub repository",
+    "retracted": "Withdrawn",
+    "selectColor": "Select a color",
+    "tenth": "Tenth",
+    "toTime": "to",
+    "week": "Week"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Remove",
@@ -409,7 +435,9 @@
   },
   "courseAssignmentsTab": {
     "emptyState": "There are no assignments here",
-    "title": "Assignments"
+    "title": "Assignments",
+    "longPress": "Long press to open the menu to withdraw the assignment",
+    "menuInfo": "Assignment settings, through the menu you can choose which assignments to withdraw"
   },
   "courseColorPickerScreen": {
     "accessibleColor": "Accessible colors",
@@ -443,7 +471,8 @@
   "courseFileListItem": {
     "openFileError": "Cannot open the file.",
     "reDownloadFile": "Redownload file",
-    "fileSavedPrefix": "File saved in"
+    "fileSavedPrefix": "File saved in",
+    "downloadPending": "Download in progress"
   },
   "courseFilesTab": {
     "browseFiles": "Browse files",
@@ -469,7 +498,9 @@
     "updateDownloadedInfoMessages": "{{downloadedCount}} already downloaded files will be updated and {{newCount}} new files will be downloaded.",
     "updateDownloadedInfoTitle": "Download",
     "updateDownloadedMessage": "{{count}} selected files are already downloaded. Do you want to update them?",
-    "updateDownloadedTitle": "Update downloaded files"
+    "updateDownloadedTitle": "Update downloaded files",
+    "longPress": "Long press to open the menu to update or delete the file",
+    "openDirectory": "Double tap to open the folder"
   },
   "courseGuideScreen": {
     "title": "Course guide"
@@ -581,7 +612,8 @@
   },
   "courseNoticesTab": {
     "emptyState": "There are no news here",
-    "title": "News"
+    "title": "News",
+    "messageReadAfterGoBack": "The message will be marked as read after leaving this screen"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
@@ -595,7 +627,9 @@
     "lecturesSubtitle": "New lectures available",
     "noticesSubtitle": "News sent by the professor",
     "showInExtracts": "Show in extracts",
-    "showInExtractsSubtitle": "In home screen and agenda"
+    "showInExtractsSubtitle": "In home screen and agenda",
+    "choseIcon": "Choose an icon for the course",
+    "selectedIcon": "Selected icon"
   },
   "courseScreen": {
     "fileDownloadFailed": "The download failed. Please try again later.",
@@ -610,7 +644,12 @@
     "emptyState": "No courses available",
     "otherCoursesSectionTitle": "Other courses",
     "title": "Courses",
-    "total": "There are {{total}} courses"
+    "total": "There are {{total}} courses",
+    "totalNotVisible": "There are {{total}} hidden courses",
+    "hiddenCredits": "Credits hidden",
+    "visibleCredits": "Credits visible",
+    "longPress": "Long press this button to open a menu that lets you follow or unfollow the course",
+    "notVisible": "Hidden course"
   },
   "cpdSurveysScreen": {
     "emptyState": "There are no surveys",
@@ -631,7 +670,10 @@
     "title": "Create ticket",
     "topicDescription": "Select topic",
     "topicDropdownLabel": "Topic",
-    "topicDropdownPlaceholder": "Pick a topic"
+    "topicDropdownPlaceholder": "Pick a topic",
+    "addFile": "Add file",
+    "subtopicDropdownLabelAccessibility": "Subtopic, open and choose from the options",
+    "topicDropdownLabelAccessibility": "Topic, open and choose from the options"
   },
   "degreeCourseScreen": {
     "classroomExercise": "Classroom excercise",
@@ -645,7 +687,8 @@
     "statistics": "Statistics",
     "statisticsSubtitle": "See exam statistics",
     "title": "Course",
-    "tutoring": "Tutoring"
+    "tutoring": "Tutoring",
+    "periodSelect": "Double tap to change the course year"
   },
   "degreeScreen": {
     "cohort": "Coorte",
@@ -743,7 +786,8 @@
   "examsScreen": {
     "emptyState": "There are no open exam calls",
     "title": "Exam calls",
-    "total": "There are {{ total }} exam calls"
+    "total": "There are {{ total }} exam calls",
+    "totalNotVisible": "There are {{ total }} hidden exam calls"
   },
   "freeRoomsScreen": {
     "noFreeRooms": "No free rooms found",
@@ -828,7 +872,8 @@
     "usernameLabel": "Student ID",
     "usernameLabelAccessibility": "Enter your username here",
     "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received.",
-    "SSO": "Login with SSO"
+    "SSO": "Login with SSO",
+    "onboarding": "Onboarding"
   },
   "messageScreen": {
     "backTitle": "Archive",
@@ -844,7 +889,8 @@
     "sentAt": "Sent at",
     "title": "Messages archive",
     "unreadMessages": "Message ({{read}} of {{total}})",
-    "youHaveUnreadMessages": "You have {{total}} unread messages"
+    "youHaveUnreadMessages": "You have {{total}} unread messages",
+    "deleteMessage": "Delete message"
   },
   "messagingView": {
     "pickFile": "Pick file max 32MB",
@@ -852,7 +898,8 @@
     "pickPhoto": "Pick image",
     "pickPhotoHint": "From your library",
     "takePhoto": "Take photo",
-    "takePhotoHint": "Take one or more photos and generate a file"
+    "takePhotoHint": "Take one or more photos and generate a file",
+    "activeReplay": "Active, double tap to activate"
   },
   "mfaScreen": {
     "headerTitle": "Authenticator",
@@ -901,7 +948,8 @@
       "locked": "Blocked",
       "removed": "PoliTO Authenticator on this device has been removed from the MFA Management panel. You can re-add it by entering the dedicated section available on this screen.",
       "removedTitle": "Authenticator Removed"
-    }
+    },
+    "description": "<b>PoliTO Authenticator</b> is a multi-factor authentication method that provides secure and fast access to University services by sending a notification to your device to confirm your identity.<br/><br/>It is based on asymmetric cryptography and is <b>installed per device</b>: each installation is independent and tied to a single device.<br/><br/>The following actions will remove this PoliTO Authenticator installation from your device:<br/>- Logging out<br/>- Uninstalling the app<br/>- Clearing app data through device settings<br/><br/>You can always manage all multi-factor authentication methods by visiting <b>idp.polito.it > MFA Management</b>"
   },
   "newsScreen": {
     "createdAt": "Published on ",
@@ -1016,7 +1064,8 @@
     "teacher": "Holder",
     "textModal": "Having taken the exam by the first useful session, you are awarded an additional score of 0.5, which will be added to your final grade.\nYou can consult your total on-time points on career.\nMore information is available in the Student Guide.",
     "titleOnTimePoint": "On-time Exam points",
-    "ctaButtonModal": "Access your career"
+    "ctaButtonModal": "Access your career",
+    "gradeValue": "Grade: {{grade}}"
   },
   "sectionHeader": {
     "cta": "See all",
@@ -1062,7 +1111,8 @@
     "toBeCompiledEmptyState": "There are no surveys to be compiled",
     "toBeCompiledTitle": "Surveys to be compiled",
     "tapToOpenSurvey": "Tap to open survey",
-    "surveysList": "There are {{count}} surveys"
+    "surveysList": "There are {{count}} surveys",
+    "remainingCount": "{{count}} remaining"
   },
   "graduationCodeScreen": {
     "dateTime": "Date and time",
@@ -1104,7 +1154,8 @@
     "headerBackTitle": "New",
     "noResultFound": "Didn't find what you are looking for?",
     "title": "FAQ",
-    "writeTicket": "Open ticket"
+    "writeTicket": "Open ticket",
+    "writeTicketMessage": "Write a ticket if you didn't find what you're looking for"
   },
   "ticketFaqsScreen": {
     "emptyState": "No results found",
@@ -1114,7 +1165,8 @@
     "search": "Search (type at least 3 characters)",
     "searchMinLengthHint": "Please, insert at least 3 characters.",
     "title": "FAQs",
-    "writeTicket": "Write ticket"
+    "writeTicket": "Write ticket",
+    "searchButton": "Activate to search the entered keywords among the FAQs"
   },
   "ticketScreen": {
     "headerBackTitle": "Tickets",
@@ -1129,7 +1181,13 @@
     "sendError": "There was an error while sending the message. Try again.",
     "ticketNumber": "Ticket number",
     "title": "Ticket",
-    "youCanReopenTheTicket": "You can reopen the ticket at any time by submitting a reply"
+    "youCanReopenTheTicket": "You can reopen the ticket at any time by submitting a reply",
+    "feedbackPositive": "Helpful",
+    "feedbackNegative": "Not helpful",
+    "incomingMessage": "Your reply",
+    "outgoingMessage": "Reply from operator number",
+    "send": "Send",
+    "yourQuestion": "Your question"
   },
   "tickets": {
     "close": "Close ticket",
@@ -1147,7 +1205,10 @@
     "closedEmptyState": "There are no closed tickets",
     "openEmptyState": "There are no open tickets",
     "opened": "Open tickets",
-    "title": "Ticket"
+    "title": "Ticket",
+    "unreadCount": "{{count}} unread",
+    "noClosedTickets": "There are no closed tickets",
+    "noOpenTickets": "There are no open tickets"
   },
   "transcriptGradeScreen": {
     "title": "Evaluation"
@@ -1162,7 +1223,9 @@
     "rejectedSubtitle": "Rejected on {{-date}} at {{-time}}",
     "rejectionCountdown": "Rejectable by:",
     "title": "Grades",
-    "total": "There are {{total}} grades"
+    "total": "There are {{total}} grades",
+    "gradeValue": "Grade: {{grade}}",
+    "provisionalGradeItem": "{{courseName}}, {{state}}"
   },
   "transcriptMetricsScreen": {
     "acquiredCreditsLabel": "Acquired credits",
@@ -1214,6 +1277,9 @@
   },
   "videoPlayer": {
     "speedSectionTitle": "Speed"
+  },
+  "userQrModal": {
+    "studentIdentity": "{{firstName}} {{lastName}}, {{studentId}}"
   },
   "staffScreen": {
     "staffList": "Staff list, {{count}} members"

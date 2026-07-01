@@ -9,9 +9,12 @@
 
 ### `Checkbox` (shared component)
 
-- `accessibilityRole="checkbox"`, `accessibilityState={{ checked, disabled }}`, `accessibilityLabel={text}`.
-- Inner icon and sibling `Text` hidden from a11y tree.
-- `hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}` added so the touch target meets the 44×44 pt minimum.
+- `accessibilityRole="checkbox"`, `accessibilityState={{ checked, disabled }}`, `accessibilityLabel={accessibilityLabel ?? text}`.
+- Optional `accessibilityLabel` prop overrides visible `text` when the label needs more context.
+
+### `useScreenReader` (shared hook)
+
+- Subscribes to `AccessibilityInfo` `screenReaderChanged` so `isEnabled` updates when the user toggles VoiceOver/TalkBack without restarting the app.
 
 ### `ProgressChart`
 
@@ -38,8 +41,9 @@
 
 ### `SurveyCategoryListItem`
 
-- Composite `accessibilityLabel` with category name + pending count.
-- `accessibilityRole="button"`.
+- `accessibilityRole="button"` and `accessibilityHint={t('common.tapToNavigate')}`.
+- Composite `accessibilityLabel`: category name, pending count (`surveysScreen.remainingCount`), position via `accessibilityListLabel(index, total)` at the **end**.
+- `SurveyTypesSection` passes `index` and `total` from the `types.map` callback.
 
 ### `SurveyListItem` / `SurveyListItemByTypeName`
 
@@ -84,7 +88,7 @@
 - New keys added to `en.json` and `it.json`:
   - `examRescheduleScreen.ctaDisabledHint`
   - `common.progressChart`, `common.progressChartMulti`
-  - `surveysScreen.tapToOpenSurvey`, `surveysScreen.surveysList`
+  - `surveysScreen.tapToOpenSurvey`, `surveysScreen.surveysList`, `surveysScreen.remainingCount`
 
 ---
 
@@ -125,11 +129,15 @@ useLayoutEffect(() => {
 
 ### Survey list items
 
-Every `SurveyListItem` gets role, hint, and a label that includes the survey's own title — never replace the title with a position-only string:
+Every `SurveyListItem` and `SurveyCategoryListItem` gets role, hint, and a label that includes the item's own title — never replace the title with a position-only string. Position always goes at the **end**:
 
 ```tsx
-// Position at the end, title first
-accessibilityLabel={`${survey.title}, ${accessibilityListLabel(index, total)}`}
+// SurveyCategoryListItem — position at the end
+accessibilityLabel={[
+  type.name,
+  t('surveysScreen.remainingCount', { count: type.incompleteCount }),
+  accessibilityListLabel(index, total),
+].filter(Boolean).join(', ')}
 ```
 
 ### RadioGroup

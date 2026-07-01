@@ -55,8 +55,13 @@ export const GradesScreen = () => {
                 : t('transcriptGradesScreen.provisionalEmptyState')
             }
           >
-            {provisionalGradesQuery.data?.map(grade => (
-              <ProvisionalGradeListItem key={grade.id} grade={grade} />
+            {provisionalGradesQuery.data?.map((grade, index) => (
+              <ProvisionalGradeListItem
+                key={grade.id}
+                grade={grade}
+                index={index}
+                total={provisionalGradesQuery.data?.length ?? 0}
+              />
             ))}
           </OverviewList>
         </Section>

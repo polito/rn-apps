@@ -44,6 +44,12 @@
 - Check-in and cancel `CtaButton` have `accessibilityHint` and explicit `accessibilityState={{ disabled }}`.
 - Successful check-in is announced via `AccessibilityInfo.announceForAccessibility`.
 
+### `BookingField`
+
+- Single accessible `Col` with composite `accessibilityLabel` (`label: value`), `importantForAccessibility="no-hide-descendants"`.
+- Decorative icon wrapped with `importantForAccessibility` + `accessibilityElementsHidden={IS_IOS}`.
+- Inner `Text` nodes set to `accessible={false}`.
+
 ### `LectureScreen`
 
 - `ListItem` elements for room and course-files have `accessibilityRole="button"` and `accessibilityLabel`.
@@ -98,6 +104,28 @@ Hide inner layout elements:
     {/* inner content */}
   </Col>
 </TouchableHighlight>
+```
+
+### BookingField — composite read-only field
+
+Group label and value into one focus target; hide decorative icon and duplicate text:
+
+```tsx
+<Col
+  accessible
+  importantForAccessibility="no-hide-descendants"
+  accessibilityLabel={`${label}: ${fieldValue}`}
+>
+  <View
+    accessible={false}
+    importantForAccessibility="no-hide-descendants"
+    accessibilityElementsHidden={IS_IOS}
+  >
+    <Icon icon={icon} />
+  </View>
+  <Text accessible={false}>{label}</Text>
+  <Text accessible={false}>{fieldValue}</Text>
+</Col>
 ```
 
 ### Checkbox labels in HiddenEventsScreen

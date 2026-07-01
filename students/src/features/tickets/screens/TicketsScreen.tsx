@@ -2,14 +2,12 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AccessibilityInfo,
-  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
 } from 'react-native';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { getHtmlTextContent } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   CtaButton,
@@ -25,7 +23,6 @@ import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onlineManager } from '@tanstack/react-query';
 
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
@@ -50,24 +47,13 @@ const ListItem = ({
     [getUnreadsCount, ticket.id],
   );
 
-  const { accessibilityListLabel } = useAccessibility();
-  const accessibilityLabel = [
-    accessibilityListLabel(index, totalData),
-    getHtmlTextContent(ticket?.subject),
-  ].join(', ');
-
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
-    >
-      <TicketListItem
-        accessibilityLabel={accessibilityLabel}
-        ticket={ticket}
-        key={ticket.id}
-        unread={unread}
-      />
-    </Pressable>
+    <TicketListItem
+      ticket={ticket}
+      index={index}
+      total={totalData}
+      unread={unread}
+    />
   );
 };
 

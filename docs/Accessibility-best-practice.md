@@ -1,6 +1,6 @@
 # Accessibility Guide — Students App PoliTo
 
-This document is the **mandatory entry point** for any developer working on the Students app. It collects all best practices identified during accessibility sessions on Teaching, Agenda, Offering, Contacts, Job Offers, Guides, and Services. Detailed documentation for each section is available in [`.github/accessibility/`](../.github/accessibility/README.md).
+This document is the **mandatory entry point** for any developer working on the Students app. It collects all best practices identified during accessibility sessions on Teaching, Agenda, Offering, Contacts, Job Offers, Guides, Services, Tickets, Transcript, and User/Profile. Detailed documentation for each section is available in [`.github/accessibility/`](../.github/accessibility/README.md).
 
 ---
 
@@ -847,17 +847,17 @@ SVG components such as `RNCKProgressChart` are traversed by TalkBack even when t
 
 ### Quick reference
 
-| Utility                 | Path                                                  | When to use it                                                               |
-| ----------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `useAccessibility`      | `students/src/core/hooks/useAccessibilty.ts`          | Central a11y hook. File name has intentional typo; import `useAccessibility` |
-| `useScreenReader`       | `students/src/core/hooks/useScreenReader.ts`          | Detects screen reader state; exposes `announce(msg)`                         |
-| `useAccessibleListItem` | `students/src/core/hooks/useAccessibleListItem.ts`    | List item props with position, container props, list announcement            |
-| `AccessibleFlatList`    | `students/src/core/components/AccessibleFlatList.tsx` | FlatList with count and position — always prefer over bare FlatList          |
-| `AccessibleText`        | `students/src/core/components/AccessibleText.tsx`     | Adds `accessibilityLanguage` for mixed IT/EN text                            |
-| `MultiLingualText`      | `students/src/core/components/AccessibleText.tsx`     | Inline mixed text                                                            |
-| `VisuallyHidden`        | `lib/src/ui/components/VisuallyHidden.tsx`            | Zero-size wrapper for screen-reader-only content                             |
-| `Checkbox`              | `students/src/core/components/Checkbox.tsx`           | Already wraps role, state, hitSlop — do not reimplement                      |
-| `IS_IOS` / `IS_ANDROID` | `students/src/core/constants.ts`                      | Platform conditionals                                                        |
+| Utility                 | Path                                                  | When to use it                                                                        |
+| ----------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `useAccessibility`      | `students/src/core/hooks/useAccessibilty.ts`          | Central a11y hook. File name has intentional typo; import `useAccessibility`          |
+| `useScreenReader`       | `students/src/core/hooks/useScreenReader.ts`          | Detects screen reader state (`screenReaderChanged` listener); exposes `announce(msg)` |
+| `useAccessibleListItem` | `students/src/core/hooks/useAccessibleListItem.ts`    | List item props with position, container props, list announcement                     |
+| `AccessibleFlatList`    | `students/src/core/components/AccessibleFlatList.tsx` | FlatList with count and position — always prefer over bare FlatList                   |
+| `AccessibleText`        | `students/src/core/components/AccessibleText.tsx`     | Adds `accessibilityLanguage` for mixed IT/EN text                                     |
+| `MultiLingualText`      | `students/src/core/components/AccessibleText.tsx`     | Inline mixed text                                                                     |
+| `VisuallyHidden`        | `lib/src/ui/components/VisuallyHidden.tsx`            | Zero-size wrapper for screen-reader-only content                                      |
+| `Checkbox`              | `students/src/core/components/Checkbox.tsx`           | Already wraps role, state, and label — do not reimplement                             |
+| `IS_IOS` / `IS_ANDROID` | `students/src/core/constants.ts`                      | Platform conditionals                                                                 |
 
 ### `useAccessibility` — exposed functions
 
@@ -950,15 +950,18 @@ Before closing any accessibility session, check the following:
 
 Each section has complete documentation with issues found, applied solutions, and specific patterns:
 
-| Document                                                                        | Covered section    | Main topics                                                                  |
-| ------------------------------------------------------------------------------- | ------------------ | ---------------------------------------------------------------------------- |
-| [`.github/accessibility/teaching.md`](../.github/accessibility/teaching.md)     | Teaching + Surveys | Checkbox, ProgressChart, RadioGroup, ExamCTA, BottomModal, SurveyListItem    |
-| [`.github/accessibility/agenda.md`](../.github/accessibility/agenda.md)         | Agenda             | AgendaCard, WeekFilter, Calendar/HourGuideCell, BookingScreen, LectureScreen |
-| [`.github/accessibility/offering.md`](../.github/accessibility/offering.md)     | Offering           | Expandable sections, DegreeCourseScreen, HTML content, StaffListItem         |
-| [`.github/accessibility/contacts.md`](../.github/accessibility/contacts.md)     | Contacts           | Search with announcements, RecentSearch long press, PersonScreen             |
-| [`.github/accessibility/job-offers.md`](../.github/accessibility/job-offers.md) | Job Offers         | Card with navigable children, email/URL links, section heading               |
-| [`.github/accessibility/guides.md`](../.github/accessibility/guides.md)         | Guides             | GuideFieldListItem copy action, HtmlView, undefined guards                   |
-| [`.github/accessibility/services.md`](../.github/accessibility/services.md)     | Services           | ServiceCard nested buttons, NewsListItem, ServicesScreen labels              |
+| Document                                                                        | Covered section    | Main topics                                                                                       |
+| ------------------------------------------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------- |
+| [`.github/accessibility/teaching.md`](../.github/accessibility/teaching.md)     | Teaching + Surveys | Checkbox, ProgressChart, RadioGroup, ExamCTA, BottomModal, SurveyListItem, SurveyCategoryListItem |
+| [`.github/accessibility/agenda.md`](../.github/accessibility/agenda.md)         | Agenda             | AgendaCard, WeekFilter, Calendar/HourGuideCell, BookingScreen, BookingField, LectureScreen        |
+| [`.github/accessibility/offering.md`](../.github/accessibility/offering.md)     | Offering           | Expandable sections, DegreeCourseScreen, HTML content, StaffListItem                              |
+| [`.github/accessibility/contacts.md`](../.github/accessibility/contacts.md)     | Contacts           | Search with announcements, RecentSearch long press, PersonScreen                                  |
+| [`.github/accessibility/job-offers.md`](../.github/accessibility/job-offers.md) | Job Offers         | Card with navigable children, email/URL links, section heading                                    |
+| [`.github/accessibility/guides.md`](../.github/accessibility/guides.md)         | Guides             | GuideFieldListItem copy action, HtmlView, undefined guards                                        |
+| [`.github/accessibility/services.md`](../.github/accessibility/services.md)     | Services           | ServiceCard nested buttons, NewsListItem, ServicesScreen labels                                   |
+| [`.github/accessibility/tickets.md`](../.github/accessibility/tickets.md)       | Tickets            | TicketListItem, AccessibleFlatList, accessibilityActions, attachment chips                        |
+| [`.github/accessibility/transcript.md`](../.github/accessibility/transcript.md) | Transcript         | ProvisionalGradeListItem, grade screens, rejected-item handling                                   |
+| [`.github/accessibility/user.md`](../.github/accessibility/user.md)             | User / Profile     | UserQrModal focus trapping, MessagesScreen delete action                                          |
 
 ---
 

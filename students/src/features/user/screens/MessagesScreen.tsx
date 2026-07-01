@@ -53,6 +53,8 @@ export const MessagesScreen = () => {
                           styles.deleteButton,
                           { backgroundColor: palettes.danger[600] },
                         ]}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('messagesScreen.deleteMessage')}
                         onPress={() => handleDelete(message.id)}
                       >
                         <FontAwesomeIcon

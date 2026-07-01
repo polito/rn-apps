@@ -18,8 +18,12 @@
 
 ### `NewsListItem`
 
-- `accessibilityRole="button"` with composite label: position + title + subtitle.
-- Position info from `accessibilityListLabel(index, totalData)`.
+- `accessibilityRole="button"` with composite label: title + subtitle + position.
+- Position info from `accessibilityListLabel(index, totalData)` at the **end**.
+
+### `TicketsScreen` (under Services navigation)
+
+- Documented in [tickets.md](./tickets.md) — ticket list items, `AccessibleFlatList`, feedback bar.
 
 ### `JobOffersScreen` / `JobOfferListItem` / `JobOfferScreen`
 

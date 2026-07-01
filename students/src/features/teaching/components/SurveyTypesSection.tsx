@@ -14,8 +14,13 @@ export const SurveyTypesSection = ({ types }: Props) => {
     <Section>
       <SectionHeader title={t('teachingScreen.cpdTitle')} />
       <OverviewList indented>
-        {types.map(type => (
-          <SurveyCategoryListItem key={type.id} type={type} />
+        {types.map((type, index) => (
+          <SurveyCategoryListItem
+            key={type.id}
+            type={type}
+            index={index}
+            total={types.length}
+          />
         ))}
       </OverviewList>
     </Section>

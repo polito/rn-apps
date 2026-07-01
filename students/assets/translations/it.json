@@ -16,7 +16,8 @@
     "paragraphSpacingTitle": "Paragrafi",
     "paragraphSpacingSubtitle": "Aggiunge spazio extra tra un paragrafo e l’altro",
     "wordSpacingTitle": "Parole",
-    "wordSpacingSubtitle": "Amplia la distanza tra le parole"
+    "wordSpacingSubtitle": "Amplia la distanza tra le parole",
+    "themeCustomizationTitle": "Personalizzazione tema"
   },
   "agendaScreen": {
     "backToToday": "Torna a oggi",
@@ -384,7 +385,8 @@
     "week": "Settimana",
     "year": "anno",
     "yes": "Sì",
-    "yesterday": "Ieri"
+    "yesterday": "Ieri",
+    "customColorTitle": "Colori a scelta"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Rimuovi",
@@ -887,7 +889,8 @@
     "sentAt": "Inviato il",
     "title": "Archivio messaggi",
     "unreadMessages": "Messaggio ({{read}} di {{total}})",
-    "youHaveUnreadMessages": "Hai {{total}} messaggi non letti"
+    "youHaveUnreadMessages": "Hai {{total}} messaggi non letti",
+    "deleteMessage": "Elimina messaggio"
   },
   "messagingView": {
     "activeReplay": "Attivo, (tocca due volte per attivare)",
@@ -1061,7 +1064,8 @@
     "teacher": "Titolare",
     "textModal": "Avendo sostenuto l’esame entro la prima sessione utile, ti viene riconosciuto un punteggio aggiuntivo di 0.5 che si sommerà al voto di laurea.\nPuoi consultare il totale dei tuoi punteggi on-time su carriera.\nMaggiori informazioni nella Guida Studenti",
     "titleOnTimePoint": "Punti Esame on-time",
-    "ctaButtonModal": "Accedi alla tua carriera"
+    "ctaButtonModal": "Accedi alla tua carriera",
+    "gradeValue": "Voto: {{grade}}"
   },
   "sectionHeader": {
     "cta": "Vedi tutti",
@@ -1107,7 +1111,8 @@
     "toBeCompiledEmptyState": "Non ci sono questionari da compilare",
     "toBeCompiledTitle": "Questionari da compilare",
     "tapToOpenSurvey": "Tocca per aprire il questionario",
-    "surveysList": "Sono presenti {{count}} questionari"
+    "surveysList": "Sono presenti {{count}} questionari",
+    "remainingCount": "{{count}} rimanenti"
   },
   "graduationCodeScreen": {
     "dateTime": "Data e ora",
@@ -1180,7 +1185,9 @@
     "feedbackQuestion": "La risposta ti soddisfa?",
     "ticketNumber": "Numero ticket",
     "title": "Ticket",
-    "youCanReopenTheTicket": "Puoi riaprire il ticket in qualsiasi momento, inviando una risposta"
+    "youCanReopenTheTicket": "Puoi riaprire il ticket in qualsiasi momento, inviando una risposta",
+    "feedbackPositive": "Utile",
+    "feedbackNegative": "Non utile"
   },
   "tickets": {
     "close": "Chiudi ticket",
@@ -1200,7 +1207,8 @@
     "closedEmptyState": "Non ci sono ticket chiusi",
     "openEmptyState": "Non ci sono ticket aperti",
     "opened": "Ticket aperti",
-    "title": "Ticket"
+    "title": "Ticket",
+    "unreadCount": "{{count}} non letti"
   },
   "transcriptGradeScreen": {
     "title": "Valutazione"
@@ -1215,7 +1223,9 @@
     "rejectedSubtitle": "Rifiutato il {{-date}} alle {{-time}}",
     "rejectionCountdown": "Rifiutabile entro:",
     "title": "Valutazioni",
-    "total": "Sono presenti {{total}} valutazioni"
+    "total": "Sono presenti {{total}} valutazioni",
+    "gradeValue": "Voto: {{grade}}",
+    "provisionalGradeItem": "{{courseName}}, {{state}}"
   },
   "transcriptMetricsScreen": {
     "acquiredCreditsLabel": "Crediti acquisiti",
@@ -1267,6 +1277,9 @@
   },
   "videoPlayer": {
     "speedSectionTitle": "Velocità"
+  },
+  "userQrModal": {
+    "studentIdentity": "{{firstName}} {{lastName}}, {{studentId}}"
   },
   "staffScreen": {
     "staffList": "Lista del personale, {{count}} membri"

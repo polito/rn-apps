@@ -13,6 +13,9 @@ This folder documents what has been implemented for assistive-technology accessi
 | Job Offers         | [job-offers.md](./job-offers.md) |
 | Guides             | [guides.md](./guides.md)         |
 | Services           | [services.md](./services.md)     |
+| Tickets            | [tickets.md](./tickets.md)       |
+| Transcript         | [transcript.md](./transcript.md) |
+| User / Profile     | [user.md](./user.md)             |
 
 ## Cross-cutting rules
 
@@ -102,7 +105,7 @@ Two nested button roles cause VoiceOver on iOS to misroute focus. Keep `accessib
 | Badge count                   | `getBadgeAccessibilityLabel` from `useAccessibility`                                              |
 | Loading announcement          | `announceLoading` / `useAnnounceLoading` from `useAccessibility`                                  |
 | Conditional announcement      | `announceIfEnabled` from `useAccessibility`                                                       |
-| Screen reader detection       | `useScreenReader().isEnabled`                                                                     |
+| Screen reader detection       | `useScreenReader().isEnabled` — listens to `screenReaderChanged` for live updates                 |
 | Mixed IT/EN text              | `AccessibleText` / `MultiLingualText` from `students/src/core/components/AccessibleText.tsx`      |
 | Screen-reader-only content    | `VisuallyHidden` from `@polito/lib/ui`                                                            |
 | Platform conditionals         | `IS_IOS`, `IS_ANDROID` from `students/src/core/constants.ts`                                      |

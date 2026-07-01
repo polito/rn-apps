@@ -11,20 +11,39 @@ import {
   useStylesheet,
 } from '@polito/lib/ui';
 
+import { useAccessibility } from '~/core/hooks/useAccessibilty';
+
 import { SurveyType } from '../types/SurveyType';
 
 type Props = {
   type: SurveyType;
+  index: number;
+  total: number;
 } & Omit<ListItemProps, 'title'>;
 
-export const SurveyCategoryListItem = ({ type, ...props }: Props) => {
+export const SurveyCategoryListItem = ({
+  type,
+  index,
+  total,
+  ...props
+}: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
+  const { accessibilityListLabel } = useAccessibility();
 
   return (
     <ListItem
       {...props}
       title={type.name}
+      accessibilityRole="button"
+      accessibilityHint={t('common.tapToNavigate')}
+      accessibilityLabel={[
+        type.name,
+        t('surveysScreen.remainingCount', { count: type.incompleteCount }),
+        accessibilityListLabel(index, total),
+      ]
+        .filter(Boolean)
+        .join(', ')}
       linkTo={{
         screen: 'CpdSurveys',
         params: {

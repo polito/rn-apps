@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
 import { useScreenTitle } from '@polito/lib/core';
 import {
@@ -13,6 +13,7 @@ import {
 import { TicketStatus } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { AccessibleFlatList } from '../../../core/components/AccessibleFlatList';
 import { useGetTickets } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
@@ -52,12 +53,15 @@ export const TicketListScreen = ({ route }: Props) => {
   }
 
   return (
-    <FlatList
+    <AccessibleFlatList
+      listName={labels.title}
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={paddingHorizontal}
       refreshControl={<RefreshControl queries={[ticketsQuery]} manual />}
       data={tickets}
-      renderItem={({ item }) => <TicketListItem ticket={item} key={item.id} />}
+      renderItem={({ item, index }) => (
+        <TicketListItem ticket={item} index={index} total={tickets.length} />
+      )}
       ItemSeparatorComponent={Platform.select({
         ios: IndentedDivider,
       })}
