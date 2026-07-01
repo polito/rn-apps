@@ -278,11 +278,6 @@ export const CourseListItem = ({
   }, [t]);
 
   const accessibleText = useMemo(() => {
-    const positionLabel =
-      itemIndex !== undefined && itemTotal !== undefined
-        ? accessibilityListLabel(itemIndex, itemTotal)
-        : accessibilityLabel || '';
-
     let badgeCount = 0;
     if (hasModules) {
       badgeCount = getTotalModuleBadges();
@@ -295,9 +290,16 @@ export const CourseListItem = ({
 
     const baseText = `${course.name}, ${course.cfu} ${t(
       'common.credits',
-    )}${badgeText}, ${isHidden ? t('coursesScreen.notVisible') : ''} ${accessibleExtraText}`;
+    )}${badgeText}, ${isHidden ? t('coursesScreen.notVisible') : ''} ${accessibleExtraText}`.trim();
 
-    return positionLabel ? `${positionLabel}. ${baseText}` : baseText;
+    const positionLabel =
+      itemIndex !== undefined && itemTotal !== undefined
+        ? accessibilityListLabel(itemIndex, itemTotal)
+        : '';
+
+    return [baseText, positionLabel || accessibilityLabel]
+      .filter(Boolean)
+      .join(', ');
   }, [
     course.name,
     course.cfu,

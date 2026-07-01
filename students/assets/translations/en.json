@@ -347,6 +347,7 @@
     "tomorrow": "Tomorrow",
     "transcript": "Transcript",
     "unnamedFile": "Unnamed file",
+    "unread": "Unread",
     "untitled": "Untitled",
     "updatedAt": "Updated at",
     "upload": "Upload",
@@ -1091,6 +1092,7 @@
     "allCoursesHidden": "You've hidden all your courses",
     "cpdTitle": "CPD Surveys",
     "eventTitle": "QR Code Event Passes",
+    "tapToOpenGraduationCode": "Tap to open graduation QR code",
     "title": "Teaching"
   },
   "theme": {

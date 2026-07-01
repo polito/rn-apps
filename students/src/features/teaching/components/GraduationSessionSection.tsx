@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
 
 import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -23,20 +24,34 @@ export const GraduationSessionSection = ({ contextName, events }: Props) => {
   return (
     <Section>
       <SectionHeader title={t('teachingScreen.eventTitle')} />
-      <OverviewList indented>
-        {events.map(event => (
-          <ListItem
-            key={event.id}
-            title={contextName}
-            subtitle={event.title}
-            leadingItem={<Icon icon={faQrcode} size={fontSizes['2xl']} />}
-            linkTo={{
-              screen: 'GraduationCode',
-              params: { id: event.id },
-            }}
-          />
-        ))}
-      </OverviewList>
+      <View
+        accessibilityRole="list"
+        accessibilityLabel={t('teachingScreen.eventTitle')}
+      >
+        <OverviewList indented>
+          {events.map(event => (
+            <ListItem
+              key={event.id}
+              accessibilityRole="button"
+              accessibilityLabel={[contextName, event.title]
+                .filter(Boolean)
+                .join(', ')}
+              accessibilityHint={t('teachingScreen.tapToOpenGraduationCode')}
+              title={contextName}
+              subtitle={event.title}
+              leadingItem={
+                <View accessible={false}>
+                  <Icon icon={faQrcode} size={fontSizes['2xl']} />
+                </View>
+              }
+              linkTo={{
+                screen: 'GraduationCode',
+                params: { id: event.id },
+              }}
+            />
+          ))}
+        </OverviewList>
+      </View>
     </Section>
   );
 };

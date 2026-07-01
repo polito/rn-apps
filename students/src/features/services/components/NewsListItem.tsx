@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
@@ -15,17 +16,22 @@ interface Props {
 }
 
 export const NewsListItem = ({ newsItem, index, totalData }: Props) => {
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
 
   const { accessibilityListLabel } = useAccessibility();
   const { getUnreadsCount } = useNotifications();
 
-  const accessibilityLabel = accessibilityListLabel(index, totalData);
   const title = getHtmlTextContent(newsItem?.title);
   const shortDescription = getHtmlTextContent(newsItem?.shortDescription);
   const createdAt = formatDate(newsItem.createdAt);
   const subTitle = `${createdAt} - ${shortDescription}`;
+  const isUnread = !!getUnreadsCount([
+    'services',
+    'news',
+    newsItem?.id.toString(),
+  ]);
 
   return (
     <ListItem
@@ -38,7 +44,14 @@ export const NewsListItem = ({ newsItem, index, totalData }: Props) => {
         },
       }}
       accessibilityRole="button"
-      accessibilityLabel={[accessibilityLabel, title, subTitle].join(', ')}
+      accessibilityLabel={[
+        title,
+        isUnread ? t('common.unread') : '',
+        subTitle,
+        accessibilityListLabel(index, totalData),
+      ]
+        .filter(Boolean)
+        .join(', ')}
       subtitle={subTitle}
       subtitleStyle={styles.subtitle}
       trailingItem={
@@ -48,7 +61,7 @@ export const NewsListItem = ({ newsItem, index, totalData }: Props) => {
           style={styles.icon}
         />
       }
-      unread={!!getUnreadsCount(['services', 'news', newsItem?.id.toString()])}
+      unread={isUnread}
     />
   );
 };

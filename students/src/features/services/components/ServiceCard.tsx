@@ -97,7 +97,6 @@ export const ServiceCard = ({
           />
         </View>
         <IconButton
-          accessibilityRole="button"
           accessibilityLabel={
             favorite
               ? t('servicesScreen.favoriteActive')

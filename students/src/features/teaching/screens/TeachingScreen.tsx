@@ -324,30 +324,38 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 : undefined
             }
           />
-          <OverviewList
-            loading={coursesQuery.isLoading && !isOffline}
-            indented
-            emptyStateText={(() => {
-              if (isOffline) return t('common.cacheMiss');
-
-              return (coursesQuery.data?.length ?? 0) > 0
-                ? t('teachingScreen.allCoursesHidden')
-                : t('coursesScreen.emptyState');
-            })()}
+          <View
+            accessibilityRole="list"
+            accessibilityLabel={t('common.listWithCount', {
+              name: t('coursesScreen.title'),
+              count: courses.filter(hasValidModules).length,
+            })}
           >
-            {courses.filter(hasValidModules).map((course, index) => (
-              <CourseListItem
-                key={course.shortcode + '' + course.id}
-                course={course}
-                badge={getUnreadsCountPerCourse(
-                  course.id,
-                  course.previousEditions,
-                )}
-                index={index}
-                total={courses.filter(hasValidModules).length}
-              />
-            ))}
-          </OverviewList>
+            <OverviewList
+              loading={coursesQuery.isLoading && !isOffline}
+              indented
+              emptyStateText={(() => {
+                if (isOffline) return t('common.cacheMiss');
+
+                return (coursesQuery.data?.length ?? 0) > 0
+                  ? t('teachingScreen.allCoursesHidden')
+                  : t('coursesScreen.emptyState');
+              })()}
+            >
+              {courses.filter(hasValidModules).map((course, index) => (
+                <CourseListItem
+                  key={course.shortcode + '' + course.id}
+                  course={course}
+                  badge={getUnreadsCountPerCourse(
+                    course.id,
+                    course.previousEditions,
+                  )}
+                  index={index}
+                  total={courses.filter(hasValidModules).length}
+                />
+              ))}
+            </OverviewList>
+          </View>
         </Section>
         <Section>
           <SectionHeader
