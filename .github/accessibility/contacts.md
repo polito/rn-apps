@@ -31,9 +31,9 @@
 - Contacts and courses `OverviewList` no longer use `accessible={true}` — items are individually reachable on iOS.
 - Profile image placeholder `View` has `importantForAccessibility="no-hide-descendants"` on Android.
 - `faLink` icon row has `importantForAccessibility="no-hide-descendants"` to hide the SVG from TalkBack.
-- Phone `ListItem` hint changed to describe outcome ("Opens phone dialer") instead of repeating the action.
+- Phone `ListItem`: `buildCompositeListLabel` for position at the **end**; `accessibilityHint={t('personScreen.callHint')}`; `accessibilityState={{ disabled: isOffline }}`.
 - Email `ListItem` hint changed to "Opens mail app".
-- Phone and email `ListItem`s have `accessibilityState={{ disabled: isOffline }}`.
+- Course `ListItem` rows: `buildCompositeListLabel([course.name, year + role], index, total)` and `accessibilityHint={t('common.tapToNavigate')}`.
 - Email `ListItem` is conditionally rendered only when `person?.email` is defined.
 - `Metric` components for role and department have `accessibilityLabel`.
 

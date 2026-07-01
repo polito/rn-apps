@@ -123,6 +123,9 @@ Two nested button roles cause VoiceOver on iOS to misroute focus. Keep `accessib
 | Mixed IT/EN text              | `AccessibleText` / `MultiLingualText` from `students/src/core/components/AccessibleText.tsx`                    |
 | Screen-reader-only content    | `VisuallyHidden` from `@polito/lib/ui`                                                                          |
 | Platform conditionals         | `IS_IOS`, `IS_ANDROID` from `students/src/core/constants.ts`                                                    |
+| Long-press via screen reader  | `accessibilityActions` + `onAccessibilityAction` on the same element as `onLongPress`                           |
+| Disabled CTA hint             | `accessibilityHint` when `accessibilityState.disabled` is true and the reason is not obvious                    |
+| External URL rows             | `accessibilityRole="link"` + `accessibilityHint={t('common.externalLink')}`                                     |
 | Strip HTML for labels         | `getHtmlTextContent` from `src/utils/html`                                                                      |
 
 Full guide: [`docs/Accessibility-best-practice.md`](../../docs/Accessibility-best-practice.md) (English) · [`docs/best-practise-accessibilita.md`](../../docs/best-practise-accessibilita.md) (Italian)

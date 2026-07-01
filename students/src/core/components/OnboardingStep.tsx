@@ -17,6 +17,8 @@ import {
 
 import { Image } from 'expo-image';
 
+import { hideFromScreenReader } from '../accessibility/hideFromScreenReader';
+
 interface Props {
   title: string;
   description?: string;
@@ -59,19 +61,21 @@ export const OnboardingStep = ({
     >
       {cover && (
         <View style={styles.coverImageContainer}>
-          <Image
-            source={{ uri: cover }}
-            style={{
-              borderRadius: shapes.lg,
-              width: coverWidth,
-              aspectRatio: coverAspectRatio ?? 16 / 9,
-            }}
-            contentFit="cover"
-            onLoad={e => {
-              const { width: w, height: h } = e.source;
-              if (w > 0 && h > 0) setCoverAspectRatio(w / h);
-            }}
-          />
+          <View {...hideFromScreenReader}>
+            <Image
+              source={{ uri: cover }}
+              style={{
+                borderRadius: shapes.lg,
+                width: coverWidth,
+                aspectRatio: coverAspectRatio ?? 16 / 9,
+              }}
+              contentFit="cover"
+              onLoad={e => {
+                const { width: w, height: h } = e.source;
+                if (w > 0 && h > 0) setCoverAspectRatio(w / h);
+              }}
+            />
+          </View>
         </View>
       )}
       <View style={styles.header}>

@@ -101,10 +101,15 @@ export const ExamCTA = ({ exam, absolute = false }: Props) => {
       action={action}
       loading={mutationsLoading}
       disabled={!onlineManager.isOnline() || examUnavailable}
+      accessibilityState={{
+        disabled: !onlineManager.isOnline() || examUnavailable,
+      }}
       variant="filled"
       absolute={absolute}
       containerStyle={{ paddingVertical: 0 }}
-      accessibilityHint={accessibilityHint}
+      accessibilityHint={
+        !onlineManager.isOnline() ? t('common.noInternet') : accessibilityHint
+      }
     />
   );
 };

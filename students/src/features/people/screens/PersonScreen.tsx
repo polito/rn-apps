@@ -50,7 +50,7 @@ export const PersonScreen = ({ route }: Props) => {
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const personQuery = useGetPerson(id);
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
   const openInAppLink = useOpenInAppLink();
   const person = personQuery.data;
   const fullName = [person?.firstName, person?.lastName]
@@ -169,10 +169,11 @@ export const PersonScreen = ({ route }: Props) => {
         leadingItem={<Icon icon={faPhone} size={fontSizes.xl} />}
         title={t('common.phone')}
         subtitle={phoneLabel}
-        accessibilityLabel={`${accessibilityListLabel(
+        accessibilityLabel={buildCompositeListLabel(
+          [`${t('personScreen.call')} ${phoneLabel}`],
           index,
           phoneNumbers?.length || 0,
-        )}. ${t('personScreen.call')} ${phoneLabel}`}
+        )}
         accessibilityHint={t('personScreen.callHint')}
         accessibilityState={{ disabled: isOffline }}
         onPress={() => Linking.openURL(`tel:${phoneNumber.full}`)}
@@ -196,10 +197,12 @@ export const PersonScreen = ({ route }: Props) => {
         title={course.name}
         subtitle={`${course.year} - ${t('common.' + role)}`}
         isAction
-        accessibilityLabel={`${accessibilityListLabel(
+        accessibilityLabel={buildCompositeListLabel(
+          [course.name, `${course.year} - ${t('common.' + role)}`],
           index,
           courses?.length || 0,
-        )}. ${course.name}, ${course.year} -${t('common.' + role)}`}
+        )}
+        accessibilityHint={t('common.tapToNavigate')}
         linkTo={{
           screen: 'DegreeCourse',
           params: {

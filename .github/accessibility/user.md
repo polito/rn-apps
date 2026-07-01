@@ -22,12 +22,53 @@
 ### `ProfileScreen`
 
 - Career row uses `accessibilityRole="none"` (not invalid `"text"`) when switching careers is unavailable.
+- Degree `ListItem`: `accessibilityRole="button"`, composite `accessibilityLabel` (degree name, level, enrollment year).
+- Notifications, Settings, and Messages rows: `accessibilityRole="button"` and explicit `accessibilityLabel`.
+
+### `CareerStatus`
+
+- Decorative status dot `View` wrapped with `hideFromScreenReader`.
+
+### `EscInfoBottomModal`
+
+- Info `Icon` container uses `hideFromScreenReader`.
+
+### `MfaAuthContent`
+
+- Allow/deny CTAs: `accessibilityState={{ disabled: isPending }}`.
+- Countdown `Text`: `accessibilityLiveRegion="polite"` for timer updates.
+
+### `MfaEnrollContent`
+
+- Confirm CTA: `accessibilityState={{ disabled: deviceName.length === 0 }}` and `accessibilityHint={t('mfaScreen.enroll.confirmDisabledHint')}`.
+
+### `MfaSettings`
+
+- Information block `View`: `accessible` with `accessibilityLabel={t('mfaScreen.settings.description')}`.
+
+### `AccessibilityFontSettingsScreen`
+
+- Custom font size menu row: `accessibilityLabel` with title and current value.
+
+### `NotificationsScreen`
+
+- Ticket and booking `SwitchListItem` rows: explicit `accessibilityLabel`.
+
+### `RequestESCScreen`
+
+- Bullet characters hidden via `hideFromScreenReader`; list item text keeps individual `accessibilityLabel`.
+- Request card: composite `accessibilityLabel` from i18n section strings.
+
+### `UnreadMessagesModal`
+
+- Next `CtaButton` (icon-only): `accessibilityLabel={t('common.next')}`.
 
 ### Translations
 
 - New keys added to `en.json` and `it.json`:
   - `userQrModal.studentIdentity`
   - `messagesScreen.deleteMessage`
+  - `mfaScreen.enroll.confirmDisabledHint`
 
 ---
 

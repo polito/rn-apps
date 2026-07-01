@@ -344,7 +344,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
                   {...formattedProps}
                   style={[touchableOpacityProps.style, styles.event]}
                   accessibilityRole="button"
-                  accessibilityLabel={`${item.title}`}
+                  accessibilityLabel={item.title || t('common.event')}
                 >
                   {item.type === 'booking' && (
                     <BookingCard key={item.key} item={item} compact={true} />

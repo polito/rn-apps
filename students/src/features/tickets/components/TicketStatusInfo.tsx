@@ -66,6 +66,7 @@ export const TicketStatusInfo = ({
       <Row style={styles.row}>
         <Pressable
           accessibilityLabel={accessibilityIdText}
+          accessibilityRole="none"
           style={GlobalStyles.grow}
         >
           <Metric
@@ -76,6 +77,7 @@ export const TicketStatusInfo = ({
         </Pressable>
         <Pressable
           accessibilityLabel={accessibilityCreatedAtText}
+          accessibilityRole="none"
           style={GlobalStyles.grow}
         >
           <Metric
@@ -88,6 +90,7 @@ export const TicketStatusInfo = ({
       <Row style={styles.row}>
         <Pressable
           accessibilityLabel={accessibilityUpdatedAtText}
+          accessibilityRole="none"
           style={GlobalStyles.grow}
         >
           <Metric
@@ -98,6 +101,7 @@ export const TicketStatusInfo = ({
         </Pressable>
         <Pressable
           accessibilityLabel={accessibilityStatusText}
+          accessibilityRole="none"
           style={GlobalStyles.grow}
         >
           <Metric

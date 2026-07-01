@@ -442,6 +442,16 @@ export const CourseDirectoryListItem = ({
           ? () => onLongPress(getAllFilesInDirectory().map(f => f.id))
           : undefined
       }
+      accessibilityActions={
+        onLongPress
+          ? [{ name: 'longPress', label: t('common.selectAll') }]
+          : undefined
+      }
+      onAccessibilityAction={event => {
+        if (event.nativeEvent.actionName === 'longPress' && onLongPress) {
+          onLongPress(getAllFilesInDirectory().map(f => f.id));
+        }
+      }}
       trailingItem={trailingItem || undefined}
       isDownloaded={allFilesDownloaded}
       unread={hasUnreadFiles}

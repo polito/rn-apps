@@ -93,7 +93,8 @@
     "slotBookableFrom": "This slot will be bookable starting from ",
     "title": "Select a seat",
     "zoomInToEnableSeatSelection": "Zoom in to enable seat selection",
-    "confirmSuccess": "Booking confirmed"
+    "confirmSuccess": "Booking confirmed",
+    "confirmDisabledHint": "Select a seat to enable confirmation"
   },
   "bookingsScreen": {
     "emptyState": "You have no active bookings",
@@ -449,7 +450,8 @@
     "areYouSureTitle": "Do you want to proceed?",
     "customColorTitle": "Custom colors",
     "dontShowAgain": "Don't show again",
-    "title": "Pick a color"
+    "title": "Pick a color",
+    "confirmDisabledHint": "Change the color to enable confirmation"
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
@@ -502,6 +504,8 @@
     "updateDownloadedInfoMessages": "{{downloadedCount}} already downloaded files will be updated and {{newCount}} new files will be downloaded.",
     "updateDownloadedInfoTitle": "Download",
     "updateDownloadedMessage": "{{count}} selected files are already downloaded. Do you want to update them?",
+    "downloadDisabledHint": "Select files to enable download",
+    "removeDisabledHint": "Select downloaded files to enable removal",
     "updateDownloadedTitle": "Update downloaded files",
     "longPress": "Long press to open the menu to update or delete the file",
     "openDirectory": "Double tap to open the folder"
@@ -583,6 +587,7 @@
   },
   "courseHideEventScreen": {
     "button": "Show in agenda",
+    "buttonDisabledHint": "Select at least one event to show in the agenda",
     "selectItems": "Select all"
   },
   "courseIconPickerScreen": {
@@ -923,7 +928,8 @@
       "expired": "The session has expired, please log in again to continue",
       "Success": "Polito Authenticator has been successfully activated on this device",
       "devicePrompt": "The name below will be used to <b>identify this device</b> among your authentication factors. <b>You can change it</b> if you want to make it more recognizable.",
-      "deviceName": "Device name"
+      "deviceName": "Device name",
+      "confirmDisabledHint": "Enter a device name to enable confirmation"
     },
     "auth": {
       "prompt": "New login request with multi-factor authentication. Do you want to proceed?",
@@ -1144,6 +1150,7 @@
     },
     "qrCode": "QR code",
     "share": "Share",
+    "shareDisabledHint": "Wait for the QR code to load",
     "shareFailure": "Unable to share the PDF: {{reason}}",
     "title": "Graduation session",
     "validUntil": "Valid until {{date}} at {{time}}"

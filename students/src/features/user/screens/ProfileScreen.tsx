@@ -214,6 +214,14 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
             <ListItem
               title={student?.degreeName ?? ''}
               subtitle={student?.degreeLevel + ' - ' + enrollmentYear}
+              accessibilityRole="button"
+              accessibilityLabel={[
+                student?.degreeName,
+                student?.degreeLevel,
+                enrollmentYear,
+              ]
+                .filter(Boolean)
+                .join(', ')}
               linkTo={{
                 screen: 'Degree',
                 params: {
@@ -226,16 +234,22 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
           <OverviewList indented>
             <ListItem
               title={t('notificationsScreen.title')}
+              accessibilityRole="button"
+              accessibilityLabel={t('notificationsScreen.title')}
               leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
               linkTo="Notifications"
             />
             <ListItem
               title={t('profileScreen.settings')}
+              accessibilityRole="button"
+              accessibilityLabel={t('profileScreen.settings')}
               leadingItem={<Icon icon={faCog} size={fontSizes.xl} />}
               linkTo="Settings"
             />
             <ListItem
               title={t('messagesScreen.title')}
+              accessibilityRole="button"
+              accessibilityLabel={t('messagesScreen.title')}
               leadingItem={<Icon icon={faMessage} size={fontSizes.xl} />}
               linkTo="Messages"
               disabled={areMessagesDisabled}

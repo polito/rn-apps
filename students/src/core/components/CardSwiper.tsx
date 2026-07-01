@@ -140,6 +140,7 @@ const SlideItem = ({
           source={{ uri: item.card.uri }}
           priority="high"
           contentFit="contain"
+          accessibilityLabel={`${item.name} ${item.lastname}`}
         />
       ) : (
         <View>
@@ -293,7 +294,10 @@ export const CardSwiper = ({
           })}
         />
       </View>
-      <View style={styles.dotsContainer}>
+      <View
+        style={styles.dotsContainer}
+        importantForAccessibility="no-hide-descendants"
+      >
         <AnimatedDotsCarousel
           length={items.length > 1 ? items?.length : 0}
           currentIndex={currentPageIndex}

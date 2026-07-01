@@ -23,6 +23,7 @@
 ### `ProvisionalGradeScreen` / `RecordedGradeScreen`
 
 - Grade value `Col` is a single accessible unit: `accessibilityLabel={t('…gradeValue', { grade })}` with inner `Text` set to `accessible={false}`.
+- `RecordedGradeScreen` on-time bonus row: `accessibilityRole="none"` with explicit `accessibilityLabel` for the points value.
 
 ### Translations
 

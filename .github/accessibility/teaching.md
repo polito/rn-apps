@@ -26,7 +26,23 @@
 ### `ExamCTA` / `ExamRescheduleCTA`
 
 - Status-specific `accessibilityHint` per exam state (not available, requestable, bookable, booked/cancel).
-- `ExamRescheduleScreen` CTA has `accessibilityHint={t('examRescheduleScreen.ctaDisabledHint')}` explaining why it is disabled.
+- Explicit `accessibilityState={{ disabled }}` when offline or exam unavailable; offline uses `t('common.noInternet')` as hint.
+- `ExamRescheduleScreen` CTA has `accessibilityHint={t('examRescheduleScreen.ctaDisabledHint')}` and `accessibilityState={{ disabled: !isCheck }}` explaining why it is disabled.
+
+### `GraduationSessionSection`
+
+- List wrapped in `<View accessibilityRole="list">` with section title as `accessibilityLabel`.
+- Each row: `buildCompositeListLabel([contextName, event.title], index, total)` — position at the **end**.
+- Leading QR `Icon` wrapped with `hideFromScreenReader`.
+
+### `GraduationCodeScreen`
+
+- Share CTA: `accessibilityState={{ disabled: !qrCodeQuery.data }}` and `accessibilityHint={t('graduationCodeScreen.shareDisabledHint')}` while the QR is loading.
+
+### `SurveyTypesSection`
+
+- `OverviewList` wrapped in `<View accessibilityRole="list">` (no `accessible={true}` on `OverviewList`).
+- Passes `index` and `total` to each `SurveyCategoryListItem`.
 
 ### `ExamListItem`
 
@@ -60,6 +76,7 @@
 
 - `IncompleteSurveys` and `CompiledSurveys` moved to module scope (no longer redefined on every parent render — prevents focus reset on VoiceOver/TalkBack).
 - Incomplete surveys `SectionHeader` includes pending count in `accessibilityLabel`.
+- Each `SurveyListItem` receives `accessibilityLabel` from `buildCompositeListLabel([survey.title], index, total)` in both incomplete and compiled sections.
 
 ### `SurveyListScreen`
 
@@ -93,6 +110,7 @@
   - `examRescheduleScreen.ctaDisabledHint`
   - `common.progressChart`, `common.progressChartMulti`
   - `surveysScreen.tapToOpenSurvey`, `surveysScreen.surveysList`, `surveysScreen.remainingCount`
+  - `graduationCodeScreen.shareDisabledHint`
 
 ---
 

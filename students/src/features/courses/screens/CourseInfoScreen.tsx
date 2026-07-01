@@ -351,6 +351,11 @@ export const CourseInfoScreen = () => {
             {courseQuery.data?.links.map((link, index) => (
               <ListItem
                 key={index}
+                accessibilityRole="link"
+                accessibilityLabel={
+                  link.description ?? t('courseInfoTab.linkDefaultTitle')
+                }
+                accessibilityHint={t('common.externalLink')}
                 leadingItem={<Icon icon={faLink} size={fontSizes.xl} />}
                 title={link.description ?? t('courseInfoTab.linkDefaultTitle')}
                 subtitle={link.url}

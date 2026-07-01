@@ -34,6 +34,15 @@
 - FAQ results wrapped with `getListAccessibilityProps`; position at end of each row label.
 - Leading question icon wrapped with `hideFromScreenReader`.
 - Empty search results announced via `announceIfEnabled` (SR-gated).
+- Search `IconButton`: `accessibilityState={{ disabled: !canSearch }}` and `accessibilityHint={t('ticketFaqsScreen.searchMinLengthHint')}` when query is too short.
+
+### `TicketScreen`
+
+- Header overflow menu trigger: `accessibilityLabel={t('tickets.menuAction')}`.
+
+### `MessagingView`
+
+- Send `IconButton`: `accessibilityState={{ disabled: !message?.length || loading }}`.
 
 ### `ChatMessage` / `TicketScreen` (request bubble)
 
@@ -43,12 +52,14 @@
 ### `TicketStatusInfo`
 
 - Removed invalid `accessibilityRole="text"` from metric rows; each `Metric` keeps its own `accessibilityLabel`.
+- Metric `Pressable` wrappers use `accessibilityRole="none"` (read-only, non-interactive).
 
 ### Translations
 
 - New keys added to `en.json` and `it.json`:
   - `ticketsScreen.unreadCount`
   - `ticketScreen.feedbackPositive`, `ticketScreen.feedbackNegative`
+  - `tickets.menuAction` (header overflow menu on `TicketScreen`)
 
 ---
 

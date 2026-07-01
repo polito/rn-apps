@@ -134,7 +134,8 @@ export const CourseListItem = ({
 }: Props) => {
   const { colors, spacing, palettes, fontSizes, dark } = useTheme();
   const { t, i18n } = useTranslation();
-  const { accessibilityListLabel } = useAccessibility();
+  const { accessibilityListLabel, buildCompositeListLabel } =
+    useAccessibility();
   const preferences = usePreferencesContext<AppPreferences>();
   const styles = useStylesheet(createStyles);
   const { getUnreadsCountPerCourse } = useNotifications();
@@ -462,7 +463,11 @@ export const CourseListItem = ({
                             );
                           }
                         }}
-                        accessibilityLabel={`${accessibilityLabel} ${module.name}`}
+                        accessibilityLabel={buildCompositeListLabel(
+                          [`${accessibilityLabel} ${module.name}`],
+                          index,
+                          filteredModules.length,
+                        )}
                         title={module.name}
                         subtitle={getTeacherName(module.teacherId) ?? undefined}
                         leadingItem={

@@ -47,6 +47,7 @@
 - `BookingSeatCell`: `accessibilityState={{ disabled }}` for unavailable seats.
 - `BookingDeskCell`: labeled desk landmark.
 - Cancel CTA: explicit `accessibilityState` and offline `accessibilityHint`.
+- `BookingSeatsCta`: confirm CTA has `accessibilityState={{ disabled: !ctaEnabled }}` and `accessibilityHint={t('bookingSeatScreen.confirmDisabledHint')}` when seat selection is required but missing.
 
 ### `NewsItemScreen`
 
@@ -71,6 +72,7 @@
   - `newsScreen.openLink`, `newsScreen.openFile`
   - `bookingTopicScreen.selectTopicHint`
   - `bookingScreen.cancelDisabledHint`
+  - `bookingSeatScreen.confirmDisabledHint`
 
 ---
 

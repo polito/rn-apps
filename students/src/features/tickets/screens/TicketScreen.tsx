@@ -104,6 +104,7 @@ const HeaderRight = ({ ticket }: { ticket: TicketOverview }) => {
           icon={faEllipsisVertical}
           color={colors.secondaryText}
           size={fontSizes.xl}
+          accessibilityLabel={t('tickets.menuAction')}
         />
       </MenuView>
     );

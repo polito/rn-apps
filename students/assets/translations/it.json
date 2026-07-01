@@ -82,6 +82,7 @@
   "bookingSeatScreen": {
     "confirm": "Conferma prenotazione",
     "confirmSuccess": "Prenotazione confermata",
+    "confirmDisabledHint": "Seleziona un posto per abilitare la conferma",
     "deadlineExpired": "Siamo spiacenti,\nè scaduto il termine ultimo per potersi prenotare a questo turno",
     "noSeatSelected": "Nessuna",
     "noSeatsAvailable": "Siamo spiacenti,\nnon ci sono posti disponibili",
@@ -449,7 +450,8 @@
     "areYouSureTitle": "Vuoi procedere?",
     "customColorTitle": "Colori a scelta",
     "dontShowAgain": "Non mostrare più",
-    "title": "Seleziona un colore"
+    "title": "Seleziona un colore",
+    "confirmDisabledHint": "Modifica il colore per abilitare la conferma"
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
@@ -504,6 +506,8 @@
     "updateDownloadedInfoMessages": "{{downloadedCount}} file già scaricati verranno aggiornati e {{newCount}} nuovi file verranno scaricati.",
     "updateDownloadedInfoTitle": "Download",
     "updateDownloadedMessage": "{{count}} file selezionati sono già scaricati. Vuoi aggiornarli?",
+    "downloadDisabledHint": "Seleziona dei file per abilitare il download",
+    "removeDisabledHint": "Seleziona file scaricati per abilitare la rimozione",
     "updateDownloadedTitle": "Aggiorna file scaricati"
   },
   "courseGuideScreen": {
@@ -583,6 +587,7 @@
   },
   "courseHideEventScreen": {
     "button": "Mostra in agenda",
+    "buttonDisabledHint": "Seleziona almeno un evento da mostrare in agenda",
     "selectItems": "Seleziona tutti"
   },
   "courseIconPickerScreen": {
@@ -924,7 +929,8 @@
       "expired": "Sessione scaduta. È necessario riautenticarsi.",
       "Success": "PoliTO Authenticator è stato attivato correttamente su questo dispositivo.",
       "devicePrompt": "Il nome sottostante verrà utilizzato per <b>identificare questo dispositivo</b> tra i tuoi fattori di autenticazione. <b>Puoi cambiarlo</b> se vuoi renderlo più riconoscibile.",
-      "deviceName": "Nome dispositivo"
+      "deviceName": "Nome dispositivo",
+      "confirmDisabledHint": "Inserisci un nome dispositivo per abilitare la conferma"
     },
     "auth": {
       "prompt": "Nuova richiesta di accesso con autenticazione multi-fattore. Vuoi proseguire?",
@@ -1144,6 +1150,7 @@
     },
     "qrCode": "QR code",
     "share": "Condividi",
+    "shareDisabledHint": "Attendi il caricamento del codice QR",
     "shareFailure": "Impossibile condividere il PDF: {{reason}}",
     "title": "Sessione di laurea",
     "validUntil": "Valido fino al {{date}} ore {{time}}"

@@ -426,6 +426,16 @@ export const CourseFileListItem = memo(
         accessibilityLabel={accessibilityLabel}
         disabled={disabled}
         onLongPress={showContextMenuOnLongPress ? undefined : onLongPress}
+        accessibilityActions={
+          !showContextMenuOnLongPress && onLongPress
+            ? [{ name: 'longPress', label: t('courseFilesTab.selectFiles') }]
+            : undefined
+        }
+        onAccessibilityAction={event => {
+          if (event.nativeEvent.actionName === 'longPress' && onLongPress) {
+            onLongPress();
+          }
+        }}
         onPress={!enableMultiSelect ? downloadFile : handleToggleQueue}
         isDownloaded={isDownloaded && !isCheckingDownloadStatus}
         downloadProgress={downloadProgress}

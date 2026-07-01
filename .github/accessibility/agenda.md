@@ -62,6 +62,7 @@
 
 ### `AgendaWeekScreen` — shared `Calendar` component (`lib/`)
 
+- Week event cells: `accessibilityLabel` falls back to `t('common.event')` when `item.title` is empty.
 - `Calendar` scales `cellHeight` when `accessibility.fontSize >= 150` so time slots remain usable at large text sizes.
 - `CalendarBody` passes `locale` to each `HourGuideCell`.
 - `HourGuideCell` announces each time slot as localized weekday + hour (e.g. "Wednesday, 09:00") via `accessibilityLabel` on `TouchableWithoutFeedback`.
@@ -194,3 +195,11 @@ const accessibilityLabel = useMemo(() => {
 ```
 
 Pass `locale` from the screen through `Calendar` → `CalendarBody` → `HourGuideCell`.
+
+### `EventInfo`
+
+- Composite `accessibilityLabel` on the date/room row: formatted date (single events) and room name, joined with `, `.
+
+### `DeadlineScreen`
+
+- External link `ListItem`: `accessibilityRole="link"` and `accessibilityHint={t('common.externalLink')}`.

@@ -6,7 +6,15 @@
 
 - Composite `accessibilityLabel`: course name, credits, badge count, hidden state, long-press hint (iOS), with `accessibilityListLabel(index, total)` at the **end**.
 - `accessibilityRole="button"`, `accessibilityLanguage` for mixed-language course titles.
-- Expandable modules: chevron toggle announced via context menu on long-press; module rows reuse the same label pattern.
+- Expandable modules: chevron toggle announced via context menu on long-press; module rows use `buildCompositeListLabel` for position at the **end**.
+
+### `CourseDirectoryListItem`
+
+- Long-press “select all” exposed via `accessibilityActions` + `onAccessibilityAction` (maps to existing `onLongPress` handler).
+
+### `CourseFileListItem`
+
+- Long-press file selection exposed via `accessibilityActions` + `onAccessibilityAction` when context menu is not used for long-press.
 
 ### `CoursesScreen`
 
@@ -41,10 +49,35 @@
 
 - Edition selector `Metric` wrapped in `StatefulMenuView` with explicit button role on the trigger `View`.
 - Staff, exams, and next-lecture sections use `OverviewList` without `accessible={true}`.
+- Useful-link rows: `accessibilityRole="link"`, label from description, `accessibilityHint={t('common.externalLink')}`.
+
+### `CourseLecturesScreen`
+
+- Section header `Pressable`: `accessibilityRole="button"`, `accessibilityState={{ expanded: isExpanded }}`, composite label with open/closed state.
+
+### `CourseAssignmentPdfCreationScreen`
+
+- PDF action `TouchableHighlight`: `accessibilityRole="button"`, `accessibilityLabel`, `accessibilityState={{ disabled }}`.
+
+### `CourseColorPickerScreen`
+
+- Confirm CTA: `accessibilityState={{ disabled: !hasChanged }}` and `accessibilityHint={t('courseColorPickerScreen.confirmDisabledHint')}`.
+
+### `CourseFileMultiSelectScreen`
+
+- Modal download/remove CTAs: explicit `accessibilityState` and disabled hints (`courseFilesTab.downloadDisabledHint`, `courseFilesTab.removeDisabledHint`).
+
+### `CourseHideEventScreen`
+
+- Restore CTA: `accessibilityState` and `accessibilityHint={t('courseHideEventScreen.buttonDisabledHint')}` when no events are selected.
 
 ### Translations
 
 - Reuses existing keys: `coursesScreen.*`, `courseListItem.*`, `courseNoticesTab.*`, `courseAssignmentsTab.*`, `courseFileListItem.*`.
+- New disabled-hint keys in `en.json` and `it.json`:
+  - `courseColorPickerScreen.confirmDisabledHint`
+  - `courseHideEventScreen.buttonDisabledHint`
+  - `courseFilesTab.downloadDisabledHint`, `courseFilesTab.removeDisabledHint`
 
 ---
 

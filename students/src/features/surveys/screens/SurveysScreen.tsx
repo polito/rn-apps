@@ -13,6 +13,7 @@ import {
 } from '@polito/lib/ui';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetSurveys } from '../../../core/queries/surveysHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { SurveyListItem } from '../components/SurveyListItem';
@@ -24,6 +25,7 @@ interface Props {
 const IncompleteSurveys = () => {
   const surveysQuery = useGetSurveys();
   const { t } = useTranslation();
+  const { buildCompositeListLabel } = useAccessibility();
 
   const incompleteSurveys = (surveysQuery.data || [])
     .filter(survey => !survey.isCompiled)
@@ -42,8 +44,16 @@ const IncompleteSurveys = () => {
       {!surveysQuery.isLoading &&
         (incompleteSurveys.length > 0 ? (
           <OverviewList indented>
-            {incompleteSurveys?.map(survey => (
-              <SurveyListItem survey={survey} key={survey.id} />
+            {incompleteSurveys?.map((survey, index) => (
+              <SurveyListItem
+                survey={survey}
+                key={survey.id}
+                accessibilityLabel={buildCompositeListLabel(
+                  [survey.title],
+                  index,
+                  incompleteSurveys.length,
+                )}
+              />
             ))}
           </OverviewList>
         ) : (
@@ -58,6 +68,7 @@ const IncompleteSurveys = () => {
 const CompiledSurveys = () => {
   const surveysQuery = useGetSurveys();
   const { t } = useTranslation();
+  const { buildCompositeListLabel } = useAccessibility();
 
   const compiledSurveys = (surveysQuery.data || [])
     .filter(survey => survey.isCompiled)
@@ -87,8 +98,16 @@ const CompiledSurveys = () => {
       {!surveysQuery.isLoading &&
         (renderedCompiledSurveys.length > 0 ? (
           <OverviewList indented>
-            {renderedCompiledSurveys.map(survey => (
-              <SurveyListItem survey={survey} key={survey.id} />
+            {renderedCompiledSurveys.map((survey, index) => (
+              <SurveyListItem
+                survey={survey}
+                key={survey.id}
+                accessibilityLabel={buildCompositeListLabel(
+                  [survey.title],
+                  index,
+                  renderedCompiledSurveys.length,
+                )}
+              />
             ))}
           </OverviewList>
         ) : (

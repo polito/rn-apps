@@ -168,6 +168,8 @@ export const CourseLecturesScreen = () => {
       renderSectionHeader={({ section: { title, isExpanded } }) => (
         <Pressable
           onPress={() => toggleSection(title)}
+          accessibilityRole="button"
+          accessibilityState={{ expanded: isExpanded }}
           accessibilityLabel={`${title}. ${t(
             `common.openedStatus.${isExpanded}`,
           )}. ${t(`common.openedStatusAction.${isExpanded}`)}`}

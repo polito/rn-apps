@@ -12,6 +12,9 @@ import {
 } from '@polito/lib/ui';
 import { type Event } from '@polito/student-api-client';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+
 type Props = {
   contextName: string;
   events: Event[];
@@ -20,6 +23,7 @@ type Props = {
 export const GraduationSessionSection = ({ contextName, events }: Props) => {
   const { t } = useTranslation();
   const { fontSizes } = useTheme();
+  const { buildCompositeListLabel } = useAccessibility();
 
   return (
     <Section>
@@ -29,18 +33,20 @@ export const GraduationSessionSection = ({ contextName, events }: Props) => {
         accessibilityLabel={t('teachingScreen.eventTitle')}
       >
         <OverviewList indented>
-          {events.map(event => (
+          {events.map((event, index) => (
             <ListItem
               key={event.id}
               accessibilityRole="button"
-              accessibilityLabel={[contextName, event.title]
-                .filter(Boolean)
-                .join(', ')}
+              accessibilityLabel={buildCompositeListLabel(
+                [contextName, event.title].filter(Boolean),
+                index,
+                events.length,
+              )}
               accessibilityHint={t('teachingScreen.tapToOpenGraduationCode')}
               title={contextName}
               subtitle={event.title}
               leadingItem={
-                <View accessible={false}>
+                <View {...hideFromScreenReader}>
                   <Icon icon={faQrcode} size={fontSizes['2xl']} />
                 </View>
               }

@@ -131,6 +131,12 @@ export const TicketFaqsScreen = ({ navigation }: Props) => {
                 }}
                 accessibilityRole="button"
                 disabled={!canSearch}
+                accessibilityState={{ disabled: !canSearch }}
+                accessibilityHint={
+                  !canSearch
+                    ? t('ticketFaqsScreen.searchMinLengthHint')
+                    : undefined
+                }
               />
             </Row>
           </OverviewList>

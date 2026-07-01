@@ -881,18 +881,21 @@ I componenti SVG come `RNCKProgressChart` vengono attraversati da TalkBack anche
 
 ### Quick reference
 
-| Utility                 | Percorso                                                  | Quando usarla                                                                       |
-| ----------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `useAccessibility`      | `students/src/core/hooks/useAccessibilty.ts`              | Hook centrale a11y. Nome file con typo intenzionale; importare `useAccessibility`   |
-| `hideFromScreenReader`  | `students/src/core/accessibility/hideFromScreenReader.ts` | Su icone, badge, chevron decorativi dentro righe etichettate — nessun cambio visivo |
-| `useScreenReader`       | `students/src/core/hooks/useScreenReader.ts`              | Rileva stato screen reader (listener `screenReaderChanged`); espone `announce(msg)` |
-| `useAccessibleListItem` | `students/src/core/hooks/useAccessibleListItem.ts`        | Props list item con posizione, container props, annuncio lista                      |
-| `AccessibleFlatList`    | `students/src/core/components/AccessibleFlatList.tsx`     | FlatList con count e posizione — preferire sempre al FlatList nudo                  |
-| `AccessibleText`        | `students/src/core/components/AccessibleText.tsx`         | Aggiunge `accessibilityLanguage` per testo IT/EN misto                              |
-| `MultiLingualText`      | `students/src/core/components/AccessibleText.tsx`         | Testo misto inline                                                                  |
-| `VisuallyHidden`        | `lib/src/ui/components/VisuallyHidden.tsx`                | Wrapper zero-size per contenuto solo screen reader                                  |
-| `Checkbox`              | `students/src/core/components/Checkbox.tsx`               | Già wrappa role, state e label — non reimplementare                                 |
-| `IS_IOS` / `IS_ANDROID` | `students/src/core/constants.ts`                          | Conditionals di piattaforma                                                         |
+| Utility                 | Percorso                                                  | Quando usarla                                                                          |
+| ----------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `useAccessibility`      | `students/src/core/hooks/useAccessibilty.ts`              | Hook centrale a11y. Nome file con typo intenzionale; importare `useAccessibility`      |
+| `hideFromScreenReader`  | `students/src/core/accessibility/hideFromScreenReader.ts` | Su icone, badge, chevron decorativi dentro righe etichettate — nessun cambio visivo    |
+| `useScreenReader`       | `students/src/core/hooks/useScreenReader.ts`              | Rileva stato screen reader (listener `screenReaderChanged`); espone `announce(msg)`    |
+| `useAccessibleListItem` | `students/src/core/hooks/useAccessibleListItem.ts`        | Props list item con posizione, container props, annuncio lista                         |
+| `AccessibleFlatList`    | `students/src/core/components/AccessibleFlatList.tsx`     | FlatList con count e posizione — preferire sempre al FlatList nudo                     |
+| `AccessibleText`        | `students/src/core/components/AccessibleText.tsx`         | Aggiunge `accessibilityLanguage` per testo IT/EN misto                                 |
+| `MultiLingualText`      | `students/src/core/components/AccessibleText.tsx`         | Testo misto inline                                                                     |
+| `VisuallyHidden`        | `lib/src/ui/components/VisuallyHidden.tsx`                | Wrapper zero-size per contenuto solo screen reader                                     |
+| `Checkbox`              | `students/src/core/components/Checkbox.tsx`               | Già wrappa role, state e label — non reimplementare                                    |
+| `CardSwiper`            | `students/src/core/components/CardSwiper.tsx`             | `accessibilityLabel` sulla foto tessera; indicatori pagina nascosti agli screen reader |
+| `OnboardingStep`        | `students/src/core/components/OnboardingStep.tsx`         | Immagine cover wrappata con `hideFromScreenReader`                                     |
+| `ReadMoreText`          | `students/src/core/components/ReadMoreText.tsx`           | `Text` di misura nascosto con `hideFromScreenReader`; toggle con ruolo `button`        |
+| `IS_IOS` / `IS_ANDROID` | `students/src/core/constants.ts`                          | Conditionals di piattaforma                                                            |
 
 ### `useAccessibility` — funzioni esposte
 
@@ -970,7 +973,15 @@ Props inline equivalenti (non copiare — importare la costante):
 }
 ```
 
-Implementazione di riferimento: `TicketListItem`, `RecordedGradeListItem`, `BookingField`.
+Implementazione di riferimento: `TicketListItem`, `RecordedGradeListItem`, `BookingField`, `CareerStatus`, `RequestESCScreen`.
+
+### Componenti core condivisi (`students/src/core/components/`)
+
+| Componente       | Pattern                                                                                                         |
+| ---------------- | --------------------------------------------------------------------------------------------------------------- |
+| `CardSwiper`     | Foto studente: `accessibilityLabel` con nome; pallini pagina: `importantForAccessibility="no-hide-descendants"` |
+| `OnboardingStep` | `Image` cover in `<View {...hideFromScreenReader}>` — nessun cambio visivo                                      |
+| `ReadMoreText`   | `Text` di misura iOS: `hideFromScreenReader`; controllo espandi/comprimi: `accessibilityRole="button"`          |
 
 ### `VisuallyHidden` — contenuto solo screen reader
 

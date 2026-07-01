@@ -892,6 +892,9 @@ SVG components such as `RNCKProgressChart` are traversed by TalkBack even when t
 | `MultiLingualText`      | `students/src/core/components/AccessibleText.tsx`         | Inline mixed text                                                                     |
 | `VisuallyHidden`        | `lib/src/ui/components/VisuallyHidden.tsx`                | Zero-size wrapper for screen-reader-only content                                      |
 | `Checkbox`              | `students/src/core/components/Checkbox.tsx`               | Already wraps role, state, and label — do not reimplement                             |
+| `CardSwiper`            | `students/src/core/components/CardSwiper.tsx`             | Student card image `accessibilityLabel`; dot indicator hidden from screen readers     |
+| `OnboardingStep`        | `students/src/core/components/OnboardingStep.tsx`         | Cover image wrapped with `hideFromScreenReader`                                       |
+| `ReadMoreText`          | `students/src/core/components/ReadMoreText.tsx`           | Hidden layout-measure `Text` uses `hideFromScreenReader`; toggle has `button` role    |
 | `IS_IOS` / `IS_ANDROID` | `students/src/core/constants.ts`                          | Platform conditionals                                                                 |
 
 ### `useAccessibility` — exposed functions
@@ -970,7 +973,15 @@ Equivalent inline props (do not copy-paste — import the constant):
 }
 ```
 
-Reference implementation: `TicketListItem`, `RecordedGradeListItem`, `BookingField`.
+Reference implementation: `TicketListItem`, `RecordedGradeListItem`, `BookingField`, `CareerStatus`, `RequestESCScreen`.
+
+### Shared core components (`students/src/core/components/`)
+
+| Component        | Pattern                                                                                                     |
+| ---------------- | ----------------------------------------------------------------------------------------------------------- |
+| `CardSwiper`     | Student photo: `accessibilityLabel` with name; page dots: `importantForAccessibility="no-hide-descendants"` |
+| `OnboardingStep` | Cover `Image` inside `<View {...hideFromScreenReader}>` — no visual change                                  |
+| `ReadMoreText`   | iOS measure `Text`: `hideFromScreenReader`; expand/collapse control: `accessibilityRole="button"`           |
 
 ### `VisuallyHidden` — screen-reader-only content
 

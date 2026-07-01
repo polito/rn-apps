@@ -5,6 +5,8 @@ import { StyleSheet, View } from 'react-native';
 import { Row, Text, useStylesheet, useTheme } from '@polito/lib/ui';
 import { StudentCareerStatusEnum } from '@polito/student-api-client';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
+
 type Props = {
   status: StudentCareerStatusEnum;
 };
@@ -34,6 +36,7 @@ export const CareerStatus = ({ status }: Props) => {
   return (
     <Row align="baseline" gap={2}>
       <View
+        {...hideFromScreenReader}
         style={[
           styles.statusCircle,
           {

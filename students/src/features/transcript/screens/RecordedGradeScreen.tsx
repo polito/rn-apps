@@ -156,6 +156,8 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
                   />
                   <OverviewList indented loading={!grade}>
                     <ListItem
+                      accessibilityRole="none"
+                      accessibilityLabel={`${t('recordedGradeScreen.titleOnTimePoint')}: +${grade.onTimeExamPoints}`}
                       leadingItem={
                         <Icon icon={faFlagCheckered} size={fontSizes['2xl']} />
                       }

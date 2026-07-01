@@ -20,11 +20,20 @@
 - MFA row: `accessibilityRole="button"`, `accessibilityHint={t('common.tapToNavigate')}`.
 - Accessibility font settings row: `accessibilityRole="button"`.
 
+### `MfaAuthContent` / `MfaEnrollContent` / `MfaSettings`
+
+- Documented in [user.md](./user.md) — disabled CTA state/hints, MFA countdown live region, settings description label.
+
+### `AccessibilityFontSettingsScreen`
+
+- Custom font size picker row: composite `accessibilityLabel` (title + current value). See [user.md](./user.md).
+
 ### Translations
 
 - New keys in `en.json` and `it.json`:
   - `loginScreen.ctaDisabledHint`, `loginScreen.forgotPasswordHint`, `loginScreen.ssoHint`
   - `settingsScreen.openStorageMenu`
+  - `mfaScreen.enroll.confirmDisabledHint`
 
 ---
 
