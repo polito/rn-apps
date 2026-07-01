@@ -33,7 +33,8 @@
     "selectDate": "Select date",
     "title": "Agenda",
     "weeklyLayout": "Weekly layout",
-    "weekRange": "From {{start}} to {{end}}"
+    "weekRange": "From {{start}} to {{end}}",
+    "calendarCellHint": "Tap to select this time slot"
   },
   "agendaDialog": {
     "hideEventTitle": "Hide event",
@@ -753,13 +754,24 @@
     "fail": "Fail",
     "pass": "Pass"
   },
+  "guideFieldListItem": {
+    "tapToCopy": "Tap to copy to clipboard"
+  },
   "guideScreen": {
     "copiedFieldFeedback": "{{field}} copied",
+    "fieldsAvailable": "fields available",
+    "fieldsLoading": "Guide fields loading",
+    "guideFields": "Guide fields",
+    "introduction": "Introduction",
     "title": "Guide"
   },
   "guidesScreen": {
+    "guidesList": "Guides list",
+    "listLoaded": "{{count}} guides loaded",
+    "tapToOpenGuide": "Tap to open guide",
     "title": "Guides",
-    "total": "There are {{ total }} guides"
+    "total": "There are {{ total }} guides",
+    "unreadGuide": "unread"
   },
   "jobOfferScreen": {
     "application": "Application",
@@ -1012,7 +1024,10 @@
   "servicesScreen": {
     "subTitleOne": "Information services",
     "subTitleTwo": "Operational services",
-    "title": "Services"
+    "title": "Services",
+    "newElement": ", you have a new item to view",
+    "favoriteActive": "Remove from favorites",
+    "favoriteInactive": "Add to favorites"
   },
   "settingsScreen": {
     "appVersion": "Version {{version}}",

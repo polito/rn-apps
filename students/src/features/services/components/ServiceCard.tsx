@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
@@ -73,6 +73,7 @@ export const ServiceCard = ({
   return (
     <TouchableCard
       accessibilityRole="button"
+      accessibilityState={{ disabled: !!disabled }}
       onPress={
         linkTo
           ? () => {
@@ -87,18 +88,22 @@ export const ServiceCard = ({
       cardStyle={[styles.card, props.cardStyle]}
       accessibilityLabel={accessibilityLabel}
     >
-      <Row accessibilityRole="button" justify="space-between" align="center">
-        <Icon
-          icon={icon}
-          size={28}
-          color={iconColor ?? palettes.primary[dark ? 400 : 500]}
-        />
+      <Row justify="space-between" align="center">
+        <View accessible={false}>
+          <Icon
+            icon={icon}
+            size={28}
+            color={iconColor ?? palettes.primary[dark ? 400 : 500]}
+          />
+        </View>
         <IconButton
+          accessibilityRole="button"
           accessibilityLabel={
             favorite
               ? t('servicesScreen.favoriteActive')
               : t('servicesScreen.favoriteInactive')
           }
+          accessibilityState={{ disabled: !!disabled }}
           icon={favorite ? faStarFilled : faStar}
           color={favorite ? palettes.orange[400] : colors.secondaryText}
           onPress={() => onFavoriteChange(!favorite)}

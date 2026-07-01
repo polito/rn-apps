@@ -33,7 +33,8 @@
     "selectDate": "Seleziona data",
     "title": "Agenda",
     "weeklyLayout": "Layout settimanale",
-    "weekRange": "Dal {{start}} al {{end}}"
+    "weekRange": "Dal {{start}} al {{end}}",
+    "calendarCellHint": "Tocca per selezionare questa fascia oraria"
   },
   "agendaDialog": {
     "hideEventTitle": "Nascondi evento",
@@ -796,13 +797,24 @@
     "fail": "Ins",
     "pass": "Sup"
   },
+  "guideFieldListItem": {
+    "tapToCopy": "Tocca per copiare negli appunti"
+  },
   "guideScreen": {
     "copiedFieldFeedback": "{{field}} copiato",
+    "fieldsAvailable": "campi disponibili",
+    "fieldsLoading": "Caricamento campi guida",
+    "guideFields": "Campi guida",
+    "introduction": "Introduzione",
     "title": "Guida"
   },
   "guidesScreen": {
+    "guidesList": "Lista guide",
+    "listLoaded": "{{count}} guide caricate",
+    "tapToOpenGuide": "Tocca per aprire la guida",
     "title": "Guide",
-    "total": "Sono presenti {{ total }} guide"
+    "total": "Sono presenti {{ total }} guide",
+    "unreadGuide": "non letta"
   },
   "jobOfferScreen": {
     "application": "Candidatura",
