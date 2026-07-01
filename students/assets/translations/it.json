@@ -1071,7 +1071,9 @@
     "compiledTitle": "Questionari compilati",
     "title": "Questionari",
     "toBeCompiledEmptyState": "Non ci sono questionari da compilare",
-    "toBeCompiledTitle": "Questionari da compilare"
+    "toBeCompiledTitle": "Questionari da compilare",
+    "tapToOpenSurvey": "Tocca per aprire il questionario",
+    "surveysList": "Sono presenti {{count}} questionari"
   },
   "graduationCodeScreen": {
     "dateTime": "Data e ora",

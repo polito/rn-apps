@@ -1022,7 +1022,9 @@
     "compiledTitle": "Compiled surveys",
     "title": "Surveys",
     "toBeCompiledEmptyState": "There are no surveys to be compiled",
-    "toBeCompiledTitle": "Surveys to be compiled"
+    "toBeCompiledTitle": "Surveys to be compiled",
+    "tapToOpenSurvey": "Tap to open survey",
+    "surveysList": "There are {{count}} surveys"
   },
   "graduationCodeScreen": {
     "dateTime": "Date and time",
