@@ -296,6 +296,7 @@
     "preferencesAgenda": "Agenda preferences",
     "profilePic": "Profile picture",
     "profilePicture": "Profile picture",
+    "noImage": "No image available",
     "progressChart": "Progress chart",
     "progressChartMulti": "Progress chart, first value {{first}}, second value {{last}}",
     "recentlyViewed": "Recently viewed",
@@ -364,10 +365,21 @@
     "cancelRecentSearchText": "Remove recent search",
     "clearSearch": "Clear search",
     "clearSearches": "Clear searches",
+    "clearSearchesHint": "Clears all recent searches",
+    "contactsFound": "contacts",
     "emptyState": "No people found",
+    "moreOptions": "More options",
+    "moreOptionsHint": "Opens menu with additional actions",
+    "noResultsFound": "No results found",
     "recentSearch": "Recent search",
     "recentSearches": "Recent searches",
+    "removeFromRecent": "Remove from recent searches",
+    "resultFound": "Found",
+    "resultFoundRes": "results",
     "search": "Search people",
+    "searchHint": "Type at least 2 characters to search contacts",
+    "searchPlaceholder": "Search people by name",
+    "searchResults": "Search results",
     "title": "Contacts"
   },
   "courseAssignmentPdfCreationScreen": {
@@ -761,11 +773,19 @@
     "location": "Company location: ",
     "requirements": "Requirements",
     "salary": "Salary: ",
+    "sendEmail": "Opens the email app to send an email",
     "title": "Job offers",
     "url": "Website: "
   },
+  "jobOfferListItem": {
+    "tapToViewDetails": "Tap to view job offer details"
+  },
   "jobOffersScreen": {
+    "emptyState": "No job offers available",
     "endsAtDate": "expiration: ",
+    "jobOffersAvailable": "job offers available",
+    "jobOffersList": "Job offers list",
+    "listLoaded": "{{count}} job offers loaded",
     "title": "Job offers"
   },
   "josOffersScreen": {
@@ -908,9 +928,11 @@
   },
   "personScreen": {
     "call": "Call",
+    "callHint": "Opens the phone app to call this number",
     "contacts": "Contacts",
     "coursesLabel": "List of courses offered by the teacher",
     "department": "Department",
+    "emailHint": "Opens the email app to send an email",
     "moreInfo": "More information",
     "role": "Role",
     "sentEmail": "Send e-mail",

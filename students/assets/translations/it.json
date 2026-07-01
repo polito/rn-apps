@@ -315,6 +315,7 @@
     "preferencesAgenda": "Preferenze agenda",
     "profilePic": "Immagine di profilo",
     "profilePicture": "Immagine di profilo",
+    "noImage": "Nessuna immagine disponibile",
     "progressChart": "Grafico avanzamento",
     "progressChartMulti": "Grafico avanzamento, primo valore {{first}}, secondo valore {{last}}",
     "recentlyViewed": "Visto di recente",
@@ -389,10 +390,21 @@
     "cancelRecentSearchText": "Rimuovi ricerca recente",
     "clearSearch": "Cancella ricerca",
     "clearSearches": "Cancella ricerche",
+    "clearSearchesHint": "Cancella tutte le ricerche recenti",
+    "contactsFound": "contatti",
     "emptyState": "Nessun contatto trovato",
+    "moreOptions": "Altre opzioni",
+    "moreOptionsHint": "Apre il menu con azioni aggiuntive",
+    "noResultsFound": "Nessun risultato trovato",
     "recentSearch": "Ricerca recente",
     "recentSearches": "Ricerche recenti",
+    "removeFromRecent": "Rimuovi dalle ricerche recenti",
+    "resultFound": "Trovati",
+    "resultFoundRes": "risultati",
     "search": "Cerca contatti",
+    "searchHint": "Digita almeno 2 caratteri per cercare contatti",
+    "searchPlaceholder": "Cerca contatti per nome",
+    "searchResults": "Risultati della ricerca",
     "title": "Contatti"
   },
   "courseAssignmentPdfCreationScreen": {
@@ -804,11 +816,19 @@
     "location": "Sede di lavoro: ",
     "requirements": "Requisiti",
     "salary": "Retribuzione: ",
+    "sendEmail": "Apre l'app email per inviare un messaggio",
     "title": "Offerte di lavoro",
     "url": "Sito web: "
   },
+  "jobOfferListItem": {
+    "tapToViewDetails": "Tocca per vedere i dettagli dell'offerta di lavoro"
+  },
   "jobOffersScreen": {
+    "emptyState": "Nessuna offerta di lavoro disponibile",
     "endsAtDate": "Scadenza: ",
+    "jobOffersAvailable": "offerte di lavoro disponibili",
+    "jobOffersList": "Lista offerte di lavoro",
+    "listLoaded": "{{count}} offerte di lavoro caricate",
     "title": "Offerte di lavoro"
   },
   "josOffersScreen": {
@@ -954,9 +974,11 @@
   },
   "personScreen": {
     "call": "Chiama",
+    "callHint": "Apre l'app telefono per chiamare questo numero",
     "contacts": "Contatti",
     "coursesLabel": "Lista dei corsi offerti dal docente",
     "department": "Dipartimento",
+    "emailHint": "Apre l'app email per inviare un messaggio",
     "moreInfo": "Maggiori informazioni",
     "role": "Ruolo",
     "sentEmail": "Invia e-mail",

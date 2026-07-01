@@ -28,7 +28,6 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
   const { t } = useTranslation();
   const { accessibilityListLabel } = useAccessibility();
 
-  const accessibilityLabel = accessibilityListLabel(index, totalData);
   const location = jobOffer?.location;
   const title = getHtmlTextContent(jobOffer?.title);
   const companyInfos = `${jobOffer?.companyName} - ${t(
@@ -37,6 +36,8 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
 
   return (
     <ListItem
+      accessible={true}
+      accessibilityRole="button"
       title={title}
       titleStyle={styles.title}
       linkTo={{
@@ -46,11 +47,14 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
         },
       }}
       accessibilityLabel={[
-        accessibilityLabel,
         title,
         location,
         companyInfos,
-      ].join(', ')}
+        accessibilityListLabel(index, totalData),
+      ]
+        .filter(Boolean)
+        .join(', ')}
+      accessibilityHint={t('jobOfferListItem.tapToViewDetails')}
       subtitle={
         <Col>
           <Text
