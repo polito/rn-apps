@@ -27,7 +27,11 @@ import { onlineManager } from '@tanstack/react-query';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
-import { useGetTickets } from '../../../core/queries/ticketHooks';
+import {
+  CLOSED_TICKET_LIST_STATUSES,
+  isConcludedTicketStatus,
+  useGetTickets,
+} from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
 
@@ -79,7 +83,7 @@ const OpenTickets = ({ ticketsQuery }: TicketPageSection) => {
   const { t } = useTranslation();
 
   const openTickets = (ticketsQuery.data || [])
-    .filter(ticket => ticket.status !== TicketStatus.Closed)
+    .filter(ticket => !isConcludedTicketStatus(ticket.status))
     .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
   useFocusEffect(
@@ -131,7 +135,7 @@ const ClosedTickets = ({ ticketsQuery }: TicketPageSection) => {
   const { t } = useTranslation();
 
   const closedTickets = (ticketsQuery.data || [])
-    .filter(ticket => ticket.status === TicketStatus.Closed)
+    .filter(ticket => isConcludedTicketStatus(ticket.status))
     .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
   const renderedClosedTickets = useMemo(
@@ -155,7 +159,9 @@ const ClosedTickets = ({ ticketsQuery }: TicketPageSection) => {
         title={t('ticketsScreen.closed')}
         linkTo={{
           screen: 'TicketList',
-          params: { statuses: [TicketStatus.Closed] },
+          params: {
+            statuses: [...CLOSED_TICKET_LIST_STATUSES] as TicketStatus[],
+          },
         }}
         linkToMoreCount={closedTickets.length - renderedClosedTickets.length}
       />

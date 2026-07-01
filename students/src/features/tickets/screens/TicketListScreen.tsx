@@ -10,10 +10,12 @@ import {
   RefreshControl,
   useSafeAreaSpacing,
 } from '@polito/lib/ui';
-import { TicketStatus } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useGetTickets } from '../../../core/queries/ticketHooks';
+import {
+  isConcludedTicketStatus,
+  useGetTickets,
+} from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
 
@@ -34,7 +36,7 @@ export const TicketListScreen = ({ route }: Props) => {
   );
 
   const labels = useMemo(() => {
-    const closedTicket = statuses.includes(TicketStatus.Closed);
+    const closedTicket = statuses.some(isConcludedTicketStatus);
     return {
       title: closedTicket
         ? t('ticketsScreen.closed')

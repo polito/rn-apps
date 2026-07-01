@@ -1,20 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import {
-  Col,
-  CtaButton,
-  Text,
-  type Theme,
-  useStylesheet,
-} from '@polito/lib/ui';
+import { Col, Text, type Theme, useStylesheet } from '@polito/lib/ui';
 
-interface TicketRateBarProps {
-  onPress: () => void;
-}
-
-export const TicketRateBar = ({ onPress }: TicketRateBarProps) => {
+export const TicketWaitingOperatorBar = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
 
@@ -22,20 +11,12 @@ export const TicketRateBar = ({ onPress }: TicketRateBarProps) => {
     <View style={styles.container}>
       <Col gap={3}>
         <Text variant="heading" style={styles.title}>
-          {t('ticketScreen.rateBarTitle')}
+          {t('ticketScreen.waitingOperatorBarTitle')}
         </Text>
         <Text variant="prose" style={styles.subtitle}>
-          {t('ticketScreen.rateBarSubtitle')}
+          {t('ticketScreen.waitingOperatorBarSubtitle')}
         </Text>
       </Col>
-      <CtaButton
-        absolute={false}
-        variant="outlined"
-        icon={faCheck}
-        title={t('ticketScreen.rateBarCta')}
-        action={onPress}
-        containerStyle={styles.buttonContainer}
-      />
     </View>
   );
 };
@@ -47,7 +28,6 @@ const createStyles = ({ spacing, fontSizes, colors, palettes }: Theme) =>
       paddingHorizontal: spacing[5],
       paddingTop: spacing[2],
       paddingBottom: spacing[4],
-      gap: spacing[3],
     },
     title: {
       color: palettes.primary[700],
@@ -58,9 +38,5 @@ const createStyles = ({ spacing, fontSizes, colors, palettes }: Theme) =>
       color: palettes.gray[600],
       fontSize: fontSizes.xs,
       lineHeight: fontSizes.xs * 1.5,
-    },
-    buttonContainer: {
-      paddingVertical: 0,
-      paddingHorizontal: 0,
     },
   });

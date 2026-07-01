@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import {
   Col,
   CtaButton,
@@ -10,11 +9,11 @@ import {
   useStylesheet,
 } from '@polito/lib/ui';
 
-interface TicketRateBarProps {
+interface TicketDuplicateBarProps {
   onPress: () => void;
 }
 
-export const TicketRateBar = ({ onPress }: TicketRateBarProps) => {
+export const TicketDuplicateBar = ({ onPress }: TicketDuplicateBarProps) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
 
@@ -22,17 +21,16 @@ export const TicketRateBar = ({ onPress }: TicketRateBarProps) => {
     <View style={styles.container}>
       <Col gap={3}>
         <Text variant="heading" style={styles.title}>
-          {t('ticketScreen.rateBarTitle')}
+          {t('ticketScreen.duplicateBarTitle')}
         </Text>
         <Text variant="prose" style={styles.subtitle}>
-          {t('ticketScreen.rateBarSubtitle')}
+          {t('ticketScreen.duplicateBarSubtitle')}
         </Text>
       </Col>
       <CtaButton
         absolute={false}
         variant="outlined"
-        icon={faCheck}
-        title={t('ticketScreen.rateBarCta')}
+        title={t('ticketScreen.duplicateBarCta')}
         action={onPress}
         containerStyle={styles.buttonContainer}
       />

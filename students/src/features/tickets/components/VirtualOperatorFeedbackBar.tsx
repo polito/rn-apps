@@ -17,11 +17,15 @@ import { useGiveTicketReplyFeedback } from '../../../core/queries/ticketHooks';
 interface VirtualOperatorFeedbackBarProps {
   ticketId: number;
   replyId: number;
+  onAccepted?: () => void;
+  onRejected?: () => void;
 }
 
 export const VirtualOperatorFeedbackBar = ({
   ticketId,
   replyId,
+  onAccepted,
+  onRejected,
 }: VirtualOperatorFeedbackBarProps) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
@@ -32,9 +36,15 @@ export const VirtualOperatorFeedbackBar = ({
   );
 
   const handleFeedback = (positive: boolean) => {
-    giveFeedback(positive).catch(() =>
-      Alert.alert(t('common.error'), t('ticketScreen.sendError')),
-    );
+    giveFeedback(positive)
+      .then(() => {
+        if (positive) {
+          onAccepted?.();
+        } else {
+          onRejected?.();
+        }
+      })
+      .catch(() => Alert.alert(t('common.error'), t('ticketScreen.sendError')));
   };
 
   return (

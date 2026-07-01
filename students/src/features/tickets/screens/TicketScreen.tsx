@@ -1,138 +1,63 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, FlatList, Pressable, StyleSheet, View } from 'react-native';
+import {
+  Alert,
+  FlatList,
+  Platform,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Animated, {
   useAnimatedKeyboard,
   useAnimatedStyle,
 } from 'react-native-reanimated';
 
-import { faCircleQuestion } from '@fortawesome/free-regular-svg-icons';
-import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { usePreferencesContext } from '@polito/lib/core';
 import {
-  IS_IOS,
-  usePreferencesContext,
-  useScreenTitle,
-} from '@polito/lib/core';
-import {
-  BottomModal,
   ChatBubble,
   GlobalStyles,
-  IconButton,
   RefreshControl,
-  Row,
+  Text,
   type Theme,
-  useBottomModal,
   useSafeAreaSpacing,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import {
-  TicketOverview,
-  TicketSpecialAgent,
-  TicketStatus,
-} from '@polito/student-api-client';
-import { MenuView } from '@react-native-menu/menu';
+import { TicketStatus } from '@polito/student-api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { useHeaderHeight } from '@react-navigation/elements';
-import { useNavigation } from '@react-navigation/native';
-import {
-  NativeStackNavigationProp,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';
 
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import {
-  MOCK_TICKET_FEEDBACK,
-  MOCK_TICKET_RESOLVE,
-  MOCK_TICKET_STAGE,
+  isResolvedTicketStatus,
   useGetTicket,
-  useMarkTicketAsClosed,
   useMarkTicketAsRead,
 } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { ChatMessage } from '../components/ChatMessage';
 import { HtmlMessage } from '../components/HtmlMessage';
 import { TicketAttachmentChip } from '../components/TicketAttachmentChip';
+import { TicketAutoresolvedBar } from '../components/TicketAutoresolvedBar';
+import { TicketDuplicateBar } from '../components/TicketDuplicateBar';
 import { TicketFeedbackInfo } from '../components/TicketFeedbackInfo';
 import { TicketHeader } from '../components/TicketHeader';
-import { TicketInfoBottomModal } from '../components/TicketInfoBottomModal';
 import { TicketMessagingView } from '../components/TicketMessagingView';
 import { TicketRateBar } from '../components/TicketRateBar';
-import { TicketResolvePromptBar } from '../components/TicketResolvePromptBar';
+import { TicketWaitingOperatorBar } from '../components/TicketWaitingOperatorBar';
 import { VirtualOperatorFeedbackBar } from '../components/VirtualOperatorFeedbackBar';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'Ticket'>;
-
-const HeaderRight = ({ ticket }: { ticket: TicketOverview }) => {
-  const { t } = useTranslation();
-  const theme = useTheme();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<ServiceStackParamList, 'Ticket'>>();
-  const { colors, fontSizes } = theme;
-  const styles = useStylesheet(createStyles);
-  const { mutateAsync: markTicketAsClosed, isSuccess } = useMarkTicketAsClosed(
-    ticket?.id,
-  );
-  const confirm = useConfirmationDialog({
-    message: t('tickets.closeTip'),
-  });
-
-  const actions = useMemo(
-    () => [
-      {
-        title: t('tickets.close'),
-        color: 'red',
-        image: 'trash.fill',
-        imageColor: 'red',
-      },
-    ],
-    [t],
-  );
-
-  const onPressCloseTicket = async () => {
-    if (await confirm()) {
-      return markTicketAsClosed();
-    }
-    return Promise.reject();
-  };
-
-  useEffect(() => {
-    if (isSuccess) {
-      navigation.navigate('Tickets');
-    }
-  }, [isSuccess, navigation]);
-
-  return (
-    <MenuView
-      title={t('tickets.menuAction')}
-      actions={actions}
-      onPressAction={onPressCloseTicket}
-    >
-      <IconButton
-        style={styles.icon}
-        icon={faEllipsisVertical}
-        color={colors.secondaryText}
-        size={fontSizes.xl}
-      />
-    </MenuView>
-  );
-};
 
 export const TicketScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const styles = useStylesheet(createStyles);
   const ticketQuery = useGetTicket(id);
   const { mutate: markAsRead } = useMarkTicketAsRead(id);
-  const { spacing, palettes } = useTheme();
-  const {
-    open: showInfoModal,
-    close: closeInfoModal,
-    modal: infoModal,
-  } = useBottomModal();
-  const headerHeight = useHeaderHeight();
+  const { spacing } = useTheme();
   const bottomBarHeight = useBottomTabBarHeight();
   const ticket = ticketQuery.data;
   const { paddingHorizontal } = useSafeAreaSpacing();
@@ -145,8 +70,6 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     t('ticketScreen.yourQuestion'),
     ticket?.message,
   ].join(', ');
-
-  useScreenTitle(ticket?.subject);
 
   const markAsReadIfNeeded = useCallback(async () => {
     if (!ticket) {
@@ -163,102 +86,31 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     markAsReadIfNeeded();
   }, [markAsReadIfNeeded]);
 
-  const isResolved = useMemo(() => {
-    if (!ticket) {
-      return false;
-    }
-    if (MOCK_TICKET_RESOLVE) {
-      // TEMP: closed tickets act as resolved unless previewing the 'resolve' step
-      return (
-        (ticket.status as string) === 'closed' &&
-        MOCK_TICKET_STAGE !== 'resolve'
-      );
-    }
-    return ticket.status === TicketStatus.Closed;
-  }, [ticket]);
-
-  const feedbackInserted = useMemo(() => {
-    if (!isResolved || !ticket) {
-      return false;
-    }
-    if (MOCK_TICKET_RESOLVE) {
-      return MOCK_TICKET_STAGE === 'feedback';
-    }
-    return !!ticket.feedbackProvided;
-  }, [isResolved, ticket]);
-
-  const feedback = MOCK_TICKET_RESOLVE
-    ? MOCK_TICKET_FEEDBACK
-    : ticket?.feedbackProvided;
-
-  const headerRight = useCallback(() => {
-    if (!ticket?.status) {
-      return null;
-    }
-    return (
-      <Row align="center" gap={1}>
-        {!isResolved && <HeaderRight ticket={ticket} />}
-        <IconButton
-          icon={faCircleQuestion}
-          color={palettes.primary[500]}
-          size={fontSizes.xl}
-          accessibilityLabel={t('ticketScreen.infoModalTitle')}
-          onPress={() =>
-            showInfoModal(
-              <TicketInfoBottomModal
-                ticket={ticket}
-                onClose={closeInfoModal}
-              />,
-            )
-          }
-        />
-      </Row>
-    );
-  }, [
-    ticket,
-    isResolved,
-    palettes,
-    fontSizes,
-    t,
-    showInfoModal,
-    closeInfoModal,
-  ]);
-
-  useEffect(() => {
-    navigation.setOptions({ headerRight });
-  }, [navigation, ticket, headerRight]);
-
-  const replies = useMemo(
-    () =>
-      ticket?.replies.sort(
-        (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-      ) ?? [],
+  const isAutoResolved = useMemo(
+    () => ticket?.status === TicketStatus.Autoresolved,
     [ticket],
   );
 
-  const lastReply = replies[0];
+  const isDuplicate = useMemo(
+    () => ticket?.status === TicketStatus.Duplicate,
+    [ticket],
+  );
 
-  const canResolve = useMemo(() => {
-    if (!ticket || !lastReply || isResolved) {
+  const isResolved = useMemo(
+    () => isResolvedTicketStatus(ticket?.status),
+    [ticket?.status],
+  );
+
+  const feedbackInserted = useMemo(() => {
+    if ((!isResolved && !isAutoResolved) || !ticket) {
       return false;
     }
-    const isHumanAgentReply =
-      lastReply.isFromAgent && lastReply.agentId !== TicketSpecialAgent.AiAgent;
-    if (MOCK_TICKET_RESOLVE) {
-      // TEMP: force the in-chat resolve CTA on any ticket in the 'resolve' step
-      return MOCK_TICKET_STAGE === 'resolve';
-    }
-    return ticket.status === TicketStatus.Pending && isHumanAgentReply;
-  }, [ticket, lastReply, isResolved]);
+    return !!ticket.feedbackProvided;
+  }, [isResolved, isAutoResolved, ticket]);
 
-  const onPressRate = useCallback(() => {
-    navigation.navigate('TicketResolved', { ticketId: id });
-  }, [navigation, id]);
+  const feedback = ticket?.feedbackProvided;
 
-  const onPressResolve = useCallback(() => {
-    if (!lastReply) {
-      return;
-    }
+  const onPressMarkResolved = useCallback(() => {
     Alert.alert(
       t('ticketScreen.resolveConfirmTitle'),
       t('ticketScreen.resolveConfirmMessage'),
@@ -267,12 +119,155 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         {
           text: t('common.confirm'),
           onPress: () =>
-            navigation.navigate('TicketResolved', { ticketId: id }),
+            navigation.navigate('TicketResolved', {
+              ticketId: id,
+              markAsResolved: true,
+            }),
         },
       ],
       { cancelable: true },
     );
-  }, [lastReply, t, navigation, id]);
+  }, [t, navigation, id]);
+
+  const onPressGoToLinkedTicket = useCallback(() => {
+    if (ticket?.duplicateId != null) {
+      navigation.push('Ticket', { id: ticket.duplicateId });
+    }
+  }, [navigation, ticket]);
+
+  const onVirtualOperatorAccepted = useCallback(() => {
+    navigation.replace('TicketAutoResolved', { ticketId: id });
+  }, [navigation, id]);
+
+  const replies = useMemo(
+    () =>
+      [...(ticket?.replies ?? [])].sort(
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+      ),
+    [ticket?.replies],
+  );
+
+  const replyNeedingFeedback = useMemo(
+    () =>
+      [...(ticket?.replies ?? [])]
+        .filter(reply => reply.needsFeedback === true)
+        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0],
+    [ticket?.replies],
+  );
+
+  const showVirtualOperatorFeedback = useMemo(() => {
+    if (
+      !ticket ||
+      isAutoResolved ||
+      isDuplicate ||
+      isResolved ||
+      feedbackInserted
+    ) {
+      return false;
+    }
+    return replyNeedingFeedback != null;
+  }, [
+    ticket,
+    isAutoResolved,
+    isDuplicate,
+    isResolved,
+    feedbackInserted,
+    replyNeedingFeedback,
+  ]);
+
+  const showResolvedRateBar = useMemo(
+    () => isResolved && !feedbackInserted && replyNeedingFeedback != null,
+    [isResolved, feedbackInserted, replyNeedingFeedback],
+  );
+
+  const showAutoresolvedRateBar = useMemo(
+    () => isAutoResolved && !feedbackInserted,
+    [isAutoResolved, feedbackInserted],
+  );
+
+  const isWaitingForOperator = useMemo(() => {
+    if (
+      !ticket ||
+      isAutoResolved ||
+      isDuplicate ||
+      isResolved ||
+      feedbackInserted ||
+      showVirtualOperatorFeedback
+    ) {
+      return false;
+    }
+    if (ticket.status !== TicketStatus.Pending) {
+      return false;
+    }
+    return (ticket.replies ?? []).some(reply => reply.isFromAgent);
+  }, [
+    ticket,
+    isAutoResolved,
+    isDuplicate,
+    isResolved,
+    feedbackInserted,
+    showVirtualOperatorFeedback,
+  ]);
+
+  const isMessagingDisabled = useMemo(
+    () =>
+      (isResolved && !showResolvedRateBar) ||
+      (isAutoResolved && !showAutoresolvedRateBar) ||
+      isDuplicate ||
+      feedbackInserted ||
+      isWaitingForOperator ||
+      showVirtualOperatorFeedback,
+    [
+      isResolved,
+      showResolvedRateBar,
+      isAutoResolved,
+      showAutoresolvedRateBar,
+      isDuplicate,
+      feedbackInserted,
+      isWaitingForOperator,
+      showVirtualOperatorFeedback,
+    ],
+  );
+
+  const headerRight = useCallback(() => {
+    if (
+      !ticket?.status ||
+      isResolved ||
+      isAutoResolved ||
+      isWaitingForOperator
+    ) {
+      return null;
+    }
+    return (
+      <TouchableOpacity
+        accessibilityRole="button"
+        accessibilityLabel={t('ticketScreen.markAsResolved')}
+        onPress={onPressMarkResolved}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        style={styles.markResolvedButton}
+      >
+        <Text style={styles.markResolved}>
+          {t('ticketScreen.markAsResolved')}
+        </Text>
+      </TouchableOpacity>
+    );
+  }, [
+    ticket,
+    isResolved,
+    isAutoResolved,
+    isWaitingForOperator,
+    onPressMarkResolved,
+    styles,
+    t,
+  ]);
+
+  useEffect(() => {
+    navigation.setOptions({ headerRight });
+  }, [navigation, ticket, headerRight]);
+
+  const onPressRate = useCallback(() => {
+    navigation.navigate('TicketResolved', { ticketId: id });
+  }, [navigation, id]);
 
   useEffect(() => {
     const changeStyle = () => {
@@ -300,20 +295,57 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     [styless],
   );
 
+  const bottomBarMode = useMemo(() => {
+    if (isDuplicate) {
+      return 'duplicate';
+    }
+    if (feedbackInserted && feedback) {
+      return 'feedback';
+    }
+    if (showVirtualOperatorFeedback) {
+      return 'vo-feedback';
+    }
+    if (isWaitingForOperator) {
+      return 'waiting';
+    }
+    if (isAutoResolved && showAutoresolvedRateBar) {
+      return 'autoresolved';
+    }
+    if (showResolvedRateBar) {
+      return 'resolved';
+    }
+    return 'messaging';
+  }, [
+    isDuplicate,
+    feedbackInserted,
+    feedback,
+    showVirtualOperatorFeedback,
+    isWaitingForOperator,
+    isAutoResolved,
+    showAutoresolvedRateBar,
+    showResolvedRateBar,
+  ]);
+
   // TODO: traslucent does not work anymore because now views
   // are more linear: it's needed to recalculate layouts and set
   // the flatlist to be absolutely positioned
 
   return (
     <Animated.View style={[GlobalStyles.grow, animatedBottomPadding]}>
-      {!!ticket && <TicketHeader ticket={ticket} />}
+      {!!ticket && (
+        <TicketHeader
+          ticket={ticket}
+          onPress={() => navigation.navigate('TicketInfo', { id })}
+        />
+      )}
       <FlatList
         keyboardShouldPersistTaps="handled"
         inverted
+        removeClippedSubviews={Platform.OS !== 'android'}
         contentContainerStyle={[
           {
             paddingTop: spacing[5],
-            paddingBottom: IS_IOS ? headerHeight + spacing[5] : undefined,
+            paddingBottom: spacing[5],
           },
           paddingHorizontal,
         ]}
@@ -337,7 +369,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
                 />
                 {ticket.hasAttachments && (
                   <View>
-                    {ticket.attachments.map((item, index) => (
+                    {(ticket.attachments ?? []).map((item, index) => (
                       <TicketAttachmentChip
                         key={index}
                         attachment={item}
@@ -359,29 +391,41 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         )}
         ItemSeparatorComponent={ItemsSeparator}
       />
-      {feedbackInserted && feedback ? (
-        <TicketFeedbackInfo
-          rating={feedback.rating}
-          comment={
-            MOCK_TICKET_RESOLVE ? MOCK_TICKET_FEEDBACK.comment : undefined
-          }
-          createdAt={feedback.createdAt}
-        />
-      ) : lastReply?.needsFeedback ? (
-        <VirtualOperatorFeedbackBar ticketId={id} replyId={lastReply.id} />
-      ) : isResolved ? (
-        <TicketRateBar onPress={onPressRate} />
-      ) : canResolve ? (
-        <TicketResolvePromptBar onPress={onPressResolve} />
-      ) : (
-        <TicketMessagingView ticketId={id} />
-      )}
-      <BottomModal {...infoModal} />
+      <View key={bottomBarMode}>
+        {isDuplicate ? (
+          <TicketDuplicateBar onPress={onPressGoToLinkedTicket} />
+        ) : feedbackInserted && feedback ? (
+          <TicketFeedbackInfo
+            rating={feedback.rating}
+            createdAt={feedback.createdAt}
+          />
+        ) : showVirtualOperatorFeedback ? (
+          <VirtualOperatorFeedbackBar
+            ticketId={id}
+            replyId={replyNeedingFeedback!.id}
+            onAccepted={onVirtualOperatorAccepted}
+          />
+        ) : isWaitingForOperator ? (
+          <TicketWaitingOperatorBar />
+        ) : showAutoresolvedRateBar ? (
+          <TicketAutoresolvedBar onPress={onPressRate} />
+        ) : showResolvedRateBar ? (
+          <TicketRateBar onPress={onPressRate} />
+        ) : isMessagingDisabled ? null : (
+          <TicketMessagingView ticketId={id} />
+        )}
+      </View>
     </Animated.View>
   );
 };
 
-const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
+const createStyles = ({
+  spacing,
+  fontSizes,
+  fontWeights,
+  colors,
+  palettes,
+}: Theme) =>
   StyleSheet.create({
     separator: {
       height: spacing[3],
@@ -390,8 +434,15 @@ const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
       marginHorizontal: spacing[5],
       marginVertical: spacing[3],
     },
-    icon: {
-      marginRight: -spacing[3],
+    markResolvedButton: {
+      justifyContent: 'center',
+      paddingVertical: spacing[2],
+      paddingHorizontal: spacing[2],
+    },
+    markResolved: {
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.medium,
+      color: palettes.primary[500],
     },
     text: {
       padding: 0,

@@ -2,17 +2,15 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { formatDate } from '@polito/lib/core';
-import { Text, type Theme, useStylesheet } from '@polito/lib/ui';
+import { Col, Text, type Theme, useStylesheet } from '@polito/lib/ui';
 
 interface TicketFeedbackInfoProps {
   rating: number;
-  comment?: string;
   createdAt: Date;
 }
 
 export const TicketFeedbackInfo = ({
   rating,
-  comment,
   createdAt,
 }: TicketFeedbackInfoProps) => {
   const { t } = useTranslation();
@@ -26,48 +24,56 @@ export const TicketFeedbackInfo = ({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{t('ticketScreen.feedbackInfoTitle')}</Text>
-      <Text style={styles.body}>
-        {`${t('ticketScreen.feedbackInfoRatingPrefix')} `}
-        <Text style={styles.bold}>
-          {t('ticketScreen.feedbackInfoStars', { count: rating })}
+      <Col gap={3}>
+        <Text variant="heading" style={styles.title}>
+          {t('ticketScreen.feedbackInfoTitle')}
         </Text>
-        {` ${t('ticketScreen.feedbackInfoOnDate')} `}
-        <Text style={styles.bold}>{date}</Text>
-        {` ${t('ticketScreen.feedbackInfoAtTime')} `}
-        <Text style={styles.bold}>{time}</Text>.
-      </Text>
-      {!!comment && <Text style={styles.body}>{`“${comment}”`}</Text>}
-      <Text style={styles.body}>{t('ticketScreen.feedbackInfoThanks')}</Text>
+        <Text variant="prose" style={styles.body}>
+          {`${t('ticketScreen.feedbackInfoRatingPrefix')} `}
+          <Text variant="heading" style={styles.bold}>
+            {t('ticketScreen.feedbackInfoStars', { count: rating })}
+          </Text>
+          {` ${t('ticketScreen.feedbackInfoOnDate')} `}
+          <Text variant="heading" style={styles.bold}>
+            {date}
+          </Text>
+          {` ${t('ticketScreen.feedbackInfoAtTime')} `}
+          <Text variant="heading" style={styles.bold}>
+            {time}
+          </Text>
+          .
+        </Text>
+        <Text variant="prose" style={styles.body}>
+          {t('ticketScreen.feedbackInfoThanks')}
+        </Text>
+      </Col>
     </View>
   );
 };
 
-const createStyles = ({
-  spacing,
-  fontSizes,
-  fontWeights,
-  colors,
-  palettes,
-}: Theme) =>
+const createStyles = ({ spacing, fontSizes, colors, palettes }: Theme) =>
   StyleSheet.create({
     container: {
-      backgroundColor: colors.surface,
-      paddingHorizontal: spacing[4],
+      backgroundColor: colors.white,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: colors.divider,
+      paddingHorizontal: spacing[5],
       paddingTop: spacing[2],
       paddingBottom: spacing[4],
-      gap: spacing[1],
     },
     title: {
+      color: palettes.gray[700],
       fontSize: fontSizes.sm,
-      fontWeight: fontWeights.semibold,
-      color: colors.heading,
+      lineHeight: fontSizes.sm * 1.1,
     },
     body: {
-      fontSize: fontSizes.sm,
       color: palettes.gray[700],
+      fontSize: fontSizes.sm,
+      lineHeight: fontSizes.sm * 1.1,
     },
     bold: {
-      fontWeight: fontWeights.semibold,
+      color: palettes.gray[700],
+      fontSize: fontSizes.sm,
+      lineHeight: fontSizes.sm * 1.1,
     },
   });

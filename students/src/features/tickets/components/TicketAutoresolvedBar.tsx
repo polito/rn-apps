@@ -10,11 +10,13 @@ import {
   useStylesheet,
 } from '@polito/lib/ui';
 
-interface TicketRateBarProps {
+interface TicketAutoresolvedBarProps {
   onPress: () => void;
 }
 
-export const TicketRateBar = ({ onPress }: TicketRateBarProps) => {
+export const TicketAutoresolvedBar = ({
+  onPress,
+}: TicketAutoresolvedBarProps) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
 
@@ -22,17 +24,17 @@ export const TicketRateBar = ({ onPress }: TicketRateBarProps) => {
     <View style={styles.container}>
       <Col gap={3}>
         <Text variant="heading" style={styles.title}>
-          {t('ticketScreen.rateBarTitle')}
+          {t('ticketScreen.autoResolvedBarTitle')}
         </Text>
         <Text variant="prose" style={styles.subtitle}>
-          {t('ticketScreen.rateBarSubtitle')}
+          {t('ticketScreen.autoResolvedBarSubtitle')}
         </Text>
       </Col>
       <CtaButton
         absolute={false}
         variant="outlined"
         icon={faCheck}
-        title={t('ticketScreen.rateBarCta')}
+        title={t('ticketResolvedScreen.sendFeedback')}
         action={onPress}
         containerStyle={styles.buttonContainer}
       />

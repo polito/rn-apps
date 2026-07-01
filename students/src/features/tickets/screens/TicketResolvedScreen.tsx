@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -10,7 +11,7 @@ import {
 } from 'react-native';
 
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
-import { faRankingStar, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 import {
   CtaButton,
   CtaButtonContainer,
@@ -21,11 +22,14 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useProvideTicketFeedback } from '~/core/queries/ticketHooks';
 
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
+import { PodiumIcon } from '../components/PodiumIcon';
+import { exitToTicketsList } from '../utils/exitToTicketsList';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketResolved'>;
 
@@ -37,8 +41,9 @@ const STAR_ICON_SIZE = 32;
 export const TicketResolvedScreen = ({ route, navigation }: Props) => {
   const { ticketId } = route.params;
   const { t } = useTranslation();
-  const { palettes, colors } = useTheme();
+  const { palettes, colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
+  const headerHeight = useHeaderHeight();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [attempted, setAttempted] = useState(false);
@@ -47,10 +52,8 @@ export const TicketResolvedScreen = ({ route, navigation }: Props) => {
 
   const commentLength = comment.trim().length;
   const commentValid = commentLength >= MIN_COMMENT_LENGTH;
-  // Comment is mandatory only for the lowest rating (1 star)
   const commentRequired = rating === 1;
   const canSubmit = rating > 0 && (!commentRequired || commentValid);
-  // Error styling kicks in once the user typed something or tapped submit
   const showError =
     commentRequired && !commentValid && (commentLength > 0 || attempted);
 
@@ -67,22 +70,22 @@ export const TicketResolvedScreen = ({ route, navigation }: Props) => {
       return;
     }
     provideFeedback({ rating, comment: comment.trim() || undefined })
-      .then(() => navigation.navigate('Tickets'))
+      .then(() => exitToTicketsList(navigation))
       .catch(() => Alert.alert(t('common.error'), t('ticketScreen.sendError')));
   };
 
   return (
     <View style={styles.screen}>
       <ScrollView
-        contentContainerStyle={styles.container}
+        contentContainerStyle={[
+          styles.container,
+          Platform.OS === 'ios' && { paddingTop: headerHeight + spacing[5] },
+        ]}
         keyboardShouldPersistTaps="handled"
       >
-        <Icon
-          icon={faRankingStar}
-          size={PODIUM_ICON_SIZE}
-          color={palettes.success[700]}
-          style={styles.headerIcon}
-        />
+        <View style={styles.headerIcon}>
+          <PodiumIcon size={PODIUM_ICON_SIZE} color={palettes.success[700]} />
+        </View>
         <Text variant="heading" style={styles.title}>
           {t('ticketResolvedScreen.title')}
         </Text>

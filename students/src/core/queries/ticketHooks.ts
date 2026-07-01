@@ -9,6 +9,7 @@ import {
   GetTicketReplyAttachmentRequest,
   ReplyToTicketRequest,
   TicketFeedbackRequest,
+  TicketStatus,
   TicketsApi,
 } from '@polito/student-api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -18,6 +19,26 @@ import { cacheDirectory } from '../storage/fileSystem';
 
 export const TICKETS_QUERY_KEY = ['tickets'];
 export const TICKET_QUERY_PREFIX = 'ticket';
+
+export const LEGACY_CLOSED_TICKET_STATUS = 'closed' as const;
+
+export const CONCLUDED_TICKET_STATUSES = [
+  TicketStatus.Resolved,
+  TicketStatus.Autoresolved,
+  TicketStatus.Duplicate,
+] as const satisfies readonly TicketStatus[];
+
+export const CLOSED_TICKET_LIST_STATUSES = [
+  ...CONCLUDED_TICKET_STATUSES,
+  LEGACY_CLOSED_TICKET_STATUS,
+] as const;
+
+export const isConcludedTicketStatus = (status?: TicketStatus | string) =>
+  (CONCLUDED_TICKET_STATUSES as readonly string[]).includes(status ?? '') ||
+  status === LEGACY_CLOSED_TICKET_STATUS;
+
+export const isResolvedTicketStatus = (status?: TicketStatus | string) =>
+  status === TicketStatus.Resolved || status === LEGACY_CLOSED_TICKET_STATUS;
 
 const TICKETS_ATTACHMENTS_PREFIX = 'attachments';
 const TOPICS_QUERY_KEY = ['topics'];
@@ -96,25 +117,6 @@ export const useGiveTicketReplyFeedback = (
   });
 };
 
-// TEMP: local testing without backend. Set to false (and delete usages)
-// once @polito/student-api-client with resolveTicket/WaitingUser is published.
-export const MOCK_TICKET_RESOLVE = true;
-
-// TEMP: which step of the flow to preview on closed tickets while mocking.
-// 'resolve'  -> in-chat "Sì, risolvi il ticket" CTA (start of the loop)
-// 'rate'     -> resolved ticket with the "Valuta ticket" bar
-// 'feedback' -> resolved ticket with the "Feedback inserito" block
-export const MOCK_TICKET_STAGE: 'resolve' | 'rate' | 'feedback' = 'resolve';
-
-// TEMP: sample feedback shown in the "Feedback inserito" block while mocking.
-// The real values will come from the ticket once the API exposes them.
-export const MOCK_TICKET_FEEDBACK = {
-  rating: 1,
-  comment:
-    "Il sistema di ticketing ha funzionato bene, ma l'operatore 'Luca' ha impiegato troppo tempo per rispondere.",
-  createdAt: new Date('2026-03-15T15:30:00'),
-};
-
 export const useProvideTicketFeedback = (ticketId: number) => {
   const client = useQueryClient();
   const ticketsClient = useTicketsClient();
@@ -124,25 +126,31 @@ export const useProvideTicketFeedback = (ticketId: number) => {
   ];
 
   return useMutation({
-    mutationFn: async (ticketFeedbackRequest: TicketFeedbackRequest) => {
-      if (MOCK_TICKET_RESOLVE) {
-        // TEMP: simulate feedback locally, no network call
-        await new Promise(resolve => setTimeout(resolve, 600));
-        console.debug('[MOCK] provideTicketFeedback', {
-          ticketId,
-          ...ticketFeedbackRequest,
-        });
-        return;
-      }
-      return ticketsClient.provideTicketFeedback({
+    mutationFn: (ticketFeedbackRequest: TicketFeedbackRequest) =>
+      ticketsClient.provideTicketFeedback({
         ticketId,
         ticketFeedbackRequest,
-      });
+      }),
+    onSuccess() {
+      return invalidatesQueries.forEach(queryKey =>
+        client.invalidateQueries({ queryKey }),
+      );
+    },
+  });
+};
+
+export const useMarkTicketAsResolved = (ticketId: number) => {
+  const client = useQueryClient();
+  const invalidatesQueries = [
+    TICKETS_QUERY_KEY,
+    [TICKET_QUERY_PREFIX, ticketId],
+  ];
+
+  return useMutation({
+    mutationFn: async () => {
+      // TODO: call resolveTicket
     },
     onSuccess() {
-      if (MOCK_TICKET_RESOLVE) {
-        return;
-      }
       return invalidatesQueries.forEach(queryKey =>
         client.invalidateQueries({ queryKey }),
       );

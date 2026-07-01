@@ -27,12 +27,13 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { TicketOverview, TicketStatus } from '@polito/student-api-client';
+import { TicketOverview } from '@polito/student-api-client';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import {
   TICKET_QUERY_PREFIX,
+  isConcludedTicketStatus,
   useMarkTicketAsClosed,
 } from '../../../core/queries/ticketHooks';
 
@@ -49,7 +50,7 @@ export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
     message: t('tickets.closeTip'),
   });
 
-  const markTicketAsClosedEnabled = ticket?.status !== TicketStatus.Closed;
+  const markTicketAsClosedEnabled = !isConcludedTicketStatus(ticket?.status);
   const queryClient = useQueryClient();
 
   const isDataMissing = useCallback(
