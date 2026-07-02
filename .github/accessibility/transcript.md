@@ -25,6 +25,12 @@
 - Grade value `Col` is a single accessible unit: `accessibilityLabel={t('…gradeValue', { grade })}` with inner `Text` set to `accessible={false}`.
 - `RecordedGradeScreen` on-time bonus row: `accessibilityRole="none"` with explicit `accessibilityLabel` for the points value.
 
+### `GradeStates`
+
+- Each row is one focus target: composite `accessibilityLabel` (name, description, active state).
+- `accessibilityState={{ selected: isActive }}` on the active grade state.
+- Decorative dot and inner text hidden from screen readers via `importantForAccessibility`.
+
 ### Translations
 
 - New keys added to `en.json` and `it.json`:

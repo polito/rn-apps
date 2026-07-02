@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import {
@@ -23,9 +24,16 @@ type RowProps = {
 
 const GradeStateRow = ({ state, isActive = false }: RowProps) => {
   const styles = useStylesheet(createStyles);
+  const { t } = useTranslation();
   return (
-    <Row ph={5} gap={5}>
-      <Col pt={9}>
+    <Row
+      ph={5}
+      gap={5}
+      accessible={true}
+      accessibilityState={{ selected: isActive }}
+      accessibilityLabel={`${state.name}, ${state.description}${isActive ? `, ${t('common.active')}` : ''}`}
+    >
+      <Col pt={9} importantForAccessibility="no-hide-descendants">
         <View
           style={[
             styles.dot,
@@ -37,11 +45,17 @@ const GradeStateRow = ({ state, isActive = false }: RowProps) => {
               state.id === ProvisionalGradeStateEnum.Confirmed &&
               styles.dotConfirmed,
           ]}
+          importantForAccessibility="no"
         />
       </Col>
-      <Col pt={5} flexShrink={1}>
+      <Col
+        pt={5}
+        flexShrink={1}
+        importantForAccessibility="no-hide-descendants"
+      >
         <Text
           style={[styles.stateTitle, !isActive && styles.stateTitleInactive]}
+          importantForAccessibility="no"
         >
           {state.name}
         </Text>
@@ -50,6 +64,7 @@ const GradeStateRow = ({ state, isActive = false }: RowProps) => {
             styles.stateDescription,
             !isActive && styles.stateDescriptionInactive,
           ]}
+          importantForAccessibility="no"
         >
           {state.description}
         </Text>

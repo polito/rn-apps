@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, StyleSheet, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  FlatList,
+  Platform,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FileNavigatorID, usePreferencesContext } from '@polito/lib/core';
@@ -28,6 +34,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { AccessibleFlatList } from '~/core/components/AccessibleFlatList';
 import { useDownloadsContext } from '~/core/contexts/DownloadsContext';
 import { useNotifications } from '~/core/hooks/useNotifications';
 import { useOnLeaveScreen } from '~/core/hooks/useOnLeaveScreen';
@@ -393,11 +400,25 @@ const CourseFileSearchFlatList = ({
     );
   }, [recentFilesQuery.data, searchFilter]);
 
+  useEffect(() => {
+    if (!searchFilter || !recentFilesQuery.data) return;
+    if (searchResults.length > 0) {
+      AccessibilityInfo.announceForAccessibility(
+        `${t('contactsScreen.resultFound')} ${searchResults.length} ${t('contactsScreen.resultFoundRes')}`,
+      );
+    } else {
+      AccessibilityInfo.announceForAccessibility(
+        t('courseDirectoryScreen.noResult'),
+      );
+    }
+  }, [searchResults, searchFilter, recentFilesQuery.data, t]);
+
   const onSwipeStart = useCallback(() => setScrollEnabled(false), []);
   const onSwipeEnd = useCallback(() => setScrollEnabled(true), []);
 
   return (
-    <FlatList
+    <AccessibleFlatList
+      listName={t('common.search')}
       contentInsetAdjustmentBehavior="automatic"
       data={searchResults}
       scrollEnabled={scrollEnabled}

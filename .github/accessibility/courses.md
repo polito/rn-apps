@@ -71,6 +71,21 @@
 
 - Restore CTA: `accessibilityState` and `accessibilityHint={t('courseHideEventScreen.buttonDisabledHint')}` when no events are selected.
 
+### `CourseGradesChart` / `EnrolledExamDetailChart`
+
+- SVG chart subtree hidden with `importantForAccessibility="no-hide-descendants"`.
+- Screen-reader summary via `VisuallyHidden` + i18n keys `gradesChartA11ySummary` and `enrolledExamDetailA11ySummary`.
+
+### `CourseDirectoryScreen`
+
+- File search results use `AccessibleFlatList` with `listName={t('common.search')}`.
+- Search result count (including zero) announced via `AccessibilityInfo.announceForAccessibility`.
+
+### `CourseColorWarningModal`
+
+- `accessibilityViewIsModal={IS_ANDROID}` for TalkBack focus trapping.
+- Switch has explicit `accessibilityLabel`.
+
 ### Translations
 
 - Reuses existing keys: `coursesScreen.*`, `courseListItem.*`, `courseNoticesTab.*`, `courseAssignmentsTab.*`, `courseFileListItem.*`.
@@ -78,6 +93,7 @@
   - `courseColorPickerScreen.confirmDisabledHint`
   - `courseHideEventScreen.buttonDisabledHint`
   - `courseFilesTab.downloadDisabledHint`, `courseFilesTab.removeDisabledHint`
+  - `courseStatisticsScreen.gradesChartA11ySummary`, `courseStatisticsScreen.enrolledExamDetailA11ySummary`
 
 ---
 

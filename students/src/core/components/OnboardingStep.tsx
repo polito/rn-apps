@@ -1,4 +1,4 @@
-import { ComponentType, ReactNode, useMemo, useState } from 'react';
+import { ComponentType, ReactNode, RefObject, useMemo, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -26,6 +26,7 @@ interface Props {
   cover?: string;
   ScrollViewComponent?: ComponentType<any>;
   children?: ReactNode;
+  headerRef?: RefObject<View>;
 }
 
 export const OnboardingStep = ({
@@ -34,6 +35,7 @@ export const OnboardingStep = ({
   cover,
   ScrollViewComponent = ScrollView,
   children,
+  headerRef,
 }: Props) => {
   const styles = useStylesheet(createStyles);
   const { shapes, spacing } = useTheme();
@@ -78,8 +80,14 @@ export const OnboardingStep = ({
           </View>
         </View>
       )}
-      <View style={styles.header}>
-        <Text variant="title" role="heading">
+      <View
+        ref={headerRef}
+        style={styles.header}
+        accessible
+        accessibilityRole="header"
+        accessibilityLabel={title}
+      >
+        <Text variant="title" role="heading" accessible={false}>
           {title}
         </Text>
       </View>

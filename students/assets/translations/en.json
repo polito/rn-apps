@@ -523,8 +523,10 @@
     "enrolledExamInfo": "Information on passing the exam",
     "enrolledExamDetailTitle": "Exam passing details",
     "enrolledExamDetailInfo": "Detailed information on passing the exam",
+    "enrolledExamDetailA11ySummary": "1st year: {{firstYearPassed}} passed, {{firstYearFailed}} failed. From 2nd year onwards: {{otherYearsPassed}} passed, {{otherYearsFailed}} failed.",
     "examGradeDetailTitle": "Details of votes",
     "examGradeDetailInfo": "Vote detail information",
+    "gradesChartA11ySummary": "Average grade — 1st year: {{firstYearAvg}}, from 2nd year onwards: {{otherYearsAvg}}.",
     "enrolledExamBottomSheet": {
       "title": "Passed exam",
       "content": "Statistics regarding the total number of exam passes with two types of display:",
@@ -742,7 +744,9 @@
     "title": "THE EUROPEAN STUDENT CARD",
     "expiredTitle": "Your Card has expired",
     "expiredText": "Student not enrolled in the current school year",
-    "inactive": "Your Card is suspended"
+    "inactive": "Your Card is suspended",
+    "cardInfoButton": "Card information",
+    "showQrCode": "Show QR code"
   },
   "eventPlacesScreen": {
     "title": "Event locations"

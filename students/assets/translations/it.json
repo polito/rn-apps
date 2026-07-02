@@ -523,8 +523,10 @@
     "enrolledExamInfo": "Informazioni superamento esame",
     "enrolledExamDetailTitle": "Dettaglio superamento esame",
     "enrolledExamDetailInfo": "Informazioni dettaglio superamento esame",
+    "enrolledExamDetailA11ySummary": "1° anno: {{firstYearPassed}} superati, {{firstYearFailed}} bocciati. Dal 2° anno in poi: {{otherYearsPassed}} superati, {{otherYearsFailed}} bocciati.",
     "examGradeDetailTitle": "Dettaglio voti",
     "examGradeDetailInfo": "Informazioni dettaglio voti",
+    "gradesChartA11ySummary": "Voto medio — 1° anno: {{firstYearAvg}}, dal 2° anno in poi: {{otherYearsAvg}}.",
     "enrolledExamBottomSheet": {
       "title": "Superamento esame",
       "content": "Statistica riguardante il numero di superi totali all’esame con due tipi di visualizzazione:",
@@ -742,7 +744,9 @@
     "title": "THE EUROPEAN STUDENT CARD",
     "expiredTitle": "La tua Card è scaduta",
     "expiredText": "Studente non iscritto all’a.a corrente",
-    "inactive": "La tua Card è sospesa"
+    "inactive": "La tua Card è sospesa",
+    "cardInfoButton": "Informazioni sulla card",
+    "showQrCode": "Mostra codice QR"
   },
   "eventPlacesScreen": {
     "title": "Luoghi evento"
