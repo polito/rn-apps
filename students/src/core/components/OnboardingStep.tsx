@@ -26,7 +26,7 @@ interface Props {
   cover?: string;
   ScrollViewComponent?: ComponentType<any>;
   children?: ReactNode;
-  headerRef?: RefObject<View>;
+  headerRef?: RefObject<View | null>;
 }
 
 export const OnboardingStep = ({
