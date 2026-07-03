@@ -167,6 +167,9 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
       maxAdmissionsText: t('graduationCodeScreen.pdf.maxAdmissions', {
         max: event.totalAdmissions,
       }),
+      accessInfo:
+        (event as typeof event & { accessInfo?: string | null }).accessInfo ??
+        '',
       location: locationLabel,
       mapUrl: buildPlaceMapUrl(event.place),
       instruction: t('graduationCodeScreen.pdf.instruction', {
@@ -177,6 +180,7 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
         event: t('graduationCodeScreen.pdf.event'),
         date: t('graduationCodeScreen.pdf.date'),
         admissions: t('graduationCodeScreen.pdf.admissions'),
+        accessInfo: t('graduationCodeScreen.pdf.accessInfo'),
         location: t('graduationCodeScreen.location'),
         map: t('graduationCodeScreen.pdf.map'),
         qrTitle: t('graduationCodeScreen.pdf.qrTitle'),
