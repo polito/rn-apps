@@ -16,9 +16,7 @@ react {
     reactNativeDir = new File(projectRoot, "../node_modules/react-native")
     codegenDir = new File(projectRoot, "../node_modules/@react-native/codegen")
 
-    hermesCommand = new File(
-        new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim()).getParent(), "sdks/hermesc/%OS-BIN%/hermesc"
-    ).getAbsolutePath()
+    hermesCommand = new File(["node", "--print", "require.resolve('hermes-compiler/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim()).getParentFile().getAbsolutePath() + "/hermesc/%OS-BIN%/hermesc"
 
     // Added by install-expo-modules
     entryFile = file(["node", "-e", "require('expo/scripts/resolveAppEntry')", projectRoot, "android", "absolute"].execute(null, rootDir).text.trim())

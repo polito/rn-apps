@@ -3,6 +3,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, Platform, StyleSheet, View } from 'react-native';
+import { Dimensions } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -16,7 +17,6 @@ import BaseBottomSheet, {
   BottomSheetFooter,
   BottomSheetFooterProps,
   BottomSheetScrollView,
-  SCREEN_HEIGHT,
 } from '@gorhom/bottom-sheet';
 import { CtaButton, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 import { AnnouncementScope } from '@polito/student-api-client';
@@ -26,6 +26,8 @@ import {
   useGetAnnouncements,
   useMarkAnnouncementAsRead,
 } from '../queries/announcementHooks';
+
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 interface Props {
   visible: boolean;

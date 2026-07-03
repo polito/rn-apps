@@ -27,7 +27,7 @@ export interface TextFieldProps extends Omit<TextInputProps, 'placeholder'> {
  * A text input field
  */
 export const TextField = ({
-  inputRef,
+  //inputRef,
   label,
   type,
   style,
@@ -64,7 +64,7 @@ export const TextField = ({
     >
       <TextInput
         accessible={true}
-        ref={inputRef}
+        //ref={inputRef}
         importantForAccessibility="no"
         autoCapitalize={autoCapitalize}
         selectionColor={colors.link}

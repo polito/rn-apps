@@ -21,6 +21,7 @@ program
   .usage('<dependencies...> [options]')
   .description('Add dependencies to workspaces with proper hoisting')
   .argument('<dependencies...>', 'Dependencies to add')
+  .option('-D', '--dev', 'Install to devDependencies') //  TODO: aggiungere, poi installare babel-preset-expo in dev, etc (INSTALL COMMAND SOTTO)
   .option('-a, --all', 'Target all workspaces')
   .option('-w, --workspaces <workspaces...>', 'Target workspaces');
 

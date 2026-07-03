@@ -1,7 +1,7 @@
 import { PropsWithChildren, useEffect, useMemo } from 'react';
 import { Linking, useColorScheme } from 'react-native';
+import { Appearance } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
-import overrideColorScheme from 'react-native-override-color-scheme';
 import { PaperProvider } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -38,9 +38,9 @@ export const UiProvider = <T extends ParamListBase = ParamListBase>({
   const { isAppLoaded } = useSplashContext();
   useEffect(() => {
     if (colorScheme === 'dark' || colorScheme === 'light') {
-      overrideColorScheme.setScheme(colorScheme);
+      Appearance.setScheme(colorScheme);
     } else {
-      overrideColorScheme.setScheme();
+      Appearance.setScheme();
     }
   }, [colorScheme]);
 

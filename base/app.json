@@ -1,5 +1,8 @@
 {
   "name": "base",
   "displayName": "base",
-  "plugins": ["react-native-edge-to-edge"]
+  "plugins": [
+    "react-native-edge-to-edge",
+    "@sentry/react-native"
+  ]
 }

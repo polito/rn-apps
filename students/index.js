@@ -15,4 +15,6 @@ if ('__setDefaultTimeZone' in Intl.DateTimeFormat) {
   Intl.DateTimeFormat.__setDefaultTimeZone('Europe/Rome');
 }
 
-AppRegistry.registerComponent(appName, () => App);
+import 'expo-router/entry';
+
+//AppRegistry.registerComponent(appName, () => App);

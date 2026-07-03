@@ -11,6 +11,8 @@ const monorepoRoot = path.join(projectRoot, '..');
 
 const config = getSentryExpoConfig(projectRoot);
 
+config.resolver.sourceExts.push('mjs');
+
 config.server.unstable_serverRoot = projectRoot;
 config.resolver.unstable_conditionNames = ['react-native'];
 

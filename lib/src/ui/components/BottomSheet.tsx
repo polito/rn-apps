@@ -121,7 +121,7 @@ export const BottomSheet = forwardRef(
         }
       >
         <BaseBottomSheet
-          ref={ref}
+          //ref={ref}
           index={1}
           snapPoints={snapPoints}
           overDragResistanceFactor={0.9}
