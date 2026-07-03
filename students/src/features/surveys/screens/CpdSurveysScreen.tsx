@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 
 import { useScreenTitle } from '@polito/lib/core';
 import {
@@ -26,7 +26,8 @@ export const CpdSurveysScreen = ({ route }: Props) => {
   const { data } = useGetCpdSurveys();
 
   const { t } = useTranslation();
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel, getListAccessibilityProps } =
+    useAccessibility();
 
   const { categoryId, typeId, typeName } = route.params;
 
@@ -44,35 +45,33 @@ export const CpdSurveysScreen = ({ route }: Props) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      accessibilityRole="list"
-      accessibilityLabel={t('cpdSurveysScreen.total', {
-        total: surveys?.length ?? 0,
-      })}
       refreshControl={<RefreshControl queries={[surveysQuery]} manual />}
     >
       <SafeAreaView>
         <Section>
-          <OverviewList
-            emptyStateText={
-              surveys && surveys.length === 0
-                ? t('cpdSurveysScreen.emptyState')
-                : undefined
-            }
-            indented
-            loading={surveysQuery.isLoading}
-          >
-            {surveys?.map((survey, index) => (
-              <SurveyListItem
-                key={survey.id}
-                survey={survey}
-                accessible={true}
-                accessibilityLabel={`${survey.title}, ${accessibilityListLabel(
-                  index,
-                  surveys.length,
-                )}`}
-              />
-            ))}
-          </OverviewList>
+          <View {...getListAccessibilityProps(typeName, surveys?.length ?? 0)}>
+            <OverviewList
+              emptyStateText={
+                surveys && surveys.length === 0
+                  ? t('cpdSurveysScreen.emptyState')
+                  : undefined
+              }
+              indented
+              loading={surveysQuery.isLoading}
+            >
+              {surveys?.map((survey, index) => (
+                <SurveyListItem
+                  key={survey.id}
+                  survey={survey}
+                  accessibilityLabel={buildCompositeListLabel(
+                    [survey.title],
+                    index,
+                    surveys.length,
+                  )}
+                />
+              ))}
+            </OverviewList>
+          </View>
         </Section>
         <BottomBarSpacer />
       </SafeAreaView>

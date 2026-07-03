@@ -55,7 +55,7 @@ export const ExamListItem = ({
   ...rest
 }: Props) => {
   const { t, i18n } = useTranslation();
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
 
   const { courses: coursesPreferences, accessibility } =
     usePreferencesContext<AppPreferences>();
@@ -82,17 +82,13 @@ export const ExamListItem = ({
       }
     }
 
-    // Build complete accessibility label with proper translations
     const baseLabel = `${exam.courseName} ${accessibleDateTime} ${status}`;
-    const positionLabel =
-      index !== undefined && total !== undefined
-        ? accessibilityListLabel(index, total)
-        : accessibilityLabel;
 
     return {
-      accessibilityLabel: positionLabel
-        ? [baseLabel, positionLabel].filter(Boolean).join(', ')
-        : baseLabel,
+      accessibilityLabel:
+        index !== undefined && total !== undefined
+          ? buildCompositeListLabel([baseLabel], index, total)
+          : accessibilityLabel || baseLabel,
     };
   }, [
     accessibilityLabel,
@@ -101,7 +97,7 @@ export const ExamListItem = ({
     formatHHmm,
     index,
     total,
-    accessibilityListLabel,
+    buildCompositeListLabel,
   ]);
 
   return (

@@ -53,7 +53,7 @@ export const TicketListItem = ({
   const { fontSizes, colors, palettes, spacing, dark } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
   const { mutateAsync: markTicketAsClosed } = useMarkTicketAsClosed(ticket?.id);
   const confirm = useConfirmationDialog({
     message: t('tickets.closeTip'),
@@ -106,22 +106,29 @@ export const TicketListItem = ({
 
   const ticketSubject = getHtmlTextContent(ticket?.subject);
   const ticketDate = formatDateTime(ticket.updatedAt);
-  const ticketAccessibilityLabel = useMemo(() => {
-    const parts = [ticketSubject, ticketDate];
-    if (ticket.unreadCount > 0) {
-      parts.push(t('ticketsScreen.unreadCount', { count: ticket.unreadCount }));
-    }
-    parts.push(accessibilityListLabel(index, total));
-    return parts.filter(Boolean).join(', ');
-  }, [
-    ticketSubject,
-    ticketDate,
-    ticket.unreadCount,
-    index,
-    total,
-    t,
-    accessibilityListLabel,
-  ]);
+  const ticketAccessibilityLabel = useMemo(
+    () =>
+      buildCompositeListLabel(
+        [
+          ticketSubject,
+          ticketDate,
+          ticket.unreadCount > 0
+            ? t('ticketsScreen.unreadCount', { count: ticket.unreadCount })
+            : undefined,
+        ],
+        index,
+        total,
+      ),
+    [
+      ticketSubject,
+      ticketDate,
+      ticket.unreadCount,
+      index,
+      total,
+      t,
+      buildCompositeListLabel,
+    ],
+  );
 
   const handleAccessibilityAction = useCallback(
     ({ nativeEvent }: { nativeEvent: { actionName: string } }) => {

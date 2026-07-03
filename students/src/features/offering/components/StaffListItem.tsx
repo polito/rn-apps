@@ -21,7 +21,7 @@ interface StaffListItemProps {
 export const StaffListItem = ({ staff, index, total }: StaffListItemProps) => {
   const { t } = useTranslation();
   const { data: person } = useGetPerson(staff.id);
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
 
   const subtitle = t(
     'common.' + (staff.role === 'Titolare' ? 'roleHolder' : 'roleCollaborator'),
@@ -31,12 +31,7 @@ export const StaffListItem = ({ staff, index, total }: StaffListItemProps) => {
     ? `${person.firstName} ${person.lastName}, ${subtitle}`
     : `${t('common.staffMemberUnavailable')}, ${subtitle}`;
 
-  const accessibilityLabel =
-    index !== undefined && total !== undefined
-      ? [baseLabel, accessibilityListLabel(index, total)]
-          .filter(Boolean)
-          .join(', ')
-      : baseLabel;
+  const accessibilityLabel = buildCompositeListLabel([baseLabel], index, total);
 
   return person ? (
     <PersonListItem

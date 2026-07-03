@@ -134,8 +134,7 @@ export const CourseListItem = ({
 }: Props) => {
   const { colors, spacing, palettes, fontSizes, dark } = useTheme();
   const { t, i18n } = useTranslation();
-  const { accessibilityListLabel, buildCompositeListLabel } =
-    useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
   const preferences = usePreferencesContext<AppPreferences>();
   const styles = useStylesheet(createStyles);
   const { getUnreadsCountPerCourse } = useNotifications();
@@ -286,21 +285,21 @@ export const CourseListItem = ({
       badgeCount = badge;
     }
 
-    const badgeText =
-      badgeCount > 0 ? `, ${t('common.newItems', { count: badgeCount })}` : '';
+    const label = buildCompositeListLabel(
+      [
+        course.name,
+        `${course.cfu} ${t('common.credits')}`,
+        badgeCount > 0
+          ? t('common.newItems', { count: badgeCount })
+          : undefined,
+        isHidden ? t('coursesScreen.notVisible') : undefined,
+        accessibleExtraText || undefined,
+      ],
+      itemIndex,
+      itemTotal,
+    );
 
-    const baseText = `${course.name}, ${course.cfu} ${t(
-      'common.credits',
-    )}${badgeText}, ${isHidden ? t('coursesScreen.notVisible') : ''} ${accessibleExtraText}`.trim();
-
-    const positionLabel =
-      itemIndex !== undefined && itemTotal !== undefined
-        ? accessibilityListLabel(itemIndex, itemTotal)
-        : '';
-
-    return [baseText, positionLabel || accessibilityLabel]
-      .filter(Boolean)
-      .join(', ');
+    return label || accessibilityLabel;
   }, [
     course.name,
     course.cfu,
@@ -309,7 +308,7 @@ export const CourseListItem = ({
     accessibilityLabel,
     itemIndex,
     itemTotal,
-    accessibilityListLabel,
+    buildCompositeListLabel,
     badge,
     hasModules,
     getTotalModuleBadges,
