@@ -9,6 +9,7 @@ export type GraduationCodePdfLabels = {
   event: string;
   date: string;
   admissions: string;
+  accessInfo: string;
   location: string;
   map: string;
   qrTitle: string;
@@ -20,6 +21,7 @@ export type GraduationCodePdfContent = {
   eventTitle: string;
   dateTime: string;
   maxAdmissionsText: string;
+  accessInfo: string;
   location: string;
   mapUrl: string;
   instruction: string;
@@ -63,6 +65,7 @@ export const buildGraduationCodePdfHtml = ({
   eventTitle,
   dateTime,
   maxAdmissionsText,
+  accessInfo,
   location,
   mapUrl,
   instruction,
@@ -75,6 +78,7 @@ export const buildGraduationCodePdfHtml = ({
     renderRow(labels.date, dateTime),
     renderRow(labels.admissions, maxAdmissionsText),
     location ? renderRow(labels.location, location) : '',
+    accessInfo ? renderRow(labels.accessInfo, accessInfo, true) : '',
   ].join('');
 
   return fillTemplate(GRADUATION_CODE_PDF_TEMPLATE, {
