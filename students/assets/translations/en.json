@@ -994,6 +994,7 @@
     "openMap": "Show in Places",
     "pdf": {
       "admissions": "Entries:",
+      "accessInfo": "Access information:",
       "codeId": "Code ID:",
       "date": "Date:",
       "description": "Description:",
