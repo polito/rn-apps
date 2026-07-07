@@ -268,6 +268,7 @@
     "listWithCount": "{{name}}, {{count}} elementi",
     "loading": "Caricamento",
     "location": "Sede",
+    "locationHint": "Visualizza la posizione sulla mappa",
     "logout": "Logout",
     "mightTakeAWhile": "Potrebbe volerci un momento",
     "minutes": "Minuti",
@@ -1096,7 +1097,8 @@
     "title": "Servizi",
     "newElement": ", hai Un nuovo elemento da visualizzare",
     "favoriteActive": "Imposta preferito, Attivo",
-    "favoriteInactive": "Imposta preferito, Non attivo"
+    "favoriteInactive": "Imposta preferito, Non attivo",
+    "webMail": "Web\nMail"
   },
   "settingsScreen": {
     "appVersion": "Versione {{version}}",

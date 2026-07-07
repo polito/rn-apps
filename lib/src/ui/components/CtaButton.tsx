@@ -58,6 +58,9 @@ export const CtaButton = ({
   variant = 'filled',
   textStyle,
   progress,
+  accessibilityState,
+  accessibilityLabel,
+  accessibilityHint,
   ...rest
 }: Props) => {
   const { palettes, colors, fontSizes, spacing, dark, fontWeights } =
@@ -67,6 +70,8 @@ export const CtaButton = ({
   const bottomBarHeight = useSafeBottomBarHeight();
   const { isFeedbackVisible } = useFeedbackContext();
   const { accessibility } = usePreferencesContext();
+
+  const isDisabled = Boolean(disabled || loading);
 
   const outlined = variant === 'outlined';
 
@@ -127,7 +132,7 @@ export const CtaButton = ({
       <TouchableHighlight
         accessibilityRole="button"
         underlayColor={underlayColor}
-        disabled={disabled || loading}
+        disabled={isDisabled}
         style={[
           styles.button,
           variant === 'outlined' && {
@@ -143,11 +148,17 @@ export const CtaButton = ({
           disabled && variant === 'filled' && styles.disabledButton,
           style,
         ]}
-        accessibilityLabel={title}
+        accessibilityLabel={accessibilityLabel ?? title}
+        accessibilityHint={accessibilityHint}
+        accessibilityState={{
+          disabled: isDisabled,
+          ...(loading ? { busy: true } : {}),
+          ...accessibilityState,
+        }}
         onPress={action}
         {...rest}
       >
-        <View>
+        <View importantForAccessibility="no-hide-descendants">
           <View style={styles.stack}>
             {loading && (
               <ActivityIndicator

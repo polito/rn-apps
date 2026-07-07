@@ -1,3 +1,4 @@
+export * from './useAnnounceLoading';
 export * from './useDeviceDimension';
 export * from './useDeviceLanguage';
 export * from './useDeviceOrientation';

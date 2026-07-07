@@ -1,4 +1,4 @@
-import { PropsWithChildren, useCallback } from 'react';
+import { PropsWithChildren, useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
@@ -6,6 +6,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 import { useStylesheet } from '../hooks/useStylesheet';
 import { Theme } from '../types/Theme';
+import { BottomModalFocusContext } from './BottomModal';
 import { HeaderAccessory } from './HeaderAccessory';
 import { IconButton } from './IconButton';
 import { Text } from './Text';
@@ -26,6 +27,7 @@ export const ModalContent = ({
 }: PropsWithChildren<Props>) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
+  const registerFocus = useContext(BottomModalFocusContext);
 
   const handleOnScroll = useCallback(
     (event: any) => {
@@ -44,13 +46,16 @@ export const ModalContent = ({
         style={styles.header}
       >
         <View style={styles.headerLeft} />
-        <Text
-          style={styles.modalTitle}
+        <View
+          ref={registerFocus ?? undefined}
+          accessible
           accessibilityRole="header"
           accessibilityLabel={title}
         >
-          {title}
-        </Text>
+          <Text accessible={false} style={styles.modalTitle}>
+            {title}
+          </Text>
+        </View>
         <IconButton
           accessibilityLabel={t('common.close')}
           accessibilityRole="button"

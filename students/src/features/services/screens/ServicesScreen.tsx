@@ -24,7 +24,6 @@ import {
   BottomBarSpacer,
   Grid,
   Theme,
-  UnreadBadge,
   auto,
   useStylesheet,
 } from '@polito/lib/ui';
@@ -32,6 +31,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { AppPreferences } from '~/core/types/preferences.ts';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import {
@@ -45,6 +45,7 @@ import { ServiceCard } from '../components/ServiceCard';
 
 export const ServicesScreen = () => {
   const { t } = useTranslation();
+  const { getBadgeAccessibilityLabel } = useAccessibility();
   const {
     favoriteServices: favoriteServiceIds,
     emailGuideRead,
@@ -78,6 +79,11 @@ export const ServicesScreen = () => {
   }, [openInAppLink, queryClient, getWebmailLink]);
 
   const services = useMemo(() => {
+    const newsUnread = getUnreadsCount(['services', 'news']) ?? 0;
+    const mailUnread = Number(unreadEmailsQuery.data?.unreadEmails ?? 0);
+    const guidesUnread = emailGuideRead ? 0 : 1;
+    const offlineHint = t('common.noInternet');
+
     return [
       {
         id: 'tickets',
@@ -88,9 +94,14 @@ export const ServicesScreen = () => {
           queryClient.getQueryData(TICKETS_QUERY_KEY) === undefined,
         linkTo: { screen: 'Tickets' },
         unReadCount: unreadTickets,
-        accessibilityLabel: `${t('ticketsScreen.title')} ${
-          unreadTickets ? t('servicesScreen.newElement') : ''
-        }`,
+        accessibilityLabel: getBadgeAccessibilityLabel(
+          unreadTickets ?? 0,
+          t('ticketsScreen.title'),
+        ),
+        accessibilityHint:
+          isOffline && queryClient.getQueryData(TICKETS_QUERY_KEY) === undefined
+            ? offlineHint
+            : undefined,
       },
       {
         id: 'appFeedback',
@@ -104,8 +115,11 @@ export const ServicesScreen = () => {
             subtopicId: 2001,
           },
         },
-        additionalContent: <UnreadBadge text="BETA" style={styles.badge} />,
-        accessibilityLabel: t('common.appFeedback'),
+        accessibilityLabel: getBadgeAccessibilityLabel(
+          0,
+          t('common.appFeedback'),
+        ),
+        accessibilityHint: isOffline ? offlineHint : undefined,
       },
       {
         id: 'github',
@@ -123,12 +137,12 @@ export const ServicesScreen = () => {
         linkTo: {
           screen: 'News',
         },
-        unReadCount: getUnreadsCount(['services', 'news']),
-        accessibilityLabel: `${t('newsScreen.title')} ${
-          getUnreadsCount(['services', 'news'])
-            ? t('servicesScreen.newElement')
-            : ''
-        }`,
+        unReadCount: newsUnread,
+        accessibilityLabel: getBadgeAccessibilityLabel(
+          newsUnread,
+          t('newsScreen.title'),
+        ),
+        accessibilityHint: isOffline ? offlineHint : undefined,
       },
       {
         id: 'jobOffers',
@@ -136,7 +150,11 @@ export const ServicesScreen = () => {
         icon: faBriefcase,
         disabled: isOffline,
         linkTo: { screen: 'JobOffers' },
-        accessibilityLabel: t('jobOffersScreen.title'),
+        accessibilityLabel: getBadgeAccessibilityLabel(
+          0,
+          t('jobOffersScreen.title'),
+        ),
+        accessibilityHint: isOffline ? offlineHint : undefined,
       },
       {
         id: 'offering',
@@ -144,7 +162,11 @@ export const ServicesScreen = () => {
         icon: faBookBookmark,
         disabled: isOffline,
         linkTo: { screen: 'Offering' },
-        accessibilityLabel: t('offeringScreen.title'),
+        accessibilityLabel: getBadgeAccessibilityLabel(
+          0,
+          t('offeringScreen.title'),
+        ),
+        accessibilityHint: isOffline ? offlineHint : undefined,
       },
       {
         id: 'contacts',
@@ -152,17 +174,23 @@ export const ServicesScreen = () => {
         icon: faIdCard,
         disabled: isOffline && peopleSearched?.length === 0, // TODO why?
         linkTo: { screen: 'Contacts' },
-        accessibilityLabel: t('contactsScreen.title'),
+        accessibilityLabel: getBadgeAccessibilityLabel(
+          0,
+          t('contactsScreen.title'),
+        ),
+        accessibilityHint:
+          isOffline && peopleSearched?.length === 0 ? offlineHint : undefined,
       },
       {
         id: 'guides',
         name: t('guidesScreen.title'),
         icon: faSignsPost,
         linkTo: { screen: 'Guides' },
-        unReadCount: emailGuideRead ? 0 : 1,
-        accessibilityLabel: `${t('guidesScreen.title')} ${
-          !emailGuideRead ? t('servicesScreen.newElement') : ''
-        }`,
+        unReadCount: guidesUnread,
+        accessibilityLabel: getBadgeAccessibilityLabel(
+          guidesUnread,
+          t('guidesScreen.title'),
+        ),
       },
       {
         id: 'bookings',
@@ -172,7 +200,15 @@ export const ServicesScreen = () => {
           isOffline &&
           queryClient.getQueryData(BOOKINGS_QUERY_KEY) === undefined,
         linkTo: { screen: 'Bookings' },
-        accessibilityLabel: t('bookingsScreen.title'),
+        accessibilityLabel: getBadgeAccessibilityLabel(
+          0,
+          t('bookingsScreen.title'),
+        ),
+        accessibilityHint:
+          isOffline &&
+          queryClient.getQueryData(BOOKINGS_QUERY_KEY) === undefined
+            ? offlineHint
+            : undefined,
       },
       {
         id: 'surveys',
@@ -180,20 +216,24 @@ export const ServicesScreen = () => {
         icon: faClipboardQuestion,
         disabled: isOffline,
         linkTo: { screen: 'Surveys' },
-        accessibilityLabel: t('surveysScreen.title'),
+        accessibilityLabel: getBadgeAccessibilityLabel(
+          0,
+          t('surveysScreen.title'),
+        ),
+        accessibilityHint: isOffline ? offlineHint : undefined,
       },
       {
         id: 'mail',
-        name: 'Web\nMail',
+        name: t('servicesScreen.webMail'),
         icon: faEnvelope,
         disabled: isOffline,
-        unReadCount: unreadEmailsQuery.data
-          ? unreadEmailsQuery.data.unreadEmails
-          : 0,
+        unReadCount: mailUnread,
         onPress: () => openWebmailLink(),
-        accessibilityLabel: `${t('WebMail')} ${
-          unreadEmailsQuery.data ? t('servicesScreen.newElement') : ''
-        }`,
+        accessibilityLabel: getBadgeAccessibilityLabel(
+          mailUnread,
+          t('servicesScreen.webMail').replace('\n', ' '),
+        ),
+        accessibilityHint: isOffline ? offlineHint : undefined,
       },
     ];
   }, [
@@ -201,8 +241,8 @@ export const ServicesScreen = () => {
     isOffline,
     queryClient,
     unreadTickets,
-    styles.badge,
     getUnreadsCount,
+    getBadgeAccessibilityLabel,
     peopleSearched?.length,
     emailGuideRead,
     unreadEmailsQuery.data,
@@ -247,6 +287,7 @@ export const ServicesScreen = () => {
                 onFavoriteChange={updateFavorite(service)}
                 unReadCount={service?.unReadCount}
                 accessibilityLabel={service?.accessibilityLabel}
+                accessibilityHint={service?.accessibilityHint}
               />
             ))}
           </Grid>
@@ -269,6 +310,7 @@ export const ServicesScreen = () => {
                 onFavoriteChange={updateFavorite(service)}
                 unReadCount={service?.unReadCount}
                 accessibilityLabel={service?.accessibilityLabel}
+                accessibilityHint={service?.accessibilityHint}
               />
             ))}
           </Grid>
@@ -283,10 +325,5 @@ const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     grid: {
       margin: spacing[5],
-    },
-    badge: {
-      position: 'absolute',
-      top: -spacing[2.5],
-      right: -spacing[2],
     },
   });

@@ -1,4 +1,5 @@
 import { PropsWithChildren, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   StyleProp,
   TextStyle,
@@ -10,6 +11,8 @@ import { PillButton } from '@polito/lib/ui';
 
 import color from 'color';
 
+import { hideFromScreenReader } from '../../core/accessibility/hideFromScreenReader';
+import { IS_IOS } from '../../core/constants';
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
 import { UnreadBadge } from './UnreadBadge';
@@ -29,9 +32,26 @@ export const Tab = ({
   selected = false,
   textStyle,
   badge,
+  accessibilityLabel,
+  accessibilityState,
+  accessibilityHint,
   ...rest
 }: PropsWithChildren<TouchableHighlightProps & TabProps>) => {
   const { dark, palettes, fontSizes, fontWeights } = useTheme();
+  const { t } = useTranslation();
+
+  const label = useMemo(() => {
+    if (accessibilityLabel) return accessibilityLabel;
+    if (typeof children !== 'string') return undefined;
+    if (badge != null && !Number.isNaN(Number(badge))) {
+      const count = Number(badge);
+      if (count > 0) {
+        return `${children}, ${t('common.newItems', { count })}`;
+      }
+    }
+    return children;
+  }, [accessibilityLabel, children, badge, t]);
+
   const backgroundColor = useMemo(
     () =>
       selected
@@ -53,8 +73,11 @@ export const Tab = ({
     <PillButton
       accessibilityRole="tab"
       accessible={true}
+      accessibilityLabel={label}
+      accessibilityHint={accessibilityHint}
       accessibilityState={{
         selected,
+        ...accessibilityState,
       }}
       style={[
         {
@@ -66,8 +89,13 @@ export const Tab = ({
       ]}
       {...rest}
     >
-      <View style={{ position: 'relative' }}>
+      <View
+        style={{ position: 'relative' }}
+        importantForAccessibility="no-hide-descendants"
+        accessibilityElementsHidden={IS_IOS}
+      >
         <Text
+          accessible={false}
           weight="medium"
           style={[
             {
@@ -87,14 +115,16 @@ export const Tab = ({
           {children}
         </Text>
         {badge && (
-          <UnreadBadge
-            text={badge}
-            style={{
-              position: 'absolute',
-              right: -15,
-              top: -12,
-            }}
-          />
+          <View {...hideFromScreenReader}>
+            <UnreadBadge
+              text={badge}
+              style={{
+                position: 'absolute',
+                right: -15,
+                top: -12,
+              }}
+            />
+          </View>
         )}
       </View>
     </PillButton>

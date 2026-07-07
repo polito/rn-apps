@@ -257,6 +257,7 @@
     "listWithCount": "{{name}}, {{count}} elements",
     "loading": "Loading",
     "location": "Location",
+    "locationHint": "View location on map",
     "logout": "Logout",
     "mightTakeAWhile": "This might take a while",
     "minutes": "Minutes",
@@ -1096,7 +1097,8 @@
     "title": "Services",
     "newElement": ", you have a new item to view",
     "favoriteActive": "Remove from favorites",
-    "favoriteInactive": "Add to favorites"
+    "favoriteInactive": "Add to favorites",
+    "webMail": "Web\nMail"
   },
   "settingsScreen": {
     "appVersion": "Version {{version}}",
