@@ -1,9 +1,5 @@
-import { Platform } from 'react-native';
-import ReactNativeBlobUtil from 'react-native-blob-util';
-
 import { pluckData, rethrowApiError } from '@polito/lib/core';
 import {
-  BASE_PATH,
   CreateTicketRequest,
   GetTicketAttachmentRequest,
   GetTicketReplyAttachmentRequest,
@@ -14,8 +10,7 @@ import {
 } from '@polito/student-api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { useApiContext } from '../contexts/ApiContext';
-import { cacheDirectory } from '../storage/fileSystem';
+import { downloadViaClient } from '../storage/apiDownload';
 
 export const TICKETS_QUERY_KEY = ['tickets'];
 export const TICKET_QUERY_PREFIX = 'ticket';
@@ -217,29 +212,19 @@ export const useGetTicketReplyAttachment = (
   fileName: string,
   enabled: boolean,
 ) => {
-  const { token } = useApiContext();
-
   return useQuery({
     queryKey: [TICKETS_ATTACHMENTS_PREFIX, ticketId, replyId, attachmentId],
     queryFn: () =>
-      ReactNativeBlobUtil.config({
-        fileCache: true,
-        path:
-          cacheDirectory +
-          Platform.select({ android: '/', ios: '' }) +
-          fileName,
-      })
-        .fetch(
-          'GET',
-          BASE_PATH +
-            `/tickets/${ticketId}/replies/${replyId}/attachments/${attachmentId}`,
-          {
-            Authorization: `Bearer ${token}`,
-          },
-        )
-        .then(
-          res => Platform.select({ android: 'file://', ios: '' }) + res.path(),
-        ),
+      downloadViaClient(
+        fileName,
+        config => new TicketsApi(config),
+        client =>
+          client.getTicketReplyAttachmentRaw({
+            ticketId,
+            replyId,
+            attachmentId,
+          }),
+      ),
     enabled,
   });
 };
@@ -249,28 +234,14 @@ export const useGetTicketAttachment = (
   fileName: string,
   enabled: boolean,
 ) => {
-  const { token } = useApiContext();
-
   return useQuery({
     queryKey: [TICKETS_ATTACHMENTS_PREFIX, ticketId, attachmentId],
     queryFn: () =>
-      ReactNativeBlobUtil.config({
-        fileCache: true,
-        path:
-          cacheDirectory +
-          Platform.select({ android: '/', ios: '' }) +
-          fileName,
-      })
-        .fetch(
-          'GET',
-          BASE_PATH + `/tickets/${ticketId}/attachments/${attachmentId}`,
-          {
-            Authorization: `Bearer ${token}`,
-          },
-        )
-        .then(
-          res => Platform.select({ android: 'file://', ios: '' }) + res.path(),
-        ),
+      downloadViaClient(
+        fileName,
+        config => new TicketsApi(config),
+        client => client.getTicketAttachmentRaw({ ticketId, attachmentId }),
+      ),
     enabled,
   });
 };
