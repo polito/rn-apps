@@ -35,6 +35,7 @@ import { useNotifications } from '../../../core/hooks/useNotifications';
 import {
   isResolvedTicketStatus,
   useGetTicket,
+  useMarkTicketAsClosed,
   useMarkTicketAsRead,
 } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
@@ -57,6 +58,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const ticketQuery = useGetTicket(id);
   const { mutate: markAsRead } = useMarkTicketAsRead(id);
+  const { mutateAsync: markTicketAsClosed } = useMarkTicketAsClosed(id);
   const { spacing } = useTheme();
   const bottomBarHeight = useBottomTabBarHeight();
   const ticket = ticketQuery.data;
@@ -101,15 +103,14 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     [ticket?.status],
   );
 
+  const feedback = ticket?.providedFeedback;
+
   const feedbackInserted = useMemo(() => {
     if ((!isResolved && !isAutoResolved) || !ticket) {
       return false;
     }
-    return !!ticket.feedbackProvided;
-  }, [isResolved, isAutoResolved, ticket]);
-
-  const feedback = ticket?.feedbackProvided;
-
+    return !!feedback;
+  }, [isResolved, isAutoResolved, ticket, feedback]);
   const onPressMarkResolved = useCallback(() => {
     Alert.alert(
       t('ticketScreen.resolveConfirmTitle'),
@@ -118,16 +119,22 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         { text: t('common.cancel'), style: 'cancel' },
         {
           text: t('common.confirm'),
-          onPress: () =>
-            navigation.navigate('TicketResolved', {
-              ticketId: id,
-              markAsResolved: true,
-            }),
+          onPress: async () => {
+            try {
+              await markTicketAsClosed();
+              navigation.navigate('TicketResolved', {
+                ticketId: id,
+                markAsResolved: true,
+              });
+            } catch {
+              Alert.alert(t('common.error'), t('ticketScreen.sendError'));
+            }
+          },
         },
       ],
       { cancelable: true },
     );
-  }, [t, navigation, id]);
+  }, [t, navigation, id, markTicketAsClosed]);
 
   const onPressGoToLinkedTicket = useCallback(() => {
     if (ticket?.duplicateId != null) {
@@ -176,8 +183,8 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   ]);
 
   const showResolvedRateBar = useMemo(
-    () => isResolved && !feedbackInserted && replyNeedingFeedback != null,
-    [isResolved, feedbackInserted, replyNeedingFeedback],
+    () => isResolved && !feedbackInserted && ticket?.needsFeedback === true,
+    [isResolved, feedbackInserted, ticket?.needsFeedback],
   );
 
   const showAutoresolvedRateBar = useMemo(

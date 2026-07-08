@@ -134,25 +134,6 @@ export const useProvideTicketFeedback = (ticketId: number) => {
   });
 };
 
-export const useMarkTicketAsResolved = (ticketId: number) => {
-  const client = useQueryClient();
-  const invalidatesQueries = [
-    TICKETS_QUERY_KEY,
-    [TICKET_QUERY_PREFIX, ticketId],
-  ];
-
-  return useMutation({
-    mutationFn: async () => {
-      // TODO: call resolveTicket
-    },
-    onSuccess() {
-      return invalidatesQueries.forEach(queryKey =>
-        client.invalidateQueries({ queryKey }),
-      );
-    },
-  });
-};
-
 export const useGetTicket = (ticketId: number) => {
   const ticketsClient = useTicketsClient();
 
