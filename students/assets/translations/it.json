@@ -1057,7 +1057,7 @@
     "noResultFound": "Non hai trovato quello che cerchi?",
     "search": "Cerca (inserisci almeno 3 caratteri)",
     "searchMinLengthHint": "Per favore, inserisci almeno 3 caratteri.",
-    "title": "FAQs",
+    "title": "FAQ",
     "writeTicket": "Scrivi ticket"
   },
   "ticketScreen": {
@@ -1066,7 +1066,7 @@
     "yourQuestion": "La tua domanda",
     "sendFirstMessage": "Fai la tua domanda",
     "send": "Invia",
-    "headerBackTitle": "Tickets",
+    "headerBackTitle": "Ticket",
     "new": "Nuovo ticket",
     "pickFileTitle": "Puoi includere un allegato per messaggio",
     "reply": "Rispondi",
