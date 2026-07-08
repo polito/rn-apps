@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, View } from 'react-native';
 
@@ -35,17 +36,22 @@ export const VirtualOperatorFeedbackBar = ({
     replyId,
   );
 
-  const handleFeedback = (positive: boolean) => {
-    giveFeedback(positive)
-      .then(() => {
-        if (positive) {
-          onAccepted?.();
-        } else {
-          onRejected?.();
-        }
-      })
-      .catch(() => Alert.alert(t('common.error'), t('ticketScreen.sendError')));
-  };
+  const handleFeedback = useCallback(
+    (positive: boolean) => {
+      giveFeedback(positive)
+        .then(() => {
+          if (positive) {
+            onAccepted?.();
+          } else {
+            onRejected?.();
+          }
+        })
+        .catch(() =>
+          Alert.alert(t('common.error'), t('ticketScreen.sendError')),
+        );
+    },
+    [giveFeedback, onAccepted, onRejected, t],
+  );
 
   return (
     <View style={styles.container}>

@@ -10,7 +10,7 @@ import {
 } from '@polito/student-api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { downloadViaClient } from '../storage/apiDownload';
+import { withNativeDownloader } from '../storage/apiDownload';
 
 export const TICKETS_QUERY_KEY = ['tickets'];
 export const TICKET_QUERY_PREFIX = 'ticket';
@@ -215,15 +215,10 @@ export const useGetTicketReplyAttachment = (
   return useQuery({
     queryKey: [TICKETS_ATTACHMENTS_PREFIX, ticketId, replyId, attachmentId],
     queryFn: () =>
-      downloadViaClient(
+      withNativeDownloader(
+        TicketsApi,
+        c => c.getTicketReplyAttachment({ ticketId, replyId, attachmentId }),
         fileName,
-        config => new TicketsApi(config),
-        client =>
-          client.getTicketReplyAttachmentRaw({
-            ticketId,
-            replyId,
-            attachmentId,
-          }),
       ),
     enabled,
   });
@@ -237,10 +232,10 @@ export const useGetTicketAttachment = (
   return useQuery({
     queryKey: [TICKETS_ATTACHMENTS_PREFIX, ticketId, attachmentId],
     queryFn: () =>
-      downloadViaClient(
+      withNativeDownloader(
+        TicketsApi,
+        c => c.getTicketAttachment({ ticketId, attachmentId }),
         fileName,
-        config => new TicketsApi(config),
-        client => client.getTicketAttachmentRaw({ ticketId, attachmentId }),
       ),
     enabled,
   });
