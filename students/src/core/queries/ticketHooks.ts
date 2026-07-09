@@ -4,7 +4,9 @@ import {
   GetTicketAttachmentRequest,
   GetTicketReplyAttachmentRequest,
   ReplyToTicketRequest,
+  Ticket,
   TicketFeedbackRequest,
+  TicketOverview,
   TicketStatus,
   TicketsApi,
 } from '@polito/student-api-client';
@@ -34,6 +36,20 @@ export const isConcludedTicketStatus = (status?: TicketStatus | string) =>
 
 export const isResolvedTicketStatus = (status?: TicketStatus | string) =>
   status === TicketStatus.Resolved || status === LEGACY_CLOSED_TICKET_STATUS;
+
+export type TicketStatusGroup = 'open' | 'resolved' | 'duplicate';
+
+export const getTicketStatusGroup = (
+  status?: TicketStatus | string,
+): TicketStatusGroup => {
+  if (isResolvedTicketStatus(status) || status === TicketStatus.Autoresolved) {
+    return 'resolved';
+  }
+  if (status === TicketStatus.Duplicate) {
+    return 'duplicate';
+  }
+  return 'open';
+};
 
 const TICKETS_ATTACHMENTS_PREFIX = 'attachments';
 const TOPICS_QUERY_KEY = ['topics'];
@@ -164,16 +180,17 @@ export const useMarkTicketAsClosed = (ticketId: number) => {
 export const useMarkTicketAsRead = (ticketId: number) => {
   const ticketsClient = useTicketsClient();
   const client = useQueryClient();
-  const invalidatesQueries = [
-    TICKETS_QUERY_KEY,
-    [TICKET_QUERY_PREFIX, ticketId],
-  ];
 
   return useMutation({
     mutationFn: () => ticketsClient.markTicketAsRead({ ticketId }),
     onSuccess() {
-      return invalidatesQueries.forEach(queryKey =>
-        client.invalidateQueries({ queryKey }),
+      client.setQueryData<Ticket>([TICKET_QUERY_PREFIX, ticketId], prev =>
+        prev ? { ...prev, unreadCount: 0 } : prev,
+      );
+      client.setQueryData<TicketOverview[]>(TICKETS_QUERY_KEY, prev =>
+        prev?.map(ticket =>
+          ticket.id === ticketId ? { ...ticket, unreadCount: 0 } : ticket,
+        ),
       );
     },
   });

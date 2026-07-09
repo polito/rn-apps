@@ -1,14 +1,17 @@
+import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { faCircle } from '@fortawesome/free-regular-svg-icons';
-import {
-  faCalendar,
-  faCircleInfo,
-  faHashtag,
-} from '@fortawesome/free-solid-svg-icons';
-import { formatDate, formatDateTime } from '@polito/lib/core';
+import { faCalendar, faCircle } from '@fortawesome/free-regular-svg-icons';
+import { faCircleInfo, faHashtag } from '@fortawesome/free-solid-svg-icons';
+import { dateFormatter, formatDate } from '@polito/lib/core';
 import {
   Card,
   Icon,
@@ -18,9 +21,15 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { TicketStatus } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useGetTicket } from '~/core/queries/ticketHooks';
+import {
+  getTicketStatusGroup,
+  isResolvedTicketStatus,
+  useGetTicket,
+  useMarkTicketAsClosed,
+} from '~/core/queries/ticketHooks';
 
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 
@@ -38,23 +47,93 @@ const InfoRow = ({
   const styles = useStylesheet(createStyles);
   const { colors, fontSizes } = useTheme();
   return (
-    <Row align="flex-start" gap={2} style={styles.row}>
+    <Row align="center" gap={2} style={styles.row}>
       <Row align="center" gap={1.5} style={styles.rowLabel}>
-        <Icon icon={icon} size={fontSizes.xs} color={colors.secondaryText} />
+        <View style={styles.iconWrap}>
+          <Icon icon={icon} size={fontSizes.xs} color={colors.secondaryText} />
+        </View>
         <Text style={styles.label}>{label}</Text>
       </Row>
-      <Text style={styles.value}>{value}</Text>
+      <Text variant="heading" style={styles.value}>
+        {value}
+      </Text>
     </Row>
   );
 };
 
-export const TicketInfoScreen = ({ route }: Props) => {
+export const TicketInfoScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { palettes } = useTheme();
   const ticketQuery = useGetTicket(id);
   const ticket = ticketQuery.data;
+  const { mutateAsync: markTicketAsClosed } = useMarkTicketAsClosed(id);
+
+  const canMarkResolved = useMemo(() => {
+    const status = ticket?.status;
+    if (!status) {
+      return false;
+    }
+    return (
+      !isResolvedTicketStatus(status) &&
+      status !== TicketStatus.Autoresolved &&
+      status !== TicketStatus.Duplicate
+    );
+  }, [ticket?.status]);
+
+  const onPressMarkResolved = useCallback(() => {
+    Alert.alert(
+      t('ticketScreen.resolveConfirmTitle'),
+      t('ticketScreen.resolveConfirmMessage'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('common.confirm'),
+          onPress: async () => {
+            try {
+              await markTicketAsClosed();
+              navigation.navigate('TicketResolved', {
+                ticketId: id,
+                markAsResolved: true,
+              });
+            } catch {
+              Alert.alert(t('common.error'), t('ticketScreen.sendError'));
+            }
+          },
+        },
+      ],
+      { cancelable: true },
+    );
+  }, [t, navigation, id, markTicketAsClosed]);
+
+  const headerRight = useCallback(() => {
+    if (!ticket?.status) {
+      return null;
+    }
+    const disabled = !canMarkResolved;
+    return (
+      <TouchableOpacity
+        accessibilityRole="button"
+        accessibilityState={{ disabled }}
+        accessibilityLabel={t('ticketScreen.markAsResolved')}
+        onPress={onPressMarkResolved}
+        disabled={disabled}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        style={styles.markResolvedButton}
+      >
+        <Text
+          style={[styles.markResolved, disabled && styles.markResolvedDisabled]}
+        >
+          {t('ticketScreen.markAsResolved')}
+        </Text>
+      </TouchableOpacity>
+    );
+  }, [ticket?.status, canMarkResolved, onPressMarkResolved, styles, t]);
+
+  useEffect(() => {
+    navigation.setOptions({ headerRight });
+  }, [navigation, headerRight]);
 
   if (!ticket) {
     return null;
@@ -65,13 +144,15 @@ export const TicketInfoScreen = ({ route }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={styles.container}
     >
-      <Text style={styles.title}>{ticket.subject}</Text>
+      <Text variant="heading" style={styles.title}>
+        {ticket.subject}
+      </Text>
 
       <Card rounded spaced={false} style={styles.card}>
         <InfoRow
           icon={faCircle}
           label={t('common.status')}
-          value={t(`tickets.status.${ticket.status}`)}
+          value={t(`tickets.status.${getTicketStatusGroup(ticket.status)}`)}
         />
         <InfoRow
           icon={faHashtag}
@@ -81,12 +162,12 @@ export const TicketInfoScreen = ({ route }: Props) => {
         <InfoRow
           icon={faCalendar}
           label={t('common.createdAt')}
-          value={formatDate(ticket.createdAt)}
+          value={formatDateWithTime(ticket.createdAt)}
         />
         <InfoRow
           icon={faCalendar}
           label={t('common.updatedAt')}
-          value={formatDateTime(ticket.updatedAt)}
+          value={formatDateWithTime(ticket.updatedAt)}
         />
       </Card>
 
@@ -107,10 +188,14 @@ export const TicketInfoScreen = ({ route }: Props) => {
 
 const INFO_ICON_SIZE = 16;
 
+const formatDateWithTime = (date: Date) =>
+  `${formatDate(date)} - ${dateFormatter('HH:mm')(date)}`;
+
 const createStyles = ({
   spacing,
   fontSizes,
   fontWeights,
+  fontFamilies,
   colors,
   palettes,
   shapes,
@@ -119,6 +204,22 @@ const createStyles = ({
     container: {
       padding: spacing[5],
       gap: spacing[2.5],
+    },
+    markResolvedButton: {
+      justifyContent: 'center',
+      paddingVertical: spacing[2],
+      paddingHorizontal: spacing[2],
+    },
+    markResolved: {
+      fontFamily: fontFamilies.title,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.medium,
+      letterSpacing: 0.16,
+      color: palettes.primary[500],
+    },
+    // eslint-disable-next-line react-native/no-color-literals
+    markResolvedDisabled: {
+      color: '#90A1B9',
     },
     title: {
       fontSize: fontSizes.xl,
@@ -136,14 +237,22 @@ const createStyles = ({
     rowLabel: {
       flexShrink: 0,
     },
+    iconWrap: {
+      width: fontSizes.xs,
+      height: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
     label: {
       fontSize: fontSizes.sm,
+      lineHeight: 20,
       color: colors.secondaryText,
     },
     value: {
       flex: 1,
       textAlign: 'right',
       fontSize: fontSizes.sm,
+      lineHeight: 20,
       fontWeight: fontWeights.semibold,
       color: colors.title,
     },
@@ -155,7 +264,7 @@ const createStyles = ({
       borderWidth: 1,
       borderColor: palettes.info[600],
       borderRadius: shapes.lg,
-      paddingHorizontal: spacing[5],
+      paddingHorizontal: 20,
       paddingVertical: spacing[3],
     },
     infoMessageIcon: {
@@ -163,9 +272,10 @@ const createStyles = ({
     },
     infoMessageText: {
       flex: 1,
+      fontFamily: fontFamilies.title,
       fontSize: fontSizes.xs,
       fontWeight: fontWeights.medium,
-      lineHeight: fontSizes.xs * 1.35,
+      lineHeight: 16,
       color: palettes.info[700],
     },
   });

@@ -56,7 +56,7 @@ export const VirtualOperatorFeedbackBar = ({
   return (
     <View style={styles.container}>
       <Col gap={1}>
-        <Text variant="title" style={styles.title}>
+        <Text variant="heading" style={styles.title}>
           {t('ticketScreen.feedbackTitle')}
         </Text>
         <Text variant="secondaryText" style={styles.description}>
@@ -64,7 +64,7 @@ export const VirtualOperatorFeedbackBar = ({
         </Text>
       </Col>
       <Row align="center" style={styles.buttonsRow}>
-        <Text variant="title" style={styles.question}>
+        <Text variant="heading" style={styles.question}>
           {t('ticketScreen.feedbackQuestion')}
         </Text>
         <Row gap={3} style={styles.buttons}>

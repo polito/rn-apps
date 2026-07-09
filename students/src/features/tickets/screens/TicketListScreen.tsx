@@ -1,11 +1,10 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { useScreenTitle } from '@polito/lib/core';
 import {
   BottomBarSpacer,
-  IndentedDivider,
   OverviewList,
   RefreshControl,
   useSafeAreaSpacing,
@@ -54,17 +53,17 @@ export const TicketListScreen = ({ route }: Props) => {
   }
 
   return (
-    <FlatList
+    <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={paddingHorizontal}
       refreshControl={<RefreshControl queries={[ticketsQuery]} manual />}
-      data={tickets}
-      renderItem={({ item }) => <TicketListItem ticket={item} key={item.id} />}
-      ItemSeparatorComponent={Platform.select({
-        ios: IndentedDivider,
-      })}
-      ListFooterComponent={<BottomBarSpacer />}
-      ListEmptyComponent={<OverviewList emptyStateText={labels.emptyState} />}
-    />
+    >
+      <OverviewList indented>
+        {tickets.map(ticket => (
+          <TicketListItem ticket={ticket} key={ticket.id} />
+        ))}
+      </OverviewList>
+      <BottomBarSpacer />
+    </ScrollView>
   );
 };

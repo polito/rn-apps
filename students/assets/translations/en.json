@@ -326,6 +326,7 @@
     "transcript": "Transcript",
     "unnamedFile": "Unnamed file",
     "untitled": "Untitled",
+    "dateAtTime": "{{date}} at {{time}}",
     "updatedAt": "Updated at",
     "upload": "Upload",
     "username": "Student ID",

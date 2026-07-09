@@ -335,6 +335,7 @@
     "transcript": "Libretto",
     "unnamedFile": "File senza nome",
     "untitled": "Senza titolo",
+    "dateAtTime": "{{date}} alle {{time}}",
     "updatedAt": "Aggiornato il",
     "upload": "Carica",
     "username": "Matricola",

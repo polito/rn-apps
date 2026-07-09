@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { formatDateTime } from '@polito/lib/core';
+import { dateFormatter, formatDate } from '@polito/lib/core';
 import {
   Col,
   Icon,
@@ -15,6 +15,11 @@ import {
 } from '@polito/lib/ui';
 import { TicketOverview } from '@polito/student-api-client';
 
+import {
+  type TicketStatusGroup,
+  getTicketStatusGroup,
+} from '~/core/queries/ticketHooks';
+
 interface TicketHeaderProps {
   ticket: TicketOverview;
   onPress?: () => void;
@@ -25,25 +30,12 @@ export const TicketHeader = ({ ticket, onPress }: TicketHeaderProps) => {
   const styles = useStylesheet(createStyles);
   const { palettes, colors, fontSizes } = useTheme();
 
-  // Statuses are grouped into 3 visual categories (see Figma "Stati"):
-  // open (pending/open/waiting_user/incoming), resolved (resolved/autoresolved)
-  // and duplicate. The category drives both the tag label and color.
-  const statusGroups: Record<string, 'open' | 'resolved' | 'duplicate'> = {
-    open: 'open',
-    pending: 'open',
-    waiting_user: 'open',
-    incoming: 'open',
-    resolved: 'resolved',
-    autoresolved: 'resolved',
-    closed: 'resolved',
-    duplicate: 'duplicate',
-  };
-  const groupPalettes: Record<'open' | 'resolved' | 'duplicate', Palette> = {
-    open: palettes.primary,
+  const groupPalettes: Record<TicketStatusGroup, Palette> = {
+    open: palettes.info,
     resolved: palettes.success,
-    duplicate: palettes.violet,
+    duplicate: palettes.purple,
   };
-  const statusGroup = statusGroups[ticket.status] ?? 'open';
+  const statusGroup = getTicketStatusGroup(ticket.status);
   const palette = groupPalettes[statusGroup];
 
   return (
@@ -54,7 +46,7 @@ export const TicketHeader = ({ ticket, onPress }: TicketHeaderProps) => {
       style={styles.bar}
     >
       <Col flex={1} gap={2}>
-        <Text style={styles.title} numberOfLines={2}>
+        <Text variant="heading" style={styles.title} numberOfLines={2}>
           {ticket.subject}
         </Text>
         <Row gap={8} align="flex-start">
@@ -68,7 +60,13 @@ export const TicketHeader = ({ ticket, onPress }: TicketHeaderProps) => {
           </Col>
           <Col gap={1}>
             <Text style={styles.label}>{t('common.updatedAt')}</Text>
-            <Text style={styles.value}>{formatDateTime(ticket.updatedAt)}</Text>
+            <Text style={styles.value}>
+              {t('common.dateAtTime', {
+                date: formatDate(ticket.updatedAt),
+                time: dateFormatter('HH:mm')(ticket.updatedAt),
+                interpolation: { escapeValue: false },
+              })}
+            </Text>
           </Col>
         </Row>
       </Col>
@@ -87,8 +85,8 @@ const createStyles = ({
   spacing,
   fontSizes,
   fontWeights,
+  fontFamilies,
   colors,
-  shapes,
 }: Theme) =>
   StyleSheet.create({
     bar: {
@@ -109,17 +107,18 @@ const createStyles = ({
       color: colors.secondaryText,
     },
     value: {
+      fontFamily: fontFamilies.title,
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.medium,
       color: colors.title,
     },
     tag: {
-      borderRadius: shapes.sm,
-      paddingHorizontal: spacing[1.5],
-      paddingVertical: spacing[0.5],
+      borderRadius: 6,
+      paddingHorizontal: 5,
       alignSelf: 'flex-start',
     },
     tagText: {
+      fontFamily: fontFamilies.title,
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.medium,
     },

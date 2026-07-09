@@ -237,23 +237,27 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   );
 
   const headerRight = useCallback(() => {
-    if (
-      !ticket?.status ||
-      isResolved ||
-      isAutoResolved ||
-      isWaitingForOperator
-    ) {
+    if (!ticket?.status) {
       return null;
     }
+    const disabled =
+      isResolved ||
+      isAutoResolved ||
+      isWaitingForOperator ||
+      showVirtualOperatorFeedback;
     return (
       <TouchableOpacity
         accessibilityRole="button"
+        accessibilityState={{ disabled }}
         accessibilityLabel={t('ticketScreen.markAsResolved')}
         onPress={onPressMarkResolved}
+        disabled={disabled}
         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         style={styles.markResolvedButton}
       >
-        <Text style={styles.markResolved}>
+        <Text
+          style={[styles.markResolved, disabled && styles.markResolvedDisabled]}
+        >
           {t('ticketScreen.markAsResolved')}
         </Text>
       </TouchableOpacity>
@@ -263,6 +267,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     isResolved,
     isAutoResolved,
     isWaitingForOperator,
+    showVirtualOperatorFeedback,
     onPressMarkResolved,
     styles,
     t,
@@ -430,6 +435,7 @@ const createStyles = ({
   spacing,
   fontSizes,
   fontWeights,
+  fontFamilies,
   colors,
   palettes,
 }: Theme) =>
@@ -447,9 +453,15 @@ const createStyles = ({
       paddingHorizontal: spacing[2],
     },
     markResolved: {
+      fontFamily: fontFamilies.title,
       fontSize: fontSizes.md,
       fontWeight: fontWeights.medium,
+      letterSpacing: 0.16,
       color: palettes.primary[500],
+    },
+    // eslint-disable-next-line react-native/no-color-literals
+    markResolvedDisabled: {
+      color: '#90A1B9',
     },
     text: {
       padding: 0,
