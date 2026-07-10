@@ -1089,9 +1089,6 @@
     "sendFeedback": "Send feedback"
   },
   "tickets": {
-    "close": "Close ticket",
-    "closeTip": "Are you sure you want to close this ticket?",
-    "menuAction": "Ticket actions",
     "status": {
       "autoresolved": "Auto-resolved",
       "closed": "Closed",
@@ -1106,10 +1103,10 @@
   },
   "ticketsScreen": {
     "addNew": "Add ticket",
-    "closed": "Closed tickets",
-    "closedEmptyState": "There are no closed tickets",
-    "openEmptyState": "There are no open tickets",
-    "opened": "Open tickets",
+    "emptyState": "There are no tickets",
+    "insertFeedback": "Insert feedback",
+    "myTickets": "My tickets",
+    "openedOn": "Opened on {{date}}",
     "title": "Ticket"
   },
   "transcriptGradeScreen": {

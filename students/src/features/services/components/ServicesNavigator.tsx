@@ -11,7 +11,7 @@ import {
   useTheme,
   useTitlesStyles,
 } from '@polito/lib/ui';
-import { TicketFAQ, TicketStatus } from '@polito/student-api-client';
+import { TicketFAQ } from '@polito/student-api-client';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -39,7 +39,6 @@ import { TicketAutoResolvedScreen } from '../../tickets/screens/TicketAutoResolv
 import { TicketFaqScreen } from '../../tickets/screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../../tickets/screens/TicketFaqsScreen';
 import { TicketInfoScreen } from '../../tickets/screens/TicketInfoScreen';
-import { TicketListScreen } from '../../tickets/screens/TicketListScreen';
 import { TicketResolvedScreen } from '../../tickets/screens/TicketResolvedScreen';
 import { TicketScreen } from '../../tickets/screens/TicketScreen';
 import { TicketsScreen } from '../../tickets/screens/TicketsScreen';
@@ -68,9 +67,6 @@ export type ServiceStackParamList = OfferingStackParamList & {
   };
   TicketFaqs: undefined;
   TicketFaq: { faq: TicketFAQ };
-  TicketList: {
-    statuses: Array<(typeof TicketStatus)[keyof typeof TicketStatus]>;
-  };
   JobOffers: undefined;
   JobOffer: {
     id: number;
@@ -134,13 +130,6 @@ export const ServicesNavigator = () => {
       <Stack.Screen
         name="Tickets"
         component={TicketsScreen}
-        options={{
-          headerTitle: t('ticketsScreen.title'),
-        }}
-      />
-      <Stack.Screen
-        name="TicketList"
-        component={TicketListScreen}
         options={{
           headerTitle: t('ticketsScreen.title'),
         }}

@@ -25,11 +25,6 @@ export const CONCLUDED_TICKET_STATUSES = [
   TicketStatus.Duplicate,
 ] as const satisfies readonly TicketStatus[];
 
-export const CLOSED_TICKET_LIST_STATUSES = [
-  ...CONCLUDED_TICKET_STATUSES,
-  LEGACY_CLOSED_TICKET_STATUS,
-] as const;
-
 export const isConcludedTicketStatus = (status?: TicketStatus | string) =>
   (CONCLUDED_TICKET_STATUSES as readonly string[]).includes(status ?? '') ||
   status === LEGACY_CLOSED_TICKET_STATUS;

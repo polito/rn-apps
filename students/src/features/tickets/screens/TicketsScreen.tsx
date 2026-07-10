@@ -20,18 +20,14 @@ import {
   type Theme,
   useStylesheet,
 } from '@polito/lib/ui';
-import { TicketOverview, TicketStatus } from '@polito/student-api-client';
+import { TicketOverview } from '@polito/student-api-client';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onlineManager } from '@tanstack/react-query';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
-import {
-  CLOSED_TICKET_LIST_STATUSES,
-  isConcludedTicketStatus,
-  useGetTickets,
-} from '../../../core/queries/ticketHooks';
+import { useGetTickets } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
 
@@ -53,7 +49,6 @@ const ListItem = ({
     () => !!getUnreadsCount(['services', 'tickets', ticket.id.toString()]),
     [getUnreadsCount, ticket.id],
   );
-
   const { accessibilityListLabel } = useAccessibility();
   const accessibilityLabel = [
     accessibilityListLabel(index, totalData),
@@ -75,119 +70,34 @@ const ListItem = ({
   );
 };
 
-type TicketPageSection = {
-  ticketsQuery: ReturnType<typeof useGetTickets>;
-};
-
-const OpenTickets = ({ ticketsQuery }: TicketPageSection) => {
-  const { t } = useTranslation();
-
-  const openTickets = (ticketsQuery.data || [])
-    .filter(ticket => !isConcludedTicketStatus(ticket.status))
-    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-
-  useFocusEffect(
-    useCallback(() => {
-      if (!ticketsQuery?.data || openTickets?.length > 0) {
-        return;
-      }
-      AccessibilityInfo.announceForAccessibility(
-        t('ticketsScreen.noOpenTickets'),
-      );
-    }, [openTickets, t, ticketsQuery]),
-  );
-
-  const sectionHeaderTicketOpenAccessibilityLabel = useMemo(() => {
-    const baseText = t('ticketsScreen.opened');
-    if (openTickets?.length > 0) {
-      return baseText;
-    } else {
-      return [baseText, t('ticketsScreen.noOpenTickets')].join(', ');
-    }
-  }, [openTickets, t]);
-
-  return (
-    <Section>
-      <SectionHeader
-        accessibilityLabel={sectionHeaderTicketOpenAccessibilityLabel}
-        title={t('ticketsScreen.opened')}
-      />
-      {!ticketsQuery.isLoading &&
-        (openTickets.length > 0 ? (
-          <OverviewList indented>
-            {openTickets?.map((ticket, index) => (
-              <ListItem
-                totalData={openTickets?.length || 0}
-                index={index}
-                ticket={ticket}
-                key={ticket.id}
-              />
-            ))}
-          </OverviewList>
-        ) : (
-          <OverviewList emptyStateText={t('ticketsScreen.openEmptyState')} />
-        ))}
-    </Section>
-  );
-};
-
-const ClosedTickets = ({ ticketsQuery }: TicketPageSection) => {
-  const { t } = useTranslation();
-
-  const closedTickets = (ticketsQuery.data || [])
-    .filter(ticket => isConcludedTicketStatus(ticket.status))
-    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-
-  const renderedClosedTickets = useMemo(
-    () => closedTickets.slice(0, 4),
-    [closedTickets],
-  );
-
-  const sectionHeaderTicketClosedAccessibilityLabel = useMemo(() => {
-    const baseText = t('ticketsScreen.closed');
-    if (renderedClosedTickets.length > 0) {
-      return baseText;
-    } else {
-      return [baseText, t('ticketsScreen.noClosedTickets')].join(', ');
-    }
-  }, [renderedClosedTickets, t]);
-
-  return (
-    <Section>
-      <SectionHeader
-        accessibilityLabel={sectionHeaderTicketClosedAccessibilityLabel}
-        title={t('ticketsScreen.closed')}
-        linkTo={{
-          screen: 'TicketList',
-          params: {
-            statuses: [...CLOSED_TICKET_LIST_STATUSES] as TicketStatus[],
-          },
-        }}
-        linkToMoreCount={closedTickets.length - renderedClosedTickets.length}
-      />
-      {!ticketsQuery.isLoading &&
-        (renderedClosedTickets.length > 0 ? (
-          <OverviewList indented>
-            {renderedClosedTickets.map((ticket, index) => (
-              <ListItem
-                totalData={renderedClosedTickets?.length || 0}
-                index={index}
-                ticket={ticket}
-                key={ticket.id}
-              />
-            ))}
-          </OverviewList>
-        ) : (
-          <OverviewList emptyStateText={t('ticketsScreen.closedEmptyState')} />
-        ))}
-    </Section>
-  );
-};
-
 export const TicketsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const ticketsQuery = useGetTickets();
+
+  const tickets = useMemo(
+    () =>
+      (ticketsQuery.data ?? [])
+        .slice()
+        .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()),
+    [ticketsQuery.data],
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!ticketsQuery.data || tickets.length > 0) {
+        return;
+      }
+      AccessibilityInfo.announceForAccessibility(t('ticketsScreen.emptyState'));
+    }, [tickets, t, ticketsQuery.data]),
+  );
+
+  const sectionHeaderAccessibilityLabel = useMemo(() => {
+    const baseText = t('ticketsScreen.myTickets');
+    return tickets.length > 0
+      ? baseText
+      : [baseText, t('ticketsScreen.emptyState')].join(', ');
+  }, [tickets, t]);
 
   return (
     <>
@@ -197,8 +107,27 @@ export const TicketsScreen = ({ navigation }: Props) => {
         contentContainerStyle={styles.container}
       >
         <SafeAreaView>
-          <OpenTickets ticketsQuery={ticketsQuery} />
-          <ClosedTickets ticketsQuery={ticketsQuery} />
+          <Section>
+            <SectionHeader
+              accessibilityLabel={sectionHeaderAccessibilityLabel}
+              title={t('ticketsScreen.myTickets')}
+            />
+            {!ticketsQuery.isLoading &&
+              (tickets.length > 0 ? (
+                <OverviewList indented>
+                  {tickets.map((ticket, index) => (
+                    <ListItem
+                      totalData={tickets.length}
+                      index={index}
+                      ticket={ticket}
+                      key={ticket.id}
+                    />
+                  ))}
+                </OverviewList>
+              ) : (
+                <OverviewList emptyStateText={t('ticketsScreen.emptyState')} />
+              ))}
+          </Section>
           <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>

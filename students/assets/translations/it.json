@@ -1116,9 +1116,6 @@
     "sendFeedback": "Invia feedback"
   },
   "tickets": {
-    "close": "Chiudi ticket",
-    "closeTip": "Sei sicuro di voler chiudere questo ticket?",
-    "menuAction": "Azioni ticket",
     "status": {
       "autoresolved": "Auto-risolto",
       "closed": "Chiuso",
@@ -1132,13 +1129,11 @@
     }
   },
   "ticketsScreen": {
-    "noOpenTickets": "Non ci sono ticket aperti",
-    "noClosedTickets": "Non ci sono ticket chiusi",
     "addNew": "Nuovo ticket",
-    "closed": "Ticket chiusi",
-    "closedEmptyState": "Non ci sono ticket chiusi",
-    "openEmptyState": "Non ci sono ticket aperti",
-    "opened": "Ticket aperti",
+    "emptyState": "Non ci sono ticket",
+    "insertFeedback": "Inserisci feedback",
+    "myTickets": "I miei ticket",
+    "openedOn": "Aperto il {{date}}",
     "title": "Ticket"
   },
   "transcriptGradeScreen": {

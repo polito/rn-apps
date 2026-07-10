@@ -21,21 +21,21 @@ export const TicketWaitingOperatorBar = () => {
   );
 };
 
-const createStyles = ({ spacing, fontSizes, colors, palettes }: Theme) =>
+const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
   StyleSheet.create({
     container: {
-      backgroundColor: colors.white,
+      backgroundColor: colors.surface,
       paddingHorizontal: spacing[5],
       paddingTop: spacing[2],
       paddingBottom: spacing[4],
     },
     title: {
-      color: palettes.primary[700],
+      color: colors.title,
       fontSize: fontSizes.sm,
       lineHeight: fontSizes.sm * 1.25,
     },
     subtitle: {
-      color: palettes.gray[600],
+      color: colors.secondaryText,
       fontSize: fontSizes.xs,
       lineHeight: fontSizes.xs * 1.5,
     },

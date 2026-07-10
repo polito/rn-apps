@@ -51,10 +51,10 @@ export const TicketFeedbackInfo = ({
   );
 };
 
-const createStyles = ({ spacing, fontSizes, colors, palettes }: Theme) =>
+const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
   StyleSheet.create({
     container: {
-      backgroundColor: colors.white,
+      backgroundColor: colors.surface,
       borderTopWidth: StyleSheet.hairlineWidth,
       borderTopColor: colors.divider,
       paddingHorizontal: spacing[5],
@@ -62,17 +62,17 @@ const createStyles = ({ spacing, fontSizes, colors, palettes }: Theme) =>
       paddingBottom: spacing[4],
     },
     title: {
-      color: palettes.gray[700],
+      color: colors.prose,
       fontSize: fontSizes.sm,
       lineHeight: fontSizes.sm * 1.1,
     },
     body: {
-      color: palettes.gray[700],
+      color: colors.prose,
       fontSize: fontSizes.sm,
       lineHeight: fontSizes.sm * 1.1,
     },
     bold: {
-      color: palettes.gray[700],
+      color: colors.prose,
       fontSize: fontSizes.sm,
       lineHeight: fontSizes.sm * 1.1,
     },
