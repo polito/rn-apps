@@ -27,13 +27,23 @@ import { onlineManager } from '@tanstack/react-query';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
-import { useGetTickets } from '../../../core/queries/ticketHooks';
+import {
+  getTicketStatusGroup,
+  useGetTickets,
+} from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { TicketListItem } from '../components/TicketListItem';
 
 interface Props {
   navigation: NativeStackNavigationProp<ServiceStackParamList, 'Tickets'>;
 }
+
+const getTicketRank = (ticket: TicketOverview) => {
+  const group = getTicketStatusGroup(ticket.status);
+  if (group === 'open') return ticket.unreadCount > 0 ? 0 : 1;
+  if (group === 'duplicate') return 4;
+  return ticket.needsFeedback ? 2 : 3;
+};
 
 const ListItem = ({
   ticket,
@@ -77,9 +87,13 @@ export const TicketsScreen = ({ navigation }: Props) => {
 
   const tickets = useMemo(
     () =>
-      (ticketsQuery.data ?? [])
-        .slice()
-        .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()),
+      (ticketsQuery.data ?? []).slice().sort((a, b) => {
+        const rankDifference = getTicketRank(a) - getTicketRank(b);
+        if (rankDifference !== 0) {
+          return rankDifference;
+        }
+        return b.createdAt.getTime() - a.createdAt.getTime();
+      }),
     [ticketsQuery.data],
   );
 

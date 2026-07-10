@@ -35,7 +35,7 @@ export const TicketListItem = ({
   unread,
   ...props
 }: TicketListItemProps) => {
-  const { fontSizes, palettes } = useTheme();
+  const { palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const queryClient = useQueryClient();
@@ -61,13 +61,9 @@ export const TicketListItem = ({
       title={getHtmlTextContent(ticket?.subject)}
       subtitle={
         ticket.needsFeedback ? (
-          <Row align="center" gap={1.5}>
-            <Icon
-              icon={faStar}
-              size={fontSizes.sm}
-              color={palettes.orange[600]}
-            />
-            <Text style={styles.feedbackHint}>
+          <Row align="center" gap={1} style={styles.feedbackTag}>
+            <Icon icon={faStar} size={16} color={palettes.darkOrange[600]} />
+            <Text style={styles.feedbackTagText}>
               {t('ticketsScreen.insertFeedback')}
             </Text>
           </Row>
@@ -91,11 +87,23 @@ export const TicketListItem = ({
   );
 };
 
-const createStyles = ({ fontSizes, fontWeights, palettes }: Theme) =>
+const createStyles = ({
+  fontFamilies,
+  fontSizes,
+  fontWeights,
+  palettes,
+}: Theme) =>
   StyleSheet.create({
-    feedbackHint: {
+    feedbackTag: {
+      alignSelf: 'flex-start',
+      backgroundColor: palettes.darkOrange[50],
+      borderRadius: 6,
+      paddingHorizontal: 5,
+    },
+    feedbackTagText: {
+      fontFamily: fontFamilies.title,
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.medium,
-      color: palettes.orange[600],
+      color: palettes.darkOrange[600],
     },
   });
