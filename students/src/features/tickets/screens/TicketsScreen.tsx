@@ -6,19 +6,24 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
+  View,
 } from 'react-native';
+import { Defs, LinearGradient, Rect, Stop, Svg } from 'react-native-svg';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { getHtmlTextContent } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   CtaButton,
+  CtaButtonSpacer,
   OverviewList,
   RefreshControl,
   Section,
   SectionHeader,
   type Theme,
+  useSafeBottomBarHeight,
   useStylesheet,
+  useTheme,
 } from '@polito/lib/ui';
 import { TicketOverview } from '@polito/student-api-client';
 import { useFocusEffect } from '@react-navigation/native';
@@ -77,6 +82,29 @@ const ListItem = ({
         unread={unread}
       />
     </Pressable>
+  );
+};
+
+const CtaFade = () => {
+  const { colors } = useTheme();
+  const bottomBarHeight = useSafeBottomBarHeight();
+  const styles = useStylesheet(createStyles);
+
+  return (
+    <View
+      pointerEvents="none"
+      style={[styles.fade, { bottom: bottomBarHeight }]}
+    >
+      <Svg width="100%" height="100%" preserveAspectRatio="none">
+        <Defs>
+          <LinearGradient id="ctaFade" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor={colors.background} stopOpacity="0" />
+            <Stop offset="1" stopColor={colors.background} stopOpacity="1" />
+          </LinearGradient>
+        </Defs>
+        <Rect x="0" y="0" width="100%" height="100%" fill="url(#ctaFade)" />
+      </Svg>
+    </View>
   );
 };
 
@@ -142,9 +170,12 @@ export const TicketsScreen = ({ navigation }: Props) => {
                 <OverviewList emptyStateText={t('ticketsScreen.emptyState')} />
               ))}
           </Section>
+          <CtaButtonSpacer />
           <BottomBarSpacer />
         </SafeAreaView>
       </ScrollView>
+
+      <CtaFade />
 
       <CtaButton
         absolute={true}
@@ -161,5 +192,11 @@ const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     container: {
       paddingVertical: spacing[5],
+    },
+    fade: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      height: spacing[24],
     },
   });
