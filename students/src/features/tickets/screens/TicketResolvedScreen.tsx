@@ -56,11 +56,6 @@ export const TicketResolvedScreen = ({ route, navigation }: Props) => {
   const canSubmit = rating > 0 && (!commentRequired || commentValid);
   const showError = commentRequired && !commentValid;
 
-  const counterColor = commentValid
-    ? palettes.success[700]
-    : palettes.danger[600];
-  const helperColor = showError ? palettes.danger[600] : colors.secondaryText;
-
   const onSubmit = () => {
     if (!canSubmit || isPending) {
       return;
@@ -123,21 +118,16 @@ export const TicketResolvedScreen = ({ route, navigation }: Props) => {
             multiline
             textAlignVertical="top"
           />
-          {commentRequired && (
-            <Text variant="secondaryText" style={styles.counter}>
-              <Text style={{ color: counterColor }}>{commentLength}</Text>
-              <Text
-                style={styles.counterTotal}
-              >{`/${MIN_COMMENT_LENGTH}`}</Text>
-            </Text>
-          )}
         </View>
-        {commentRequired && (
-          <Text
-            variant="secondaryText"
-            style={[styles.helper, { color: helperColor }]}
-          >
-            {t('ticketResolvedScreen.minCharsHint')}
+        {showError && (
+          <Text variant="secondaryText" style={styles.helper}>
+            {commentLength === 0
+              ? t('ticketResolvedScreen.minCharsHint', {
+                  count: MIN_COMMENT_LENGTH,
+                })
+              : t('ticketResolvedScreen.remainingCharsHint', {
+                  count: MIN_COMMENT_LENGTH - commentLength,
+                })}
           </Text>
         )}
       </ScrollView>
@@ -211,19 +201,12 @@ const createStyles = ({
       color: colors.prose,
       padding: 0,
     },
-    counter: {
-      alignSelf: 'flex-end',
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.medium,
-    },
-    counterTotal: {
-      color: colors.secondaryText,
-    },
     helper: {
       alignSelf: 'flex-start',
       fontSize: fontSizes.xs,
       fontWeight: fontWeights.medium,
       marginTop: spacing[1],
+      color: palettes.danger[600],
     },
     buttonDisabled: {
       backgroundColor: palettes.gray[400],

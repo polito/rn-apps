@@ -151,6 +151,7 @@ export const useGetTicket = (ticketId: number) => {
   return useQuery({
     queryKey: [TICKET_QUERY_PREFIX, ticketId],
     queryFn: () => ticketsClient.getTicket({ ticketId }).then(pluckData),
+    staleTime: 0,
   });
 };
 

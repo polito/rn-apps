@@ -1083,9 +1083,12 @@
     "title": "Ticket resolved",
     "rateQuestion": "How would you rate our service?",
     "rateValue": "{{value}} stars",
-    "commentLabel": "Would you like to leave a comment?",
+    "commentLabel": "Comment",
     "commentPlaceholder": "Write your comment here",
-    "minCharsHint": "Enter at least 100 characters",
+    "minCharsHint": "Enter at least {{count}} character",
+    "minCharsHint_plural": "Enter at least {{count}} characters",
+    "remainingCharsHint": "{{count}} character missing",
+    "remainingCharsHint_plural": "{{count}} characters missing",
     "sendFeedback": "Send feedback"
   },
   "tickets": {
