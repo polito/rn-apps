@@ -25,7 +25,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { TicketStatus } from '@polito/student-api-client';
+import { TicketSpecialAgent, TicketStatus } from '@polito/student-api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -182,14 +182,32 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     replyNeedingFeedback,
   ]);
 
+  const hasHumanOperatorReply = useMemo(
+    () =>
+      (ticket?.replies ?? []).some(
+        reply =>
+          reply.isFromAgent && reply.agentId !== TicketSpecialAgent.AiAgent,
+      ),
+    [ticket?.replies],
+  );
+
   const showResolvedRateBar = useMemo(
-    () => isResolved && !feedbackInserted && ticket?.needsFeedback === true,
-    [isResolved, feedbackInserted, ticket?.needsFeedback],
+    () =>
+      isResolved &&
+      !feedbackInserted &&
+      hasHumanOperatorReply &&
+      ticket?.needsFeedback === true,
+    [
+      isResolved,
+      feedbackInserted,
+      hasHumanOperatorReply,
+      ticket?.needsFeedback,
+    ],
   );
 
   const showAutoresolvedRateBar = useMemo(
-    () => isAutoResolved && !feedbackInserted,
-    [isAutoResolved, feedbackInserted],
+    () => isAutoResolved && !feedbackInserted && hasHumanOperatorReply,
+    [isAutoResolved, feedbackInserted, hasHumanOperatorReply],
   );
 
   const isWaitingForOperator = useMemo(() => {
