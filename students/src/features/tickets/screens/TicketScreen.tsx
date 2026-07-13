@@ -62,6 +62,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
   const { spacing } = useTheme();
   const bottomBarHeight = useBottomTabBarHeight();
   const ticket = ticketQuery.data;
+  const refetchTicket = ticketQuery.refetch;
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
   const { t } = useTranslation();
@@ -122,6 +123,10 @@ export const TicketScreen = ({ route, navigation }: Props) => {
           onPress: async () => {
             try {
               await markTicketAsClosed();
+              const { data: closedTicket } = await refetchTicket();
+              if (!closedTicket?.needsFeedback) {
+                return;
+              }
               navigation.navigate('TicketResolved', {
                 ticketId: id,
                 markAsResolved: true,
@@ -134,7 +139,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
       ],
       { cancelable: true },
     );
-  }, [t, navigation, id, markTicketAsClosed]);
+  }, [t, navigation, id, markTicketAsClosed, refetchTicket]);
 
   const onPressGoToLinkedTicket = useCallback(() => {
     if (ticket?.duplicateId != null) {

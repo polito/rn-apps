@@ -68,6 +68,7 @@ export const TicketInfoScreen = ({ route, navigation }: Props) => {
   const { palettes } = useTheme();
   const ticketQuery = useGetTicket(id);
   const ticket = ticketQuery.data;
+  const refetchTicket = ticketQuery.refetch;
   const { mutateAsync: markTicketAsClosed } = useMarkTicketAsClosed(id);
 
   const canMarkResolved = useMemo(() => {
@@ -93,6 +94,11 @@ export const TicketInfoScreen = ({ route, navigation }: Props) => {
           onPress: async () => {
             try {
               await markTicketAsClosed();
+              const { data: closedTicket } = await refetchTicket();
+              if (!closedTicket?.needsFeedback) {
+                navigation.goBack();
+                return;
+              }
               navigation.navigate('TicketResolved', {
                 ticketId: id,
                 markAsResolved: true,
@@ -105,7 +111,7 @@ export const TicketInfoScreen = ({ route, navigation }: Props) => {
       ],
       { cancelable: true },
     );
-  }, [t, navigation, id, markTicketAsClosed]);
+  }, [t, navigation, id, markTicketAsClosed, refetchTicket]);
 
   const headerRight = useCallback(() => {
     if (!ticket?.status) {

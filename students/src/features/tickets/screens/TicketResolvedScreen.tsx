@@ -34,6 +34,7 @@ import { exitToTicketsList } from '../utils/exitToTicketsList';
 type Props = NativeStackScreenProps<ServiceStackParamList, 'TicketResolved'>;
 
 const MIN_COMMENT_LENGTH = 100;
+const MAX_RATING_REQUIRING_COMMENT = 2;
 const RATINGS = [1, 2, 3, 4, 5];
 const PODIUM_ICON_SIZE = 64;
 const STAR_ICON_SIZE = 32;
@@ -46,27 +47,22 @@ export const TicketResolvedScreen = ({ route, navigation }: Props) => {
   const headerHeight = useHeaderHeight();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
-  const [attempted, setAttempted] = useState(false);
   const { mutateAsync: provideFeedback, isPending } =
     useProvideTicketFeedback(ticketId);
 
   const commentLength = comment.trim().length;
   const commentValid = commentLength >= MIN_COMMENT_LENGTH;
-  const commentRequired = rating === 1;
+  const commentRequired = rating > 0 && rating <= MAX_RATING_REQUIRING_COMMENT;
   const canSubmit = rating > 0 && (!commentRequired || commentValid);
-  const showError =
-    commentRequired && !commentValid && (commentLength > 0 || attempted);
+  const showError = commentRequired && !commentValid;
 
   const counterColor = commentValid
     ? palettes.success[700]
-    : showError
-      ? palettes.danger[600]
-      : colors.secondaryText;
+    : palettes.danger[600];
   const helperColor = showError ? palettes.danger[600] : colors.secondaryText;
 
   const onSubmit = () => {
     if (!canSubmit || isPending) {
-      setAttempted(true);
       return;
     }
     provideFeedback({ rating, comment: comment.trim() || undefined })
@@ -127,10 +123,14 @@ export const TicketResolvedScreen = ({ route, navigation }: Props) => {
             multiline
             textAlignVertical="top"
           />
-          <Text variant="secondaryText" style={styles.counter}>
-            <Text style={{ color: counterColor }}>{commentLength}</Text>
-            <Text style={styles.counterTotal}>{`/${MIN_COMMENT_LENGTH}`}</Text>
-          </Text>
+          {commentRequired && (
+            <Text variant="secondaryText" style={styles.counter}>
+              <Text style={{ color: counterColor }}>{commentLength}</Text>
+              <Text
+                style={styles.counterTotal}
+              >{`/${MIN_COMMENT_LENGTH}`}</Text>
+            </Text>
+          )}
         </View>
         {commentRequired && (
           <Text
