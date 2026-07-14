@@ -34,6 +34,7 @@ export const TicketHeader = ({ ticket, onPress }: TicketHeaderProps) => {
     open: palettes.info,
     resolved: palettes.success,
     duplicate: palettes.purple,
+    waitingUser: palettes.warning,
   };
   const statusGroup = getTicketStatusGroup(ticket.status);
   const palette = groupPalettes[statusGroup];

@@ -1015,15 +1015,16 @@
     "location": "Luogo",
     "openMap": "Mostra in Luoghi",
     "pdf": {
-      "admissions": "N. ingressi:",
+      "admissions": "Ingressi:",
       "accessInfo": "Informazioni accesso:",
       "codeId": "ID Codice:",
       "date": "Data:",
       "description": "Descrizione:",
       "event": "Evento:",
+      "footer": "Politecnico di Torino — documento generato automaticamente",
       "instruction": "Mostra questo QR code all'ingresso dell'evento per ogni partecipante al tuo gruppo compreso te stesso (massimo {{max}} accessi)",
       "map": "Dove si svolge l'evento:",
-      "maxAdmissions": "{{max}} partecipanti massimo",
+      "maxAdmissions": "Massimo {{max}} partecipanti",
       "qrTitle": "Il tuo QR Code di ingresso"
     },
     "qrCode": "QR code",
@@ -1128,7 +1129,7 @@
       "open": "Aperto",
       "pending": "In lavorazione",
       "resolved": "Risolto",
-      "waiting_user": "Attesa studente"
+      "waitingUser": "In attesa"
     }
   },
   "ticketsScreen": {

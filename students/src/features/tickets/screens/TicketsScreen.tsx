@@ -45,9 +45,10 @@ interface Props {
 
 const getTicketRank = (ticket: TicketOverview) => {
   const group = getTicketStatusGroup(ticket.status);
-  if (group === 'open') return ticket.unreadCount > 0 ? 0 : 1;
-  if (group === 'duplicate') return 4;
-  return ticket.needsFeedback ? 2 : 3;
+  if (group === 'waitingUser') return ticket.unreadCount > 0 ? 0 : 1;
+  if (group === 'open') return 2;
+  if (group === 'duplicate') return 5;
+  return ticket.needsFeedback ? 3 : 4;
 };
 
 const ListItem = ({

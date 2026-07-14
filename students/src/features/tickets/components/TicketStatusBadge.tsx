@@ -29,6 +29,7 @@ export const TicketStatusBadge = ({ status }: TicketStatusBadgeProps) => {
       open: { palette: palettes.primary, light: 100, dark: 600 },
       resolved: { palette: palettes.success, light: 200, dark: 800 },
       duplicate: { palette: palettes.purple, light: 200, dark: 800 },
+      waitingUser: { palette: palettes.warning, light: 200, dark: 800 },
     };
     const { palette, light, dark: darkShade } = groupStyles[statusGroup];
 

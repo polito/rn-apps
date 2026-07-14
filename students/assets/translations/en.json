@@ -1000,6 +1000,7 @@
       "date": "Date:",
       "description": "Description:",
       "event": "Event:",
+      "footer": "Politecnico di Torino — automatically generated document",
       "instruction": "Show this QR code at the event entrance for each participant in your group including yourself (maximum {{max}} accesses)",
       "map": "Event location:",
       "maxAdmissions": "Maximum {{max}} participants",
@@ -1101,7 +1102,7 @@
       "open": "Open",
       "pending": "Pending",
       "resolved": "Resolved",
-      "waiting_user": "Awaiting student"
+      "waitingUser": "Pending"
     }
   },
   "ticketsScreen": {

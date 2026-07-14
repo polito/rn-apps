@@ -32,7 +32,11 @@ export const isConcludedTicketStatus = (status?: TicketStatus | string) =>
 export const isResolvedTicketStatus = (status?: TicketStatus | string) =>
   status === TicketStatus.Resolved || status === LEGACY_CLOSED_TICKET_STATUS;
 
-export type TicketStatusGroup = 'open' | 'resolved' | 'duplicate';
+export type TicketStatusGroup =
+  | 'open'
+  | 'resolved'
+  | 'duplicate'
+  | 'waitingUser';
 
 export const getTicketStatusGroup = (
   status?: TicketStatus | string,
@@ -42,6 +46,9 @@ export const getTicketStatusGroup = (
   }
   if (status === TicketStatus.Duplicate) {
     return 'duplicate';
+  }
+  if (status === TicketStatus.WaitingUser) {
+    return 'waitingUser';
   }
   return 'open';
 };
