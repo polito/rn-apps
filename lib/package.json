@@ -13,10 +13,10 @@
     "update": "node ../tools/scripts/manageDeps.js"
   },
   "peerDependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.7.2",
-    "@fortawesome/free-regular-svg-icons": "^6.6.0",
-    "@fortawesome/free-solid-svg-icons": "^6.6.0",
-    "@fortawesome/react-native-fontawesome": "^0.3.2",
+    "@fortawesome/fontawesome-svg-core": "^7.3.0",
+    "@fortawesome/free-regular-svg-icons": "^7.3.0",
+    "@fortawesome/free-solid-svg-icons": "^7.3.0",
+    "@fortawesome/react-native-fontawesome": "^1.0.0",
     "@gorhom/bottom-sheet": "^5.2.6",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-community/blur": "^4.4.1",
@@ -55,7 +55,7 @@
     "use-latest-callback": "^0.2.4"
   },
   "dependencies": {
-    "@polito/student-api-client": "^2.3.5",
+    "@polito/student-api-client": "^2.3.6",
     "autolinker": "^4.1.5",
     "color": "^5.0.3",
     "dom-serializer": "^2.0.0",

@@ -11,7 +11,7 @@ import {
   useTheme,
   useTitlesStyles,
 } from '@polito/lib/ui';
-import { TicketFAQ, TicketStatus } from '@polito/student-api-client';
+import { TicketFAQ } from '@polito/student-api-client';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -35,9 +35,11 @@ import { ContactsScreen } from '../../people/screens/ContactsScreen';
 import { SurveyListScreen } from '../../surveys/screens/SurveyListScreen';
 import { SurveysScreen } from '../../surveys/screens/SurveysScreen';
 import { CreateTicketScreen } from '../../tickets/screens/CreateTicketScreen';
+import { TicketAutoResolvedScreen } from '../../tickets/screens/TicketAutoResolvedScreen';
 import { TicketFaqScreen } from '../../tickets/screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../../tickets/screens/TicketFaqsScreen';
-import { TicketListScreen } from '../../tickets/screens/TicketListScreen';
+import { TicketInfoScreen } from '../../tickets/screens/TicketInfoScreen';
+import { TicketResolvedScreen } from '../../tickets/screens/TicketResolvedScreen';
 import { TicketScreen } from '../../tickets/screens/TicketScreen';
 import { TicketsScreen } from '../../tickets/screens/TicketsScreen';
 import { BookingsScreen } from '../screens/BookingsScreen';
@@ -56,15 +58,15 @@ export type ServiceStackParamList = OfferingStackParamList & {
   Services: undefined;
   Tickets: undefined;
   Ticket: { id: number };
+  TicketInfo: { id: number };
+  TicketResolved: { ticketId: number; markAsResolved?: boolean };
+  TicketAutoResolved: { ticketId: number };
   CreateTicket: {
     topicId?: number;
     subtopicId?: number;
   };
   TicketFaqs: undefined;
   TicketFaq: { faq: TicketFAQ };
-  TicketList: {
-    statuses: Array<(typeof TicketStatus)[keyof typeof TicketStatus]>;
-  };
   JobOffers: undefined;
   JobOffer: {
     id: number;
@@ -133,20 +135,44 @@ export const ServicesNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="TicketList"
-        component={TicketListScreen}
-        options={{
-          headerTitle: t('ticketsScreen.title'),
-        }}
-      />
-      <Stack.Screen
         name="Ticket"
         component={TicketScreen}
         getId={({ params: { id } }) => id.toString()}
         options={{
           headerLargeTitle: false,
-          headerTitle: t('ticketScreen.title'),
+          headerTransparent: false,
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: colors.surface },
+          headerTitle: '',
           headerBackTitle: t('ticketScreen.headerBackTitle'), // TODO wrong with direct navigation
+        }}
+      />
+      <Stack.Screen
+        name="TicketInfo"
+        component={TicketInfoScreen}
+        getId={({ params: { id } }) => id.toString()}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: '',
+          headerBackTitle: t('ticketScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="TicketResolved"
+        component={TicketResolvedScreen}
+        options={({ route }) => ({
+          headerLargeTitle: false,
+          headerTitle: `${t('ticketScreen.title')} ${route.params.ticketId}`,
+          headerBackButtonDisplayMode: 'minimal',
+        })}
+      />
+      <Stack.Screen
+        name="TicketAutoResolved"
+        component={TicketAutoResolvedScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: '',
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen

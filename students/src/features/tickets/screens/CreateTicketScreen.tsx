@@ -136,16 +136,13 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     }
   }, [t, topicId]);
 
-  const handleDuplicateError = (err: ApiError) => {
-    const message = err.message;
-    if (typeof message === 'string') {
-      const normalized = message.toLowerCase();
-      if (normalized.includes('duplicate')) {
-        Alert.alert(
-          t('createTicketScreen.duplicateTitle'),
-          t('createTicketScreen.duplicateMessage'),
-        );
-      }
+  const handleCreateError = (err: ApiError) => {
+    if (err.code === -33 && err.responseCode === 400) {
+      Alert.alert(
+        t('createTicketScreen.duplicateTitle'),
+        t('createTicketScreen.duplicateMessage'),
+      );
+      return;
     }
   };
 
@@ -228,7 +225,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
               message: ticketBody?.message?.trim().replace(/\n/g, '<br>'),
             } as CreateTicketRequest);
           } catch (err) {
-            handleDuplicateError(err as ApiError);
+            handleCreateError(err as ApiError);
           }
         }}
         loading={isPending}

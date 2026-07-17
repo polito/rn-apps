@@ -120,6 +120,8 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
     return formatGraduationDisplayName(profile.firstName, profile.lastName);
   }, [profileQuery.data]);
 
+  const studentId = (profileQuery.data?.username ?? '').replace(/^\D+/, '');
+
   const locationLabel = event?.placeName ?? event?.place ?? '';
 
   const hasValidPlace = useMemo(
@@ -162,6 +164,7 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
 
     return {
       fullName: pdfFullName,
+      studentId,
       eventTitle: event.title,
       dateTime,
       maxAdmissionsText: t('graduationCodeScreen.pdf.maxAdmissions', {
@@ -185,9 +188,10 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
         map: t('graduationCodeScreen.pdf.map'),
         qrTitle: t('graduationCodeScreen.pdf.qrTitle'),
         codeId: t('graduationCodeScreen.pdf.codeId'),
+        footer: t('graduationCodeScreen.pdf.footer'),
       },
     };
-  }, [dateTime, event, locationLabel, pdfFullName, t]);
+  }, [dateTime, event, locationLabel, pdfFullName, studentId, t]);
 
   const onPressLocation = useCallback(() => {
     const place = parsePlace(event?.place);
