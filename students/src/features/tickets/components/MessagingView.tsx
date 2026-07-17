@@ -91,6 +91,14 @@ export const MessagingView = ({
     }
   };
 
+  const getPhotoName = (filename: string | null | undefined, mime: string) => {
+    if (filename) {
+      return filename;
+    }
+    const extension = mime.split('/')[1] || 'jpg';
+    return `${Date.now()}.${extension}`;
+  };
+
   const pickPhoto = async () => {
     try {
       const picture = await openPicker({
@@ -99,7 +107,7 @@ export const MessagingView = ({
       });
       onAttachmentChange?.({
         uri: picture.path,
-        name: picture.filename || t('common.unnamedFile'),
+        name: getPhotoName(picture.filename, picture.mime),
         size: picture.size,
         type: picture.mime,
       });
@@ -120,7 +128,7 @@ export const MessagingView = ({
       });
       onAttachmentChange?.({
         uri: picture.path,
-        name: picture.filename || t('common.unnamedFile'),
+        name: getPhotoName(picture.filename, picture.mime),
         size: picture.size,
         type: picture.mime,
       });
