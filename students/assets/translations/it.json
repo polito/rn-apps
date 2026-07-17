@@ -931,11 +931,17 @@
       "closed": "Chiusa",
       "graduated": "Laureato"
     },
+    "cohort": "Coorte (a.a. di immatricolazione)",
     "course": "Corso di laurea",
     "enrollmentYear": "Anno di immatricolazione {{- enrollmentYear}}",
     "notifications": "Archivio notifiche",
+    "qrCode": "Codice QR",
+    "qrWarning": "Si raccomanda di non condividere o conservare screenshot: eventuali utilizzi impropri restano sotto la tua responsabilità.",
     "settings": "Impostazioni",
+    "showQr": "Mostra QR",
     "smartCard": "Smartcard",
+    "smartCardTitle": "SMART CARD",
+    "studentId": "Matricola",
     "title": "Profilo",
     "trainingOffer": "Offerta formativa"
   },

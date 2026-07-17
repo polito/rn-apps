@@ -20,23 +20,30 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { EuropeanStudentCard } from '@polito/student-api-client';
+import {
+  EuropeanStudentCard,
+  StudentCareerStatusEnum,
+} from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { Image } from 'expo-image';
 import { DateTime } from 'luxon';
 
 import { UserStackParamList } from '../../features/user/components/UserNavigator.tsx';
 import { EscCard } from './EscCard.tsx';
+import { SmartCard } from './SmartCard.tsx';
 
 interface CardSwiperProps {
   firstName: string;
   lastName: string;
   username: string;
-  smartCardUrl?: string;
+  degreeName?: string;
+  status?: StudentCareerStatusEnum;
+  picture?: string;
+  hasSmartCard: boolean;
   europeanStudentCard?: EuropeanStudentCard;
   firstRequest?: boolean;
+  onShowQr?: () => void;
 }
 
 type EscItem = {
@@ -45,24 +52,27 @@ type EscItem = {
   firstRender?: boolean;
 };
 
-type UrlItem = {
+type SmartCardItem = {
   isESC: false;
-  uri: string;
 };
 
-type Item = EscItem | UrlItem;
+type Item = EscItem | SmartCardItem;
 
 type CarouselProps = {
   item: {
     name: string;
     lastname: string;
     username: string;
+    degreeName?: string;
+    status?: StudentCareerStatusEnum;
+    picture?: string;
     card: Item;
   };
   index: number;
   scrollX: SharedValue<number>;
   single: boolean;
   scrollTo: (index: number, valInterval: number) => void;
+  onShowQr?: () => void;
 };
 
 const SRC_WIDTH = Dimensions.get('window').width;
@@ -76,6 +86,7 @@ const SlideItem = ({
   scrollX,
   single,
   scrollTo,
+  onShowQr,
 }: CarouselProps) => {
   const styles = useStylesheet(createStyles);
 
@@ -135,11 +146,15 @@ const SlideItem = ({
       ]}
     >
       {!item.card.isESC ? (
-        <Image
-          style={styles.smartCard}
-          source={{ uri: item.card.uri }}
-          priority="high"
-          contentFit="contain"
+        <SmartCard
+          width={CARD_LENGTH}
+          firstName={item.name}
+          lastName={item.lastname}
+          username={item.username}
+          degreeName={item.degreeName}
+          status={item.status}
+          picture={item.picture}
+          onShowQr={onShowQr}
         />
       ) : (
         <View>
@@ -190,9 +205,13 @@ export const CardSwiper = ({
   firstName,
   lastName,
   username,
-  smartCardUrl,
+  degreeName,
+  status,
+  picture,
+  hasSmartCard,
   europeanStudentCard,
   firstRequest,
+  onShowQr,
 }: CardSwiperProps) => {
   const styles = useStylesheet(createStyles);
   const scrollX = useSharedValue(0);
@@ -211,7 +230,7 @@ export const CardSwiper = ({
   const { colors } = useTheme();
 
   const items: Item[] = [
-    ...(smartCardUrl ? [{ isESC: false, uri: smartCardUrl } as UrlItem] : []),
+    ...(hasSmartCard ? [{ isESC: false } as SmartCardItem] : []),
     ...(europeanStudentCard &&
     (europeanStudentCard.canBeRequested || europeanStudentCard.details)
       ? [
@@ -265,12 +284,16 @@ export const CardSwiper = ({
                 name: firstName,
                 username,
                 lastname: lastName,
+                degreeName,
+                status,
+                picture,
                 card: item,
               }}
               index={index}
               scrollX={scrollX}
               single={items.length < 1}
               scrollTo={scrollTo}
+              onShowQr={onShowQr}
             />
           )}
           horizontal
@@ -361,13 +384,6 @@ const createStyles = ({ fontWeights, colors, spacing }: Theme) =>
       paddingVertical: 16,
       justifyContent: 'center',
       alignItems: 'center',
-    },
-    smartCard: {
-      aspectRatio: 1.5817,
-      height: undefined,
-      maxWidth: 540, // width of a physical card in dp
-      maxHeight: 341,
-      paddingHorizontal: '50%',
     },
     dotsContainer: {
       alignItems: 'center',
