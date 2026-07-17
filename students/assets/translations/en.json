@@ -913,11 +913,17 @@
       "closed": "Closed",
       "graduated": "Graduated"
     },
+    "cohort": "First year of enrollment",
     "course": "Course",
     "enrollmentYear": "Enrollment year {{- enrollmentYear}}",
     "notifications": "Notifications archive",
+    "qrCode": "QR code",
+    "qrWarning": "Do not share or save screenshots: any improper use remains your responsibility.",
     "settings": "Settings",
+    "showQr": "Show QR",
     "smartCard": "Smartcard",
+    "smartCardTitle": "SMART CARD",
+    "studentId": "Student ID",
     "title": "Profile",
     "trainingOffer": "Training offer"
   },
