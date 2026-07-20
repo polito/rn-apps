@@ -67,14 +67,15 @@ export const SharedScreens = () => {
       />
       <Stack.Screen
         name="Person"
-        component={PersonScreen}
         getId={({ params: { id } }) => id.toString()}
         options={{
           headerLargeTitle: false,
           headerTitle: t('common.contact'),
           headerBackButtonDisplayMode: 'minimal',
         }}
-      />
+      >
+        {props => <PersonScreen {...props} showPreferredContacts={false} />}
+      </Stack.Screen>
       <Stack.Screen
         name="UsefulContact"
         component={UsefulContactScreen}

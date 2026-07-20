@@ -110,7 +110,10 @@ export const ServicesNavigator = () => {
   const theme = useTheme();
   const { colors } = theme;
   const ContactsScreen = () => (
-    <LibContactsScreen usefulContacts={defaultUsefulContactsList} />
+    <LibContactsScreen
+      usefulContacts={defaultUsefulContactsList}
+      showPreferredContacts={false}
+    />
   );
 
   return (

@@ -35,61 +35,62 @@ export const StaticContactScreenContent = ({ detail }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={styles.scroll}
     >
-      <Text variant="heading" style={styles.title}>
-        {detail.title}
-      </Text>
+      <View style={styles.content}>
+        <Text variant="heading" style={styles.title}>
+          {detail.title}
+        </Text>
 
-      <Card style={styles.descriptionCard} padded={false}>
-        <View style={styles.descriptionInner}>
-          {detail.description.paragraphs.map((paragraph, index) => (
-            <Fragment key={index}>{paragraph}</Fragment>
-          ))}
-          {detail.description.warning && (
-            <InfoMessage variant="warning">
-              {detail.description.warning}
-            </InfoMessage>
-          )}
-        </View>
-      </Card>
-
-      {detail.info && (
-        <Card style={styles.infoCard} padded={false}>
-          <View style={styles.infoInner}>
-            <Text
-              variant="title"
-              weight="semibold"
-              style={[styles.infoTitle, { color: colors.heading }]}
-            >
-              {detail.info.title}
-            </Text>
-            {detail.info.body}
+        <Card style={styles.descriptionCard} padded={false}>
+          <View style={styles.descriptionInner}>
+            {detail.description.paragraphs.map((paragraph, index) => (
+              <Fragment key={index}>{paragraph}</Fragment>
+            ))}
+            {detail.description.warning && (
+              <InfoMessage variant="warning">
+                {detail.description.warning}
+              </InfoMessage>
+            )}
           </View>
         </Card>
-      )}
 
-      {detail.contacts.length > 0 && (
-        <Card style={styles.contactsCard} padded={false}>
-          {detail.contacts.map((contact, index) => (
-            <View key={index}>
-              {index > 0 && <IndentedDivider indent={20} />}
-              <ListItem
-                title={contact.title}
-                subtitle={contact.value}
-                onPress={() => openContact(contact)}
-                accessibilityRole="button"
-                leadingItem={<Icon icon={contact.icon} size={fontSizes.lg} />}
-                trailingItem={
-                  <Icon
-                    icon={faChevronRight}
-                    color={colors.secondaryText}
-                    size={fontSizes.sm}
-                  />
-                }
-              />
+        {detail.info && (
+          <Card style={styles.infoCard} padded={false}>
+            <View style={styles.infoInner}>
+              <Text
+                variant="heading"
+                style={[styles.infoTitle, { fontSize: fontSizes.sm }]}
+              >
+                {detail.info.title}
+              </Text>
+              {detail.info.body}
             </View>
-          ))}
-        </Card>
-      )}
+          </Card>
+        )}
+
+        {detail.contacts.length > 0 && (
+          <Card style={styles.contactsCard} padded={false}>
+            {detail.contacts.map((contact, index) => (
+              <View key={index}>
+                {index > 0 && <IndentedDivider indent={20} />}
+                <ListItem
+                  title={contact.title}
+                  subtitle={contact.value}
+                  onPress={() => openContact(contact)}
+                  accessibilityRole="button"
+                  leadingItem={<Icon icon={contact.icon} size={fontSizes.lg} />}
+                  trailingItem={
+                    <Icon
+                      icon={faChevronRight}
+                      color={colors.secondaryText}
+                      size={fontSizes.sm}
+                    />
+                  }
+                />
+              </View>
+            ))}
+          </Card>
+        )}
+      </View>
     </ScrollView>
   );
 };
@@ -97,7 +98,13 @@ export const StaticContactScreenContent = ({ detail }: Props) => {
 const createStyles = ({ spacing, shapes }: Theme) =>
   StyleSheet.create({
     scroll: {
-      padding: spacing[4],
+      flexGrow: 1,
+    },
+    content: {
+      alignSelf: 'center',
+      width: '100%',
+      maxWidth: 390,
+      padding: spacing[5],
       gap: spacing[3],
     },
     title: {
@@ -117,8 +124,7 @@ const createStyles = ({ spacing, shapes }: Theme) =>
       borderRadius: shapes.md,
     },
     infoInner: {
-      paddingHorizontal: spacing[3],
-      paddingVertical: spacing[2.5],
+      padding: spacing[3],
       gap: spacing[1],
     },
     infoTitle: {

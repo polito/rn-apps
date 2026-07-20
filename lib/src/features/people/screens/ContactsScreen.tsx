@@ -31,11 +31,14 @@ import {
 interface Props {
   usefulContacts?: UsefulContact[];
   usefulContactsVisibility?: UsefulContactsVisibility;
+  /** Whether to show the preferred/favorite contacts section. */
+  showPreferredContacts?: boolean;
 }
 
 export const ContactsScreen = ({
   usefulContacts,
   usefulContactsVisibility = 'always',
+  showPreferredContacts = true,
 }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
@@ -60,7 +63,7 @@ export const ContactsScreen = ({
   const idleListHeader = (
     <>
       {showUsefulAlways && <UsefulContactsSection contacts={usefulContacts!} />}
-      {peoplePreferred.length > 0 && (
+      {showPreferredContacts && peoplePreferred.length > 0 && (
         <PreferredContactsSection contacts={peoplePreferred} />
       )}
       {showUsefulOnSearchFocus && (

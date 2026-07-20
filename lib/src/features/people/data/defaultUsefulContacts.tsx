@@ -17,15 +17,39 @@ export const defaultUsefulContactsList: UsefulContact[] = [
   { id: SPORTELLO_ANTIVIOLENZA_ID, title: 'Sportello Antiviolenza' },
 ];
 
+const SIZE = 14;
+const LINE_HEIGHT = SIZE * 1.3;
+
 const styles = StyleSheet.create({
+  body: {
+    fontFamily: 'Montserrat-Regular',
+    fontSize: SIZE,
+    lineHeight: LINE_HEIGHT,
+  },
+  medium: {
+    fontFamily: 'Montserrat-Medium',
+    fontSize: SIZE,
+    lineHeight: LINE_HEIGHT,
+  },
+  italic: {
+    fontFamily: 'Montserrat-Italic',
+    fontSize: SIZE,
+    lineHeight: LINE_HEIGHT,
+  },
   bulletRow: {
     flexDirection: 'row',
   },
   bulletMarker: {
     width: 16,
+    fontFamily: 'Montserrat-Regular',
+    fontSize: SIZE,
+    lineHeight: LINE_HEIGHT,
   },
   bulletBody: {
     flex: 1,
+    fontFamily: 'Montserrat-Regular',
+    fontSize: SIZE,
+    lineHeight: LINE_HEIGHT,
   },
   paragraphSpacer: {
     height: 12,
@@ -33,24 +57,26 @@ const styles = StyleSheet.create({
 });
 
 const SportelloDescription = () => (
-  <Text variant="prose">
+  <Text variant="prose" style={styles.body}>
     Lo sportello antiviolenza dell’ateneo “Non sei sola”, gestito da{' '}
-    <Text italic>E.M.M.A. Onlus</Text>, offre uno{' '}
-    <Text weight="medium">spazio sicuro di ascolto</Text> e{' '}
-    <Text weight="medium">consulenza gratuita</Text> per{' '}
-    <Text weight="medium">prevenire e affrontare la violenza di genere</Text>,
-    garantendo sempre la privacy e il consenso della persona.
+    <Text style={styles.italic}>E.M.M.A. Onlus</Text>, offre uno{' '}
+    <Text style={styles.medium}>spazio sicuro di ascolto</Text> e{' '}
+    <Text style={styles.medium}>consulenza gratuita</Text> per{' '}
+    <Text style={styles.medium}>
+      prevenire e affrontare la violenza di genere
+    </Text>
+    , garantendo sempre la privacy e il consenso della persona.
   </Text>
 );
 
 const SportelloInfoBody = () => (
   <View>
-    <Text variant="prose">
-      <Text weight="medium">Non</Text> serve prenotazione!{' '}
+    <Text variant="prose" style={styles.body}>
+      <Text style={styles.medium}>Non</Text> serve prenotazione!{' '}
     </Text>
-    <Text variant="prose">
+    <Text variant="prose" style={styles.body}>
       Lo sportello, ad accesso diretto, è{' '}
-      <Text weight="medium">aperto dalle 14:30 alle 17:30</Text>:
+      <Text style={styles.medium}>aperto dalle 14:30 alle 17:30</Text>:
     </Text>
     <View style={styles.bulletRow}>
       <Text variant="prose" style={styles.bulletMarker}>
@@ -59,7 +85,7 @@ const SportelloInfoBody = () => (
       <Text variant="prose" style={styles.bulletBody}>
         Primi tre mercoledì del mese: Atrio di ingresso del corridoio che
         conduce alla Biblioteca Centrale di Ingegneria,{' '}
-        <Text weight="medium">Corso Duca degli Abruzzi 24</Text>
+        <Text style={styles.medium}>Corso Duca degli Abruzzi 24</Text>
       </Text>
     </View>
     <View style={styles.bulletRow}>
@@ -68,7 +94,7 @@ const SportelloInfoBody = () => (
       </Text>
       <Text variant="prose" style={styles.bulletBody}>
         Ultimo mercoledì del mese: Castello del Valentino,{' '}
-        <Text weight="medium">Viale Mattioli 39</Text>{' '}
+        <Text style={styles.medium}>Viale Mattioli 39</Text>{' '}
       </Text>
     </View>
   </View>
@@ -80,15 +106,15 @@ export const defaultUsefulContactsContent: Record<string, UsefulContactDetail> =
       title: 'Consigliera di fiducia',
       description: {
         paragraphs: [
-          <Text variant="prose">
+          <Text variant="prose" style={styles.body}>
             La Consigliera di fiducia è la consulente esterna di riferimento per
             i casi di violenza, molestie anche di natura sessuale e
-            discriminazioni che si verificano all’interno dell’Ateneo. Fornisce
+            discriminazioni che si verificano all'interno dell'Ateneo. Fornisce
             un servizio gratuito di consulenza e assistenza su prenotazione a
             studenti e studentesse, docenti e PTAB.
           </Text>,
           <View style={styles.paragraphSpacer} />,
-          <Text variant="prose">
+          <Text variant="prose" style={styles.body}>
             La Consigliera garantisce la privacy della persona segnalante e
             agisce esclusivamente con il suo consenso.{' '}
           </Text>,
@@ -97,7 +123,7 @@ export const defaultUsefulContactsContent: Record<string, UsefulContactDetail> =
       info: {
         title: 'Prenotare un colloquio',
         body: (
-          <Text variant="prose">
+          <Text variant="prose" style={styles.body}>
             La prenotazione del colloquio avviene via email. La Consigliera
             risponderà alla richiesta entro due giorni. Il colloquio potrà
             avvenire anche in modalità da remoto.

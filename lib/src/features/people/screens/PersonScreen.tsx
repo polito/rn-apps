@@ -49,11 +49,17 @@ import {
   togglePersonPreferred,
 } from '../utils/peoplePreferences';
 
-type Props = NativeStackScreenProps<PeopleStackParamList, 'Person'>;
+type Props = NativeStackScreenProps<PeopleStackParamList, 'Person'> & {
+  /** Whether to show the preferred/favorite contact toggle. */
+  showPreferredContacts?: boolean;
+};
 
 const profileImageSize = 120;
 
-export const PersonScreen = ({ route }: Props) => {
+export const PersonScreen = ({
+  route,
+  showPreferredContacts = true,
+}: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
@@ -89,7 +95,7 @@ export const PersonScreen = ({ route }: Props) => {
         <Text weight="bold" variant="title" style={styles.title}>
           {fullName}
         </Text>
-        {person && (
+        {person && showPreferredContacts && (
           <IconButton
             icon={isPreferred ? faStar : faStarRegular}
             size={22}
