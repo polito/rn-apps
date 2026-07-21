@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
 
 const SportelloDescription = () => (
   <Text variant="prose" style={styles.body}>
-    Lo sportello antiviolenza dell’ateneo “Non sei sola”, gestito da{' '}
+    Lo sportello antiviolenza dell’Ateneo “Non sei sola”, gestito da{' '}
     <Text style={styles.italic}>E.M.M.A. Onlus</Text>, offre uno{' '}
     <Text style={styles.medium}>spazio sicuro di ascolto</Text> e{' '}
     <Text style={styles.medium}>consulenza gratuita</Text> per{' '}
