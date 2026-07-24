@@ -33,7 +33,7 @@ class AppDelegate: ExpoAppDelegate {
 #if os(iOS) || os(tvOS)
     window = UIWindow(frame: UIScreen.main.bounds)
     factory.startReactNative(
-      withModuleName: "students",
+      withModuleName: "main",
       in: window,
       launchOptions: launchOptions)
 #endif
