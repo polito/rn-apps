@@ -1,4 +1,4 @@
-//const path = require('node:path');          REMOVED  DUE TO EXPO AUTO MANAGEMENT FOR MONOREPO
+const path = require('node:path');
 const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 /**
  * Metro configuration
