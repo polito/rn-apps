@@ -1,17 +1,40 @@
 import { useMemo } from 'react';
 
 import {
+  DefaultConfig as ApiDefaultConfig,
+  Configuration,
   GetBuildingsRequest,
   GetFreeRoomsRequest,
+  GetPlacesRequest,
+  PlacesApi,
   ResponseError,
-} from '@polito/student-api-client';
-import { GetPlacesRequest, PlacesApi } from '@polito/student-api-client';
+} from '@polito/api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { pluckData } from '../../../core/utils/queries';
 
-//TODO: replace with @polito/map-client when available
-export { DefaultConfig } from '@polito/student-api-client';
+/**
+ * Temporary configuration bridge for the shared Places feature.
+ *
+ * Places used to be imported from `@polito/student-api-client`, which made the
+ * shared library depend on the Students-specific client. Until the dedicated
+ * `@polito/map-client` is available, Places uses `@polito/api-client` instead.
+ *
+ * Generated clients have independent `DefaultConfig` singletons. An app whose
+ * main API comes from another package (currently Students) must therefore also
+ * configure this Places singleton with the same base URL, token, and language.
+ *
+ * The generated `Configuration` classes contain package-specific private state
+ * and self-referencing `config` setters, so TypeScript treats instances from
+ * different generated packages as incompatible even though their public
+ * runtime configuration is equivalent. This temporary facade exposes only the
+ * compatible public shape needed by the app configuration code.
+ *
+ * TODO(map-api): Replace this bridge with `@polito/map-client` when available.
+ */
+export const DefaultConfig = ApiDefaultConfig as unknown as {
+  config: Omit<Configuration, 'config'>;
+};
 
 const SITES_QUERY_KEY = 'sites';
 const BUILDINGS_QUERY_KEY = 'buildings';

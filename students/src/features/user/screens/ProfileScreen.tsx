@@ -10,6 +10,7 @@ import {
   faSignOut,
 } from '@fortawesome/free-solid-svg-icons';
 import { useOfflineDisabled } from '@polito/lib/core';
+import { useLogout } from '@polito/lib/features/auth';
 import {
   BottomBarSpacer,
   CtaButton,
@@ -35,11 +36,8 @@ import {
   hasUnreadMessages,
 } from '../../../../src/utils/messages';
 import { CardSwiper } from '../../../core/components/CardSwiper';
-import {
-  useLogout,
-  useMfaChallengeHandler,
-  useSwitchCareer,
-} from '../../../core/queries/authHooks';
+import { useMfaChallengeHandler } from '../../../core/hooks/useMfaChallengeHandler';
+import { useSwitchCareer } from '../../../core/queries/studentAuthHooks';
 import {
   MESSAGES_QUERY_KEY,
   useGetMessages,

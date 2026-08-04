@@ -16,6 +16,7 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { notNullish, useOfflineDisabled } from '@polito/lib/core';
+import { useOpenInAppLink } from '@polito/lib/features/auth';
 import {
   BottomBarSpacer,
   Col,
@@ -36,7 +37,6 @@ import { PersonCourse, PhoneNumber } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
-import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 

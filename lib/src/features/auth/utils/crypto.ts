@@ -1,12 +1,13 @@
 import 'react-native-get-random-values';
 
 import { secp256k1 } from '@noble/curves/secp256k1.js';
-import { AuthenticatorPrivKey } from '@polito/lib/core';
 
 import { BitString, ObjectIdentifier, Sequence } from 'asn1js';
 import base32Encode from 'base32-encode';
 // ts/linter does not complain without Buffer, but it's needed at runtime
 import { Buffer } from 'buffer';
+
+import { AuthenticatorPrivKey } from '../../../core';
 
 const generateSecp256k1PrivKey = () => secp256k1.utils.randomSecretKey();
 

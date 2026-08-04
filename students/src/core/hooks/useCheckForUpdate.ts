@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import { checkVersion } from 'react-native-check-version';
 
-import { isEnvProduction, useSplashContext } from '@polito/lib/core';
+import {
+  GITHUB_URL,
+  isEnvProduction,
+  useSplashContext,
+} from '@polito/lib/core';
+import { useUpdateAppInfo } from '@polito/lib/features/auth';
 
-import { GITHUB_URL } from '../constants.ts';
-import { getFcmToken, useUpdateAppInfo } from '../queries/authHooks.ts';
+import { getFcmToken } from '../utils/firebase';
 
 type UpdateInfo = {
   needsUpdate?: boolean;

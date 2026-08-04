@@ -21,16 +21,22 @@ import {
 import { SQLiteStorage } from 'expo-sqlite/kv-store';
 import SuperJSON from 'superjson';
 
-import { PolitoAppId, getPolitoAppConfig } from '../config';
+import { PolitoAppConfig } from '../config';
 import {
   ApiContext,
   ApiContextProps,
   Credentials,
 } from '../contexts/ApiContext';
+import { AuthApiContext } from '../contexts/AuthApiContext';
 import { useFeedbackContext } from '../contexts/FeedbackContext';
 import { PolitoAppContext } from '../contexts/PolitoAppContext';
 import { usePreferencesContext } from '../contexts/PreferencesContext';
 import { useSplashContext } from '../contexts/SplashContext';
+import {
+  AuthApiClient,
+  AuthIdentityValidator,
+  PushTokenProvider,
+} from '../types/auth';
 import { isEnvProduction } from '../utils/env';
 import { createPolitoAppKeychainServices } from '../utils/keychain';
 
@@ -48,6 +54,9 @@ const queryPersister = experimental_createQueryPersister({
 
 export const clearPersistedQueryCache = () => queryStorage.clear();
 
+// TODO(shared-api): Replace this structural guard with a generated error
+// predicate only if the Students, shared, and Faculty clients expose the same
+// runtime ResponseError contract.
 /** Minimal shape of the api-client `ResponseError`, kept client-agnostic */
 export type ResponseErrorLike = { response: Response & { url?: string } };
 
@@ -64,8 +73,14 @@ const isResponseError = (error: unknown): error is ResponseErrorLike => {
 };
 
 type ApiProviderProps = PropsWithChildren<{
-  /** Identifies the app and derives shared app configuration */
-  appId: PolitoAppId;
+  /** App-owned identity and keychain configuration */
+  config: PolitoAppConfig;
+  /** Creates the generated auth client owned and configured by this app */
+  createAuthClient: () => AuthApiClient;
+  /** Optional app-owned push transport used to register this device */
+  getPushToken?: PushTokenProvider;
+  /** Optional app-owned policy for identities returned by the shared login */
+  validateIdentity?: AuthIdentityValidator;
   /** Configures the app-specific API client(s) with the token and language */
   updateApiConfiguration: (params: {
     token?: string;
@@ -81,11 +96,12 @@ type ApiProviderProps = PropsWithChildren<{
  * `Prefs` is the app-specific preferences shape (e.g. `ApiProvider<AppPreferences>`),
  * mirroring `PreferencesProvider<AppPreferences>`.
  */
-export const ApiProvider = <
-  Prefs extends { username?: string } = { username?: string },
->({
+export const ApiProvider = <Prefs extends object = {}>({
   children,
-  appId,
+  config,
+  createAuthClient,
+  getPushToken,
+  validateIdentity,
   updateApiConfiguration,
 }: ApiProviderProps) => {
   const { t } = useTranslation();
@@ -98,12 +114,16 @@ export const ApiProvider = <
   const [hasResolvedInitialCredentials, setHasResolvedInitialCredentials] =
     useState(false);
   const { setFeedback } = useFeedbackContext();
-  const { language, username } = usePreferencesContext<Prefs>();
+  const { language, username, updatePreference } =
+    usePreferencesContext<Prefs>();
   const splashContext = useSplashContext();
-  const appConfig = useMemo(() => getPolitoAppConfig(appId), [appId]);
+  const authApiContext = useMemo(
+    () => ({ client: createAuthClient(), getPushToken, validateIdentity }),
+    [createAuthClient, getPushToken, validateIdentity],
+  );
   const keychainServices = useMemo(
-    () => createPolitoAppKeychainServices(appConfig.id),
-    [appConfig.id],
+    () => createPolitoAppKeychainServices(config),
+    [config],
   );
   const resetCredentials = useCallback(async () => {
     await keychainServices.credentials.resetCredentials();
@@ -115,6 +135,9 @@ export const ApiProvider = <
       if (isResponseError(error)) {
         if (error.response.status === 401) {
           await resetCredentials();
+          updatePreference('politoAuthnEnrolmentStatus', {});
+          Sentry.setUser(null);
+          updateApiConfiguration({ language });
           setApiContext(c => ({
             ...c,
             isLogged: false,
@@ -140,7 +163,7 @@ export const ApiProvider = <
         }
       }
     },
-    [resetCredentials, t],
+    [language, resetCredentials, t, updateApiConfiguration, updatePreference],
   );
 
   const queryClient = useMemo(() => {
@@ -250,14 +273,16 @@ export const ApiProvider = <
   }, [hasResolvedInitialCredentials, splashContext]);
 
   return (
-    <PolitoAppContext.Provider value={appConfig}>
-      <ApiContext.Provider value={apiContext}>
-        {splashContext.isAppLoaded && (
-          <QueryClientProvider client={queryClient}>
-            {children}
-          </QueryClientProvider>
-        )}
-      </ApiContext.Provider>
+    <PolitoAppContext.Provider value={config}>
+      <AuthApiContext.Provider value={authApiContext}>
+        <ApiContext.Provider value={apiContext}>
+          {splashContext.isAppLoaded && (
+            <QueryClientProvider client={queryClient}>
+              {children}
+            </QueryClientProvider>
+          )}
+        </ApiContext.Provider>
+      </AuthApiContext.Provider>
     </PolitoAppContext.Provider>
   );
 };

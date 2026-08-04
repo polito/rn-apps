@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 import { Linking } from 'react-native';
 
-import { IS_IOS } from '@polito/lib/core';
-import { useTheme } from '@polito/lib/ui';
-
 import * as WebBrowser from 'expo-web-browser';
+
+import { IS_IOS } from '../../../core';
+import { useTheme } from '../../../ui';
 
 export enum WebviewType {
   NORMAL,
@@ -35,7 +35,7 @@ export const useOpenInAppLink = (type: WebviewType = WebviewType.NORMAL) => {
           opts,
         )) as WebBrowser.WebBrowserRedirectResult;
         if (IS_IOS && out.url) {
-          Linking.openURL(out.url);
+          await Linking.openURL(out.url);
         }
       } else {
         await WebBrowser.openBrowserAsync(url, opts);

@@ -7,22 +7,16 @@ import {
   Route,
 } from '@react-navigation/native';
 
-import { PolitoAppId, getPolitoAppConfig } from '../config';
+import { PolitoAppConfig, getPolitoDeepLinkPrefix } from '../config';
 
 export const createPolitoLinking = <T extends ParamListBase = ParamListBase>(
-  appId: PolitoAppId,
-  options?: {
-    ssoRouteName?: string;
-  },
+  appConfig: PolitoAppConfig,
 ): LinkingOptions<T> => {
-  const appConfig = getPolitoAppConfig(appId);
-  const ssoRouteName = options?.ssoRouteName ?? appConfig.ssoRouteName;
-
   return {
-    prefixes: [appConfig.deepLinkPrefix],
+    prefixes: [getPolitoDeepLinkPrefix(appConfig.id)],
     config: {
       screens: {
-        [ssoRouteName]: {
+        SSO: {
           path: '/login',
           parse: {
             uid: (uid: string) => uid,

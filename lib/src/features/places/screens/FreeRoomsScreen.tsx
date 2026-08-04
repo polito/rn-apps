@@ -16,7 +16,7 @@ import {
   faMapPin,
 } from '@fortawesome/free-solid-svg-icons';
 import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
-import { PlaceOverview } from '@polito/student-api-client';
+import { PlaceOverview } from '@polito/api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 

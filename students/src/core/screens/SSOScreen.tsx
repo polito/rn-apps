@@ -1,10 +1,10 @@
+import { useAuth } from '@polito/lib/features/auth';
 import { SSOScreen as SharedSSOScreen } from '@polito/lib/ui';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { GuestStackParamList } from '~/core/components/GuestNavigator.tsx';
 import { PolitoLogo } from '~/core/components/Logo.tsx';
-import { useAuth } from '~/core/hooks/useAuth.ts';
 
 type Props = NativeStackScreenProps<GuestStackParamList, 'SSO'>;
 

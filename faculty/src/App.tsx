@@ -5,18 +5,22 @@ import { LogBox } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { APP_VERSION, BUILD_NO } from '@env';
+import { AuthApi } from '@polito/api-client';
 import {
+  ApiProvider,
+  PolitoAppConfig,
   PreferencesProvider,
   Sentry,
   createPolitoLinking,
+  extendSuperJSON,
   initSentry,
   isEnvProduction,
 } from '@polito/lib/core';
+import { mfaScreenTranslations } from '@polito/lib/features/auth';
 import { FeedbackProvider, SplashProvider, UiProvider } from '@polito/lib/ui';
 import Mapbox from '@rnmapbox/maps';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// <-- import React Query
+import { updateGlobalApiConfiguration } from '~/config/api';
 import { RootNavigator } from '~/core/components/RootNavigator';
 import { CoursesProvider } from '~/core/contexts/CoursesContext';
 import { RootParamList } from '~/core/types/navigation';
@@ -35,15 +39,17 @@ LogBox.ignoreLogs([
   'VirtualizedLists should never be nested inside plain ScrollViews',
 ]);
 
+extendSuperJSON();
+
 i18n.use(initReactI18next).init({
   compatibilityJSON: 'v3',
   fallbackLng: 'en',
   resources: {
     en: {
-      translation: en,
+      translation: { ...en, mfaScreen: mfaScreenTranslations.en },
     },
     it: {
-      translation: it,
+      translation: { ...it, mfaScreen: mfaScreenTranslations.it },
     },
   },
 });
@@ -57,15 +63,19 @@ initSentry({
   environment: process.env.NODE_ENV || 'development',
 });
 
-// Crea l'istanza di QueryClient
-const queryClient = new QueryClient();
-
 Mapbox.setAccessToken(process.env.MAPBOX_TOKEN! || 'no_token');
+
+const appConfig = {
+  id: 'faculty',
+  keychainService: 'it.polito.faculty-app',
+} satisfies PolitoAppConfig;
+
+// TODO(shared-api): Create this login/MFA client from the shared API package
+// TODO(shared-api): add a validartion of identity
+const createAuthClient = () => new AuthApi();
 
 const App = () => {
   return (
-    // Avvolgi tutto dentro QueryClientProvider e passa il client
-
     <Sentry.TouchEventBoundary>
       <SafeAreaProvider>
         <SplashProvider>
@@ -76,19 +86,21 @@ const App = () => {
             initialPreferences={initialAppPreferences}
           >
             <UiProvider<RootParamList>
-              linking={createPolitoLinking<any>('faculty', {
-                ssoRouteName: 'Login',
-              })}
+              linking={createPolitoLinking<any>(appConfig)}
             >
-              <QueryClientProvider client={queryClient}>
-                <CoursesProvider>
-                  <FeedbackProvider>
+              <FeedbackProvider>
+                <ApiProvider<AppPreferences>
+                  config={appConfig}
+                  createAuthClient={createAuthClient}
+                  updateApiConfiguration={updateGlobalApiConfiguration}
+                >
+                  <CoursesProvider>
                     <GestureHandlerRootView style={{ flex: 1 }}>
                       <RootNavigator />
                     </GestureHandlerRootView>
-                  </FeedbackProvider>
-                </CoursesProvider>
-              </QueryClientProvider>
+                  </CoursesProvider>
+                </ApiProvider>
+              </FeedbackProvider>
             </UiProvider>
           </PreferencesProvider>
         </SplashProvider>
