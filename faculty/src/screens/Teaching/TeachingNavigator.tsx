@@ -29,6 +29,7 @@ import { ExamScreen2 } from '../ExamScreen2';
 import { ExamScreen3 } from '../ExamScreen3';
 import { ExamsScreen } from '../ExamsScreen';
 import { GradesScreen } from '../GradesScreen';
+import { AssignmentScreen } from './AssignmentScreen';
 import { ContactScreen2 } from './ContactScreen2';
 import { CourseGuideScreen } from './CourseGuideScreen';
 import { CourseSharedScreens } from './CourseSharedScreens';
@@ -79,6 +80,12 @@ export type TeachingStackParamList = {
   LectureForm: undefined;
   StudentsForm: undefined;
   Contatto: undefined;
+  Assignment: {
+    assignmentId: number;
+    title: string | React.JSX.Element;
+    date: string;
+    student: string;
+  };
 };
 
 export const CustomBackButton = () => {
@@ -233,6 +240,8 @@ export const TeachingNavigator = () => {
       />
 
       <Stack.Screen name="StudentContact" component={StudentContact} />
+
+      <Stack.Screen name="Assignment" component={AssignmentScreen} />
 
       <Stack.Screen
         name="Staff"
