@@ -120,9 +120,9 @@ export const useLogin = () => {
 };
 
 export const useLogout = () => {
-  const { client: authClient } = useAuthApiContext();
+  const { client: authClient, onLogoutSuccess } = useAuthApiContext();
   const queryClient = useQueryClient();
-  const { refreshContext } = useApiContext();
+  const { refreshContext, username } = useApiContext();
   const { updatePreference } = usePreferencesContext();
   const {
     credentials: credentialsKeychain,
@@ -138,6 +138,9 @@ export const useLogout = () => {
         console.error('Error clearing query storage:', e);
       });
       queryClient.removeQueries();
+      if (username) {
+        await onLogoutSuccess?.(username);
+      }
       await credentialsKeychain.resetCredentials();
       await mfaPrivateKeyKeychain.resetPrivateKeyMFA();
     },

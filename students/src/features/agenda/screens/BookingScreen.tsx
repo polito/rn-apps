@@ -51,7 +51,7 @@ import {
   useGetBookings,
   useUpdateBooking,
 } from '../../../core/queries/bookingHooks';
-import { useGetStudent } from '../../../core/queries/studentHooks';
+import { useGetProfile } from '../../../core/queries/studentHooks';
 import { BookingDateTime } from '../../bookings/components/BookingDateTime';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
@@ -73,7 +73,7 @@ export const BookingScreen = ({ navigation, route }: Props) => {
   const bookingsQuery = useGetBookings();
   const deleteBookingMutation = useDeleteBooking(id);
   const updateBookingMutation = useUpdateBooking();
-  const studentQuery = useGetStudent();
+  const profileQuery = useGetProfile();
   const confirmCancel = useConfirmationDialog({
     title: t('bookingScreen.cancelBooking'),
     message: t('bookingScreen.cancelBookingText'),
@@ -270,9 +270,9 @@ export const BookingScreen = ({ navigation, route }: Props) => {
               accessible={false}
             />
             <Card style={styles.barCodeCard} spaced>
-              {studentQuery.data && (
+              {profileQuery.data && (
                 <Barcode
-                  value={studentQuery.data.username}
+                  value={profileQuery.data.username}
                   format="CODE128"
                   height={85}
                   lineColor={palettes.primary[800]}

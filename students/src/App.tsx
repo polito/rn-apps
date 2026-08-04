@@ -35,6 +35,7 @@ import {
   initialAppPreferences,
 } from './core/types/preferences';
 import { getFcmToken } from './core/utils/firebase';
+import { deleteProfilePictureFile } from './utils/profilePicture';
 
 extendSuperJSON();
 
@@ -101,6 +102,7 @@ const App = () => {
                 createAuthClient={createAuthClient}
                 getPushToken={getPushToken}
                 validateIdentity={validateStudentIdentity}
+                onLogoutSuccess={deleteProfilePictureFile}
                 updateApiConfiguration={updateGlobalApiConfiguration}
               >
                 <DialogProvider />

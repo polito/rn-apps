@@ -36,7 +36,7 @@ PODS:
     - Yoga
   - ExpoAsset (12.0.12):
     - ExpoModulesCore
-  - ExpoFileSystem (19.0.21):
+  - ExpoFileSystem (19.0.23):
     - ExpoModulesCore
   - ExpoImage (3.0.11):
     - ExpoModulesCore
@@ -3201,7 +3201,7 @@ DEPENDENCIES:
   - EXConstants (from `../../node_modules/expo-constants/ios`)
   - Expo (from `../../node_modules/expo`)
   - ExpoAsset (from `../../node_modules/expo-asset/ios`)
-  - ExpoFileSystem (from `../../node_modules/expo/node_modules/expo-file-system/ios`)
+  - ExpoFileSystem (from `../../node_modules/expo-file-system/ios`)
   - ExpoImage (from `../../node_modules/expo-image/ios`)
   - ExpoModulesCore (from `../../node_modules/expo-modules-core`)
   - ExpoSQLite (from `../../node_modules/expo-sqlite/ios`)
@@ -3330,7 +3330,7 @@ EXTERNAL SOURCES:
   ExpoAsset:
     :path: "../../node_modules/expo-asset/ios"
   ExpoFileSystem:
-    :path: "../../node_modules/expo/node_modules/expo-file-system/ios"
+    :path: "../../node_modules/expo-file-system/ios"
   ExpoImage:
     :path: "../../node_modules/expo-image/ios"
   ExpoModulesCore:
@@ -3533,7 +3533,7 @@ SPEC CHECKSUMS:
   EXConstants: fce59a631a06c4151602843667f7cfe35f81e271
   Expo: ffcd2fb31776b663b84501a2568cab7dd7c0f9cb
   ExpoAsset: f867e55ceb428aab99e1e8c082b5aee7c159ea18
-  ExpoFileSystem: 858a44267a3e6e9057e0888ad7c7cfbf55d52063
+  ExpoFileSystem: a8e7fb1e958471764fb48d281cf9fa81a9e4d77c
   ExpoImage: 686f972bff29525733aa13357f6691dc90aa03d8
   ExpoModulesCore: d86dab8a6c8f1184f9b0b0503ace93919882aa15
   ExpoSQLite: 7eedbe476870a5f18d6b89c817c4ac6f299830ad

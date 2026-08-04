@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, View } from 'react-native';
 
@@ -17,11 +18,15 @@ import { useGiveTicketReplyFeedback } from '../../../core/queries/ticketHooks';
 interface VirtualOperatorFeedbackBarProps {
   ticketId: number;
   replyId: number;
+  onAccepted?: () => void;
+  onRejected?: () => void;
 }
 
 export const VirtualOperatorFeedbackBar = ({
   ticketId,
   replyId,
+  onAccepted,
+  onRejected,
 }: VirtualOperatorFeedbackBarProps) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
@@ -31,16 +36,27 @@ export const VirtualOperatorFeedbackBar = ({
     replyId,
   );
 
-  const handleFeedback = (positive: boolean) => {
-    giveFeedback(positive).catch(() =>
-      Alert.alert(t('common.error'), t('ticketScreen.sendError')),
-    );
-  };
+  const handleFeedback = useCallback(
+    (positive: boolean) => {
+      giveFeedback(positive)
+        .then(() => {
+          if (positive) {
+            onAccepted?.();
+          } else {
+            onRejected?.();
+          }
+        })
+        .catch(() =>
+          Alert.alert(t('common.error'), t('ticketScreen.sendError')),
+        );
+    },
+    [giveFeedback, onAccepted, onRejected, t],
+  );
 
   return (
     <View style={styles.container}>
       <Col gap={1}>
-        <Text variant="title" style={styles.title}>
+        <Text variant="heading" style={styles.title}>
           {t('ticketScreen.feedbackTitle')}
         </Text>
         <Text variant="secondaryText" style={styles.description}>
@@ -48,7 +64,7 @@ export const VirtualOperatorFeedbackBar = ({
         </Text>
       </Col>
       <Row align="center" style={styles.buttonsRow}>
-        <Text variant="title" style={styles.question}>
+        <Text variant="heading" style={styles.question}>
           {t('ticketScreen.feedbackQuestion')}
         </Text>
         <Row gap={3} style={styles.buttons}>

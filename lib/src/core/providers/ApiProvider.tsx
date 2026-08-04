@@ -35,6 +35,7 @@ import { useSplashContext } from '../contexts/SplashContext';
 import {
   AuthApiClient,
   AuthIdentityValidator,
+  AuthLogoutSuccessHandler,
   PushTokenProvider,
 } from '../types/auth';
 import { isEnvProduction } from '../utils/env';
@@ -81,6 +82,8 @@ type ApiProviderProps = PropsWithChildren<{
   getPushToken?: PushTokenProvider;
   /** Optional app-owned policy for identities returned by the shared login */
   validateIdentity?: AuthIdentityValidator;
+  /** Optional app-owned cleanup after a successful logout */
+  onLogoutSuccess?: AuthLogoutSuccessHandler;
   /** Configures the app-specific API client(s) with the token and language */
   updateApiConfiguration: (params: {
     token?: string;
@@ -102,6 +105,7 @@ export const ApiProvider = <Prefs extends object = {}>({
   createAuthClient,
   getPushToken,
   validateIdentity,
+  onLogoutSuccess,
   updateApiConfiguration,
 }: ApiProviderProps) => {
   const { t } = useTranslation();
@@ -118,8 +122,13 @@ export const ApiProvider = <Prefs extends object = {}>({
     usePreferencesContext<Prefs>();
   const splashContext = useSplashContext();
   const authApiContext = useMemo(
-    () => ({ client: createAuthClient(), getPushToken, validateIdentity }),
-    [createAuthClient, getPushToken, validateIdentity],
+    () => ({
+      client: createAuthClient(),
+      getPushToken,
+      validateIdentity,
+      onLogoutSuccess,
+    }),
+    [createAuthClient, getPushToken, onLogoutSuccess, validateIdentity],
   );
   const keychainServices = useMemo(
     () => createPolitoAppKeychainServices(config),

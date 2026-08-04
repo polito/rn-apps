@@ -29,8 +29,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { UnreadMessagesModal } from '~/features/user/screens/UnreadMessagesModal';
 
-import { Image } from 'expo-image';
-
 import { filterUnread } from '../../../src/utils/messages';
 import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigator';
 import { ServicesNavigator } from '../../features/services/components/ServicesNavigator';
@@ -70,12 +68,6 @@ export const RootNavigator = ({
   const { isOnboardingVisible, closeOnboarding } =
     useModalManager(versionModalIsOpen);
   const profileMessages = useGetMessages();
-
-  useEffect(() => {
-    if (student?.smartCardPicture) {
-      Image.prefetch(student.smartCardPicture).catch(() => {});
-    }
-  }, [student]);
 
   useInitFirebaseMessaging();
 

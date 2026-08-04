@@ -116,6 +116,10 @@ export interface AuthApiClient {
 
 export type PushTokenProvider = () => Promise<string | undefined>;
 
+export type AuthLogoutSuccessHandler = (
+  username: string,
+) => void | Promise<void>;
+
 export type AuthIdentityValidator = (
   identity: AuthIdentity,
 ) => void | Promise<void>;

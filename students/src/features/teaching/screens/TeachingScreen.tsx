@@ -23,7 +23,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { ExamStatusEnum } from '@polito/student-api-client';
+import { type Event, ExamStatusEnum } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';
@@ -32,6 +32,7 @@ import { DateTime } from 'luxon';
 
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useGetCourses } from '../../../core/queries/courseHooks';
+import { useGetEventAdmissions } from '../../../core/queries/eventAdmissionHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { useGetStudent } from '../../../core/queries/studentHooks';
 import { useGetSurveyCategories } from '../../../core/queries/surveysHooks';
@@ -39,6 +40,7 @@ import { formatFinalGrade, formatThirtiethsGrade } from '../../../utils/grades';
 import { CourseListItem } from '../../courses/components/CourseListItem';
 import { isCourseDetailed } from '../../courses/utils/courses';
 import { ExamListItem } from '../components/ExamListItem';
+import { GraduationSessionSection } from '../components/GraduationSessionSection';
 import { ProgressChart } from '../components/ProgressChart';
 import { SurveyTypesSection } from '../components/SurveyTypesSection';
 import { TeachingStackParamList } from '../components/TeachingNavigator';
@@ -57,7 +59,24 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
+  const eventAdmissionsQuery = useGetEventAdmissions();
   const transcriptBadge = null;
+
+  const eventAdmissionsByContext = useMemo(() => {
+    if (!eventAdmissionsQuery.data?.length) {
+      return [];
+    }
+
+    const byContext = new Map<string, Event[]>();
+
+    eventAdmissionsQuery.data.forEach(event => {
+      const events = byContext.get(event.contextName) ?? [];
+      events.push(event);
+      byContext.set(event.contextName, events);
+    });
+
+    return [...byContext.entries()];
+  }, [eventAdmissionsQuery.data]);
 
   const hasValidModules = (course: any) => {
     if (!course.modules || course.modules.length === 0) return true;
@@ -115,12 +134,20 @@ export const TeachingScreen = ({ navigation }: Props) => {
             examsQuery,
             studentQuery,
             surveyCategoriesQuery,
+            eventAdmissionsQuery,
           ]}
           manual
         />
       }
     >
       <View style={styles.container}>
+        {eventAdmissionsByContext.map(([contextName, events]) => (
+          <GraduationSessionSection
+            key={contextName}
+            contextName={contextName}
+            events={events}
+          />
+        ))}
         {surveyCategoriesQuery.data?.length ? (
           <SurveyTypesSection types={surveyCategoriesQuery.data} />
         ) : undefined}
@@ -252,9 +279,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                         title={t('transcriptMetricsScreen.averageLabel')}
                         value={formatFinalGrade(
                           !hideGrades
-                            ? studentQuery.data?.usePurgedAverageFinalGrade
-                              ? studentQuery.data?.estimatedFinalGradePurged
-                              : studentQuery.data?.estimatedFinalGrade
+                            ? studentQuery.data?.estimatedFinalGrade
                             : null,
                         )}
                         color={colors.title}
