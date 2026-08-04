@@ -4,6 +4,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { APP_VERSION, BUILD_NO } from '@env';
 import {
   ApiProvider,
+  AuthIdentityValidator,
+  PolitoAppConfig,
   PreferencesProvider,
   Sentry,
   createPolitoLinking,
@@ -11,7 +13,12 @@ import {
   initSentry,
   isEnvProduction,
 } from '@polito/lib/core';
+import {
+  UnsupportedIdentityTypeError,
+  mfaScreenTranslations,
+} from '@polito/lib/features/auth';
 import { FeedbackProvider, SplashProvider, UiProvider } from '@polito/lib/ui';
+import { AuthApi } from '@polito/student-api-client';
 import Mapbox from '@rnmapbox/maps';
 
 import i18n from 'i18next';
@@ -27,6 +34,7 @@ import {
   objectPreferenceKeys as appObjectPreferenceKeys,
   initialAppPreferences,
 } from './core/types/preferences';
+import { getFcmToken } from './core/utils/firebase';
 
 extendSuperJSON();
 
@@ -37,10 +45,10 @@ i18n.use(initReactI18next).init({
   fallbackLng: 'en',
   resources: {
     en: {
-      translation: en,
+      translation: { ...en, mfaScreen: mfaScreenTranslations.en },
     },
     it: {
-      translation: it,
+      translation: { ...it, mfaScreen: mfaScreenTranslations.it },
     },
   },
 });
@@ -58,6 +66,22 @@ extendSuperJSON();
 
 Mapbox.setAccessToken(process.env.MAPBOX_TOKEN || 'no_token');
 
+const appConfig = {
+  id: 'students',
+  keychainService: 'it.polito.students-app',
+} satisfies PolitoAppConfig;
+
+// TODO(shared-api): Create this login/MFA client from the shared API package.
+const createAuthClient = () => new AuthApi();
+const getPushToken = () => getFcmToken();
+const validateStudentIdentity: AuthIdentityValidator = identity => {
+  if (identity.type !== 'student') {
+    throw new UnsupportedIdentityTypeError(
+      `User type ${identity.type} is not supported by the students app`,
+    );
+  }
+};
+
 const App = () => {
   return (
     <SafeAreaProvider>
@@ -69,11 +93,14 @@ const App = () => {
           initialPreferences={initialAppPreferences}
         >
           <UiProvider<RootParamList>
-            linking={createPolitoLinking<RootParamList>('students')}
+            linking={createPolitoLinking<RootParamList>(appConfig)}
           >
             <FeedbackProvider>
               <ApiProvider<AppPreferences>
-                appId="students"
+                config={appConfig}
+                createAuthClient={createAuthClient}
+                getPushToken={getPushToken}
+                validateIdentity={validateStudentIdentity}
                 updateApiConfiguration={updateGlobalApiConfiguration}
               >
                 <DialogProvider />

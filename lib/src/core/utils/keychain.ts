@@ -8,7 +8,7 @@ import Keychain, {
   hasGenericPassword,
 } from 'react-native-keychain';
 
-import { PolitoAppId, getPolitoAppConfig } from '../config';
+import { PolitoAppConfig, getPolitoMfaKeychainService } from '../config';
 import { usePolitoAppConfig } from '../contexts/PolitoAppContext';
 
 const NO_TOKEN = '__EMPTY__';
@@ -158,15 +158,13 @@ export type MfaPrivateKeyKeychainService = ReturnType<
   typeof createMfaPrivateKeyKeychainService
 >;
 
-export const createPolitoAppKeychainServices = (appId: PolitoAppId) => {
-  const appConfig = getPolitoAppConfig(appId);
-
+export const createPolitoAppKeychainServices = (appConfig: PolitoAppConfig) => {
   return {
     credentials: createCredentialsKeychainService({
       service: appConfig.keychainService,
     }),
     mfaPrivateKey: createMfaPrivateKeyKeychainService({
-      service: appConfig.mfaKeychainService,
+      service: getPolitoMfaKeychainService(appConfig.keychainService),
     }),
   };
 };
@@ -176,9 +174,9 @@ export type PolitoAppKeychainServices = ReturnType<
 >;
 
 export const usePolitoAppKeychainServices = () => {
-  const { id } = usePolitoAppConfig();
+  const appConfig = usePolitoAppConfig();
 
-  return useMemo(() => createPolitoAppKeychainServices(id), [id]);
+  return useMemo(() => createPolitoAppKeychainServices(appConfig), [appConfig]);
 };
 
 export const usePolitoAppCredentialsKeychain = () =>

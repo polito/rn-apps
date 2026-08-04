@@ -3,9 +3,9 @@ import { Linking } from 'react-native';
 
 import * as WebBrowser from 'expo-web-browser';
 
-import { useTheme } from '../../ui/hooks/useTheme';
+<import { useTheme } from '../../ui/hooks/useTheme';
 import { IS_IOS } from '../constants';
-
+=
 export enum WebviewType {
   NORMAL,
   LOGIN,
@@ -35,7 +35,7 @@ export const useOpenInAppLink = (type: WebviewType = WebviewType.NORMAL) => {
           opts,
         )) as WebBrowser.WebBrowserRedirectResult;
         if (IS_IOS && out.url) {
-          Linking.openURL(out.url);
+          await Linking.openURL(out.url);
         }
       } else {
         await WebBrowser.openBrowserAsync(url, opts);

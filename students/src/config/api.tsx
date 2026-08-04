@@ -39,6 +39,7 @@ export const updateGlobalApiConfiguration = ({
     configurationParameters.accessToken = token;
   }
 
+  // TODO(shared-api): Configure the future shared auth client's DefaultConfig here alongside the Students-specific client.
   DefaultConfig.config = new Configuration(configurationParameters);
   PlacesApiConfig.config = new Configuration(configurationParameters);
 };

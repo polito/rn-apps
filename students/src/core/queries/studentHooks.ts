@@ -25,8 +25,8 @@ import { DateTime } from 'luxon';
 
 import { filterUnread } from '../../utils/messages';
 import { getProfilePictureFile } from '../../utils/profilePicture';
+import { useMfaChallengeHandler } from '../hooks/useMfaChallengeHandler';
 import { UpdateNotificationPreferencesRequestKey } from '../types/notificationTypes';
-import { useMfaChallengeHandler } from './authHooks.ts';
 import { COURSE_QUERY_PREFIX } from './courseHooks';
 
 export const STUDENT_QUERY_KEY = ['student'];
@@ -295,7 +295,7 @@ export const useUpdateDevicePreferences = () => {
   });
 };
 
-export const useGetMessages = () => {
+export const useGetMessages = (enabled = true) => {
   const queryClient = useQueryClient();
   const studentClient = useStudentClient();
 
@@ -303,6 +303,7 @@ export const useGetMessages = () => {
 
   return useQuery({
     queryKey: MESSAGES_QUERY_KEY,
+    enabled,
     queryFn: () =>
       studentClient
         .getMessages()

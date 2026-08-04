@@ -27,6 +27,7 @@ import {
   usePolitoAppMfaPrivateKeyKeychain,
   usePreferencesContext,
 } from '@polito/lib/core';
+import { useCheckMfa } from '@polito/lib/features/auth';
 import {
   Badge,
   BottomBarSpacer,
@@ -49,7 +50,6 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { useDownloadsContext } from '~/core/contexts/DownloadsContext';
 import { getFileDatabase } from '~/core/database/FileDatabase';
-import { useCheckMfa } from '~/core/queries/authHooks';
 import { AppPreferences } from '~/core/types/preferences';
 
 import i18next from 'i18next';

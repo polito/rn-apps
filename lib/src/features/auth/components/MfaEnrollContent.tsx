@@ -7,40 +7,41 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 
+import { useQueryClient } from '@tanstack/react-query';
+
+import useLatestCallback from 'use-latest-callback';
+
 import {
   ApiError,
-  resetNavigationStatusTo,
   useFeedbackContext,
   usePolitoAppMfaPrivateKeyKeychain,
   usePreferencesContext,
-} from '@polito/lib/core';
+} from '../../../core';
 import {
   CtaButton,
   OverviewList,
   TextField,
   type Theme,
+  useSafeBottomBarHeight,
   useStylesheet,
-} from '@polito/lib/ui';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useQueryClient } from '@tanstack/react-query';
-
-import { RTFTrans } from '~/core/components/RTFTrans';
-import { AppPreferences } from '~/core/types/preferences';
-
+} from '../../../ui';
 import {
   MFA_STATUS_QUERY_KEY,
   useMfaEnrol,
   useSSOLoginInitiator,
-} from '../../../core/queries/authHooks';
-import { generateSecp256k1KeyPair } from '../../../utils/crypto';
-import { UserStackParamList } from './UserNavigator';
+} from '../queries/authHooks';
+import { generateSecp256k1KeyPair } from '../utils/crypto';
+import { RTFTrans } from './RTFTrans';
 
-type Props = {
-  navigation: NativeStackNavigationProp<UserStackParamList>;
+export type MfaEnrollContentProps = {
+  onClose: () => void;
+  onSettingsEnrollmentComplete: () => void;
 };
 
-export const MfaEnrollScreen = ({ navigation }: Props) => {
+export const MfaEnrollContent = ({
+  onClose,
+  onSettingsEnrollmentComplete,
+}: MfaEnrollContentProps) => {
   const { t } = useTranslation();
   const { mutateAsync: enrolMfa } = useMfaEnrol();
   const { checkCanSavePrivateKeyMFA, savePrivateKeyMFA } =
@@ -51,12 +52,16 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
   const [step, setStep] = useState(0);
   const { publicKey, privateKey } = generateSecp256k1KeyPair();
   const { politoAuthnEnrolmentStatus, updatePreference } =
-    usePreferencesContext<AppPreferences>();
+    usePreferencesContext();
   const styles = useStylesheet(createStyles);
   const deviceId = DeviceInfo.getDeviceNameSync();
   const [deviceName, setDeviceName] = useState(deviceId);
   const [isLoading, setIsLoading] = useState(false);
-  const bottomBarHeight = useBottomTabBarHeight();
+  const handleClose = useLatestCallback(onClose);
+  const handleSettingsEnrollmentComplete = useLatestCallback(
+    onSettingsEnrollmentComplete,
+  );
+  const bottomBarHeight = useSafeBottomBarHeight();
   const keyboard = useAnimatedKeyboard();
   const animatedBottomPadding = useAnimatedStyle(() => ({
     paddingBottom: Math.max(keyboard.height.value, bottomBarHeight),
@@ -72,8 +77,8 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
       ...politoAuthnEnrolmentStatus,
       hideInitialPrompt: true,
     });
-    navigation.goBack();
-  }, [navigation, politoAuthnEnrolmentStatus, updatePreference]);
+    handleClose();
+  }, [handleClose, politoAuthnEnrolmentStatus, updatePreference]);
 
   const executeEnrollment = useCallback(async () => {
     const dtoMfa = {
@@ -96,11 +101,7 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
         isPersistent: false,
       });
       if (politoAuthnEnrolmentStatus?.inSettings === true) {
-        resetNavigationStatusTo(navigation, 'ProfileTab', [
-          { name: 'Profile', params: { firstRequest: false } },
-          { name: 'Settings' },
-          { name: 'MfaSettings' },
-        ]);
+        handleSettingsEnrollmentComplete();
         updatePreference('politoAuthnEnrolmentStatus', {
           inSettings: false,
           insertedDeviceName: undefined,
@@ -133,7 +134,7 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
       }
     }
     setIsLoading(false);
-    navigation.goBack();
+    handleClose();
   }, [
     deviceName,
     deviceId,
@@ -145,8 +146,9 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
     setFeedback,
     politoAuthnEnrolmentStatus,
     updatePreference,
-    navigation,
     handleSSO,
+    handleClose,
+    handleSettingsEnrollmentComplete,
     savePrivateKeyMFA,
   ]);
 
@@ -154,7 +156,7 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
     if (step === 0) {
       if (!(await checkCanSavePrivateKeyMFA())) {
         Alert.alert(t('common.error'), t('mfaScreen.enroll.unsupported'));
-        navigation.goBack();
+        handleClose();
         return;
       }
       setStep(s => s + 1);
@@ -162,7 +164,7 @@ export const MfaEnrollScreen = ({ navigation }: Props) => {
     }
 
     await executeEnrollment();
-  }, [step, t, navigation, executeEnrollment, checkCanSavePrivateKeyMFA]);
+  }, [step, t, handleClose, executeEnrollment, checkCanSavePrivateKeyMFA]);
 
   useEffect(() => {
     if (isAutoEnrollment && step === 0) {

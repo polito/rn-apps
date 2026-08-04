@@ -15,7 +15,7 @@ import {
   faCompass,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext, useSplashContext } from '@polito/lib/core';
+import { usePreferencesContext } from '@polito/lib/core';
 import {
   PlacesNavigator,
   PlacesStackParamList,
@@ -67,13 +67,6 @@ export const RootNavigator = () => {
   const { updatePreference } = usePreferencesContext<AppPreferences>();
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
-  const splashContext = useSplashContext();
-
-  // TODO: move this step to ApiProvider when it will be created
-  useEffect(() => {
-    splashContext.setIsAppLoaded(true);
-  }, [splashContext]);
-
   useEffect(() => {
     //TODO: check if user is logged (see reference in RootNavigator of students app)
     if (!campus && sites?.data?.length) {

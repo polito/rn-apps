@@ -10,7 +10,8 @@ import {
   faMessage,
   faPersonThroughWindow,
 } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled } from '@polito/lib/core';
+import { useApiContext, useOfflineDisabled } from '@polito/lib/core';
+import { useLogout } from '@polito/lib/features/auth';
 import {
   BottomBarSpacer,
   Icon,
@@ -34,13 +35,11 @@ import {
   filterUnread,
   hasUnreadMessages,
 } from '../../../../src/utils/messages';
+import { deleteProfilePictureFile } from '../../../utils/profilePicture';
 import { CardSwiper } from '../../../core/components/CardSwiper';
-import {
-  useLogout,
-  useMfaChallengeHandler,
-  useSwitchCareer,
-} from '../../../core/queries/authHooks';
+import { useMfaChallengeHandler } from '../../../core/hooks/useMfaChallengeHandler';
 import { useEscGet } from '../../../core/queries/escHooks';
+import { useSwitchCareer } from '../../../core/queries/studentAuthHooks';
 import {
   MESSAGES_QUERY_KEY,
   useGetMessages,
@@ -135,7 +134,16 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
   const { firstRequest } = route.params;
   const { fontSizes, palettes } = useTheme();
   const [isQrVisible, setIsQrVisible] = useState(false);
-  const { mutate: handleLogout } = useLogout();
+  const { username } = useApiContext();
+  const { mutate: logout } = useLogout();
+  const handleLogout = () =>
+    logout(undefined, {
+      onSuccess: () => {
+        if (username) {
+          deleteProfilePictureFile(username);
+        }
+      },
+    });
   const profileQuery = useGetProfile();
   const profile = profileQuery.data;
   const studentQuery = useGetStudent();
