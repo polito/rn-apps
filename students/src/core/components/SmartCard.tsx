@@ -55,6 +55,9 @@ export const SmartCard = ({
   const [, statusColor] = useCareerStatusColors(
     status ?? StudentCareerStatusEnum.Active,
   );
+  const statusLabel = t(
+    `profileScreen.careerStatusEnum.${status ?? StudentCareerStatusEnum.Active}`,
+  );
 
   const s = width / CARD_WIDTH;
   const scaled = (value: number) => value * s;
@@ -62,9 +65,15 @@ export const SmartCard = ({
   return (
     <View
       accessible={true}
-      accessibilityLabel={`${t('profileScreen.smartCard')}. ${lastName} ${firstName}. ${t(
-        'profileScreen.studentId',
-      )} ${username}`}
+      accessibilityLabel={[
+        t('profileScreen.smartCard'),
+        `${lastName} ${firstName}`,
+        `${t('profileScreen.studentId')} ${username}`,
+        degreeName,
+        `${t('profileScreen.careerStatus')} ${statusLabel}`,
+      ]
+        .filter(Boolean)
+        .join('. ')}
       style={[
         styles.card,
         {
@@ -211,6 +220,8 @@ export const SmartCard = ({
 
       <Pressable
         accessibilityRole="button"
+        accessibilityLabel={t('profileScreen.showQr')}
+        accessibilityHint={t('common.tapToNavigate')}
         onPress={onShowQr}
         style={[
           styles.qrButton,

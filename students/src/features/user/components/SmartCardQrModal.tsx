@@ -37,6 +37,9 @@ export const SmartCardQrModal = ({
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const qrCodeQuery = useGetSmartCardQrCode(visible);
+  const identityLabel = [lastName.toUpperCase(), firstName, degreeName]
+    .filter(Boolean)
+    .join(', ');
 
   return (
     <QrCodeModal
@@ -45,7 +48,7 @@ export const SmartCardQrModal = ({
       maxWidth={CARD_WIDTH}
       showCloseButton={false}
     >
-      <View>
+      <View accessible={true} accessibilityLabel={identityLabel}>
         <Text variant="prose" style={styles.name}>
           {lastName.toUpperCase()}
         </Text>
@@ -57,6 +60,7 @@ export const SmartCardQrModal = ({
       <View style={styles.qrColumn}>
         <View
           style={styles.qrContainer}
+          accessibilityRole="image"
           accessibilityLabel={t('profileScreen.qrCode')}
         >
           {qrCodeQuery.data ? (
