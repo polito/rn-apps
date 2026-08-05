@@ -653,7 +653,9 @@
     "expiredText": "Student not enrolled in the current school year",
     "inactive": "Your Card is suspended",
     "cardInfoButton": "Card information",
-    "showQrCode": "Show QR code"
+    "cardInfoHint": "Opens card information",
+    "showQrCode": "Show QR code",
+    "showQrCodeHint": "Opens your QR code"
   },
   "eventPlacesScreen": {
     "title": "Event locations"
@@ -924,6 +926,7 @@
     "settings": "Settings",
     "showQr": "Show QR",
     "showQrAccessibility": "Show QR code",
+    "showQrHint": "Opens your QR code",
     "smartCard": "Smartcard",
     "smartCardTitle": "SMART CARD",
     "studentId": "Student ID",

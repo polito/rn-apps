@@ -1,4 +1,4 @@
-import { PropsWithChildren, useLayoutEffect, useRef } from 'react';
+import { PropsWithChildren, RefObject, useLayoutEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AccessibilityInfo,
@@ -27,6 +27,7 @@ type Props = PropsWithChildren<{
   onClose: () => void;
   maxWidth?: number;
   showCloseButton?: boolean;
+  firstFocusRef?: RefObject<View | null>;
 }>;
 
 export const QrCodeModal = ({
@@ -34,21 +35,25 @@ export const QrCodeModal = ({
   onClose,
   maxWidth,
   showCloseButton = true,
+  firstFocusRef,
   children,
 }: Props) => {
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
-  const firstInteractiveRef = useRef<View>(null);
+  const closeButtonRef = useRef<View>(null);
 
   useLayoutEffect(() => {
     if (!visible) return;
     const timer = setTimeout(() => {
-      const node = findNodeHandle(firstInteractiveRef.current);
+      const focusTarget =
+        firstFocusRef?.current ??
+        (showCloseButton ? closeButtonRef.current : null);
+      const node = findNodeHandle(focusTarget);
       if (node) AccessibilityInfo.setAccessibilityFocus(node);
     }, 100);
     return () => clearTimeout(timer);
-  }, [visible]);
+  }, [visible, firstFocusRef, showCloseButton]);
 
   return (
     <Modal
@@ -60,7 +65,6 @@ export const QrCodeModal = ({
     >
       <View style={styles.backdrop} accessibilityViewIsModal={IS_ANDROID}>
         <Pressable
-          ref={firstInteractiveRef}
           style={styles.backdropTouchable}
           accessibilityRole="button"
           accessibilityLabel={t('common.close')}
@@ -69,16 +73,18 @@ export const QrCodeModal = ({
         <View style={[styles.cardWrapper, maxWidth != null && { maxWidth }]}>
           <Card rounded gapped style={styles.card}>
             {showCloseButton && (
-              <IconButton
-                accessibilityLabel={t('common.close')}
-                accessibilityRole="button"
-                icon={faTimes}
-                size={fontSizes.lg}
-                color={colors.title}
-                onPress={onClose}
-                adjustSpacing="right"
-                style={styles.closeButton}
-              />
+              <View ref={closeButtonRef} collapsable={false}>
+                <IconButton
+                  accessibilityLabel={t('common.close')}
+                  accessibilityRole="button"
+                  icon={faTimes}
+                  size={fontSizes.lg}
+                  color={colors.title}
+                  onPress={onClose}
+                  adjustSpacing="right"
+                  style={styles.closeButton}
+                />
+              </View>
             )}
             <ScrollView
               style={styles.scroll}

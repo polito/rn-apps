@@ -208,7 +208,7 @@ export const SmartCard = ({
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={t('profileScreen.showQrAccessibility')}
-        accessibilityHint={t('common.tapToNavigate')}
+        accessibilityHint={t('profileScreen.showQrHint')}
         onPress={onShowQr}
         style={[
           styles.qrButton,

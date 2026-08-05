@@ -668,7 +668,9 @@
     "expiredText": "Studente non iscritto all’a.a corrente",
     "inactive": "La tua Card è sospesa",
     "cardInfoButton": "Informazioni sulla card",
-    "showQrCode": "Mostra codice QR"
+    "cardInfoHint": "Apre le informazioni sulla card",
+    "showQrCode": "Mostra codice QR",
+    "showQrCodeHint": "Apre il tuo codice QR"
   },
   "eventPlacesScreen": {
     "title": "Luoghi evento"
@@ -942,6 +944,7 @@
     "settings": "Impostazioni",
     "showQr": "Mostra QR",
     "showQrAccessibility": "Mostra codice QR",
+    "showQrHint": "Apre il tuo codice QR",
     "smartCard": "Smartcard",
     "smartCardTitle": "SMART CARD",
     "studentId": "Matricola",

@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text as RNText, StyleSheet, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
@@ -36,6 +37,7 @@ export const SmartCardQrModal = ({
 }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+  const headerRef = useRef<View>(null);
   const qrCodeQuery = useGetSmartCardQrCode(visible);
   const identityLabel = [lastName.toUpperCase(), firstName, degreeName]
     .filter(Boolean)
@@ -47,8 +49,10 @@ export const SmartCardQrModal = ({
       onClose={onClose}
       maxWidth={CARD_WIDTH}
       showCloseButton={false}
+      firstFocusRef={headerRef}
     >
       <View
+        ref={headerRef}
         accessible={true}
         accessibilityRole="header"
         accessibilityLabel={identityLabel}

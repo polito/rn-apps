@@ -70,11 +70,12 @@ export const ServiceCard = ({
       }
       {...props}
       disabled={disabled}
+      accessibilityState={{ disabled: !!disabled }}
       style={[styles.touchable, props.style]}
       cardStyle={[styles.card, props.cardStyle]}
       accessibilityLabel={accessibilityLabel}
     >
-      <Row accessibilityRole="button" justify="space-between" align="center">
+      <Row justify="space-between" align="center">
         <Icon
           icon={icon}
           size={28}
@@ -91,6 +92,7 @@ export const ServiceCard = ({
           onPress={() => onFavoriteChange(!favorite)}
           style={styles.favButton}
           disabled={disabled}
+          accessibilityState={{ disabled: !!disabled }}
           hitSlop={uniformInsets(16)}
         />
       </Row>
