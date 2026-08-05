@@ -25,7 +25,7 @@ export const Badge = ({
   accessible,
   ...rest
 }: Props) => {
-  const { spacing, shapes, fontSizes } = useTheme();
+  const { spacing, shapes, fontSizes, fontFamilies } = useTheme();
   const { accessibility } = usePreferencesContext();
 
   return (
@@ -54,7 +54,11 @@ export const Badge = ({
     >
       {icon && <Icon icon={icon} size={fontSizes.md} color={foregroundColor} />}
       <Text
-        style={{ color: foregroundColor, fontSize: fontSizes.xs }}
+        style={{
+          color: foregroundColor,
+          fontSize: fontSizes.xs,
+          fontFamily: fontFamilies.title,
+        }}
         weight="medium"
       >
         {text}

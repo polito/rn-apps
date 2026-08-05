@@ -1,42 +1,39 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Pressable, StyleSheet, View } from 'react-native';
+import {
+  Alert,
+  FlatList,
+  Platform,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Animated, {
   useAnimatedKeyboard,
   useAnimatedStyle,
 } from 'react-native-reanimated';
 
-import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
-import {
-  IS_IOS,
-  usePreferencesContext,
-  useScreenTitle,
-} from '@polito/lib/core';
+import { usePreferencesContext } from '@polito/lib/core';
 import {
   ChatBubble,
   GlobalStyles,
-  IconButton,
   RefreshControl,
+  Text,
   type Theme,
   useSafeAreaSpacing,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { TicketOverview, TicketStatus } from '@polito/student-api-client';
-import { MenuView } from '@react-native-menu/menu';
+import { TicketStatus } from '@polito/student-api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { useHeaderHeight } from '@react-navigation/elements';
-import { useNavigation } from '@react-navigation/native';
-import {
-  NativeStackNavigationProp,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';
 
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import {
+  isResolvedTicketStatus,
   useGetTicket,
   useMarkTicketAsClosed,
   useMarkTicketAsRead,
@@ -45,83 +42,27 @@ import { ServiceStackParamList } from '../../services/components/ServicesNavigat
 import { ChatMessage } from '../components/ChatMessage';
 import { HtmlMessage } from '../components/HtmlMessage';
 import { TicketAttachmentChip } from '../components/TicketAttachmentChip';
+import { TicketAutoresolvedBar } from '../components/TicketAutoresolvedBar';
+import { TicketDuplicateBar } from '../components/TicketDuplicateBar';
+import { TicketFeedbackInfo } from '../components/TicketFeedbackInfo';
+import { TicketHeader } from '../components/TicketHeader';
 import { TicketMessagingView } from '../components/TicketMessagingView';
-import { TicketStatusInfo } from '../components/TicketStatusInfo';
+import { TicketRateBar } from '../components/TicketRateBar';
+import { TicketWaitingOperatorBar } from '../components/TicketWaitingOperatorBar';
 import { VirtualOperatorFeedbackBar } from '../components/VirtualOperatorFeedbackBar';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'Ticket'>;
-
-const HeaderRight = ({ ticket }: { ticket: TicketOverview }) => {
-  const { t } = useTranslation();
-  const theme = useTheme();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<ServiceStackParamList, 'Ticket'>>();
-  const { colors, fontSizes } = theme;
-  const styles = useStylesheet(createStyles);
-  const { mutateAsync: markTicketAsClosed, isSuccess } = useMarkTicketAsClosed(
-    ticket?.id,
-  );
-  const confirm = useConfirmationDialog({
-    message: t('tickets.closeTip'),
-  });
-
-  const actions = useMemo(() => {
-    if (ticket.status !== TicketStatus.Closed) {
-      return [
-        {
-          title: t('tickets.close'),
-          color: 'red',
-          image: 'trash.fill',
-          imageColor: 'red',
-        },
-      ];
-    }
-    return [];
-  }, [t, ticket.status]);
-
-  const onPressCloseTicket = async () => {
-    if (await confirm()) {
-      return markTicketAsClosed();
-    }
-    return Promise.reject();
-  };
-
-  useEffect(() => {
-    if (isSuccess) {
-      navigation.navigate('Tickets');
-    }
-  }, [isSuccess, navigation]);
-
-  if (ticket?.status !== TicketStatus.Closed) {
-    return (
-      <MenuView
-        title={t('tickets.menuAction')}
-        actions={actions}
-        onPressAction={onPressCloseTicket}
-      >
-        <IconButton
-          style={styles.icon}
-          icon={faEllipsisVertical}
-          color={colors.secondaryText}
-          size={fontSizes.xl}
-          accessibilityLabel={t('tickets.menuAction')}
-        />
-      </MenuView>
-    );
-  }
-
-  return <View />;
-};
 
 export const TicketScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const styles = useStylesheet(createStyles);
   const ticketQuery = useGetTicket(id);
   const { mutate: markAsRead } = useMarkTicketAsRead(id);
+  const { mutateAsync: markTicketAsClosed } = useMarkTicketAsClosed(id);
   const { spacing } = useTheme();
-  const headerHeight = useHeaderHeight();
   const bottomBarHeight = useBottomTabBarHeight();
   const ticket = ticketQuery.data;
+  const refetchTicket = ticketQuery.refetch;
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
   const { t } = useTranslation();
@@ -132,8 +73,6 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     t('ticketScreen.yourQuestion'),
     ticket?.message,
   ].join(', ');
-
-  useScreenTitle(ticket?.subject);
 
   const markAsReadIfNeeded = useCallback(async () => {
     if (!ticket) {
@@ -150,26 +89,202 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     markAsReadIfNeeded();
   }, [markAsReadIfNeeded]);
 
-  const headerRight = useCallback(
-    () =>
-      ticket?.status &&
-      ticket?.status !== TicketStatus.Closed && <HeaderRight ticket={ticket} />,
+  const isAutoResolved = useMemo(
+    () => ticket?.status === TicketStatus.Autoresolved,
     [ticket],
   );
+
+  const isDuplicate = useMemo(
+    () => ticket?.status === TicketStatus.Duplicate,
+    [ticket],
+  );
+
+  const isResolved = useMemo(
+    () => isResolvedTicketStatus(ticket?.status),
+    [ticket?.status],
+  );
+
+  const feedback = ticket?.providedFeedback;
+
+  const feedbackInserted = useMemo(() => {
+    if ((!isResolved && !isAutoResolved) || !ticket) {
+      return false;
+    }
+    return !!feedback;
+  }, [isResolved, isAutoResolved, ticket, feedback]);
+  const onPressMarkResolved = useCallback(() => {
+    Alert.alert(
+      t('ticketScreen.resolveConfirmTitle'),
+      t('ticketScreen.resolveConfirmMessage'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('common.confirm'),
+          onPress: async () => {
+            try {
+              await markTicketAsClosed();
+              const { data: closedTicket } = await refetchTicket();
+              if (!closedTicket?.needsFeedback) {
+                return;
+              }
+              navigation.navigate('TicketResolved', {
+                ticketId: id,
+                markAsResolved: true,
+              });
+            } catch {
+              Alert.alert(t('common.error'), t('ticketScreen.sendError'));
+            }
+          },
+        },
+      ],
+      { cancelable: true },
+    );
+  }, [t, navigation, id, markTicketAsClosed, refetchTicket]);
+
+  const onPressGoToLinkedTicket = useCallback(() => {
+    if (ticket?.duplicateId != null) {
+      navigation.push('Ticket', { id: ticket.duplicateId });
+    }
+  }, [navigation, ticket]);
+
+  const onVirtualOperatorAccepted = useCallback(() => {
+    navigation.replace('TicketAutoResolved', { ticketId: id });
+  }, [navigation, id]);
+
+  const replies = useMemo(
+    () =>
+      [...(ticket?.replies ?? [])].sort(
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+      ),
+    [ticket?.replies],
+  );
+
+  const replyNeedingFeedback = useMemo(
+    () =>
+      [...(ticket?.replies ?? [])]
+        .filter(reply => reply.needsFeedback === true)
+        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0],
+    [ticket?.replies],
+  );
+
+  const showVirtualOperatorFeedback = useMemo(() => {
+    if (
+      !ticket ||
+      isAutoResolved ||
+      isDuplicate ||
+      isResolved ||
+      feedbackInserted
+    ) {
+      return false;
+    }
+    return replyNeedingFeedback != null;
+  }, [
+    ticket,
+    isAutoResolved,
+    isDuplicate,
+    isResolved,
+    feedbackInserted,
+    replyNeedingFeedback,
+  ]);
+
+  const showResolvedRateBar = useMemo(
+    () => isResolved && !feedbackInserted && ticket?.needsFeedback === true,
+    [isResolved, feedbackInserted, ticket?.needsFeedback],
+  );
+
+  const showAutoresolvedRateBar = useMemo(
+    () => isAutoResolved && !feedbackInserted && ticket?.needsFeedback === true,
+    [isAutoResolved, feedbackInserted, ticket?.needsFeedback],
+  );
+
+  const isWaitingForOperator = useMemo(() => {
+    if (
+      !ticket ||
+      isAutoResolved ||
+      isDuplicate ||
+      isResolved ||
+      feedbackInserted ||
+      showVirtualOperatorFeedback
+    ) {
+      return false;
+    }
+    if (ticket.status !== TicketStatus.Pending) {
+      return false;
+    }
+    return (ticket.replies ?? []).some(reply => reply.isFromAgent);
+  }, [
+    ticket,
+    isAutoResolved,
+    isDuplicate,
+    isResolved,
+    feedbackInserted,
+    showVirtualOperatorFeedback,
+  ]);
+
+  const isMessagingDisabled = useMemo(
+    () =>
+      (isResolved && !showResolvedRateBar) ||
+      (isAutoResolved && !showAutoresolvedRateBar) ||
+      isDuplicate ||
+      feedbackInserted ||
+      isWaitingForOperator ||
+      showVirtualOperatorFeedback,
+    [
+      isResolved,
+      showResolvedRateBar,
+      isAutoResolved,
+      showAutoresolvedRateBar,
+      isDuplicate,
+      feedbackInserted,
+      isWaitingForOperator,
+      showVirtualOperatorFeedback,
+    ],
+  );
+
+  const headerRight = useCallback(() => {
+    if (!ticket?.status) {
+      return null;
+    }
+    const disabled =
+      isResolved ||
+      isAutoResolved ||
+      isWaitingForOperator ||
+      showVirtualOperatorFeedback;
+    return (
+      <TouchableOpacity
+        accessibilityRole="button"
+        accessibilityState={{ disabled }}
+        accessibilityLabel={t('ticketScreen.markAsResolved')}
+        onPress={onPressMarkResolved}
+        disabled={disabled}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        style={styles.markResolvedButton}
+      >
+        <Text
+          style={[styles.markResolved, disabled && styles.markResolvedDisabled]}
+        >
+          {t('ticketScreen.markAsResolved')}
+        </Text>
+      </TouchableOpacity>
+    );
+  }, [
+    ticket,
+    isResolved,
+    isAutoResolved,
+    isWaitingForOperator,
+    showVirtualOperatorFeedback,
+    onPressMarkResolved,
+    styles,
+    t,
+  ]);
 
   useEffect(() => {
     navigation.setOptions({ headerRight });
   }, [navigation, ticket, headerRight]);
 
-  const replies = useMemo(
-    () =>
-      ticket?.replies.sort(
-        (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-      ) ?? [],
-    [ticket],
-  );
-
-  const lastReply = replies[0];
+  const onPressRate = useCallback(() => {
+    navigation.navigate('TicketResolved', { ticketId: id });
+  }, [navigation, id]);
 
   useEffect(() => {
     const changeStyle = () => {
@@ -197,19 +312,57 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     [styless],
   );
 
+  const bottomBarMode = useMemo(() => {
+    if (isDuplicate) {
+      return 'duplicate';
+    }
+    if (feedbackInserted && feedback) {
+      return 'feedback';
+    }
+    if (showVirtualOperatorFeedback) {
+      return 'vo-feedback';
+    }
+    if (isWaitingForOperator) {
+      return 'waiting';
+    }
+    if (isAutoResolved && showAutoresolvedRateBar) {
+      return 'autoresolved';
+    }
+    if (showResolvedRateBar) {
+      return 'resolved';
+    }
+    return 'messaging';
+  }, [
+    isDuplicate,
+    feedbackInserted,
+    feedback,
+    showVirtualOperatorFeedback,
+    isWaitingForOperator,
+    isAutoResolved,
+    showAutoresolvedRateBar,
+    showResolvedRateBar,
+  ]);
+
   // TODO: traslucent does not work anymore because now views
   // are more linear: it's needed to recalculate layouts and set
   // the flatlist to be absolutely positioned
 
   return (
     <Animated.View style={[GlobalStyles.grow, animatedBottomPadding]}>
+      {!!ticket && (
+        <TicketHeader
+          ticket={ticket}
+          onPress={() => navigation.navigate('TicketInfo', { id })}
+        />
+      )}
       <FlatList
         keyboardShouldPersistTaps="handled"
         inverted
+        removeClippedSubviews={Platform.OS !== 'android'}
         contentContainerStyle={[
           {
             paddingTop: spacing[5],
-            paddingBottom: IS_IOS ? headerHeight + spacing[5] : undefined,
+            paddingBottom: spacing[5],
           },
           paddingHorizontal,
         ]}
@@ -218,34 +371,32 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         keyExtractor={item => item.id.toString()}
         ListFooterComponent={
           !ticketQuery?.isLoading && !!ticket ? (
-            <>
-              <TicketStatusInfo
-                ticket={ticket}
-                loading={ticketQuery?.isLoading}
-              />
-              <Pressable accessible={false}>
-                <ChatBubble
-                  accessibilityLabel={accessibilityMessageText}
-                  style={styless.requestMessage}
-                >
-                  <HtmlMessage
-                    message={ticket?.message}
-                    baseStyle={styless.text}
-                  />
-                  {ticket.hasAttachments && (
-                    <View>
-                      {ticket.attachments.map((item, index) => (
-                        <TicketAttachmentChip
-                          key={index}
-                          attachment={item}
-                          ticketId={ticket.id}
-                        />
-                      ))}
-                    </View>
-                  )}
-                </ChatBubble>
-              </Pressable>
-            </>
+            <Pressable
+              accessibilityRole="text"
+              accessibilityLabel={accessibilityMessageText}
+            >
+              <ChatBubble
+                accessibilityRole="text"
+                accessibilityLabel={accessibilityMessageText}
+                style={styless.requestMessage}
+              >
+                <HtmlMessage
+                  message={ticket?.message}
+                  baseStyle={styless.text}
+                />
+                {ticket.hasAttachments && (
+                  <View>
+                    {(ticket.attachments ?? []).map((item, index) => (
+                      <TicketAttachmentChip
+                        key={index}
+                        attachment={item}
+                        ticketId={ticket.id}
+                      />
+                    ))}
+                  </View>
+                )}
+              </ChatBubble>
+            </Pressable>
           ) : undefined
         }
         renderItem={({ item: reply }) => (
@@ -257,16 +408,42 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         )}
         ItemSeparatorComponent={ItemsSeparator}
       />
-      {lastReply?.needsFeedback ? (
-        <VirtualOperatorFeedbackBar ticketId={id} replyId={lastReply.id} />
-      ) : (
-        <TicketMessagingView ticketId={id} />
-      )}
+      <View key={bottomBarMode}>
+        {isDuplicate ? (
+          <TicketDuplicateBar onPress={onPressGoToLinkedTicket} />
+        ) : feedbackInserted && feedback ? (
+          <TicketFeedbackInfo
+            rating={feedback.rating}
+            createdAt={feedback.createdAt}
+          />
+        ) : showVirtualOperatorFeedback ? (
+          <VirtualOperatorFeedbackBar
+            ticketId={id}
+            replyId={replyNeedingFeedback!.id}
+            onAccepted={onVirtualOperatorAccepted}
+          />
+        ) : isWaitingForOperator ? (
+          <TicketWaitingOperatorBar />
+        ) : showAutoresolvedRateBar ? (
+          <TicketAutoresolvedBar onPress={onPressRate} />
+        ) : showResolvedRateBar ? (
+          <TicketRateBar onPress={onPressRate} />
+        ) : isMessagingDisabled ? null : (
+          <TicketMessagingView ticketId={id} />
+        )}
+      </View>
     </Animated.View>
   );
 };
 
-const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
+const createStyles = ({
+  spacing,
+  fontSizes,
+  fontWeights,
+  fontFamilies,
+  colors,
+  palettes,
+}: Theme) =>
   StyleSheet.create({
     separator: {
       height: spacing[3],
@@ -275,8 +452,21 @@ const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
       marginHorizontal: spacing[5],
       marginVertical: spacing[3],
     },
-    icon: {
-      marginRight: -spacing[3],
+    markResolvedButton: {
+      justifyContent: 'center',
+      paddingVertical: spacing[2],
+      paddingHorizontal: spacing[2],
+    },
+    markResolved: {
+      fontFamily: fontFamilies.title,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.medium,
+      letterSpacing: 0.16,
+      color: palettes.primary[500],
+    },
+    // eslint-disable-next-line react-native/no-color-literals
+    markResolvedDisabled: {
+      color: '#90A1B9',
     },
     text: {
       padding: 0,

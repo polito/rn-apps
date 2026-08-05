@@ -272,6 +272,8 @@ export const ServicesScreen = () => {
         {favoriteServices.length > 0 && (
           <Grid
             numColumns={fontSize && fontSize >= 125 ? 1 : auto}
+            minColumnWidth={ServiceCard.minWidth}
+            maxColumnWidth={ServiceCard.maxWidth}
             gap={4}
             style={styles.grid}
           >
@@ -296,6 +298,8 @@ export const ServicesScreen = () => {
         {otherServices.length > 0 && (
           <Grid
             numColumns={fontSize && fontSize >= 125 ? 1 : auto}
+            minColumnWidth={ServiceCard.minWidth}
+            maxColumnWidth={ServiceCard.maxWidth}
             gap={4}
             style={styles.grid}
           >

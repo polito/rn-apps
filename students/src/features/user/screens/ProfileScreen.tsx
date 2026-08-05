@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 
@@ -7,12 +7,11 @@ import {
   faBell,
   faCog,
   faMessage,
-  faSignOut,
+  faPersonThroughWindow,
 } from '@fortawesome/free-solid-svg-icons';
 import { useOfflineDisabled } from '@polito/lib/core';
 import {
   BottomBarSpacer,
-  CtaButton,
   Icon,
   ListItem,
   OverviewList,
@@ -45,10 +44,11 @@ import {
   MESSAGES_QUERY_KEY,
   useGetMessages,
   useGetProfile,
+  useGetProfilePicture,
   useGetSmartCard,
   useGetStudent,
 } from '../../../core/queries/studentHooks';
-import { CareerStatus } from '../components/CareerStatus';
+import { SmartCardQrModal } from '../components/SmartCardQrModal';
 import { UserStackParamList } from '../components/UserNavigator';
 
 type Props = NativeStackScreenProps<UserStackParamList, 'Profile'>;
@@ -132,7 +132,8 @@ const HeaderRightDropdown = ({
 export const ProfileScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { firstRequest } = route.params;
-  const { fontSizes } = useTheme();
+  const { fontSizes, palettes } = useTheme();
+  const [isQrVisible, setIsQrVisible] = useState(false);
   const { mutate: handleLogout } = useLogout();
   const profileQuery = useGetProfile();
   const profile = profileQuery.data;
@@ -142,6 +143,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
   const esc = escQuery.data;
   const smartCardQuery = useGetSmartCard();
   const smartCardUrl = smartCardQuery.data?.url;
+  const pictureQuery = useGetProfilePicture(profile?.username);
   const queryClient = useQueryClient();
   const messages = useGetMessages();
   const mfaChallengeQuery = useMfaChallengeHandler();
@@ -174,7 +176,13 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
       refreshControl={
         <RefreshControl
           manual
-          queries={[profileQuery, studentQuery, escQuery, mfaChallengeQuery]}
+          queries={[
+            profileQuery,
+            studentQuery,
+            escQuery,
+            mfaChallengeQuery,
+            pictureQuery,
+          ]}
         />
       }
     >
@@ -195,29 +203,37 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
               firstName={profile.firstName}
               lastName={profile.lastName}
               username={profile.username}
-              smartCardUrl={smartCardUrl}
+              degreeName={student?.degreeName}
+              status={student?.status}
+              picture={pictureQuery.data}
+              hasSmartCard={!!smartCardUrl}
               europeanStudentCard={esc}
               firstRequest={firstRequest}
+              onShowQr={() => setIsQrVisible(true)}
             />
           ) : (
             <UserDetails profile={profile} />
           )}
         </View>
-        <Section accessible={false}>
-          <SectionHeader
-            title={t('common.career')}
-            trailingItem={
-              student?.status && <CareerStatus status={student?.status} />
-            }
+        {profile && (
+          <SmartCardQrModal
+            visible={isQrVisible}
+            onClose={() => setIsQrVisible(false)}
+            firstName={profile.firstName}
+            lastName={profile.lastName}
+            degreeName={student?.degreeName}
           />
+        )}
+        <Section accessible={false}>
+          <SectionHeader title={t('common.career')} />
           <OverviewList>
             <ListItem
-              title={student?.degreeName ?? ''}
-              subtitle={student?.degreeLevel + ' - ' + enrollmentYear}
+              title={student?.degreeLevel ?? ''}
+              subtitle={t('profileScreen.cohort') + ' - ' + enrollmentYear}
               accessibilityRole="button"
               accessibilityLabel={[
-                student?.degreeName,
                 student?.degreeLevel,
+                t('profileScreen.cohort'),
                 enrollmentYear,
               ]
                 .filter(Boolean)
@@ -259,14 +275,20 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
                 ) : undefined
               }
             />
+            <ListItem
+              title={t('common.logout')}
+              leadingItem={
+                <Icon
+                  icon={faPersonThroughWindow}
+                  size={fontSizes.xl}
+                  color={palettes.danger[700]}
+                />
+              }
+              titleStyle={{ color: palettes.danger[700] }}
+              onPress={() => handleLogout()}
+              disabled={isOffline}
+            />
           </OverviewList>
-          <CtaButton
-            absolute={false}
-            disabled={isOffline}
-            title={t('common.logout')}
-            action={handleLogout}
-            icon={faSignOut}
-          />
         </Section>
         <BottomBarSpacer />
       </SafeAreaView>
