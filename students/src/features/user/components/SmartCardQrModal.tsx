@@ -48,14 +48,22 @@ export const SmartCardQrModal = ({
       maxWidth={CARD_WIDTH}
       showCloseButton={false}
     >
-      <View accessible={true} accessibilityLabel={identityLabel}>
-        <Text variant="prose" style={styles.name}>
+      <View
+        accessible={true}
+        accessibilityRole="header"
+        accessibilityLabel={identityLabel}
+      >
+        <Text accessible={false} variant="prose" style={styles.name}>
           {lastName.toUpperCase()}
         </Text>
-        <Text variant="prose" style={styles.name}>
+        <Text accessible={false} variant="prose" style={styles.name}>
           {firstName}
         </Text>
-        {!!degreeName && <Text style={styles.degree}>{degreeName}</Text>}
+        {!!degreeName && (
+          <Text accessible={false} style={styles.degree}>
+            {degreeName}
+          </Text>
+        )}
       </View>
       <View style={styles.qrColumn}>
         <View

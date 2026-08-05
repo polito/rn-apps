@@ -187,14 +187,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
       }
     >
       <SafeAreaView>
-        <View
-          accessible={true}
-          accessibilityLabel={`${t('profileScreen.smartCard')}. ${t(
-            'common.username',
-          )} ${profile?.username?.substring(1, profile?.username?.length)}, ${
-            profile?.firstName
-          } ${profile?.lastName}`}
-        >
+        <View>
           {!profile ||
           smartCardQuery.isLoading ||
           escQuery.isLoading ? null : smartCardUrl ||

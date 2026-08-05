@@ -1,8 +1,17 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useLayoutEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+  findNodeHandle,
+} from 'react-native';
 
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { IS_ANDROID } from '@polito/lib/core';
 import {
   Card,
   IconButton,
@@ -30,6 +39,16 @@ export const QrCodeModal = ({
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
+  const firstInteractiveRef = useRef<View>(null);
+
+  useLayoutEffect(() => {
+    if (!visible) return;
+    const timer = setTimeout(() => {
+      const node = findNodeHandle(firstInteractiveRef.current);
+      if (node) AccessibilityInfo.setAccessibilityFocus(node);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [visible]);
 
   return (
     <Modal
@@ -39,8 +58,9 @@ export const QrCodeModal = ({
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <View style={styles.backdrop}>
+      <View style={styles.backdrop} accessibilityViewIsModal={IS_ANDROID}>
         <Pressable
+          ref={firstInteractiveRef}
           style={styles.backdropTouchable}
           accessibilityRole="button"
           accessibilityLabel={t('common.close')}

@@ -666,7 +666,9 @@
     "title": "THE EUROPEAN STUDENT CARD",
     "expiredTitle": "La tua Card è scaduta",
     "expiredText": "Studente non iscritto all’a.a corrente",
-    "inactive": "La tua Card è sospesa"
+    "inactive": "La tua Card è sospesa",
+    "cardInfoButton": "Informazioni sulla card",
+    "showQrCode": "Mostra codice QR"
   },
   "eventPlacesScreen": {
     "title": "Luoghi evento"
@@ -939,6 +941,7 @@
     "qrWarning": "Si raccomanda di non condividere o conservare screenshot: eventuali utilizzi impropri restano sotto la tua responsabilità.",
     "settings": "Impostazioni",
     "showQr": "Mostra QR",
+    "showQrAccessibility": "Mostra codice QR",
     "smartCard": "Smartcard",
     "smartCardTitle": "SMART CARD",
     "studentId": "Matricola",
@@ -979,7 +982,8 @@
     "title": "Servizi",
     "newElement": ", hai Un nuovo elemento da visualizzare",
     "favoriteActive": "Imposta preferito, Attivo",
-    "favoriteInactive": "Imposta preferito, Non attivo"
+    "favoriteInactive": "Imposta preferito, Non attivo",
+    "webMail": "Web\nMail"
   },
   "settingsScreen": {
     "appVersion": "Versione {{version}}",

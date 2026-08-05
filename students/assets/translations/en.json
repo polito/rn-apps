@@ -651,7 +651,9 @@
     "title": "THE EUROPEAN STUDENT CARD",
     "expiredTitle": "Your Card has expired",
     "expiredText": "Student not enrolled in the current school year",
-    "inactive": "Your Card is suspended"
+    "inactive": "Your Card is suspended",
+    "cardInfoButton": "Card information",
+    "showQrCode": "Show QR code"
   },
   "eventPlacesScreen": {
     "title": "Event locations"
@@ -921,6 +923,7 @@
     "qrWarning": "Do not share or save screenshots: any improper use remains your responsibility.",
     "settings": "Settings",
     "showQr": "Show QR",
+    "showQrAccessibility": "Show QR code",
     "smartCard": "Smartcard",
     "smartCardTitle": "SMART CARD",
     "studentId": "Student ID",
@@ -958,7 +961,11 @@
   "servicesScreen": {
     "subTitleOne": "Information services",
     "subTitleTwo": "Operational services",
-    "title": "Services"
+    "title": "Services",
+    "newElement": ", you have a new item to view",
+    "favoriteActive": "Remove from favorites",
+    "favoriteInactive": "Add to favorites",
+    "webMail": "Web\nMail"
   },
   "settingsScreen": {
     "appVersion": "Version {{version}}",

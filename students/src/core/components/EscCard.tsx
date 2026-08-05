@@ -95,7 +95,9 @@ export const EscCard = (
           <G
             onPress={onPressEvent}
             accessible={true}
+            accessibilityRole="button"
             accessibilityLabel={t('europeanCardScreen.cardInfoButton')}
+            accessibilityHint={t('common.tapToNavigate')}
           >
             <Rect x={290} y={2} width={40} height={30} fill="transparent" />
             <Path
@@ -196,6 +198,7 @@ export const EscCard = (
             accessible={true}
             accessibilityRole="button"
             accessibilityLabel={t('europeanCardScreen.showQrCode')}
+            accessibilityHint={t('common.tapToNavigate')}
           >
             <Image
               x="200"

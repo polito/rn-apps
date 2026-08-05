@@ -1,6 +1,6 @@
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
@@ -54,26 +54,12 @@ export const ServiceCard = ({
   const { dark, colors, palettes } = useTheme();
   const { t } = useTranslation();
   const { accessibility } = usePreferencesContext<AppPreferences>();
+  const isLargeFont = Number(accessibility?.fontSize) >= 125;
 
-  const [minWidth, setMinWidth] = useState(0);
-  const [maxWidth, setMaxWidth] = useState(0);
-
-  const styles = useStylesheet(theme =>
-    createStyles(theme, minWidth, maxWidth),
-  );
-  useEffect(() => {
-    if (Number(accessibility?.fontSize) !== 100) {
-      setMinWidth(Dimensions.get('window').width - 32);
-      setMaxWidth(Dimensions.get('window').width - 32);
-    } else {
-      setMinWidth(110);
-      setMaxWidth(110);
-    }
-  }, [accessibility?.fontSize]);
+  const styles = useStylesheet(theme => createStyles(theme, isLargeFont));
   return (
     <TouchableCard
       accessibilityRole="button"
-      accessibilityState={{ disabled: !!disabled }}
       onPress={
         linkTo
           ? () => {
@@ -88,21 +74,18 @@ export const ServiceCard = ({
       cardStyle={[styles.card, props.cardStyle]}
       accessibilityLabel={accessibilityLabel}
     >
-      <Row justify="space-between" align="center">
-        <View accessible={false}>
-          <Icon
-            icon={icon}
-            size={28}
-            color={iconColor ?? palettes.primary[dark ? 400 : 500]}
-          />
-        </View>
+      <Row accessibilityRole="button" justify="space-between" align="center">
+        <Icon
+          icon={icon}
+          size={28}
+          color={iconColor ?? palettes.primary[dark ? 400 : 500]}
+        />
         <IconButton
           accessibilityLabel={
             favorite
               ? t('servicesScreen.favoriteActive')
               : t('servicesScreen.favoriteInactive')
           }
-          accessibilityState={{ disabled: !!disabled }}
           icon={favorite ? faStarFilled : faStar}
           color={favorite ? palettes.orange[400] : colors.secondaryText}
           onPress={() => onFavoriteChange(!favorite)}
@@ -130,17 +113,18 @@ export const ServiceCard = ({
 ServiceCard.minWidth = 110;
 ServiceCard.maxWidth = 384;
 
-const createStyles = (
-  { spacing, fontSizes }: Theme,
-  minWidth: number,
-  maxWidth: number,
-) =>
+const createStyles = ({ spacing, fontSizes }: Theme, isLargeFont: boolean) =>
   StyleSheet.create({
     touchable: {
       flex: 1,
+      width: '100%',
       height: ServiceCard.minWidth,
-      minWidth,
-      maxWidth,
+      ...(isLargeFont
+        ? {}
+        : {
+            minWidth: ServiceCard.minWidth,
+            maxWidth: ServiceCard.maxWidth,
+          }),
     },
     card: {
       flex: 1,
