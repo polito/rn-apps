@@ -19,7 +19,8 @@ import BaseBottomSheet, {
   SCREEN_HEIGHT,
 } from '@gorhom/bottom-sheet';
 import { CtaButton, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
-import { AnnouncementScope } from '@polito/student-api-client';
+
+// import { AnnouncementScope } from '@polito/student-api-client';
 
 import { OnboardingStep } from '../components/OnboardingStep';
 import {
@@ -39,10 +40,13 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
   const bottomSheetRef = useRef<BaseBottomSheet>(null);
   const animatedPosition = useSharedValue(SCREEN_HEIGHT);
 
-  const { data: announcements } = useGetAnnouncements(
-    false,
-    AnnouncementScope.Onboarding,
-  );
+  // why: scope filter momentarily disabled to show both `onboarding` and
+  // `appInfo` announcements;
+  // const { data: announcements } = useGetAnnouncements(
+  //   false,
+  //   AnnouncementScope.Onboarding,
+  // );
+  const { data: announcements } = useGetAnnouncements(false);
   const { mutate: markAsRead } = useMarkAnnouncementAsRead();
 
   const stepsRef = useRef<typeof announcements>(undefined);
