@@ -51,9 +51,11 @@
   },
   "bookingsScreen": {
     "emptyState": "Non hai prenotazioni attive",
+    "emptyStateCaption": "Creane una se ti serve.",
     "newBooking": "Nuova prenotazione",
-    "sectionTitle": "Attive",
-    "title": "Prenotazioni"
+    "sectionDescription": "Qui troverai le ultime prenotazioni che hai effettuato.",
+    "sectionTitle": "Prenotazioni attive",
+    "title": "Strumento di prenotazione"
   },
   "colors": {
     "amber": "Ambra",
@@ -907,7 +909,7 @@
     "enterMail": "Inserisci la tua mail",
     "enterPrivateMail": "Inserisci la tua mail privata",
     "places": "Luoghi",
-    "bookPlaces": "Prenotazione Spazi",
+    "bookPlaces": "Strumento di prenotazione",
     "emergencies": "Emergenze",
     "support": "Supporto audio-video in aula",
     "lookForPersone": "Cerca persona...",

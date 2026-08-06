@@ -17,15 +17,15 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { useCourses } from '../../core/contexts/CoursesContext';
-import { ProfileStackParamList } from './ServiceNavigator';
+import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
+import { useBookings } from '../hooks/useBookings';
 
 export const BookEventsRoomScreen = () => {
   const { t } = useTranslation();
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
-  const { bookings, setSelectedBooking } = useCourses();
+  const { bookings, setSelectedBooking } = useBookings();
   const { paddingHorizontal } = useSafeAreaSpacing();
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {

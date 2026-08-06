@@ -27,9 +27,9 @@ import DateTimePicker, {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { DateRow } from '../../core/components/DateRow';
-import { useCourses } from '../../core/contexts/CoursesContext';
-import { ProfileStackParamList } from './ServiceNavigator';
+import { DateRow } from '../../../core/components/DateRow';
+import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
+import { useBookings } from '../hooks/useBookings';
 
 const availableSlots = [
   '08:30',
@@ -71,7 +71,7 @@ export const BookStructureForm = () => {
   const [selectedEndSlot, setSelectedEndSlot] = useState('');
   const [selectedPlace, setSelectedPlace] = useState('');
   const [description, setDescription] = useState('');
-  const { addBooking, bookings } = useCourses();
+  const { addBooking, bookings } = useBookings();
 
   const getAvailablePlaces = () => {
     if (!startDate || !selectedStartSlot || !selectedEndSlot) return places;

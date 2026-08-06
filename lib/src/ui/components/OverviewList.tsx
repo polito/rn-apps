@@ -2,6 +2,8 @@ import { Children, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ViewProps } from 'react-native';
 
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+
 import { useScreenReader } from '../../../src/core/hooks/useScreenReader';
 import { useTheme } from '../hooks/useTheme';
 import { ActivityIndicator } from './ActivityIndicator';
@@ -16,6 +18,9 @@ type Props = PropsWithChildren<
     loading?: boolean;
     indented?: boolean;
     emptyStateText?: string;
+    emptyStateCaption?: string;
+    emptyStateIcon?: IconDefinition;
+    emptyStateIconSize?: number;
     rounded?: boolean;
     translucent?: boolean;
   }
@@ -32,6 +37,9 @@ export const OverviewList = ({
   dividers,
   translucent = false,
   emptyStateText,
+  emptyStateCaption,
+  emptyStateIcon,
+  emptyStateIconSize,
   style,
   rounded,
   ...rest
@@ -68,7 +76,15 @@ export const OverviewList = ({
           {children}
         </List>
       ) : (
-        emptyStateText && <EmptyState message={emptyStateText} />
+        emptyStateText && (
+          <EmptyState
+            message={emptyStateText}
+            caption={emptyStateCaption}
+            icon={emptyStateIcon}
+            iconSize={emptyStateIconSize}
+            spacing={8}
+          />
+        )
       )}
     </Card>
   );

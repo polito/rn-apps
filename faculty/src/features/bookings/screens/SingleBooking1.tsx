@@ -28,13 +28,13 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { useCourses } from '../../core/contexts/CoursesContext';
-import { ProfileStackParamList } from './ServiceNavigator';
+import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
+import { useBookings } from '../hooks/useBookings';
 
 export const SingleBooking1 = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { selectedBooking, removeBooking } = useCourses(); // Recupero i corsi dal context
+  const { selectedBooking, removeBooking } = useBookings(); // Recupero i corsi dal context
   const { fontSizes, spacing } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();

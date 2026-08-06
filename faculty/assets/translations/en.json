@@ -45,10 +45,12 @@
     "zoomInToEnableSeatSelection": "Zoom in to enable seat selection"
   },
   "bookingsScreen": {
-    "emptyState": "You have no active bookings",
-    "newBooking": "New booking",
-    "sectionTitle": "Active",
-    "title": "Bookings"
+    "emptyState": "You don't have any active reservations",
+    "emptyStateCaption": "Make one if you need to.",
+    "newBooking": "New reservation",
+    "sectionDescription": "Here you will find the latest reservations you made.",
+    "sectionTitle": "Active reservations",
+    "title": "Booking tool"
   },
   "colors": {
     "amber": "Amber",
@@ -880,7 +882,7 @@
     "enterMail": "Enter your mail",
     "enterPrivateMail": "Enter your private mail",
     "places": "Places",
-    "bookPlaces": "Book Places",
+    "bookPlaces": "Booking Tool",
     "emergencies": "Emergencies",
     "support": "Audio-video support in the classroom",
     "lookForPersone": "Look for someone...",

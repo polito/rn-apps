@@ -6,13 +6,17 @@ import { useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { BookEventsForm } from './BookEventsForm';
-import { BookEventsRoomScreen } from './BookEventsRoomScreen';
-import { BookRoomForm } from './BookRoomForm';
-import { BookRoomScreen } from './BookRoomScreen';
-import { BookStructureForm } from './BookStructureForm';
-import { BookStructureRoomScreen } from './BookStructureRoomScreen';
-import { BookingScreen } from './BookingScreen';
+import { BookEventsForm } from '../../features/bookings/components/BookEventsForm';
+import { BookRoomForm } from '../../features/bookings/components/BookRoomForm';
+import { BookStructureForm } from '../../features/bookings/components/BookStructureForm';
+import { BookEventsRoomScreen } from '../../features/bookings/screens/BookEventsRoomScreen';
+import { BookRoomScreen } from '../../features/bookings/screens/BookRoomScreen';
+import { BookStructureRoomScreen } from '../../features/bookings/screens/BookStructureRoomScreen';
+import { BookingScreen } from '../../features/bookings/screens/BookingScreen';
+import { NewReservationScreen } from '../../features/bookings/screens/NewReservationScreen';
+import { SingleBooking0 } from '../../features/bookings/screens/SingleBooking0';
+import { SingleBooking1 } from '../../features/bookings/screens/SingleBooking1';
+import { SingleBooking2 } from '../../features/bookings/screens/SingleBooking2';
 import { ContactScreen } from './ContactScreen';
 import { DigitalSignatureScreen } from './DigitalSignatureScreen';
 import { EmergencyDetails } from './EmergencyDetails';
@@ -23,9 +27,6 @@ import { IssueReportForm } from './IssueReportForm';
 import { PersoneScreen } from './PersoneScreen';
 import { ServiceScreen } from './ServiceScreen';
 import { SignatureScreen } from './SignatureScreen';
-import { SingleBooking0 } from './SingleBooking0';
-import { SingleBooking1 } from './SingleBooking1';
-import { SingleBooking2 } from './SingleBooking2';
 import { SupportScreen } from './SupportScreen';
 
 export type ProfileStackParamList = {
@@ -34,6 +35,7 @@ export type ProfileStackParamList = {
   Persone: undefined;
   Supporto: undefined;
   Prenotazione: undefined;
+  NuovaPrenotazione: undefined;
   PrenotaSpaziStrutture: undefined;
   PrenotaAula: undefined;
   PrenotaSpaziEventi: undefined;
@@ -115,6 +117,15 @@ export const ServiceNavigator = () => {
       <Stack.Screen
         name="Prenotazione"
         component={BookingScreen}
+        options={{
+          headerLeft: () => <CustomBackButton2 />,
+          headerShown: true,
+        }}
+      />
+
+      <Stack.Screen
+        name="NuovaPrenotazione"
+        component={NewReservationScreen}
         options={{
           headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
