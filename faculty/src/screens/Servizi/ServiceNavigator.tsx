@@ -6,17 +6,16 @@ import { useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { BookEventsForm } from '../../features/bookings/components/BookEventsForm';
 import { BookRoomForm } from '../../features/bookings/components/BookRoomForm';
-import { BookStructureForm } from '../../features/bookings/components/BookStructureForm';
+import { NewFacilityBookingForm } from '../../features/bookings/components/NewFacilityBookingForm';
 import { BookEventsRoomScreen } from '../../features/bookings/screens/BookEventsRoomScreen';
-import { BookRoomScreen } from '../../features/bookings/screens/BookRoomScreen';
 import { BookStructureRoomScreen } from '../../features/bookings/screens/BookStructureRoomScreen';
 import { BookingScreen } from '../../features/bookings/screens/BookingScreen';
+import { FacilitySpaceCalendarScreen } from '../../features/bookings/screens/FacilitySpaceCalendarScreen';
+import { FacilitySpaceTimelineScreen } from '../../features/bookings/screens/FacilitySpaceTimelineScreen';
 import { NewReservationScreen } from '../../features/bookings/screens/NewReservationScreen';
-import { SingleBooking0 } from '../../features/bookings/screens/SingleBooking0';
-import { SingleBooking1 } from '../../features/bookings/screens/SingleBooking1';
-import { SingleBooking2 } from '../../features/bookings/screens/SingleBooking2';
+import { RequestDetailsScreen } from '../../features/bookings/screens/RequestDetailsScreen';
+import { RequestSpaceScreen } from '../../features/bookings/screens/RequestSpaceScreen';
 import { ContactScreen } from './ContactScreen';
 import { DigitalSignatureScreen } from './DigitalSignatureScreen';
 import { EmergencyDetails } from './EmergencyDetails';
@@ -36,16 +35,17 @@ export type ProfileStackParamList = {
   Supporto: undefined;
   Prenotazione: undefined;
   NuovaPrenotazione: undefined;
+  RichiediSpazio: undefined;
+  CalendarioSpaziStrutture: undefined;
+  VistaCalendarioSpazio: { spaceId: string };
+  NuovaPrenotazioneSpazio:
+    | { spaceId: string; eventId?: string }
+    | undefined;
   PrenotaSpaziStrutture: undefined;
-  PrenotaAula: undefined;
   PrenotaSpaziEventi: undefined;
   PrenotaAulaForm: undefined;
-  PrenotaEventiForm: undefined;
-  PrenotaStruttureForm: undefined;
   DigitalSignature: undefined;
-  Booking0: undefined;
-  Booking1: undefined;
-  Booking2: undefined;
+  RequestDetails: undefined;
   SignatureScreen: undefined;
   Emergency: undefined;
   EmergencyDetails: undefined;
@@ -118,7 +118,6 @@ export const ServiceNavigator = () => {
         name="Prenotazione"
         component={BookingScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -127,17 +126,66 @@ export const ServiceNavigator = () => {
         name="NuovaPrenotazione"
         component={NewReservationScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
 
       <Stack.Screen
-        name="PrenotaAula"
-        component={BookRoomScreen}
+        name="RichiediSpazio"
+        component={RequestSpaceScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
+          presentation: Platform.OS === 'ios' ? 'formSheet' : 'modal',
+          ...(Platform.OS === 'ios'
+            ? {
+                sheetAllowedDetents: [1],
+                sheetGrabberVisible: true,
+                sheetCornerRadius: 12,
+              }
+            : {}),
           headerShown: true,
+          headerLargeTitle: false,
+          headerTitle: '',
+          headerBackButtonDisplayMode: 'minimal',
+          headerShadowVisible: true,
+          headerTransparent: false,
+          contentStyle: {
+            backgroundColor: theme.colors.background,
+          },
+        }}
+      />
+
+      <Stack.Screen
+        name="CalendarioSpaziStrutture"
+        component={FacilitySpaceCalendarScreen}
+        options={{
+          headerShown: true,
+          headerLargeTitle: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="VistaCalendarioSpazio"
+        component={FacilitySpaceTimelineScreen}
+        options={{
+          headerShown: true,
+          headerLargeTitle: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="NuovaPrenotazioneSpazio"
+        component={NewFacilityBookingForm}
+        options={{
+          presentation: 'modal',
+          headerShown: true,
+          headerLargeTitle: false,
+          headerTitle: '',
+          headerBackButtonDisplayMode: 'minimal',
+          headerShadowVisible: true,
+          headerTransparent: false,
+          contentStyle: {
+            backgroundColor: theme.colors.background,
+          },
         }}
       />
 
@@ -163,26 +211,15 @@ export const ServiceNavigator = () => {
         name="PrenotaAulaForm"
         component={BookRoomForm}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
-        }}
-      />
-
-      <Stack.Screen
-        name="PrenotaEventiForm"
-        component={BookEventsForm}
-        options={{
-          headerLeft: () => <CustomBackButton2 />,
-          headerShown: true,
-        }}
-      />
-
-      <Stack.Screen
-        name="PrenotaStruttureForm"
-        component={BookStructureForm}
-        options={{
-          headerLeft: () => <CustomBackButton2 />,
-          headerShown: true,
+          headerLargeTitle: false,
+          headerTitle: '',
+          headerBackButtonDisplayMode: 'minimal',
+          headerShadowVisible: true,
+          headerTransparent: false,
+          contentStyle: {
+            backgroundColor: theme.colors.background,
+          },
         }}
       />
 
@@ -196,28 +233,9 @@ export const ServiceNavigator = () => {
       />
 
       <Stack.Screen
-        name="Booking0"
-        component={SingleBooking0}
+        name="RequestDetails"
+        component={RequestDetailsScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
-          headerShown: true,
-        }}
-      />
-
-      <Stack.Screen
-        name="Booking1"
-        component={SingleBooking1}
-        options={{
-          headerLeft: () => <CustomBackButton2 />,
-          headerShown: true,
-        }}
-      />
-
-      <Stack.Screen
-        name="Booking2"
-        component={SingleBooking2}
-        options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />

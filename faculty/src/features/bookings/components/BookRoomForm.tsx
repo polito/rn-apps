@@ -1,349 +1,537 @@
-import React, { useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
-  Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import {
-  Card,
-  CtaButton,
-  IconButton,
-  Row,
-  Select,
+  faChevronDown,
+  faDesktop,
+  faLocationDot,
+  faPaperPlane,
+  faPeopleLine,
+  faPlug,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+  Icon,
+  ListItem,
+  OverviewList,
+  Section,
+  SectionHeader,
+  StatefulMenuView,
   Switch,
   Text,
   Theme,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import DateTimePicker, {
-  DateTimePickerAndroid,
-  DateTimePickerEvent,
-} from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { DateRow } from '../../../core/components/DateRow';
 import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
-import { useBookings } from '../hooks/useBookings';
 
-const availableSlots = [
-  '08:30',
-  '10:00',
-  '11:30',
-  '13:00',
-  '14:30',
-  '16:00',
-  '17:30',
-  '19:00',
-];
+const DETAILS_MAX_LENGTH = 30;
+const NO_PREFERENCE = '__none__';
 
-const places = ['Valentino', 'Centrale'];
+const CAPACITY_OPTIONS = ['10', '20', '30', '50', '100'];
+const CAMPUS_OPTIONS = ['Valentino', 'Centrale'];
+
+type MenuOption = { id: string; title: string };
+
 export const BookRoomForm = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { spacing, palettes } = useTheme();
+  const { dark, colors, fontSizes } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
-  const [showStartPicker, setShowStartPicker] = useState(false);
-  const [startDate, setStartDate] = useState(new Date());
-  const [selectedStartSlot, setSelectedStartSlot] = useState('');
-  const [selectedEndSlot, setSelectedEndSlot] = useState('');
+
   const [capacity, setCapacity] = useState('');
-  const [hasPowerPlugs, setHasPowerPlugs] = useState(false);
-  const [selectedPlace, setSelectedPlace] = useState('');
-  const [description, setDescription] = useState('');
-  const { addBooking } = useBookings();
-  const [selectedChairType, setSelectedChairType] = useState('');
-  const chairTypes = [
-    t('other.desk1'),
-    t('other.desk2'),
-    t('other.desk3'),
-    t('other.desk4'),
-    t('other.notImportant'),
-  ];
+  const [deskType, setDeskType] = useState('');
+  const [campus, setCampus] = useState('');
+  const [hasOutlets, setHasOutlets] = useState(false);
+  const [details, setDetails] = useState('');
+  const [isDetailsFocused, setIsDetailsFocused] = useState(false);
 
-  const handleDateChange = (
-    event: DateTimePickerEvent,
-    selectedDate: Date | undefined,
-    setShowPicker: React.Dispatch<React.SetStateAction<boolean>>,
-    setDate: React.Dispatch<React.SetStateAction<Date>>,
-  ) => {
-    if (event.type === 'set' && selectedDate) {
-      setShowPicker(false);
-      setDate(selectedDate);
-    } else if (event.type === 'dismissed') {
-      setShowPicker(false);
-    }
-  };
+  const noPreferences = t('other.noPreferences');
+  const iconColor = dark ? colors.secondaryText : TEXT_HEADING;
 
-  const formatDate = (date: Date) => {
-    const year = date.getFullYear();
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    return `${year}-${day}-${month}`;
-  };
-
-  const filteredEndSlots = availableSlots.filter(
-    slot => !selectedStartSlot || slot > selectedStartSlot,
+  const deskTypes = useMemo(
+    () => [
+      t('other.desk1'),
+      t('other.desk2'),
+      t('other.desk3'),
+      t('other.desk4'),
+    ],
+    [t],
   );
 
-  const generateRandomId = () => {
-    return Date.now() + Math.floor(Math.random() * 1000);
-  };
-
-  const handlePublish = () => {
-    const newId = generateRandomId();
-    const formattedStartDate = formatDate(startDate);
-    const Booking = {
-      id: newId,
-      type: 0,
-      title: `Richiesta aula #${Math.floor(10000 + Math.random() * 90000)}`,
-      content: description,
-      date: formattedStartDate,
-      time: selectedStartSlot + ' - ' + selectedEndSlot,
-      details: description,
-      capacity: parseInt(capacity, 10),
-      powerOutput: hasPowerPlugs,
-      status: 'in attesa',
-      chairType: selectedChairType,
-    };
-    addBooking(Booking);
-    navigation.goBack();
-  };
-
-  const openAndroidDatePicker = () => {
-    DateTimePickerAndroid.open({
-      value: startDate,
-      mode: 'date',
-      display: 'default',
-      onChange: (event, selectedDate) => {
-        if (event.type === 'set' && selectedDate) {
-          setStartDate(selectedDate);
-        }
-        setShowStartPicker(false);
-      },
-    });
+  const showComingSoon = () => {
+    Alert.alert(
+      t('common.comingSoon'),
+      t('bookingsScreen.bookEventComingSoon'),
+    );
   };
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerTitle: '',
+      headerBackTitle: '',
+      headerBackVisible: false,
+      headerShadowVisible: true,
+      headerTransparent: false,
+      headerStyle: {
+        backgroundColor: dark ? colors.background : HEADER_GRAY,
+      },
+      contentStyle: {
+        backgroundColor: colors.background,
+      },
       headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.navigate('PrenotaAula')}
-        />
-      ),
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-            marginLeft: Platform.OS === 'android' ? -25 : -55,
-          }}
+        <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel={t('common.close')}
+          onPress={() => navigation.goBack()}
+          style={styles.closeButton}
         >
-          {t('other.requestRoom')}
-        </Text>
+          <Text style={styles.closeText}>{t('common.close')}</Text>
+        </TouchableOpacity>
       ),
     });
-  }, [navigation, t]);
+  }, [
+    navigation,
+    t,
+    dark,
+    colors.background,
+    styles.closeButton,
+    styles.closeText,
+  ]);
+
+  const renderSelectField = ({
+    icon,
+    title,
+    value,
+    placeholder,
+    options,
+    onSelect,
+  }: {
+    icon: typeof faPeopleLine;
+    title: string;
+    value: string;
+    placeholder: string;
+    options: MenuOption[];
+    onSelect: (id: string) => void;
+  }) => (
+    <StatefulMenuView
+      style={styles.menuFill}
+      title={title}
+      actions={[
+        { id: NO_PREFERENCE, title: noPreferences },
+        ...options.map(option => ({
+          id: option.id,
+          title: option.title,
+          state: (value === option.id ? 'on' : 'off') as 'on' | 'off',
+        })),
+      ]}
+      onPressAction={({ nativeEvent: { event } }) =>
+        onSelect(event === NO_PREFERENCE ? '' : event)
+      }
+    >
+      <ListItem
+        isAction
+        leadingItem={
+          <Icon icon={icon} size={fontSizes['2xl']} color={iconColor} />
+        }
+        title={title}
+        titleStyle={styles.listTitle}
+        subtitle={value || placeholder}
+        subtitleStyle={styles.listSubtitle}
+        containerStyle={styles.listItem}
+      />
+    </StatefulMenuView>
+  );
+
+  const remainingChars = DETAILS_MAX_LENGTH - details.length;
 
   return (
-    <>
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <Card>
-          <Text variant="heading" style={styles.label}>
-            {t('other.selectDate')}
-          </Text>
-          <DateRow
-            label={t('other.date')}
-            date={formatDate(startDate)}
-            onPressCalendar={() => {
-              if (Platform.OS === 'android') {
-                openAndroidDatePicker();
-              } else {
-                setShowStartPicker(true);
+    <View style={styles.screen}>
+      <ScrollView
+        style={styles.scroll}
+        contentInsetAdjustmentBehavior="never"
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.datetimeRow}>
+          <Pressable
+            accessibilityRole="button"
+            onPress={showComingSoon}
+            style={styles.datetimeCard}
+          >
+            <Icon icon={faCalendar} size={fontSizes['2xl']} color={iconColor} />
+            <View style={styles.fieldTextBlock}>
+              <Text style={styles.fieldLabel}>{t('other.date')}</Text>
+              <View style={styles.fieldValueRow}>
+                <Text style={styles.fieldValue} numberOfLines={1}>
+                  {t('other.selectDate')}
+                </Text>
+                <Icon
+                  icon={faChevronDown}
+                  size={fontSizes.sm}
+                  color={dark ? colors.prose : TEXT_SUBTITLE}
+                />
+              </View>
+            </View>
+          </Pressable>
+
+          <Pressable
+            accessibilityRole="button"
+            onPress={showComingSoon}
+            style={styles.datetimeCard}
+          >
+            <Icon icon={faCalendar} size={fontSizes['2xl']} color={iconColor} />
+            <View style={styles.fieldTextBlock}>
+              <Text style={styles.fieldLabel} numberOfLines={1}>
+                {t('other.timeShift')}
+              </Text>
+              <View style={styles.fieldValueRow}>
+                <Text style={styles.fieldValue} numberOfLines={1}>
+                  {t('other.selectTime')}
+                </Text>
+                <Icon
+                  icon={faChevronDown}
+                  size={fontSizes.sm}
+                  color={dark ? colors.prose : TEXT_SUBTITLE}
+                />
+              </View>
+            </View>
+          </Pressable>
+        </View>
+
+        <Section style={styles.section}>
+          <SectionHeader
+            title={t('other.characteristics')}
+            titleStyle={styles.sectionTitle}
+            ellipsizeTitle={false}
+            separator={false}
+          />
+          <OverviewList indented>
+            {renderSelectField({
+              icon: faPeopleLine,
+              title: t('other.capacity'),
+              value: capacity
+                ? t('other.peopleCount', { count: Number(capacity) })
+                : '',
+              placeholder: noPreferences,
+              options: CAPACITY_OPTIONS.map(option => ({
+                id: option,
+                title: t('other.peopleCount', { count: Number(option) }),
+              })),
+              onSelect: setCapacity,
+            })}
+            {renderSelectField({
+              icon: faDesktop,
+              title: t('other.deskType'),
+              value: deskType,
+              placeholder: noPreferences,
+              options: deskTypes.map(type => ({ id: type, title: type })),
+              onSelect: setDeskType,
+            })}
+            {renderSelectField({
+              icon: faLocationDot,
+              title: t('common.campus'),
+              value: campus,
+              placeholder: noPreferences,
+              options: CAMPUS_OPTIONS.map(option => ({
+                id: option,
+                title: option,
+              })),
+              onSelect: setCampus,
+            })}
+            <ListItem
+              leadingItem={
+                <Icon icon={faPlug} size={fontSizes['2xl']} color={iconColor} />
               }
-            }}
-          />
-        </Card>
-        {Platform.OS === 'ios' && showStartPicker && (
-          <DateTimePicker
-            value={startDate}
-            mode="date"
-            display="spinner"
-            onChange={(event, date) =>
-              handleDateChange(event, date, setShowStartPicker, setStartDate)
-            }
-          />
-        )}
-        <Card style={{ marginBottom: spacing[4] }}>
-          <Text variant="heading" style={styles.label}>
-            {t('other.selectSlot')}
-          </Text>
-          <Row justify="space-between">
-            <View style={{ flex: 1, marginRight: spacing[2] }}>
-              <Select
-                label={t('other.startTime')}
-                value={selectedStartSlot}
-                onSelectOption={setSelectedStartSlot}
-                options={availableSlots.map(slot => ({
-                  id: slot,
-                  title: slot,
-                }))}
-              />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Select
-                label={t('other.endTime')}
-                value={selectedEndSlot}
-                onSelectOption={setSelectedEndSlot}
-                options={filteredEndSlots.map(slot => ({
-                  id: slot,
-                  title: slot,
-                }))}
-              />
-            </View>
-          </Row>
-        </Card>
-        <Card style={{ marginBottom: spacing[4] }}>
-          <Text variant="heading" style={styles.label}>
-            {t('other.selectDeskType')}
-          </Text>
-          <View style={{ flex: 1, marginRight: spacing[2] }}>
-            <Select
-              label={t('other.deskType')}
-              value={selectedChairType}
-              onSelectOption={setSelectedChairType}
-              options={chairTypes.map(type => ({
-                id: type,
-                title: type,
-              }))}
+              title={t('other.outlets')}
+              titleStyle={styles.listTitle}
+              containerStyle={styles.listItem}
+              onPress={() => setHasOutlets(prev => !prev)}
+              trailingItem={
+                <Switch
+                  value={hasOutlets}
+                  onChange={() => setHasOutlets(prev => !prev)}
+                  trackColor={{
+                    true: IOS_SWITCH_ON,
+                    false: IOS_SWITCH_OFF,
+                  }}
+                />
+              }
             />
-          </View>
-        </Card>
-        <Card style={{ marginBottom: spacing[4] }}>
-          <Text variant="heading" style={styles.label}>
-            {t('other.capacity')}
-          </Text>
-          <TextInput
-            style={[
-              styles.input,
-              {
-                borderBottomWidth: 1,
-                borderColor: palettes.gray[300],
-                marginHorizontal: spacing[2],
-              },
-            ]}
-            keyboardType="numeric"
-            value={capacity}
-            onChangeText={setCapacity}
-            placeholder={t('other.enterCapacity')}
-          />
-        </Card>
-        <Card style={{ marginBottom: spacing[4] }}>
-          <Row
-            justify="space-between"
-            style={{
-              marginTop: spacing[2],
-              alignItems: 'center',
-              marginBottom: spacing[2],
-            }}
-          >
-            <Text variant="heading" style={styles.label}>
-              {t('other.powerSockets')}
+          </OverviewList>
+        </Section>
+
+        <View
+          style={[
+            styles.detailsCard,
+            isDetailsFocused && styles.detailsCardFocused,
+          ]}
+        >
+          <View style={styles.detailsHeader}>
+            <Text
+              style={[
+                styles.detailsLabel,
+                !isDetailsFocused && styles.detailsLabelIdle,
+              ]}
+            >
+              {t('other.details')}
             </Text>
-            <Switch value={hasPowerPlugs} onValueChange={setHasPowerPlugs} />
-          </Row>
-        </Card>
-        <Card style={{ marginBottom: spacing[4] }}>
-          <Text variant="heading" style={styles.label}>
-            {t('other.selectRoomSite')}
-          </Text>
-          <Select
-            label={t('other.noSelection')}
-            value={selectedPlace}
-            onSelectOption={setSelectedPlace}
-            options={places.map(slot => ({ id: slot, title: slot }))}
-          />
-        </Card>
-        <Card>
-          <Text
-            variant="heading"
-            style={{
-              marginLeft: 17,
-              marginTop: 5,
-              color: palettes.gray[800],
-            }}
-          >
-            {t('other.requestReason')}
-          </Text>
+            <Text
+              style={[
+                styles.detailsCounter,
+                !isDetailsFocused && styles.detailsLabelIdle,
+              ]}
+            >
+              {remainingChars}
+            </Text>
+          </View>
           <TextInput
-            placeholder={t('other.enterDetails')}
-            value={description}
-            onChangeText={setDescription}
-            multiline={true}
-            numberOfLines={4}
+            value={details}
+            onChangeText={text => setDetails(text.slice(0, DETAILS_MAX_LENGTH))}
+            onFocus={() => setIsDetailsFocused(true)}
+            onBlur={() => setIsDetailsFocused(false)}
+            placeholder={t('other.writeSomething')}
+            placeholderTextColor={dark ? colors.secondaryText : PLACEHOLDER}
+            selectionColor={CURSOR_ORANGE}
+            multiline
             textAlignVertical="top"
-            style={{
-              borderBottomWidth: 0,
-              padding: spacing[2],
-              marginLeft: 10,
-              fontSize: 16,
-              color: palettes.gray[600],
-              minHeight: 50,
-            }}
+            maxLength={DETAILS_MAX_LENGTH}
+            style={styles.detailsInput}
           />
-        </Card>
-        <View style={{ marginBottom: spacing[10] }} />
+        </View>
       </ScrollView>
-      <CtaButton
-        title={t('other.sendRequest')}
-        action={() => {
-          Alert.alert(t('other.confirm'), t('other.alertBooking'), [
-            { text: t('common.cancel'), style: 'cancel' },
-            {
-              text: t('other.confirm'),
-              onPress: () => {
-                handlePublish();
-              },
-            },
-          ]);
-        }}
-        absolute={false}
-        variant="filled"
-        disabled={
-          !startDate || !selectedStartSlot || !selectedEndSlot || !selectedPlace
-        }
-      />
-    </>
+
+      <View style={styles.ctaContainer}>
+        <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel={t('other.send')}
+          onPress={showComingSoon}
+          style={styles.sendButton}
+        >
+          <Icon
+            icon={faPaperPlane}
+            size={fontSizes.sm}
+            color={ON_SEND_BUTTON}
+          />
+          <Text style={styles.sendButtonText}>{t('other.send')}</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 
-const createStyles = ({ palettes }: Theme) =>
+const HEADER_GRAY = '#EDEEF0';
+const CARD_SURFACE = '#FFFFFF';
+const TEXT_HEADING = '#45556C';
+const TEXT_PRIMARY = '#262626';
+const TEXT_SUBTITLE = '#314158';
+const PLACEHOLDER = '#90A1B9';
+const IOS_SWITCH_ON = '#34C759';
+const IOS_SWITCH_OFF = '#E9E9EA';
+const DETAILS_FOCUS_BORDER = '#7EB8D9';
+const CURSOR_ORANGE = '#FF9500';
+const SEND_BUTTON = '#90A1B9';
+const ON_SEND_BUTTON = '#FFFFFF';
+
+const createStyles = ({
+  dark,
+  colors,
+  fontFamilies,
+  fontSizes,
+  fontWeights,
+  shapes,
+  spacing,
+}: Theme) =>
   StyleSheet.create({
-    container: {
+    screen: {
       flex: 1,
-      paddingBottom: 20,
-      paddingTop: 10,
+      backgroundColor: colors.background,
     },
-    label: {
-      marginLeft: 17,
-      marginTop: 5,
-      color: palettes.gray[700],
+    scroll: {
+      flex: 1,
     },
-    input: {
-      borderBottomWidth: 0,
-      padding: 10,
-      marginLeft: 10,
-      fontSize: 16,
+    scrollContent: {
+      paddingTop: spacing[3],
+      paddingBottom: spacing[6],
+      gap: spacing[4],
+    },
+    closeButton: {
+      marginLeft: -spacing[2],
+      paddingHorizontal: spacing[2],
+      paddingVertical: spacing[1],
+    },
+    closeText: {
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.normal,
+      color: dark ? colors.secondaryText : PLACEHOLDER,
+    },
+    datetimeRow: {
+      flexDirection: 'row',
+      alignItems: 'stretch',
+      gap: spacing[3],
+      paddingHorizontal: spacing[4],
+    },
+    menuFill: {
+      flex: 1,
+      width: '100%',
+    },
+    datetimeCard: {
+      flex: 1,
+      height: 80,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing[2.5],
+      backgroundColor: dark ? colors.surfaceDark : CARD_SURFACE,
+      borderRadius: shapes.lg,
+      paddingVertical: spacing[3],
+      paddingHorizontal: spacing[3],
+      overflow: 'hidden',
+    },
+    datetimeCardContent: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing[2.5],
+    },
+    fieldTextBlock: {
+      flex: 1,
+      gap: spacing[0.5],
+      minWidth: 0,
+    },
+    ctaContainer: {
+      paddingHorizontal: spacing[4],
+      paddingTop: spacing[2],
+      paddingBottom: spacing[12],
+    },
+    sendButton: {
+      height: 45,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: spacing[2],
+      borderRadius: shapes.lg,
+      backgroundColor: SEND_BUTTON,
+      paddingHorizontal: 20,
+      paddingVertical: spacing[3],
+    },
+    sendButtonDisabled: {
+      opacity: 0.55,
+    },
+    sendButtonText: {
+      fontFamily: fontFamilies.heading,
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.semibold,
+      lineHeight: 20,
+      color: ON_SEND_BUTTON,
+    },
+    fieldLabel: {
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.xs,
+      fontWeight: fontWeights.normal,
+      lineHeight: 16,
+      color: dark ? colors.secondaryText : TEXT_HEADING,
+    },
+    fieldValueRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing[1],
+    },
+    fieldValue: {
+      flexShrink: 1,
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.semibold,
+      lineHeight: 20,
+      color: dark ? colors.prose : TEXT_SUBTITLE,
+    },
+    section: {
+      marginBottom: 0,
+    },
+    sectionTitle: {
+      fontFamily: fontFamilies.heading,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.bold,
+      lineHeight: 20,
+      color: dark ? colors.heading : TEXT_HEADING,
+    },
+    listItem: {
+      minHeight: 52,
+      paddingVertical: spacing[1],
+    },
+    listTitle: {
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.semibold,
+      lineHeight: 20,
+      color: dark ? colors.title : TEXT_PRIMARY,
+    },
+    listSubtitle: {
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.xs,
+      fontWeight: fontWeights.normal,
+      lineHeight: 16,
+      color: dark ? colors.prose : TEXT_SUBTITLE,
+    },
+    detailsCard: {
+      marginHorizontal: spacing[4],
+      backgroundColor: dark ? colors.surfaceDark : CARD_SURFACE,
+      borderRadius: shapes.lg,
+      paddingHorizontal: spacing[4],
+      paddingTop: spacing[3],
+      paddingBottom: spacing[3],
+      borderWidth: 1,
+      borderColor: 'transparent',
+    },
+    detailsCardFocused: {
+      borderColor: DETAILS_FOCUS_BORDER,
+    },
+    detailsHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    detailsLabel: {
+      fontFamily: fontFamilies.heading,
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.semibold,
+      lineHeight: 20,
+      color: dark ? colors.heading : TEXT_HEADING,
+    },
+    detailsLabelIdle: {
+      color: dark ? colors.secondaryText : PLACEHOLDER,
+      fontFamily: fontFamilies.body,
+      fontWeight: fontWeights.normal,
+    },
+    detailsCounter: {
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.xs,
+      fontWeight: fontWeights.medium,
+      lineHeight: 16,
+      color: dark ? colors.secondaryText : PLACEHOLDER,
+    },
+    detailsInput: {
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.xs,
+      fontWeight: fontWeights.normal,
+      lineHeight: 16,
+      color: dark ? colors.prose : TEXT_SUBTITLE,
+      padding: 0,
+      marginTop: spacing[1],
+      minHeight: 16,
     },
   });

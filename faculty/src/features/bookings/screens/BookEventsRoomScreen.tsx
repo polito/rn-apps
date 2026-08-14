@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, ScrollView } from 'react-native';
+import { FlatList, Platform, ScrollView, StyleSheet } from 'react-native';
 
 import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -11,8 +11,10 @@ import {
   IndentedDivider,
   ListItem,
   Text,
+  Theme,
   useBottomBarAwareStyles,
   useSafeAreaSpacing,
+  useStylesheet,
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -22,6 +24,7 @@ import { useBookings } from '../hooks/useBookings';
 
 export const BookEventsRoomScreen = () => {
   const { t } = useTranslation();
+  const styles = useStylesheet(createStyles);
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
@@ -45,24 +48,17 @@ export const BookEventsRoomScreen = () => {
         />
       ),
       headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-            marginLeft: Platform.OS === 'android' ? -25 : -55,
-          }}
-        >
+        <Text variant="heading" style={styles.headerTitle}>
           {t('other.requestEventsPlaces')}
         </Text>
       ),
     });
-  }, [navigation, t]);
+  }, [navigation, t, styles.headerTitle]);
 
   return (
     <>
       <ScrollView
-        style={{ flex: 1 }}
+        style={styles.scroll}
         contentContainerStyle={bottomBarAwareStyles}
         contentInsetAdjustmentBehavior="automatic"
         bounces={false}
@@ -111,7 +107,7 @@ export const BookEventsRoomScreen = () => {
                 subtitle={item.date + ' ' + item.time}
                 onPress={() => {
                   setSelectedBooking(item);
-                  navigation.navigate('Booking1');
+                  navigation.navigate('RequestDetails');
                 }}
                 trailingItem={
                   <Badge
@@ -138,7 +134,7 @@ export const BookEventsRoomScreen = () => {
       <CtaButton
         title={t('other.newRequest')}
         action={() => {
-          navigation.navigate('PrenotaEventiForm');
+          navigation.navigate('RichiediSpazio');
         }}
         absolute={false}
         variant="filled"
@@ -147,3 +143,18 @@ export const BookEventsRoomScreen = () => {
     </>
   );
 };
+
+const createStyles = ({ fontFamilies, fontSizes, fontWeights }: Theme) =>
+  StyleSheet.create({
+    scroll: {
+      flex: 1,
+    },
+    headerTitle: {
+      width: '100%',
+      textAlign: 'center',
+      marginLeft: Platform.select({ android: -25, default: -55 }),
+      fontFamily: fontFamilies.heading,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.semibold,
+    },
+  });

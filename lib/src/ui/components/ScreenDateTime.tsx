@@ -23,41 +23,61 @@ export const ScreenDateTime = ({
   time,
   inListItem = false,
 }: Props) => {
-  const { colors, dark, fontSizes, palettes } = useTheme();
+  const { colors, dark, fontFamilies, fontSizes, fontWeights, palettes } =
+    useTheme();
   const { accessibility } = usePreferencesContext();
   const color = useMemo(() => {
-    if (!inListItem) return colors.prose;
-    return dark ? palettes.gray[400] : palettes.gray[500];
+    if (!inListItem) return dark ? colors.prose : TEXT_SHORT;
+    return dark ? palettes.gray[400] : TEXT_SUBTITLE;
   }, [colors.prose, dark, inListItem, palettes.gray]);
+  const iconSize = fontSizes.sm;
+  const groupGap = inListItem ? 2 : 3;
+  const iconTextGap = 1;
+  const textStyle = inListItem
+    ? {
+        fontFamily: fontFamilies.body,
+        fontSize: fontSizes.xs,
+        fontWeight: fontWeights.normal,
+        lineHeight: 16,
+        color,
+      }
+    : {
+        fontFamily: fontFamilies.body,
+        fontSize: fontSizes.sm,
+        fontWeight: fontWeights.medium,
+        lineHeight: 20,
+        color,
+      };
 
   return (
     <>
       <Row
         accessibilityLabel={accessibilityLabel}
-        gap={3}
+        gap={groupGap}
         accessible={accessible}
       >
-        <Row gap={2} align="center">
-          <Icon icon={faCalendar} color={color} size={fontSizes.md} />
-          <Text style={{ fontSize: fontSizes.md, color }}>{date ?? ''}</Text>
+        <Row gap={iconTextGap} align="center">
+          <Icon icon={faCalendar} color={color} size={iconSize} />
+          <Text style={textStyle}>{date ?? ''}</Text>
         </Row>
-        <Row gap={2} align="center">
+        <Row gap={iconTextGap} align="center">
           {time && Number(accessibility?.fontSize) < 150 && (
             <>
-              <Icon icon={faClock} color={color} size={fontSizes.md} />
-              <Text style={{ fontSize: fontSizes.md, color }}>
-                {time ?? ''}
-              </Text>
+              <Icon icon={faClock} color={color} size={iconSize} />
+              <Text style={textStyle}>{time ?? ''}</Text>
             </>
           )}
         </Row>
       </Row>
       {time && Number(accessibility?.fontSize) >= 150 && (
-        <Row>
-          <Icon icon={faClock} color={color} size={fontSizes.md} />
-          <Text style={{ fontSize: fontSizes.md, color }}>{time ?? ''}</Text>
+        <Row gap={iconTextGap}>
+          <Icon icon={faClock} color={color} size={iconSize} />
+          <Text style={textStyle}>{time ?? ''}</Text>
         </Row>
       )}
     </>
   );
 };
+
+const TEXT_SHORT = '#525252';
+const TEXT_SUBTITLE = '#314158';
