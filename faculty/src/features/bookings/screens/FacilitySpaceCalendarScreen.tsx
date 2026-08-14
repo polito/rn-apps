@@ -1,27 +1,20 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
 
-import {
-  faChevronDown,
-  faCity,
-  faMap,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCity, faMap } from '@fortawesome/free-solid-svg-icons';
 import {
   CtaButton,
   Divider,
-  Icon,
   ListItem,
   OverviewList,
   Section,
-  StatefulMenuView,
   Text,
   Theme,
   useStylesheet,
@@ -31,7 +24,10 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
+import { SelectMenuField } from '../components/SelectMenuField';
+import { useBookingsBlurHeader } from '../hooks/useBookingsBlurHeader';
 import { useGetInterdepartmentalSpaces } from '../hooks/useInterdepartmentalSpaces';
+import { bookingsColors } from '../utils/bookingsTheme';
 
 export const FacilitySpaceCalendarScreen = () => {
   const { t } = useTranslation();
@@ -44,6 +40,11 @@ export const FacilitySpaceCalendarScreen = () => {
   const [site, setSite] = useState<string>();
   const [location, setLocation] = useState<string>();
   const [selectedSpaceId, setSelectedSpaceId] = useState<string>();
+
+  useBookingsBlurHeader({
+    title: t('bookingsScreen.facilitySpaceCalendar'),
+    headerBackButtonDisplayMode: 'minimal',
+  });
 
   useEffect(() => {
     if (!filter) return;
@@ -88,31 +89,7 @@ export const FacilitySpaceCalendarScreen = () => {
     }
   }, [filteredRooms, selectedSpaceId]);
 
-  const iconColor = dark ? colors.secondaryText : TEXT_HEADING;
-  const radioColor = dark ? colors.secondaryText : ON_SURFACE;
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: () => (
-        <Text style={styles.headerTitle}>
-          {t('bookingsScreen.facilitySpaceCalendar')}
-        </Text>
-      ),
-      headerBackTitle: '',
-      headerBackButtonDisplayMode: 'minimal',
-      headerTransparent: Platform.OS === 'ios',
-      headerBlurEffect: dark
-        ? 'systemUltraThinMaterialDark'
-        : 'systemUltraThinMaterialLight',
-      headerShadowVisible: true,
-      headerStyle: {
-        backgroundColor: Platform.select({
-          ios: undefined,
-          android: colors.headersBackground,
-        }),
-      },
-    });
-  }, [navigation, t, styles.headerTitle, dark, colors.headersBackground]);
+  const radioColor = dark ? colors.secondaryText : bookingsColors.onSurface;
 
   const renderRadio = (selected: boolean) => (
     <View style={[styles.radio, { borderColor: radioColor }]}>
@@ -140,61 +117,27 @@ export const FacilitySpaceCalendarScreen = () => {
         contentContainerStyle={styles.scrollContent}
       >
         <OverviewList style={styles.filtersList} dividers={false}>
-          <Pressable accessibilityRole="button">
-            <StatefulMenuView
-              style={styles.menu}
-              title={t('common.location')}
-              actions={siteActions}
-              onPressAction={({ nativeEvent: { event } }) => setSite(event)}
-            >
-              <ListItem
-                inverted
-                title={site}
-                titleStyle={styles.filterValue}
-                subtitle={t('common.location')}
-                subtitleStyle={styles.filterLabel}
-                subtitleProps={{ numberOfLines: 1 }}
-                containerStyle={styles.listItem}
-                leadingItem={<Icon icon={faMap} size={24} color={iconColor} />}
-                trailingItem={
-                  <Icon
-                    icon={faChevronDown}
-                    size={16}
-                    color={colors.secondaryText}
-                  />
-                }
-              />
-            </StatefulMenuView>
-          </Pressable>
+          <SelectMenuField
+            inverted
+            icon={faMap}
+            title={t('common.location')}
+            value={site}
+            options={siteActions}
+            onSelect={setSite}
+            iconSize={24}
+            containerStyle={styles.listItem}
+          />
           <Divider />
-          <Pressable accessibilityRole="button">
-            <StatefulMenuView
-              style={styles.menu}
-              title={t('common.campus')}
-              actions={locationActions}
-              onPressAction={({ nativeEvent: { event } }) =>
-                setLocation(event)
-              }
-            >
-              <ListItem
-                inverted
-                title={location}
-                titleStyle={styles.filterValue}
-                subtitle={t('common.campus')}
-                subtitleStyle={styles.filterLabel}
-                subtitleProps={{ numberOfLines: 1 }}
-                containerStyle={styles.listItem}
-                leadingItem={<Icon icon={faCity} size={24} color={iconColor} />}
-                trailingItem={
-                  <Icon
-                    icon={faChevronDown}
-                    size={16}
-                    color={colors.secondaryText}
-                  />
-                }
-              />
-            </StatefulMenuView>
-          </Pressable>
+          <SelectMenuField
+            inverted
+            icon={faCity}
+            title={t('common.campus')}
+            value={location}
+            options={locationActions}
+            onSelect={setLocation}
+            iconSize={24}
+            containerStyle={styles.listItem}
+          />
         </OverviewList>
 
         <Section style={styles.section}>
@@ -243,14 +186,6 @@ export const FacilitySpaceCalendarScreen = () => {
   );
 };
 
-const TEXT_PRIMARY = '#262626';
-const TEXT_HEADING = '#45556C';
-const TEXT_SUBTITLE = '#314158';
-const ON_SURFACE = '#62748E';
-const LINK_BLUE = '#006DB4';
-const ON_BUTTON_PRIMARY = '#F8FAFC';
-const NATIVE_LABEL_ON_NAVIGATOR = '#171717';
-
 const createStyles = ({
   dark,
   colors,
@@ -278,36 +213,8 @@ const createStyles = ({
       paddingBottom: spacing[4],
       gap: spacing[5],
     },
-    headerTitle: {
-      fontFamily: fontFamilies.heading,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 22,
-      letterSpacing: 0,
-      color: dark ? colors.title : NATIVE_LABEL_ON_NAVIGATOR,
-      textAlign: 'center',
-    },
     filtersList: {
       marginBottom: 0,
-    },
-    menu: {
-      width: '100%',
-    },
-    filterLabel: {
-      overflow: 'hidden',
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.xs,
-      fontWeight: fontWeights.medium,
-      lineHeight: 16,
-      color: dark ? colors.prose : TEXT_SUBTITLE,
-    },
-    filterValue: {
-      flex: 0,
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 20,
-      color: dark ? colors.title : TEXT_PRIMARY,
     },
     section: {
       marginBottom: 0,
@@ -318,16 +225,16 @@ const createStyles = ({
       fontSize: fontSizes.md,
       fontWeight: fontWeights.bold,
       lineHeight: 20,
-      color: dark ? colors.heading : TEXT_HEADING,
+      color: dark ? colors.heading : bookingsColors.textHeading,
       paddingHorizontal: spacing[4],
-    },
-    spacesList: {
-      marginBottom: 0,
     },
     listItem: {
       minHeight: 52,
       paddingVertical: spacing[1],
       paddingHorizontal: spacing[4],
+    },
+    spacesList: {
+      marginBottom: 0,
     },
     listTitle: {
       flex: 0,
@@ -336,7 +243,7 @@ const createStyles = ({
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
       lineHeight: 20,
-      color: dark ? colors.title : TEXT_PRIMARY,
+      color: dark ? colors.title : bookingsColors.textPrimary,
       marginBottom: 0,
     },
     listSubtitle: {
@@ -345,7 +252,7 @@ const createStyles = ({
       fontSize: fontSizes.xs,
       fontWeight: fontWeights.medium,
       lineHeight: 16,
-      color: dark ? colors.prose : TEXT_SUBTITLE,
+      color: dark ? colors.prose : bookingsColors.textSubtitle,
     },
     radio: {
       width: 16,
@@ -374,12 +281,12 @@ const createStyles = ({
       alignItems: 'center',
       width: '100%',
       borderRadius: shapes.lg,
-      backgroundColor: LINK_BLUE,
-      borderColor: LINK_BLUE,
+      backgroundColor: bookingsColors.linkBlue,
+      borderColor: bookingsColors.linkBlue,
       elevation: 0,
     },
     ctaButtonText: {
-      color: ON_BUTTON_PRIMARY,
+      color: bookingsColors.onButtonPrimary,
       textAlign: 'center',
       fontFamily: fontFamilies.heading,
       fontSize: fontSizes.sm,

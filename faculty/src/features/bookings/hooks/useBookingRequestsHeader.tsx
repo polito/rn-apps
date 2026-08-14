@@ -1,5 +1,4 @@
-import { useEffect, useLayoutEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useLayoutEffect } from 'react';
 import { Platform, StyleSheet } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -13,24 +12,11 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
-import { BookingRequestsList } from '../components/BookingRequestsList';
-import { useBookings } from '../hooks/useBookings';
 
-export const BookStructureRoomScreen = () => {
-  const { t } = useTranslation();
-  const styles = useStylesheet(createStyles);
+export const useBookingRequestsHeader = (title: string) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
-  const { bookings, setSelectedBooking } = useBookings();
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', e => {
-      e.preventDefault();
-      navigation.navigate('Prenotazione');
-    });
-
-    return unsubscribe;
-  }, [navigation]);
+  const styles = useStylesheet(createStyles);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -43,23 +29,11 @@ export const BookStructureRoomScreen = () => {
       ),
       headerTitle: () => (
         <Text variant="heading" style={styles.headerTitle}>
-          {t('other.bookStructurePlaces')}
+          {title}
         </Text>
       ),
     });
-  }, [navigation, t, styles.headerTitle]);
-
-  return (
-    <BookingRequestsList
-      bookings={bookings.filter(b => b.type === 2)}
-      onItemPress={item => {
-        setSelectedBooking(item);
-        navigation.navigate('RequestDetails');
-      }}
-      ctaTitle={t('bookingsScreen.newBooking')}
-      onCtaPress={() => navigation.navigate('RichiediSpazio')}
-    />
-  );
+  }, [navigation, title, styles.headerTitle]);
 };
 
 const createStyles = ({ fontFamilies, fontSizes, fontWeights }: Theme) =>

@@ -3,6 +3,8 @@ import { StyleSheet, TextInput, View } from 'react-native';
 
 import { Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 
+import { bookingsColors } from '../utils/bookingsTheme';
+
 interface Props {
   label: string;
   value: string;
@@ -10,14 +12,6 @@ interface Props {
   maxLength: number;
   placeholder: string;
 }
-
-const PLACEHOLDER = '#90A1B9';
-const TEXT_HEADING = '#45556C';
-const TEXT_PRIMARY = '#262626';
-const TEXT_SUBTITLE = '#314158';
-const CARD_SURFACE = '#FFFFFF';
-const FOCUS_BORDER = '#00ACFF';
-const CURSOR_ORANGE = '#FF9500';
 
 export const LimitedTextArea = ({
   label,
@@ -54,8 +48,8 @@ export const LimitedTextArea = ({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         placeholder={placeholder}
-        placeholderTextColor={dark ? colors.secondaryText : PLACEHOLDER}
-        selectionColor={CURSOR_ORANGE}
+        placeholderTextColor={dark ? colors.secondaryText : bookingsColors.placeholder}
+        selectionColor={bookingsColors.cursorOrange}
         multiline
         textAlignVertical="top"
         maxLength={maxLength}
@@ -77,7 +71,7 @@ const createStyles = ({
   StyleSheet.create({
     card: {
       marginHorizontal: spacing[4],
-      backgroundColor: dark ? colors.surfaceDark : CARD_SURFACE,
+      backgroundColor: dark ? colors.surfaceDark : bookingsColors.cardSurface,
       borderRadius: shapes.lg,
       paddingHorizontal: spacing[3],
       paddingTop: spacing[2],
@@ -86,7 +80,7 @@ const createStyles = ({
       borderColor: 'transparent',
     },
     cardFocused: {
-      borderColor: FOCUS_BORDER,
+      borderColor: bookingsColors.focusBorder,
     },
     header: {
       flexDirection: 'row',
@@ -98,10 +92,10 @@ const createStyles = ({
       fontSize: fontSizes.md,
       fontWeight: fontWeights.medium,
       lineHeight: 24,
-      color: dark ? colors.heading : TEXT_HEADING,
+      color: dark ? colors.heading : bookingsColors.textHeading,
     },
     labelIdle: {
-      color: dark ? colors.secondaryText : PLACEHOLDER,
+      color: dark ? colors.secondaryText : bookingsColors.placeholder,
     },
     counter: {
       fontFamily: fontFamilies.body,
@@ -110,14 +104,14 @@ const createStyles = ({
       lineHeight: 16,
     },
     counterActive: {
-      color: dark ? colors.heading : TEXT_HEADING,
+      color: dark ? colors.heading : bookingsColors.textHeading,
     },
     input: {
       fontFamily: fontFamilies.body,
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.normal,
       lineHeight: 20,
-      color: dark ? colors.prose : TEXT_PRIMARY,
+      color: dark ? colors.prose : bookingsColors.textPrimary,
       overflow: 'hidden',
       padding: 0,
       marginTop: spacing[0.5],

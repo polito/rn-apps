@@ -1,7 +1,5 @@
-import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -14,22 +12,21 @@ import {
   OverviewList,
   Section,
   SectionHeader,
-  Text,
   Theme,
   useStylesheet,
-  useTheme,
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
 import { BookingListItem } from '../components/BookingListItem';
+import { useBookingsBlurHeader } from '../hooks/useBookingsBlurHeader';
 import { useBookings } from '../hooks/useBookings';
+import { bookingsColors } from '../utils/bookingsTheme';
 import { getBookingDetailRoute } from '../utils/bookingStatus';
 
 export const BookingScreen = () => {
   const { t } = useTranslation();
-  const { dark, colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
@@ -37,26 +34,10 @@ export const BookingScreen = () => {
 
   const reservations = bookings.filter(booking => booking.type === 2);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: () => (
-        <Text style={styles.headerTitle}>{t('bookingsScreen.title')}</Text>
-      ),
-      headerBackTitle: t('common.services'),
-      headerBackButtonDisplayMode: 'default',
-      headerTransparent: Platform.OS === 'ios',
-      headerBlurEffect: dark
-        ? 'systemUltraThinMaterialDark'
-        : 'systemUltraThinMaterialLight',
-      headerShadowVisible: true,
-      headerStyle: {
-        backgroundColor: Platform.select({
-          ios: undefined,
-          android: colors.headersBackground,
-        }),
-      },
-    });
-  }, [navigation, t, styles.headerTitle, dark, colors.headersBackground]);
+  useBookingsBlurHeader({
+    title: t('bookingsScreen.title'),
+    headerBackTitle: t('common.services'),
+  });
 
   return (
     <>
@@ -115,11 +96,6 @@ export const BookingScreen = () => {
   );
 };
 
-const NATIVE_LABEL_ON_NAVIGATOR = '#171717';
-const TEXT_HEADING = '#45556C';
-const BUTTON_PRIMARY = '#006DB4';
-const ON_BUTTON_PRIMARY = '#F8FAFC';
-
 const createStyles = ({
   dark,
   colors,
@@ -136,21 +112,12 @@ const createStyles = ({
     section: {
       marginTop: spacing[3],
     },
-    headerTitle: {
-      fontFamily: fontFamilies.heading,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 22,
-      letterSpacing: 0,
-      color: dark ? colors.title : NATIVE_LABEL_ON_NAVIGATOR,
-      textAlign: 'center',
-    },
     sectionTitle: {
       fontFamily: fontFamilies.heading,
       fontSize: fontSizes.md,
       fontWeight: fontWeights.bold,
       lineHeight: 20,
-      color: dark ? colors.heading : TEXT_HEADING,
+      color: dark ? colors.heading : bookingsColors.textHeading,
     },
     sectionSubtitle: {
       color: colors.prose,
@@ -173,12 +140,12 @@ const createStyles = ({
       flexBasis: 0,
       width: '100%',
       borderRadius: shapes.lg,
-      backgroundColor: BUTTON_PRIMARY,
-      borderColor: BUTTON_PRIMARY,
+      backgroundColor: bookingsColors.buttonPrimary,
+      borderColor: bookingsColors.buttonPrimary,
       elevation: 0,
     },
     ctaButtonText: {
-      color: ON_BUTTON_PRIMARY,
+      color: bookingsColors.onButtonPrimary,
       textAlign: 'center',
       fontFamily: fontFamilies.heading,
       fontSize: fontSizes.sm,

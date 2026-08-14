@@ -1,8 +1,7 @@
-import { ReactElement, useEffect, useLayoutEffect } from 'react';
+import { ReactElement, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
-  Platform,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -42,7 +41,9 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
 import { BookingStatusBadge } from '../components/BookingStatusBadge';
+import { useBookingsBlurHeader } from '../hooks/useBookingsBlurHeader';
 import { useBookings } from '../hooks/useBookings';
+import { bookingsColors } from '../utils/bookingsTheme';
 import { parseBookingDescription } from '../utils/bookingStatus';
 
 const getActiveStatusLabel = (value: boolean, t: (key: string) => string) =>
@@ -57,27 +58,10 @@ export const RequestDetailsScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: () => (
-        <Text style={styles.headerTitle}>{t('other.requestRoom')}</Text>
-      ),
-      headerLeft: undefined,
-      headerBackTitle: t('common.services'),
-      headerBackButtonDisplayMode: 'default',
-      headerTransparent: Platform.OS === 'ios',
-      headerBlurEffect: dark
-        ? 'systemUltraThinMaterialDark'
-        : 'systemUltraThinMaterialLight',
-      headerShadowVisible: true,
-      headerStyle: {
-        backgroundColor: Platform.select({
-          ios: undefined,
-          android: colors.headersBackground,
-        }),
-      },
-    });
-  }, [navigation, t, styles.headerTitle, dark, colors.headersBackground]);
+  useBookingsBlurHeader({
+    title: t('other.requestRoom'),
+    headerBackTitle: t('common.services'),
+  });
 
   useEffect(() => {
     if (selectedBooking && !isOwnBooking(selectedBooking)) {
@@ -89,7 +73,7 @@ export const RequestDetailsScreen = () => {
 
   const isOwn = isOwnBooking(selectedBooking);
 
-  const iconColor = dark ? colors.secondaryText : TEXT_HEADING;
+  const iconColor = dark ? colors.secondaryText : bookingsColors.textHeading;
   const isFacilityBooking = selectedBooking.type === 2;
   const eventTypeLabel =
     selectedBooking.eventType ??
@@ -324,7 +308,7 @@ export const RequestDetailsScreen = () => {
               )
             }
           >
-            <Icon icon={faTrash} size={fontSizes.xl} color={BUTTON_DANGER_ON} />
+            <Icon icon={faTrash} size={fontSizes.xl} color={bookingsColors.buttonDangerOn} />
             <Text style={styles.deleteButtonText}>{t('common.delete')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -338,7 +322,7 @@ export const RequestDetailsScreen = () => {
               )
             }
           >
-            <Icon icon={faPen} size={fontSizes.xl} color={ON_BUTTON_PRIMARY} />
+            <Icon icon={faPen} size={fontSizes.xl} color={bookingsColors.onButtonPrimary} />
             <Text style={styles.editButtonText}>{t('common.edit')}</Text>
           </TouchableOpacity>
         </CtaButtonContainer>
@@ -346,17 +330,6 @@ export const RequestDetailsScreen = () => {
     </View>
   );
 };
-
-const NATIVE_LABEL = '#171717';
-const TEXT_TITLE = '#002B49';
-const TEXT_HEADING = '#45556C';
-const TEXT_PRIMARY = '#262626';
-const TEXT_SUBTITLE = '#314158';
-const BUTTON_DANGER_BORDER = '#EC003F';
-const BUTTON_DANGER_BG = 'rgba(255, 241, 242, 0.70)';
-const BUTTON_DANGER_ON = '#C70036';
-const BUTTON_PRIMARY = '#006DB4';
-const ON_BUTTON_PRIMARY = '#F8FAFC';
 
 const createStyles = ({
   dark,
@@ -404,12 +377,12 @@ const createStyles = ({
       flexBasis: 0,
       borderRadius: shapes.lg,
       borderWidth: 1,
-      borderColor: BUTTON_DANGER_BORDER,
-      backgroundColor: dark ? colors.background : BUTTON_DANGER_BG,
+      borderColor: bookingsColors.buttonDangerBorder,
+      backgroundColor: dark ? colors.background : bookingsColors.buttonDangerBg,
       elevation: 0,
     },
     deleteButtonText: {
-      color: BUTTON_DANGER_ON,
+      color: bookingsColors.buttonDangerOn,
       fontFamily: fontFamilies.heading,
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
@@ -427,11 +400,11 @@ const createStyles = ({
       flexShrink: 0,
       flexBasis: 0,
       borderRadius: shapes.lg,
-      backgroundColor: BUTTON_PRIMARY,
+      backgroundColor: bookingsColors.buttonPrimary,
       elevation: 0,
     },
     editButtonText: {
-      color: ON_BUTTON_PRIMARY,
+      color: bookingsColors.onButtonPrimary,
       fontFamily: fontFamilies.heading,
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
@@ -442,7 +415,7 @@ const createStyles = ({
       fontSize: fontSizes.md,
       fontWeight: fontWeights.semibold,
       lineHeight: 22,
-      color: dark ? colors.title : NATIVE_LABEL,
+      color: dark ? colors.title : bookingsColors.nativeLabelOnNavigator,
       textAlign: 'center',
     },
     headerBlock: {
@@ -454,7 +427,7 @@ const createStyles = ({
       fontSize: fontSizes.xl,
       fontWeight: fontWeights.bold,
       lineHeight: 24,
-      color: dark ? colors.title : TEXT_TITLE,
+      color: dark ? colors.title : bookingsColors.textTitle,
     },
     metaRow: {
       flexDirection: 'row',
@@ -470,7 +443,7 @@ const createStyles = ({
       fontSize: fontSizes.md,
       fontWeight: fontWeights.bold,
       lineHeight: 20,
-      color: dark ? colors.heading : TEXT_HEADING,
+      color: dark ? colors.heading : bookingsColors.textHeading,
     },
     listItem: {
       minHeight: 52,
@@ -481,21 +454,21 @@ const createStyles = ({
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
       lineHeight: 20,
-      color: dark ? colors.title : TEXT_PRIMARY,
+      color: dark ? colors.title : bookingsColors.textPrimary,
     },
     listSubtitle: {
       fontFamily: fontFamilies.body,
       fontSize: fontSizes.xs,
       fontWeight: fontWeights.normal,
       lineHeight: 16,
-      color: dark ? colors.prose : TEXT_SUBTITLE,
+      color: dark ? colors.prose : bookingsColors.textSubtitle,
     },
     detailsText: {
       fontFamily: fontFamilies.body,
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.normal,
       lineHeight: 20,
-      color: dark ? colors.prose : TEXT_PRIMARY,
+      color: dark ? colors.prose : bookingsColors.textPrimary,
       padding: spacing[4],
     },
   });

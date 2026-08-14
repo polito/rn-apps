@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
+import { bookingsColors } from '../utils/bookingsTheme';
 
 export const RequestSpaceScreen = () => {
   const { t } = useTranslation();
@@ -30,7 +31,7 @@ export const RequestSpaceScreen = () => {
       headerShadowVisible: true,
       headerTransparent: false,
       headerStyle: {
-        backgroundColor: HEADER_GRAY,
+        backgroundColor: bookingsColors.headerGray,
       },
       contentStyle: {
         backgroundColor: colors.background,
@@ -38,7 +39,7 @@ export const RequestSpaceScreen = () => {
       headerLeft: () => (
         <IconButton
           icon={faChevronLeft}
-          color={LINK_BLUE}
+          color={bookingsColors.linkBlue}
           size={22}
           adjustSpacing="left"
           noPadding
@@ -81,10 +82,6 @@ export const RequestSpaceScreen = () => {
   );
 };
 
-const TEXT_PRIMARY = '#262626';
-const LINK_BLUE = '#006DB4';
-const HEADER_GRAY = '#EDEEF0';
-
 const createStyles = ({
   dark,
   colors,
@@ -126,6 +123,6 @@ const createStyles = ({
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
       lineHeight: 20,
-      color: dark ? colors.title : TEXT_PRIMARY,
+      color: dark ? colors.title : bookingsColors.textPrimary,
     },
   });

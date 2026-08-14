@@ -35,6 +35,7 @@ import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator
 import { DateTimeFieldRow } from '../components/DateTimeFieldRow';
 import { LimitedTextArea } from '../components/LimitedTextArea';
 import { SelectMenuField } from '../components/SelectMenuField';
+import { bookingsColors } from '../utils/bookingsTheme';
 
 const DETAILS_MAX_LENGTH = 30;
 
@@ -55,7 +56,7 @@ export const BookRoomScreen = () => {
   const [details, setDetails] = useState('');
 
   const noPreferences = t('other.noPreferences');
-  const iconColor = dark ? colors.secondaryText : TEXT_HEADING;
+  const iconColor = dark ? colors.secondaryText : bookingsColors.textHeading;
 
   const deskTypes = useMemo(
     () => [
@@ -82,7 +83,7 @@ export const BookRoomScreen = () => {
       headerShadowVisible: true,
       headerTransparent: false,
       headerStyle: {
-        backgroundColor: dark ? colors.background : HEADER_GRAY,
+        backgroundColor: dark ? colors.background : bookingsColors.headerGray,
       },
       contentStyle: {
         backgroundColor: colors.background,
@@ -193,8 +194,8 @@ export const BookRoomScreen = () => {
                   value={hasOutlets}
                   onChange={() => setHasOutlets(prev => !prev)}
                   trackColor={{
-                    true: IOS_SWITCH_ON,
-                    false: IOS_SWITCH_OFF,
+                    true: bookingsColors.iosSwitchOn,
+                    false: bookingsColors.iosSwitchOff,
                   }}
                 />
               }
@@ -221,7 +222,7 @@ export const BookRoomScreen = () => {
           <Icon
             icon={faPaperPlane}
             size={fontSizes.sm}
-            color={ON_SEND_BUTTON}
+            color={bookingsColors.onSendButton}
           />
           <Text style={styles.sendButtonText}>{t('other.send')}</Text>
         </TouchableOpacity>
@@ -229,15 +230,6 @@ export const BookRoomScreen = () => {
     </View>
   );
 };
-
-const HEADER_GRAY = '#EDEEF0';
-const TEXT_HEADING = '#45556C';
-const TEXT_PRIMARY = '#262626';
-const PLACEHOLDER = '#90A1B9';
-const IOS_SWITCH_ON = '#34C759';
-const IOS_SWITCH_OFF = '#E9E9EA';
-const SEND_BUTTON = '#90A1B9';
-const ON_SEND_BUTTON = '#FFFFFF';
 
 const createStyles = ({
   dark,
@@ -270,7 +262,7 @@ const createStyles = ({
       fontFamily: fontFamilies.body,
       fontSize: fontSizes.md,
       fontWeight: fontWeights.normal,
-      color: dark ? colors.secondaryText : PLACEHOLDER,
+      color: dark ? colors.secondaryText : bookingsColors.placeholder,
     },
     ctaContainer: {
       paddingHorizontal: spacing[4],
@@ -284,7 +276,7 @@ const createStyles = ({
       justifyContent: 'center',
       gap: spacing[2],
       borderRadius: shapes.lg,
-      backgroundColor: SEND_BUTTON,
+      backgroundColor: bookingsColors.sendButton,
       paddingHorizontal: 20,
       paddingVertical: spacing[3],
     },
@@ -293,7 +285,7 @@ const createStyles = ({
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
       lineHeight: 20,
-      color: ON_SEND_BUTTON,
+      color: bookingsColors.onSendButton,
     },
     section: {
       marginBottom: 0,
@@ -303,7 +295,7 @@ const createStyles = ({
       fontSize: fontSizes.md,
       fontWeight: fontWeights.bold,
       lineHeight: 20,
-      color: dark ? colors.heading : TEXT_HEADING,
+      color: dark ? colors.heading : bookingsColors.textHeading,
     },
     listItem: {
       minHeight: 52,
@@ -314,6 +306,6 @@ const createStyles = ({
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
       lineHeight: 20,
-      color: dark ? colors.title : TEXT_PRIMARY,
+      color: dark ? colors.title : bookingsColors.textPrimary,
     },
   });

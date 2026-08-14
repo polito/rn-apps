@@ -29,6 +29,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { DateTime } from 'luxon';
 
 import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
+import { bookingsColors } from '../utils/bookingsTheme';
 import {
   DATE_SELECTOR_WEEKDAY_COUNT,
   DateSelector,
@@ -316,12 +317,6 @@ export const FacilitySpaceTimelineScreen = () => {
   );
 };
 
-const NATIVE_LABEL_ON_NAVIGATOR = '#171717';
-const TEXT_PRIMARY = '#262626';
-const GRAY_300 = '#CBD5DC';
-const LINK_BLUE = '#006DB4';
-const ON_BUTTON_PRIMARY = '#F8FAFC';
-
 const createStyles = ({
   dark,
   colors,
@@ -342,7 +337,7 @@ const createStyles = ({
       fontWeight: fontWeights.semibold,
       lineHeight: 22,
       letterSpacing: 0,
-      color: dark ? colors.title : NATIVE_LABEL_ON_NAVIGATOR,
+      color: dark ? colors.title : bookingsColors.nativeLabelOnNavigator,
       textAlign: 'center',
     },
     daysContainer: {
@@ -389,7 +384,7 @@ const createStyles = ({
       fontWeight: fontWeights.normal,
       lineHeight: 16,
       textAlign: 'center',
-      color: dark ? colors.title : TEXT_PRIMARY,
+      color: dark ? colors.title : bookingsColors.textPrimary,
     },
     hourFrame: {
       flexGrow: 1,
@@ -397,14 +392,14 @@ const createStyles = ({
       flexBasis: 0,
       alignSelf: 'stretch',
       borderLeftWidth: 0.5,
-      borderLeftColor: dark ? colors.divider : GRAY_300,
+      borderLeftColor: dark ? colors.divider : bookingsColors.gray300,
     },
     hourLine: {
       flexGrow: 1,
       flexShrink: 1,
       flexBasis: 0,
       height: StyleSheet.hairlineWidth,
-      backgroundColor: dark ? colors.divider : GRAY_300,
+      backgroundColor: dark ? colors.divider : bookingsColors.gray300,
     },
     eventCard: {
       position: 'absolute',
@@ -432,7 +427,7 @@ const createStyles = ({
       fontWeight: fontWeights.normal,
       lineHeight: 19,
       letterSpacing: 0.12,
-      color: NATIVE_LABEL_ON_NAVIGATOR,
+      color: bookingsColors.nativeLabelOnNavigator,
     },
     eventCategory: {
       flexShrink: 1,
@@ -441,7 +436,7 @@ const createStyles = ({
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
       lineHeight: 20,
-      color: TEXT_PRIMARY,
+      color: bookingsColors.textPrimary,
     },
     eventPerson: {
       fontFamily: fontFamilies.heading,
@@ -457,7 +452,7 @@ const createStyles = ({
       fontWeight: fontWeights.normal,
       lineHeight: 19,
       letterSpacing: 0.12,
-      color: TEXT_PRIMARY,
+      color: bookingsColors.textPrimary,
     },
     ctaContainer: {
       paddingHorizontal: spacing[4],
@@ -473,12 +468,12 @@ const createStyles = ({
       alignItems: 'center',
       width: '100%',
       borderRadius: shapes.lg,
-      backgroundColor: LINK_BLUE,
-      borderColor: LINK_BLUE,
+      backgroundColor: bookingsColors.linkBlue,
+      borderColor: bookingsColors.linkBlue,
       elevation: 0,
     },
     ctaButtonText: {
-      color: ON_BUTTON_PRIMARY,
+      color: bookingsColors.onButtonPrimary,
       textAlign: 'center',
       fontFamily: fontFamilies.heading,
       fontSize: fontSizes.sm,

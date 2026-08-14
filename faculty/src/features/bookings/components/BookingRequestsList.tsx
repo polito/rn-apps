@@ -1,4 +1,4 @@
-import { FlatList, ScrollView, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -27,34 +27,24 @@ export const BookingRequestsList = ({
 }: Props) => {
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const { paddingHorizontal } = useSafeAreaSpacing();
-  const styles = StyleSheet.create({
-    scroll: {
-      flex: 1,
-    },
-  });
 
   return (
     <>
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={bottomBarAwareStyles}
+      <FlatList
+        data={bookings}
+        style={styles.list}
+        keyExtractor={item => item.id.toString()}
+        contentContainerStyle={[bottomBarAwareStyles, paddingHorizontal]}
         contentInsetAdjustmentBehavior="automatic"
-        bounces={false}
-      >
-        <FlatList
-          data={bookings}
-          keyExtractor={item => item.id.toString()}
-          contentContainerStyle={paddingHorizontal}
-          ItemSeparatorComponent={() => <IndentedDivider />}
-          renderItem={({ item }) => (
-            <BookingListItem
-              booking={item}
-              onPress={() => onItemPress(item)}
-            />
-          )}
-          ListFooterComponent={<BottomBarSpacer />}
-        />
-      </ScrollView>
+        ItemSeparatorComponent={IndentedDivider}
+        renderItem={({ item }) => (
+          <BookingListItem
+            booking={item}
+            onPress={() => onItemPress(item)}
+          />
+        )}
+        ListFooterComponent={BottomBarSpacer}
+      />
 
       <CtaButton
         title={ctaTitle}
@@ -66,3 +56,9 @@ export const BookingRequestsList = ({
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  list: {
+    flex: 1,
+  },
+});

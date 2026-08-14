@@ -9,6 +9,8 @@ import {
   useStylesheet,
 } from '@polito/lib/ui';
 
+import { bookingsColors } from '../utils/bookingsTheme';
+
 interface Props {
   label: string;
   title: string;
@@ -36,18 +38,12 @@ export const BookingActionCard = ({ label, title, onPress }: Props) => {
       </View>
       <View style={styles.buttonRow}>
         <View style={styles.iconButton}>
-          <Icon icon={faPaperPlane} size={12} color={BUTTON_PRIMARY} />
+          <Icon icon={faPaperPlane} size={12} color={bookingsColors.buttonPrimary} />
         </View>
       </View>
     </TouchableCard>
   );
 };
-
-const CARD_SURFACE = '#D4D4D4';
-const TEXT_PRIMARY = '#262626';
-const BUTTON_PRIMARY = '#006DB4';
-const BUTTON_SECONDARY_BG = 'rgba(238, 249, 255, 0.7)';
-const BUTTON_SECONDARY_BG_DARK = 'rgba(0, 109, 180, 0.2)';
 
 const createStyles = ({
   colors,
@@ -69,7 +65,7 @@ const createStyles = ({
       marginVertical: 0,
       padding: spacing[2],
       borderRadius: shapes.lg,
-      backgroundColor: dark ? colors.surfaceDark : CARD_SURFACE,
+      backgroundColor: dark ? colors.surfaceDark : bookingsColors.cardSurfaceMuted,
       elevation: 0,
     },
     textContainer: {
@@ -81,14 +77,14 @@ const createStyles = ({
       fontSize: fontSizes.xs,
       fontWeight: fontWeights.normal,
       lineHeight: 18,
-      color: dark ? colors.prose : TEXT_PRIMARY,
+      color: dark ? colors.prose : bookingsColors.textPrimary,
     },
     title: {
       fontFamily: fontFamilies.heading,
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
       lineHeight: 17.5,
-      color: dark ? colors.heading : TEXT_PRIMARY,
+      color: dark ? colors.heading : bookingsColors.textPrimary,
     },
     buttonRow: {
       width: '100%',
@@ -100,8 +96,8 @@ const createStyles = ({
       paddingHorizontal: spacing[3],
       borderRadius: shapes.lg,
       borderWidth: 1,
-      borderColor: BUTTON_PRIMARY,
-      backgroundColor: dark ? BUTTON_SECONDARY_BG_DARK : BUTTON_SECONDARY_BG,
+      borderColor: bookingsColors.buttonPrimary,
+      backgroundColor: dark ? bookingsColors.buttonSecondaryBgDark : bookingsColors.buttonSecondaryBg,
       alignItems: 'center',
       justifyContent: 'center',
     },

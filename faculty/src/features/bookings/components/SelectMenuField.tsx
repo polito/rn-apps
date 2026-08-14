@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import {
@@ -9,6 +9,8 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+
+import { bookingsColors } from '../utils/bookingsTheme';
 
 export const NO_PREFERENCE = '__none__';
 
@@ -24,11 +26,9 @@ interface Props {
   allowNoPreference?: boolean;
   noPreferenceLabel?: string;
   iconSize?: number;
+  inverted?: boolean;
+  containerStyle?: StyleProp<ViewStyle>;
 }
-
-const TEXT_HEADING = '#45556C';
-const TEXT_PRIMARY = '#262626';
-const TEXT_SUBTITLE = '#314158';
 
 export const SelectMenuField = ({
   icon,
@@ -40,10 +40,12 @@ export const SelectMenuField = ({
   allowNoPreference = false,
   noPreferenceLabel,
   iconSize,
+  inverted = false,
+  containerStyle,
 }: Props) => {
   const { dark, colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
-  const iconColor = dark ? colors.secondaryText : TEXT_HEADING;
+  const iconColor = dark ? colors.secondaryText : bookingsColors.textHeading;
   const resolvedIconSize = iconSize ?? fontSizes['2xl'];
   const displayValue =
     options.find(option => option.id === value)?.title ?? value;
@@ -59,6 +61,9 @@ export const SelectMenuField = ({
     })),
   ];
 
+  const primaryText = inverted ? displayValue || placeholder : title;
+  const secondaryText = inverted ? title : displayValue || placeholder;
+
   return (
     <StatefulMenuView
       style={styles.menuFill}
@@ -72,14 +77,16 @@ export const SelectMenuField = ({
     >
       <ListItem
         isAction
+        inverted={inverted}
         leadingItem={
           <Icon icon={icon} size={resolvedIconSize} color={iconColor} />
         }
-        title={title}
-        titleStyle={styles.listTitle}
-        subtitle={displayValue || placeholder}
-        subtitleStyle={styles.listSubtitle}
-        containerStyle={styles.listItem}
+        title={primaryText}
+        titleStyle={inverted ? styles.filterValue : styles.listTitle}
+        subtitle={secondaryText}
+        subtitleStyle={inverted ? styles.filterLabel : styles.listSubtitle}
+        subtitleProps={inverted ? { numberOfLines: 1 } : undefined}
+        containerStyle={[styles.listItem, containerStyle]}
       />
     </StatefulMenuView>
   );
@@ -107,13 +114,29 @@ const createStyles = ({
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
       lineHeight: 20,
-      color: dark ? colors.title : TEXT_PRIMARY,
+      color: dark ? colors.title : bookingsColors.textPrimary,
     },
     listSubtitle: {
       fontFamily: fontFamilies.body,
       fontSize: fontSizes.xs,
       fontWeight: fontWeights.normal,
       lineHeight: 16,
-      color: dark ? colors.prose : TEXT_SUBTITLE,
+      color: dark ? colors.prose : bookingsColors.textSubtitle,
+    },
+    filterLabel: {
+      overflow: 'hidden',
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.xs,
+      fontWeight: fontWeights.medium,
+      lineHeight: 16,
+      color: dark ? colors.prose : bookingsColors.textSubtitle,
+    },
+    filterValue: {
+      flex: 0,
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.semibold,
+      lineHeight: 20,
+      color: dark ? colors.title : bookingsColors.textPrimary,
     },
   });

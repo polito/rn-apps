@@ -1,8 +1,7 @@
-import { useLayoutEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
-  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -28,7 +27,9 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
 import { BookingActionCard } from '../components/BookingActionCard';
 import { BookingListItem } from '../components/BookingListItem';
+import { useBookingsBlurHeader } from '../hooks/useBookingsBlurHeader';
 import { useBookings } from '../hooks/useBookings';
+import { bookingsColors } from '../utils/bookingsTheme';
 import { getBookingDetailRoute } from '../utils/bookingStatus';
 
 const VISIBLE_COUNT = 3;
@@ -55,26 +56,10 @@ export const NewReservationScreen = () => {
     reservations.length - VISIBLE_COUNT,
   );
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: () => (
-        <Text style={styles.headerTitle}>{t('bookingsScreen.title')}</Text>
-      ),
-      headerBackTitle: t('common.services'),
-      headerBackButtonDisplayMode: 'default',
-      headerTransparent: Platform.OS === 'ios',
-      headerBlurEffect: dark
-        ? 'systemUltraThinMaterialDark'
-        : 'systemUltraThinMaterialLight',
-      headerShadowVisible: true,
-      headerStyle: {
-        backgroundColor: Platform.select({
-          ios: undefined,
-          android: colors.headersBackground,
-        }),
-      },
-    });
-  }, [navigation, t, styles.headerTitle, dark, colors.headersBackground]);
+  useBookingsBlurHeader({
+    title: t('bookingsScreen.title'),
+    headerBackTitle: t('common.services'),
+  });
 
   const renderShowOthers = (
     moreCount: number,
@@ -95,7 +80,7 @@ export const NewReservationScreen = () => {
         <Icon
           icon={faChevronRight}
           size={fontSizes.xs}
-          color={dark ? colors.link : TEXT_LINK}
+          color={dark ? colors.link : bookingsColors.textLink}
         />
       </TouchableOpacity>
     );
@@ -181,10 +166,6 @@ export const NewReservationScreen = () => {
   );
 };
 
-const NATIVE_LABEL_ON_NAVIGATOR = '#171717';
-const TEXT_HEADING = '#45556C';
-const TEXT_LINK = '#004C7A';
-
 const createStyles = ({
   dark,
   colors,
@@ -208,21 +189,12 @@ const createStyles = ({
       marginTop: spacing[5],
       marginBottom: 0,
     },
-    headerTitle: {
-      fontFamily: fontFamilies.heading,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 22,
-      letterSpacing: 0,
-      color: dark ? colors.title : NATIVE_LABEL_ON_NAVIGATOR,
-      textAlign: 'center',
-    },
     sectionTitle: {
       fontFamily: fontFamilies.heading,
       fontSize: fontSizes.md,
       fontWeight: fontWeights.bold,
       lineHeight: 20,
-      color: dark ? colors.heading : TEXT_HEADING,
+      color: dark ? colors.heading : bookingsColors.textHeading,
     },
     showOthers: {
       flexDirection: 'row',
@@ -235,7 +207,7 @@ const createStyles = ({
       fontSize: fontSizes.xs,
       fontWeight: fontWeights.medium,
       lineHeight: 16,
-      color: dark ? colors.link : TEXT_LINK,
+      color: dark ? colors.link : bookingsColors.textLink,
       textAlign: 'right',
     },
   });

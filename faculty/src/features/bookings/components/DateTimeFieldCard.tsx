@@ -4,6 +4,8 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { Icon, Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 
+import { bookingsColors } from '../utils/bookingsTheme';
+
 interface Props {
   icon: IconDefinition;
   label: string;
@@ -35,7 +37,7 @@ export const DateTimeFieldCard = ({
       <Icon
         icon={icon}
         size={iconSize}
-        color={dark ? colors.secondaryText : TEXT_HEADING}
+        color={dark ? colors.secondaryText : bookingsColors.textHeading}
       />
       <View style={styles.fieldTextBlock}>
         <Text style={styles.fieldLabel} numberOfLines={1}>
@@ -48,18 +50,13 @@ export const DateTimeFieldCard = ({
           <Icon
             icon={faChevronDown}
             size={chevronSize}
-            color={dark ? colors.prose : TEXT_SUBTITLE}
+            color={dark ? colors.prose : bookingsColors.textSubtitle}
           />
         </View>
       </View>
     </Pressable>
   );
 };
-
-const CARD_SURFACE = '#FFFFFF';
-const TEXT_HEADING = '#45556C';
-const TEXT_PRIMARY = '#262626';
-const TEXT_SUBTITLE = '#314158';
 
 const createStyles = ({
   dark,
@@ -76,7 +73,7 @@ const createStyles = ({
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing[3],
-      backgroundColor: dark ? colors.surfaceDark : CARD_SURFACE,
+      backgroundColor: dark ? colors.surfaceDark : bookingsColors.cardSurface,
       borderRadius: shapes.lg,
       paddingVertical: spacing[3],
       paddingHorizontal: spacing[4],
@@ -92,7 +89,7 @@ const createStyles = ({
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.normal,
       lineHeight: 20,
-      color: dark ? colors.secondaryText : TEXT_PRIMARY,
+      color: dark ? colors.secondaryText : bookingsColors.textPrimary,
     },
     fieldValueRow: {
       flexDirection: 'row',
@@ -105,6 +102,6 @@ const createStyles = ({
       fontSize: fontSizes.md,
       fontWeight: fontWeights.semibold,
       lineHeight: 24,
-      color: dark ? colors.prose : TEXT_SUBTITLE,
+      color: dark ? colors.prose : bookingsColors.textSubtitle,
     },
   });

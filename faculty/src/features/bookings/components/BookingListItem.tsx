@@ -10,6 +10,7 @@ import {
 } from '@polito/lib/ui';
 
 import { useBookings } from '../hooks/useBookings';
+import { bookingsColors } from '../utils/bookingsTheme';
 import { formatBookingTitle } from '../utils/bookingStatus';
 import { BookingStatusBadge } from './BookingStatusBadge';
 
@@ -49,8 +50,6 @@ export const BookingListItem = ({
   );
 };
 
-const TEXT_PRIMARY = '#262626';
-
 const createStyles = ({
   dark,
   colors,
@@ -66,7 +65,7 @@ const createStyles = ({
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
       lineHeight: 20,
-      color: dark ? colors.title : TEXT_PRIMARY,
+      color: dark ? colors.title : bookingsColors.textPrimary,
       marginBottom: spacing[1],
     },
     trailing: {

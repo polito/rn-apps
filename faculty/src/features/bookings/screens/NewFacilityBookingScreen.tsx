@@ -48,12 +48,13 @@ import {
   useUpdateSpaceEvent,
 } from '../hooks/useInterdepartmentalSpaces';
 import { useBookings } from '../hooks/useBookings';
+import { bookingsColors } from '../utils/bookingsTheme';
 import {
   fromApiDate,
   fromApiTime,
   toApiDate,
   toApiTime,
-} from '../utils/slotTimeline';
+} from '../utils/apiDates';
 
 const DESCRIPTION_MAX_LENGTH = 30;
 
@@ -169,7 +170,7 @@ export const NewFacilityBookingScreen = () => {
     );
   }, [editingSlot, eventTypes]);
 
-  const iconColor = dark ? colors.secondaryText : TEXT_HEADING;
+  const iconColor = dark ? colors.secondaryText : bookingsColors.textHeading;
 
   const eventTypeTitle =
     eventTypes.find(item => item.id === eventTypeId)?.title ?? '';
@@ -330,7 +331,7 @@ export const NewFacilityBookingScreen = () => {
       headerShadowVisible: true,
       headerTransparent: false,
       headerStyle: {
-        backgroundColor: dark ? colors.background : HEADER_GRAY,
+        backgroundColor: dark ? colors.background : bookingsColors.headerGray,
       },
       contentStyle: {
         backgroundColor: colors.background,
@@ -461,10 +462,10 @@ export const NewFacilityBookingScreen = () => {
                   value={recurringEvent}
                   onChange={() => setRecurringEvent(prev => !prev)}
                   trackColor={{
-                    true: IOS_SWITCH_ON,
-                    false: IOS_SWITCH_OFF,
+                    true: bookingsColors.iosSwitchOn,
+                    false: bookingsColors.iosSwitchOff,
                   }}
-                  ios_backgroundColor={IOS_SWITCH_OFF}
+                  ios_backgroundColor={bookingsColors.iosSwitchOff}
                 />
               }
             />
@@ -479,10 +480,10 @@ export const NewFacilityBookingScreen = () => {
                   value={visibleToOthers}
                   onChange={() => setVisibleToOthers(prev => !prev)}
                   trackColor={{
-                    true: IOS_SWITCH_ON,
-                    false: IOS_SWITCH_OFF,
+                    true: bookingsColors.iosSwitchOn,
+                    false: bookingsColors.iosSwitchOff,
                   }}
-                  ios_backgroundColor={IOS_SWITCH_OFF}
+                  ios_backgroundColor={bookingsColors.iosSwitchOff}
                 />
               }
             />
@@ -522,18 +523,6 @@ export const NewFacilityBookingScreen = () => {
   );
 };
 
-const HEADER_GRAY = '#EDEEF0';
-const NATIVE_LABEL_ON_NAVIGATOR = '#171717';
-const TEXT_HEADING = '#45556C';
-const TEXT_PRIMARY = '#262626';
-const TEXT_SUBTITLE = '#314158';
-const CONTROLS_DISABLE = '#90A1B9';
-const BUTTON_DISABLED = '#45556C';
-const LINK_BLUE = '#006DB4';
-const ON_BUTTON_PRIMARY = '#F8FAFC';
-const IOS_SWITCH_ON = '#34C759';
-const IOS_SWITCH_OFF = '#E9E9EA';
-
 const createStyles = ({
   dark,
   colors,
@@ -569,7 +558,7 @@ const createStyles = ({
       lineHeight: 23,
       letterSpacing: 0.16,
       textAlign: 'right',
-      color: LINK_BLUE,
+      color: bookingsColors.linkBlue,
     },
     headerTitle: {
       fontFamily: fontFamilies.heading,
@@ -579,7 +568,7 @@ const createStyles = ({
       lineHeight: 22,
       letterSpacing: 0,
       textAlign: 'center',
-      color: dark ? colors.title : NATIVE_LABEL_ON_NAVIGATOR,
+      color: dark ? colors.title : bookingsColors.nativeLabelOnNavigator,
     },
     datePicker: {
       alignSelf: 'center',
@@ -597,7 +586,7 @@ const createStyles = ({
       fontFamily: fontFamilies.body,
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.medium,
-      color: dark ? colors.secondaryText : TEXT_SUBTITLE,
+      color: dark ? colors.secondaryText : bookingsColors.textSubtitle,
       marginBottom: spacing[1],
     },
     section: {
@@ -608,7 +597,7 @@ const createStyles = ({
       fontSize: fontSizes.md,
       fontWeight: fontWeights.bold,
       lineHeight: 20,
-      color: dark ? colors.heading : TEXT_HEADING,
+      color: dark ? colors.heading : bookingsColors.textHeading,
     },
     listItem: {
       minHeight: 52,
@@ -619,7 +608,7 @@ const createStyles = ({
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
       lineHeight: 20,
-      color: dark ? colors.title : TEXT_PRIMARY,
+      color: dark ? colors.title : bookingsColors.textPrimary,
     },
     ctaContainer: {
       paddingHorizontal: spacing[4],
@@ -634,16 +623,16 @@ const createStyles = ({
       alignItems: 'center',
       width: '100%',
       borderRadius: shapes.lg,
-      backgroundColor: LINK_BLUE,
-      borderColor: LINK_BLUE,
+      backgroundColor: bookingsColors.linkBlue,
+      borderColor: bookingsColors.linkBlue,
       elevation: 0,
     },
     ctaButtonDisabled: {
-      backgroundColor: dark ? BUTTON_DISABLED : CONTROLS_DISABLE,
-      borderColor: dark ? BUTTON_DISABLED : CONTROLS_DISABLE,
+      backgroundColor: dark ? bookingsColors.buttonDisabled : bookingsColors.controlsDisable,
+      borderColor: dark ? bookingsColors.buttonDisabled : bookingsColors.controlsDisable,
     },
     ctaButtonText: {
-      color: ON_BUTTON_PRIMARY,
+      color: bookingsColors.onButtonPrimary,
       textAlign: 'center',
       fontFamily: fontFamilies.heading,
       fontSize: fontSizes.sm,
@@ -651,6 +640,6 @@ const createStyles = ({
       lineHeight: 20,
     },
     ctaButtonTextDisabled: {
-      color: dark ? NATIVE_LABEL_ON_NAVIGATOR : ON_BUTTON_PRIMARY,
+      color: dark ? bookingsColors.nativeLabelOnNavigator : bookingsColors.onButtonPrimary,
     },
   });

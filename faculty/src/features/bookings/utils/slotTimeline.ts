@@ -78,19 +78,3 @@ export const slotsToTimelineEvents = (
     })
     .map(slot => slotToTimelineEvent(slot, options))
     .filter(event => event.isOwn || event.isPubliclyVisible !== false);
-
-export const toApiTime = (date: Date) =>
-  DateTime.fromJSDate(date).toFormat('HH:mm:ss');
-
-export const toApiDate = (date: Date) =>
-  DateTime.fromJSDate(date).toFormat('yyyy-MM-dd');
-
-export const fromApiTime = (isoDateTime: string) => {
-  const parsed = DateTime.fromISO(isoDateTime);
-  return parsed.isValid ? parsed.toJSDate() : new Date();
-};
-
-export const fromApiDate = (isoDateTime: string) => {
-  const parsed = DateTime.fromISO(isoDateTime);
-  return parsed.isValid ? parsed.toJSDate() : new Date();
-};
