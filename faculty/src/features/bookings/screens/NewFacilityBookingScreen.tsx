@@ -2,17 +2,14 @@ import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 
 import {
   faCalendar,
-  faChevronDown,
   faEye,
   faGrip,
   faRotate,
@@ -24,7 +21,6 @@ import {
   OverviewList,
   Section,
   SectionHeader,
-  StatefulMenuView,
   Switch,
   Text,
   Theme,
@@ -42,6 +38,9 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { DateTime } from 'luxon';
 
 import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
+import { DateTimeFieldRow } from '../components/DateTimeFieldRow';
+import { LimitedTextArea } from '../components/LimitedTextArea';
+import { SelectMenuField } from '../components/SelectMenuField';
 import {
   useCreateSpaceEvent,
   useGetInterdepartmentalSpace,
@@ -156,7 +155,6 @@ export const NewFacilityBookingScreen = () => {
   const [description, setDescription] = useState(
     () => editingSlot?.description ?? '',
   );
-  const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
 
   useEffect(() => {
     if (!editingSlot) return;
@@ -172,13 +170,9 @@ export const NewFacilityBookingScreen = () => {
   }, [editingSlot, eventTypes]);
 
   const iconColor = dark ? colors.secondaryText : TEXT_HEADING;
-  const disabledIconColor = dark ? colors.secondaryText : CONTROLS_DISABLE;
 
   const eventTypeTitle =
     eventTypes.find(item => item.id === eventTypeId)?.title ?? '';
-  const seatsTitle =
-    seatOptions.find(item => item.id === seats)?.title ??
-    t('bookingsScreen.availableSeats', { count: Number(seats) });
   const formattedDate =
     DateTime.fromJSDate(selectedDate).toFormat('dd/MM/yyyy');
   const formattedTimeSlot = `${formatTime(startTime)}-${formatTime(endTime)}`;
@@ -363,8 +357,6 @@ export const NewFacilityBookingScreen = () => {
     isEditing,
   ]);
 
-  const remainingChars = DESCRIPTION_MAX_LENGTH - description.length;
-
   if (!spaceId || (eventId && !canEdit)) {
     return null;
   }
@@ -378,53 +370,22 @@ export const NewFacilityBookingScreen = () => {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.datetimeRow}>
-          <Pressable
-            accessibilityRole="button"
-            onPress={openDatePicker}
-            style={styles.datetimeCard}
-          >
-            <Icon icon={faCalendar} size={22} color={disabledIconColor} />
-            <View style={styles.fieldTextBlock}>
-              <Text style={styles.fieldLabel} numberOfLines={1}>
-                {t('other.date')}
-              </Text>
-              <View style={styles.fieldValueRow}>
-                <Text style={styles.fieldValue} numberOfLines={1}>
-                  {formattedDate}
-                </Text>
-                <Icon
-                  icon={faChevronDown}
-                  size={14}
-                  color={dark ? colors.prose : TEXT_SUBTITLE}
-                />
-              </View>
-            </View>
-          </Pressable>
-
-          <Pressable
-            accessibilityRole="button"
-            onPress={openTimePicker}
-            style={styles.datetimeCard}
-          >
-            <Icon icon={faCalendar} size={22} color={disabledIconColor} />
-            <View style={styles.fieldTextBlock}>
-              <Text style={styles.fieldLabel} numberOfLines={1}>
-                {t('bookingsScreen.timeSlot')}
-              </Text>
-              <View style={styles.fieldValueRow}>
-                <Text style={styles.fieldValue} numberOfLines={1}>
-                  {formattedTimeSlot}
-                </Text>
-                <Icon
-                  icon={faChevronDown}
-                  size={14}
-                  color={dark ? colors.prose : TEXT_SUBTITLE}
-                />
-              </View>
-            </View>
-          </Pressable>
-        </View>
+        <DateTimeFieldRow
+          fields={[
+            {
+              icon: faCalendar,
+              label: t('other.date'),
+              value: formattedDate,
+              onPress: openDatePicker,
+            },
+            {
+              icon: faCalendar,
+              label: t('bookingsScreen.timeSlot'),
+              value: formattedTimeSlot,
+              onPress: openTimePicker,
+            },
+          ]}
+        />
 
         {Platform.OS === 'ios' && showDatePicker && (
           <DateTimePicker
@@ -473,50 +434,22 @@ export const NewFacilityBookingScreen = () => {
             separator={false}
           />
           <OverviewList indented>
-            <StatefulMenuView
-              style={styles.menuFill}
+            <SelectMenuField
+              icon={faGrip}
               title={t('bookingsScreen.typeOfEvent')}
-              actions={eventTypes.map(option => ({
-                id: option.id,
-                title: option.title,
-                state: (eventTypeId === option.id ? 'on' : 'off') as
-                  | 'on'
-                  | 'off',
-              }))}
-              onPressAction={({ nativeEvent: { event } }) =>
-                setEventTypeId(event)
-              }
-            >
-              <ListItem
-                isAction
-                leadingItem={<Icon icon={faGrip} size={28} color={iconColor} />}
-                title={t('bookingsScreen.typeOfEvent')}
-                titleStyle={styles.listTitle}
-                subtitle={eventTypeTitle}
-                subtitleStyle={styles.listSubtitle}
-                containerStyle={styles.listItem}
-              />
-            </StatefulMenuView>
-            <StatefulMenuView
-              style={styles.menuFill}
+              value={eventTypeId}
+              options={eventTypes}
+              onSelect={setEventTypeId}
+              iconSize={28}
+            />
+            <SelectMenuField
+              icon={faSeat}
               title={t('bookingsScreen.specifySeats')}
-              actions={seatOptions.map(option => ({
-                id: option.id,
-                title: option.title,
-                state: (seats === option.id ? 'on' : 'off') as 'on' | 'off',
-              }))}
-              onPressAction={({ nativeEvent: { event } }) => setSeats(event)}
-            >
-              <ListItem
-                isAction
-                leadingItem={<Icon icon={faSeat} size={28} color={iconColor} />}
-                title={t('bookingsScreen.specifySeats')}
-                titleStyle={styles.listTitle}
-                subtitle={seatsTitle}
-                subtitleStyle={styles.listSubtitle}
-                containerStyle={styles.listItem}
-              />
-            </StatefulMenuView>
+              value={seats}
+              options={seatOptions}
+              onSelect={setSeats}
+              iconSize={28}
+            />
             <ListItem
               leadingItem={<Icon icon={faRotate} size={24} color={iconColor} />}
               title={t('bookingsScreen.recurringEvent')}
@@ -556,48 +489,13 @@ export const NewFacilityBookingScreen = () => {
           </OverviewList>
         </Section>
 
-        <View
-          style={[
-            styles.descriptionCard,
-            isDescriptionFocused && styles.descriptionCardFocused,
-          ]}
-        >
-          <View style={styles.descriptionHeader}>
-            <Text
-              style={[
-                styles.descriptionLabel,
-                !isDescriptionFocused && styles.descriptionLabelIdle,
-              ]}
-            >
-              {t('other.description')}
-            </Text>
-            <Text
-              style={[
-                styles.descriptionCounter,
-                isDescriptionFocused
-                  ? styles.descriptionCounterActive
-                  : styles.descriptionLabelIdle,
-              ]}
-            >
-              {remainingChars}
-            </Text>
-          </View>
-          <TextInput
-            value={description}
-            onChangeText={text =>
-              setDescription(text.slice(0, DESCRIPTION_MAX_LENGTH))
-            }
-            onFocus={() => setIsDescriptionFocused(true)}
-            onBlur={() => setIsDescriptionFocused(false)}
-            placeholder={t('other.writeSomething')}
-            placeholderTextColor={dark ? colors.secondaryText : PLACEHOLDER}
-            selectionColor={CURSOR_ORANGE}
-            multiline
-            textAlignVertical="top"
-            maxLength={DESCRIPTION_MAX_LENGTH}
-            style={styles.descriptionInput}
-          />
-        </View>
+        <LimitedTextArea
+          label={t('other.description')}
+          value={description}
+          onChange={setDescription}
+          maxLength={DESCRIPTION_MAX_LENGTH}
+          placeholder={t('other.writeSomething')}
+        />
       </ScrollView>
 
       <CtaButton
@@ -626,19 +524,15 @@ export const NewFacilityBookingScreen = () => {
 
 const HEADER_GRAY = '#EDEEF0';
 const NATIVE_LABEL_ON_NAVIGATOR = '#171717';
-const CARD_SURFACE = '#FFFFFF';
 const TEXT_HEADING = '#45556C';
 const TEXT_PRIMARY = '#262626';
 const TEXT_SUBTITLE = '#314158';
 const CONTROLS_DISABLE = '#90A1B9';
 const BUTTON_DISABLED = '#45556C';
-const PLACEHOLDER = '#90A1B9';
 const LINK_BLUE = '#006DB4';
 const ON_BUTTON_PRIMARY = '#F8FAFC';
 const IOS_SWITCH_ON = '#34C759';
 const IOS_SWITCH_OFF = '#E9E9EA';
-const TEXTAREA_BORDER_TYPING = '#00ACFF';
-const CURSOR_ORANGE = '#FF9500';
 
 const createStyles = ({
   dark,
@@ -687,12 +581,6 @@ const createStyles = ({
       textAlign: 'center',
       color: dark ? colors.title : NATIVE_LABEL_ON_NAVIGATOR,
     },
-    datetimeRow: {
-      flexDirection: 'row',
-      alignItems: 'stretch',
-      gap: spacing[3],
-      paddingHorizontal: spacing[4],
-    },
     datePicker: {
       alignSelf: 'center',
     },
@@ -711,47 +599,6 @@ const createStyles = ({
       fontWeight: fontWeights.medium,
       color: dark ? colors.secondaryText : TEXT_SUBTITLE,
       marginBottom: spacing[1],
-    },
-    menuFill: {
-      flex: 1,
-      width: '100%',
-    },
-    datetimeCard: {
-      flex: 1,
-      height: 72,
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing[3],
-      backgroundColor: dark ? colors.surfaceDark : CARD_SURFACE,
-      borderRadius: shapes.lg,
-      paddingVertical: spacing[3],
-      paddingHorizontal: spacing[4],
-      overflow: 'hidden',
-    },
-    fieldTextBlock: {
-      flex: 1,
-      gap: spacing[0.5],
-      minWidth: 0,
-    },
-    fieldLabel: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.normal,
-      lineHeight: 20,
-      color: dark ? colors.secondaryText : TEXT_PRIMARY,
-    },
-    fieldValueRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing[1.5],
-    },
-    fieldValue: {
-      flexShrink: 1,
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 24,
-      color: dark ? colors.prose : TEXT_SUBTITLE,
     },
     section: {
       marginBottom: 0,
@@ -773,61 +620,6 @@ const createStyles = ({
       fontWeight: fontWeights.semibold,
       lineHeight: 20,
       color: dark ? colors.title : TEXT_PRIMARY,
-    },
-    listSubtitle: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.xs,
-      fontWeight: fontWeights.medium,
-      lineHeight: 16,
-      color: dark ? colors.prose : TEXT_SUBTITLE,
-    },
-    descriptionCard: {
-      marginHorizontal: spacing[4],
-      backgroundColor: dark ? colors.surfaceDark : CARD_SURFACE,
-      borderRadius: shapes.lg,
-      paddingHorizontal: spacing[3],
-      paddingTop: spacing[2],
-      paddingBottom: spacing[2],
-      borderWidth: 1,
-      borderColor: 'transparent',
-    },
-    descriptionCardFocused: {
-      borderColor: TEXTAREA_BORDER_TYPING,
-    },
-    descriptionHeader: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    descriptionLabel: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.medium,
-      lineHeight: 24,
-      color: dark ? colors.heading : TEXT_HEADING,
-    },
-    descriptionLabelIdle: {
-      color: dark ? colors.secondaryText : PLACEHOLDER,
-    },
-    descriptionCounter: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.xs,
-      fontWeight: fontWeights.medium,
-      lineHeight: 16,
-    },
-    descriptionCounterActive: {
-      color: dark ? colors.heading : TEXT_HEADING,
-    },
-    descriptionInput: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.normal,
-      lineHeight: 20,
-      color: dark ? colors.prose : TEXT_PRIMARY,
-      overflow: 'hidden',
-      padding: 0,
-      marginTop: spacing[0.5],
-      minHeight: 20,
     },
     ctaContainer: {
       paddingHorizontal: spacing[4],

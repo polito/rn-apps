@@ -2,17 +2,14 @@ import { useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
-  Pressable,
   ScrollView,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import {
-  faChevronDown,
   faDesktop,
   faLocationDot,
   faPaperPlane,
@@ -25,7 +22,6 @@ import {
   OverviewList,
   Section,
   SectionHeader,
-  StatefulMenuView,
   Switch,
   Text,
   Theme,
@@ -36,14 +32,14 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
+import { DateTimeFieldRow } from '../components/DateTimeFieldRow';
+import { LimitedTextArea } from '../components/LimitedTextArea';
+import { SelectMenuField } from '../components/SelectMenuField';
 
 const DETAILS_MAX_LENGTH = 30;
-const NO_PREFERENCE = '__none__';
 
 const CAPACITY_OPTIONS = ['10', '20', '30', '50', '100'];
 const CAMPUS_OPTIONS = ['Valentino', 'Centrale'];
-
-type MenuOption = { id: string; title: string };
 
 export const BookRoomScreen = () => {
   const { t } = useTranslation();
@@ -57,7 +53,6 @@ export const BookRoomScreen = () => {
   const [campus, setCampus] = useState('');
   const [hasOutlets, setHasOutlets] = useState(false);
   const [details, setDetails] = useState('');
-  const [isDetailsFocused, setIsDetailsFocused] = useState(false);
 
   const noPreferences = t('other.noPreferences');
   const iconColor = dark ? colors.secondaryText : TEXT_HEADING;
@@ -112,52 +107,6 @@ export const BookRoomScreen = () => {
     styles.closeText,
   ]);
 
-  const renderSelectField = ({
-    icon,
-    title,
-    value,
-    placeholder,
-    options,
-    onSelect,
-  }: {
-    icon: typeof faPeopleLine;
-    title: string;
-    value: string;
-    placeholder: string;
-    options: MenuOption[];
-    onSelect: (id: string) => void;
-  }) => (
-    <StatefulMenuView
-      style={styles.menuFill}
-      title={title}
-      actions={[
-        { id: NO_PREFERENCE, title: noPreferences },
-        ...options.map(option => ({
-          id: option.id,
-          title: option.title,
-          state: (value === option.id ? 'on' : 'off') as 'on' | 'off',
-        })),
-      ]}
-      onPressAction={({ nativeEvent: { event } }) =>
-        onSelect(event === NO_PREFERENCE ? '' : event)
-      }
-    >
-      <ListItem
-        isAction
-        leadingItem={
-          <Icon icon={icon} size={fontSizes['2xl']} color={iconColor} />
-        }
-        title={title}
-        titleStyle={styles.listTitle}
-        subtitle={value || placeholder}
-        subtitleStyle={styles.listSubtitle}
-        containerStyle={styles.listItem}
-      />
-    </StatefulMenuView>
-  );
-
-  const remainingChars = DETAILS_MAX_LENGTH - details.length;
-
   return (
     <View style={styles.screen}>
       <ScrollView
@@ -167,51 +116,25 @@ export const BookRoomScreen = () => {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.datetimeRow}>
-          <Pressable
-            accessibilityRole="button"
-            onPress={showComingSoon}
-            style={styles.datetimeCard}
-          >
-            <Icon icon={faCalendar} size={fontSizes['2xl']} color={iconColor} />
-            <View style={styles.fieldTextBlock}>
-              <Text style={styles.fieldLabel}>{t('other.date')}</Text>
-              <View style={styles.fieldValueRow}>
-                <Text style={styles.fieldValue} numberOfLines={1}>
-                  {t('other.selectDate')}
-                </Text>
-                <Icon
-                  icon={faChevronDown}
-                  size={fontSizes.sm}
-                  color={dark ? colors.prose : TEXT_SUBTITLE}
-                />
-              </View>
-            </View>
-          </Pressable>
-
-          <Pressable
-            accessibilityRole="button"
-            onPress={showComingSoon}
-            style={styles.datetimeCard}
-          >
-            <Icon icon={faCalendar} size={fontSizes['2xl']} color={iconColor} />
-            <View style={styles.fieldTextBlock}>
-              <Text style={styles.fieldLabel} numberOfLines={1}>
-                {t('other.timeShift')}
-              </Text>
-              <View style={styles.fieldValueRow}>
-                <Text style={styles.fieldValue} numberOfLines={1}>
-                  {t('other.selectTime')}
-                </Text>
-                <Icon
-                  icon={faChevronDown}
-                  size={fontSizes.sm}
-                  color={dark ? colors.prose : TEXT_SUBTITLE}
-                />
-              </View>
-            </View>
-          </Pressable>
-        </View>
+        <DateTimeFieldRow
+          iconSize={fontSizes['2xl']}
+          chevronSize={fontSizes.sm}
+          cardHeight={80}
+          fields={[
+            {
+              icon: faCalendar,
+              label: t('other.date'),
+              value: t('other.selectDate'),
+              onPress: showComingSoon,
+            },
+            {
+              icon: faCalendar,
+              label: t('other.timeShift'),
+              value: t('other.selectTime'),
+              onPress: showComingSoon,
+            },
+          ]}
+        />
 
         <Section style={styles.section}>
           <SectionHeader
@@ -221,38 +144,42 @@ export const BookRoomScreen = () => {
             separator={false}
           />
           <OverviewList indented>
-            {renderSelectField({
-              icon: faPeopleLine,
-              title: t('other.capacity'),
-              value: capacity
-                ? t('other.peopleCount', { count: Number(capacity) })
-                : '',
-              placeholder: noPreferences,
-              options: CAPACITY_OPTIONS.map(option => ({
+            <SelectMenuField
+              icon={faPeopleLine}
+              title={t('other.capacity')}
+              value={capacity}
+              placeholder={noPreferences}
+              options={CAPACITY_OPTIONS.map(option => ({
                 id: option,
                 title: t('other.peopleCount', { count: Number(option) }),
-              })),
-              onSelect: setCapacity,
-            })}
-            {renderSelectField({
-              icon: faDesktop,
-              title: t('other.deskType'),
-              value: deskType,
-              placeholder: noPreferences,
-              options: deskTypes.map(type => ({ id: type, title: type })),
-              onSelect: setDeskType,
-            })}
-            {renderSelectField({
-              icon: faLocationDot,
-              title: t('common.campus'),
-              value: campus,
-              placeholder: noPreferences,
-              options: CAMPUS_OPTIONS.map(option => ({
+              }))}
+              onSelect={setCapacity}
+              allowNoPreference
+              noPreferenceLabel={noPreferences}
+            />
+            <SelectMenuField
+              icon={faDesktop}
+              title={t('other.deskType')}
+              value={deskType}
+              placeholder={noPreferences}
+              options={deskTypes.map(type => ({ id: type, title: type }))}
+              onSelect={setDeskType}
+              allowNoPreference
+              noPreferenceLabel={noPreferences}
+            />
+            <SelectMenuField
+              icon={faLocationDot}
+              title={t('common.campus')}
+              value={campus}
+              placeholder={noPreferences}
+              options={CAMPUS_OPTIONS.map(option => ({
                 id: option,
                 title: option,
-              })),
-              onSelect: setCampus,
-            })}
+              }))}
+              onSelect={setCampus}
+              allowNoPreference
+              noPreferenceLabel={noPreferences}
+            />
             <ListItem
               leadingItem={
                 <Icon icon={faPlug} size={fontSizes['2xl']} color={iconColor} />
@@ -275,44 +202,13 @@ export const BookRoomScreen = () => {
           </OverviewList>
         </Section>
 
-        <View
-          style={[
-            styles.detailsCard,
-            isDetailsFocused && styles.detailsCardFocused,
-          ]}
-        >
-          <View style={styles.detailsHeader}>
-            <Text
-              style={[
-                styles.detailsLabel,
-                !isDetailsFocused && styles.detailsLabelIdle,
-              ]}
-            >
-              {t('other.details')}
-            </Text>
-            <Text
-              style={[
-                styles.detailsCounter,
-                !isDetailsFocused && styles.detailsLabelIdle,
-              ]}
-            >
-              {remainingChars}
-            </Text>
-          </View>
-          <TextInput
-            value={details}
-            onChangeText={text => setDetails(text.slice(0, DETAILS_MAX_LENGTH))}
-            onFocus={() => setIsDetailsFocused(true)}
-            onBlur={() => setIsDetailsFocused(false)}
-            placeholder={t('other.writeSomething')}
-            placeholderTextColor={dark ? colors.secondaryText : PLACEHOLDER}
-            selectionColor={CURSOR_ORANGE}
-            multiline
-            textAlignVertical="top"
-            maxLength={DETAILS_MAX_LENGTH}
-            style={styles.detailsInput}
-          />
-        </View>
+        <LimitedTextArea
+          label={t('other.details')}
+          value={details}
+          onChange={setDetails}
+          maxLength={DETAILS_MAX_LENGTH}
+          placeholder={t('other.writeSomething')}
+        />
       </ScrollView>
 
       <View style={styles.ctaContainer}>
@@ -335,15 +231,11 @@ export const BookRoomScreen = () => {
 };
 
 const HEADER_GRAY = '#EDEEF0';
-const CARD_SURFACE = '#FFFFFF';
 const TEXT_HEADING = '#45556C';
 const TEXT_PRIMARY = '#262626';
-const TEXT_SUBTITLE = '#314158';
 const PLACEHOLDER = '#90A1B9';
 const IOS_SWITCH_ON = '#34C759';
 const IOS_SWITCH_OFF = '#E9E9EA';
-const DETAILS_FOCUS_BORDER = '#7EB8D9';
-const CURSOR_ORANGE = '#FF9500';
 const SEND_BUTTON = '#90A1B9';
 const ON_SEND_BUTTON = '#FFFFFF';
 
@@ -380,39 +272,6 @@ const createStyles = ({
       fontWeight: fontWeights.normal,
       color: dark ? colors.secondaryText : PLACEHOLDER,
     },
-    datetimeRow: {
-      flexDirection: 'row',
-      alignItems: 'stretch',
-      gap: spacing[3],
-      paddingHorizontal: spacing[4],
-    },
-    menuFill: {
-      flex: 1,
-      width: '100%',
-    },
-    datetimeCard: {
-      flex: 1,
-      height: 80,
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing[2.5],
-      backgroundColor: dark ? colors.surfaceDark : CARD_SURFACE,
-      borderRadius: shapes.lg,
-      paddingVertical: spacing[3],
-      paddingHorizontal: spacing[3],
-      overflow: 'hidden',
-    },
-    datetimeCardContent: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing[2.5],
-    },
-    fieldTextBlock: {
-      flex: 1,
-      gap: spacing[0.5],
-      minWidth: 0,
-    },
     ctaContainer: {
       paddingHorizontal: spacing[4],
       paddingTop: spacing[2],
@@ -429,35 +288,12 @@ const createStyles = ({
       paddingHorizontal: 20,
       paddingVertical: spacing[3],
     },
-    sendButtonDisabled: {
-      opacity: 0.55,
-    },
     sendButtonText: {
       fontFamily: fontFamilies.heading,
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
       lineHeight: 20,
       color: ON_SEND_BUTTON,
-    },
-    fieldLabel: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.xs,
-      fontWeight: fontWeights.normal,
-      lineHeight: 16,
-      color: dark ? colors.secondaryText : TEXT_HEADING,
-    },
-    fieldValueRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing[1],
-    },
-    fieldValue: {
-      flexShrink: 1,
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 20,
-      color: dark ? colors.prose : TEXT_SUBTITLE,
     },
     section: {
       marginBottom: 0,
@@ -479,59 +315,5 @@ const createStyles = ({
       fontWeight: fontWeights.semibold,
       lineHeight: 20,
       color: dark ? colors.title : TEXT_PRIMARY,
-    },
-    listSubtitle: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.xs,
-      fontWeight: fontWeights.normal,
-      lineHeight: 16,
-      color: dark ? colors.prose : TEXT_SUBTITLE,
-    },
-    detailsCard: {
-      marginHorizontal: spacing[4],
-      backgroundColor: dark ? colors.surfaceDark : CARD_SURFACE,
-      borderRadius: shapes.lg,
-      paddingHorizontal: spacing[4],
-      paddingTop: spacing[3],
-      paddingBottom: spacing[3],
-      borderWidth: 1,
-      borderColor: 'transparent',
-    },
-    detailsCardFocused: {
-      borderColor: DETAILS_FOCUS_BORDER,
-    },
-    detailsHeader: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    detailsLabel: {
-      fontFamily: fontFamilies.heading,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 20,
-      color: dark ? colors.heading : TEXT_HEADING,
-    },
-    detailsLabelIdle: {
-      color: dark ? colors.secondaryText : PLACEHOLDER,
-      fontFamily: fontFamilies.body,
-      fontWeight: fontWeights.normal,
-    },
-    detailsCounter: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.xs,
-      fontWeight: fontWeights.medium,
-      lineHeight: 16,
-      color: dark ? colors.secondaryText : PLACEHOLDER,
-    },
-    detailsInput: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.xs,
-      fontWeight: fontWeights.normal,
-      lineHeight: 16,
-      color: dark ? colors.prose : TEXT_SUBTITLE,
-      padding: 0,
-      marginTop: spacing[1],
-      minHeight: 16,
     },
   });

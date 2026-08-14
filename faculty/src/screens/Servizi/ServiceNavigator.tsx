@@ -6,13 +6,13 @@ import { useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { BookRoomScreen } from '../../features/bookings/screens/BookRoomScreen';
-import { NewFacilityBookingScreen } from '../../features/bookings/screens/NewFacilityBookingScreen';
 import { BookEventsRoomScreen } from '../../features/bookings/screens/BookEventsRoomScreen';
+import { BookRoomScreen } from '../../features/bookings/screens/BookRoomScreen';
 import { BookStructureRoomScreen } from '../../features/bookings/screens/BookStructureRoomScreen';
 import { BookingScreen } from '../../features/bookings/screens/BookingScreen';
 import { FacilitySpaceCalendarScreen } from '../../features/bookings/screens/FacilitySpaceCalendarScreen';
 import { FacilitySpaceTimelineScreen } from '../../features/bookings/screens/FacilitySpaceTimelineScreen';
+import { NewFacilityBookingScreen } from '../../features/bookings/screens/NewFacilityBookingScreen';
 import { NewReservationScreen } from '../../features/bookings/screens/NewReservationScreen';
 import { RequestDetailsScreen } from '../../features/bookings/screens/RequestDetailsScreen';
 import { RequestSpaceScreen } from '../../features/bookings/screens/RequestSpaceScreen';
@@ -38,9 +38,7 @@ export type ProfileStackParamList = {
   RichiediSpazio: undefined;
   CalendarioSpaziStrutture: undefined;
   VistaCalendarioSpazio: { spaceId: string };
-  NuovaPrenotazioneSpazio:
-    | { spaceId: string; eventId?: string }
-    | undefined;
+  NuovaPrenotazioneSpazio: { spaceId: string; eventId?: string } | undefined;
   PrenotaSpaziStrutture: undefined;
   PrenotaSpaziEventi: undefined;
   PrenotaAulaForm: undefined;

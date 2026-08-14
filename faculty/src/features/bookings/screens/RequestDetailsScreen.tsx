@@ -9,9 +9,7 @@ import {
   View,
 } from 'react-native';
 
-import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 import {
-  faCircleXmark,
   faDesktop,
   faEye,
   faGrip,
@@ -20,11 +18,9 @@ import {
   faPeopleLine,
   faPlug,
   faRotate,
-  faSpinner,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import {
-  Badge,
   BottomBarSpacer,
   Card,
   CtaButtonContainer,
@@ -45,80 +41,18 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
+import { BookingStatusBadge } from '../components/BookingStatusBadge';
 import { useBookings } from '../hooks/useBookings';
-
-const getBadgeStyle = (
-  status: string,
-  dark: boolean,
-  palettes: Theme['palettes'],
-) => {
-  const darkBgOpacity = 'CC';
-  switch (status) {
-    case 'in attesa':
-      return {
-        backgroundColor: dark
-          ? palettes.warning[800] + darkBgOpacity
-          : '#FFEDD4',
-        foregroundColor: dark ? palettes.warning[200] : '#CA3500',
-        icon: faSpinner,
-      };
-    case 'accettata':
-      return {
-        backgroundColor: dark
-          ? palettes.success[800] + darkBgOpacity
-          : '#DCFCE7',
-        foregroundColor: dark ? palettes.success[200] : '#008236',
-        icon: faCircleCheck,
-      };
-    case 'respinta':
-      return {
-        backgroundColor: dark
-          ? palettes.danger[800] + darkBgOpacity
-          : '#FFE4E6',
-        foregroundColor: dark ? palettes.danger[200] : '#C70036',
-        icon: faCircleXmark,
-      };
-    default:
-      return {
-        backgroundColor: dark
-          ? palettes.muted[600] + darkBgOpacity
-          : palettes.muted[200],
-        foregroundColor: dark ? palettes.muted[200] : palettes.muted[600],
-        icon: undefined,
-      };
-  }
-};
-
-const getStatusLabel = (status: string, t: (key: string) => string) => {
-  switch (status) {
-    case 'in attesa':
-      return t('bookingsScreen.status.pending');
-    case 'accettata':
-      return t('bookingsScreen.status.accepted');
-    case 'respinta':
-      return t('bookingsScreen.status.rejected');
-    default:
-      return status;
-  }
-};
+import { parseBookingDescription } from '../utils/bookingStatus';
 
 const getActiveStatusLabel = (value: boolean, t: (key: string) => string) =>
   value ? t('common.activeStatus.true') : t('common.activeStatus.false');
-
-const parseBookingDescription = (details: string, eventType?: string) => {
-  if (!details) return '';
-  if (eventType && details.startsWith(`${eventType} — `)) {
-    return details.slice(eventType.length + 3);
-  }
-  if (eventType && details === eventType) return '';
-  return details;
-};
 
 export const RequestDetailsScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { selectedBooking, isOwnBooking } = useBookings();
-  const { dark, colors, fontSizes, palettes } = useTheme();
+  const { dark, colors, fontSizes } = useTheme();
   const bottomBarHeight = useBottomTabBarHeight();
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
@@ -155,7 +89,6 @@ export const RequestDetailsScreen = () => {
 
   const isOwn = isOwnBooking(selectedBooking);
 
-  const badge = getBadgeStyle(selectedBooking.status, dark, palettes);
   const iconColor = dark ? colors.secondaryText : TEXT_HEADING;
   const isFacilityBooking = selectedBooking.type === 2;
   const eventTypeLabel =
@@ -339,13 +272,7 @@ export const RequestDetailsScreen = () => {
               date={selectedBooking.date}
               time={selectedBooking.time}
             />
-            <Badge
-              text={getStatusLabel(selectedBooking.status, t)}
-              backgroundColor={badge.backgroundColor}
-              foregroundColor={badge.foregroundColor}
-              icon={badge.icon}
-              style={styles.badge}
-            />
+            <BookingStatusBadge status={selectedBooking.status} />
           </View>
         </View>
 
@@ -534,12 +461,6 @@ const createStyles = ({
       alignItems: 'center',
       justifyContent: 'space-between',
       gap: spacing[3],
-    },
-    badge: {
-      paddingVertical: spacing[1],
-      paddingHorizontal: spacing[2.5],
-      borderRadius: 20,
-      borderWidth: 0,
     },
     section: {
       marginBottom: 0,
