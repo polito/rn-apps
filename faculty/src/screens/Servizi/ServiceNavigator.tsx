@@ -6,8 +6,8 @@ import { useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { BookRoomForm } from '../../features/bookings/components/BookRoomForm';
-import { NewFacilityBookingForm } from '../../features/bookings/components/NewFacilityBookingForm';
+import { BookRoomScreen } from '../../features/bookings/screens/BookRoomScreen';
+import { NewFacilityBookingScreen } from '../../features/bookings/screens/NewFacilityBookingScreen';
 import { BookEventsRoomScreen } from '../../features/bookings/screens/BookEventsRoomScreen';
 import { BookStructureRoomScreen } from '../../features/bookings/screens/BookStructureRoomScreen';
 import { BookingScreen } from '../../features/bookings/screens/BookingScreen';
@@ -174,7 +174,7 @@ export const ServiceNavigator = () => {
 
       <Stack.Screen
         name="NuovaPrenotazioneSpazio"
-        component={NewFacilityBookingForm}
+        component={NewFacilityBookingScreen}
         options={{
           presentation: 'modal',
           headerShown: true,
@@ -209,7 +209,7 @@ export const ServiceNavigator = () => {
 
       <Stack.Screen
         name="PrenotaAulaForm"
-        component={BookRoomForm}
+        component={BookRoomScreen}
         options={{
           headerShown: true,
           headerLargeTitle: false,

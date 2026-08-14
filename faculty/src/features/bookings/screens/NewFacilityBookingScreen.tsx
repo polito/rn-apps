@@ -73,7 +73,7 @@ const ensureEndAfterStart = (start: Date, end: Date) => {
   return DateTime.fromJSDate(start).plus({ minutes: 30 }).toJSDate();
 };
 
-export const NewFacilityBookingForm = () => {
+export const NewFacilityBookingScreen = () => {
   const { t } = useTranslation();
   const { dark, colors } = useTheme();
   const styles = useStylesheet(createStyles);

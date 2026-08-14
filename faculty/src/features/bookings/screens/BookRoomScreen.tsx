@@ -45,7 +45,7 @@ const CAMPUS_OPTIONS = ['Valentino', 'Centrale'];
 
 type MenuOption = { id: string; title: string };
 
-export const BookRoomForm = () => {
+export const BookRoomScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { dark, colors, fontSizes } = useTheme();
