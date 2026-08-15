@@ -56,6 +56,7 @@ const androidTabBarHeight = 60;
 const HIDDEN_TAB_BAR_ROUTES = new Set([
   'CalendarioSpaziStrutture',
   'VistaCalendarioSpazio',
+  'NuovaPrenotazioneSpazio',
 ]);
 
 const TabBarButton = ({

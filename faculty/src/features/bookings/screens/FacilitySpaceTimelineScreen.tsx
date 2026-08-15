@@ -29,6 +29,7 @@ import {
   DateSelector,
 } from '../components/DateSelector';
 import { useBookings } from '../hooks/useBookings';
+import { AndroidBackButton } from '../hooks/useBookingsBlurHeader';
 import {
   useGetInterdepartmentalSpace,
   useGetInterdepartmentalSpaceTypes,
@@ -110,7 +111,7 @@ const CtaFade = ({ height }: { height: number }) => {
 
 export const FacilitySpaceTimelineScreen = () => {
   const { t } = useTranslation();
-  const { colors, spacing } = useTheme();
+  const { dark, colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const [ctaFooterHeight, setCtaFooterHeight] = useState(0);
   const navigation =
@@ -186,15 +187,26 @@ export const FacilitySpaceTimelineScreen = () => {
           {t('bookingsScreen.facilitySpaceCalendar')}
         </Text>
       ),
+      headerTitleAlign: 'center',
       headerBackTitle: '',
       headerBackButtonDisplayMode: 'minimal',
       headerTransparent: false,
       headerShadowVisible: false,
       headerStyle: {
-        backgroundColor: colors.surface,
+        backgroundColor: Platform.select({
+          ios: colors.surface,
+          android: dark ? colors.background : colors.surface,
+        }),
       },
+      ...(Platform.OS === 'android'
+        ? {
+            headerLeft: () => (
+              <AndroidBackButton displayMode="minimal" />
+            ),
+          }
+        : {}),
     });
-  }, [navigation, t, styles.headerTitle, colors.surface]);
+  }, [navigation, t, styles.headerTitle, dark, colors.background, colors.surface]);
 
   useLayoutEffect(() => {
     scrollToDate(initialDate);
@@ -361,11 +373,24 @@ const createStyles = ({
     },
     headerDivider: {
       height: StyleSheet.hairlineWidth,
-      backgroundColor: colors.divider,
+      backgroundColor: Platform.select({
+        ios: colors.divider,
+        android: dark ? colors.translucentSurface : colors.divider,
+      }),
     },
     daysContainer: {
       flexGrow: 0,
       flexShrink: 0,
+      ...Platform.select({
+        android: {
+          backgroundColor: dark ? colors.background : colors.surface,
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderBottomColor: dark
+            ? colors.translucentSurface
+            : colors.divider,
+        },
+        default: {},
+      }),
     },
     timelineScroll: {
       flex: 1,
@@ -487,7 +512,7 @@ const createStyles = ({
     ctaContainer: {
       paddingHorizontal: spacing[4],
       paddingTop: spacing[2],
-      paddingBottom: Platform.select({ ios: spacing[12], android: spacing[8] }),
+      paddingBottom: spacing[12],
       alignItems: 'flex-start',
     },
     ctaButton: {

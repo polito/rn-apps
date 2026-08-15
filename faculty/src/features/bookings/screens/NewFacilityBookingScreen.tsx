@@ -7,10 +7,12 @@ import {
   faEye,
   faGrip,
   faRotate,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   CtaButton,
   Icon,
+  IconButton,
   ListItem,
   OverviewList,
   Section,
@@ -70,7 +72,7 @@ const ensureEndAfterStart = (start: Date, end: Date) => {
 
 export const NewFacilityBookingScreen = () => {
   const { t } = useTranslation();
-  const { dark, colors } = useTheme();
+  const { dark, colors, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
@@ -316,6 +318,7 @@ export const NewFacilityBookingScreen = () => {
             : t('bookingsScreen.newBooking')}
         </Text>
       ),
+      headerTitleAlign: 'center',
       headerBackTitle: '',
       headerBackVisible: false,
       headerShadowVisible: true,
@@ -326,22 +329,33 @@ export const NewFacilityBookingScreen = () => {
       contentStyle: {
         backgroundColor: colors.background,
       },
-      headerLeft: () => (
-        <TextButton
-          accessibilityRole="button"
-          accessibilityLabel={t('common.close')}
-          onPress={() => navigation.goBack()}
-          style={styles.closeButton}
-        >
-          {t('common.close')}
-        </TextButton>
-      ),
+      headerLeft: () =>
+        Platform.OS === 'android' ? (
+          <IconButton
+            icon={faTimes}
+            size={22}
+            color={palettes.primary[400]}
+            accessibilityLabel={t('common.close')}
+            onPress={() => navigation.goBack()}
+            adjustSpacing="left"
+          />
+        ) : (
+          <TextButton
+            accessibilityRole="button"
+            accessibilityLabel={t('common.close')}
+            onPress={() => navigation.goBack()}
+            style={styles.closeButton}
+          >
+            {t('common.close')}
+          </TextButton>
+        ),
     });
   }, [
     navigation,
     t,
     dark,
     colors.background,
+    palettes.primary,
     styles.headerTitle,
     styles.closeButton,
     isEditing,
@@ -423,7 +437,7 @@ export const NewFacilityBookingScreen = () => {
             ellipsizeTitle={false}
             separator={false}
           />
-          <OverviewList indented>
+          <OverviewList indented dividers style={styles.list}>
             <SelectMenuField
               icon={faGrip}
               title={t('bookingsScreen.typeOfEvent')}
@@ -569,6 +583,9 @@ const createStyles = ({
     },
     section: {
       marginBottom: 0,
+    },
+    list: {
+      elevation: 0,
     },
     sectionTitle: {
       fontFamily: fontFamilies.heading,

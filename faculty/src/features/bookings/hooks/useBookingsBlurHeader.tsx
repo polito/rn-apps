@@ -1,7 +1,8 @@
 import { ReactNode, useLayoutEffect } from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, Pressable, StyleSheet } from 'react-native';
 
-import { Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { Icon, Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 
 import { bookingsColors } from '../utils/bookingsTheme';
@@ -11,6 +12,36 @@ type Options = {
   headerBackTitle?: string;
   headerBackButtonDisplayMode?: 'default' | 'minimal';
 };
+
+const AndroidBackButton = ({
+  label,
+  displayMode,
+}: {
+  label?: string;
+  displayMode: 'default' | 'minimal';
+}) => {
+  const navigation = useNavigation();
+  const styles = useStylesheet(createStyles);
+  const showLabel = displayMode === 'default' && !!label;
+
+  return (
+    <Pressable
+      onPress={() => navigation.goBack()}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      style={styles.backButton}
+    >
+      <Icon
+        icon={faChevronLeft}
+        size={20}
+        color={bookingsColors.linkBlue}
+      />
+      {showLabel ? <Text style={styles.backTitle}>{label}</Text> : null}
+    </Pressable>
+  );
+};
+
+export { AndroidBackButton };
 
 export const useBookingsBlurHeader = ({
   title,
@@ -26,6 +57,7 @@ export const useBookingsBlurHeader = ({
       headerTitle: () => (
         <Text style={styles.headerTitle}>{title}</Text>
       ),
+      headerTitleAlign: 'center',
       headerBackTitle: headerBackTitle ?? '',
       headerBackButtonDisplayMode,
       headerTransparent: Platform.OS === 'ios',
@@ -36,9 +68,19 @@ export const useBookingsBlurHeader = ({
       headerStyle: {
         backgroundColor: Platform.select({
           ios: undefined,
-          android: colors.headersBackground,
+          android: dark ? colors.background : colors.headersBackground,
         }),
       },
+      ...(Platform.OS === 'android'
+        ? {
+            headerLeft: () => (
+              <AndroidBackButton
+                label={headerBackTitle}
+                displayMode={headerBackButtonDisplayMode}
+              />
+            ),
+          }
+        : {}),
     });
   }, [
     navigation,
@@ -46,6 +88,7 @@ export const useBookingsBlurHeader = ({
     headerBackTitle,
     headerBackButtonDisplayMode,
     dark,
+    colors.background,
     colors.headersBackground,
     styles.headerTitle,
   ]);
@@ -57,13 +100,16 @@ export const useBookingsBlurHeaderNode = (
 ) => {
   const navigation = useNavigation();
   const { dark, colors } = useTheme();
+  const headerBackTitle = options?.headerBackTitle ?? '';
+  const headerBackButtonDisplayMode =
+    options?.headerBackButtonDisplayMode ?? 'default';
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle,
-      headerBackTitle: options?.headerBackTitle ?? '',
-      headerBackButtonDisplayMode:
-        options?.headerBackButtonDisplayMode ?? 'default',
+      headerTitleAlign: 'center',
+      headerBackTitle,
+      headerBackButtonDisplayMode,
       headerTransparent: Platform.OS === 'ios',
       headerBlurEffect: dark
         ? 'systemUltraThinMaterialDark'
@@ -72,16 +118,27 @@ export const useBookingsBlurHeaderNode = (
       headerStyle: {
         backgroundColor: Platform.select({
           ios: undefined,
-          android: colors.headersBackground,
+          android: dark ? colors.background : colors.headersBackground,
         }),
       },
+      ...(Platform.OS === 'android'
+        ? {
+            headerLeft: () => (
+              <AndroidBackButton
+                label={headerBackTitle}
+                displayMode={headerBackButtonDisplayMode}
+              />
+            ),
+          }
+        : {}),
     });
   }, [
     navigation,
     headerTitle,
-    options?.headerBackTitle,
-    options?.headerBackButtonDisplayMode,
+    headerBackTitle,
+    headerBackButtonDisplayMode,
     dark,
+    colors.background,
     colors.headersBackground,
   ]);
 };
@@ -92,6 +149,7 @@ const createStyles = ({
   fontFamilies,
   fontSizes,
   fontWeights,
+  spacing,
 }: Theme) =>
   StyleSheet.create({
     headerTitle: {
@@ -102,5 +160,18 @@ const createStyles = ({
       letterSpacing: 0,
       color: dark ? colors.title : bookingsColors.nativeLabelOnNavigator,
       textAlign: 'center',
+    },
+    backButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginLeft: -spacing[2],
+      gap: spacing[1],
+    },
+    backTitle: {
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.md,
+      fontWeight: fontWeights.normal,
+      lineHeight: 22,
+      color: bookingsColors.linkBlue,
     },
   });

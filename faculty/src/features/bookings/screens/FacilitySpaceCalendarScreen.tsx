@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
-  Platform,
   ScrollView,
   StyleSheet,
   View,
@@ -270,7 +269,7 @@ const createStyles = ({
     ctaContainer: {
       paddingHorizontal: spacing[4],
       paddingTop: spacing[2],
-      paddingBottom: Platform.select({ ios: spacing[12], android: spacing[8] }),
+      paddingBottom: spacing[12],
       alignItems: 'flex-start',
     },
     ctaButton: {

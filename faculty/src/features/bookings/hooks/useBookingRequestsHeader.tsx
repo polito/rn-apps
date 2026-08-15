@@ -7,6 +7,7 @@ import {
   Text,
   Theme,
   useStylesheet,
+  useTheme,
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -16,6 +17,7 @@ import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator
 export const useBookingRequestsHeader = (title: string) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
+  const { dark, colors } = useTheme();
   const styles = useStylesheet(createStyles);
 
   useLayoutEffect(() => {
@@ -32,8 +34,24 @@ export const useBookingRequestsHeader = (title: string) => {
           {title}
         </Text>
       ),
+      ...(Platform.OS === 'android'
+        ? {
+            headerStyle: {
+              backgroundColor: dark
+                ? colors.background
+                : colors.headersBackground,
+            },
+          }
+        : {}),
     });
-  }, [navigation, title, styles.headerTitle]);
+  }, [
+    navigation,
+    title,
+    styles.headerTitle,
+    dark,
+    colors.background,
+    colors.headersBackground,
+  ]);
 };
 
 const createStyles = ({ fontFamilies, fontSizes, fontWeights }: Theme) =>

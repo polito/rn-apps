@@ -55,10 +55,12 @@ export const BookingScreen = () => {
               ellipsizeTitle={false}
             />
             <OverviewList
+              dividers
               emptyStateText={t('bookingsScreen.emptyState')}
               emptyStateCaption={t('bookingsScreen.emptyStateCaption')}
               emptyStateIcon={faTriangleExclamation}
               emptyStateIconSize={40}
+              style={styles.list}
             >
               {reservations.map(booking => {
                 const detailRoute = getBookingDetailRoute(booking.type);
@@ -111,6 +113,9 @@ const createStyles = ({
     },
     section: {
       marginTop: spacing[3],
+    },
+    list: {
+      elevation: 0,
     },
     sectionTitle: {
       fontFamily: fontFamilies.heading,

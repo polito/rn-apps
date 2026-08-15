@@ -105,10 +105,12 @@ export const NewReservationScreen = () => {
             )}
           />
           <OverviewList
+            dividers
             emptyStateText={t('bookingsScreen.emptyState')}
             emptyStateCaption={t('bookingsScreen.emptyStateCaption')}
             emptyStateIcon={faTriangleExclamation}
             emptyStateIconSize={40}
+            style={styles.list}
           >
             {visibleReservations.map(booking => {
               const detailRoute = getBookingDetailRoute(booking.type);
@@ -136,10 +138,12 @@ export const NewReservationScreen = () => {
             ellipsizeTitle={false}
           />
           <OverviewList
+            dividers
             emptyStateText={t('bookingsScreen.emptyEvents')}
             emptyStateCaption={t('bookingsScreen.emptyEventsCaption')}
             emptyStateIcon={faTriangleExclamation}
             emptyStateIconSize={40}
+            style={styles.list}
           />
         </Section>
 
@@ -171,6 +175,9 @@ const createStyles = ({
     section: {
       marginTop: spacing[5],
       marginBottom: 0,
+    },
+    list: {
+      elevation: 0,
     },
     sectionTitle: {
       fontFamily: fontFamilies.heading,

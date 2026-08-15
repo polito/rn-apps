@@ -261,7 +261,9 @@ export const RequestDetailsScreen = () => {
             titleStyle={styles.sectionTitle}
             ellipsizeTitle={false}
           />
-          <OverviewList indented>{characteristicItems}</OverviewList>
+          <OverviewList indented dividers style={styles.list}>
+            {characteristicItems}
+          </OverviewList>
         </Section>
 
         {!!detailsText && (
@@ -271,7 +273,7 @@ export const RequestDetailsScreen = () => {
               titleStyle={styles.sectionTitle}
               ellipsizeTitle={false}
             />
-            <Card>
+            <Card style={styles.list}>
               <Text style={styles.detailsText}>{detailsText}</Text>
             </Card>
           </Section>
@@ -405,6 +407,9 @@ const createStyles = ({
     },
     section: {
       marginBottom: 0,
+    },
+    list: {
+      elevation: 0,
     },
     sectionTitle: {
       fontFamily: fontFamilies.heading,
