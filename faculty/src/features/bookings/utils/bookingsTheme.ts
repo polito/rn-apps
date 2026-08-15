@@ -21,6 +21,7 @@ export const bookingsColors = {
   placeholder: '#90A1B9',
   controlsDisable: '#90A1B9',
   focusBorder: '#00ACFF',
+  transparent: 'transparent',
   cursorOrange: '#FF9500',
   cardSurface: '#FFFFFF',
   cardSurfaceMuted: '#D4D4D4',

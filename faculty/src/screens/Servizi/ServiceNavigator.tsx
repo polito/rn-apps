@@ -6,8 +6,8 @@ import { useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { BookingRequestsScreen } from '../../features/bookings/screens/BookingRequestsScreen';
 import { BookRoomScreen } from '../../features/bookings/screens/BookRoomScreen';
+import { BookingRequestsScreen } from '../../features/bookings/screens/BookingRequestsScreen';
 import { BookingScreen } from '../../features/bookings/screens/BookingScreen';
 import { FacilitySpaceCalendarScreen } from '../../features/bookings/screens/FacilitySpaceCalendarScreen';
 import { FacilitySpaceTimelineScreen } from '../../features/bookings/screens/FacilitySpaceTimelineScreen';

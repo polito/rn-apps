@@ -37,7 +37,9 @@ export const DateTimeFieldCard = ({
       <Icon
         icon={icon}
         size={iconSize}
-        color={dark ? colors.secondaryText : bookingsColors.textHeading}
+        color={
+          dark ? colors.secondaryText : bookingsColors.controlsDisable
+        }
       />
       <View style={styles.fieldTextBlock}>
         <Text style={styles.fieldLabel} numberOfLines={1}>

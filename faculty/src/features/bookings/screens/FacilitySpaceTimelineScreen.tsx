@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Platform,
@@ -14,6 +8,7 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
+import { Defs, LinearGradient, Rect, Stop, Svg } from 'react-native-svg';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -29,20 +24,17 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { DateTime } from 'luxon';
 
 import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
-import { bookingsColors } from '../utils/bookingsTheme';
 import {
   DATE_SELECTOR_WEEKDAY_COUNT,
   DateSelector,
 } from '../components/DateSelector';
+import { useBookings } from '../hooks/useBookings';
 import {
   useGetInterdepartmentalSpace,
   useGetInterdepartmentalSpaceTypes,
 } from '../hooks/useInterdepartmentalSpaces';
-import { useBookings } from '../hooks/useBookings';
-import {
-  TimelineEvent,
-  slotsToTimelineEvents,
-} from '../utils/slotTimeline';
+import { bookingsColors } from '../utils/bookingsTheme';
+import { TimelineEvent, slotsToTimelineEvents } from '../utils/slotTimeline';
 
 const HOUR_HEIGHT = 64;
 const START_HOUR = 8;
@@ -95,10 +87,32 @@ const isSelectableDay = (day: DateTime) => day.weekday >= 1 && day.weekday <= 6;
 
 const toMonday = (day: DateTime) => day.minus({ days: day.weekday - 1 });
 
-export const FacilitySpaceTimelineScreen = () => {
-  const { t } = useTranslation();
+const CtaFade = ({ height }: { height: number }) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
+
+  if (height <= 0) return null;
+
+  return (
+    <View pointerEvents="none" style={[styles.ctaFade, { height }]}>
+      <Svg width="100%" height="100%" preserveAspectRatio="none">
+        <Defs>
+          <LinearGradient id="ctaFade" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor={colors.background} stopOpacity="0" />
+            <Stop offset="1" stopColor={colors.background} stopOpacity="1" />
+          </LinearGradient>
+        </Defs>
+        <Rect x="0" y="0" width="100%" height="100%" fill="url(#ctaFade)" />
+      </Svg>
+    </View>
+  );
+};
+
+export const FacilitySpaceTimelineScreen = () => {
+  const { t } = useTranslation();
+  const { colors, spacing } = useTheme();
+  const styles = useStylesheet(createStyles);
+  const [ctaFooterHeight, setCtaFooterHeight] = useState(0);
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const route =
@@ -112,9 +126,7 @@ export const FacilitySpaceTimelineScreen = () => {
 
   const typeLabels = useMemo(
     () =>
-      Object.fromEntries(
-        (spaceTypes ?? []).map(item => [item.id, item.name]),
-      ),
+      Object.fromEntries((spaceTypes ?? []).map(item => [item.id, item.name])),
     [spaceTypes],
   );
 
@@ -177,12 +189,12 @@ export const FacilitySpaceTimelineScreen = () => {
       headerBackTitle: '',
       headerBackButtonDisplayMode: 'minimal',
       headerTransparent: false,
-      headerShadowVisible: true,
+      headerShadowVisible: false,
       headerStyle: {
-        backgroundColor: colors.headersBackground,
+        backgroundColor: colors.surface,
       },
     });
-  }, [navigation, t, styles.headerTitle, colors.headersBackground]);
+  }, [navigation, t, styles.headerTitle, colors.surface]);
 
   useLayoutEffect(() => {
     scrollToDate(initialDate);
@@ -192,6 +204,7 @@ export const FacilitySpaceTimelineScreen = () => {
 
   return (
     <View style={styles.screen}>
+      <View style={styles.headerDivider} />
       <View style={styles.daysContainer}>
         <DateSelector
           ref={daysScrollRef}
@@ -299,20 +312,26 @@ export const FacilitySpaceTimelineScreen = () => {
         </View>
       </ScrollView>
 
-      <CtaButton
-        title={t('bookingsScreen.newBooking')}
-        icon={faPlus}
-        action={() =>
-          navigation.navigate('NuovaPrenotazioneSpazio', {
-            spaceId,
-          })
-        }
-        absolute={false}
-        variant="filled"
-        style={styles.ctaButton}
-        containerStyle={styles.ctaContainer}
-        textStyle={styles.ctaButtonText}
-      />
+      <CtaFade height={ctaFooterHeight + spacing[24]} />
+
+      <View
+        onLayout={event => setCtaFooterHeight(event.nativeEvent.layout.height)}
+      >
+        <CtaButton
+          title={t('bookingsScreen.newBooking')}
+          icon={faPlus}
+          action={() =>
+            navigation.navigate('NuovaPrenotazioneSpazio', {
+              spaceId,
+            })
+          }
+          absolute={false}
+          variant="filled"
+          style={styles.ctaButton}
+          containerStyle={styles.ctaContainer}
+          textStyle={styles.ctaButtonText}
+        />
+      </View>
     </View>
   );
 };
@@ -340,6 +359,10 @@ const createStyles = ({
       color: dark ? colors.title : bookingsColors.nativeLabelOnNavigator,
       textAlign: 'center',
     },
+    headerDivider: {
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: colors.divider,
+    },
     daysContainer: {
       flexGrow: 0,
       flexShrink: 0,
@@ -348,9 +371,10 @@ const createStyles = ({
       flex: 1,
     },
     timelineContent: {
-      // Space for hour markers that sit on the hour boundaries
+      // Space for hour markers that sit on the hour boundaries,
+      // plus extra room so the CTA fade doesn't cover the last slots.
       paddingTop: 8 + spacing[2],
-      paddingBottom: 8 + spacing[4],
+      paddingBottom: 8 + spacing[24],
     },
     timeline: {
       marginLeft: 0,
@@ -453,6 +477,12 @@ const createStyles = ({
       lineHeight: 19,
       letterSpacing: 0.12,
       color: bookingsColors.textPrimary,
+    },
+    ctaFade: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: 0,
     },
     ctaContainer: {
       paddingHorizontal: spacing[4],

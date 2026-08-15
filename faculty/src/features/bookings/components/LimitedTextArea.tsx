@@ -77,7 +77,7 @@ const createStyles = ({
       paddingTop: spacing[2],
       paddingBottom: spacing[2],
       borderWidth: 1,
-      borderColor: 'transparent',
+      borderColor: bookingsColors.transparent,
     },
     cardFocused: {
       borderColor: bookingsColors.focusBorder,

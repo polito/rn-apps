@@ -41,20 +41,20 @@ import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator
 import { DateTimeFieldRow } from '../components/DateTimeFieldRow';
 import { LimitedTextArea } from '../components/LimitedTextArea';
 import { SelectMenuField } from '../components/SelectMenuField';
+import { useBookings } from '../hooks/useBookings';
 import {
   useCreateSpaceEvent,
   useGetInterdepartmentalSpace,
   useGetInterdepartmentalSpaceTypes,
   useUpdateSpaceEvent,
 } from '../hooks/useInterdepartmentalSpaces';
-import { useBookings } from '../hooks/useBookings';
-import { bookingsColors } from '../utils/bookingsTheme';
 import {
   fromApiDate,
   fromApiTime,
   toApiDate,
   toApiTime,
 } from '../utils/apiDates';
+import { bookingsColors } from '../utils/bookingsTheme';
 
 const DESCRIPTION_MAX_LENGTH = 30;
 
@@ -90,8 +90,7 @@ export const NewFacilityBookingScreen = () => {
   const updateSpaceEvent = useUpdateSpaceEvent(spaceId ?? '');
   const editingSlot = space?.slotsOccupied.find(slot => slot.id === eventId);
   const isEditing = !!editingSlot;
-  const canEdit =
-    !editingSlot || editingSlot.bookedBy.email === user.email;
+  const canEdit = !editingSlot || editingSlot.bookedBy.email === user.email;
   const availableSeats = space?.numSeats ?? 10;
 
   const eventTypes = useMemo(
@@ -132,14 +131,10 @@ export const NewFacilityBookingScreen = () => {
   );
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [startTime, setStartTime] = useState(() =>
-    editingSlot
-      ? fromApiTime(editingSlot.startAt)
-      : buildTime(11, 30),
+    editingSlot ? fromApiTime(editingSlot.startAt) : buildTime(11, 30),
   );
   const [endTime, setEndTime] = useState(() =>
-    editingSlot
-      ? fromApiTime(editingSlot.endAt)
-      : buildTime(12, 30),
+    editingSlot ? fromApiTime(editingSlot.endAt) : buildTime(12, 30),
   );
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [seats, setSeats] = useState(String(availableSeats));
@@ -628,8 +623,12 @@ const createStyles = ({
       elevation: 0,
     },
     ctaButtonDisabled: {
-      backgroundColor: dark ? bookingsColors.buttonDisabled : bookingsColors.controlsDisable,
-      borderColor: dark ? bookingsColors.buttonDisabled : bookingsColors.controlsDisable,
+      backgroundColor: dark
+        ? bookingsColors.buttonDisabled
+        : bookingsColors.controlsDisable,
+      borderColor: dark
+        ? bookingsColors.buttonDisabled
+        : bookingsColors.controlsDisable,
     },
     ctaButtonText: {
       color: bookingsColors.onButtonPrimary,
@@ -640,6 +639,8 @@ const createStyles = ({
       lineHeight: 20,
     },
     ctaButtonTextDisabled: {
-      color: dark ? bookingsColors.nativeLabelOnNavigator : bookingsColors.onButtonPrimary,
+      color: dark
+        ? bookingsColors.nativeLabelOnNavigator
+        : bookingsColors.onButtonPrimary,
     },
   });
