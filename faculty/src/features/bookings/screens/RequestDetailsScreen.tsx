@@ -1,12 +1,6 @@
 import { ReactElement, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   faDesktop,
@@ -22,6 +16,7 @@ import {
 import {
   BottomBarSpacer,
   Card,
+  CtaButton,
   CtaButtonContainer,
   Icon,
   ListItem,
@@ -297,34 +292,36 @@ export const RequestDetailsScreen = () => {
           absolute
           style={[styles.ctaRow, { bottom: bottomBarHeight }]}
         >
-          <TouchableOpacity
-            accessibilityRole="button"
-            accessibilityLabel={t('common.delete')}
-            style={styles.deleteButton}
-            onPress={() =>
+          <CtaButton
+            title={t('common.delete')}
+            icon={faTrash}
+            action={() =>
               Alert.alert(
                 t('common.comingSoon'),
                 t('bookingsScreen.bookEventComingSoon'),
               )
             }
-          >
-            <Icon icon={faTrash} size={fontSizes.xl} color={bookingsColors.buttonDangerOn} />
-            <Text style={styles.deleteButtonText}>{t('common.delete')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            accessibilityRole="button"
-            accessibilityLabel={t('common.edit')}
-            style={styles.editButton}
-            onPress={() =>
+            absolute={false}
+            variant="outlined"
+            destructive
+            containerStyle={styles.ctaButtonContainer}
+            style={styles.ctaButton}
+            textStyle={styles.ctaButtonText}
+          />
+          <CtaButton
+            title={t('common.edit')}
+            icon={faPen}
+            action={() =>
               Alert.alert(
                 t('common.comingSoon'),
                 t('bookingsScreen.bookEventComingSoon'),
               )
             }
-          >
-            <Icon icon={faPen} size={fontSizes.xl} color={bookingsColors.onButtonPrimary} />
-            <Text style={styles.editButtonText}>{t('common.edit')}</Text>
-          </TouchableOpacity>
+            absolute={false}
+            containerStyle={styles.ctaButtonContainer}
+            style={styles.ctaButton}
+            textStyle={styles.ctaButtonText}
+          />
         </CtaButtonContainer>
       )}
     </View>
@@ -364,47 +361,18 @@ const createStyles = ({
       paddingBottom: spacing[4],
       gap: spacing[3],
     },
-    deleteButton: {
+    ctaButtonContainer: {
+      flex: 1,
+      padding: 0,
+    },
+    ctaButton: {
       height: 45,
       paddingVertical: spacing[3],
       paddingHorizontal: 20,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      gap: spacing[2],
-      flexGrow: 1,
-      flexShrink: 0,
-      flexBasis: 0,
       borderRadius: shapes.lg,
-      borderWidth: 1,
-      borderColor: bookingsColors.buttonDangerBorder,
-      backgroundColor: dark ? colors.background : bookingsColors.buttonDangerBg,
       elevation: 0,
     },
-    deleteButtonText: {
-      color: bookingsColors.buttonDangerOn,
-      fontFamily: fontFamilies.heading,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 20,
-    },
-    editButton: {
-      height: 45,
-      paddingVertical: spacing[3],
-      paddingHorizontal: 20,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      gap: spacing[2],
-      flexGrow: 1,
-      flexShrink: 0,
-      flexBasis: 0,
-      borderRadius: shapes.lg,
-      backgroundColor: bookingsColors.buttonPrimary,
-      elevation: 0,
-    },
-    editButtonText: {
-      color: bookingsColors.onButtonPrimary,
+    ctaButtonText: {
       fontFamily: fontFamilies.heading,
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,

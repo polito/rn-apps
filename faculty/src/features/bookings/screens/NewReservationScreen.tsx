@@ -1,25 +1,16 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Alert,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
-import { faChevronRight, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import {
   BottomBarSpacer,
-  Icon,
   OverviewList,
   Section,
   SectionHeader,
-  Text,
+  TextButton,
   Theme,
   useStylesheet,
-  useTheme,
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -36,7 +27,6 @@ const VISIBLE_COUNT = 3;
 
 export const NewReservationScreen = () => {
   const { t } = useTranslation();
-  const { dark, colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
@@ -69,20 +59,13 @@ export const NewReservationScreen = () => {
     if (expanded || moreCount <= 0) return undefined;
 
     return (
-      <TouchableOpacity
+      <TextButton
         accessibilityRole="button"
         onPress={onPress}
         style={styles.showOthers}
       >
-        <Text style={styles.showOthersText}>
-          {t('bookingsScreen.showOthers', { count: moreCount })}
-        </Text>
-        <Icon
-          icon={faChevronRight}
-          size={fontSizes.xs}
-          color={dark ? colors.link : bookingsColors.textLink}
-        />
-      </TouchableOpacity>
+        {t('bookingsScreen.showOthers', { count: moreCount })}
+      </TextButton>
     );
   };
 
@@ -197,17 +180,8 @@ const createStyles = ({
       color: dark ? colors.heading : bookingsColors.textHeading,
     },
     showOthers: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing[0.5],
       marginEnd: spacing[1],
-    },
-    showOthersText: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.xs,
-      fontWeight: fontWeights.medium,
-      lineHeight: 16,
-      color: dark ? colors.link : bookingsColors.textLink,
-      textAlign: 'right',
+      padding: 0,
+      marginRight: 0,
     },
   });

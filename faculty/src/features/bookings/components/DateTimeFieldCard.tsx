@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Icon, Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 
 import { bookingsColors } from '../utils/bookingsTheme';
@@ -37,9 +37,7 @@ export const DateTimeFieldCard = ({
       <Icon
         icon={icon}
         size={iconSize}
-        color={
-          dark ? colors.secondaryText : bookingsColors.controlsDisable
-        }
+        color={dark ? colors.secondaryText : bookingsColors.controlsDisable}
       />
       <View style={styles.fieldTextBlock}>
         <Text style={styles.fieldLabel} numberOfLines={1}>

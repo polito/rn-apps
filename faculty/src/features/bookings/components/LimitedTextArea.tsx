@@ -1,7 +1,13 @@
 import { useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
+import {
+  Text,
+  TextField,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 
 import { bookingsColors } from '../utils/bookingsTheme';
 
@@ -28,9 +34,7 @@ export const LimitedTextArea = ({
   return (
     <View style={[styles.card, isFocused && styles.cardFocused]}>
       <View style={styles.header}>
-        <Text
-          style={[styles.label, !isFocused && styles.labelIdle]}
-        >
+        <Text style={[styles.label, !isFocused && styles.labelIdle]}>
           {label}
         </Text>
         <Text
@@ -42,18 +46,22 @@ export const LimitedTextArea = ({
           {remainingChars}
         </Text>
       </View>
-      <TextInput
+      <TextField
+        label={placeholder}
         value={value}
         onChangeText={text => onChange(text.slice(0, maxLength))}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        placeholder={placeholder}
-        placeholderTextColor={dark ? colors.secondaryText : bookingsColors.placeholder}
-        selectionColor={bookingsColors.cursorOrange}
         multiline
-        textAlignVertical="top"
+        numberOfLines={3}
         maxLength={maxLength}
-        style={styles.input}
+        accessibilityLabel={label}
+        style={styles.field}
+        inputStyle={styles.input}
+        placeholderTextColor={
+          dark ? colors.secondaryText : bookingsColors.placeholder
+        }
+        selectionColor={bookingsColors.cursorOrange}
       />
     </View>
   );
@@ -106,6 +114,9 @@ const createStyles = ({
     counterActive: {
       color: dark ? colors.heading : bookingsColors.textHeading,
     },
+    field: {
+      paddingVertical: 0,
+    },
     input: {
       fontFamily: fontFamilies.body,
       fontSize: fontSizes.sm,
@@ -113,8 +124,10 @@ const createStyles = ({
       lineHeight: 20,
       color: dark ? colors.prose : bookingsColors.textPrimary,
       overflow: 'hidden',
-      padding: 0,
+      paddingHorizontal: 0,
+      paddingVertical: 0,
       marginTop: spacing[0.5],
       minHeight: 20,
+      borderBottomWidth: 0,
     },
   });

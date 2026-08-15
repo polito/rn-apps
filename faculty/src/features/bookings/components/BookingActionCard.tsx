@@ -38,7 +38,11 @@ export const BookingActionCard = ({ label, title, onPress }: Props) => {
       </View>
       <View style={styles.buttonRow}>
         <View style={styles.iconButton}>
-          <Icon icon={faPaperPlane} size={12} color={bookingsColors.buttonPrimary} />
+          <Icon
+            icon={faPaperPlane}
+            size={12}
+            color={bookingsColors.buttonPrimary}
+          />
         </View>
       </View>
     </TouchableCard>
@@ -65,7 +69,9 @@ const createStyles = ({
       marginVertical: 0,
       padding: spacing[2],
       borderRadius: shapes.lg,
-      backgroundColor: dark ? colors.surfaceDark : bookingsColors.cardSurfaceMuted,
+      backgroundColor: dark
+        ? colors.surfaceDark
+        : bookingsColors.cardSurfaceMuted,
       elevation: 0,
     },
     textContainer: {
@@ -97,7 +103,9 @@ const createStyles = ({
       borderRadius: shapes.lg,
       borderWidth: 1,
       borderColor: bookingsColors.buttonPrimary,
-      backgroundColor: dark ? bookingsColors.buttonSecondaryBgDark : bookingsColors.buttonSecondaryBg,
+      backgroundColor: dark
+        ? bookingsColors.buttonSecondaryBgDark
+        : bookingsColors.buttonSecondaryBg,
       alignItems: 'center',
       justifyContent: 'center',
     },

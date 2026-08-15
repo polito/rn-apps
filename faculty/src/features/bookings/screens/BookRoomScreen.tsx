@@ -1,12 +1,6 @@
 import { useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -17,13 +11,14 @@ import {
   faPlug,
 } from '@fortawesome/free-solid-svg-icons';
 import {
+  CtaButton,
   Icon,
   ListItem,
   OverviewList,
   Section,
   SectionHeader,
   Switch,
-  Text,
+  TextButton,
   Theme,
   useStylesheet,
   useTheme,
@@ -89,24 +84,17 @@ export const BookRoomScreen = () => {
         backgroundColor: colors.background,
       },
       headerLeft: () => (
-        <TouchableOpacity
+        <TextButton
           accessibilityRole="button"
           accessibilityLabel={t('common.close')}
           onPress={() => navigation.goBack()}
           style={styles.closeButton}
         >
-          <Text style={styles.closeText}>{t('common.close')}</Text>
-        </TouchableOpacity>
+          {t('common.close')}
+        </TextButton>
       ),
     });
-  }, [
-    navigation,
-    t,
-    dark,
-    colors.background,
-    styles.closeButton,
-    styles.closeText,
-  ]);
+  }, [navigation, t, dark, colors.background, styles.closeButton]);
 
   return (
     <View style={styles.screen}>
@@ -212,21 +200,15 @@ export const BookRoomScreen = () => {
         />
       </ScrollView>
 
-      <View style={styles.ctaContainer}>
-        <TouchableOpacity
-          accessibilityRole="button"
-          accessibilityLabel={t('other.send')}
-          onPress={showComingSoon}
-          style={styles.sendButton}
-        >
-          <Icon
-            icon={faPaperPlane}
-            size={fontSizes.sm}
-            color={bookingsColors.onSendButton}
-          />
-          <Text style={styles.sendButtonText}>{t('other.send')}</Text>
-        </TouchableOpacity>
-      </View>
+      <CtaButton
+        title={t('other.send')}
+        icon={faPaperPlane}
+        action={showComingSoon}
+        absolute={false}
+        containerStyle={styles.ctaContainer}
+        style={styles.sendButton}
+        textStyle={styles.sendButtonText}
+      />
     </View>
   );
 };
@@ -255,14 +237,7 @@ const createStyles = ({
     },
     closeButton: {
       marginLeft: -spacing[2],
-      paddingHorizontal: spacing[2],
       paddingVertical: spacing[1],
-    },
-    closeText: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.normal,
-      color: dark ? colors.secondaryText : bookingsColors.placeholder,
     },
     ctaContainer: {
       paddingHorizontal: spacing[4],
@@ -271,21 +246,16 @@ const createStyles = ({
     },
     sendButton: {
       height: 45,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing[2],
-      borderRadius: shapes.lg,
-      backgroundColor: bookingsColors.sendButton,
-      paddingHorizontal: 20,
       paddingVertical: spacing[3],
+      paddingHorizontal: 20,
+      borderRadius: shapes.lg,
+      elevation: 0,
     },
     sendButtonText: {
       fontFamily: fontFamilies.heading,
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
       lineHeight: 20,
-      color: bookingsColors.onSendButton,
     },
     section: {
       marginBottom: 0,

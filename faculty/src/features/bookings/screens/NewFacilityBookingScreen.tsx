@@ -1,12 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Platform,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   faCalendar,
@@ -23,6 +17,7 @@ import {
   SectionHeader,
   Switch,
   Text,
+  TextButton,
   Theme,
   faSeat,
   useStylesheet,
@@ -332,14 +327,14 @@ export const NewFacilityBookingScreen = () => {
         backgroundColor: colors.background,
       },
       headerLeft: () => (
-        <TouchableOpacity
+        <TextButton
           accessibilityRole="button"
           accessibilityLabel={t('common.close')}
           onPress={() => navigation.goBack()}
           style={styles.closeButton}
         >
-          <Text style={styles.closeText}>{t('common.close')}</Text>
-        </TouchableOpacity>
+          {t('common.close')}
+        </TextButton>
       ),
     });
   }, [
@@ -349,7 +344,6 @@ export const NewFacilityBookingScreen = () => {
     colors.background,
     styles.headerTitle,
     styles.closeButton,
-    styles.closeText,
     isEditing,
   ]);
 
@@ -542,18 +536,7 @@ const createStyles = ({
     },
     closeButton: {
       marginLeft: -spacing[2],
-      paddingHorizontal: spacing[2],
       paddingVertical: spacing[1],
-    },
-    closeText: {
-      fontFamily: fontFamilies.title,
-      fontSize: fontSizes.md,
-      fontStyle: 'normal',
-      fontWeight: fontWeights.medium,
-      lineHeight: 23,
-      letterSpacing: 0.16,
-      textAlign: 'right',
-      color: bookingsColors.linkBlue,
     },
     headerTitle: {
       fontFamily: fontFamilies.heading,
