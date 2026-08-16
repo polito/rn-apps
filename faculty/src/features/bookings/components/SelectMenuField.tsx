@@ -1,6 +1,7 @@
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import {
   Icon,
   ListItem,
@@ -87,6 +88,9 @@ export const SelectMenuField = ({
         subtitleStyle={inverted ? styles.filterLabel : styles.listSubtitle}
         subtitleProps={inverted ? { numberOfLines: 1 } : undefined}
         containerStyle={[styles.listItem, containerStyle]}
+        trailingItem={
+          <Icon icon={faChevronDown} color={colors.secondaryText} />
+        }
       />
     </StatefulMenuView>
   );
