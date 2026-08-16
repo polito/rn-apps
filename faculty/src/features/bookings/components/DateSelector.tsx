@@ -10,9 +10,9 @@ import {
 
 import { Text, Theme, useStylesheet } from '@polito/lib/ui';
 
-import { bookingsColors } from '../utils/bookingsTheme';
-
 import { DateTime } from 'luxon';
+
+import { bookingsColors } from '../utils/bookingsTheme';
 
 export const DATE_SELECTOR_CHIP_SIZE = 48;
 export const DATE_SELECTOR_CHIP_GAP = 12;

@@ -1,11 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-} from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { faPlus, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPlus,
+  faTriangleExclamation,
+} from '@fortawesome/free-solid-svg-icons';
 import {
   BottomBarSpacer,
   CtaButton,
@@ -20,10 +19,10 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
 import { BookingListItem } from '../components/BookingListItem';
-import { useBookingsBlurHeader } from '../hooks/useBookingsBlurHeader';
 import { useBookings } from '../hooks/useBookings';
-import { bookingsColors } from '../utils/bookingsTheme';
+import { useBookingsBlurHeader } from '../hooks/useBookingsBlurHeader';
 import { getBookingDetailRoute } from '../utils/bookingStatus';
+import { bookingsColors } from '../utils/bookingsTheme';
 
 export const BookingScreen = () => {
   const { t } = useTranslation();

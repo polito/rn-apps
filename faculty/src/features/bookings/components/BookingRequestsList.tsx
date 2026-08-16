@@ -14,7 +14,9 @@ import { BookingListItem } from './BookingListItem';
 
 interface Props {
   bookings: ReturnType<typeof useBookings>['bookings'];
-  onItemPress: (booking: ReturnType<typeof useBookings>['bookings'][number]) => void;
+  onItemPress: (
+    booking: ReturnType<typeof useBookings>['bookings'][number],
+  ) => void;
   ctaTitle: string;
   onCtaPress: () => void;
 }
@@ -38,10 +40,7 @@ export const BookingRequestsList = ({
         contentInsetAdjustmentBehavior="automatic"
         ItemSeparatorComponent={IndentedDivider}
         renderItem={({ item }) => (
-          <BookingListItem
-            booking={item}
-            onPress={() => onItemPress(item)}
-          />
+          <BookingListItem booking={item} onPress={() => onItemPress(item)} />
         )}
         ListFooterComponent={BottomBarSpacer}
       />

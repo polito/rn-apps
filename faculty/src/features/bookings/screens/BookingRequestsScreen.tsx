@@ -34,9 +34,7 @@ const BOOKING_REQUESTS_CONFIG: Record<
 export const BookingRequestsScreen = () => {
   const { t } = useTranslation();
   const route =
-    useRoute<
-      RouteProp<ProfileStackParamList, BookingRequestsRouteName>
-    >();
+    useRoute<RouteProp<ProfileStackParamList, BookingRequestsRouteName>>();
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const { bookings, setSelectedBooking } = useBookings();

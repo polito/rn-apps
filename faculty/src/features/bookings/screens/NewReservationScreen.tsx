@@ -1,6 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -18,10 +24,10 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
 import { BookingActionCard } from '../components/BookingActionCard';
 import { BookingListItem } from '../components/BookingListItem';
-import { useBookingsBlurHeader } from '../hooks/useBookingsBlurHeader';
 import { useBookings } from '../hooks/useBookings';
-import { bookingsColors } from '../utils/bookingsTheme';
+import { useBookingsBlurHeader } from '../hooks/useBookingsBlurHeader';
 import { getBookingDetailRoute } from '../utils/bookingStatus';
+import { bookingsColors } from '../utils/bookingsTheme';
 
 const VISIBLE_COUNT = 3;
 

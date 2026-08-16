@@ -1,4 +1,9 @@
-import { APP_TIMEZONE, dateFormatter, formatMachineDate } from '@polito/lib/core';
+import {
+  APP_TIMEZONE,
+  dateFormatter,
+  formatMachineDate,
+} from '@polito/lib/core';
+
 import { DateTime } from 'luxon';
 
 export const toApiTime = dateFormatter('HH:mm:ss');

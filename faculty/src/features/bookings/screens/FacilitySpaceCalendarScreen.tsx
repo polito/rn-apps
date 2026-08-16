@@ -1,11 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 
 import { faCity, faMap } from '@fortawesome/free-solid-svg-icons';
 import {

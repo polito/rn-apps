@@ -36,10 +36,10 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { ProfileStackParamList } from '../../../screens/Servizi/ServiceNavigator';
 import { BookingStatusBadge } from '../components/BookingStatusBadge';
-import { useBookingsBlurHeader } from '../hooks/useBookingsBlurHeader';
 import { useBookings } from '../hooks/useBookings';
-import { bookingsColors } from '../utils/bookingsTheme';
+import { useBookingsBlurHeader } from '../hooks/useBookingsBlurHeader';
 import { parseBookingDescription } from '../utils/bookingStatus';
+import { bookingsColors } from '../utils/bookingsTheme';
 
 const getActiveStatusLabel = (value: boolean, t: (key: string) => string) =>
   value ? t('common.activeStatus.true') : t('common.activeStatus.false');

@@ -10,8 +10,8 @@ import {
 } from '@polito/lib/ui';
 
 import { useBookings } from '../hooks/useBookings';
-import { bookingsColors } from '../utils/bookingsTheme';
 import { formatBookingTitle } from '../utils/bookingStatus';
+import { bookingsColors } from '../utils/bookingsTheme';
 import { BookingStatusBadge } from './BookingStatusBadge';
 
 interface Props {
@@ -33,11 +33,7 @@ export const BookingListItem = ({
       title={formatBookingTitle(booking.title, t)}
       titleStyle={styles.listTitle}
       subtitle={
-        <ScreenDateTime
-          date={booking.date}
-          time={booking.time}
-          inListItem
-        />
+        <ScreenDateTime date={booking.date} time={booking.time} inListItem />
       }
       onPress={onPress}
       trailingItem={

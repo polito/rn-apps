@@ -200,13 +200,18 @@ export const FacilitySpaceTimelineScreen = () => {
       },
       ...(Platform.OS === 'android'
         ? {
-            headerLeft: () => (
-              <AndroidBackButton displayMode="minimal" />
-            ),
+            headerLeft: () => <AndroidBackButton displayMode="minimal" />,
           }
         : {}),
     });
-  }, [navigation, t, styles.headerTitle, dark, colors.background, colors.surface]);
+  }, [
+    navigation,
+    t,
+    styles.headerTitle,
+    dark,
+    colors.background,
+    colors.surface,
+  ]);
 
   useLayoutEffect(() => {
     scrollToDate(initialDate);
@@ -385,9 +390,7 @@ const createStyles = ({
         android: {
           backgroundColor: dark ? colors.background : colors.surface,
           borderBottomWidth: StyleSheet.hairlineWidth,
-          borderBottomColor: dark
-            ? colors.translucentSurface
-            : colors.divider,
+          borderBottomColor: dark ? colors.translucentSurface : colors.divider,
         },
         default: {},
       }),

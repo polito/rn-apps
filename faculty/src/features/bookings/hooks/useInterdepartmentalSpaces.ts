@@ -33,7 +33,8 @@ export const useGetInterdepartmentalSpaceTypes = () =>
 export const useGetInterdepartmentalSpace = (spaceId?: string) =>
   useQuery({
     queryKey: interdepartmentalSpaceQueryKey(spaceId ?? ''),
-    queryFn: () => interdepartmentalSpacesApi.getInterdepartmentalSpace(spaceId!),
+    queryFn: () =>
+      interdepartmentalSpacesApi.getInterdepartmentalSpace(spaceId!),
     enabled: !!spaceId,
   });
 

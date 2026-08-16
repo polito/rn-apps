@@ -71,9 +71,7 @@ export const SelectMenuField = ({
       title={title}
       actions={actions}
       onPressAction={({ nativeEvent: { event } }) =>
-        onSelect(
-          allowNoPreference && event === NO_PREFERENCE ? '' : event,
-        )
+        onSelect(allowNoPreference && event === NO_PREFERENCE ? '' : event)
       }
     >
       <ListItem

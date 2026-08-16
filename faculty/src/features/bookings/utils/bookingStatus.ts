@@ -57,7 +57,9 @@ export const getStatusLabel = (status: string, t: (key: string) => string) => {
   }
 };
 
-export const getBookingDetailRoute = (type: number): 'RequestDetails' | null => {
+export const getBookingDetailRoute = (
+  type: number,
+): 'RequestDetails' | null => {
   switch (type) {
     case 0:
     case 1:

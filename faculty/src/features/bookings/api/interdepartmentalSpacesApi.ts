@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon';
+
 import {
   CreateSpaceEventRequest,
   InterdepartmentalSpace,
@@ -5,8 +7,6 @@ import {
   InterdepartmentalSpaceType,
   Slot,
 } from '../types/interdepartmentalSpaces';
-
-import { DateTime } from 'luxon';
 
 const todayIso = () => DateTime.now().toFormat('yyyy-MM-dd');
 
@@ -57,7 +57,10 @@ const MOCK_TYPES: InterdepartmentalSpaceType[] = [
   { id: 'other', name: 'Other' },
 ];
 
-const buildSpaceDetail = (roomId: string, slots: Slot[]): InterdepartmentalSpace => {
+const buildSpaceDetail = (
+  roomId: string,
+  slots: Slot[],
+): InterdepartmentalSpace => {
   const room = MOCK_FILTER.rooms.find(item => item.id === roomId);
   if (!room) {
     throw new Error(`Space ${roomId} not found`);
@@ -121,7 +124,8 @@ const slotsBySpace = new Map<string, Slot[]>(
   ]),
 );
 
-const delay = (ms = 300) => new Promise<void>(resolve => setTimeout(resolve, ms));
+const delay = (ms = 300) =>
+  new Promise<void>(resolve => setTimeout(resolve, ms));
 
 const getSlots = (spaceId: string) => slotsBySpace.get(spaceId) ?? [];
 
@@ -139,7 +143,9 @@ export const interdepartmentalSpacesApi = {
     return MOCK_FILTER;
   },
 
-  async getInterdepartmentalSpaceTypes(): Promise<InterdepartmentalSpaceType[]> {
+  async getInterdepartmentalSpaceTypes(): Promise<
+    InterdepartmentalSpaceType[]
+  > {
     await delay();
     return MOCK_TYPES;
   },
@@ -155,7 +161,8 @@ export const interdepartmentalSpacesApi = {
   ): Promise<string> {
     await delay();
     const slots = getSlots(spaceId);
-    const eventDate = request.eventDate ?? new Date().toISOString().slice(0, 10);
+    const eventDate =
+      request.eventDate ?? new Date().toISOString().slice(0, 10);
     const slot: Slot = {
       id: `slot-${Date.now()}`,
       startAt: `${eventDate}T${request.startsAt}`,
@@ -182,7 +189,8 @@ export const interdepartmentalSpacesApi = {
   ): Promise<void> {
     await delay();
     const slots = getSlots(spaceId);
-    const eventDate = request.eventDate ?? new Date().toISOString().slice(0, 10);
+    const eventDate =
+      request.eventDate ?? new Date().toISOString().slice(0, 10);
     setSlots(
       spaceId,
       slots.map(slot =>

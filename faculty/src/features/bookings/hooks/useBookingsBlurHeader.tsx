@@ -31,11 +31,7 @@ const AndroidBackButton = ({
       accessibilityLabel={label}
       style={styles.backButton}
     >
-      <Icon
-        icon={faChevronLeft}
-        size={20}
-        color={bookingsColors.linkBlue}
-      />
+      <Icon icon={faChevronLeft} size={20} color={bookingsColors.linkBlue} />
       {showLabel ? <Text style={styles.backTitle}>{label}</Text> : null}
     </Pressable>
   );
@@ -54,9 +50,7 @@ export const useBookingsBlurHeader = ({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text style={styles.headerTitle}>{title}</Text>
-      ),
+      headerTitle: () => <Text style={styles.headerTitle}>{title}</Text>,
       headerTitleAlign: 'center',
       headerBackTitle: headerBackTitle ?? '',
       headerBackButtonDisplayMode,
