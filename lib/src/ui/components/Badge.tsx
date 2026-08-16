@@ -50,9 +50,9 @@ export const Badge = ({
         style={{
           color: foregroundColor,
           fontSize: fontSizes.xs,
-          fontFamily: fontFamilies.title,
+          fontFamily: fontFamilies.heading,
         }}
-        weight="medium"
+        weight="semibold"
       >
         {text}
       </Text>
