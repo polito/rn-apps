@@ -8,9 +8,11 @@ export { RecentSearch } from './components/RecentSearch';
 export { UsefulContactsSection } from './components/UsefulContactsSection';
 export {
   CONSIGLIERA_FIDUCIA_ID,
+  GARANTE_STUDENTI_ID,
   SPORTELLO_ANTIVIOLENZA_ID,
   defaultUsefulContactsContent,
   defaultUsefulContactsList,
+  studentsUsefulContactsList,
 } from './data/defaultUsefulContacts';
 export {
   getPersonKey,

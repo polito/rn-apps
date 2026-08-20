@@ -2,6 +2,7 @@ import { StyleSheet, View } from 'react-native';
 
 import {
   faEnvelope,
+  faLink,
   faPhone,
   faTriangleExclamation,
 } from '@fortawesome/free-solid-svg-icons';
@@ -11,10 +12,18 @@ import { UsefulContact, UsefulContactDetail } from '../types';
 
 export const CONSIGLIERA_FIDUCIA_ID = 'consigliera-fiducia';
 export const SPORTELLO_ANTIVIOLENZA_ID = 'sportello-antiviolenza';
+export const GARANTE_STUDENTI_ID = 'garante-studenti';
+
+const GARANTE_STUDENTI_URL = '';
 
 export const defaultUsefulContactsList: UsefulContact[] = [
   { id: CONSIGLIERA_FIDUCIA_ID, title: 'Consigliera di Fiducia' },
   { id: SPORTELLO_ANTIVIOLENZA_ID, title: 'Sportello Antiviolenza' },
+];
+
+export const studentsUsefulContactsList: UsefulContact[] = [
+  ...defaultUsefulContactsList,
+  { id: GARANTE_STUDENTI_ID, title: 'Garante degli studenti' },
 ];
 
 const SIZE = 14;
@@ -100,6 +109,23 @@ const SportelloInfoBody = () => (
   </View>
 );
 
+const GaranteInfoBody = () => (
+  <View>
+    <Text variant="prose" style={styles.body}>
+      È possibile inviare una segnalazione tramite email, descrivendo con
+      ragionevole dettaglio il problema da esaminare.
+    </Text>
+    <View style={styles.paragraphSpacer} />
+    <Text variant="prose" style={styles.body}>
+      Il messaggio deve essere firmato e contenere i riferimenti necessari
+      affinché il Garante possa mettersi in contatto con chi scrive, se
+      necessario. Il testo della segnalazione deve essere scritto interamente
+      nel corpo dell'email. Eventuali allegati sono consentiti esclusivamente in
+      formato PDF.
+    </Text>
+  </View>
+);
+
 export const defaultUsefulContactsContent: Record<string, UsefulContactDetail> =
   {
     [CONSIGLIERA_FIDUCIA_ID]: {
@@ -171,6 +197,49 @@ export const defaultUsefulContactsContent: Record<string, UsefulContactDetail> =
           title: 'Numero per emergenze',
           value: '3664607803',
           action: { kind: 'tel', target: '3664607803' },
+        },
+      ],
+    },
+    [GARANTE_STUDENTI_ID]: {
+      title: 'Garante degli studenti',
+      description: {
+        paragraphs: [
+          <Text variant="prose" style={styles.body}>
+            Il Garante studenti è il referente per le funzioni di garanzia della
+            popolazione studentesca. Viene nominato dal Comitato Paritetico per
+            la Didattica tra i docenti di I fascia dell'Ateneo che abbiano
+            presentato la propria candidatura. Sulla base delle segnalazioni
+            ricevute, approfondisce le problematiche e interviene per affrontare
+            e risolvere le criticità riscontrate. A seguito dei necessari
+            accertamenti, propone agli organi competenti le opportune iniziative
+            e ne riferisce annualmente al Comitato Paritetico per la Didattica.
+            Per le questioni che implicano problemi di riservatezza personale,
+            riferisce direttamente al Rettore.
+          </Text>,
+          <View style={styles.paragraphSpacer} />,
+          <Text variant="prose" style={styles.body}>
+            Il Garante adotta ogni azione utile per salvaguardare, ove
+            possibile, la riservatezza di chi si rivolge a questa figura.
+          </Text>,
+        ],
+      },
+      info: {
+        title: 'Come contattarlo',
+        body: <GaranteInfoBody />,
+      },
+      contacts: [
+        {
+          icon: faEnvelope,
+          title: 'Email',
+          value: 'garante.studenti@polito.it',
+          action: { kind: 'email', target: 'garante.studenti@polito.it' },
+        },
+        {
+          icon: faLink,
+          title: 'Maggiori informazioni',
+          value:
+            'Per maggiori informazioni, consulta la pagina dedicata sul sito del Politecnico.',
+          action: { kind: 'link', target: GARANTE_STUDENTI_URL },
         },
       ],
     },

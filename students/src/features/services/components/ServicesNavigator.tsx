@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 
 import {
   ContactsScreen as LibContactsScreen,
-  defaultUsefulContactsList,
+  studentsUsefulContactsList,
 } from '@polito/lib/features/people';
 import {
   PlacesNavigator,
@@ -111,7 +111,7 @@ export const ServicesNavigator = () => {
   const { colors } = theme;
   const ContactsScreen = () => (
     <LibContactsScreen
-      usefulContacts={defaultUsefulContactsList}
+      usefulContacts={studentsUsefulContactsList}
       showPreferredContacts={false}
     />
   );

@@ -17,7 +17,8 @@ export type UsefulContact = {
 
 export type UsefulContactAction =
   | { kind: 'email'; target: string }
-  | { kind: 'tel'; target: string };
+  | { kind: 'tel'; target: string }
+  | { kind: 'link'; target: string };
 
 export type UsefulContactItem = {
   icon: IconDefinition;

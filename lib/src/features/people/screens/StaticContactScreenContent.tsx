@@ -3,6 +3,7 @@ import { Linking, Platform, ScrollView, StyleSheet, View } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
+import { BottomBarSpacer } from '../../../ui/components/BottomBarSpacer';
 import { Card } from '../../../ui/components/Card';
 import { Icon } from '../../../ui/components/Icon';
 import { IndentedDivider } from '../../../ui/components/IndentedDivider';
@@ -23,10 +24,14 @@ export const StaticContactScreenContent = ({ detail }: Props) => {
   const { colors, fontSizes } = useTheme();
 
   const openContact = (contact: UsefulContactItem) => {
+    const { kind, target } = contact.action;
     const url =
-      contact.action.kind === 'email'
-        ? `mailto:${contact.action.target}`
-        : `tel:${contact.action.target}`;
+      kind === 'email'
+        ? `mailto:${target}`
+        : kind === 'tel'
+          ? `tel:${target}`
+          : target;
+    if (!url) return;
     Linking.openURL(url);
   };
 
@@ -91,6 +96,7 @@ export const StaticContactScreenContent = ({ detail }: Props) => {
           </Card>
         )}
       </View>
+      <BottomBarSpacer />
     </ScrollView>
   );
 };
