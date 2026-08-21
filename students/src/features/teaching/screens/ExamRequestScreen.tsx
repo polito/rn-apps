@@ -70,6 +70,8 @@ export const ExamRequestScreen = ({ route, navigation }: Props) => {
             >
               <TextField
                 label={t('examRequestScreen.placeholder')}
+                accessibilityLabel={t('examRequestScreen.placeholder')}
+                accessibilityHint={t('examRequestScreen.title')}
                 multiline
                 numberOfLines={5}
                 value={state.value}
@@ -79,7 +81,11 @@ export const ExamRequestScreen = ({ route, navigation }: Props) => {
               />
             </OverviewList>
             {state.isError && (
-              <Text style={styles.errorFeedback}>
+              <Text
+                style={styles.errorFeedback}
+                accessibilityLiveRegion="assertive"
+                accessibilityRole="alert"
+              >
                 {t('examRequestScreen.error')}
               </Text>
             )}

@@ -1,5 +1,18 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
+import {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  Dimensions,
+  FlatList,
+  StyleSheet,
+  View,
+  ViewProps,
+} from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 import { isTablet as isTabletHelper } from 'react-native-device-info';
 import Animated, {
@@ -130,6 +143,7 @@ const SlideItem = ({
 
   return (
     <Animated.View
+      accessible={false}
       style={[
         {
           width: CARD_LENGTH,
@@ -201,6 +215,16 @@ const SlideItem = ({
   );
 };
 
+const CardCell = ({ children, ...props }: PropsWithChildren<ViewProps>) => (
+  <View {...props} accessible={false}>
+    {children}
+  </View>
+);
+
+const cellRendererProps: object = {
+  CellRendererComponent: CardCell,
+};
+
 export const CardSwiper = ({
   firstName,
   lastName,
@@ -214,6 +238,7 @@ export const CardSwiper = ({
   onShowQr,
 }: CardSwiperProps) => {
   const styles = useStylesheet(createStyles);
+  const { t } = useTranslation();
   const scrollX = useSharedValue(0);
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
   const [isFirstRequest, setIsFirstRequest] = useState<boolean>(
@@ -296,6 +321,7 @@ export const CardSwiper = ({
               onShowQr={onShowQr}
             />
           )}
+          {...cellRendererProps}
           horizontal
           showsHorizontalScrollIndicator={false}
           snapToInterval={CARD_LENGTH + SPACING * 1.5}
@@ -316,7 +342,26 @@ export const CardSwiper = ({
           })}
         />
       </View>
-      <View style={styles.dotsContainer}>
+      <View
+        style={styles.dotsContainer}
+        accessible={items.length > 1}
+        focusable={items.length > 1}
+        accessibilityRole="adjustable"
+        accessibilityLabel={t('profileScreen.cards')}
+        accessibilityValue={{
+          min: 1,
+          max: items.length,
+          now: currentPageIndex + 1,
+        }}
+        accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
+        onAccessibilityAction={({ nativeEvent: { actionName } }) => {
+          const nextIndex =
+            actionName === 'increment'
+              ? Math.min(currentPageIndex + 1, items.length - 1)
+              : Math.max(currentPageIndex - 1, 0);
+          scrollToItem(nextIndex);
+        }}
+      >
         <AnimatedDotsCarousel
           length={items.length > 1 ? items?.length : 0}
           currentIndex={currentPageIndex}

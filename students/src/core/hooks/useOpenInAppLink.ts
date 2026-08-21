@@ -1,10 +1,14 @@
 import { useCallback } from 'react';
-import { Linking } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { AccessibilityInfo, Linking } from 'react-native';
 
 import { IS_IOS } from '@polito/lib/core';
 import { useTheme } from '@polito/lib/ui';
 
 import * as WebBrowser from 'expo-web-browser';
+
+const ANNOUNCEMENT_DELAY = 500;
+const ANNOUNCEMENT_DURATION = 2400;
 
 export enum WebviewType {
   NORMAL,
@@ -13,9 +17,23 @@ export enum WebviewType {
 
 export const useOpenInAppLink = (type: WebviewType = WebviewType.NORMAL) => {
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   return useCallback(
     async (url: string) => {
+      const isScreenReaderEnabled =
+        await AccessibilityInfo.isScreenReaderEnabled();
+
+      if (isScreenReaderEnabled) {
+        setTimeout(() => {
+          AccessibilityInfo.announceForAccessibility(
+            t('common.openingExternalLink'),
+          );
+        }, ANNOUNCEMENT_DELAY);
+        await new Promise(resolve =>
+          setTimeout(resolve, ANNOUNCEMENT_DELAY + ANNOUNCEMENT_DURATION),
+        );
+      }
       const opts:
         | WebBrowser.AuthSessionOpenOptions
         | WebBrowser.WebBrowserOpenOptions = {
@@ -41,6 +59,6 @@ export const useOpenInAppLink = (type: WebviewType = WebviewType.NORMAL) => {
         await WebBrowser.openBrowserAsync(url, opts);
       }
     },
-    [colors, type],
+    [colors, type, t],
   );
 };

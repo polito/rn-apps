@@ -207,9 +207,12 @@ export const EnrolledExamChart = ({
   return (
     <View
       style={styles.graphCard}
-      accessible={false}
-      accessibilityElementsHidden={true}
-      importantForAccessibility="no-hide-descendants"
+      accessible
+      accessibilityLabel={t('courseStatisticsScreen.enrolledExamChartA11y', {
+        year: statistics?.year ?? 0,
+        succeeded: statistics?.totalSucceeded ?? 0,
+        failed: statistics?.totalFailed ?? 0,
+      })}
     >
       <View style={{ justifyContent: 'flex-end', marginBottom: spacing[4] }}>
         <Text
@@ -279,6 +282,7 @@ export const EnrolledExamChart = ({
         />
         <LegendItem
           bulletColor={chartColors[1]}
+          bulletVariant="outlined"
           text={t('courseStatisticsScreen.enrolledExamChartLegend.failed')}
         />
       </Col>

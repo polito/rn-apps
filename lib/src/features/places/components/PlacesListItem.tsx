@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
@@ -17,36 +18,55 @@ type Props = {
   eventName: string;
   places: PlaceRef[] | undefined;
 };
+
 export const PlacesListItem = ({ places, eventName }: Props) => {
   const { fontSizes } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-
   const { t } = useTranslation();
+
+  const placeIds = useMemo(
+    () =>
+      places
+        ?.map(p =>
+          p.buildingId && p.floorId && p.roomId
+            ? [p.buildingId, p.floorId, p.roomId].join('-')
+            : null,
+        )
+        .filter(notNullish) as string[] | undefined,
+    [places],
+  );
+
+  const locationTitle = useMemo(
+    () =>
+      places && places.length > 0
+        ? places.map(p => p.name).join(', ')
+        : t('examScreen.noLocation'),
+    [places, t],
+  );
+
+  const isNavigable = Boolean(placeIds?.length);
+
+  const accessibilityLabel = useMemo(
+    () => [t('examScreen.location'), locationTitle].join(', '),
+    [locationTitle, t],
+  );
 
   if (places === undefined) {
     return null;
   }
 
-  const placeIds = places
-    ?.map(p => {
-      return p.buildingId && p.floorId && p.roomId
-        ? [p.buildingId, p.floorId, p.roomId].join('-')
-        : null;
-    })
-    .filter(notNullish) as string[] | null;
-
   return (
     <ListItem
       leadingItem={<Icon icon={faLocationDot} size={fontSizes['2xl']} />}
-      title={
-        places.length > 0
-          ? places.map(p => p.name).join(', ')
-          : t('examScreen.noLocation')
-      }
+      title={locationTitle}
       subtitle={t('examScreen.location')}
-      isAction={!!placeIds?.length}
+      accessibilityRole={isNavigable ? 'button' : 'none'}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={isNavigable ? t('common.locationHint') : undefined}
+      accessibilityState={{ disabled: !isNavigable }}
+      isAction={isNavigable}
       onPress={
-        placeIds?.length
+        isNavigable
           ? () => {
               if (navigation.getId() === AgendaNavigatorID) {
                 navigation.navigate('PlacesAgendaStack', {

@@ -120,9 +120,16 @@ export const EnrolledExamDetailChart = ({
   return (
     <View
       style={styles.graphCard}
-      accessible={false}
-      accessibilityElementsHidden={true}
-      importantForAccessibility="no-hide-descendants"
+      accessible
+      accessibilityLabel={t(
+        'courseStatisticsScreen.enrolledExamDetailChartA11y',
+        {
+          firstSucceeded: statistics?.firstYear?.succeeded ?? 0,
+          firstFailed: statistics?.firstYear?.failed ?? 0,
+          otherSucceeded: statistics?.otherYears?.succeeded ?? 0,
+          otherFailed: statistics?.otherYears?.failed ?? 0,
+        },
+      )}
     >
       <NoChartDataContainer hasData={hasData}>
         <BarChart
@@ -151,6 +158,7 @@ export const EnrolledExamDetailChart = ({
         />
         <LegendItem
           bulletColor={chartColors[1]}
+          bulletVariant="outlined"
           text={t('courseStatisticsScreen.enrolledExamChartLegend.failed')}
         />
       </Col>

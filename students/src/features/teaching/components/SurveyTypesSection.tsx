@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
 
 import { OverviewList, Section, SectionHeader } from '@polito/lib/ui';
 
@@ -13,11 +14,18 @@ export const SurveyTypesSection = ({ types }: Props) => {
   return (
     <Section>
       <SectionHeader title={t('teachingScreen.cpdTitle')} />
-      <OverviewList indented>
-        {types.map(type => (
-          <SurveyCategoryListItem key={type.id} type={type} />
-        ))}
-      </OverviewList>
+      <View accessibilityRole="list">
+        <OverviewList indented>
+          {types.map((type, index) => (
+            <SurveyCategoryListItem
+              key={type.id}
+              type={type}
+              index={index}
+              total={types.length}
+            />
+          ))}
+        </OverviewList>
+      </View>
     </Section>
   );
 };

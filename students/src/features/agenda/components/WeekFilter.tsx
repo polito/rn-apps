@@ -33,24 +33,44 @@ export const WeekFilter = ({
     return current.plus({ days: daysPerWeek });
   }, [current, daysPerWeek]);
 
+  const week = useMemo(() => {
+    return `${current.toFormat('d MMM')} - ${endOfWeek.toFormat('d MMM')}`;
+  }, [current, endOfWeek]);
+
+  const weekAccessibilityLabel = useMemo(() => {
+    return t('agendaScreen.weekRange', {
+      start: current.toFormat('d MMMM'),
+      end: endOfWeek.toFormat('d MMMM'),
+    });
+  }, [current, endOfWeek, t]);
+
   return (
     <Row align="center">
       <IconButton
         accessibilityRole="button"
         icon={faChevronLeft}
         accessibilityLabel={t('bookingScreen.previousWeek')}
+        accessibilityHint={t('agendaScreen.prevWeekHint')}
+        accessibilityState={{ disabled: isPrevWeekDisabled }}
         color={colors.secondaryText}
         disabled={isPrevWeekDisabled}
         onPress={() => getPrev()}
       />
 
-      <Text style={styles.item}>
-        {current.toFormat('d MMM')} - {endOfWeek.toFormat('d MMM')}
+      <Text
+        accessible
+        accessibilityLabel={weekAccessibilityLabel}
+        accessibilityRole="none"
+        style={styles.item}
+      >
+        {week}
       </Text>
       <IconButton
         accessibilityRole="button"
         icon={faChevronRight}
         accessibilityLabel={t('bookingScreen.nextWeek')}
+        accessibilityHint={t('agendaScreen.nextWeekHint')}
+        accessibilityState={{ disabled: isNextWeekDisabled }}
         color={colors.secondaryText}
         disabled={isNextWeekDisabled}
         onPress={() => getNext()}

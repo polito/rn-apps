@@ -1,7 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 
-import { useOfflineDisabled } from '@polito/lib/core';
+import {
+  useAccessibilityFocusOnScreenFocus,
+  useOfflineDisabled,
+} from '@polito/lib/core';
 import {
   BottomBarSpacer,
   ListItem,
@@ -20,6 +23,7 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
   const offeringQuery = useGetOffering();
   const { data, isLoading } = offeringQuery;
   const styles = useStylesheet(createStyles);
+  const screenRef = useAccessibilityFocusOnScreenFocus<ScrollView>();
   const { t } = useTranslation();
   const isOffline = useOfflineDisabled();
 
@@ -27,6 +31,7 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
 
   return (
     <ScrollView
+      ref={screenRef}
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl queries={[offeringQuery]} manual />}
       contentContainerStyle={styles.container}
@@ -34,13 +39,21 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
       <LoadingContainer loading={isLoading}>
         {!!offerings && offerings?.length > 0 ? (
           offerings?.map(item => (
-            <Section key={item.code} style={styles.section}>
-              <Text variant="subHeading" style={styles.offeringClass}>
+            <Section accessible={false} key={item.code} style={styles.section}>
+              <Text
+                accessible={true}
+                accessibilityRole="none"
+                accessibilityLabel={`${item?.name}, ${t('offeringScreen.section')}`}
+                variant="subHeading"
+                style={styles.offeringClass}
+              >
                 {item?.name || item.code}
               </Text>
               <OverviewList>
                 {item?.degrees.map((degree, index) => (
                   <ListItem
+                    accessible={true}
+                    accessibilityLabel={degree?.name || degree.id}
                     containerStyle={styles.offeringListItem}
                     key={index}
                     title={degree?.name || degree.id}
@@ -49,6 +62,8 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
                       numberOfLines: undefined,
                     }}
                     accessibilityRole="button"
+                    accessibilityHint={t('common.tapToNavigate')}
+                    accessibilityState={{ disabled: isOffline }}
                     linkTo={{
                       screen: 'Degree',
                       params: {

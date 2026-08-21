@@ -1,6 +1,11 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 
 import {
@@ -9,6 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {
   APP_TIMEZONE,
+  hideFromScreenReader,
   useOfflineDisabled,
   usePreferencesContext,
 } from '@polito/lib/core';
@@ -19,16 +25,18 @@ import {
   HOURS,
   HeaderAccessory,
   IconButton,
+  StatefulMenuView,
   Tabs,
   Theme,
   WeekNum,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
+import { MenuComponentRef, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { useAnnounceLoading } from '~/core/hooks/useAccessibilty.ts';
 import { AppPreferences } from '~/core/types/preferences.ts';
 
 import { DateTime } from 'luxon';
@@ -49,6 +57,8 @@ import { AgendaItem } from '../types/AgendaItem';
 import { AgendaOption } from '../types/AgendaOption';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'AgendaWeek'>;
+
+const END_REFRESH_ANNOUNCEMENT_DELAY = 700;
 
 export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   const styles = useStylesheet(createStyles);
@@ -80,16 +90,30 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
   );
 
   const [dataPickerIsOpened, setDataPickerIsOpened] = useState<boolean>(false);
+  const optionsMenuRef = useRef<MenuComponentRef>(null);
 
   const {
     data: weekData,
     isFetching /* , fetchPreviousPage, fetchNextPage*/,
     refetch,
   } = useGetAgendaWeek(currentWeek);
+  useAnnounceLoading(isFetching);
 
   const calendarData = useMemo(() => {
-    return weekData?.data?.flatMap(week => week.items) ?? [];
-  }, [weekData?.data]);
+    const res = weekData?.data?.flatMap(week => week.items) ?? [];
+    if (res?.length === 0) {
+      setTimeout(() => {
+        AccessibilityInfo.announceForAccessibility(t('agendaScreen.noEvents'));
+      }, 500);
+    } else {
+      setTimeout(() => {
+        AccessibilityInfo.announceForAccessibility(
+          [t('agendaScreen.totalEvents'), res.length].join(', '),
+        );
+      }, 500);
+    }
+    return res;
+  }, [t, weekData?.data]);
 
   const calendarMax = useMemo(() => {
     return (
@@ -185,7 +209,14 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
           switchToDaily();
           break;
         case 'refresh':
-          refetch();
+          refetch().then(() => {
+            setTimeout(() => {
+              AccessibilityInfo.announceForAccessibilityWithOptions(
+                t('common.endRefresh'),
+                { queue: true },
+              );
+            }, END_REFRESH_ANNOUNCEMENT_DELAY);
+          });
           break;
         case 'hide-event':
           navigateToHideEventScreen();
@@ -204,15 +235,24 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
             accessibilityLabel={t('agendaScreen.selectDate')}
             onPress={() => setDataPickerIsOpened(true)}
           />
-          <MenuView actions={screenOptions} onPressAction={onPressOption}>
+          <StatefulMenuView
+            ref={optionsMenuRef}
+            actions={screenOptions}
+            onPressAction={onPressOption}
+            accessible
+            accessibilityRole="button"
+            accessibilityLabel={t('common.options')}
+            accessibilityActions={[{ name: 'activate' }]}
+            onAccessibilityAction={() => optionsMenuRef.current?.show()}
+          >
             <IconButton
+              {...hideFromScreenReader}
               icon={faEllipsisVertical}
               color={palettes.primary[400]}
               size={fontSizes.lg}
               adjustSpacing="right"
-              accessibilityLabel={t('common.options')}
             />
-          </MenuView>
+          </StatefulMenuView>
         </>
       ),
     });
@@ -276,6 +316,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
         />
       </HeaderAccessory>
       <DatePicker
+        accessible
         modal
         locale={language}
         date={todayDateTime.toJSDate()}
@@ -314,11 +355,29 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
               <CalendarHeader {...props} cellHeight={-1} />
             )}
             renderEvent={(item: AgendaItem, touchableOpacityProps, key) => {
+              const formattedProps = {
+                ...touchableOpacityProps,
+                disabled: false,
+              };
+              const placeName =
+                item.type === 'lecture'
+                  ? item.place?.name
+                  : item.type === 'exam'
+                    ? item.places.map(place => place.name).join(', ')
+                    : undefined;
               return (
                 <TouchableOpacity
                   key={key}
-                  {...touchableOpacityProps}
+                  {...formattedProps}
                   style={[touchableOpacityProps.style, styles.event]}
+                  accessibilityRole="button"
+                  accessibilityLabel={[
+                    touchableOpacityProps.accessibilityLabel,
+                    placeName &&
+                      t('agendaScreen.room', { roomName: placeName }),
+                  ]
+                    .filter(Boolean)
+                    .join(', ')}
                 >
                   {item.type === 'booking' && (
                     <BookingCard key={item.key} item={item} compact={true} />

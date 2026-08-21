@@ -2,6 +2,7 @@ import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { Props as FAProps } from '@fortawesome/react-native-fontawesome';
 
+import { useKeyboardActivation } from '../hooks/useKeyboardActivation';
 import { useTheme } from '../hooks/useTheme';
 import { ActivityIndicator } from './ActivityIndicator';
 import { Icon } from './Icon';
@@ -53,13 +54,25 @@ export const IconButton = ({
     testID,
   };
   const padding = iconPadding || (spacing[3] as number);
+  const keyboardActivationProps = useKeyboardActivation({
+    onActivate: otherButtonProps.onPress as (() => void) | undefined,
+    disabled: otherButtonProps.disabled,
+    accessibilityActions: otherButtonProps.accessibilityActions,
+    onAccessibilityAction: otherButtonProps.onAccessibilityAction,
+  });
   return (
     <TouchableOpacity
       hitSlop={{
         left: adjustSpacing === 'left' ? padding : undefined,
         right: adjustSpacing === 'right' ? padding : undefined,
       }}
+      accessibilityRole="button"
+      accessibilityState={{
+        disabled: !!otherButtonProps.disabled,
+        busy: !!loading,
+      }}
       {...otherButtonProps}
+      {...keyboardActivationProps}
       style={[!noPadding && { padding }, style]}
     >
       {loading ? (

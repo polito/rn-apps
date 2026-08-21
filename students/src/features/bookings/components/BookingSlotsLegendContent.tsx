@@ -3,6 +3,8 @@ import { StyleSheet, View } from 'react-native';
 
 import { Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 
+import { hideFromScreenReader } from '~/core/accessibility/hideFromScreenReader';
+
 type LegendItem = {
   id: 'available' | 'booked' | 'full' | 'notAvailable' | 'concluded';
   color: string;
@@ -31,7 +33,10 @@ export const BookingSlotsLegendContent = () => {
           <Text style={styles.label}>
             {t(`bookingScreen.bookingStatus.${item.id}`)}
           </Text>
-          <View style={[styles.dot, { backgroundColor: item.color }]} />
+          <View
+            style={[styles.dot, { backgroundColor: item.color }]}
+            {...hideFromScreenReader}
+          />
         </View>
       ))}
     </View>

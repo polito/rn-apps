@@ -11,7 +11,10 @@ import {
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled } from '@polito/lib/core';
+import {
+  useAccessibilityFocusOnScreenFocus,
+  useOfflineDisabled,
+} from '@polito/lib/core';
 import {
   BottomBarSpacer,
   Card,
@@ -61,6 +64,7 @@ import { useCourseContext } from '../contexts/CourseContext';
 type StaffMember = Person & { courseRole: 'roleHolder' | 'roleCollaborator' };
 
 export const CourseInfoScreen = () => {
+  const screenRef = useAccessibilityFocusOnScreenFocus<ScrollView>();
   const { t } = useTranslation();
   const courseId = useCourseContext();
   const styles = useStylesheet(createStyles);
@@ -171,6 +175,7 @@ export const CourseInfoScreen = () => {
 
   return (
     <ScrollView
+      ref={screenRef}
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={
         <RefreshControl
@@ -182,7 +187,18 @@ export const CourseInfoScreen = () => {
       <SafeAreaView>
         <Section style={styles.heading}>
           <ScreenTitle title={courseQuery.data?.name} />
-          <Text variant="caption">
+          <Text
+            variant="caption"
+            accessibilityLabel={[
+              courseQuery.data?.shortcode,
+              isModule ? parentCourse?.name : undefined,
+              !isModule && courseQuery.data?.cfu
+                ? `${courseQuery.data.cfu} ${t('common.cfu').toLowerCase()}`
+                : undefined,
+            ]
+              .filter(Boolean)
+              .join(' - ')}
+          >
             {courseQuery.data?.shortcode ?? ' '}
             {isModule && ` - ${parentCourse?.name}`}
             {!isModule && courseQuery.data?.cfu && (
@@ -193,12 +209,18 @@ export const CourseInfoScreen = () => {
             )}
           </Text>
         </Section>
-        <Card style={styles.metricsCard} accessible={true}>
+        <Card style={styles.metricsCard}>
           <Grid>
             <View
               style={GlobalStyles.grow}
               importantForAccessibility="yes"
               accessibilityRole="button"
+              accessibilityLabel={t('common.period')}
+              accessibilityValue={{
+                text: `${courseQuery.data?.teachingPeriod ?? '--'} - ${
+                  courseQuery.data?.year ?? '--'
+                }`,
+              }}
               accessible={true}
             >
               <StatefulMenuView
@@ -351,6 +373,11 @@ export const CourseInfoScreen = () => {
             {courseQuery.data?.links.map((link, index) => (
               <ListItem
                 key={index}
+                accessibilityRole="link"
+                accessibilityLabel={
+                  link.description ?? t('courseInfoTab.linkDefaultTitle')
+                }
+                accessibilityHint={t('common.externalLink')}
                 leadingItem={<Icon icon={faLink} size={fontSizes.xl} />}
                 title={link.description ?? t('courseInfoTab.linkDefaultTitle')}
                 subtitle={link.url}

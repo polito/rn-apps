@@ -47,17 +47,23 @@ export const LoginScreen = () => {
       automaticallyAdjustKeyboardInsets
       keyboardShouldPersistTaps="handled"
     >
-      <View style={styles.logoContainer}>
+      <View
+        style={styles.logoContainer}
+        accessible={true}
+        accessibilityRole="image"
+        accessibilityLabel={t('loginScreen.logoAccessibility')}
+      >
         <PolitoLogo width="100%" height="100%" />
       </View>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <Section style={styles.section}>
-          <Text variant="title" role="heading" style={styles.title}>
+          <Text variant="title" accessibilityRole="header" style={styles.title}>
             {t('loginScreen.title')}
           </Text>
           <OverviewList style={styles.sectionList} accessible={false}>
             <TextField
               accessible={true}
+              showLabel
               textContentType="username"
               label={t('loginScreen.usernameLabel')}
               value={username}
@@ -73,6 +79,7 @@ export const LoginScreen = () => {
             <Row align="center">
               <TextField
                 accessible={true}
+                showLabel
                 inputRef={passwordRef}
                 textContentType="password"
                 type="password"
@@ -94,6 +101,7 @@ export const LoginScreen = () => {
               <IconButton
                 size={fontSizes.xl}
                 icon={passwordVisible ? faEyeSlash : faEye}
+                accessibilityRole="button"
                 accessibilityLabel={t(
                   passwordVisible
                     ? 'loginScreen.hidePassword'
@@ -105,8 +113,14 @@ export const LoginScreen = () => {
               />
             </Row>
           </OverviewList>
-          <TouchableOpacity style={styles.link} onPress={() => viewChpass()}>
-            <Text variant="link" style={styles.textLink}>
+          <TouchableOpacity
+            style={styles.link}
+            onPress={() => viewChpass()}
+            accessibilityRole="link"
+            accessibilityLabel={t('loginScreen.forgotYourPassword')}
+            accessibilityHint={t('loginScreen.forgotPasswordHint')}
+          >
+            <Text variant="link" style={styles.textLink} accessible={false}>
               {t('loginScreen.forgotYourPassword')}
             </Text>
           </TouchableOpacity>
@@ -116,12 +130,19 @@ export const LoginScreen = () => {
             action={handleLogin}
             loading={isLoading}
             disabled={!canLogin}
+            accessibilityState={{ disabled: !canLogin || isLoading }}
+            accessibilityHint={
+              !canLogin ? t('loginScreen.ctaDisabledHint') : undefined
+            }
           />
           <TouchableOpacity
             style={styles.linkToSSO}
             onPress={() => handleSSO()}
+            accessibilityRole="button"
+            accessibilityLabel={t('loginScreen.SSO')}
+            accessibilityHint={t('loginScreen.ssoHint')}
           >
-            <Text variant="link" style={styles.textLink}>
+            <Text variant="link" style={styles.textLink} accessible={false}>
               {t('loginScreen.SSO')}
             </Text>
           </TouchableOpacity>

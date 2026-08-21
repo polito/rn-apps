@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
 
 import { IS_IOS, dateFormatter, formatDate } from '@polito/lib/core';
 import {
@@ -16,15 +17,20 @@ import {
   ProvisionalGradeStateEnum,
 } from '@polito/student-api-client';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetRejectionTime } from '../hooks/useGetRejectionTime';
 import { ProvisionalGradeStatusBadge } from './ProvisionalGradeStatusBadge';
 
 type Props = {
   grade: ProvisionalGrade;
+  index: number;
+  total: number;
 };
 
-export const ProvisionalGradeListItem = ({ grade }: Props) => {
+export const ProvisionalGradeListItem = ({ grade, index, total }: Props) => {
   const { t } = useTranslation();
+  const { buildCompositeListLabel } = useAccessibility();
 
   const styles = useStylesheet(createStyles);
   const isRejected = grade.state === ProvisionalGradeStateEnum.Rejected;
@@ -76,6 +82,37 @@ export const ProvisionalGradeListItem = ({ grade }: Props) => {
     rejectionTime,
   ]);
 
+  const stateLabel = (() => {
+    switch (grade.state) {
+      case ProvisionalGradeStateEnum.Confirmed:
+        return grade.canBeRejected && rejectionTime
+          ? `${t('transcriptGradesScreen.rejectionCountdown')} ${rejectionTime}`
+          : t('transcriptGradesScreen.provisionalTitle');
+      case ProvisionalGradeStateEnum.Rejected:
+        return t('transcriptGradesScreen.rejectedSubtitle', {
+          date: formatDate(grade.rejectedAt!),
+          time: formatHHmm(grade.rejectedAt!),
+        });
+      default:
+        return t('transcriptGradesScreen.provisionalTitle');
+    }
+  })();
+
+  const accessibilityLabel = useMemo(
+    () =>
+      buildCompositeListLabel(
+        [
+          t('transcriptGradesScreen.provisionalGradeItem', {
+            courseName: grade.courseName,
+            state: stateLabel,
+          }),
+        ],
+        index,
+        total,
+      ),
+    [grade.courseName, stateLabel, index, total, t, buildCompositeListLabel],
+  );
+
   return (
     <ListItem
       title={grade.courseName}
@@ -86,6 +123,10 @@ export const ProvisionalGradeListItem = ({ grade }: Props) => {
           : styles.subtitle
       }
       disabled={isRejected}
+      accessibilityRole={isRejected ? 'none' : 'button'}
+      accessibilityState={{ disabled: isRejected }}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={isRejected ? undefined : t('common.tapToNavigate')}
       linkTo={
         isRejected
           ? undefined
@@ -96,7 +137,9 @@ export const ProvisionalGradeListItem = ({ grade }: Props) => {
       }
       trailingItem={
         <Row align="center" pl={2}>
-          <ProvisionalGradeStatusBadge grade={grade} />
+          <View {...hideFromScreenReader}>
+            <ProvisionalGradeStatusBadge grade={grade} />
+          </View>
           {IS_IOS && !isRejected ? <DisclosureIndicator /> : undefined}
         </Row>
       }

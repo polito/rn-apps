@@ -5,10 +5,12 @@ import type { Theme } from '@polito/lib/ui';
 
 export const LegendItem = ({
   bulletColor,
+  bulletVariant = 'filled',
   text,
   trailingText,
 }: {
   bulletColor: string;
+  bulletVariant?: 'filled' | 'outlined';
   text: string;
   trailingText?: string;
 }) => {
@@ -18,7 +20,10 @@ export const LegendItem = ({
       <View
         style={{
           ...styles.chartLegendBullet,
-          backgroundColor: bulletColor,
+          backgroundColor:
+            bulletVariant === 'outlined' ? undefined : bulletColor,
+          borderWidth: bulletVariant === 'outlined' ? 2 : 0,
+          borderColor: bulletColor,
         }}
       />
       <Text

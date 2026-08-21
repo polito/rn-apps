@@ -33,7 +33,7 @@ export const ScreenTitle = ({
       <Separator />
       <Text
         variant="title"
-        role="heading"
+        accessibilityRole="header"
         style={{ fontFamily: fontFamilies.heading }}
         {...ellipsis}
       >

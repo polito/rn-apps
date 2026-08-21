@@ -1,9 +1,20 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled, usePreferencesContext } from '@polito/lib/core';
+import {
+  useAccessibilityFocusOnScreenFocus,
+  useOfflineDisabled,
+  usePreferencesContext,
+} from '@polito/lib/core';
 import {
   ActivityIndicator,
   BottomBarSpacer,
@@ -30,6 +41,7 @@ import { AppPreferences } from '~/core/types/preferences';
 
 import { DateTime } from 'luxon';
 
+import { useAnnounceLoading } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { useGetEventAdmissions } from '../../../core/queries/eventAdmissionHooks';
@@ -48,6 +60,7 @@ import { TeachingStackParamList } from '../components/TeachingNavigator';
 type Props = NativeStackScreenProps<TeachingStackParamList, 'Home'>;
 
 export const TeachingScreen = ({ navigation }: Props) => {
+  const screenRef = useAccessibilityFocusOnScreenFocus<ScrollView>();
   const { t } = useTranslation();
   const { colors, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
@@ -59,6 +72,9 @@ export const TeachingScreen = ({ navigation }: Props) => {
   const coursesQuery = useGetCourses();
   const examsQuery = useGetExams();
   const studentQuery = useGetStudent();
+  useAnnounceLoading(
+    coursesQuery.isLoading || examsQuery.isLoading || studentQuery.isLoading,
+  );
   const eventAdmissionsQuery = useGetEventAdmissions();
   const transcriptBadge = null;
 
@@ -124,8 +140,108 @@ export const TeachingScreen = ({ navigation }: Props) => {
     );
   }, [coursePreferences, coursesQuery.data, examsQuery.data]);
 
+  const transcriptAccessibleLabel = useMemo(() => {
+    if (hideGrades) {
+      return [
+        t('transcriptMetricsScreen.notShown'),
+        t('transcriptMetricsScreen.showDetails'),
+      ].join('. ');
+    }
+
+    const formatGradeForAccessibility = (
+      grade: number | null | undefined,
+      max: number,
+    ) => {
+      if (grade == null) {
+        return t('common.notAvailable');
+      }
+      return `${grade} ${t('common.on')} ${max}`;
+    };
+
+    const firstLabel = t('transcriptMetricsScreen.weightedAverageLabel');
+    const firstLabelValue = formatGradeForAccessibility(
+      studentQuery.data?.averageGrade,
+      30,
+    );
+
+    const secondLabel = t('transcriptMetricsScreen.estimatedFinalGrade');
+    const secondLabelValue = formatGradeForAccessibility(
+      studentQuery.data?.estimatedFinalGrade,
+      110,
+    );
+
+    const thirdLabel = t('transcriptMetricsScreen.totalCredits');
+    const thirdLabelValue = studentQuery.data?.totalAcquiredCredits
+      ? `${studentQuery.data?.totalAcquiredCredits} ${t('common.on')} ${studentQuery.data?.totalCredits}`
+      : t('common.notAvailable');
+
+    return [
+      firstLabel,
+      firstLabelValue,
+      secondLabel,
+      secondLabelValue,
+      thirdLabel,
+      thirdLabelValue,
+      t('transcriptMetricsScreen.showDetails'),
+    ].join('. ');
+  }, [
+    hideGrades,
+    studentQuery.data?.averageGrade,
+    studentQuery.data?.estimatedFinalGrade,
+    studentQuery.data?.totalAcquiredCredits,
+    studentQuery.data?.totalCredits,
+    t,
+  ]);
+
+  const coursesSectionLabelAccessible = useMemo(() => {
+    const notVisibleCourseCount = coursesQuery?.data?.length
+      ? coursesQuery?.data?.length - courses.length
+      : 0;
+    const notVisibleCourseCountLabel =
+      notVisibleCourseCount > 0
+        ? t('coursesScreen.totalNotVisible', {
+            total: notVisibleCourseCount,
+          })
+        : undefined;
+
+    const parts = [
+      t('coursesScreen.title'),
+      t('coursesScreen.total', { total: courses.length }),
+    ];
+
+    if (notVisibleCourseCountLabel) {
+      parts.push(`${t('common.and')} ${notVisibleCourseCountLabel}`);
+    }
+
+    return parts.join('. ');
+  }, [courses.length, coursesQuery?.data?.length, t]);
+
+  const examsSectionLabelAccessible = useMemo(() => {
+    const notVisibleExamCount = examsQuery?.data?.length
+      ? examsQuery?.data?.length - exams.length
+      : 0;
+    const notVisibleExamCountLabel =
+      notVisibleExamCount > 0
+        ? t('examsScreen.totalNotVisible', {
+            total: notVisibleExamCount,
+          })
+        : undefined;
+
+    const parts = [
+      t('examsScreen.title'),
+      t('examsScreen.total', { total: exams.length }),
+    ];
+
+    if (notVisibleExamCountLabel) {
+      parts.push(`${t('common.and')} ${notVisibleExamCountLabel}`);
+    }
+
+    return parts.join('. ');
+  }, [exams.length, examsQuery?.data?.length, t]);
+
   return (
     <ScrollView
+      ref={screenRef}
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={
         <RefreshControl
@@ -153,6 +269,8 @@ export const TeachingScreen = ({ navigation }: Props) => {
         ) : undefined}
         <Section>
           <SectionHeader
+            accessible
+            accessibilityLabel={coursesSectionLabelAccessible}
             title={t('coursesScreen.title')}
             linkTo={{ screen: 'Courses' }}
             linkToMoreCount={
@@ -194,31 +312,43 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 : undefined
             }
           />
-          <OverviewList
-            loading={coursesQuery.isLoading && !isOffline}
-            indented
-            emptyStateText={(() => {
-              if (isOffline) return t('common.cacheMiss');
-
-              return (coursesQuery.data?.length ?? 0) > 0
-                ? t('teachingScreen.allCoursesHidden')
-                : t('coursesScreen.emptyState');
-            })()}
+          <View
+            accessibilityRole="list"
+            accessibilityLabel={t('common.listWithCount', {
+              name: t('coursesScreen.title'),
+              count: courses.filter(hasValidModules).length,
+            })}
           >
-            {courses.filter(hasValidModules).map(course => (
-              <CourseListItem
-                key={course.shortcode + '' + course.id}
-                course={course}
-                badge={getUnreadsCountPerCourse(
-                  course.id,
-                  course.previousEditions,
-                )}
-              />
-            ))}
-          </OverviewList>
+            <OverviewList
+              loading={coursesQuery.isLoading && !isOffline}
+              indented
+              emptyStateText={(() => {
+                if (isOffline) return t('common.cacheMiss');
+
+                return (coursesQuery.data?.length ?? 0) > 0
+                  ? t('teachingScreen.allCoursesHidden')
+                  : t('coursesScreen.emptyState');
+              })()}
+            >
+              {courses.filter(hasValidModules).map((course, index) => (
+                <CourseListItem
+                  key={course.shortcode + '' + course.id}
+                  course={course}
+                  badge={getUnreadsCountPerCourse(
+                    course.id,
+                    course.previousEditions,
+                  )}
+                  index={index}
+                  total={courses.filter(hasValidModules).length}
+                />
+              ))}
+            </OverviewList>
+          </View>
         </Section>
         <Section>
           <SectionHeader
+            accessible
+            accessibilityLabel={examsSectionLabelAccessible}
             title={t('examsScreen.title')}
             linkTo={{ screen: 'Exams' }}
             linkToMoreCount={
@@ -243,6 +373,9 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 key={`${exam.id}` + exam.moduleNumber}
                 exam={exam}
                 bottomBorder={index < exams.length - 1}
+                accessible={true}
+                index={index}
+                total={exams.length}
               />
             ))}
           </OverviewList>
@@ -254,7 +387,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
           />
 
           <View style={GlobalStyles.relative}>
-            <Card style={styles.transcriptCard}>
+            <Card style={styles.transcriptCard} importantForAccessibility="no">
               {studentQuery.isLoading ? (
                 isOffline ? (
                   <OverviewList emptyStateText={t('common.cacheMiss')} />
@@ -263,10 +396,21 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 )
               ) : (
                 <TouchableHighlight
+                  accessible
+                  accessibilityRole="button"
+                  accessibilityLabel={transcriptAccessibleLabel}
+                  accessibilityHint={t('common.tapToNavigate')}
                   onPress={() => navigation.navigate('Transcript')}
                   underlayColor={colors.touchableHighlight}
+                  focusable
                 >
-                  <Row p={5} gap={5} align="center" justify="space-between">
+                  <Row
+                    p={5}
+                    gap={5}
+                    align="center"
+                    justify="space-between"
+                    importantForAccessibility="no-hide-descendants"
+                  >
                     <Col justify="center" flexShrink={1} gap={5}>
                       <Metric
                         title={t('transcriptMetricsScreen.weightedAverage')}
@@ -346,22 +490,30 @@ const HideGrades = () => {
   const label = hideGrades ? t('common.show') : t('common.hide');
   const icon = hideGrades ? faEye : faEyeSlash;
 
-  const onHide = (value: boolean) => updatePreference('hideGrades', value);
+  const onHide = (value: boolean) => {
+    updatePreference('hideGrades', value);
+    const message = value
+      ? 'coursesScreen.hiddenCredits'
+      : 'coursesScreen.visibleCredits';
+    setTimeout(() => {
+      AccessibilityInfo.announceForAccessibility(t(message));
+    }, 500);
+  };
 
   return (
-    <View
+    <Pressable
       style={styles.hideGradesSwitch}
-      accessibilityLabel={`${label}. ${t(
-        `common.activeStatus.${hideGrades}`,
-      )} `}
-      accessibilityRole="switch"
+      hitSlop={8}
+      onPress={() => onHide(!hideGrades)}
       accessible={true}
+      accessibilityRole="switch"
+      accessibilityLabel={label}
+      accessibilityHint={t('common.tapToToggle')}
+      accessibilityState={{ checked: hideGrades }}
     >
       <Icon icon={icon} color={colors.link} />
-      <Text variant="link" onPress={() => onHide(!hideGrades)}>
-        {label}
-      </Text>
-    </View>
+      <Text variant="link">{label}</Text>
+    </Pressable>
   );
 };
 

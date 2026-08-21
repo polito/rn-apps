@@ -4,6 +4,7 @@ import {
   useEffect,
   useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -34,11 +35,13 @@ import {
   faMagnifyingGlassLocation,
 } from '@fortawesome/free-solid-svg-icons';
 import { PlaceOverview } from '@polito/student-api-client';
+import { MenuComponentRef } from '@react-native-menu/menu';
 import { useHeaderHeight } from '@react-navigation/elements';
 import Mapbox from '@rnmapbox/maps';
 
 import { debounce } from 'lodash';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { useScreenTitle } from '../../../core/hooks/useScreenTitle';
 import {
@@ -289,14 +292,27 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
     if (campus)
       setFloorId(campus.floors[campus?.floors.findIndex(f => f.level >= 0)].id);
   }, [campus]);
-  const floorSelectorButton = (
+  const floorMenuRef = useRef<MenuComponentRef>(null);
+  const currentFloorName = campus?.floors.find(f => f.id === floorId)?.name;
+
+  const renderFloorSelectorButton = (hiddenFromScreenReader: boolean) => (
     <TranslucentCard
       {...(accessibility?.fontSize && Number(accessibility?.fontSize) >= 150
         ? { style: { height: 55 } }
         : {})}
     >
       <TouchableOpacity
-        accessibilityLabel={t('placesScreen.changeFloor')}
+        {...(hiddenFromScreenReader
+          ? hideFromScreenReader
+          : {
+              accessibilityRole: 'button' as const,
+              accessibilityLabel: [
+                t('placesScreen.changeFloor'),
+                currentFloorName,
+              ]
+                .filter(Boolean)
+                .join(', '),
+            })}
         disabled={!!debouncedSearch && displayFloorId != null}
       >
         <Row ph={3} pv={2.5} gap={1} align="center">
@@ -467,9 +483,20 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
           {campus?.floors?.length ? (
             !debouncedSearch ? (
               <StatefulMenuView
+                ref={floorMenuRef}
                 style={{
                   maxWidth: '60%',
                 }}
+                accessible
+                accessibilityRole="button"
+                accessibilityLabel={[
+                  t('placesScreen.changeFloor'),
+                  currentFloorName,
+                ]
+                  .filter(Boolean)
+                  .join(', ')}
+                accessibilityActions={[{ name: 'activate' }]}
+                onAccessibilityAction={() => floorMenuRef.current?.show()}
                 onPressAction={({
                   nativeEvent: { event: selectedFloorId },
                 }) => {
@@ -480,12 +507,13 @@ export const PlacesScreen = ({ navigation, route }: Props) => {
                   .map(f => ({
                     id: f.id,
                     title: f.name,
+                    state: f.id === floorId ? ('on' as const) : undefined,
                   }))}
               >
-                {floorSelectorButton}
+                {renderFloorSelectorButton(true)}
               </StatefulMenuView>
             ) : displayFloorId ? (
-              floorSelectorButton
+              renderFloorSelectorButton(false)
             ) : (
               <TranslucentCard>
                 <Row

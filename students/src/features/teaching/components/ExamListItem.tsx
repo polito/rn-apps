@@ -23,6 +23,7 @@ import {
 
 import { AppPreferences } from '~/core/types/preferences';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { Exam } from '../../../core/types/api';
 import { CourseIcon } from '../../courses/components/CourseIcon';
 import { ExamStatusBadge } from './ExamStatusBadge';
@@ -31,16 +32,21 @@ interface Props {
   exam: Exam;
   accessible?: boolean;
   accessibilityLabel?: string;
+  index?: number;
+  total?: number;
   bottomBorder?: boolean;
 }
 
 export const ExamListItem = ({
   exam,
   accessibilityLabel = '',
+  index,
+  total,
   bottomBorder = true,
   ...rest
 }: Props) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { buildCompositeListLabel } = useAccessibility();
 
   const { courses: coursesPreferences, accessibility } =
     usePreferencesContext<AppPreferences>();
@@ -67,10 +73,23 @@ export const ExamListItem = ({
       }
     }
 
+    const baseLabel = `${exam.courseName} ${accessibleDateTime} ${status}`;
+
     return {
-      accessibilityLabel: `${accessibilityLabel} ${exam.courseName} ${accessibleDateTime} ${status}`,
+      accessibilityLabel:
+        index !== undefined && total !== undefined
+          ? buildCompositeListLabel([baseLabel], index, total)
+          : accessibilityLabel || baseLabel,
     };
-  }, [accessibilityLabel, exam, t, formatHHmm]);
+  }, [
+    accessibilityLabel,
+    exam,
+    t,
+    formatHHmm,
+    index,
+    total,
+    buildCompositeListLabel,
+  ]);
 
   return (
     <View style={{ rowGap: spacing[3] }}>
@@ -81,6 +100,9 @@ export const ExamListItem = ({
         }}
         title={exam.courseName}
         accessibilityRole="button"
+        accessibilityLanguage={i18n.language}
+        accessibilityHint={t('common.tapToNavigate')}
+        focusable
         leadingItem={
           <CourseIcon
             icon={coursesPreferences[exam.uniqueShortcode]?.icon}
@@ -99,7 +121,15 @@ export const ExamListItem = ({
         subtitle={
           accessibility?.fontSize && accessibility.fontSize < 175 ? (
             <Row gap={2.5} pt={1}>
-              <Row gap={1}>
+              <Row
+                gap={1}
+                accessible
+                accessibilityLabel={`${t('common.date')}, ${
+                  exam.examStartsAt
+                    ? formatReadableDate(exam.examStartsAt, true)
+                    : t('common.dateToBeDefined')
+                }`}
+              >
                 <Icon icon={faCalendar} color={colors.secondaryText} />
                 <Text variant="secondaryText">
                   {exam.examStartsAt && isValidDate(exam?.examStartsAt)
@@ -108,7 +138,12 @@ export const ExamListItem = ({
                 </Text>
               </Row>
               {(exam.places?.length ?? 0) > 0 && (
-                <Row gap={1} flexShrink={1}>
+                <Row
+                  gap={1}
+                  flexShrink={1}
+                  accessible
+                  accessibilityLabel={`${t('common.location')}, ${exam.places?.map(place => place.name).join(', ')}`}
+                >
                   <Icon icon={faLocationDot} color={colors.secondaryText} />
                   <Text
                     variant="secondaryText"
@@ -123,7 +158,15 @@ export const ExamListItem = ({
             </Row>
           ) : (
             <>
-              <Row gap={1}>
+              <Row
+                gap={1}
+                accessible={true}
+                accessibilityLabel={`${t('common.date')}, ${
+                  exam.examStartsAt
+                    ? formatReadableDate(exam.examStartsAt, true)
+                    : t('common.dateToBeDefined')
+                }`}
+              >
                 <Icon
                   icon={faCalendar}
                   style={{ paddingVertical: spacing[8] }}
@@ -136,7 +179,12 @@ export const ExamListItem = ({
                 </Text>
               </Row>
               {(exam.places?.length ?? 0) > 0 && (
-                <Row gap={1} flexShrink={1}>
+                <Row
+                  gap={1}
+                  flexShrink={1}
+                  accessible={true}
+                  accessibilityLabel={`${t('common.location')}, ${exam.places?.map(place => place.name).join(', ')}`}
+                >
                   <Icon
                     icon={faLocationDot}
                     style={{ paddingVertical: spacing[8] }}

@@ -58,12 +58,8 @@ export const ChatMessage = ({
   );
 
   return (
-    <Pressable
-      accessibilityRole="text"
-      accessibilityLabel={accessibilityMessageText}
-    >
+    <Pressable accessible={false}>
       <ChatBubble
-        accessibilityRole="text"
         accessibilityLabel={accessibilityMessageText}
         direction={received ? 'incoming' : 'outgoing'}
         time={message.createdAt}

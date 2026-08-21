@@ -313,25 +313,31 @@ const MapNavigator = ({
                   : undefined
               }
             >
-              <MapView
-                onPress={() => {
-                  if (
-                    accessibility?.fontSize &&
-                    accessibility.fontSize >= 150
-                  ) {
-                    setSelectedId('');
-                  }
-                }}
-                ref={mapRef}
+              <View
                 style={[GlobalStyles.grow, rotating && { opacity: 0 }]}
-                {...mapDefaultOptions}
-                {...mapOptions}
+                accessibilityElementsHidden={true}
+                importantForAccessibility="no-hide-descendants"
               >
-                <BackgroundLayer id="background" />
-                <Camera ref={cameraRef} {...cameraOptions} />
-                {MapDefaultContent && <MapDefaultContent />}
-                {MapContent && <MapContent />}
-              </MapView>
+                <MapView
+                  onPress={() => {
+                    if (
+                      accessibility?.fontSize &&
+                      accessibility.fontSize >= 150
+                    ) {
+                      setSelectedId('');
+                    }
+                  }}
+                  ref={mapRef}
+                  style={GlobalStyles.grow}
+                  {...mapDefaultOptions}
+                  {...mapOptions}
+                >
+                  <BackgroundLayer id="background" />
+                  <Camera ref={cameraRef} {...cameraOptions} />
+                  {MapDefaultContent && <MapDefaultContent />}
+                  {MapContent && <MapContent />}
+                </MapView>
+              </View>
 
               <MapNavigatorContext.Provider
                 value={{ mapRef, cameraRef, selectedId, setSelectedId }}

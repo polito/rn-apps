@@ -42,10 +42,7 @@ export const Select = ({
   }, [options, value]);
 
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel || label}
-    >
+    <Pressable>
       <StatefulMenuView
         style={{ width: '100%' }}
         title={label}
@@ -59,6 +56,10 @@ export const Select = ({
           disabled={disabled}
           title={displayedValue || label}
           subtitle={description}
+          accessibilityLabel={accessibilityLabel || label}
+          accessibilityValue={
+            displayedValue ? { text: displayedValue } : undefined
+          }
           trailingItem={
             hideChevron ? (
               <View />

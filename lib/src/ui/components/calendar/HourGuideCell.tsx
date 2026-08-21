@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 
 import { DateTime } from 'luxon';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
 import { useTheme } from '../../hooks/useTheme';
 import { CalendarCellStyle } from '../../types/Calendar';
 
@@ -15,6 +17,8 @@ interface HourGuideCellProps {
   calendarCellStyle?: CalendarCellStyle;
   showBorderRight?: boolean;
   showBorderBottom?: boolean;
+  locale?: string;
+  accessibleCell?: boolean;
 }
 
 export const HourGuideCell = ({
@@ -26,8 +30,25 @@ export const HourGuideCell = ({
   calendarCellStyle,
   showBorderRight = false,
   showBorderBottom = false,
+  locale,
+  accessibleCell = false,
 }: HourGuideCellProps) => {
   const theme = useTheme();
+  const { t } = useTranslation();
+
+  const accessibilityProps = useMemo(() => {
+    if (!accessibleCell) return hideFromScreenReader;
+
+    const hourLabel = `${String(hour).padStart(2, '0')}:00`;
+    return {
+      accessible: true,
+      accessibilityLabel: [
+        date.setLocale(locale ?? 'en').toLocaleString({ weekday: 'long' }),
+        t('common.atTime', { time: hourLabel }),
+        t('bookingsScreen.emptySlot'),
+      ].join(', '),
+    };
+  }, [accessibleCell, date, hour, locale, t]);
 
   const getCalendarCellStyle = useMemo(
     () =>
@@ -40,8 +61,11 @@ export const HourGuideCell = ({
   return (
     <TouchableWithoutFeedback
       onPress={() => onPress(date.set({ hour: hour, minute: 0 }))}
+      {...accessibilityProps}
     >
       <View
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
         style={[
           {
             borderColor: theme.colors.divider,

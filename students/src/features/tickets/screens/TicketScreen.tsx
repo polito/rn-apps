@@ -255,6 +255,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         accessibilityRole="button"
         accessibilityState={{ disabled }}
         accessibilityLabel={t('ticketScreen.markAsResolved')}
+        accessibilityHint={t('ticketScreen.markAsResolvedHint')}
         onPress={onPressMarkResolved}
         disabled={disabled}
         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
@@ -371,10 +372,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
         keyExtractor={item => item.id.toString()}
         ListFooterComponent={
           !ticketQuery?.isLoading && !!ticket ? (
-            <Pressable
-              accessibilityRole="text"
-              accessibilityLabel={accessibilityMessageText}
-            >
+            <Pressable accessible={false}>
               <ChatBubble
                 accessibilityRole="text"
                 accessibilityLabel={accessibilityMessageText}
@@ -464,9 +462,8 @@ const createStyles = ({
       letterSpacing: 0.16,
       color: palettes.primary[500],
     },
-    // eslint-disable-next-line react-native/no-color-literals
     markResolvedDisabled: {
-      color: '#90A1B9',
+      color: palettes.gray[400],
     },
     text: {
       padding: 0,

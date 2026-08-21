@@ -76,12 +76,18 @@ export const VirtualOperatorFeedbackBar = ({
             size={20}
             noPadding
             style={styles.thumbsDownButton}
+            accessibilityLabel={t('ticketScreen.feedbackNegative')}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: isPending }}
           />
           <IconButton
             icon={faThumbsUp}
             onPress={() => handleFeedback(true)}
             disabled={isPending}
             color={colors.white}
+            accessibilityLabel={t('ticketScreen.feedbackPositive')}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: isPending }}
             size={20}
             noPadding
             style={styles.thumbsUpButton}

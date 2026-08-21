@@ -211,6 +211,7 @@ export const CourseSharedScreens = () => {
         options={{
           title: t('courseColorPickerScreen.title'),
           headerLargeTitle: false,
+          headerBackTitle: t('common.back'),
         }}
       />
       <Stack.Screen

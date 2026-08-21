@@ -118,6 +118,10 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
                 justify="center"
                 mt={2}
                 flexShrink={0}
+                accessible
+                accessibilityLabel={t('recordedGradeScreen.gradeValue', {
+                  grade: grade.grade,
+                })}
                 style={[
                   styles.grade,
                   accessibility?.fontSize && accessibility.fontSize >= 150
@@ -126,6 +130,7 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
                 ]}
               >
                 <Text
+                  accessible={false}
                   style={
                     grade.grade.length < 3
                       ? styles.gradeText
@@ -151,6 +156,8 @@ export const RecordedGradeScreen = ({ navigation, route }: Props) => {
                   />
                   <OverviewList indented loading={!grade}>
                     <ListItem
+                      accessibilityRole="none"
+                      accessibilityLabel={`${t('recordedGradeScreen.titleOnTimePoint')}: +${grade.onTimeExamPoints}`}
                       leadingItem={
                         <Icon icon={faFlagCheckered} size={fontSizes['2xl']} />
                       }

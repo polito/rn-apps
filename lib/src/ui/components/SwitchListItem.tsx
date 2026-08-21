@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import { ListItem, ListItemProps } from './ListItem';
 import { Switch } from './Switch';
 
@@ -14,22 +16,34 @@ export const SwitchListItem = ({
   disabled,
   ...rest
 }: Props) => {
+  const [checked, setChecked] = useState(value ?? false);
+
+  useEffect(() => {
+    setChecked(value ?? false);
+  }, [value]);
+
+  const toggle = () => {
+    const next = !checked;
+    setChecked(next);
+    onChange?.(next);
+  };
+
   return (
     <ListItem
       title={title}
-      onPress={() => {
-        onChange?.(!value);
-      }}
+      onPress={toggle}
       trailingItem={
         <Switch
-          value={value ?? false}
+          value={checked}
           disabled={disabled}
-          onChange={() => {
-            onChange?.(!value);
-          }}
+          onChange={toggle}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
         />
       }
       disabled={disabled}
+      accessibilityRole="switch"
+      accessibilityState={{ checked, disabled: !!disabled }}
       {...rest}
     />
   );
