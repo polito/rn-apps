@@ -14,7 +14,8 @@ export const CONSIGLIERA_FIDUCIA_ID = 'consigliera-fiducia';
 export const SPORTELLO_ANTIVIOLENZA_ID = 'sportello-antiviolenza';
 export const GARANTE_STUDENTI_ID = 'garante-studenti';
 
-const GARANTE_STUDENTI_URL = '';
+const GARANTE_STUDENTI_URL =
+  'https://www.polito.it/didattica/servizi-e-vita-al-politecnico/accoglienza-inclusione-e-sostegno/garante-studenti';
 
 export const defaultUsefulContactsList: UsefulContact[] = [
   { id: CONSIGLIERA_FIDUCIA_ID, title: 'Consigliera di Fiducia' },
