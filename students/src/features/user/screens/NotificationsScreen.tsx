@@ -49,6 +49,7 @@ export const NotificationsScreen = () => {
               <SwitchListItem
                 leadingItem={<Icon icon={faComments} size={fontSizes['2xl']} />}
                 title={t('common.ticket_plural')}
+                accessibilityLabel={t('common.ticket_plural')}
                 disabled={isOffline}
                 value={data?.tickets}
                 onChange={() => {
@@ -63,6 +64,7 @@ export const NotificationsScreen = () => {
                   <Icon icon={faPersonCirclePlus} size={fontSizes['2xl']} />
                 }
                 title={t('common.booking_plural')}
+                accessibilityLabel={t('common.booking_plural')}
                 disabled={isOffline}
                 value={data?.bookings}
                 onChange={() => {

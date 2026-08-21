@@ -234,6 +234,7 @@ export const MessagingView = ({
               accessibilityRole="button"
               accessibilityLabel={t('ticketScreen.send')}
               disabled={!message?.length || loading}
+              accessibilityState={{ disabled: !message?.length || loading }}
               onPress={onSend}
               icon={faPaperPlane}
               size={22}

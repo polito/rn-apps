@@ -28,6 +28,7 @@ import {
 import { BookingSubtopic } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetBookingTopics } from '../../../core/queries/bookingHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 
@@ -46,6 +47,7 @@ export const BookingTopicScreen = ({ navigation }: Props) => {
   const topicsQuery = useGetBookingTopics();
 
   const { t } = useTranslation();
+  const { buildCompositeListLabel } = useAccessibility();
   const safeAreaInsets = useSafeAreaInsets();
 
   const [sections, setSections] = useState<TopicSection[]>([]);
@@ -116,11 +118,17 @@ export const BookingTopicScreen = ({ navigation }: Props) => {
                   ? toggleSection(index)
                   : onSelectTopic(topicId, topicTitle);
               }}
+              accessibilityRole="button"
+              accessibilityState={{ expanded: isExpanded }}
               accessibilityLabel={[
-                title,
+                sanitizeHtml(title || topicId),
                 t(`common.openedStatus.${isExpanded}`),
-                t(`common.openedStatusAction.${isExpanded}`),
               ].join(', ')}
+              accessibilityHint={
+                subtopics?.length > 0
+                  ? t('common.tapToNavigate')
+                  : t('bookingTopicScreen.selectTopicHint')
+              }
             >
               <View
                 style={{
@@ -160,6 +168,13 @@ export const BookingTopicScreen = ({ navigation }: Props) => {
               <TouchableHighlight
                 underlayColor={colors.touchableHighlight}
                 onPress={() => onSelectTopic(subtopic.id, subtopic.title)}
+                accessibilityRole="button"
+                accessibilityLabel={buildCompositeListLabel(
+                  [sanitizeHtml(subtopic.title)],
+                  index,
+                  section.data.length,
+                )}
+                accessibilityHint={t('bookingTopicScreen.selectTopicHint')}
                 style={{
                   marginHorizontal: spacing[4],
                   marginBottom: isLastItem ? spacing[2] : 0,

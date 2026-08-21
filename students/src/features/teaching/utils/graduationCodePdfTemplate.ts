@@ -138,7 +138,7 @@ export const GRADUATION_CODE_PDF_TEMPLATE = `<!DOCTYPE html>
       .map-link {
         display: inline-block;
         margin-top: 4px;
-        color: #006db4;
+        color: #006db9;
         font-size: 13px;
         text-decoration: underline;
         word-break: break-all;

@@ -1,4 +1,5 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   NativeSyntheticEvent,
   Platform,
@@ -45,11 +46,24 @@ const BottomSheetTextFieldComponent = ({
   label,
   onFocus,
   onChangeText,
+  accessibilityLabel,
+  accessibilityRole,
   ...rest
 }: BottomSheetTextFieldProps) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
+  const { t } = useTranslation();
   const keyboardContext = useBottomSheetKeyboard();
+
+  const accessibleName = useMemo(() => {
+    if (accessibilityLabel == null) {
+      return undefined;
+    }
+    if (accessibilityRole === 'search' && Platform.OS === 'android') {
+      return `${accessibilityLabel}, ${t('common.searchField')}`;
+    }
+    return accessibilityLabel;
+  }, [accessibilityLabel, accessibilityRole, t]);
 
   const handleChangeText = useCallback(
     (text: string) => {
@@ -77,6 +91,9 @@ const BottomSheetTextFieldComponent = ({
         leadingIcon && <Icon icon={leadingIcon} style={styles.icon} />
       )}
       <BottomSheetTextInput
+        accessible={true}
+        accessibilityLabel={accessibleName}
+        accessibilityRole={accessibilityRole}
         clearButtonMode="never"
         placeholder={label}
         keyboardType="default"

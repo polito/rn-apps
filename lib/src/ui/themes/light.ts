@@ -74,22 +74,22 @@ const green = {
   400: '#4ADE80',
   500: '#22C55E',
   600: '#16A34A',
-  700: '#15803D',
+  700: '#0F8038',
   800: '#166534',
   900: '#14532D',
 };
 
 const tertiary = {
-  50: '#F0FDF4',
+  50: '#ECFDF5',
   100: '#D1FAE5',
-  200: '#BBF7D0',
+  200: '#A7F3D0',
   300: '#6EE7B7',
-  400: '#4ADE80',
+  400: '#34D399',
   500: '#10B981',
-  600: '#16A34A',
+  600: '#059669',
   700: '#047857',
-  800: '#166534',
-  900: '#14532D',
+  800: '#065F46',
+  900: '#064E3B',
 };
 
 const darkOrange = {
@@ -133,7 +133,7 @@ const violet = {
 
 const purple = {
   50: '#FAF5FF',
-  100: '#F3E8FF',
+  100: '#FAE8FF',
   200: '#E9D5FF',
   300: '#D8B4FE',
   400: '#C084FC',
@@ -195,7 +195,7 @@ export const lightTheme: Theme = {
     danger: rose,
     error: red,
     success: green,
-    warning: orange,
+    warning: darkOrange,
     muted: gray,
     info: lightBlue,
     tertiary: tertiary,

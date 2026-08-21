@@ -1,6 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import {
+  AccessibilityInfo,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useOfflineDisabled, usePreferencesContext } from '@polito/lib/core';
@@ -35,6 +41,19 @@ export const ContactsScreen = () => {
 
   const isInputDisabled = useOfflineDisabled();
 
+  useEffect(() => {
+    if (people && people.length > 0) {
+      AccessibilityInfo.announceForAccessibility(
+        `${t('contactsScreen.resultFound')} ${people.length} ${t('contactsScreen.resultFoundRes')}`,
+      );
+    }
+    if (people && people.length === 0) {
+      AccessibilityInfo.announceForAccessibility(
+        t('contactsScreen.noResultsFound'),
+      );
+    }
+  }, [people, t]);
+
   return (
     <>
       <HeaderAccessory style={styles.searchBar}>
@@ -43,6 +62,7 @@ export const ContactsScreen = () => {
             autoFocus
             autoCorrect={false}
             leadingIcon={faSearch}
+            accessibilityRole="search"
             value={search}
             onChangeText={setSearch}
             style={[GlobalStyles.grow, styles.textField]}
@@ -51,6 +71,9 @@ export const ContactsScreen = () => {
             isClearable={!!search}
             onClear={() => setSearch('')}
             onClearLabel={t('contactsScreen.clearSearch')}
+            accessibilityLabel={t('contactsScreen.searchPlaceholder')}
+            accessibilityHint={t('common.searchSuggestionsHint')}
+            accessibilityState={{ disabled: isInputDisabled }}
           />
         </Row>
       </HeaderAccessory>
@@ -63,21 +86,26 @@ export const ContactsScreen = () => {
         >
           <SafeAreaView>
             <Section>
-              <OverviewList
-                loading={isLoading}
-                style={{ marginTop: spacing[4] }}
-                emptyStateText={t('contactsScreen.emptyState')}
+              <View
+                accessibilityRole="list"
+                accessibilityLabel={`${t('contactsScreen.searchResults')} - ${people?.length || 0} ${t('contactsScreen.contactsFound')}`}
               >
-                {people?.map((person, index) => (
-                  <PersonOverviewListItem
-                    key={person.id}
-                    person={person}
-                    searchString={debounceSearch}
-                    index={index}
-                    totalData={people?.length || 0}
-                  />
-                ))}
-              </OverviewList>
+                <OverviewList
+                  loading={isLoading}
+                  style={{ marginTop: spacing[4] }}
+                  emptyStateText={t('contactsScreen.emptyState')}
+                >
+                  {people?.map((person, index) => (
+                    <PersonOverviewListItem
+                      key={person.id}
+                      person={person}
+                      searchString={debounceSearch}
+                      index={index}
+                      totalData={people?.length || 0}
+                    />
+                  ))}
+                </OverviewList>
+              </View>
             </Section>
           </SafeAreaView>
         </ScrollView>

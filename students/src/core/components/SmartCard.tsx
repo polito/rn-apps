@@ -11,6 +11,7 @@ import Svg, {
 } from 'react-native-svg';
 
 import { faQrcode } from '@fortawesome/free-solid-svg-icons';
+import { hideFromScreenReader } from '@polito/lib/core';
 import { Icon, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 import { StudentCareerStatusEnum } from '@polito/student-api-client';
 
@@ -61,10 +62,6 @@ export const SmartCard = ({
 
   return (
     <View
-      accessible={true}
-      accessibilityLabel={`${t('profileScreen.smartCard')}. ${lastName} ${firstName}. ${t(
-        'profileScreen.studentId',
-      )} ${username}`}
       style={[
         styles.card,
         {
@@ -74,143 +71,165 @@ export const SmartCard = ({
         },
       ]}
     >
-      <Svg
+      <View
+        accessible={true}
+        accessibilityRole="image"
+        accessibilityLabel={[
+          t('profileScreen.smartCard'),
+          `${lastName} ${firstName}`,
+          degreeName,
+          `${t('profileScreen.studentId')} ${username}`,
+        ]
+          .filter(Boolean)
+          .join('. ')}
         style={StyleSheet.absoluteFill}
-        viewBox={`0 0 ${CARD_WIDTH} ${CARD_HEIGHT}`}
       >
-        <Defs>
-          <Mask id="avatarMask">
-            <Path
-              d={AVATAR_PATH}
-              transform={`translate(${AVATAR.x}, ${AVATAR.y})`}
-              fill="#fff"
+        <View {...hideFromScreenReader} style={StyleSheet.absoluteFill}>
+          <Svg
+            {...hideFromScreenReader}
+            accessibilityLabel=""
+            style={StyleSheet.absoluteFill}
+            viewBox={`0 0 ${CARD_WIDTH} ${CARD_HEIGHT}`}
+          >
+            <Defs>
+              <Mask id="avatarMask">
+                <Path
+                  d={AVATAR_PATH}
+                  transform={`translate(${AVATAR.x}, ${AVATAR.y})`}
+                  fill="#fff"
+                />
+              </Mask>
+            </Defs>
+
+            <PiedmontMap
+              transform="translate(100.5, 14.5)"
+              fill={palettes.gray[100]}
             />
-          </Mask>
-        </Defs>
 
-        <PiedmontMap
-          transform="translate(100.5, 14.5)"
-          fill={palettes.gray[100]}
-        />
-
-        <G transform="translate(-31, -30)">
-          <Path d={HEADER_PATH} fill={palettes.primary[700]} />
-        </G>
-        <PolitoLogo transform="translate(227, 5)" fill={colors.white} />
-
-        <G mask="url(#avatarMask)">
-          <Rect
-            x={AVATAR.x}
-            y={AVATAR.y}
-            width={AVATAR.size}
-            height={AVATAR.size}
-            fill={palettes.gray[200]}
-          />
-          {picture ? (
-            <Image
-              href={{ uri: picture }}
-              x={AVATAR.x}
-              y={AVATAR.y}
-              width={AVATAR.size}
-              height={AVATAR.size}
-              preserveAspectRatio="xMidYMid meet"
-            />
-          ) : (
-            <G fill={palettes.gray[400]}>
-              <Circle cx={AVATAR.x + 48.5} cy={AVATAR.y + 38} r={19} />
-              <Circle cx={AVATAR.x + 48.5} cy={AVATAR.y + 97} r={31} />
+            <G transform="translate(-31, -30)">
+              <Path d={HEADER_PATH} fill={palettes.primary[700]} />
             </G>
-          )}
-        </G>
-        <Circle
-          cx={STATUS_DOT.cx}
-          cy={STATUS_DOT.cy}
-          r={STATUS_DOT.r}
-          fill={statusColor}
-        />
-      </Svg>
+            <PolitoLogo transform="translate(227, 5)" fill={colors.white} />
 
-      <Text
-        style={[
-          styles.cardTitle,
-          {
-            left: scaled(110.5),
-            top: scaled(16.5),
-            fontSize: scaled(13),
-          },
-        ]}
-      >
-        {t('profileScreen.smartCardTitle')}
-      </Text>
+            <G mask="url(#avatarMask)">
+              <Rect
+                x={AVATAR.x}
+                y={AVATAR.y}
+                width={AVATAR.size}
+                height={AVATAR.size}
+                fill={palettes.gray[200]}
+              />
+              {picture ? (
+                <Image
+                  href={{ uri: picture }}
+                  x={AVATAR.x}
+                  y={AVATAR.y}
+                  width={AVATAR.size}
+                  height={AVATAR.size}
+                  preserveAspectRatio="xMidYMid meet"
+                />
+              ) : (
+                <G fill={palettes.gray[400]}>
+                  <Circle cx={AVATAR.x + 48.5} cy={AVATAR.y + 38} r={19} />
+                  <Circle cx={AVATAR.x + 48.5} cy={AVATAR.y + 97} r={31} />
+                </G>
+              )}
+            </G>
+            <Circle
+              cx={STATUS_DOT.cx}
+              cy={STATUS_DOT.cy}
+              r={STATUS_DOT.r}
+              fill={statusColor}
+            />
+          </Svg>
 
-      <View
-        style={{
-          position: 'absolute',
-          left: scaled(109.5),
-          top: scaled(46.5),
-          width: scaled(211),
-          gap: scaled(4),
-        }}
-      >
-        <View>
           <Text
-            numberOfLines={1}
+            {...hideFromScreenReader}
             style={[
-              styles.name,
-              { fontSize: scaled(20), lineHeight: scaled(25) },
+              styles.cardTitle,
+              {
+                left: scaled(110.5),
+                top: scaled(16.5),
+                fontSize: scaled(13),
+              },
             ]}
           >
-            {lastName.toUpperCase()}
+            {t('profileScreen.smartCardTitle')}
           </Text>
-          <Text
-            numberOfLines={1}
-            style={[
-              styles.name,
-              { fontSize: scaled(20), lineHeight: scaled(25) },
-            ]}
+
+          <View
+            {...hideFromScreenReader}
+            style={{
+              position: 'absolute',
+              left: scaled(109.5),
+              top: scaled(46.5),
+              width: scaled(211),
+              gap: scaled(4),
+            }}
           >
-            {firstName}
-          </Text>
+            <View>
+              <Text
+                numberOfLines={1}
+                style={[
+                  styles.name,
+                  { fontSize: scaled(20), lineHeight: scaled(25) },
+                ]}
+              >
+                {lastName.toUpperCase()}
+              </Text>
+              <Text
+                numberOfLines={1}
+                style={[
+                  styles.name,
+                  { fontSize: scaled(20), lineHeight: scaled(25) },
+                ]}
+              >
+                {firstName}
+              </Text>
+            </View>
+            <Text
+              numberOfLines={2}
+              style={[
+                styles.degree,
+                { fontSize: scaled(10), lineHeight: scaled(13) },
+              ]}
+            >
+              {degreeName}
+            </Text>
+          </View>
+
+          <View
+            {...hideFromScreenReader}
+            style={{
+              position: 'absolute',
+              left: scaled(12.5),
+              top: scaled(125.5),
+              width: scaled(90),
+            }}
+          >
+            <Text
+              style={[
+                styles.infoLabel,
+                { fontSize: scaled(12), lineHeight: scaled(15) },
+              ]}
+            >
+              {t('profileScreen.studentId')}
+            </Text>
+            <Text
+              style={[
+                styles.infoValue,
+                { fontSize: scaled(12), lineHeight: scaled(15) },
+              ]}
+            >
+              {username}
+            </Text>
+          </View>
         </View>
-        <Text
-          numberOfLines={2}
-          style={[
-            styles.degree,
-            { fontSize: scaled(10), lineHeight: scaled(13) },
-          ]}
-        >
-          {degreeName}
-        </Text>
-      </View>
-
-      <View
-        style={{
-          position: 'absolute',
-          left: scaled(12.5),
-          top: scaled(125.5),
-          width: scaled(90),
-        }}
-      >
-        <Text
-          style={[
-            styles.infoLabel,
-            { fontSize: scaled(12), lineHeight: scaled(15) },
-          ]}
-        >
-          {t('profileScreen.studentId')}
-        </Text>
-        <Text
-          style={[
-            styles.infoValue,
-            { fontSize: scaled(12), lineHeight: scaled(15) },
-          ]}
-        >
-          {username}
-        </Text>
       </View>
 
       <Pressable
         accessibilityRole="button"
+        accessibilityLabel={t('profileScreen.showQr')}
         onPress={onShowQr}
         style={[
           styles.qrButton,

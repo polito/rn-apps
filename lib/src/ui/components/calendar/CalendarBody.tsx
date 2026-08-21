@@ -25,11 +25,13 @@ import {
 import { Theme } from '../../types/Theme';
 import {
   HOURS,
+  getHourGuideWidth,
   getRelativeTopInDay,
   getStyledEvents,
   isToday,
 } from '../../utils/calendar';
 import { CalendarEvent } from './CalendarEvent';
+import { CalendarHeaderDay } from './CalendarHeader';
 import { HourGuideCell } from './HourGuideCell';
 import { HourGuideColumn } from './HourGuideColumn';
 
@@ -57,7 +59,11 @@ interface CalendarBodyProps<T extends ICalendarEventBase> {
   style?: ViewStyle;
   hours?: number[];
   startHour?: number;
+  locale?: string;
+  accessibleCells?: boolean;
 }
+
+const COLUMN_HEADER_HEIGHT = 44;
 
 export const CalendarBody = <T extends ICalendarEventBase>({
   allDayEvents,
@@ -82,6 +88,8 @@ export const CalendarBody = <T extends ICalendarEventBase>({
   hideHours = false,
   hours = HOURS,
   startHour = 8,
+  locale,
+  accessibleCells = false,
 }: CalendarBodyProps<T>) => {
   const scrollView = useRef<ScrollView>(null);
   const { now } = useNow(!hideNowIndicator);
@@ -125,6 +133,18 @@ export const CalendarBody = <T extends ICalendarEventBase>({
       onPressCell && onPressCell(date);
     },
     [onPressCell],
+  );
+
+  const isHourBusy = useCallback(
+    (date: DateTime, hour: number) => {
+      const cellStart = date.set({ hour, minute: 0, second: 0 });
+      const cellEnd = cellStart.plus({ hour: 1 });
+
+      return events.some(
+        event => event.start < cellEnd && event.end > cellStart,
+      );
+    },
+    [events],
   );
 
   const _renderMappedEvent = useCallback(
@@ -187,9 +207,12 @@ export const CalendarBody = <T extends ICalendarEventBase>({
           {!hideHours && (
             <View
               style={{
-                width: 35,
+                width: getHourGuideWidth(),
               }}
             >
+              {accessibleCells && (
+                <View style={{ height: COLUMN_HEADER_HEIGHT }} />
+              )}
               {showAllDayEventCell && (
                 <HourGuideColumn
                   key="all-day"
@@ -221,56 +244,70 @@ export const CalendarBody = <T extends ICalendarEventBase>({
                 }}
                 key={date.toString()}
               >
-                {showAllDayEventCell ? (
-                  <View
-                    style={[
-                      styles.allDayEventCell,
-                      { height: cellHeight },
-                      isLastDate && { borderRightWidth: 0 },
-                    ]}
-                  >
-                    {styledAllDayEvents
-                      .filter(({ end }) => end.hasSame(date, 'day'))
-                      .map(_renderMappedEvent)}
-                  </View>
-                ) : null}
-                {hours.map((hour, index) => (
-                  <HourGuideCell
-                    key={hour}
-                    cellHeight={cellHeight}
+                {accessibleCells && (
+                  <CalendarHeaderDay
                     date={date}
-                    hour={hour}
-                    onPress={_onPressCell}
-                    index={index}
-                    calendarCellStyle={calendarCellStyle}
-                    showBorderRight={!isLastDate}
-                    showBorderBottom={index < hours.length - 1}
+                    cellHeight={COLUMN_HEADER_HEIGHT - 8}
+                    locale={locale}
+                    isLast={isLastDate}
                   />
-                ))}
-
-                {styledEvents
-                  .filter(
-                    ({ end, start }) =>
-                      start.hasSame(date, 'day') && end.hasSame(date, 'day'),
-                  )
-                  .map(_renderMappedEvent)}
-
-                {isToday(date) && !hideNowIndicator && (
-                  <View
-                    style={[
-                      styles.nowIndicator,
-                      {
-                        top: `${getRelativeTopInDay(
-                          now,
-                          showAllDayEventCell,
-                          hours,
-                        )}%`,
-                      },
-                    ]}
-                  >
-                    <View style={styles.nowIndicatorDot} />
-                  </View>
                 )}
+                <View style={styles.columnGrid}>
+                  {showAllDayEventCell ? (
+                    <View
+                      style={[
+                        styles.allDayEventCell,
+                        { height: cellHeight },
+                        isLastDate && { borderRightWidth: 0 },
+                      ]}
+                    >
+                      {styledAllDayEvents
+                        .filter(({ end }) => end.hasSame(date, 'day'))
+                        .map(_renderMappedEvent)}
+                    </View>
+                  ) : null}
+                  {hours.map((hour, index) => (
+                    <HourGuideCell
+                      accessibleCell={
+                        accessibleCells && !isHourBusy(date, hour)
+                      }
+                      key={hour}
+                      cellHeight={cellHeight}
+                      date={date}
+                      hour={hour}
+                      locale={locale}
+                      onPress={_onPressCell}
+                      index={index}
+                      calendarCellStyle={calendarCellStyle}
+                      showBorderRight={!isLastDate}
+                      showBorderBottom={index < hours.length - 1}
+                    />
+                  ))}
+
+                  {styledEvents
+                    .filter(
+                      ({ end, start }) =>
+                        start.hasSame(date, 'day') && end.hasSame(date, 'day'),
+                    )
+                    .map(_renderMappedEvent)}
+
+                  {isToday(date) && !hideNowIndicator && (
+                    <View
+                      style={[
+                        styles.nowIndicator,
+                        {
+                          top: `${getRelativeTopInDay(
+                            now,
+                            showAllDayEventCell,
+                            hours,
+                          )}%`,
+                        },
+                      ]}
+                    >
+                      <View style={styles.nowIndicatorDot} />
+                    </View>
+                  )}
+                </View>
               </View>
             );
           })}
@@ -296,6 +333,9 @@ const createStyles = ({ dark, palettes, colors }: Theme) => {
       borderRadius: 5,
       marginTop: -4,
       backgroundColor: indicatorColor,
+    },
+    columnGrid: {
+      position: 'relative',
     },
     allDayEventCell: {
       borderColor: colors.divider,

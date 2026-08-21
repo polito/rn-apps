@@ -22,6 +22,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {
   PreferencesContextBase,
+  hideFromScreenReader,
   useFeedbackContext,
   useOfflineDisabled,
   usePreferencesContext,
@@ -44,6 +45,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { MenuComponentRef } from '@react-native-menu/menu';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useDownloadsContext } from '~/core/contexts/DownloadsContext';
@@ -109,6 +111,11 @@ const CleanCacheListItem = () => {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
       })}
       accessibilityRole="button"
+      accessibilityState={{
+        disabled:
+          (cacheSize !== undefined && cacheSize === 0) ||
+          isAnyDownloadInProgress,
+      }}
       disabled={
         (cacheSize !== undefined && cacheSize === 0) || isAnyDownloadInProgress
       }
@@ -168,6 +175,8 @@ const VisualizationListItem = () => {
     usePreferencesContext<AppPreferences>();
   const settingsColorScheme = useColorScheme();
 
+  const menuRef = useRef<MenuComponentRef>(null);
+
   const colorSchema = {
     dark: lightTheme?.palettes.navy[900],
     light: lightTheme?.palettes.lightBlue[200],
@@ -209,6 +218,13 @@ const VisualizationListItem = () => {
 
   return (
     <StatefulMenuView
+      ref={menuRef}
+      accessible
+      accessibilityRole="button"
+      accessibilityLabel={`${t('common.theme')}, ${t(`theme.${colorScheme}`)}`}
+      accessibilityHint={t('settingsScreen.openThemeMenu')}
+      accessibilityActions={[{ name: 'activate' }]}
+      onAccessibilityAction={() => menuRef.current?.show()}
       actions={themeColors.map(cc => {
         return {
           id: cc.id,
@@ -226,11 +242,9 @@ const VisualizationListItem = () => {
       }}
     >
       <ListItem
+        {...hideFromScreenReader}
         title={t(`theme.${colorScheme}`)}
         isAction
-        accessibilityLabel={`${t('common.theme')}: ${t(
-          `theme.${colorScheme}`,
-        )}. ${t('settingsScreen.openThemeMenu')}`}
         leadingItem={<ThemeIcon />}
       />
     </StatefulMenuView>
@@ -244,6 +258,8 @@ const LanguageListItem = () => {
   const { mutate } = useUpdateDevicePreferences();
   const isDisabled = useOfflineDisabled();
 
+  const menuRef = useRef<MenuComponentRef>(null);
+
   const choices = useMemo(() => {
     if (isDisabled) return [];
 
@@ -251,6 +267,14 @@ const LanguageListItem = () => {
   }, [isDisabled]);
   return (
     <StatefulMenuView
+      ref={menuRef}
+      accessible
+      accessibilityRole="button"
+      accessibilityLabel={`${t('common.language')}, ${t(`common.${language}`)}`}
+      accessibilityHint={t('settingsScreen.openLanguageMenu')}
+      accessibilityState={{ disabled: isDisabled }}
+      accessibilityActions={[{ name: 'activate' }]}
+      onAccessibilityAction={() => menuRef.current?.show()}
       actions={choices.map(cc => {
         return {
           id: cc,
@@ -270,12 +294,10 @@ const LanguageListItem = () => {
       }}
     >
       <ListItem
+        {...hideFromScreenReader}
         isAction
         disabled={isDisabled}
         title={t(`common.${language}`)}
-        accessibilityLabel={`${t('common.language')}: ${t(
-          `common.${language}`,
-        )}. ${t('settingsScreen.openLanguageMenu')}`}
       />
     </StatefulMenuView>
   );
@@ -454,6 +476,8 @@ const StorageLocationListItem = () => {
     [currentLocation, isMoving, handlePickDirectory, handleSwitchToInternal],
   );
 
+  const menuRef = useRef<MenuComponentRef>(null);
+
   const subtitle = useMemo(() => {
     if (currentLocation === 'custom' && customStorageDisplayPath) {
       return customStorageDisplayPath;
@@ -465,6 +489,18 @@ const StorageLocationListItem = () => {
 
   return (
     <StatefulMenuView
+      ref={menuRef}
+      accessible
+      accessibilityRole="button"
+      accessibilityLabel={`${t('settingsScreen.storageTitle')}, ${
+        currentLocation === 'custom'
+          ? t('settingsScreen.storageCustom')
+          : t('settingsScreen.storageInternal')
+      }`}
+      accessibilityHint={t('settingsScreen.openStorageMenu')}
+      accessibilityState={{ disabled: isMoving }}
+      accessibilityActions={[{ name: 'activate' }]}
+      onAccessibilityAction={() => menuRef.current?.show()}
       actions={choices.map(c => ({
         id: c.id,
         title: c.title,
@@ -475,6 +511,7 @@ const StorageLocationListItem = () => {
       }}
     >
       <ListItem
+        {...hideFromScreenReader}
         isAction
         disabled={isMoving}
         title={
@@ -594,6 +631,7 @@ export const SettingsScreen = () => {
                 <ListItem
                   title={t('settingsScreen.authenticatorTitle')}
                   accessibilityRole="button"
+                  accessibilityHint={t('common.tapToNavigate')}
                   linkTo={{
                     screen: 'MfaSettings',
                   }}

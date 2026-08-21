@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
@@ -23,21 +23,30 @@ import {
 import { TicketOverview } from '@polito/student-api-client';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { TICKET_QUERY_PREFIX } from '../../../core/queries/ticketHooks';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import {
+  TICKET_QUERY_PREFIX,
+  getTicketStatusGroup,
+} from '../../../core/queries/ticketHooks';
 import { TicketStatusBadge } from './TicketStatusBadge';
 
 interface TicketListItemProps extends Partial<ListItemProps> {
   ticket: TicketOverview;
+  index: number;
+  total: number;
 }
 
 export const TicketListItem = ({
   ticket,
+  index,
+  total,
   unread,
   ...props
 }: TicketListItemProps) => {
   const { palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
+  const { buildCompositeListLabel } = useAccessibility();
   const queryClient = useQueryClient();
 
   const isDataMissing = useCallback(
@@ -47,18 +56,48 @@ export const TicketListItem = ({
   );
   const isDisabled = useOfflineDisabled(isDataMissing);
 
+  const ticketSubject = getHtmlTextContent(ticket?.subject);
+  const isUnread = unread || ticket.unreadCount > 0;
+
+  const ticketAccessibilityLabel = useMemo(
+    () =>
+      buildCompositeListLabel(
+        [
+          ticketSubject,
+          ticket.needsFeedback
+            ? t('ticketsScreen.insertFeedback')
+            : t('ticketsScreen.openedOn', {
+                date: formatDate(ticket.createdAt),
+                interpolation: { escapeValue: false },
+              }),
+          t(`tickets.status.${getTicketStatusGroup(ticket.status)}`),
+          isUnread
+            ? t('ticketsScreen.unreadCount', {
+                count: ticket.unreadCount || 1,
+              })
+            : undefined,
+        ],
+        index,
+        total,
+      ),
+    [buildCompositeListLabel, ticketSubject, ticket, isUnread, index, total, t],
+  );
+
   return (
     <ListItem
       {...props}
       accessibilityRole="button"
       accessible={true}
+      accessibilityLabel={ticketAccessibilityLabel}
+      accessibilityHint={t('common.tapToNavigate')}
+      accessibilityState={{ disabled: isDisabled }}
       linkTo={{
         screen: 'Ticket',
         params: { id: ticket.id },
       }}
       disabled={isDisabled}
-      unread={unread || ticket.unreadCount > 0}
-      title={getHtmlTextContent(ticket?.subject)}
+      unread={isUnread}
+      title={ticketSubject}
       subtitle={
         ticket.needsFeedback ? (
           <Row align="center" gap={1} style={styles.feedbackTag}>

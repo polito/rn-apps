@@ -1,5 +1,11 @@
 import { ComponentType, ReactElement } from 'react';
-import { RecursiveArray, TextStyle, ViewStyle } from 'react-native';
+import {
+  AccessibilityActionEvent,
+  AccessibilityActionInfo,
+  RecursiveArray,
+  TextStyle,
+  ViewStyle,
+} from 'react-native';
 
 import { DateTime } from 'luxon';
 
@@ -21,6 +27,11 @@ export type CalendarTouchableOpacityProps = {
   style: RecursiveArray<ViewStyle | undefined> | ViewStyle;
   onPress: () => void;
   disabled: boolean;
+  focusable: boolean;
+  accessible: boolean;
+  accessibilityLabel: string;
+  accessibilityActions?: ReadonlyArray<AccessibilityActionInfo>;
+  onAccessibilityAction?: (event: AccessibilityActionEvent) => void;
 };
 
 export type Mode = '3days' | 'week' | 'day' | 'custom' | 'month';

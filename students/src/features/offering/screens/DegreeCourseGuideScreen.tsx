@@ -1,6 +1,12 @@
-import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
-import { sanitizeHtml } from '@polito/lib/core';
+import { getHtmlTextContent, sanitizeHtml } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   Card,
@@ -38,13 +44,19 @@ export const DegreeCourseGuideScreen = ({ route }: Props) => {
                 <Text variant="subHeading" accessibilityRole="header">
                   {section.title}
                 </Text>
-                <HtmlView
-                  props={{
-                    source: { html: sanitizeHtml(section.content) },
-                    baseStyle: styles.html,
-                  }}
-                  variant="longProse"
-                />
+                <View
+                  accessible={true}
+                  importantForAccessibility="no-hide-descendants"
+                  accessibilityLabel={getHtmlTextContent(section.content)}
+                >
+                  <HtmlView
+                    props={{
+                      source: { html: sanitizeHtml(section.content) },
+                      baseStyle: styles.html,
+                    }}
+                    variant="longProse"
+                  />
+                </View>
               </Col>
             ))}
           </Card>

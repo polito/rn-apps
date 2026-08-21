@@ -4,6 +4,7 @@ import {
   TouchableOpacityProps,
 } from 'react-native';
 
+import { useKeyboardActivation } from '../hooks/useKeyboardActivation';
 import { useStylesheet } from '../hooks/useStylesheet';
 import { Theme } from '../types/Theme';
 import { Text } from './Text';
@@ -16,12 +17,24 @@ export const PillButton = ({
   children,
   style,
   variant = 'primary',
+  accessibilityRole = 'button',
+  accessibilityState,
+  disabled,
   ...props
 }: PillButtonProps) => {
   const styles = useStylesheet(createStyles);
+  const keyboardActivationProps = useKeyboardActivation({
+    onActivate: props.onPress as (() => void) | undefined,
+    disabled,
+    accessibilityActions: props.accessibilityActions,
+    onAccessibilityAction: props.onAccessibilityAction,
+  });
 
   return (
     <TouchableOpacity
+      accessibilityRole={accessibilityRole}
+      accessibilityState={{ disabled: !!disabled, ...accessibilityState }}
+      disabled={disabled}
       style={[
         styles.container,
         variant === 'neutral'
@@ -31,6 +44,7 @@ export const PillButton = ({
       ]}
       activeOpacity={0.7}
       {...props}
+      {...keyboardActivationProps}
     >
       {typeof children === 'string' ? (
         <Text

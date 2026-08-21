@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  SafeAreaView,
+  ScrollView,
+  View,
+} from 'react-native';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -220,6 +225,9 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   }
                 />
                 <ListItem
+                  accessible
+                  accessibilityRole="button"
+                  accessibilityLabel={t('coursePreferencesScreen.choseIcon')}
                   title={t('common.icon')}
                   subtitle={t('coursePreferencesScreen.iconSubtitle')}
                   isAction
@@ -241,6 +249,15 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                   }
                 />
                 <SwitchListItem
+                  accessible
+                  accessibilityLabel={[
+                    coursePrefs?.isHidden
+                      ? t('common.inactive')
+                      : t('common.active'),
+                    t('coursePreferencesScreen.showInExtracts'),
+                    t('coursePreferencesScreen.showInExtractsSubtitle'),
+                    t('common.clickForChange'),
+                  ].join(', ')}
                   title={t('coursePreferencesScreen.showInExtracts')}
                   subtitle={t('coursePreferencesScreen.showInExtractsSubtitle')}
                   disabled={!coursePrefs}
@@ -262,6 +279,12 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                         files: value,
                       },
                     });
+                    const message = value
+                      ? 'common.activated'
+                      : 'common.deactivated';
+                    setTimeout(() => {
+                      AccessibilityInfo.announceForAccessibility(t(message));
+                    }, 500);
                   }}
                 />
               </OverviewList>
@@ -271,6 +294,15 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
               <SectionHeader title={t('common.notifications')} />
               <OverviewList indented>
                 <SwitchListItem
+                  accessible
+                  accessibilityLabel={[
+                    courseQuery.data?.notifications.notices
+                      ? t('common.active')
+                      : t('common.inactive'),
+                    t('common.notice_plural'),
+                    t('coursePreferencesScreen.noticesSubtitle'),
+                    t('common.clickForChange'),
+                  ].join(', ')}
                   title={t('common.notice_plural')}
                   subtitle={t('coursePreferencesScreen.noticesSubtitle')}
                   disabled={!courseQuery.data}
@@ -282,10 +314,25 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                         notices: !courseQuery.data?.notifications.notices,
                       },
                     });
+                    const message = !courseQuery.data?.notifications.notices
+                      ? 'common.activated'
+                      : 'common.deactivated';
+                    setTimeout(() => {
+                      AccessibilityInfo.announceForAccessibility(t(message));
+                    }, 500);
                   }}
                 />
 
                 <SwitchListItem
+                  accessible
+                  accessibilityLabel={[
+                    courseQuery.data?.notifications.files
+                      ? t('common.active')
+                      : t('common.inactive'),
+                    t('common.file_plural'),
+                    t('coursePreferencesScreen.filesSubtitle'),
+                    t('common.clickForChange'),
+                  ].join(', ')}
                   title={t('common.file_plural')}
                   subtitle={t('coursePreferencesScreen.filesSubtitle')}
                   disabled={!courseQuery.data}
@@ -297,10 +344,25 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                         files: !courseQuery.data?.notifications.files,
                       },
                     });
+                    const message = !courseQuery.data?.notifications.files
+                      ? 'common.activated'
+                      : 'common.deactivated';
+                    setTimeout(() => {
+                      AccessibilityInfo.announceForAccessibility(t(message));
+                    }, 500);
                   }}
                 />
 
                 <SwitchListItem
+                  accessible
+                  accessibilityLabel={[
+                    courseQuery.data?.notifications.lectures
+                      ? t('common.active')
+                      : t('common.inactive'),
+                    t('common.lecture_plural'),
+                    t('coursePreferencesScreen.lecturesSubtitle'),
+                    t('common.clickForChange'),
+                  ].join(', ')}
                   title={t('common.lecture_plural')}
                   subtitle={t('coursePreferencesScreen.lecturesSubtitle')}
                   disabled={!courseQuery.data}
@@ -314,6 +376,12 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                         lectures: !courseQuery.data?.notifications.lectures,
                       },
                     });
+                    const message = !courseQuery.data?.notifications.lectures
+                      ? 'common.activated'
+                      : 'common.deactivated';
+                    setTimeout(() => {
+                      AccessibilityInfo.announceForAccessibility(t(message));
+                    }, 500);
                   }}
                 />
               </OverviewList>

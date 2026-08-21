@@ -68,7 +68,12 @@ export const TicketAttachmentChip = ({
 
   return (
     <ThemeContext.Provider value={darkTheme}>
-      <TouchableOpacity onPress={onPressAttachment} style={styles.container}>
+      <TouchableOpacity
+        onPress={onPressAttachment}
+        style={styles.container}
+        accessibilityRole="button"
+        accessibilityLabel={attachment.filename}
+      >
         <AttachmentChip
           attachment={{
             name: attachment.filename,

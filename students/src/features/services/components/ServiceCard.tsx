@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
@@ -58,55 +58,59 @@ export const ServiceCard = ({
 
   const styles = useStylesheet(theme => createStyles(theme, isLargeFont));
   return (
-    <TouchableCard
-      accessibilityRole="button"
-      onPress={
-        linkTo
-          ? () => {
-              const resolved = resolveLinkTo(linkTo);
-              navigation.navigate(resolved.name as any, resolved.params);
-            }
-          : onPress
-      }
-      {...props}
-      disabled={disabled}
-      style={[styles.touchable, props.style]}
-      cardStyle={[styles.card, props.cardStyle]}
-      accessibilityLabel={accessibilityLabel}
-    >
-      <Row accessibilityRole="button" justify="space-between" align="center">
-        <Icon
-          icon={icon}
-          size={28}
-          color={iconColor ?? palettes.primary[dark ? 400 : 500]}
-        />
-        <IconButton
-          accessibilityLabel={
-            favorite
-              ? t('servicesScreen.favoriteActive')
-              : t('servicesScreen.favoriteInactive')
-          }
-          icon={favorite ? faStarFilled : faStar}
-          color={favorite ? palettes.orange[400] : colors.secondaryText}
-          onPress={() => onFavoriteChange(!favorite)}
-          style={styles.favButton}
-          disabled={disabled}
-          hitSlop={uniformInsets(16)}
-        />
-      </Row>
-      <Row justify="space-between" align="flex-end">
-        <Text variant="title" style={styles.title}>
-          {name}
-        </Text>
-        {typeof unReadCount === 'number' && unReadCount > 0 && !disabled && (
-          <UnreadBadge text={unReadCount} />
-        )}
-        {typeof unReadCount === 'string' && !disabled && (
-          <UnreadBadge text={unReadCount} isNumeric={true} />
-        )}
-      </Row>
-      {children}
-    </TouchableCard>
+    <View style={[styles.container, props.style]}>
+      <TouchableCard
+        accessibilityRole="button"
+        accessibilityState={{ disabled: !!disabled }}
+        onPress={
+          linkTo
+            ? () => {
+                const resolved = resolveLinkTo(linkTo);
+                navigation.navigate(resolved.name as any, resolved.params);
+              }
+            : onPress
+        }
+        {...props}
+        disabled={disabled}
+        style={styles.touchable}
+        cardStyle={[styles.card, props.cardStyle]}
+        accessibilityLabel={accessibilityLabel}
+      >
+        <Row align="center">
+          <Icon
+            icon={icon}
+            size={28}
+            color={iconColor ?? palettes.primary[dark ? 400 : 500]}
+          />
+        </Row>
+        <Row justify="space-between" align="flex-end">
+          <Text variant="title" style={styles.title}>
+            {name}
+          </Text>
+          {typeof unReadCount === 'number' && unReadCount > 0 && !disabled && (
+            <UnreadBadge text={unReadCount} />
+          )}
+          {typeof unReadCount === 'string' && !disabled && (
+            <UnreadBadge text={unReadCount} isNumeric={true} />
+          )}
+        </Row>
+        {children}
+      </TouchableCard>
+      <IconButton
+        accessibilityLabel={
+          favorite
+            ? t('servicesScreen.favoriteActive')
+            : t('servicesScreen.favoriteInactive')
+        }
+        accessibilityState={{ selected: !!favorite, disabled: !!disabled }}
+        icon={favorite ? faStarFilled : faStar}
+        color={favorite ? palettes.orange[400] : colors.secondaryText}
+        onPress={() => onFavoriteChange(!favorite)}
+        style={styles.favButton}
+        disabled={disabled}
+        hitSlop={uniformInsets(16)}
+      />
+    </View>
   );
 };
 
@@ -115,16 +119,20 @@ ServiceCard.maxWidth = 384;
 
 const createStyles = ({ spacing, fontSizes }: Theme, isLargeFont: boolean) =>
   StyleSheet.create({
-    touchable: {
+    container: {
       flex: 1,
       width: '100%',
-      height: ServiceCard.minWidth,
+      minHeight: ServiceCard.minWidth,
       ...(isLargeFont
         ? {}
         : {
             minWidth: ServiceCard.minWidth,
             maxWidth: ServiceCard.maxWidth,
           }),
+    },
+    touchable: {
+      flex: 1,
+      width: '100%',
     },
     card: {
       flex: 1,
@@ -137,6 +145,9 @@ const createStyles = ({ spacing, fontSizes }: Theme, isLargeFont: boolean) =>
       flexShrink: 1,
     },
     favButton: {
+      position: 'absolute',
+      top: spacing[1],
+      right: spacing[1],
       padding: spacing[2],
     },
   });

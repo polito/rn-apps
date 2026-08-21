@@ -8,14 +8,14 @@ import {
   Section,
 } from '@polito/lib/ui';
 
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import { useAnnounceLoading } from '../../../core/hooks/useAccessibilty';
 import { useGetExams } from '../../../core/queries/examHooks';
 import { ExamListItem } from '../components/ExamListItem';
 
 export const ExamsScreen = () => {
   const { t } = useTranslation();
   const examsQuery = useGetExams();
-  const { accessibilityListLabel } = useAccessibility();
+  useAnnounceLoading(examsQuery.isLoading);
 
   return (
     <ScrollView
@@ -42,10 +42,8 @@ export const ExamsScreen = () => {
                 key={`${exam.id}` + exam.moduleNumber}
                 exam={exam}
                 accessible={true}
-                accessibilityLabel={accessibilityListLabel(
-                  index,
-                  examsQuery.data.length,
-                )}
+                index={index}
+                total={examsQuery.data.length}
               />
             ))}
           </OverviewList>

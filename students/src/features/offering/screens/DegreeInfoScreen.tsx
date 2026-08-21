@@ -7,7 +7,10 @@ import {
   View,
 } from 'react-native';
 
-import { getHtmlTextContent } from '@polito/lib/core';
+import {
+  getHtmlTextContent,
+  useAccessibilityFocusOnScreenFocus,
+} from '@polito/lib/core';
 import {
   BottomBarSpacer,
   Card,
@@ -24,6 +27,7 @@ import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { useDegreeContext } from '../contexts/DegreeContext';
 
 export const DegreeInfoScreen = () => {
+  const screenRef = useAccessibilityFocusOnScreenFocus<ScrollView>();
   const { degreeId, year } = useDegreeContext();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
@@ -33,6 +37,7 @@ export const DegreeInfoScreen = () => {
 
   return (
     <ScrollView
+      ref={screenRef}
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl queries={[degreeQuery]} manual />}
     >
@@ -43,7 +48,27 @@ export const DegreeInfoScreen = () => {
               style={styles.heading}
               title={degree?.name || degree?.id}
             />
-            <Card padded style={styles.overviewCard}>
+            <Card
+              spaced
+              padded
+              style={styles.overviewCard}
+              accessible={true}
+              accessibilityRole="none"
+              accessibilityLabel={[
+                degree?.location &&
+                  `${t('common.location')}: ${degree.location}`,
+                degree?.department?.name &&
+                  `${t('common.department')}: ${degree.department.name}`,
+                degree?.faculty?.name &&
+                  `${t('common.faculty')}: ${degree.faculty.name}`,
+                degree?.duration &&
+                  `${t('common.duration')}: ${degree.duration}`,
+                degree?._class &&
+                  `${t('degreeScreen.degreeClass')}: ${degree._class.name} (${degree._class.code})`,
+              ]
+                .filter(Boolean)
+                .join(', ')}
+            >
               {degree?.location && (
                 <Text>
                   <Text style={styles.label}>{t('common.location')}: </Text>
@@ -81,9 +106,11 @@ export const DegreeInfoScreen = () => {
             </Card>
           </>
           <Section>
-            <Card padded gapped>
+            <Card spaced accessible={false} padded gapped>
               <View>
-                <Text variant="subHeading">{t('common.notes')}</Text>
+                <Text variant="subHeading" accessibilityRole="header">
+                  {t('common.notes')}
+                </Text>
                 {degree?.notes?.map((note, index) => (
                   <Text key={index} variant="longProse">
                     {getHtmlTextContent(note)}
@@ -92,10 +119,17 @@ export const DegreeInfoScreen = () => {
               </View>
               {degree?.objectives?.content && (
                 <View>
-                  <Text variant="subHeading">{t('common.objectives')}</Text>
-                  <Text variant="longProse">
-                    {getHtmlTextContent(degree?.objectives?.content)}
+                  <Text variant="subHeading" accessibilityRole="header">
+                    {t('common.objectives')}
                   </Text>
+                  {getHtmlTextContent(degree?.objectives?.content)
+                    .split(/\n+/)
+                    .filter(paragraph => paragraph.trim().length > 0)
+                    .map((paragraph, index) => (
+                      <Text variant="longProse" key={index}>
+                        {paragraph}
+                      </Text>
+                    ))}
                 </View>
               )}
             </Card>

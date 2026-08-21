@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ViewStyle } from 'react-native';
+import { View, ViewStyle } from 'react-native';
 
 import { DateTime } from 'luxon';
 
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { GlobalStyles } from '../../styles/GlobalStyles';
 import {
   CalendarCellStyle,
   CalendarCellTextStyle,
@@ -68,6 +69,7 @@ export interface CalendarContainerProps<T extends ICalendarEventBase> {
   ampm?: boolean;
   date?: DateTime;
   locale?: string;
+  accessibleCells?: boolean;
   hideNowIndicator?: boolean;
   showAdjacentMonths?: boolean;
   mode?: Mode;
@@ -128,6 +130,7 @@ export const Calendar = <T extends ICalendarEventBase>({
   hours,
   startHour = 6,
   locale,
+  accessibleCells,
 }: CalendarContainerProps<T>) => {
   const [targetDate, setTargetDate] = useState(date);
   const { accessibility } = usePreferencesContext();
@@ -229,8 +232,8 @@ export const Calendar = <T extends ICalendarEventBase>({
   };
 
   return (
-    <>
-      <HeaderComponent {...headerProps} />
+    <View style={GlobalStyles.grow}>
+      {!accessibleCells && <HeaderComponent {...headerProps} />}
       <CalendarBody<T>
         {...commonProps}
         allDayEvents={allDayEvents}
@@ -252,7 +255,9 @@ export const Calendar = <T extends ICalendarEventBase>({
         isEventOrderingEnabled={isEventOrderingEnabled}
         hours={hours}
         startHour={startHour}
+        locale={locale}
+        accessibleCells={accessibleCells}
       />
-    </>
+    </View>
   );
 };

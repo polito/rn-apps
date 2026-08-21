@@ -186,9 +186,11 @@ export const CourseGradesChart = ({
   return (
     <View
       style={styles.graphCard}
-      accessible={false}
-      accessibilityElementsHidden={true}
-      importantForAccessibility="no-hide-descendants"
+      accessible
+      accessibilityLabel={t('courseStatisticsScreen.examGradeDetailChartA11y', {
+        firstAvg: statistics?.firstYear?.averageGrade ?? '-',
+        otherAvg: statistics?.otherYears?.averageGrade ?? '-',
+      })}
     >
       <NoChartDataContainer hasData={hasData}>
         <View style={styles.chartContainer}>
@@ -315,6 +317,7 @@ export const CourseGradesChart = ({
         />
         <LegendItem
           bulletColor={chartColors[1]}
+          bulletVariant="outlined"
           text={t('courseStatisticsScreen.gradesDetailLegend.otherYears')}
           trailingText={statistics?.otherYears?.averageGrade?.toString() ?? '-'}
         />

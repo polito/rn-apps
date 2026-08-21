@@ -4,15 +4,18 @@ import { Linking, Platform, TouchableHighlightProps } from 'react-native';
 import ContextMenu from 'react-native-context-menu-view';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
-import { IS_ANDROID, formatDateTime } from '@polito/lib/core';
+import { IS_ANDROID, IS_IOS, formatDateTime } from '@polito/lib/core';
 import { FileListItem, IconButton, useTheme } from '@polito/lib/ui';
 import { CourseAssignment } from '@polito/student-api-client';
 
 import { formatFileSize } from '~/utils/files';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+
 interface Props {
   item: CourseAssignment;
-  accessibilityListLabel?: string;
+  index: number;
+  total: number;
 }
 
 const Menu = ({ children }: PropsWithChildren) => {
@@ -45,13 +48,27 @@ const Menu = ({ children }: PropsWithChildren) => {
 
 export const CourseAssignmentListItem = ({
   item,
-  accessibilityListLabel,
+  index,
+  total,
   ...rest
 }: Omit<TouchableHighlightProps, 'onPress'> & Props) => {
+  const { t } = useTranslation();
   const { colors, spacing, fontSizes } = useTheme();
+  const { buildCompositeListLabel } = useAccessibility();
   const subTitle = `${formatFileSize(item.sizeInKiloBytes)} - ${formatDateTime(
     item.uploadedAt,
   )}`;
+  const accessibilityLabel = buildCompositeListLabel(
+    [
+      item.description,
+      item.deletedAt ? t('common.retracted') : '',
+      subTitle,
+      t('common.downloadClick'),
+      IS_IOS ? t('courseAssignmentsTab.longPress') : '',
+    ].filter(Boolean),
+    index,
+    total,
+  );
   const listItem = useMemo(
     () => (
       <FileListItem
@@ -59,12 +76,13 @@ export const CourseAssignmentListItem = ({
           await Linking.openURL(item.url);
         }}
         title={item.description}
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel}
         titleStyle={{
           textDecorationLine:
             item.deletedAt != null ? 'line-through' : undefined,
         }}
         subtitle={subTitle}
-        accessibilityLabel={`${accessibilityListLabel}. ${item.description}, ${subTitle}`}
         mimeType={item.mimeType}
         trailingItem={
           item.deletedAt == null
@@ -76,6 +94,7 @@ export const CourseAssignmentListItem = ({
                         padding: spacing[3],
                       }}
                       icon={faEllipsisVertical}
+                      accessibilityLabel={t('common.options')}
                       color={colors.secondaryText}
                       size={fontSizes.xl}
                       hitSlop={{
@@ -92,13 +111,14 @@ export const CourseAssignmentListItem = ({
       />
     ),
     [
+      t,
       item,
       subTitle,
-      accessibilityListLabel,
       spacing,
       colors.secondaryText,
       fontSizes.xl,
       rest,
+      accessibilityLabel,
     ],
   );
 

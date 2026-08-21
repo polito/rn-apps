@@ -1,10 +1,12 @@
-import { StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { formatDate, getHtmlTextContent } from '@polito/lib/core';
 import { Icon, ListItem, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 import { NewsItemOverview } from '@polito/student-api-client';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 
@@ -15,17 +17,22 @@ interface Props {
 }
 
 export const NewsListItem = ({ newsItem, index, totalData }: Props) => {
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
 
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
   const { getUnreadsCount } = useNotifications();
 
-  const accessibilityLabel = accessibilityListLabel(index, totalData);
   const title = getHtmlTextContent(newsItem?.title);
   const shortDescription = getHtmlTextContent(newsItem?.shortDescription);
   const createdAt = formatDate(newsItem.createdAt);
   const subTitle = `${createdAt} - ${shortDescription}`;
+  const isUnread = !!getUnreadsCount([
+    'services',
+    'news',
+    newsItem?.id.toString(),
+  ]);
 
   return (
     <ListItem
@@ -38,17 +45,24 @@ export const NewsListItem = ({ newsItem, index, totalData }: Props) => {
         },
       }}
       accessibilityRole="button"
-      accessibilityLabel={[accessibilityLabel, title, subTitle].join(', ')}
+      accessibilityLabel={buildCompositeListLabel(
+        [title, isUnread ? t('common.unread') : '', subTitle],
+        index,
+        totalData,
+      )}
+      accessibilityHint={t('common.tapToNavigate')}
       subtitle={subTitle}
       subtitleStyle={styles.subtitle}
       trailingItem={
-        <Icon
-          icon={faChevronRight}
-          color={colors.secondaryText}
-          style={styles.icon}
-        />
+        <View {...hideFromScreenReader}>
+          <Icon
+            icon={faChevronRight}
+            color={colors.secondaryText}
+            style={styles.icon}
+          />
+        </View>
       }
-      unread={!!getUnreadsCount(['services', 'news', newsItem?.id.toString()])}
+      unread={isUnread}
     />
   );
 };

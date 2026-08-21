@@ -17,21 +17,19 @@ type VideoProps = {
 export const VideoPlayer = ({ currentIndex, index, ...props }: VideoProps) => {
   const { width } = useWindowDimensions();
   const { addListener } = useNavigation();
-  // If there is a single video paused is initialized to false
-  const [paused, setPaused] = useState(currentIndex !== index);
+  const [paused, setPaused] = useState(true);
   // const [isPiP, setIsPiP] = useState(false);
 
   useEffect(() => {
-    setPaused(currentIndex !== index);
+    if (currentIndex !== index) {
+      setPaused(true);
+    }
   }, [index, currentIndex]);
 
   useEffect(() => {
     return addListener('blur', () => {
       // if (isPiP) return;
-      setPaused(false);
-      setTimeout(() => {
-        setPaused(true);
-      });
+      setPaused(true);
     });
   }, [addListener, setPaused]);
 

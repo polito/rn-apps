@@ -16,8 +16,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {
   APP_TIMEZONE,
+  hideFromScreenReader,
   useOfflineDisabled,
   usePreferencesContext,
+  useScreenReader,
 } from '@polito/lib/core';
 import {
   ActivityIndicator,
@@ -25,16 +27,21 @@ import {
   HeaderAccessory,
   IconButton,
   OverviewList,
+  StatefulMenuView,
   Theme,
   useSafeAreaSpacing,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
+import { MenuComponentRef, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
+import {
+  useAccessibility,
+  useAnnounceLoading,
+} from '~/core/hooks/useAccessibilty.ts';
 import { BOOKINGS_QUERY_KEY } from '~/core/queries/bookingHooks.ts';
 import { EXAMS_QUERY_KEY } from '~/core/queries/examHooks.ts';
 import { DEADLINES_QUERY_PREFIX } from '~/core/queries/studentHooks.ts';
@@ -56,6 +63,7 @@ type Props = NativeStackScreenProps<AgendaStackParamList, 'Agenda'>;
 export const AgendaScreen = ({ navigation, route }: Props) => {
   const { palettes, fontSizes } = useTheme();
   const { t } = useTranslation();
+  const { announce } = useScreenReader();
   const styles = useStylesheet(createStyles);
   const { updatePreference, agendaScreen, language } =
     usePreferencesContext<AppPreferences>();
@@ -78,6 +86,8 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
   ]);
 
   const { isLoading, data } = useGetAgendaWeeks(weeks);
+  useAnnounceLoading(isLoading);
+  const { getListAccessibilityProps } = useAccessibility();
 
   const [dataPickerIsOpened, setDataPickerIsOpened] = useState<boolean>(false);
 
@@ -89,6 +99,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
   }).current;
 
   const flatListRef = useRef<FlatList<AgendaWeek>>(null);
+  const optionsMenuRef = useRef<MenuComponentRef>(null);
 
   const isOffline = useOfflineDisabled();
 
@@ -115,8 +126,11 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
       dependingQueryKeys.map(q => client.invalidateQueries({ queryKey: q })),
     )
       .then(_ => client.invalidateQueries({ queryKey: [AGENDA_QUERY_PREFIX] }))
-      .then(_ => setAgendaState(prev => ({ ...prev, isRefreshing: false })));
-  }, [client, setAgendaState]);
+      .then(_ => {
+        setAgendaState(prev => ({ ...prev, isRefreshing: false }));
+        announce(t('common.endRefresh'));
+      });
+  }, [client, setAgendaState, announce, t]);
 
   const setCurrentDayOffset = (offsetY: number) => {
     setAgendaState(prev => ({
@@ -238,15 +252,24 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
             accessibilityLabel={t('agendaScreen.selectDate')}
             onPress={() => setDataPickerIsOpened(true)}
           />
-          <MenuView actions={screenOptions} onPressAction={onPressOption}>
+          <StatefulMenuView
+            ref={optionsMenuRef}
+            actions={screenOptions}
+            onPressAction={onPressOption}
+            accessible
+            accessibilityRole="button"
+            accessibilityLabel={t('common.options')}
+            accessibilityActions={[{ name: 'activate' }]}
+            onAccessibilityAction={() => optionsMenuRef.current?.show()}
+          >
             <IconButton
+              {...hideFromScreenReader}
               icon={faEllipsisVertical}
               color={palettes.primary[400]}
               size={fontSizes.lg}
               adjustSpacing="right"
-              accessibilityLabel={t('common.options')}
             />
-          </MenuView>
+          </StatefulMenuView>
         </>
       ),
     });
@@ -269,6 +292,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         <AgendaFilters />
       </HeaderAccessory>
       <DatePicker
+        accessible
         modal
         locale={language}
         date={today}
@@ -290,6 +314,7 @@ export const AgendaScreen = ({ navigation, route }: Props) => {
         ))}
       {!!data.length && !agendaState.isRefreshing && (
         <FlatList
+          {...getListAccessibilityProps(t('agendaScreen.title'), data.length)}
           ref={flatListRef}
           data={data}
           initialNumToRender={1}

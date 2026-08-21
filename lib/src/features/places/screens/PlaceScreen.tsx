@@ -308,6 +308,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
                 <ListItem
                   inverted
                   multilineTitle
+                  accessible={false}
                   title={t('placeScreen.getDirections')}
                   trailingItem={
                     <IconButton
@@ -398,6 +399,7 @@ export const PlaceScreen = ({ navigation, route }: Props) => {
               <ListItem
                 inverted
                 multilineTitle
+                accessible={false}
                 title={(place && place.site.name) ?? ''}
                 subtitle={t('common.campus')}
                 trailingItem={
