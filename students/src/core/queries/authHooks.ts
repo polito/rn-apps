@@ -31,6 +31,7 @@ import {
   resetCredentials,
   setCredentials,
 } from '../../utils/keychain.ts';
+import { deleteProfilePictureFile } from '../../utils/profilePicture.ts';
 import { DEFAULT_CHPASS_URL, DEFAULT_SSO_LOGIN_URL } from '../constants.ts';
 import { useApiContext } from '../contexts/ApiContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
@@ -150,7 +151,7 @@ export const useLogin = () => {
 export const useLogout = () => {
   const authClient = useAuthClient();
   const queryClient = useQueryClient();
-  const { refreshContext } = useApiContext();
+  const { username, refreshContext } = useApiContext();
   const { updatePreference } = usePreferencesContext<AppPreferences>();
   return useMutation({
     mutationFn: () => {
@@ -163,6 +164,9 @@ export const useLogout = () => {
         console.error('Error clearing query storage:', e);
       });
       queryClient.removeQueries();
+      if (username) {
+        deleteProfilePictureFile(username);
+      }
       await resetCredentials();
     },
   });

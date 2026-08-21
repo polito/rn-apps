@@ -38,7 +38,7 @@ PODS:
     - Yoga
   - ExpoAsset (12.0.12):
     - ExpoModulesCore
-  - ExpoFileSystem (19.0.21):
+  - ExpoFileSystem (19.0.23):
     - ExpoModulesCore
   - ExpoImage (3.0.11):
     - ExpoModulesCore
@@ -76,6 +76,8 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
+  - ExpoSharing (14.0.8):
+    - ExpoModulesCore
   - ExpoSQLite (16.0.10):
     - ExpoModulesCore
   - ExpoWebBrowser (15.0.10):
@@ -207,6 +209,34 @@ PODS:
   - hermes-engine (0.81.6):
     - hermes-engine/Pre-built (= 0.81.6)
   - hermes-engine/Pre-built (0.81.6)
+  - HtmlToPdf (1.3.0):
+    - boost
+    - DoubleConversion
+    - fast_float
+    - fmt
+    - glog
+    - hermes-engine
+    - RCT-Folly
+    - RCT-Folly/Fabric
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - SocketRocket
+    - Yoga
   - libavif/core (1.0.0)
   - libavif/libdav1d (1.0.0):
     - libavif/core
@@ -2122,8 +2152,6 @@ PODS:
     - Yoga
   - react-native-get-random-values (1.11.0):
     - React-Core
-  - react-native-html-to-pdf (0.12.0):
-    - React-Core
   - react-native-menu (2.0.0):
     - boost
     - DoubleConversion
@@ -3522,9 +3550,10 @@ DEPENDENCIES:
   - EXConstants (from `../../node_modules/expo-constants/ios`)
   - Expo (from `../../node_modules/expo`)
   - ExpoAsset (from `../../node_modules/expo-asset/ios`)
-  - ExpoFileSystem (from `../../node_modules/expo/node_modules/expo-file-system/ios`)
+  - ExpoFileSystem (from `../../node_modules/expo-file-system/ios`)
   - ExpoImage (from `../../node_modules/expo-image/ios`)
   - ExpoModulesCore (from `../../node_modules/expo-modules-core`)
+  - ExpoSharing (from `../../node_modules/expo-sharing/ios`)
   - ExpoSQLite (from `../../node_modules/expo-sqlite/ios`)
   - ExpoWebBrowser (from `../../node_modules/expo-web-browser/ios`)
   - fast_float (from `../../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
@@ -3536,6 +3565,7 @@ DEPENDENCIES:
   - glog (from `../../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - GoogleUtilities
   - hermes-engine (from `../../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
+  - HtmlToPdf (from `../../node_modules/react-native-html-to-pdf`)
   - RCT-Folly (from `../../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTDeprecation (from `../../node_modules/react-native/ReactApple/Libraries/RCTFoundation/RCTDeprecation`)
   - RCTRequired (from `../../node_modules/react-native/Libraries/Required`)
@@ -3577,7 +3607,6 @@ DEPENDENCIES:
   - "react-native-document-picker (from `../../node_modules/@react-native-documents/picker`)"
   - "react-native-geolocation (from `../../node_modules/@react-native-community/geolocation`)"
   - react-native-get-random-values (from `../../node_modules/react-native-get-random-values`)
-  - react-native-html-to-pdf (from `../../node_modules/react-native-html-to-pdf`)
   - "react-native-menu (from `../../node_modules/@react-native-menu/menu`)"
   - "react-native-netinfo (from `../../node_modules/@react-native-community/netinfo`)"
   - react-native-override-color-scheme (from `../../node_modules/react-native-override-color-scheme`)
@@ -3683,11 +3712,13 @@ EXTERNAL SOURCES:
   ExpoAsset:
     :path: "../../node_modules/expo-asset/ios"
   ExpoFileSystem:
-    :path: "../../node_modules/expo/node_modules/expo-file-system/ios"
+    :path: "../../node_modules/expo-file-system/ios"
   ExpoImage:
     :path: "../../node_modules/expo-image/ios"
   ExpoModulesCore:
     :path: "../../node_modules/expo-modules-core"
+  ExpoSharing:
+    :path: "../../node_modules/expo-sharing/ios"
   ExpoSQLite:
     :path: "../../node_modules/expo-sqlite/ios"
   ExpoWebBrowser:
@@ -3703,6 +3734,8 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-2025-07-07-RNv0.81.0-e0fc67142ec0763c6b6153ca2bf96df815539782
+  HtmlToPdf:
+    :path: "../../node_modules/react-native-html-to-pdf"
   RCT-Folly:
     :podspec: "../../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTDeprecation:
@@ -3783,8 +3816,6 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@react-native-community/geolocation"
   react-native-get-random-values:
     :path: "../../node_modules/react-native-get-random-values"
-  react-native-html-to-pdf:
-    :path: "../../node_modules/react-native-html-to-pdf"
   react-native-menu:
     :path: "../../node_modules/@react-native-menu/menu"
   react-native-netinfo:
@@ -3911,9 +3942,10 @@ SPEC CHECKSUMS:
   EXConstants: fce59a631a06c4151602843667f7cfe35f81e271
   Expo: ffcd2fb31776b663b84501a2568cab7dd7c0f9cb
   ExpoAsset: f867e55ceb428aab99e1e8c082b5aee7c159ea18
-  ExpoFileSystem: 858a44267a3e6e9057e0888ad7c7cfbf55d52063
+  ExpoFileSystem: a8e7fb1e958471764fb48d281cf9fa81a9e4d77c
   ExpoImage: 686f972bff29525733aa13357f6691dc90aa03d8
   ExpoModulesCore: d86dab8a6c8f1184f9b0b0503ace93919882aa15
+  ExpoSharing: 0d983394ed4a80334bab5a0d5384f75710feb7e8
   ExpoSQLite: 7eedbe476870a5f18d6b89c817c4ac6f299830ad
   ExpoWebBrowser: 17b064c621789e41d4816c95c93f429b84971f52
   fast_float: b32c788ed9c6a8c584d114d0047beda9664e7cc6
@@ -3932,6 +3964,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   hermes-engine: 7219f6e751ad6ec7f3d7ec121830ee34dae40749
+  HtmlToPdf: 6a9c28f54ec810d1d120a698a9b3c83e2bdb1672
   libavif: 5f8e715bea24debec477006f21ef9e95432e254d
   libdav1d: 23581a4d8ec811ff171ed5e2e05cd27bad64c39f
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
@@ -3980,7 +4013,6 @@ SPEC CHECKSUMS:
   react-native-document-picker: 1734eb0aa3dbd1cd7bf1b105936f9b55031ae616
   react-native-geolocation: 95e48fe2687e5a8280103085372fa62c2297c5d6
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
-  react-native-html-to-pdf: 7a49e6c58ac5221bcc093027b195f4b214f27a9d
   react-native-menu: 8d2c831a735c9e6528c28b26ca14e57591d87e14
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
   react-native-override-color-scheme: 53dc74663e03040074efbfb81cfb35b97d9bbaa5
