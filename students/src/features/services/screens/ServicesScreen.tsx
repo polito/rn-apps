@@ -20,6 +20,7 @@ import {
   useOfflineDisabled,
   usePreferencesContext,
 } from '@polito/lib/core';
+import { useOpenInAppLink } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   Grid,
@@ -33,7 +34,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { AppPreferences } from '~/core/types/preferences.ts';
 
 import { useNotifications } from '../../../core/hooks/useNotifications';
-import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import {
   WEBMAIL_LINK_QUERY_KEY,
   useGetWebmailLink,

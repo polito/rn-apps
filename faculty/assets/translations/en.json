@@ -270,6 +270,10 @@
     "recentSearch": "Recent search",
     "recentSearches": "Recent searches",
     "search": "Search people",
+    "usefulContacts": "Useful contacts",
+    "preferredContacts": "Favorite contacts",
+    "addPreferred": "Add to favorites",
+    "removePreferred": "Remove from favorites",
     "title": "Contacts"
   },
   "courseAssignmentPdfCreationScreen": {

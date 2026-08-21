@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Image,
@@ -9,50 +10,77 @@ import {
   View,
 } from 'react-native';
 
+import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import {
   faEnvelope,
   faLink,
   faPhone,
+  faStar,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { notNullish, useOfflineDisabled } from '@polito/lib/core';
-import {
-  BottomBarSpacer,
-  Col,
-  Icon,
-  ListItem,
-  Metric,
-  OverviewList,
-  RefreshControl,
-  Row,
-  Section,
-  SectionHeader,
-  Text,
-  Theme,
-  useStylesheet,
-  useTheme,
-} from '@polito/lib/ui';
 import { PersonCourse, PhoneNumber } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
-import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
-import { useGetPerson } from '../../../core/queries/peopleHooks';
-import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useAccessibility } from '../../../core/hooks/useAccessibility';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink';
+import { notNullish } from '../../../core/utils/predicates';
+import { BottomBarSpacer } from '../../../ui/components/BottomBarSpacer';
+import { Col } from '../../../ui/components/Col';
+import { Icon } from '../../../ui/components/Icon';
+import { IconButton } from '../../../ui/components/IconButton';
+import { ListItem } from '../../../ui/components/ListItem';
+import { Metric } from '../../../ui/components/Metric';
+import { OverviewList } from '../../../ui/components/OverviewList';
+import { RefreshControl } from '../../../ui/components/RefreshControl';
+import { Row } from '../../../ui/components/Row';
+import { Section } from '../../../ui/components/Section';
+import { SectionHeader } from '../../../ui/components/SectionHeader';
+import { Text } from '../../../ui/components/Text';
+import { useStylesheet } from '../../../ui/hooks/useStylesheet';
+import { useTheme } from '../../../ui/hooks/useTheme';
+import { Theme } from '../../../ui/types/Theme';
+import { useGetPerson } from '../queries/peopleHooks';
+import { PeoplePreferences, PeopleStackParamList } from '../types';
+import {
+  isPersonPreferred,
+  toPersonOverview,
+  togglePersonPreferred,
+} from '../utils/peoplePreferences';
 
-type Props = NativeStackScreenProps<ServiceStackParamList, 'Person'>;
+type Props = NativeStackScreenProps<PeopleStackParamList, 'Person'> & {
+  /** Whether to show the preferred/favorite contact toggle. */
+  showPreferredContacts?: boolean;
+};
 
 const profileImageSize = 120;
 
-export const PersonScreen = ({ route }: Props) => {
+export const PersonScreen = ({
+  route,
+  showPreferredContacts = true,
+}: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const personQuery = useGetPerson(id);
+  const { peoplePreferred = [], updatePreference } =
+    usePreferencesContext<PeoplePreferences>();
   const { accessibilityListLabel } = useAccessibility();
   const openInAppLink = useOpenInAppLink();
   const person = personQuery.data;
+  const isPreferred = person
+    ? isPersonPreferred(peoplePreferred, person.id)
+    : false;
+
+  const onTogglePreferred = useCallback(() => {
+    if (!person) return;
+    updatePreference(
+      'peoplePreferred',
+      togglePersonPreferred(peoplePreferred, toPersonOverview(person)),
+    );
+  }, [person, peoplePreferred, updatePreference]);
   const fullName = [person?.firstName, person?.lastName]
     .filter(notNullish)
     .join(' ');
@@ -63,9 +91,23 @@ export const PersonScreen = ({ route }: Props) => {
 
   const header = (
     <Col ph={5} gap={6} mb={6}>
-      <Text weight="bold" variant="title" style={styles.title}>
-        {fullName}
-      </Text>
+      <Row align="center" justify="space-between">
+        <Text weight="bold" variant="title" style={styles.title}>
+          {fullName}
+        </Text>
+        {person && showPreferredContacts && (
+          <IconButton
+            icon={isPreferred ? faStar : faStarRegular}
+            size={22}
+            onPress={onTogglePreferred}
+            accessibilityLabel={t(
+              isPreferred
+                ? 'contactsScreen.removePreferred'
+                : 'contactsScreen.addPreferred',
+            )}
+          />
+        )}
+      </Row>
       {(!person ||
         person?.picture ||
         person?.role ||

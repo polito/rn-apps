@@ -3,7 +3,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
-import { Person } from '@polito/api-client';
 import {
   BottomBarSpacer,
   Card,
@@ -21,6 +20,7 @@ import {
   Text,
 } from '@polito/lib/ui';
 import { Theme, useStylesheet, useTheme } from '@polito/lib/ui';
+import { Person } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 
 import { useCourses } from '../../core/contexts/CoursesContext';

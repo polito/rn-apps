@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
+import { useAccessibility } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   OverviewList,
@@ -10,7 +11,6 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
 import { CourseListItem } from '../components/CourseListItem';

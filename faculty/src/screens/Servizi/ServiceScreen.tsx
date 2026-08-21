@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 import { Platform } from 'react-native';
 
+import { useOfflineDisabled, usePreferencesContext } from '@polito/lib/core';
 import {
   Grid,
   Text,
@@ -17,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Logo } from '../../core/components/Logo';
 import { RootParamList } from '../../core/components/RootNavigator';
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { AppPreferences } from '../../core/types/preferences';
 import { ServiceCard } from './ServiceCard';
 
 export const ServiceScreen = () => {
@@ -26,6 +28,15 @@ export const ServiceScreen = () => {
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
   const { services, updateServicePref } = useCourses();
+  const isOffline = useOfflineDisabled();
+  const { peopleSearched } = usePreferencesContext<AppPreferences>();
+
+  const isServiceDisabled = (id: string) => {
+    if (id === 'People') {
+      return isOffline && peopleSearched?.length === 0;
+    }
+    return false;
+  };
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
       e.preventDefault();
@@ -85,6 +96,7 @@ export const ServiceScreen = () => {
               icon={service.icon}
               linkTo={service.linkTo}
               favorite={service.favorite}
+              disabled={isServiceDisabled(service.id)}
               onFavoriteChange={fav => updateFavorite(service.id, fav)}
             />
           ))}
@@ -105,6 +117,7 @@ export const ServiceScreen = () => {
               icon={service.icon}
               linkTo={service.linkTo}
               favorite={service.favorite}
+              disabled={isServiceDisabled(service.id)}
               onFavoriteChange={fav => updateFavorite(service.id, fav)}
             />
           ))}

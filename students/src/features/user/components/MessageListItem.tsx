@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 
 import { formatDateTime, getHtmlTextContent } from '@polito/lib/core';
+import { useAccessibility } from '@polito/lib/core';
 import { ListItem } from '@polito/lib/ui';
 import { Message } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useMarkMessageAsRead } from '../../../core/queries/studentHooks';
 import { UserStackParamList } from './UserNavigator';
 

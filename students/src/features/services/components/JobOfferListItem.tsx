@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { formatDate, getHtmlTextContent } from '@polito/lib/core';
+import { useAccessibility } from '@polito/lib/core';
 import {
   Col,
   Icon,
@@ -13,8 +14,6 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 import { JobOfferOverview } from '@polito/student-api-client';
-
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 
 interface Props {
   jobOffer: JobOfferOverview;

@@ -12,6 +12,8 @@ import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import { useOfflineDisabled } from '@polito/lib/core';
+import { useOpenInAppLink } from '@polito/lib/core';
+import { useGetPersons } from '@polito/lib/features/people';
 import {
   BottomBarSpacer,
   Card,
@@ -41,7 +43,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useNotifications } from '../../../core/hooks/useNotifications';
-import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import {
   CourseSectionEnum,
   getCourseKey,
@@ -50,7 +51,6 @@ import {
   useGetCourseExams,
 } from '../../../core/queries/courseHooks';
 import { useGetCourses } from '../../../core/queries/courseHooks';
-import { useGetPersons } from '../../../core/queries/peopleHooks';
 import { LectureCard } from '../../agenda/components/LectureCard';
 import { useGetNextLecture } from '../../agenda/queries/lectureHooks';
 import { ExamListItem } from '../../teaching/components/ExamListItem';

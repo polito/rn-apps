@@ -2,6 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import {
+  ContactsScreen as LibContactsScreen,
+  studentsUsefulContactsList,
+} from '@polito/lib/features/people';
+import {
   PlacesNavigator,
   type PlacesStackParamList,
 } from '@polito/lib/features/places';
@@ -31,7 +35,6 @@ import { GuideScreen } from '../../guides/screens/GuideScreen';
 import { GuidesScreen } from '../../guides/screens/GuidesScreen';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
 import { OfferingTopTabsNavigator } from '../../offering/navigation/OfferingTopTabsNavigator';
-import { ContactsScreen } from '../../people/screens/ContactsScreen';
 import { SurveyListScreen } from '../../surveys/screens/SurveyListScreen';
 import { SurveysScreen } from '../../surveys/screens/SurveysScreen';
 import { CreateTicketScreen } from '../../tickets/screens/CreateTicketScreen';
@@ -106,6 +109,12 @@ export const ServicesNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
+  const ContactsScreen = () => (
+    <LibContactsScreen
+      usefulContacts={studentsUsefulContactsList}
+      showPreferredContacts={false}
+    />
+  );
 
   return (
     <Stack.Navigator

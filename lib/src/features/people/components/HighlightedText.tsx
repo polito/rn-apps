@@ -1,4 +1,5 @@
-import { Text, useTheme } from '@polito/lib/ui';
+import { Text } from '../../../ui/components/Text';
+import { useTheme } from '../../../ui/hooks/useTheme';
 
 export const HighlightedText = ({
   text,
