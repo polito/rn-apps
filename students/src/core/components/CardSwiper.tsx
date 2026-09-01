@@ -76,7 +76,11 @@ type CarouselProps = {
 };
 
 const SRC_WIDTH = Dimensions.get('window').width;
-const CARD_LENGTH = SRC_WIDTH * 0.8;
+const CARD_TARGET_WIDTH = 330;
+const CARD_LENGTH = Math.max(
+  SRC_WIDTH * 0.8,
+  Math.min(SRC_WIDTH * 0.88, CARD_TARGET_WIDTH),
+);
 const SPACING = SRC_WIDTH * 0.02;
 const SIDECARD_LENGHT = (SRC_WIDTH - CARD_LENGTH) / 2;
 
@@ -161,7 +165,7 @@ const SlideItem = ({
           <EscCard
             cognome={item.lastname.toUpperCase()}
             nome={item.name.toUpperCase()}
-            matricola={item.username}
+            matricola={item.username.replace(/^[sS]/, '')}
             qr={item.card.ESC.details?.qrCode ?? ''}
             cardStatus={
               item.card.ESC.canBeRequested && !item.card.ESC.details
