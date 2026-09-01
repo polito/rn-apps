@@ -1,5 +1,14 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  LayoutChangeEvent,
+  NativeSyntheticEvent,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextLayoutEventData,
+  View,
+} from 'react-native';
 import Svg, {
   Circle,
   Defs,
@@ -24,6 +33,13 @@ const AVATAR = { x: 6, y: 17, size: 97 };
 const STATUS_DOT = { cx: 95.5, cy: 106.5, r: 5.5 };
 const AVATAR_PATH =
   'M97 69.7178C97 74.5562 93.0777 78.4785 88.2393 78.4785C83.4008 78.4785 79.4785 82.4008 79.4785 87.2393V87.7393C79.4785 92.8538 75.3323 97 70.2178 97H10C4.47715 97 0 92.5229 0 87V10C0 4.47715 4.47715 0 10 0H87C92.5229 0 97 4.47715 97 10V69.7178Z';
+
+const NAME_FONT_SIZE = 16;
+const NAME_LINE_HEIGHT = 20;
+const NAME_FONT_SIZE_SMALL = 14;
+const NAME_LINE_HEIGHT_SMALL = 18;
+const NAME_BLOCK_MAX_HEIGHT = 105;
+const NAME_MAX_LINES = 4;
 
 const HEADER_PATH =
   'M20.5 0C31.8218 2.57703e-07 41 9.17816 41 20.5C41 21.3284 41.6716 22 42.5 22H251.689C254.725 22 257.606 20.8277 260.251 19.3363C264.018 17.2122 268.367 16 273 16H365C379.359 16 391 27.6406 391 42C391 56.3594 379.359 68 365 68H273C263.158 68 254.593 62.5312 250.178 54.4666C246.731 48.1688 241.18 42 234 42H45.4853C40.9105 42 36.8577 44.671 33.2834 47.5262C29.7784 50.3261 25.3349 52 20.5 52C9.17816 52 7.43423e-08 42.8218 0 31.5V20.5C5.89782e-07 9.17816 9.17816 0 20.5 0Z';
@@ -56,15 +72,53 @@ export const SmartCard = ({
     status ?? StudentCareerStatusEnum.Active,
   );
 
+  const studentId = username.replace(/^[sS]/, '');
+
   const s = width / CARD_WIDTH;
   const scaled = (value: number) => value * s;
+
+  const nameKey = `${firstName}|${lastName}|${degreeName}`;
+  const [measuredName, setMeasuredName] = useState({
+    key: nameKey,
+    shrink: false,
+    lastNameLines: 0,
+  });
+  const nameFit =
+    measuredName.key === nameKey
+      ? measuredName
+      : { key: nameKey, shrink: false, lastNameLines: 0 };
+  const shrinkName = nameFit.shrink;
+
+  const onNameBlockLayout = ({ nativeEvent }: LayoutChangeEvent) => {
+    if (!shrinkName && nativeEvent.layout.height / s > NAME_BLOCK_MAX_HEIGHT) {
+      setMeasuredName({ ...nameFit, shrink: true });
+    }
+  };
+
+  const onLastNameTextLayout = ({
+    nativeEvent,
+  }: NativeSyntheticEvent<TextLayoutEventData>) => {
+    if (!nameFit.lastNameLines) {
+      setMeasuredName({ ...nameFit, lastNameLines: nativeEvent.lines.length });
+    }
+  };
+
+  const lastNameLines = nameFit.lastNameLines
+    ? Math.min(nameFit.lastNameLines, NAME_MAX_LINES - 1)
+    : undefined;
+  const firstNameLines = lastNameLines
+    ? NAME_MAX_LINES - lastNameLines
+    : undefined;
+
+  const nameFontSize = shrinkName ? NAME_FONT_SIZE_SMALL : NAME_FONT_SIZE;
+  const nameLineHeight = shrinkName ? NAME_LINE_HEIGHT_SMALL : NAME_LINE_HEIGHT;
 
   return (
     <View
       accessible={true}
       accessibilityLabel={`${t('profileScreen.smartCard')}. ${lastName} ${firstName}. ${t(
         'profileScreen.studentId',
-      )} ${username}`}
+      )} ${studentId}`}
       style={[
         styles.card,
         {
@@ -131,6 +185,7 @@ export const SmartCard = ({
       </Svg>
 
       <Text
+        allowFontScaling={false}
         style={[
           styles.cardTitle,
           {
@@ -144,6 +199,7 @@ export const SmartCard = ({
       </Text>
 
       <View
+        onLayout={onNameBlockLayout}
         style={{
           position: 'absolute',
           left: scaled(109.5),
@@ -154,19 +210,28 @@ export const SmartCard = ({
       >
         <View>
           <Text
-            numberOfLines={1}
+            numberOfLines={lastNameLines}
+            onTextLayout={onLastNameTextLayout}
+            allowFontScaling={false}
             style={[
               styles.name,
-              { fontSize: scaled(20), lineHeight: scaled(25) },
+              {
+                fontSize: scaled(nameFontSize),
+                lineHeight: scaled(nameLineHeight),
+              },
             ]}
           >
             {lastName.toUpperCase()}
           </Text>
           <Text
-            numberOfLines={1}
+            numberOfLines={firstNameLines}
+            allowFontScaling={false}
             style={[
               styles.name,
-              { fontSize: scaled(20), lineHeight: scaled(25) },
+              {
+                fontSize: scaled(nameFontSize),
+                lineHeight: scaled(nameLineHeight),
+              },
             ]}
           >
             {firstName}
@@ -174,6 +239,7 @@ export const SmartCard = ({
         </View>
         <Text
           numberOfLines={2}
+          allowFontScaling={false}
           style={[
             styles.degree,
             { fontSize: scaled(10), lineHeight: scaled(13) },
@@ -192,6 +258,7 @@ export const SmartCard = ({
         }}
       >
         <Text
+          allowFontScaling={false}
           style={[
             styles.infoLabel,
             { fontSize: scaled(12), lineHeight: scaled(15) },
@@ -200,12 +267,13 @@ export const SmartCard = ({
           {t('profileScreen.studentId')}
         </Text>
         <Text
+          allowFontScaling={false}
           style={[
             styles.infoValue,
             { fontSize: scaled(12), lineHeight: scaled(15) },
           ]}
         >
-          {username}
+          {studentId}
         </Text>
       </View>
 
@@ -223,7 +291,10 @@ export const SmartCard = ({
           },
         ]}
       >
-        <Text style={[styles.qrButtonText, { fontSize: scaled(12) }]}>
+        <Text
+          allowFontScaling={false}
+          style={[styles.qrButtonText, { fontSize: scaled(12) }]}
+        >
           {t('profileScreen.showQr')}
         </Text>
         <Icon icon={faQrcode} size={scaled(20)} color={palettes.gray[800]} />
