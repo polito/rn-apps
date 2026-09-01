@@ -75,6 +75,7 @@
     "react-native": "0.81.6",
     "react-native-animated-dots-carousel": "^1.0.2",
     "react-native-barcode-svg": "^0.0.15",
+    "react-native-ble-plx": "^3.5.1",
     "react-native-blob-util": "^0.19.11",
     "react-native-bootsplash": "^6.3.10",
     "react-native-chart-kit": "^6.12.0",

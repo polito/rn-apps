@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Access to Bluetooth to connect to external devices</string>
 	<key>CFBundleDisplayName</key>
 	<string>PoliTO Students</string>
 	<key>CFBundleExecutable</key>
