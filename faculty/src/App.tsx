@@ -1,5 +1,3 @@
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
 import { initReactI18next } from 'react-i18next';
 import { LogBox } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -8,6 +6,7 @@ import { APP_VERSION, BUILD_NO } from '@env';
 import { AuthApi } from '@polito/auth-api-client';
 import {
   ApiProvider,
+  AuthIdentityValidator,
   PolitoAppConfig,
   PreferencesProvider,
   Sentry,
@@ -16,13 +15,15 @@ import {
   initSentry,
   isEnvProduction,
 } from '@polito/lib/core';
-import { mfaScreenTranslations } from '@polito/lib/features/auth';
+import {
+  UnsupportedIdentityTypeError,
+  mfaScreenTranslations,
+} from '@polito/lib/features/auth';
 import { FeedbackProvider, SplashProvider, UiProvider } from '@polito/lib/ui';
 import Mapbox from '@rnmapbox/maps';
 
 import { updateGlobalApiConfiguration } from '~/config/api';
-import { RootNavigator } from '~/core/components/RootNavigator';
-import { CoursesProvider } from '~/core/contexts/CoursesContext';
+import { AppContent } from '~/core/components/AppContent';
 import { RootParamList } from '~/core/types/navigation';
 import {
   AppPreferences,
@@ -71,6 +72,13 @@ const appConfig = {
 } satisfies PolitoAppConfig;
 
 const createAuthClient = () => new AuthApi();
+const validateFacultyIdentity: AuthIdentityValidator = identity => {
+  if (identity.type !== 'faculty') {
+    throw new UnsupportedIdentityTypeError(
+      `User type ${identity.type} is not supported by the faculty app`,
+    );
+  }
+};
 
 const App = () => {
   return (
@@ -84,19 +92,16 @@ const App = () => {
             initialPreferences={initialAppPreferences}
           >
             <UiProvider<RootParamList>
-              linking={createPolitoLinking<any>(appConfig)}
+              linking={createPolitoLinking<RootParamList>(appConfig)}
             >
               <FeedbackProvider>
                 <ApiProvider<AppPreferences>
                   config={appConfig}
                   createAuthClient={createAuthClient}
+                  validateIdentity={validateFacultyIdentity}
                   updateApiConfiguration={updateGlobalApiConfiguration}
                 >
-                  <CoursesProvider>
-                    <GestureHandlerRootView style={{ flex: 1 }}>
-                      <RootNavigator />
-                    </GestureHandlerRootView>
-                  </CoursesProvider>
+                  <AppContent />
                 </ApiProvider>
               </FeedbackProvider>
             </UiProvider>
