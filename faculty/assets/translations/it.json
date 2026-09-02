@@ -586,11 +586,16 @@
     "passwordLabel": "Password",
     "passwordLabelAccessibility": "Inserisci qui la tua password",
     "showPassword": "Mostra password",
+    "SSO": "oppure entra con SSO",
     "title": "Accedi con le tue credenziali polito.it",
     "unsupportedUserType": "Questo tipo di utente non è supportato da PoliTO Faculty.",
-    "usernameLabel": "Matricola",
+    "usernameLabel": "Username PoliTO",
     "usernameLabelAccessibility": "Inserisci qui il tuo username",
     "fcmUnsupported": "Si è verificato un errore durante l'attivazione delle notifiche push. Questo problema può essere causato dall'assenza dei servizi Google su questo dispositivo. È possibile continuare ad utilizzare l'app ma non si riceveranno notifiche push."
+  },
+  "ssoScreen": {
+    "ssoButton": "Entra con Single-Sign-On",
+    "ssoLink": "oppure entra con le tue credenziali"
   },
   "messageScreen": {
     "backTitle": "Archivio",

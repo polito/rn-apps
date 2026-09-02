@@ -68,7 +68,6 @@ export const RootNavigator = () => {
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
   useEffect(() => {
-    //TODO: check if user is logged (see reference in RootNavigator of students app)
     if (!campus && sites?.data?.length) {
       updatePreference('campusId', sites?.data[0].id);
     }
