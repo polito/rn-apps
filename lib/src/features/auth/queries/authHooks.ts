@@ -88,8 +88,6 @@ export const useLogin = () => {
                   version: `${Platform.Version}`,
                   model,
                   manufacturer,
-                  // TODO(shared-api): Keep this field in the generated
-                  // shared login Device model.
                   toothPicCompatible: true,
                 },
                 client: {

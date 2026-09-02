@@ -10,6 +10,7 @@ import {
   faMessage,
   faPersonThroughWindow,
 } from '@fortawesome/free-solid-svg-icons';
+import { AuthProfile } from '@polito/auth-api-client';
 import { useApiContext, useOfflineDisabled } from '@polito/lib/core';
 import { useLogout } from '@polito/lib/features/auth';
 import {
@@ -26,7 +27,6 @@ import {
   UnreadBadge,
   useTheme,
 } from '@polito/lib/ui';
-import { AuthProfile } from '@polito/student-api-client';
 import { MenuAction, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';

@@ -1,12 +1,8 @@
+import type { ResponseError } from '@polito/auth-api-client';
+
 import { SuccessResponse } from '../types/api';
 
-// TODO(shared-api): Use a generated error predicate here
-type ResponseErrorLike = {
-  name: 'ResponseError';
-  response: Pick<Response, 'json' | 'status'>;
-};
-
-const isResponseError = (error: unknown): error is ResponseErrorLike => {
+export const isResponseError = (error: unknown): error is ResponseError => {
   if (!error || typeof error !== 'object') return false;
 
   const response = (error as { response?: unknown }).response;
