@@ -40,6 +40,7 @@ import {
 } from '../types/auth';
 import { isEnvProduction } from '../utils/env';
 import { createPolitoAppKeychainServices } from '../utils/keychain';
+import { isResponseError } from '../utils/queries';
 
 const DATA_MAX_AGE = 1000 * 3600 * 24 * 7;
 
@@ -54,24 +55,6 @@ const queryPersister = experimental_createQueryPersister({
 });
 
 export const clearPersistedQueryCache = () => queryStorage.clear();
-
-// TODO(shared-api): Replace this structural guard with a generated error
-// predicate only if the Students, shared, and Faculty clients expose the same
-// runtime ResponseError contract.
-/** Minimal shape of the api-client `ResponseError`, kept client-agnostic */
-export type ResponseErrorLike = { response: Response & { url?: string } };
-
-const isResponseError = (error: unknown): error is ResponseErrorLike => {
-  if (!error || typeof error !== 'object') return false;
-  const response = (error as { response?: unknown }).response;
-  if (!response || typeof response !== 'object') return false;
-
-  return (
-    (error as { name?: unknown }).name === 'ResponseError' &&
-    typeof (response as { status?: unknown }).status === 'number' &&
-    typeof (response as { json?: unknown }).json === 'function'
-  );
-};
 
 type ApiProviderProps = PropsWithChildren<{
   /** App-owned identity and keychain configuration */
@@ -153,6 +136,7 @@ export const ApiProvider = <Prefs extends object = {}>({
             username: '',
             token: '',
           }));
+          await clearPersistedQueryCache();
           await client.invalidateQueries();
         }
         const { message } = (await error.response.json()) as {

@@ -1,10 +1,10 @@
-import { pluckData } from '@polito/lib/core';
 import {
   AuthApi,
-  EventAdmissionsApi,
   GetAccessTokenAcceptEnum,
   TokenType,
-} from '@polito/student-api-client';
+} from '@polito/auth-api-client';
+import { pluckData } from '@polito/lib/core';
+import { EventAdmissionsApi } from '@polito/student-api-client';
 import { useQuery } from '@tanstack/react-query';
 
 export const EVENT_ADMISSIONS_QUERY_KEY = ['eventAdmissions'];

@@ -2,6 +2,7 @@ import { initReactI18next } from 'react-i18next';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { APP_VERSION, BUILD_NO } from '@env';
+import { AuthApi } from '@polito/auth-api-client';
 import {
   ApiProvider,
   AuthIdentityValidator,
@@ -18,7 +19,6 @@ import {
   mfaScreenTranslations,
 } from '@polito/lib/features/auth';
 import { FeedbackProvider, SplashProvider, UiProvider } from '@polito/lib/ui';
-import { AuthApi } from '@polito/student-api-client';
 import Mapbox from '@rnmapbox/maps';
 
 import i18n from 'i18next';
@@ -72,7 +72,6 @@ const appConfig = {
   keychainService: 'it.polito.students-app',
 } satisfies PolitoAppConfig;
 
-// TODO(shared-api): Create this login/MFA client from the shared API package.
 const createAuthClient = () => new AuthApi();
 const getPushToken = () => getFcmToken();
 const validateStudentIdentity: AuthIdentityValidator = identity => {

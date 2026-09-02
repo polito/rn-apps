@@ -1,16 +1,18 @@
 import { useMemo } from 'react';
 
-import { pluckData, toOASTruncable } from '@polito/lib/core';
 import {
   AuthApi,
-  ExamGrade,
   GetAccessTokenAcceptEnum,
+  TokenType,
+} from '@polito/auth-api-client';
+import { pluckData, toOASTruncable } from '@polito/lib/core';
+import {
+  ExamGrade,
   Message,
   MessageType,
   ProvisionalGradeState,
   StudentApi,
   StudentCareer,
-  TokenType,
   UpdateDevicePreferencesRequest,
 } from '@polito/student-api-client';
 import * as Sentry from '@sentry/react-native';

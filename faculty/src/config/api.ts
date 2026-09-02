@@ -5,6 +5,10 @@ import {
   ConfigurationParameters,
   DefaultConfig,
 } from '@polito/api-client';
+import {
+  Configuration as AuthConfiguration,
+  DefaultConfig as AuthDefaultConfig,
+} from '@polito/auth-api-client';
 
 export const updateGlobalApiConfiguration = ({
   token,
@@ -27,6 +31,6 @@ export const updateGlobalApiConfiguration = ({
     configurationParameters.accessToken = token;
   }
 
-  // TODO(shared-api): Configure the future shared auth and Faculty client DefaultConfigs separately.
+  AuthDefaultConfig.config = new AuthConfiguration(configurationParameters);
   DefaultConfig.config = new Configuration(configurationParameters);
 };

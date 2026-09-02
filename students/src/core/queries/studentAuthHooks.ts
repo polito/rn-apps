@@ -1,18 +1,21 @@
 import { useCallback } from 'react';
 
+import { AuthApi } from '@polito/auth-api-client';
 import {
   pluckData,
   useApiContext,
   usePolitoAppKeychainServices,
   usePreferencesContext,
 } from '@polito/lib/core';
-import { AuthApi, SwitchCareerRequest } from '@polito/student-api-client';
+import {
+  AuthApi as StudentAuthApi,
+  SwitchCareerRequest,
+} from '@polito/student-api-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const WEBMAIL_LINK_QUERY_KEY = ['webmailLink'];
 
-// switching careers and opening webmail are Students-only flows.
-const useStudentAuthClient = () => new AuthApi();
+const useStudentAuthClient = () => new StudentAuthApi();
 
 export const useSwitchCareer = () => {
   const authClient = useStudentAuthClient();
@@ -36,10 +39,5 @@ export const useSwitchCareer = () => {
 };
 
 export const useGetWebmailLink = () => {
-  const authClient = useStudentAuthClient();
-
-  return useCallback(
-    () => authClient.getMailLink().then(pluckData),
-    [authClient],
-  );
+  return useCallback(() => new AuthApi().getMailLink().then(pluckData), []);
 };

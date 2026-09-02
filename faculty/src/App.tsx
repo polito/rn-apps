@@ -5,7 +5,7 @@ import { LogBox } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { APP_VERSION, BUILD_NO } from '@env';
-import { AuthApi } from '@polito/api-client';
+import { AuthApi } from '@polito/auth-api-client';
 import {
   ApiProvider,
   PolitoAppConfig,
@@ -70,8 +70,6 @@ const appConfig = {
   keychainService: 'it.polito.faculty-app',
 } satisfies PolitoAppConfig;
 
-// TODO(shared-api): Create this login/MFA client from the shared API package
-// TODO(shared-api): add a validartion of identity
 const createAuthClient = () => new AuthApi();
 
 const App = () => {
