@@ -50,6 +50,10 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Access to Bluetooth to enable BLE fingerprinting</string>
+	<key>NSBluetoothWhileInUseUsageDescription</key>
+	<string>Access to Bluetooth to enable BLE fingerprinting</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Scan documents</string>
 	<key>NSFaceIDUsageDescription</key>

@@ -17,6 +17,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { UnreadMessagesModal } from '~/features/user/screens/UnreadMessagesModal';
 
+import { BleScreenTest } from '../../../../../lib/src/features/places/screens/BleScreenTest';
 import {
   SharedScreens,
   SharedScreensParamList,
@@ -394,6 +395,7 @@ export const ServicesNavigator = () => {
       >
         {() => <PlacesNavigator unreadMessagesModal={UnreadMessagesModal} />}
       </Stack.Screen>
+      <Stack.Screen name="BleScreenTest" component={BleScreenTest} />
       {SharedScreens()}
     </Stack.Navigator>
   );

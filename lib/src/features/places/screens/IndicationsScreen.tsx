@@ -8,14 +8,7 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Alert,
-  Dimensions,
-  Keyboard,
-  PermissionsAndroid,
-  Platform,
-  View,
-} from 'react-native';
+import { Dimensions, Keyboard, View } from 'react-native';
 import { ActivityIndicator, Image, TextInput } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 
@@ -49,49 +42,8 @@ import { useGetCurrentCampus } from '../hooks/useGetCurrentCampus';
 import { useNavigationPlaces, useSearchPlaces } from '../hooks/useSearchPlaces';
 import { useGetPath, useGetPlaces } from '../queries/placesHooks';
 import { NavField } from '../types';
-import { bleManager } from '../utils/bleManager';
 
 type Props = MapScreenProps<PlacesStackParamList, 'Indications'>;
-
-const requestBluetoothPermission = async () => {
-  if (Platform.OS === 'ios') {
-    return true;
-  }
-  if (
-    Platform.OS === 'android' &&
-    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-  ) {
-    const apiLevel = parseInt(Platform.Version.toString(), 10);
-
-    if (apiLevel < 31) {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      return granted === PermissionsAndroid.RESULTS.GRANTED;
-    }
-    if (
-      PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN &&
-      PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT
-    ) {
-      const result = await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
-        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      ]);
-
-      return (
-        result['android.permission.BLUETOOTH_CONNECT'] ===
-          PermissionsAndroid.RESULTS.GRANTED &&
-        result['android.permission.BLUETOOTH_SCAN'] ===
-          PermissionsAndroid.RESULTS.GRANTED &&
-        result['android.permission.ACCESS_FINE_LOCATION'] ===
-          PermissionsAndroid.RESULTS.GRANTED
-      );
-    }
-  }
-
-  return false;
-};
 
 export const IndicationsScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
@@ -137,94 +89,6 @@ export const IndicationsScreen = ({ navigation, route }: Props) => {
     siteId: campus?.id,
   });
   const innerRef = useRef<BottomSheet>(null);
-
-  const tempReadingsRef = useRef<Record<string, number[]>>({});
-
-  const [_countdown, setCountdown] = useState<number>(0);
-  const [isMapping, setIsMapping] = useState<boolean>(false);
-
-  const startFingerprintingCapture = useCallback(async () => {
-    if (isMapping) return;
-
-    if (await requestBluetoothPermission()) {
-      setCountdown(5); // Campionamento di 5 secondi per stabilizzare il segnale
-      tempReadingsRef.current = {};
-
-      // Avvia la scansione BLE catturando QUALSIASI dispositivo nell'ufficio
-      //console.log('Starting BLE scanning for fingerprinting...');
-
-      bleManager.startDeviceScan(
-        null,
-        { allowDuplicates: true },
-        (error, device) => {
-          if (error) {
-            console.error('Errore scansione:', error);
-            return;
-          }
-
-          if (device && device.id && device.rssi) {
-            //console.log('Device info: ', device);
-
-            // Escludiamo dispositivi con segnale troppo debole (es. oltre i -95 dBm) perché instabili
-            if (device.rssi > -95) {
-              if (!tempReadingsRef.current[device.id]) {
-                tempReadingsRef.current[device.id] = [];
-              }
-              tempReadingsRef.current[device.id].push(device.rssi);
-            }
-          }
-        },
-      );
-
-      // Gestione del timer di fine campionamento
-      let currentSeconds = 5;
-      const interval = setInterval(() => {
-        currentSeconds--;
-        setCountdown(currentSeconds);
-
-        if (currentSeconds <= 0) {
-          clearInterval(interval);
-
-          bleManager.stopDeviceScan();
-          setIsMapping(false);
-
-          //const uniqueDevices = Object.keys(tempReadingsRef.current);
-          /*console.log(
-            `Scan stopped. Found ${uniqueDevices.length} unique devices:`,
-            uniqueDevices,
-          );*/
-
-          const finalSignals: Record<string, number> = {};
-
-          // 3. PROCESS THE DATA (Averaging)
-          for (const macAddress in tempReadingsRef.current) {
-            const readings = tempReadingsRef.current[macAddress];
-
-            // Keep only devices intercepted at least twice (more reliable)
-            if (readings.length >= 2) {
-              const sum = readings.reduce((a, b) => a + b, 0);
-              const averageRssi = Math.round(sum / readings.length);
-              finalSignals[macAddress] = averageRssi;
-            }
-          }
-
-          if (Object.keys(finalSignals).length === 0) {
-            Alert.alert(
-              'Errore',
-              "Nessun segnale Bluetooth stabile rilevato nell'ufficio. Riprova.",
-            );
-            return;
-          }
-        }
-      }, 1000);
-    }
-  }, [isMapping]);
-
-  useEffect(() => {
-    if (destRoom?.placeId) {
-      startFingerprintingCapture();
-    }
-  }, [destRoom?.placeId, startRoom?.placeId, startFingerprintingCapture]);
 
   const handleRoom = useCallback(
     (place: PlaceOverview | undefined, roomSelectionType: NavField) => {

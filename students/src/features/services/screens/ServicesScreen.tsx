@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faBluetooth, faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faBookBookmark,
   faBriefcase,
@@ -194,6 +194,13 @@ export const ServicesScreen = () => {
         accessibilityLabel: `${t('WebMail')} ${
           unreadEmailsQuery.data ? t('servicesScreen.newElement') : ''
         }`,
+      },
+      {
+        id: 'ble',
+        name: 'BleScreen',
+        icon: faBluetooth,
+        linkTo: { screen: 'BleScreenTest' },
+        accessibilityLabel: 'BleScreenTest',
       },
     ];
   }, [

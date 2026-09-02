@@ -12,3 +12,8 @@ export type NavigationPlaceType = {
 };
 
 export type NavField = 'start' | 'destination';
+
+export type Fingerprint = {
+  locationName: string;
+  signals: Record<string, number>;
+};
