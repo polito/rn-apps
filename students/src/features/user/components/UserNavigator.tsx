@@ -2,8 +2,12 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import { UserNavigatorID } from '@polito/lib/core';
+import { MfaSettings } from '@polito/lib/features/auth';
 import { HeaderLogoNoProps, useTheme, useTitlesStyles } from '@polito/lib/ui';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+  NativeStackScreenProps,
+  createNativeStackNavigator,
+} from '@react-navigation/native-stack';
 
 import { SharedScreens } from '../../../shared/navigation/SharedScreens';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
@@ -15,7 +19,6 @@ import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { RequestESCScreen } from '../screens/RequestESCScreen.tsx';
 import { SettingsScreen } from '../screens/SettingsScreen';
-import { MfaSettings } from './MfaSettings.tsx';
 
 export type UserStackParamList = OfferingStackParamList & {
   Profile: { firstRequest?: boolean };
@@ -30,6 +33,16 @@ export type UserStackParamList = OfferingStackParamList & {
   Notifications: undefined;
   Person: { id: number };
 };
+
+const MfaSettingsScreen = ({
+  navigation,
+}: NativeStackScreenProps<UserStackParamList, 'MfaSettings'>) => (
+  <MfaSettings
+    onEnroll={() =>
+      navigation.navigate('PolitoAuthenticator', { activeView: 'enroll' })
+    }
+  />
+);
 
 const Stack = createNativeStackNavigator<
   UserStackParamList,
@@ -101,7 +114,7 @@ export const UserNavigator = () => {
       />
       <Stack.Screen
         name="MfaSettings"
-        component={MfaSettings}
+        component={MfaSettingsScreen}
         options={{
           headerTitle: t('settingsScreen.authenticatorTitle'),
         }}

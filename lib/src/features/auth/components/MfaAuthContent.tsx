@@ -2,34 +2,34 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Text, View } from 'react-native';
 
-import { useAppState, useFeedbackContext } from '@polito/lib/core';
-import { CtaButton, useStylesheet } from '@polito/lib/ui';
-import { MessageType, MfaChallenge } from '@polito/student-api-client';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import useLatestCallback from 'use-latest-callback';
 
-import { RTFTrans } from '~/core/components/RTFTrans';
-
-import { useMfaAuth } from '../../../core/queries/authHooks';
-import {
-  useGetMessages,
-  useMarkMessageAsRead,
-} from '../../../core/queries/studentHooks';
-import { signSecp256k1 } from '../../../utils/crypto';
 import {
   AuthenticatorPrivKey,
-  getPrivateKeyMFA,
-  hasPrivateKeyMFA,
-  resetPrivateKeyMFA,
-} from '../../../utils/keychain';
+  MfaChallenge,
+  useAppState,
+  useFeedbackContext,
+  usePolitoAppMfaPrivateKeyKeychain,
+} from '../../../core';
+import { CtaButton, useStylesheet } from '../../../ui';
+import { useMfaAuth } from '../queries/authHooks';
+import { signSecp256k1 } from '../utils/crypto';
 import { createStyles } from './MfaEnrollContent';
-import { UserStackParamList } from './UserNavigator';
+import { RTFTrans } from './RTFTrans';
 
-type Props = {
+export type MfaAuthContentProps = {
   challenge: MfaChallenge;
-  navigation: NativeStackNavigationProp<UserStackParamList>;
+  onClose: () => void;
+  onMissingKey: () => void;
+  onFinalized?: () => void;
 };
 
-export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
+export const MfaAuthContent = ({
+  challenge,
+  onClose,
+  onMissingKey,
+  onFinalized,
+}: MfaAuthContentProps) => {
   const { t } = useTranslation();
 
   const { challenge: nonce } = challenge;
@@ -51,35 +51,27 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
   }, [remainingSeconds]);
   const styles = useStylesheet(createStyles);
   const { mutateAsync: verifyMfa, isPending } = useMfaAuth();
-  const { mutate: markMessageAsRead } = useMarkMessageAsRead();
-  const messagesQuery = useGetMessages();
+  const { getPrivateKeyMFA, hasPrivateKeyMFA, resetPrivateKeyMFA } =
+    usePolitoAppMfaPrivateKeyKeychain();
   const appState = useAppState();
   const [authPk, setAuthPk] = useState<
     AuthenticatorPrivKey | null | undefined
   >();
   const { setFeedback } = useFeedbackContext();
-  const markMfaMessageAsRead = useCallback(() => {
-    const messages = messagesQuery.data;
-    if (messages) {
-      const mfaMessage = messages.find(
-        m => m.type === MessageType.Mfa && !m.isRead,
-      );
-      if (mfaMessage) {
-        markMessageAsRead(mfaMessage.id);
-      }
-    }
-  }, [messagesQuery.data, markMessageAsRead]);
+  const handleClose = useLatestCallback(onClose);
+  const handleMissingKey = useLatestCallback(onMissingKey);
+  const handleFinalized = useLatestCallback(() => onFinalized?.());
 
   const finalizeAuth = useCallback(
     (feedbackLabel: string, success: boolean) => {
-      markMfaMessageAsRead();
+      handleFinalized();
       setFeedback({
         text: success ? t(feedbackLabel) : t('mfaScreen.auth.failed'),
         isPersistent: false,
       });
-      navigation.goBack();
+      handleClose();
     },
-    [markMfaMessageAsRead, setFeedback, t, navigation],
+    [handleClose, handleFinalized, setFeedback, t],
   );
 
   useEffect(() => {
@@ -124,22 +116,27 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
             [
               {
                 text: t('common.ok'),
-                onPress: async () => {
-                  navigation.navigate('ProfileTab', {
-                    screen: 'Settings',
-                  });
-                },
+                onPress: handleMissingKey,
               },
             ],
           );
         } else {
           Alert.alert(t('common.error'), t('mfaScreen.auth.unlockDismissed'));
         }
-        navigation.goBack();
+        handleClose();
       }
     };
     fetchPrivateKey().catch(console.error);
-  }, [t, authPk, navigation, appState]);
+  }, [
+    t,
+    authPk,
+    appState,
+    getPrivateKeyMFA,
+    resetPrivateKeyMFA,
+    hasPrivateKeyMFA,
+    handleClose,
+    handleMissingKey,
+  ]);
 
   const onNo = async () => {
     if (!authPk) return;

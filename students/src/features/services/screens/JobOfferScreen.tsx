@@ -4,6 +4,7 @@ import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import replace from 'react-string-replace';
 
 import { formatDate } from '@polito/lib/core';
+import { useOpenInAppLink } from '@polito/lib/features/auth';
 import {
   BottomBarSpacer,
   Card,
@@ -16,7 +17,6 @@ import {
 } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import { useGetJobOffer } from '../../../core/queries/jobOfferHooks';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 

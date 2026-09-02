@@ -2,7 +2,7 @@ import { ReactElement } from 'react';
 import { Image, StyleSheet, TouchableHighlightProps } from 'react-native';
 
 import { faUser } from '@fortawesome/free-regular-svg-icons';
-import { Person } from '@polito/student-api-client';
+import { Person } from '@polito/api-client';
 
 import { useTheme } from '../hooks/useTheme';
 import { Icon } from './Icon';

@@ -3,7 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { usePreferencesContext } from '@polito/lib/core';
+import { useFocusEffect } from '@react-navigation/native';
+
+import {
+  usePolitoAppMfaPrivateKeyKeychain,
+  usePreferencesContext,
+} from '../../../core';
 import {
   CtaButton,
   ListItem,
@@ -13,28 +18,24 @@ import {
   type Theme,
   useStylesheet,
   useTheme,
-} from '@polito/lib/ui';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+} from '../../../ui';
+import { useCheckMfa, useLogout } from '../queries/authHooks';
+import { RTFTrans } from './RTFTrans';
 
-import { RTFTrans } from '~/core/components/RTFTrans';
-import { useCheckMfa, useLogout } from '~/core/queries/authHooks';
-import { AppPreferences } from '~/core/types/preferences';
-import { hasPrivateKeyMFA } from '~/utils/keychain';
+export type MfaSettingsProps = {
+  onEnroll: () => void;
+};
 
-import { UserStackParamList } from './UserNavigator';
-
-export const MfaSettings = () => {
+export const MfaSettings = ({ onEnroll }: MfaSettingsProps) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { fontSizes, palettes, colors, spacing } = useTheme();
   const { data: mfa, refetch: refetchMfa } = useCheckMfa(true);
+  const { hasPrivateKeyMFA } = usePolitoAppMfaPrivateKeyKeychain();
   const { mutate: logout } = useLogout();
   const { politoAuthnEnrolmentStatus, updatePreference } =
-    usePreferencesContext<AppPreferences>();
+    usePreferencesContext();
   const [hasLocalMfaKey, setHasLocalMfaKey] = useState<boolean>(false);
-  const navigation =
-    useNavigation<NativeStackNavigationProp<UserStackParamList>>();
   const { bottom } = useSafeAreaInsets();
 
   useFocusEffect(
@@ -45,7 +46,7 @@ export const MfaSettings = () => {
 
   useEffect(() => {
     hasPrivateKeyMFA().then(res => setHasLocalMfaKey(res));
-  }, [mfa]);
+  }, [hasPrivateKeyMFA, mfa]);
 
   const buttonHeight = spacing[4] + bottom;
 
@@ -100,7 +101,7 @@ export const MfaSettings = () => {
                   mfa?.status === 'needsReauth') && (
                   <>
                     <ListItem
-                      title={t('common.enroll.serial')}
+                      title={t('mfaScreen.serial')}
                       trailingItem={
                         <Text
                           style={[
@@ -181,15 +182,7 @@ export const MfaSettings = () => {
                 mfa?.status === 'available' ||
                 mfa?.status === 'needsReauth'
               ) {
-                navigation.navigate({
-                  name: 'ProfileTab',
-                  params: {
-                    screen: 'PolitoAuthenticator',
-                    params: {
-                      activeView: 'enroll',
-                    },
-                  },
-                });
+                onEnroll();
               } else {
                 logout();
               }

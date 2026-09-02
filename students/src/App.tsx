@@ -2,21 +2,31 @@ import { initReactI18next } from 'react-i18next';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { APP_VERSION, BUILD_NO } from '@env';
+import { AuthApi } from '@polito/auth-api-client';
 import {
+  ApiProvider,
+  AuthIdentityValidator,
+  PolitoAppConfig,
   PreferencesProvider,
   Sentry,
+  createPolitoLinking,
   extendSuperJSON,
   initSentry,
+  isEnvProduction,
 } from '@polito/lib/core';
+import {
+  UnsupportedIdentityTypeError,
+  mfaScreenTranslations,
+} from '@polito/lib/features/auth';
 import { FeedbackProvider, SplashProvider, UiProvider } from '@polito/lib/ui';
 import Mapbox from '@rnmapbox/maps';
 
 import i18n from 'i18next';
 
 import { en, it } from '../assets/translations';
+import { updateGlobalApiConfiguration } from './config/api';
 import { AppContent } from './core/components/AppContent';
 import { DialogProvider } from './core/components/Dialog';
-import { ApiProvider } from './core/providers/ApiProvider';
 import { RootParamList } from './core/types/navigation';
 import {
   AppPreferences,
@@ -24,8 +34,8 @@ import {
   objectPreferenceKeys as appObjectPreferenceKeys,
   initialAppPreferences,
 } from './core/types/preferences';
-import { isEnvProduction } from './utils/env';
-import { setDeepLink } from './utils/linking';
+import { getFcmToken } from './core/utils/firebase';
+import { deleteProfilePictureFile } from './utils/profilePicture';
 
 extendSuperJSON();
 
@@ -36,10 +46,10 @@ i18n.use(initReactI18next).init({
   fallbackLng: 'en',
   resources: {
     en: {
-      translation: en,
+      translation: { ...en, mfaScreen: mfaScreenTranslations.en },
     },
     it: {
-      translation: it,
+      translation: { ...it, mfaScreen: mfaScreenTranslations.it },
     },
   },
 });
@@ -57,6 +67,21 @@ extendSuperJSON();
 
 Mapbox.setAccessToken(process.env.MAPBOX_TOKEN || 'no_token');
 
+const appConfig = {
+  id: 'students',
+  keychainService: 'it.polito.students-app',
+} satisfies PolitoAppConfig;
+
+const createAuthClient = () => new AuthApi();
+const getPushToken = () => getFcmToken();
+const validateStudentIdentity: AuthIdentityValidator = identity => {
+  if (identity.type !== 'student') {
+    throw new UnsupportedIdentityTypeError(
+      `User type ${identity.type} is not supported by the students app`,
+    );
+  }
+};
+
 const App = () => {
   return (
     <SafeAreaProvider>
@@ -67,9 +92,18 @@ const App = () => {
           extraObjectKeys={appObjectPreferenceKeys}
           initialPreferences={initialAppPreferences}
         >
-          <UiProvider<RootParamList> linking={setDeepLink()}>
+          <UiProvider<RootParamList>
+            linking={createPolitoLinking<RootParamList>(appConfig)}
+          >
             <FeedbackProvider>
-              <ApiProvider>
+              <ApiProvider<AppPreferences>
+                config={appConfig}
+                createAuthClient={createAuthClient}
+                getPushToken={getPushToken}
+                validateIdentity={validateStudentIdentity}
+                onLogoutSuccess={deleteProfilePictureFile}
+                updateApiConfiguration={updateGlobalApiConfiguration}
+              >
                 <DialogProvider />
                 <AppContent />
               </ApiProvider>

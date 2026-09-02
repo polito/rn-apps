@@ -571,11 +571,16 @@
     "passwordLabel": "Password",
     "passwordLabelAccessibility": "Enter your password here",
     "showPassword": "Show password",
+    "SSO": "Login with SSO",
     "title": "Log in with your polito.it credentials",
-    "unsupportedUserType": "User type not supported: only students can log in to PoliTO Students.",
-    "usernameLabel": "Student ID",
+    "unsupportedUserType": "This user type is not supported by PoliTO Faculty.",
+    "usernameLabel": "PoliTO username",
     "usernameLabelAccessibility": "Enter your username here",
     "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received."
+  },
+  "ssoScreen": {
+    "ssoButton": "Sign in with Single-Sign-On",
+    "ssoLink": "or sign in with your credentials"
   },
   "messageScreen": {
     "backTitle": "Archive",
