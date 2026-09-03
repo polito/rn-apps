@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faBookBookmark,
   faBriefcase,
@@ -10,7 +9,6 @@ import {
   faComments,
   faEnvelope,
   faIdCard,
-  faMobileScreenButton,
   faNewspaper,
   faPersonCirclePlus,
   faSignsPost,
@@ -24,7 +22,6 @@ import {
   BottomBarSpacer,
   Grid,
   Theme,
-  UnreadBadge,
   auto,
   useStylesheet,
 } from '@polito/lib/ui';
@@ -91,29 +88,6 @@ export const ServicesScreen = () => {
         accessibilityLabel: `${t('ticketsScreen.title')} ${
           unreadTickets ? t('servicesScreen.newElement') : ''
         }`,
-      },
-      {
-        id: 'appFeedback',
-        name: t('common.appFeedback'),
-        icon: faMobileScreenButton,
-        disabled: isOffline,
-        linkTo: {
-          screen: 'CreateTicket',
-          params: {
-            topicId: 1101,
-            subtopicId: 2001,
-          },
-        },
-        additionalContent: <UnreadBadge text="BETA" style={styles.badge} />,
-        accessibilityLabel: t('common.appFeedback'),
-      },
-      {
-        id: 'github',
-        name: t('common.openSource'),
-        icon: faGithub,
-        onPress: () =>
-          Linking.openURL('https://github.com/polito/students-app'),
-        accessibilityLabel: t('common.openSourceAccessibilityLabel'),
       },
       {
         id: 'news',
@@ -201,7 +175,6 @@ export const ServicesScreen = () => {
     isOffline,
     queryClient,
     unreadTickets,
-    styles.badge,
     getUnreadsCount,
     peopleSearched?.length,
     emailGuideRead,
@@ -287,10 +260,5 @@ const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     grid: {
       margin: spacing[5],
-    },
-    badge: {
-      position: 'absolute',
-      top: -spacing[2.5],
-      right: -spacing[2],
     },
   });
