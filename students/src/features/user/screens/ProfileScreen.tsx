@@ -5,6 +5,7 @@ import { SafeAreaView, ScrollView, View } from 'react-native';
 import {
   faAngleDown,
   faBell,
+  faCircleInfo,
   faCog,
   faMessage,
   faPersonThroughWindow,
@@ -249,6 +250,12 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
               title={t('profileScreen.settings')}
               leadingItem={<Icon icon={faCog} size={fontSizes.xl} />}
               linkTo="Settings"
+            />
+            <ListItem
+              title={t('profileScreen.appInfo')}
+              leadingItem={<Icon icon={faCircleInfo} size={fontSizes.xl} />}
+              linkTo="AppInfo"
+              accessibilityRole="button"
             />
             <ListItem
               title={t('messagesScreen.title')}

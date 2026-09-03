@@ -26,6 +26,7 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 import { UnreadMessagesModal } from '~/features/user/screens/UnreadMessagesModal';
 
@@ -46,6 +47,10 @@ import { AppPreferences } from '../types/preferences';
 
 const TabNavigator = createBottomTabNavigator<RootParamList>();
 const androidTabBarHeight = 60;
+
+// The tab bar sits underneath these full-bleed nested screens on both
+// platforms and must be hidden explicitly while they're focused.
+const profileTabBarHiddenRoutes = ['WhatsNew', 'NewOverlay'];
 
 export const RootNavigator = ({
   versionModalIsOpen,
@@ -174,13 +179,23 @@ export const RootNavigator = ({
         <TabNavigator.Screen
           name="ProfileTab"
           component={UserNavigator}
-          options={{
-            tabBarLabel: t('profileScreen.title'),
-            tabBarIcon: ({ color }) => (
-              <Icon icon={faUser} color={color} size={tabBarIconSize} />
-            ),
-            tabBarBadge:
-              filterUnread(profileMessages.data || []).length || undefined,
+          options={({ route }) => {
+            const focusedRouteName = getFocusedRouteNameFromRoute(route);
+            const hideTabBarForRoute =
+              !!focusedRouteName &&
+              profileTabBarHiddenRoutes.includes(focusedRouteName);
+
+            return {
+              tabBarLabel: t('profileScreen.title'),
+              tabBarIcon: ({ color }) => (
+                <Icon icon={faUser} color={color} size={tabBarIconSize} />
+              ),
+              tabBarBadge:
+                filterUnread(profileMessages.data || []).length || undefined,
+              ...(hideTabBarForRoute && {
+                tabBarStyle: { display: 'none' },
+              }),
+            };
           }}
         />
       </TabNavigator.Navigator>
