@@ -22,8 +22,9 @@ Questo documento è il **punto di ingresso obbligatorio** per qualunque sviluppa
 14. [Platform specifics — iOS vs Android](#14-platform-specifics--ios-vs-android)
 15. [Utility e componenti del progetto](#15-utility-e-componenti-del-progetto)
 16. [Touch target](#16-touch-target)
-17. [Checklist — bug ricorrenti](#17-checklist--bug-ricorrenti)
-18. [Documentazione di dettaglio per sezione](#18-documentazione-di-dettaglio-per-sezione)
+17. [Tastiera esterna e hardware](#17-tastiera-esterna-e-hardware)
+18. [Checklist — bug ricorrenti](#17-checklist--bug-ricorrenti)
+19. [Documentazione di dettaglio per sezione](#19-documentazione-di-dettaglio-per-sezione)
 
 ---
 
@@ -890,6 +891,7 @@ I componenti SVG come `RNCKProgressChart` vengono attraversati da TalkBack anche
 | `AccessibleFlatList`    | `students/src/core/components/AccessibleFlatList.tsx`     | FlatList con count e posizione — preferire sempre al FlatList nudo                     |
 | `AccessibleText`        | `students/src/core/components/AccessibleText.tsx`         | Aggiunge `accessibilityLanguage` per testo IT/EN misto                                 |
 | `MultiLingualText`      | `students/src/core/components/AccessibleText.tsx`         | Testo misto inline                                                                     |
+| `useKeyboardActivation` | `lib/src/ui/hooks/useKeyboardActivation.ts`               | Attivazione da tastiera esterna su elementi interattivi custom (vedi §17)              |
 | `VisuallyHidden`        | `lib/src/ui/components/VisuallyHidden.tsx`                | Wrapper zero-size per contenuto solo screen reader                                     |
 | `Checkbox`              | `students/src/core/components/Checkbox.tsx`               | Già wrappa role, state e label — non reimplementare                                    |
 | `CardSwiper`            | `students/src/core/components/CardSwiper.tsx`             | `accessibilityLabel` sulla foto tessera; indicatori pagina nascosti agli screen reader |
@@ -1021,7 +1023,89 @@ Quando l'area visiva è inferiore, usare `hitSlop`:
 
 ---
 
-## 17. Checklist — bug ricorrenti
+## 17. Tastiera esterna e hardware
+
+Riguarda tastiere Bluetooth/USB, iOS Full Keyboard Access e Switch Access. Requisito: ogni elemento interattivo custom dev'essere raggiungibile con TAB/frecce e attivabile con Spazio/Invio.
+
+### 17.1 Limite di framework — Android non attraversa il focus da tastiera
+
+La causa non è una sola. Concorrono tre cose:
+
+1. **Le view RN non sono `focusable` di default.** Una `View` Android diventa raggiungibile dal focus solo se marcata `focusable`; RN non lo fa in automatico su ogni elemento interattivo, quindi la maggior parte dell'albero è fuori dalla catena del focus prima ancora che entri in gioco la tastiera.
+2. **Touch mode.** Android, dopo un'interazione touch, entra in _touch mode_ e sospende il focus di navigazione: finché l'app non ne esce — cosa che nessuna prop React fa — non c'è alcun elemento focalizzato da cui partire.
+3. **Dispatching dei tasti in stile TV.** `ReactAndroidHWInputDeviceHelper` non è un sistema di navigazione da tastiera: è il dispatcher pensato per telecomandi Android TV. Mappa `DPAD_*` (frecce), `ENTER`/`SPACE`/`DPAD_CENTER` → `select`, tasti media, INFO e MENU — **`KEYCODE_TAB` non è mappato**, perché fuori dallo scope TV.
+
+Verificato a device con tastiera BT su **RN 0.81.6, New Architecture attiva** (`newArchEnabled=true`, pod Fabric su iOS): né TAB né frecce raggiungono alcun elemento, header nativo compreso. Fabric non cambia il quadro — la catena del focus e il touch mode restano quelli della piattaforma.
+
+> **Conseguenza pratica.** I fix a componente (ruolo, `focusable`, `accessibilityActions`) sono **necessari ma inerti** su Android con tastiera hardware: senza traversata del focus non c'è nulla da attivare. Non si abilita da una prop React — servirebbe intervento nativo Android (focus iniziale, uscita dal touch-mode, key handling nella `MainActivity`).
+>
+> Restano invece **pienamente efficaci** su iOS Full Keyboard Access, Switch Access e TalkBack, che usano la propria navigazione. È la ragione per cui il pattern qui sotto va applicato comunque.
+
+**Prospettiva upgrade.** Su RN 0.81 le prop `onKeyDown`/`onKeyUp` non esistono sui `ViewProps` Android. Sono state introdotte in **RN 0.84** (`KeyEventProps` in `ViewPropTypes`, con le varianti `onKeyDownCapture`/`onKeyUpCapture`): dopo l'upgrade sarà possibile intercettare TAB a livello di singola view JS. Non è però un "tutto risolto" — restano aperte due delle tre concause: le view continuano a non essere `focusable` di default (RN documenta che `onFocus` e i key event scattano solo su view focusabili) e l'uscita dal touch mode con il focus iniziale richiede comunque intervento nativo.
+
+### 17.2 `useKeyboardActivation` — attivazione da tastiera su elementi custom
+
+Hook condiviso in `lib/src/ui/hooks/useKeyboardActivation.ts`. Restituisce `focusable` (raggiungibilità TAB su Android), l'azione `activate` e l'handler che invoca l'`onPress` del componente:
+
+```tsx
+import { useKeyboardActivation } from 'lib/ui/hooks/useKeyboardActivation';
+
+const keyboardProps = useKeyboardActivation({
+  onActivate: onPress,
+  disabled,
+  accessibilityActions,
+  onAccessibilityAction,
+});
+
+<Pressable
+  {...keyboardProps}
+  accessibilityRole="button"
+  accessibilityLabel={t('common.close')}
+  onPress={onPress}
+/>;
+```
+
+L'hook **preserva** le azioni passate dal chiamante e **non duplica** `activate` se il chiamante lo gestisce già (es. i dots di `CardSwiper`, che espongono `increment`/`decrement`). `focusable` vale `!disabled`.
+
+### 17.3 Componenti condivisi che lo montano già
+
+Non riapplicarlo a mano su questi — arriva dal componente condiviso:
+
+| Componente                                        | Note                                                           |
+| ------------------------------------------------- | -------------------------------------------------------------- |
+| `IconButton`                                      | Menu "°°°" e pulsanti icona                                    |
+| `ListItem`                                        | Voci di primo livello, messaggi, guide                         |
+| `StatefulMenuView`                                | Attivatori dei menu nativi (vedi 17.4)                         |
+| `PillButton`, `TextButton`, `TouchableCard`       | Controlli a pillola e card                                     |
+| `AgendaCard` + `useCalendarTouchableOpacityProps` | Eventi agenda giorno/settimana                                 |
+| `BookingSeatCell`                                 | Posti prenotabili — `activate` evita anche lo zoom sulla mappa |
+| `BottomSheet`                                     | `activate` sull'handle alterna `expand()`/`collapse()`         |
+
+### 17.4 Componenti senza `onPress` JS — menu nativi e ref imperativi
+
+`StatefulMenuView` apre un menu **nativo**: il tocco è intercettato dalla libreria, quindi l'attivatore non ha un `onPress` JS da innescare. Va tenuto un `ref` al `MenuView` e chiamato `show()` dall'azione `activate`:
+
+```tsx
+const menuRef = useRef<MenuComponentRef>(null);
+
+const keyboardProps = useKeyboardActivation({
+  onActivate: () => menuRef.current?.show(),
+});
+
+<MenuView ref={menuRef} {...keyboardProps} accessibilityRole="button" />;
+```
+
+Stesso schema per qualsiasi controllo la cui azione viva in un `ref` imperativo invece che in un `onPress` (es. `BottomSheetMethods`). Se il componente accetta un `ref` dal chiamante, **fondere** ref esterno e ref interno, così l'azione funziona anche quando il chiamante non passa un ref proprio.
+
+### 17.5 Cosa non copre
+
+- **Back nativo dello stack** — reso e gestito dall'OS, nessun punto di aggancio JS.
+- **Search bar nativa** (`headerSearchBarOptions`) — `SearchBarProps` non espone prop di accessibilità.
+- **Confinamento del focus nei menu nativi iOS** — gestito dall'OS, `accessibilityViewIsModal` non si applica ai menu nativi.
+
+---
+
+## 18. Checklist — bug ricorrenti
 
 Prima di chiudere qualsiasi sessione di accessibilità, verificare questi punti:
 
@@ -1051,11 +1135,13 @@ Prima di chiudere qualsiasi sessione di accessibilità, verificare questi punti:
 - [ ] **Chiavi i18n**: aggiunte a **entrambi** `en.json` e `it.json`?
 - [ ] **Touch target**: tutti gli elementi interattivi ≥ 44×44 pt (iOS) / 48×48 dp (Android)? `hitSlop` usato dove necessario?
 - [ ] **`pointerEvents="none"`**: mai su elementi focusabili?
+- [ ] **Tastiera esterna**: elementi interattivi custom con `useKeyboardActivation` (o `focusable` + `accessibilityActions` equivalenti)?
+- [ ] **Azioni in `ref` imperativo**: `activate` collegato al metodo (`show()`, `expand()`) quando non c'è un `onPress` JS?
 - [ ] **ListItem interattività**: tutta l'interattività su `ListItem` (non su figli nascosti)?
 
 ---
 
-## 18. Documentazione di dettaglio per sezione
+## 19. Documentazione di dettaglio per sezione
 
 Ogni sezione ha documentazione completa con problemi trovati, soluzioni applicate e pattern specifici:
 
