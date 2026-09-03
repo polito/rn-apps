@@ -14,11 +14,11 @@ import { AccessibilitySettingsScreen } from '../screens/AccessibilityFontSetting
 import { AppInfoScreen } from '../screens/AppInfoScreen.tsx';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
+import { NewOverlayScreen } from '../screens/NewOverlayScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { RequestESCScreen } from '../screens/RequestESCScreen.tsx';
 import { SettingsScreen } from '../screens/SettingsScreen';
-import { NewOverlayScreen } from '../screens/NewOverlayScreen';
 import { WhatsNewScreen } from '../screens/WhatsNewScreen';
 import { MfaSettings } from './MfaSettings.tsx';
 

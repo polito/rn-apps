@@ -2,16 +2,20 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AccessibilityInfo,
-  findNodeHandle,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
+  findNodeHandle,
   useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { IS_ANDROID, getHtmlTextContent, useScreenReader } from '@polito/lib/core';
+import {
+  IS_ANDROID,
+  getHtmlTextContent,
+  useScreenReader,
+} from '@polito/lib/core';
 import {
   ActivityIndicator,
   CtaButton,

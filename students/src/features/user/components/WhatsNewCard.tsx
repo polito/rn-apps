@@ -38,9 +38,7 @@ const Card = ({ announcement, index, total }: CardProps) => {
   const { fontSizes } = useTheme();
   const { accessibilityListLabel } = useAccessibility();
   const navigation =
-    useNavigation<
-      NativeStackNavigationProp<{ NewOverlay: { id: string } }>
-    >();
+    useNavigation<NativeStackNavigationProp<{ NewOverlay: { id: string } }>>();
 
   return (
     <Pressable
@@ -53,9 +51,7 @@ const Card = ({ announcement, index, total }: CardProps) => {
         .filter(Boolean)
         .join(', ')}
       accessibilityHint={t('appInfoScreen.openNewsHint')}
-      onPress={() =>
-        navigation.navigate('NewOverlay', { id: announcement.id })
-      }
+      onPress={() => navigation.navigate('NewOverlay', { id: announcement.id })}
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}
     >
       <View style={styles.text}>

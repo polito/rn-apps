@@ -42,9 +42,7 @@ export const WhatsNewListItem = ({ announcement, index, totalData }: Props) => {
   const styles = useStylesheet(createStyles);
   const { accessibilityListLabel } = useAccessibility();
   const navigation =
-    useNavigation<
-      NativeStackNavigationProp<{ NewOverlay: { id: string } }>
-    >();
+    useNavigation<NativeStackNavigationProp<{ NewOverlay: { id: string } }>>();
 
   const dateLabel = formatWhatsNewDate(announcement.date, i18n.language, t);
   const body =
@@ -63,9 +61,7 @@ export const WhatsNewListItem = ({ announcement, index, totalData }: Props) => {
         .filter(Boolean)
         .join(', ')}
       accessibilityHint={t('appInfoScreen.openNewsHint')}
-      onPress={() =>
-        navigation.navigate('NewOverlay', { id: announcement.id })
-      }
+      onPress={() => navigation.navigate('NewOverlay', { id: announcement.id })}
       style={({ pressed }) => [styles.item, pressed && styles.pressed]}
     >
       <Text variant="title" style={styles.title}>

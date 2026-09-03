@@ -101,7 +101,11 @@ export const AppInfoScreen = () => {
               ].join(', ')}
               trailingItem={
                 <Row align="center" gap={0.5} style={styles.showAllRow}>
-                  <Text variant="link" style={styles.showAll} accessible={false}>
+                  <Text
+                    variant="link"
+                    style={styles.showAll}
+                    accessible={false}
+                  >
                     {t('appInfoScreen.showAll')}
                   </Text>
                   <View
