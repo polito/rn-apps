@@ -189,6 +189,12 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
             title={t('common.confirm')}
             action={handleConfirmColor}
             disabled={!hasChanged}
+            accessibilityState={{ disabled: !hasChanged }}
+            accessibilityHint={
+              !hasChanged
+                ? t('courseColorPickerScreen.confirmDisabledHint')
+                : undefined
+            }
             absolute={false}
             containerStyle={styles.buttonWrapper}
           />

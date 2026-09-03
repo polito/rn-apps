@@ -651,7 +651,11 @@
     "title": "THE EUROPEAN STUDENT CARD",
     "expiredTitle": "Your Card has expired",
     "expiredText": "Student not enrolled in the current school year",
-    "inactive": "Your Card is suspended"
+    "inactive": "Your Card is suspended",
+    "cardInfoButton": "Card information",
+    "cardInfoHint": "Opens card information",
+    "showQrCode": "Show QR code",
+    "showQrCodeHint": "Opens your QR code"
   },
   "eventPlacesScreen": {
     "title": "Event locations"
@@ -921,6 +925,8 @@
     "qrWarning": "Do not share or save screenshots: any improper use remains your responsibility.",
     "settings": "Settings",
     "showQr": "Show QR",
+    "showQrAccessibility": "Show QR code",
+    "showQrHint": "Opens your QR code",
     "smartCard": "Smartcard",
     "smartCardTitle": "SMART CARD",
     "studentId": "Student ID",
@@ -958,7 +964,11 @@
   "servicesScreen": {
     "subTitleOne": "Information services",
     "subTitleTwo": "Operational services",
-    "title": "Services"
+    "title": "Services",
+    "newElement": ", you have a new item to view",
+    "favoriteActive": "Remove from favorites",
+    "favoriteInactive": "Add to favorites",
+    "webMail": "Web\nMail"
   },
   "settingsScreen": {
     "appVersion": "Version {{version}}",
@@ -1053,11 +1063,17 @@
     "feedbackTitle": "You have spoken with a virtual operator",
     "feedbackDescription": "This new service was created to give you faster and more effective support. If you need further assistance, our team will respond to you as soon as possible!",
     "feedbackQuestion": "Are you satisfied with the answer?",
+    "feedbackPositive": "Helpful",
+    "feedbackNegative": "Not helpful",
+    "incomingMessage": "Your reply",
+    "outgoingMessage": "Reply from operator number",
     "reply": "Reply",
+    "send": "Send",
     "sendFirstMessage": "Ask your question",
     "sendError": "There was an error while sending the message. Try again.",
     "ticketNumber": "Ticket number",
     "title": "Ticket",
+    "yourQuestion": "Your question",
     "youCanReopenTheTicket": "You can reopen the ticket at any time by submitting a reply",
     "resolveQuestion": "Was this answer helpful?",
     "resolveCta": "Yes, resolve the ticket",
@@ -1113,9 +1129,11 @@
   },
   "ticketsScreen": {
     "addNew": "Add ticket",
+    "closedEmptyState": "There are no closed tickets",
     "emptyState": "There are no tickets",
     "insertFeedback": "Insert feedback",
     "myTickets": "My tickets",
+    "openEmptyState": "There are no open tickets",
     "openedOn": "Opened on {{date}}",
     "title": "Ticket"
   },

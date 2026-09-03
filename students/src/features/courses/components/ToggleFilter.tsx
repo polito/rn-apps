@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { faFolderTree, faList } from '@fortawesome/free-solid-svg-icons';
@@ -16,6 +17,7 @@ export const ToggleFilter = ({
 }: ToggleFilterProps) => {
   const styles = useStylesheet(createStyles);
   const { palettes, dark } = useTheme();
+  const { t } = useTranslation();
 
   const activeColor = palettes.primary[dark ? 300 : 500];
   const inactiveColor = palettes.gray[400];
@@ -26,7 +28,12 @@ export const ToggleFilter = ({
       disabled={disabled}
       style={[styles.container, disabled && styles.disabled]}
       accessibilityRole="button"
-      accessibilityLabel="Toggle view"
+      accessibilityLabel={
+        isDirectoryView
+          ? t('courseFilesTab.folderTreeView')
+          : t('courseFilesTab.fileListView')
+      }
+      accessibilityHint={t('courseFilesTab.toggleViewHint')}
       accessibilityState={{ disabled }}
     >
       <View style={[styles.tab, isDirectoryView && styles.activeTab]}>

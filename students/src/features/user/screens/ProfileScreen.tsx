@@ -110,7 +110,7 @@ const HeaderRightDropdown = ({
     <View
       style={{ padding: spacing[2] }}
       accessible={true}
-      accessibilityRole={canSwitchCareer ? 'button' : 'text'}
+      accessibilityRole={canSwitchCareer ? 'button' : 'none'}
       accessibilityLabel={`${t('common.username')} ${username} ${
         canSwitchCareer ? t('common.switchCareerLabel') : ''
       }`}
@@ -187,14 +187,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
       }
     >
       <SafeAreaView>
-        <View
-          accessible={true}
-          accessibilityLabel={`${t('profileScreen.smartCard')}. ${t(
-            'common.username',
-          )} ${profile?.username?.substring(1, profile?.username?.length)}, ${
-            profile?.firstName
-          } ${profile?.lastName}`}
-        >
+        <View>
           {!profile ||
           smartCardQuery.isLoading ||
           escQuery.isLoading ? null : smartCardUrl ||
@@ -230,6 +223,14 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
             <ListItem
               title={student?.degreeLevel ?? ''}
               subtitle={t('profileScreen.cohort') + ' - ' + enrollmentYear}
+              accessibilityRole="button"
+              accessibilityLabel={[
+                student?.degreeLevel,
+                t('profileScreen.cohort'),
+                enrollmentYear,
+              ]
+                .filter(Boolean)
+                .join(', ')}
               linkTo={{
                 screen: 'Degree',
                 params: {
@@ -242,19 +243,26 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
           <OverviewList indented>
             <ListItem
               title={t('notificationsScreen.title')}
+              accessibilityRole="button"
+              accessibilityLabel={t('notificationsScreen.title')}
               leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
               linkTo="Notifications"
             />
             <ListItem
               title={t('profileScreen.settings')}
+              accessibilityRole="button"
+              accessibilityLabel={t('profileScreen.settings')}
               leadingItem={<Icon icon={faCog} size={fontSizes.xl} />}
               linkTo="Settings"
             />
             <ListItem
               title={t('messagesScreen.title')}
+              accessibilityRole="button"
+              accessibilityLabel={t('messagesScreen.title')}
               leadingItem={<Icon icon={faMessage} size={fontSizes.xl} />}
               linkTo="Messages"
               disabled={areMessagesDisabled}
+              accessibilityState={{ disabled: areMessagesDisabled }}
               trailingItem={
                 messages.data && hasUnreadMessages(messages.data) ? (
                   <UnreadBadge text={filterUnread(messages.data).length} />
@@ -263,6 +271,8 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
             />
             <ListItem
               title={t('common.logout')}
+              accessibilityRole="button"
+              accessibilityLabel={t('common.logout')}
               leadingItem={
                 <Icon
                   icon={faPersonThroughWindow}
@@ -273,6 +283,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
               titleStyle={{ color: palettes.danger[700] }}
               onPress={() => handleLogout()}
               disabled={isOffline}
+              accessibilityState={{ disabled: isOffline }}
             />
           </OverviewList>
         </Section>

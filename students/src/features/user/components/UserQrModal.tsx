@@ -1,8 +1,15 @@
-import { useCallback, useEffect } from 'react';
-import { StyleSheet, View, useWindowDimensions } from 'react-native';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  AccessibilityInfo,
+  StyleSheet,
+  View,
+  findNodeHandle,
+  useWindowDimensions,
+} from 'react-native';
 import Modal from 'react-native-modal';
 
-import { useDeviceOrientation } from '@polito/lib/core';
+import { IS_ANDROID, useDeviceOrientation } from '@polito/lib/core';
 import { Col, Row, Text, type Theme, useStylesheet } from '@polito/lib/ui';
 
 import { QrEsc } from '../../../core/components/QrEsc.tsx';
@@ -25,7 +32,9 @@ export const UserQrModal = ({
   dismissable,
   student,
 }: AgendaEventVisibilityModalProps) => {
+  const { t } = useTranslation();
   const deviceOrientation = useDeviceOrientation();
+  const headerRef = useRef<View>(null);
 
   const handleBackCloseModal = useCallback(() => {
     dismissable && onClose?.();
@@ -36,6 +45,15 @@ export const UserQrModal = ({
       handleBackCloseModal();
     }
   }, [deviceOrientation, handleBackCloseModal]);
+
+  useLayoutEffect(() => {
+    if (!visible) return;
+    const timer = setTimeout(() => {
+      const node = findNodeHandle(headerRef.current);
+      if (node) AccessibilityInfo.setAccessibilityFocus(node);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [visible]);
 
   const { width, height } = useWindowDimensions();
   const styles = useStylesheet(createStyles);
@@ -70,17 +88,29 @@ export const UserQrModal = ({
             styles.modalContainer,
           ]}
           pointerEvents="auto"
+          accessibilityViewIsModal={IS_ANDROID}
         >
-          <Row style={styles.modalTitleContainer}>
-            <Col>
-              <Text style={styles.modalTitle}>
-                {student?.cognome.toUpperCase() +
-                  '\n' +
-                  student?.nome.toUpperCase()}
-              </Text>
-              <Text>polito.it - {student?.matricola}</Text>
-            </Col>
-          </Row>
+          <View
+            ref={headerRef}
+            accessible
+            accessibilityRole="header"
+            accessibilityLabel={t('userQrModal.studentIdentity', {
+              firstName: student?.nome ?? '',
+              lastName: student?.cognome ?? '',
+              studentId: student?.matricola ?? '',
+            })}
+          >
+            <Row style={styles.modalTitleContainer}>
+              <Col>
+                <Text style={styles.modalTitle} accessible={false}>
+                  {student?.cognome.toUpperCase() +
+                    '\n' +
+                    student?.nome.toUpperCase()}
+                </Text>
+                <Text accessible={false}>polito.it - {student?.matricola}</Text>
+              </Col>
+            </Row>
+          </View>
           <QrEsc
             qr={student.qr}
             height={deviceOrientation === 'landscape' ? height / 2 : '100%'}

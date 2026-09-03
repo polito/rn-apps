@@ -54,6 +54,9 @@ export const BookingSeatCell = ({
       accessible
       accessibilityRole="button"
       accessibilityLabel={[seat.label, seatStatus].join(', ')}
+      accessibilityState={{
+        disabled: seat.status !== 'available' || !!rest.disabled,
+      }}
       style={{
         height: size,
         width: size,

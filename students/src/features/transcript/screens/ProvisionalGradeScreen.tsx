@@ -145,6 +145,10 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
                 justify="center"
                 mt={2}
                 flexShrink={0}
+                accessible
+                accessibilityLabel={t('transcriptGradesScreen.gradeValue', {
+                  grade: grade.grade,
+                })}
                 style={[
                   styles.grade,
                   accessibility?.fontSize && accessibility.fontSize >= 150
@@ -153,6 +157,7 @@ export const ProvisionalGradeScreen = ({ navigation, route }: Props) => {
                 ]}
               >
                 <Text
+                  accessible={false}
                   style={[
                     grade.grade.length < 3
                       ? styles.gradeText

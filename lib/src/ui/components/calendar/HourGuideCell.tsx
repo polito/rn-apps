@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 
 import { DateTime } from 'luxon';
@@ -15,6 +16,7 @@ interface HourGuideCellProps {
   calendarCellStyle?: CalendarCellStyle;
   showBorderRight?: boolean;
   showBorderBottom?: boolean;
+  locale?: string;
 }
 
 export const HourGuideCell = ({
@@ -26,8 +28,10 @@ export const HourGuideCell = ({
   calendarCellStyle,
   showBorderRight = false,
   showBorderBottom = false,
+  locale,
 }: HourGuideCellProps) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const getCalendarCellStyle = useMemo(
     () =>
@@ -37,9 +41,21 @@ export const HourGuideCell = ({
     [calendarCellStyle],
   );
 
+  const accessibilityLabel = useMemo(() => {
+    const dayName = date
+      .setLocale(locale ?? 'en')
+      .toLocaleString({ weekday: 'long' });
+    const hourStr = String(hour).padStart(2, '0') + ':00';
+    return `${dayName}, ${hourStr}`;
+  }, [date, hour, locale]);
+
   return (
     <TouchableWithoutFeedback
       onPress={() => onPress(date.set({ hour: hour, minute: 0 }))}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={t('agendaScreen.calendarCellHint')}
     >
       <View
         style={[

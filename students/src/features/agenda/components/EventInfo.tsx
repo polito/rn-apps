@@ -35,7 +35,21 @@ export const EventInfo = ({ item, place, placeLoading }: EventInfoProps) => {
   }
 
   return (
-    <Text style={styles.label} numberOfLines={1} ellipsizeMode="tail">
+    <Text
+      style={styles.label}
+      numberOfLines={1}
+      ellipsizeMode="tail"
+      accessibilityLabel={
+        item.type === 'single'
+          ? [
+              DateTime.fromISO(item.day as string)
+                .setZone('local')
+                .toFormat('dd/MM/yyyy'),
+              place.room.name,
+            ].join(', ')
+          : place.room.name
+      }
+    >
       {item.type === 'single' && (
         <>
           <Icon

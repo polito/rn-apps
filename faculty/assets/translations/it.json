@@ -186,6 +186,7 @@
     "legend": "Legenda",
     "loading": "Caricamento",
     "location": "Sede",
+    "locationHint": "Visualizza la posizione sulla mappa",
     "logout": "Logout",
     "mightTakeAWhile": "Potrebbe volerci un momento",
     "minutes": "Minuti",

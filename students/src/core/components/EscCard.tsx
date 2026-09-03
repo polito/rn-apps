@@ -92,7 +92,13 @@ export const EscCard = (
               {t('europeanCardScreen.title')}
             </TSpan>
           </Text>
-          <G onPress={onPressEvent}>
+          <G
+            onPress={onPressEvent}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel={t('europeanCardScreen.cardInfoButton')}
+            accessibilityHint={t('europeanCardScreen.cardInfoHint')}
+          >
             <Rect x={290} y={2} width={40} height={30} fill="transparent" />
             <Path
               fill="#FF8F19"
@@ -187,14 +193,21 @@ export const EscCard = (
           </G>
         </G>
         {!isBlur && (
-          <Image
-            x="200"
-            y="60"
-            width="120"
-            height="120"
-            href={{ uri: ESCimage }}
+          <G
             onPress={handlePress}
-          />
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel={t('europeanCardScreen.showQrCode')}
+            accessibilityHint={t('europeanCardScreen.showQrCodeHint')}
+          >
+            <Image
+              x="200"
+              y="60"
+              width="120"
+              height="120"
+              href={{ uri: ESCimage }}
+            />
+          </G>
         )}
         {isBlur && (
           <G>

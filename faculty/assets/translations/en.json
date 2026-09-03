@@ -179,6 +179,7 @@
     "legend": "Legend",
     "loading": "Loading",
     "location": "Location",
+    "locationHint": "View location on map",
     "logout": "Logout",
     "mightTakeAWhile": "This might take a while",
     "minutes": "Minutes",

@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text as RNText, StyleSheet, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
@@ -36,7 +37,11 @@ export const SmartCardQrModal = ({
 }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+  const headerRef = useRef<View>(null);
   const qrCodeQuery = useGetSmartCardQrCode(visible);
+  const identityLabel = [lastName.toUpperCase(), firstName, degreeName]
+    .filter(Boolean)
+    .join(', ');
 
   return (
     <QrCodeModal
@@ -44,19 +49,30 @@ export const SmartCardQrModal = ({
       onClose={onClose}
       maxWidth={CARD_WIDTH}
       showCloseButton={false}
+      firstFocusRef={headerRef}
     >
-      <View>
-        <Text variant="prose" style={styles.name}>
+      <View
+        ref={headerRef}
+        accessible={true}
+        accessibilityRole="header"
+        accessibilityLabel={identityLabel}
+      >
+        <Text accessible={false} variant="prose" style={styles.name}>
           {lastName.toUpperCase()}
         </Text>
-        <Text variant="prose" style={styles.name}>
+        <Text accessible={false} variant="prose" style={styles.name}>
           {firstName}
         </Text>
-        {!!degreeName && <Text style={styles.degree}>{degreeName}</Text>}
+        {!!degreeName && (
+          <Text accessible={false} style={styles.degree}>
+            {degreeName}
+          </Text>
+        )}
       </View>
       <View style={styles.qrColumn}>
         <View
           style={styles.qrContainer}
+          accessibilityRole="image"
           accessibilityLabel={t('profileScreen.qrCode')}
         >
           {qrCodeQuery.data ? (

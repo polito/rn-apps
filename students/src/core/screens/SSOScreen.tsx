@@ -48,8 +48,11 @@ export const SSOScreen = ({ navigation }: Props) => {
         <TouchableOpacity
           style={styles.link}
           onPress={() => navigation.navigate('Login')}
+          accessibilityRole="link"
+          accessibilityLabel={t('ssoScreen.ssoLink')}
+          accessibilityHint={t('common.tapToNavigate')}
         >
-          <Text variant="link" style={styles.textLink}>
+          <Text variant="link" style={styles.textLink} accessible={false}>
             {t('ssoScreen.ssoLink')}
           </Text>
         </TouchableOpacity>

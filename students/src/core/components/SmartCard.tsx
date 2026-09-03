@@ -61,10 +61,6 @@ export const SmartCard = ({
 
   return (
     <View
-      accessible={true}
-      accessibilityLabel={`${t('profileScreen.smartCard')}. ${lastName} ${firstName}. ${t(
-        'profileScreen.studentId',
-      )} ${username}`}
       style={[
         styles.card,
         {
@@ -211,6 +207,8 @@ export const SmartCard = ({
 
       <Pressable
         accessibilityRole="button"
+        accessibilityLabel={t('profileScreen.showQrAccessibility')}
+        accessibilityHint={t('profileScreen.showQrHint')}
         onPress={onShowQr}
         style={[
           styles.qrButton,

@@ -265,6 +265,9 @@ const Action = ({
       style={styles.actionHighlight}
       underlayColor={colors.touchableHighlight}
       disabled={disabled}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled }}
     >
       <View style={styles.action}>
         {loading ? (

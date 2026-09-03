@@ -905,6 +905,12 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
             icon={faCloudArrowDown}
             action={handleDownloadPress}
             disabled={isModalDownloadButtonDisabled}
+            accessibilityState={{ disabled: isModalDownloadButtonDisabled }}
+            accessibilityHint={
+              isModalDownloadButtonDisabled
+                ? t('courseFilesTab.downloadDisabledHint')
+                : undefined
+            }
             absolute={false}
             variant="filled"
             style={modalDownloadButtonStyle}
@@ -918,6 +924,12 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
             action={handleRemovePress}
             style={[modalRemoveButtonStyle, styles.ctaButton]}
             disabled={isModalRemoveButtonDisabled}
+            accessibilityState={{ disabled: isModalRemoveButtonDisabled }}
+            accessibilityHint={
+              isModalRemoveButtonDisabled
+                ? t('courseFilesTab.removeDisabledHint')
+                : undefined
+            }
             absolute={false}
             destructive={true}
             containerStyle={styles.ctaButtonContainer}

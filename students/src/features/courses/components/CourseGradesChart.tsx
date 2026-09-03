@@ -2,7 +2,13 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import Svg, { G, Line, Path, Text as SvgText } from 'react-native-svg';
 
-import { Col, Text, useStylesheet, useTheme } from '@polito/lib/ui';
+import {
+  Col,
+  Text,
+  VisuallyHidden,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import type { Theme } from '@polito/lib/ui';
 import {
   CourseStatistics,
@@ -183,143 +189,157 @@ export const CourseGradesChart = ({
   const labelFontSize = Math.max(10, Math.min(14, chartWidth * 0.035));
   const percentageFontSize = Math.max(9, Math.min(11, chartWidth * 0.025));
 
+  const a11ySummary = t('courseStatisticsScreen.gradesChartA11ySummary', {
+    firstYearAvg: statistics?.firstYear?.averageGrade?.toString() ?? '-',
+    otherYearsAvg: statistics?.otherYears?.averageGrade?.toString() ?? '-',
+  });
+
   return (
-    <View
-      style={styles.graphCard}
-      accessible={false}
-      accessibilityElementsHidden={true}
-      importantForAccessibility="no-hide-descendants"
-    >
-      <NoChartDataContainer hasData={hasData}>
-        <View style={styles.chartContainer}>
-          <Svg width={chartWidth} height={hasData ? chartHeight : 200}>
-            {/* Center line */}
-            {hasData && (
-              <Line
-                x1={centerX}
-                y1={0}
-                x2={centerX}
-                y2={chartHeight}
-                stroke={colors.divider}
-                strokeWidth="1"
-                opacity="0.5"
-              />
+    <>
+      <VisuallyHidden>
+        <Text>{a11ySummary}</Text>
+      </VisuallyHidden>
+      <View
+        style={styles.graphCard}
+        accessible={false}
+        accessibilityElementsHidden={true}
+        importantForAccessibility="no-hide-descendants"
+      >
+        <NoChartDataContainer hasData={hasData}>
+          <View style={styles.chartContainer}>
+            <Svg width={chartWidth} height={hasData ? chartHeight : 200}>
+              {/* Center line */}
+              {hasData && (
+                <Line
+                  x1={centerX}
+                  y1={0}
+                  x2={centerX}
+                  y2={chartHeight}
+                  stroke={colors.divider}
+                  strokeWidth="1"
+                  opacity="0.5"
+                />
+              )}
+
+              {pyramidData.map((item, index) => {
+                const y = 10 + index * barHeight;
+
+                return (
+                  <G key={item.grade}>
+                    {/* Left bar (first year) - only if there is data */}
+                    {hasData && item.firstYearPercentage > 0 && (
+                      <Path
+                        d={createRoundedBarPath(
+                          item.firstYearPercentage,
+                          y,
+                          true,
+                        )}
+                        fill={chartColors[0]}
+                        opacity="0.8"
+                      />
+                    )}
+
+                    {/* Right bar (other years) - only if there is data */}
+                    {hasData && item.otherYearsPercentage > 0 && (
+                      <Path
+                        d={createRoundedBarPath(
+                          item.otherYearsPercentage,
+                          y,
+                          false,
+                        )}
+                        fill={chartColors[1]}
+                        opacity="0.8"
+                      />
+                    )}
+
+                    {/* Vote label in the center */}
+                    {hasData && (
+                      <SvgText
+                        x={centerX}
+                        y={y + barHeight / 2 + 2}
+                        fontSize={labelFontSize}
+                        fill={colors.title}
+                        textAnchor="middle"
+                        fontWeight="bold"
+                      >
+                        {item.grade}
+                      </SvgText>
+                    )}
+
+                    {/* Percentages - only if there is data */}
+                    {hasData &&
+                      item.firstYearPercentage > 0 &&
+                      !isNaN(item.firstYearPercentage) && (
+                        <SvgText
+                          x={
+                            getPositionPercentage(
+                              item.firstYearPercentage,
+                              true,
+                            ) - 15
+                          }
+                          y={y + barHeight / 2 + 1}
+                          fontSize={percentageFontSize}
+                          fill={colors.title}
+                          textAnchor="middle"
+                          fontWeight="bold"
+                        >
+                          {item.firstYearPercentage.toFixed(1) + '%'}
+                        </SvgText>
+                      )}
+
+                    {hasData &&
+                      item.otherYearsPercentage > 0 &&
+                      !isNaN(item.otherYearsPercentage) && (
+                        <SvgText
+                          x={
+                            getPositionPercentage(
+                              item.otherYearsPercentage,
+                              false,
+                            ) + 15
+                          }
+                          y={y + barHeight / 2 + 1}
+                          fontSize={percentageFontSize}
+                          fill={colors.title}
+                          textAnchor="middle"
+                          fontWeight="bold"
+                        >
+                          {item.otherYearsPercentage.toFixed(1) + '%'}
+                        </SvgText>
+                      )}
+                  </G>
+                );
+              })}
+            </Svg>
+          </View>
+        </NoChartDataContainer>
+
+        <Col>
+          <Text
+            variant="prose"
+            style={styles.gradesChartLegendTitle}
+            accessibilityLabel={t(
+              'courseStatisticsScreen.gradesDetailLegend.averageGrade',
             )}
-
-            {pyramidData.map((item, index) => {
-              const y = 10 + index * barHeight;
-
-              return (
-                <G key={item.grade}>
-                  {/* Left bar (first year) - only if there is data */}
-                  {hasData && item.firstYearPercentage > 0 && (
-                    <Path
-                      d={createRoundedBarPath(
-                        item.firstYearPercentage,
-                        y,
-                        true,
-                      )}
-                      fill={chartColors[0]}
-                      opacity="0.8"
-                    />
-                  )}
-
-                  {/* Right bar (other years) - only if there is data */}
-                  {hasData && item.otherYearsPercentage > 0 && (
-                    <Path
-                      d={createRoundedBarPath(
-                        item.otherYearsPercentage,
-                        y,
-                        false,
-                      )}
-                      fill={chartColors[1]}
-                      opacity="0.8"
-                    />
-                  )}
-
-                  {/* Vote label in the center */}
-                  {hasData && (
-                    <SvgText
-                      x={centerX}
-                      y={y + barHeight / 2 + 2}
-                      fontSize={labelFontSize}
-                      fill={colors.title}
-                      textAnchor="middle"
-                      fontWeight="bold"
-                    >
-                      {item.grade}
-                    </SvgText>
-                  )}
-
-                  {/* Percentages - only if there is data */}
-                  {hasData &&
-                    item.firstYearPercentage > 0 &&
-                    !isNaN(item.firstYearPercentage) && (
-                      <SvgText
-                        x={
-                          getPositionPercentage(
-                            item.firstYearPercentage,
-                            true,
-                          ) - 15
-                        }
-                        y={y + barHeight / 2 + 1}
-                        fontSize={percentageFontSize}
-                        fill={colors.title}
-                        textAnchor="middle"
-                        fontWeight="bold"
-                      >
-                        {item.firstYearPercentage.toFixed(1) + '%'}
-                      </SvgText>
-                    )}
-
-                  {hasData &&
-                    item.otherYearsPercentage > 0 &&
-                    !isNaN(item.otherYearsPercentage) && (
-                      <SvgText
-                        x={
-                          getPositionPercentage(
-                            item.otherYearsPercentage,
-                            false,
-                          ) + 15
-                        }
-                        y={y + barHeight / 2 + 1}
-                        fontSize={percentageFontSize}
-                        fill={colors.title}
-                        textAnchor="middle"
-                        fontWeight="bold"
-                      >
-                        {item.otherYearsPercentage.toFixed(1) + '%'}
-                      </SvgText>
-                    )}
-                </G>
-              );
-            })}
-          </Svg>
-        </View>
-      </NoChartDataContainer>
-
-      <Col>
-        <Text
-          variant="prose"
-          style={styles.gradesChartLegendTitle}
-          accessibilityLabel={t(
-            'courseStatisticsScreen.gradesDetailLegend.averageGrade',
-          )}
-        >
-          {t('courseStatisticsScreen.gradesDetailLegend.averageGrade')}
-        </Text>
-        <LegendItem
-          bulletColor={chartColors[0]}
-          text={t('courseStatisticsScreen.gradesDetailLegend.firstYear')}
-          trailingText={statistics?.firstYear?.averageGrade?.toString() ?? '-'}
-        />
-        <LegendItem
-          bulletColor={chartColors[1]}
-          text={t('courseStatisticsScreen.gradesDetailLegend.otherYears')}
-          trailingText={statistics?.otherYears?.averageGrade?.toString() ?? '-'}
-        />
-      </Col>
-    </View>
+          >
+            {t('courseStatisticsScreen.gradesDetailLegend.averageGrade')}
+          </Text>
+          <LegendItem
+            bulletColor={chartColors[0]}
+            text={t('courseStatisticsScreen.gradesDetailLegend.firstYear')}
+            trailingText={
+              statistics?.firstYear?.averageGrade?.toString() ?? '-'
+            }
+          />
+          <LegendItem
+            bulletColor={chartColors[1]}
+            text={t('courseStatisticsScreen.gradesDetailLegend.otherYears')}
+            trailingText={
+              statistics?.otherYears?.averageGrade?.toString() ?? '-'
+            }
+          />
+        </Col>
+      </View>
+    </>
   );
 };
 

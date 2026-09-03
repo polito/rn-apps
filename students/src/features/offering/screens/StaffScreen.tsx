@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
 import { OverviewList, Section } from '@polito/lib/ui';
@@ -13,6 +14,7 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'Staff'>;
 
 export const StaffScreen = ({ route }: Props) => {
   const { staff } = route.params;
+  const { t } = useTranslation();
 
   const staffIds = useMemo(() => staff.map(s => s.id), [staff]);
 
@@ -40,11 +42,21 @@ export const StaffScreen = ({ route }: Props) => {
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <SafeAreaView>
         <Section>
-          <OverviewList loading={isLoading}>
-            {staffPeople.map(person => (
+          <OverviewList
+            loading={isLoading}
+            accessibilityRole="list"
+            accessibilityLabel={
+              isLoading
+                ? t('common.loading')
+                : t('staffScreen.staffList', { count: staffPeople.length })
+            }
+          >
+            {staffPeople.map((person, index) => (
               <StaffListItem
                 key={`${person.id}${person.courseId}`}
                 staff={person}
+                index={index}
+                total={staffPeople.length}
               />
             ))}
           </OverviewList>

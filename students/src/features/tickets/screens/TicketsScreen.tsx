@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AccessibilityInfo,
-  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -72,17 +71,12 @@ const ListItem = ({
   ].join(', ');
 
   return (
-    <Pressable
-      accessibilityRole="button"
+    <TicketListItem
       accessibilityLabel={accessibilityLabel}
-    >
-      <TicketListItem
-        accessibilityLabel={accessibilityLabel}
-        ticket={ticket}
-        key={ticket.id}
-        unread={unread}
-      />
-    </Pressable>
+      ticket={ticket}
+      key={ticket.id}
+      unread={unread}
+    />
   );
 };
 

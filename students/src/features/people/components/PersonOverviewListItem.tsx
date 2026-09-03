@@ -1,9 +1,11 @@
 import { ReactElement, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Image,
   StyleProp,
   StyleSheet,
   TouchableHighlightProps,
+  View,
   ViewStyle,
 } from 'react-native';
 
@@ -46,10 +48,10 @@ export const PersonOverviewListItem = ({
   const { fontSizes, colors } = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const styles = useStylesheet(createStyles);
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
+  const { t } = useTranslation();
   const { updatePreference, peopleSearched } =
     usePreferencesContext<AppPreferences>();
-  const accessibilityLabel = accessibilityListLabel(index, totalData);
   const subtitle = person.role ?? '';
   const firstName = person?.firstName ?? '';
   const lastName = person?.lastName ?? '';
@@ -82,13 +84,29 @@ export const PersonOverviewListItem = ({
       onPress={navigateToPerson}
       leadingItem={
         person?.picture ? (
-          <Image source={{ uri: person.picture }} style={styles.picture} />
+          <Image
+            source={{ uri: person.picture }}
+            style={styles.picture}
+            accessible={false}
+          />
         ) : (
-          <Icon icon={faUser} size={fontSizes.xl} />
+          <View
+            accessible={false}
+            importantForAccessibility="no-hide-descendants"
+          >
+            <Icon icon={faUser} size={fontSizes.xl} />
+          </View>
         )
       }
       title={<HighlightedText text={title} highlight={searchString || ''} />}
-      accessibilityLabel={[accessibilityLabel, title, subtitle].join(', ')}
+      accessibilityLabel={buildCompositeListLabel(
+        [title, subtitle],
+        index,
+        totalData,
+      )}
+      accessibilityRole="button"
+      accessibilityHint={t('common.tapToViewContact')}
+      accessibilityState={{ disabled: isDisabled }}
       subtitle={subtitle}
       trailingItem={trailingItem}
       style={[

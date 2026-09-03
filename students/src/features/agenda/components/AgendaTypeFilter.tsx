@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, View } from 'react-native';
 
@@ -12,7 +12,11 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { MenuAction, MenuView } from '@react-native-menu/menu';
+import {
+  MenuAction,
+  MenuView,
+  NativeActionEvent,
+} from '@react-native-menu/menu';
 
 import { AppPreferences } from '~/core/types/preferences';
 
@@ -36,15 +40,19 @@ export const AgendaTypeFilter = () => {
     return { ...agendaScreen.filters };
   }, [agendaScreen]);
 
-  const toggleFilter = (type: AgendaItemType) => {
-    const newVal = {
-      ...agendaScreen,
-      filters: { ...filters, [type]: !filters[type] },
-    };
-    updatePreference('agendaScreen', newVal);
-  };
+  const toggleFilter = useCallback(
+    (type: AgendaItemType) => {
+      updatePreference('agendaScreen', {
+        ...agendaScreen,
+        filters: { ...filters, [type]: !filters[type] },
+      });
+    },
+    [agendaScreen, filters, updatePreference],
+  );
 
   const { colors } = useTheme();
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const colorsMap: Record<AgendaItemType, string | null> = useMemo(() => {
     return {
@@ -73,12 +81,30 @@ export const AgendaTypeFilter = () => {
     } else {
       return selectedTypes.map(type => (
         <View key={type} style={styles.buttonType}>
-          <Icon icon={faCircle} color={colorsMap[type] ?? undefined} />
+          <View
+            accessible={false}
+            importantForAccessibility="no-hide-descendants"
+          >
+            <Icon icon={faCircle} color={colorsMap[type] ?? undefined} />
+          </View>
           <Text>{getLocalizedType(type)}</Text>
         </View>
       ));
     }
   }, [filters, colorsMap, getLocalizedType, styles.buttonType, t]);
+
+  const pillContentText = useMemo(() => {
+    const selectedTypes: AgendaItemType[] = [];
+    Object.entries(filters).forEach(([type, enabled]) => {
+      if (enabled) selectedTypes.push(type as AgendaItemType);
+    });
+
+    if (selectedTypes.length === 0 || selectedTypes.length === 4) {
+      return t('common.all');
+    } else {
+      return selectedTypes.map(type => getLocalizedType(type)).join(', ');
+    }
+  }, [filters, getLocalizedType, t]);
 
   const typeActions = useMemo(() => {
     return ALL_AGENDA_TYPES.map(eventType => {
@@ -98,15 +124,30 @@ export const AgendaTypeFilter = () => {
     });
   }, [filters, colorsMap, getLocalizedType]);
 
+  const onPressAction = useCallback(
+    ({ nativeEvent: { event } }: NativeActionEvent) => {
+      toggleFilter(event as AgendaItemType);
+    },
+    [toggleFilter],
+  );
+
   return (
     <MenuView
       actions={typeActions}
-      onPressAction={({ nativeEvent: { event } }) => {
-        const type = event as AgendaItemType;
-        toggleFilter(type);
-      }}
+      onPressAction={onPressAction}
+      onOpenMenu={() => setIsOpen(true)}
+      onCloseMenu={() => setIsOpen(false)}
     >
-      <PillDropdownActivator variant="neutral">
+      <PillDropdownActivator
+        variant="neutral"
+        accessibilityRole="button"
+        accessibilityLabel={[
+          t('agendaTypeFilter.filterButton'),
+          pillContentText,
+        ].join(', ')}
+        accessibilityHint={t('agendaTypeFilter.filterHint')}
+        accessibilityState={{ expanded: isOpen }}
+      >
         <View style={styles.typeFilter}>
           <Text key="events">{t('common.event_plural')} </Text>
           <Text

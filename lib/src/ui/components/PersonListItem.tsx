@@ -1,4 +1,5 @@
 import { ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, TouchableHighlightProps } from 'react-native';
 
 import { faUser } from '@fortawesome/free-regular-svg-icons';
@@ -18,24 +19,40 @@ export const PersonListItem = ({
   person,
   subtitle,
   navigateEnabled = true,
+  ...rest
 }: TouchableHighlightProps & Props) => {
   const { fontSizes } = useTheme();
+  const { t } = useTranslation();
+
+  const accessibilityLabel = person
+    ? typeof subtitle === 'string'
+      ? `${subtitle}: ${person.firstName} ${person.lastName}${
+          navigateEnabled ? `. ${t('common.tapToViewContact')}` : ''
+        }`
+      : `${person.firstName} ${person.lastName}${
+          navigateEnabled ? `. ${t('common.tapToViewContact')}` : ''
+        }`
+    : undefined;
 
   return (
     <ListItem
+      accessibilityRole="button"
+      accessible
       leadingItem={
         person?.picture ? (
-          <Image source={{ uri: person.picture }} style={styles.picture} />
+          <Image
+            source={{ uri: person.picture }}
+            style={styles.picture}
+            accessibilityLabel={t('common.profilePicture', {
+              name: `${person.firstName} ${person.lastName}`,
+            })}
+          />
         ) : (
           <Icon icon={faUser} size={fontSizes['2xl']} />
         )
       }
       title={person ? `${person.firstName} ${person.lastName}` : ''}
-      accessibilityLabel={
-        person
-          ? `${subtitle}: ${person.firstName} ${person.lastName}`
-          : undefined
-      }
+      accessibilityLabel={accessibilityLabel}
       linkTo={
         person?.id && navigateEnabled
           ? {
@@ -45,6 +62,7 @@ export const PersonListItem = ({
           : undefined
       }
       subtitle={subtitle}
+      {...rest}
     />
   );
 };
