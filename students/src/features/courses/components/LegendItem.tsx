@@ -7,33 +7,35 @@ export const LegendItem = ({
   bulletColor,
   text,
   trailingText,
+  indented = false,
 }: {
-  bulletColor: string;
+  bulletColor?: string;
   text: string;
   trailingText?: string;
+  indented?: boolean;
 }) => {
   const styles = useStylesheet(createStyles);
   return (
-    <Row gap={2} style={{ alignItems: 'center' }}>
-      <View
-        style={{
-          ...styles.chartLegendBullet,
-          backgroundColor: bulletColor,
-        }}
-      />
-      <Text
-        variant="prose"
-        style={styles.chartLegendText}
-        accessibilityLabel={text}
-      >
+    <Row
+      gap={2.5}
+      style={[styles.chartLegendRow, indented && styles.chartLegendRowIndented]}
+      accessible={true}
+      accessibilityRole="text"
+      accessibilityLabel={[text, trailingText].filter(Boolean).join(', ')}
+    >
+      {bulletColor && (
+        <View
+          style={{
+            ...styles.chartLegendBullet,
+            backgroundColor: bulletColor,
+          }}
+        />
+      )}
+      <Text variant="prose" style={styles.chartLegendText}>
         {text}
       </Text>
       {trailingText && (
-        <Text
-          variant="prose"
-          style={styles.chartLegendTrailingText}
-          accessibilityLabel={trailingText}
-        >
+        <Text variant="prose" style={styles.chartLegendTrailingText}>
           {trailingText}
         </Text>
       )}
@@ -41,19 +43,27 @@ export const LegendItem = ({
   );
 };
 
-const createStyles = ({ fontSizes, fontWeights }: Theme) =>
+const createStyles = ({ spacing, fontSizes, fontWeights }: Theme) =>
   StyleSheet.create({
+    chartLegendRow: {
+      alignItems: 'center',
+      minHeight: 25,
+    },
+    chartLegendRowIndented: {
+      paddingLeft: spacing[9],
+    },
     chartLegendBullet: {
-      height: 8,
-      width: 8,
-      borderRadius: 8,
+      height: spacing[3],
+      width: spacing[3],
+      borderRadius: spacing[3],
     },
     chartLegendText: {
-      fontSize: fontSizes.xs,
+      flex: 1,
+      fontSize: fontSizes.sm,
     },
     chartLegendTrailingText: {
       marginLeft: 'auto',
-      fontSize: fontSizes.sm,
+      fontSize: fontSizes.md,
       fontWeight: fontWeights.medium,
     },
   });

@@ -1,19 +1,15 @@
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { Icon, faSeat } from '@polito/lib/ui';
 
-import { getBookingSlotIcon } from '~/utils/bookings';
-
-import { BookingCalendarEvent } from '../screens/BookingSlotScreen';
-
 type Props = {
-  item: BookingCalendarEvent;
+  icon: IconDefinition;
   color: string;
   size: number;
 };
 
 const VIEW_BOX_EXPANSION = 64;
 
-export const BookingSlotIcon = ({ item, color, size }: Props) => {
-  const icon = getBookingSlotIcon(item);
+export const BookingSlotIcon = ({ icon, color, size }: Props) => {
   const [width, height] = icon.icon;
   const seatWidth = icon === faSeat ? width : height;
   const renderedWidth = Math.max(width, height + VIEW_BOX_EXPANSION);

@@ -61,6 +61,7 @@ import {
 } from '../../../core/queries/bookingHooks';
 import {
   canBeBookedWithSeatSelection,
+  getBookingSlotIcon,
   getBookingSlotStatus,
   getBookingStyle,
   getCalendarHours,
@@ -480,7 +481,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                     >
                       <Row align="center" gap={2.5}>
                         <BookingSlotIcon
-                          item={item}
+                          icon={getBookingSlotIcon(item)}
                           color={color}
                           size={fontSizes.md}
                         />
@@ -586,7 +587,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                   >
                     {!isMini && (
                       <BookingSlotIcon
-                        item={item}
+                        icon={getBookingSlotIcon(item)}
                         color={color}
                         size={fontSizes.md}
                       />

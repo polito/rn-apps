@@ -205,12 +205,7 @@ export const EnrolledExamChart = ({
   const hasData = barData.some(it => it.value !== undefined && it.value > 0);
 
   return (
-    <View
-      style={styles.graphCard}
-      accessible={false}
-      accessibilityElementsHidden={true}
-      importantForAccessibility="no-hide-descendants"
-    >
+    <View style={styles.graphCard}>
       <View style={{ justifyContent: 'flex-end', marginBottom: spacing[4] }}>
         <Text
           accessibilityLabel={t(
@@ -252,34 +247,42 @@ export const EnrolledExamChart = ({
         </View>
       </View>
 
-      <NoChartDataContainer hasData={hasData}>
-        <BarChart
-          animationDuration={kChartAnimationDuration}
-          initialSpacing={initialSpacing}
-          data={hasData ? barData : emptyChartData}
-          barWidth={hasData ? barWidth : 19}
-          barBorderTopLeftRadius={barRadius}
-          barBorderTopRightRadius={barRadius}
-          spacing={hasData ? graphSpacing : 0}
-          isAnimated
-          yAxisTextStyle={styles.chartAxisLabel}
-          rulesColor={colors.divider}
-          yAxisColor="rgba(255,255,255,0)"
-          xAxisColor={colors.divider}
-          rulesType="solid"
-          noOfSections={noOfSections}
-          maxValue={Math.max(...barData.map(d => d.value || 0)) * 1.1}
-        />
-      </NoChartDataContainer>
+      <View
+        accessible={false}
+        accessibilityElementsHidden={true}
+        importantForAccessibility="no-hide-descendants"
+      >
+        <NoChartDataContainer hasData={hasData}>
+          <BarChart
+            animationDuration={kChartAnimationDuration}
+            initialSpacing={initialSpacing}
+            data={hasData ? barData : emptyChartData}
+            barWidth={hasData ? barWidth : 19}
+            barBorderTopLeftRadius={barRadius}
+            barBorderTopRightRadius={barRadius}
+            spacing={hasData ? graphSpacing : 0}
+            isAnimated
+            yAxisTextStyle={styles.chartAxisLabel}
+            rulesColor={colors.divider}
+            yAxisColor="rgba(255,255,255,0)"
+            xAxisColor={colors.divider}
+            rulesType="solid"
+            noOfSections={noOfSections}
+            maxValue={Math.max(...barData.map(d => d.value || 0)) * 1.1}
+          />
+        </NoChartDataContainer>
+      </View>
 
       <Col>
         <LegendItem
           bulletColor={chartColors[0]}
           text={t('courseStatisticsScreen.enrolledExamChartLegend.passed')}
+          trailingText={(statistics?.totalSucceeded ?? 0).toString()}
         />
         <LegendItem
           bulletColor={chartColors[1]}
           text={t('courseStatisticsScreen.enrolledExamChartLegend.failed')}
+          trailingText={(statistics?.totalFailed ?? 0).toString()}
         />
       </Col>
     </View>
