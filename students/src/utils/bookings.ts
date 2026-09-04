@@ -1,5 +1,12 @@
 import { APP_TIMEZONE } from '@polito/lib/core';
-import { Theme } from '@polito/lib/ui';
+import {
+  Theme,
+  faSeat,
+  faSeatCheck,
+  faSeatClock,
+  faSeatFull,
+  faSeatOutline,
+} from '@polito/lib/ui';
 import { Booking, BookingTopic } from '@polito/student-api-client';
 
 import { inRange } from 'lodash';
@@ -91,6 +98,26 @@ export const getBookingStyle = (
     backgroundColor: palettes.rose[dark ? '600' : '200'],
     color: palettes.rose[dark ? '200' : '600'],
   };
+};
+
+export const getBookingSlotIcon = (item: BookingCalendarEvent) => {
+  const isPast = isPastSlot(item);
+  if (item.isBooked && !isPast) {
+    return faSeatCheck;
+  }
+  if (isSlotBookable(item)) {
+    return faSeat;
+  }
+  if (isPast) {
+    return faSeatOutline;
+  }
+  if (isSlotFull(item)) {
+    return faSeatFull;
+  }
+  if (item.start > DateTime.now().setZone(APP_TIMEZONE)) {
+    return faSeatClock;
+  }
+  return faSeatFull;
 };
 
 export const getBookingSlotStatus = (
