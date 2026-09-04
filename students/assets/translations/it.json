@@ -1054,15 +1054,16 @@
     "writeTicketMessage": "Scrivi ticket se non hai trovato quello che cerchi"
   },
   "ticketFaqsScreen": {
-    "searchButton": "Attiva per cercare le parole chiave inserite tra le faq",
     "emptyState": "Nessun risultato trovato",
     "findFAQ": "Cerca tra le FAQ",
     "findFAQSubtitle": "Prima di inserire un ticket cerca una risposta tra le FAQ.",
     "noResultFound": "Non hai trovato quello che cerchi?",
     "search": "Cerca (inserisci almeno 3 caratteri)",
+    "searchButton": "Attiva per cercare le parole chiave inserite tra le faq",
     "searchMinLengthHint": "Per favore, inserisci almeno 3 caratteri.",
+    "stillNeedHelp": "Hai ancora bisogno di aiuto?",
     "title": "FAQ",
-    "writeTicket": "Scrivi ticket"
+    "writeTicket": "Scrivi un ticket"
   },
   "ticketScreen": {
     "incomingMessage": "la tua risposta",

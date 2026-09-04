@@ -21,7 +21,7 @@ export const darkTheme: Theme = {
     disableTitle: lightTheme.palettes.gray[700],
     longProse: lightTheme.palettes.text[50],
     secondaryText: lightTheme.palettes.text[400],
-    caption: lightTheme.palettes.text[500],
+    caption: lightTheme.palettes.gray[400],
     link: lightTheme.palettes.primary[300],
     translucentSurface: Platform.select({
       android: 'rgba(255, 255, 255, .1)',

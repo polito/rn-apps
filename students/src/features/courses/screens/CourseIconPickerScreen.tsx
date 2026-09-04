@@ -27,7 +27,7 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseIconPicker'>;
 
 export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
-  const { spacing, fontSizes } = useTheme();
+  const { spacing, fontSizes, dark, palettes, colors } = useTheme();
   const [searchFilter, setSearchFilter] = useState('');
   const { courses: coursesPrefs, updatePreference } =
     usePreferencesContext<AppPreferences>();
@@ -49,9 +49,11 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
     navigation.setOptions({
       headerSearchBarOptions: {
         onChangeText: e => setSearchFilter(e.nativeEvent.text.toLowerCase()),
+        textColor: colors.prose,
+        hintTextColor: dark ? palettes.gray[400] : palettes.gray[600],
       },
     });
-  }, [navigation]);
+  }, [navigation, colors, dark, palettes]);
 
   return (
     <>

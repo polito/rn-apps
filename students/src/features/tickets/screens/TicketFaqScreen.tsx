@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import {
   BottomBarSpacer,
-  CtaButton,
   HtmlView,
+  ListItem,
+  OverviewList,
   Section,
   SectionHeader,
   type Theme,
@@ -37,18 +37,25 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
           />
         </Section>
 
-        <CtaButton
-          absolute={false}
-          title={t('ticketFaqsScreen.writeTicket')}
-          hint={t('ticketFaqsScreen.noResultFound')}
-          action={() =>
-            navigation.navigate('CreateTicket', {
-              subtopicId: undefined,
-              topicId: undefined,
-            })
-          }
-          icon={faPencil}
-        />
+        <OverviewList indented style={styles.writeTicketList}>
+          <ListItem
+            inverted
+            isAction
+            title={t('ticketFaqsScreen.writeTicket')}
+            subtitle={t('ticketFaqsScreen.stillNeedHelp')}
+            accessibilityRole="button"
+            accessibilityLabel={[
+              t('ticketFaqsScreen.stillNeedHelp'),
+              t('ticketFaqsScreen.writeTicket'),
+            ].join(', ')}
+            onPress={() =>
+              navigation.navigate('CreateTicket', {
+                subtopicId: undefined,
+                topicId: undefined,
+              })
+            }
+          />
+        </OverviewList>
 
         <BottomBarSpacer />
       </SafeAreaView>
@@ -60,5 +67,8 @@ const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     container: {
       paddingVertical: spacing[5],
+    },
+    writeTicketList: {
+      marginTop: spacing[4],
     },
   });

@@ -184,119 +184,120 @@ export const CourseGradesChart = ({
   const percentageFontSize = Math.max(9, Math.min(11, chartWidth * 0.025));
 
   return (
-    <View
-      style={styles.graphCard}
-      accessible={false}
-      accessibilityElementsHidden={true}
-      importantForAccessibility="no-hide-descendants"
-    >
-      <NoChartDataContainer hasData={hasData}>
-        <View style={styles.chartContainer}>
-          <Svg width={chartWidth} height={hasData ? chartHeight : 200}>
-            {/* Center line */}
-            {hasData && (
-              <Line
-                x1={centerX}
-                y1={0}
-                x2={centerX}
-                y2={chartHeight}
-                stroke={colors.divider}
-                strokeWidth="1"
-                opacity="0.5"
-              />
-            )}
+    <View style={styles.graphCard}>
+      <View
+        accessible={false}
+        accessibilityElementsHidden={true}
+        importantForAccessibility="no-hide-descendants"
+      >
+        <NoChartDataContainer hasData={hasData}>
+          <View style={styles.chartContainer}>
+            <Svg width={chartWidth} height={hasData ? chartHeight : 200}>
+              {/* Center line */}
+              {hasData && (
+                <Line
+                  x1={centerX}
+                  y1={0}
+                  x2={centerX}
+                  y2={chartHeight}
+                  stroke={colors.divider}
+                  strokeWidth="1"
+                  opacity="0.5"
+                />
+              )}
 
-            {pyramidData.map((item, index) => {
-              const y = 10 + index * barHeight;
+              {pyramidData.map((item, index) => {
+                const y = 10 + index * barHeight;
 
-              return (
-                <G key={item.grade}>
-                  {/* Left bar (first year) - only if there is data */}
-                  {hasData && item.firstYearPercentage > 0 && (
-                    <Path
-                      d={createRoundedBarPath(
-                        item.firstYearPercentage,
-                        y,
-                        true,
-                      )}
-                      fill={chartColors[0]}
-                      opacity="0.8"
-                    />
-                  )}
+                return (
+                  <G key={item.grade}>
+                    {/* Left bar (first year) - only if there is data */}
+                    {hasData && item.firstYearPercentage > 0 && (
+                      <Path
+                        d={createRoundedBarPath(
+                          item.firstYearPercentage,
+                          y,
+                          true,
+                        )}
+                        fill={chartColors[0]}
+                        opacity="0.8"
+                      />
+                    )}
 
-                  {/* Right bar (other years) - only if there is data */}
-                  {hasData && item.otherYearsPercentage > 0 && (
-                    <Path
-                      d={createRoundedBarPath(
-                        item.otherYearsPercentage,
-                        y,
-                        false,
-                      )}
-                      fill={chartColors[1]}
-                      opacity="0.8"
-                    />
-                  )}
+                    {/* Right bar (other years) - only if there is data */}
+                    {hasData && item.otherYearsPercentage > 0 && (
+                      <Path
+                        d={createRoundedBarPath(
+                          item.otherYearsPercentage,
+                          y,
+                          false,
+                        )}
+                        fill={chartColors[1]}
+                        opacity="0.8"
+                      />
+                    )}
 
-                  {/* Vote label in the center */}
-                  {hasData && (
-                    <SvgText
-                      x={centerX}
-                      y={y + barHeight / 2 + 2}
-                      fontSize={labelFontSize}
-                      fill={colors.title}
-                      textAnchor="middle"
-                      fontWeight="bold"
-                    >
-                      {item.grade}
-                    </SvgText>
-                  )}
-
-                  {/* Percentages - only if there is data */}
-                  {hasData &&
-                    item.firstYearPercentage > 0 &&
-                    !isNaN(item.firstYearPercentage) && (
+                    {/* Vote label in the center */}
+                    {hasData && (
                       <SvgText
-                        x={
-                          getPositionPercentage(
-                            item.firstYearPercentage,
-                            true,
-                          ) - 15
-                        }
-                        y={y + barHeight / 2 + 1}
-                        fontSize={percentageFontSize}
+                        x={centerX}
+                        y={y + barHeight / 2 + 2}
+                        fontSize={labelFontSize}
                         fill={colors.title}
                         textAnchor="middle"
                         fontWeight="bold"
                       >
-                        {item.firstYearPercentage.toFixed(1) + '%'}
+                        {item.grade}
                       </SvgText>
                     )}
 
-                  {hasData &&
-                    item.otherYearsPercentage > 0 &&
-                    !isNaN(item.otherYearsPercentage) && (
-                      <SvgText
-                        x={
-                          getPositionPercentage(
-                            item.otherYearsPercentage,
-                            false,
-                          ) + 15
-                        }
-                        y={y + barHeight / 2 + 1}
-                        fontSize={percentageFontSize}
-                        fill={colors.title}
-                        textAnchor="middle"
-                        fontWeight="bold"
-                      >
-                        {item.otherYearsPercentage.toFixed(1) + '%'}
-                      </SvgText>
-                    )}
-                </G>
-              );
-            })}
-          </Svg>
-        </View>
-      </NoChartDataContainer>
+                    {/* Percentages - only if there is data */}
+                    {hasData &&
+                      item.firstYearPercentage > 0 &&
+                      !isNaN(item.firstYearPercentage) && (
+                        <SvgText
+                          x={
+                            getPositionPercentage(
+                              item.firstYearPercentage,
+                              true,
+                            ) - 15
+                          }
+                          y={y + barHeight / 2 + 1}
+                          fontSize={percentageFontSize}
+                          fill={colors.title}
+                          textAnchor="middle"
+                          fontWeight="bold"
+                        >
+                          {item.firstYearPercentage.toFixed(1) + '%'}
+                        </SvgText>
+                      )}
+
+                    {hasData &&
+                      item.otherYearsPercentage > 0 &&
+                      !isNaN(item.otherYearsPercentage) && (
+                        <SvgText
+                          x={
+                            getPositionPercentage(
+                              item.otherYearsPercentage,
+                              false,
+                            ) + 15
+                          }
+                          y={y + barHeight / 2 + 1}
+                          fontSize={percentageFontSize}
+                          fill={colors.title}
+                          textAnchor="middle"
+                          fontWeight="bold"
+                        >
+                          {item.otherYearsPercentage.toFixed(1) + '%'}
+                        </SvgText>
+                      )}
+                  </G>
+                );
+              })}
+            </Svg>
+          </View>
+        </NoChartDataContainer>
+      </View>
 
       <Col>
         <Text

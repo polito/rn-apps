@@ -36,15 +36,15 @@ export const Tab = ({
     () =>
       selected
         ? palettes.primary[500]
-        : color(palettes.primary[dark ? 600 : 50])
-            .alpha(0.4)
-            .toString(),
+        : dark
+          ? color(palettes.primary[600]).alpha(0.4).toString()
+          : palettes.primary[50],
     [selected, dark, palettes],
   );
 
   const borderColor = useMemo(
-    () => (selected ? 'transparent' : palettes.primary[50]),
-    [selected, palettes],
+    () => (selected ? 'transparent' : palettes.primary[dark ? 600 : 50]),
+    [selected, dark, palettes],
   );
 
   const borderWidth = useMemo(() => (selected ? 0 : 1), [selected]);
@@ -74,7 +74,7 @@ export const Tab = ({
               color: selected
                 ? palettes.text[50]
                 : dark
-                  ? palettes.primary[400]
+                  ? palettes.primary[300]
                   : palettes.primary[500],
               fontWeight: fontWeights.medium,
               fontSize: fontSizes.xs + 1,

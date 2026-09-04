@@ -47,6 +47,7 @@ export const TranslucentTextField = ({
       )}
       <TextField
         clearButtonMode="never"
+        placeholderTextColor={styles.placeholder.color}
         {...props}
         style={[styles.textField, style]}
         inputStyle={[styles.input, inputStyle]}
@@ -88,5 +89,8 @@ const createStyles = ({ colors, dark, palettes, spacing }: Theme) =>
     },
     cancelIcon: {
       color: dark ? palettes.gray[400] : palettes.gray[500],
+    },
+    placeholder: {
+      color: dark ? palettes.gray[400] : palettes.gray[600],
     },
   });

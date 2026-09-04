@@ -118,41 +118,66 @@ export const EnrolledExamDetailChart = ({
   const hasData = barData.some(it => it.value !== undefined && it.value > 0);
 
   return (
-    <View
-      style={styles.graphCard}
-      accessible={false}
-      accessibilityElementsHidden={true}
-      importantForAccessibility="no-hide-descendants"
-    >
-      <NoChartDataContainer hasData={hasData}>
-        <BarChart
-          animationDuration={kChartAnimationDuration}
-          initialSpacing={initialSpacing}
-          data={hasData ? barData : emptyChartData}
-          barWidth={barWidth}
-          barBorderTopLeftRadius={barRadius}
-          barBorderTopRightRadius={barRadius}
-          spacing={hasData ? graphSpacing : 0}
-          isAnimated
-          yAxisTextStyle={styles.chartAxisLabel}
-          rulesColor={colors.divider}
-          yAxisColor="rgba(255,255,255,0)"
-          xAxisColor={colors.divider}
-          rulesType="solid"
-          noOfSections={noOfSections}
-          maxValue={Math.max(...barData.map(d => d.value || 0)) * 1.1}
-        />
-      </NoChartDataContainer>
+    <View style={styles.graphCard}>
+      <View
+        accessible={false}
+        accessibilityElementsHidden={true}
+        importantForAccessibility="no-hide-descendants"
+      >
+        <NoChartDataContainer hasData={hasData}>
+          <BarChart
+            animationDuration={kChartAnimationDuration}
+            initialSpacing={initialSpacing}
+            data={hasData ? barData : emptyChartData}
+            barWidth={barWidth}
+            barBorderTopLeftRadius={barRadius}
+            barBorderTopRightRadius={barRadius}
+            spacing={hasData ? graphSpacing : 0}
+            isAnimated
+            yAxisTextStyle={styles.chartAxisLabel}
+            rulesColor={colors.divider}
+            yAxisColor="rgba(255,255,255,0)"
+            xAxisColor={colors.divider}
+            rulesType="solid"
+            noOfSections={noOfSections}
+            maxValue={Math.max(...barData.map(d => d.value || 0)) * 1.1}
+          />
+        </NoChartDataContainer>
+      </View>
 
-      <Col>
-        <LegendItem
-          bulletColor={chartColors[0]}
-          text={t('courseStatisticsScreen.enrolledExamChartLegend.passed')}
-        />
-        <LegendItem
-          bulletColor={chartColors[1]}
-          text={t('courseStatisticsScreen.enrolledExamChartLegend.failed')}
-        />
+      <Col gap={1}>
+        <Col>
+          <LegendItem
+            bulletColor={chartColors[0]}
+            text={t('courseStatisticsScreen.enrolledExamChartLegend.passed')}
+          />
+          <LegendItem
+            indented
+            text={t('courseStatisticsScreen.enrolledExamChartLabel.firstYear')}
+            trailingText={(statistics?.firstYear?.succeeded ?? 0).toString()}
+          />
+          <LegendItem
+            indented
+            text={t('courseStatisticsScreen.enrolledExamChartLabel.otherYears')}
+            trailingText={(statistics?.otherYears?.succeeded ?? 0).toString()}
+          />
+        </Col>
+        <Col>
+          <LegendItem
+            bulletColor={chartColors[1]}
+            text={t('courseStatisticsScreen.enrolledExamChartLegend.failed')}
+          />
+          <LegendItem
+            indented
+            text={t('courseStatisticsScreen.enrolledExamChartLabel.firstYear')}
+            trailingText={(statistics?.firstYear?.failed ?? 0).toString()}
+          />
+          <LegendItem
+            indented
+            text={t('courseStatisticsScreen.enrolledExamChartLabel.otherYears')}
+            trailingText={(statistics?.otherYears?.failed ?? 0).toString()}
+          />
+        </Col>
       </Col>
     </View>
   );

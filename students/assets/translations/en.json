@@ -1039,8 +1039,9 @@
     "noResultFound": "Didn't find what you were looking for?",
     "search": "Search (type at least 3 characters)",
     "searchMinLengthHint": "Please, insert at least 3 characters.",
+    "stillNeedHelp": "Still need help?",
     "title": "FAQs",
-    "writeTicket": "Write ticket"
+    "writeTicket": "Write a ticket"
   },
   "ticketScreen": {
     "headerBackTitle": "Tickets",
