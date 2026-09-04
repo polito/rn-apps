@@ -25,13 +25,11 @@ import {
   CalendarHeader,
   Col,
   HeaderAccessory,
-  Icon,
   IconButton,
   Row,
   Tabs,
   Text,
   WeekNum,
-  faSeat,
   useBottomModal,
   useStylesheet,
   useTheme,
@@ -72,6 +70,7 @@ import {
 import { WeekFilter } from '../../agenda/components/WeekFilter';
 import { AgendaOption } from '../../agenda/types/AgendaOption';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
+import { BookingSlotIcon } from '../components/BookingSlotIcon';
 import { BookingSlotModal } from '../components/BookingSlotModal';
 import { BookingSlotsLegendModal } from '../components/BookingSlotsLegendModal';
 import { BookingSlotsStatusLegend } from '../components/BookingSlotsStatusLegend';
@@ -479,11 +478,11 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                       time={timeRange}
                       onPress={() => handlePress(item)}
                     >
-                      <Row align="center">
-                        <Icon
-                          icon={faSeat}
+                      <Row align="center" gap={2.5}>
+                        <BookingSlotIcon
+                          item={item}
                           color={color}
-                          style={{ marginRight: 10 }}
+                          size={fontSizes.md}
                         />
                         <Text>
                           {item.bookedPlaces} / {item.places || 0}
@@ -585,8 +584,14 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                     }
                     onPress={() => handlePress(item)}
                   >
-                    {!isMini && <Icon icon={faSeat} color={color} />}
-                    <Text style={styles.placesText}>
+                    {!isMini && (
+                      <BookingSlotIcon
+                        item={item}
+                        color={color}
+                        size={fontSizes.md}
+                      />
+                    )}
+                    <Text style={[styles.placesText, { color }]}>
                       {item.bookedPlaces} / {item.places || 0}
                     </Text>
                   </Pressable>
@@ -635,8 +640,9 @@ const createStyles = ({
       alignItems: 'center',
     },
     placesText: {
-      fontSize: fontSizes.xs,
-      fontWeight: fontWeights.normal,
+      fontSize: fontSizes['2xs'],
+      lineHeight: fontSizes['2xs'] * 1.5,
+      fontWeight: fontWeights.medium,
       marginTop: spacing[1],
     },
     dayColumn: {
