@@ -9,11 +9,17 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 
 import { faBullhorn } from '@fortawesome/free-solid-svg-icons';
 import { IS_IOS, dateFormatter, useScreenReader } from '@polito/lib/core';
-import { Icon, Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
+import {
+  CarouselDots,
+  Icon,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { Announcement } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -82,7 +88,7 @@ export const WhatsNewCard = ({ announcements }: Props) => {
   const { t } = useTranslation();
   const { isEnabled, announce } = useScreenReader();
   const { width: pageWidth } = useWindowDimensions();
-  const { spacing, colors } = useTheme();
+  const { spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const [index, setIndex] = useState(0);
 
@@ -146,42 +152,9 @@ export const WhatsNewCard = ({ announcements }: Props) => {
           importantForAccessibility="no-hide-descendants"
           accessibilityElementsHidden={IS_IOS}
         >
-          <AnimatedDotsCarousel
-            length={announcements.length}
-            currentIndex={index}
-            maxIndicators={announcements.length}
-            activeIndicatorConfig={{
-              color: colors.link,
-              margin: 5,
-              opacity: 1,
-              size: 10,
-            }}
-            inactiveIndicatorConfig={{
-              color: colors.heading,
-              margin: 5,
-              opacity: 0.5,
-              size: 10,
-            }}
-            decreasingDots={[
-              {
-                config: {
-                  color: colors.heading,
-                  margin: 5,
-                  opacity: 0.5,
-                  size: 8,
-                },
-                quantity: 1,
-              },
-              {
-                config: {
-                  color: colors.heading,
-                  margin: 5,
-                  opacity: 0.5,
-                  size: 6,
-                },
-                quantity: 1,
-              },
-            ]}
+          <CarouselDots
+            carouselLength={announcements.length}
+            carouselIndex={index}
           />
         </View>
       )}

@@ -2,6 +2,8 @@ import { getHtmlTextContent, pluckData } from '@polito/lib/core';
 import { NewsApi, NewsItemOverview } from '@polito/student-api-client';
 import { useQuery } from '@tanstack/react-query';
 
+import { sortByDateDesc } from '../../utils/sorting';
+
 const NEWS_ITEM_QUERY_PREFIX = 'news';
 const NEWS_QUERY_KEY = [NEWS_ITEM_QUERY_PREFIX];
 
@@ -32,12 +34,7 @@ const isOperationalNotice = (item: NewsItemOverview) => {
 };
 
 export const getOperationalNotices = (items: NewsItemOverview[] = []) =>
-  [...items]
-    .filter(isOperationalNotice)
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    );
+  sortByDateDesc(items.filter(isOperationalNotice));
 
 const useNewsClient = (): NewsApi => {
   return new NewsApi();

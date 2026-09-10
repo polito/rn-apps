@@ -16,10 +16,10 @@ import {
   faComments,
   faTriangleExclamation,
 } from '@fortawesome/free-solid-svg-icons';
-import { IS_IOS, getHtmlTextContent } from '@polito/lib/core';
+import { getHtmlTextContent } from '@polito/lib/core';
 import {
   BottomBarSpacer,
-  Icon,
+  DecorativeIcon,
   ListItem,
   OverviewList,
   RefreshControl,
@@ -108,17 +108,11 @@ export const AppInfoScreen = () => {
                   >
                     {t('appInfoScreen.showAll')}
                   </Text>
-                  <View
-                    accessible={false}
-                    importantForAccessibility="no-hide-descendants"
-                    accessibilityElementsHidden={IS_IOS}
-                  >
-                    <Icon
-                      icon={faChevronRight}
-                      color={styles.showAll.color}
-                      size={fontSizes.xs}
-                    />
-                  </View>
+                  <DecorativeIcon
+                    icon={faChevronRight}
+                    color={styles.showAll.color}
+                    size={fontSizes.xs}
+                  />
                 </Row>
               }
             />
@@ -178,17 +172,11 @@ export const AppInfoScreen = () => {
                     subtitleProps={{ numberOfLines: 1 }}
                     containerStyle={styles.listItemContainer}
                     trailingItem={
-                      <View
-                        accessible={false}
-                        importantForAccessibility="no-hide-descendants"
-                        accessibilityElementsHidden={IS_IOS}
-                      >
-                        <Icon
-                          icon={faChevronRight}
-                          size={fontSizes.md}
-                          color={styles.listItemTrailingIcon.color}
-                        />
-                      </View>
+                      <DecorativeIcon
+                        icon={faChevronRight}
+                        size={fontSizes.md}
+                        color={styles.listItemTrailingIcon.color}
+                      />
                     }
                     accessibilityRole="button"
                     accessibilityLabel={[
@@ -226,30 +214,18 @@ export const AppInfoScreen = () => {
                   subtitleProps={{ numberOfLines: 1 }}
                   containerStyle={styles.listItemContainer}
                   leadingItem={
-                    <View
-                      accessible={false}
-                      importantForAccessibility="no-hide-descendants"
-                      accessibilityElementsHidden={IS_IOS}
-                    >
-                      <Icon
-                        icon={faTriangleExclamation}
-                        size={fontSizes['2xl']}
-                        color={styles.listItemIcon.color}
-                      />
-                    </View>
+                    <DecorativeIcon
+                      icon={faTriangleExclamation}
+                      size={fontSizes['2xl']}
+                      color={styles.listItemIcon.color}
+                    />
                   }
                   trailingItem={
-                    <View
-                      accessible={false}
-                      importantForAccessibility="no-hide-descendants"
-                      accessibilityElementsHidden={IS_IOS}
-                    >
-                      <Icon
-                        icon={faChevronRight}
-                        size={fontSizes.md}
-                        color={styles.listItemTrailingIcon.color}
-                      />
-                    </View>
+                    <DecorativeIcon
+                      icon={faChevronRight}
+                      size={fontSizes.md}
+                      color={styles.listItemTrailingIcon.color}
+                    />
                   }
                   accessibilityRole="button"
                   accessibilityLabel={[
@@ -267,30 +243,18 @@ export const AppInfoScreen = () => {
                   subtitleProps={{ numberOfLines: 1 }}
                   containerStyle={styles.listItemContainer}
                   leadingItem={
-                    <View
-                      accessible={false}
-                      importantForAccessibility="no-hide-descendants"
-                      accessibilityElementsHidden={IS_IOS}
-                    >
-                      <Icon
-                        icon={faComments}
-                        size={fontSizes['2xl']}
-                        color={styles.listItemIcon.color}
-                      />
-                    </View>
+                    <DecorativeIcon
+                      icon={faComments}
+                      size={fontSizes['2xl']}
+                      color={styles.listItemIcon.color}
+                    />
                   }
                   trailingItem={
-                    <View
-                      accessible={false}
-                      importantForAccessibility="no-hide-descendants"
-                      accessibilityElementsHidden={IS_IOS}
-                    >
-                      <Icon
-                        icon={faChevronRight}
-                        size={fontSizes.md}
-                        color={styles.listItemTrailingIcon.color}
-                      />
-                    </View>
+                    <DecorativeIcon
+                      icon={faChevronRight}
+                      size={fontSizes.md}
+                      color={styles.listItemTrailingIcon.color}
+                    />
                   }
                   accessibilityRole="button"
                   accessibilityLabel={[
@@ -313,30 +277,18 @@ export const AppInfoScreen = () => {
               subtitleProps={{ numberOfLines: 1 }}
               containerStyle={styles.listItemContainer}
               leadingItem={
-                <View
-                  accessible={false}
-                  importantForAccessibility="no-hide-descendants"
-                  accessibilityElementsHidden={IS_IOS}
-                >
-                  <Icon
-                    icon={faGithub}
-                    size={fontSizes['2xl']}
-                    color={styles.listItemIcon.color}
-                  />
-                </View>
+                <DecorativeIcon
+                  icon={faGithub}
+                  size={fontSizes['2xl']}
+                  color={styles.listItemIcon.color}
+                />
               }
               trailingItem={
-                <View
-                  accessible={false}
-                  importantForAccessibility="no-hide-descendants"
-                  accessibilityElementsHidden={IS_IOS}
-                >
-                  <Icon
-                    icon={faArrowUpRightFromSquare}
-                    color={styles.listItemTrailingIcon.color}
-                    size={fontSizes.md}
-                  />
-                </View>
+                <DecorativeIcon
+                  icon={faArrowUpRightFromSquare}
+                  color={styles.listItemTrailingIcon.color}
+                  size={fontSizes.md}
+                />
               }
               accessibilityRole="link"
               accessibilityLabel={[
