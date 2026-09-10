@@ -1,5 +1,6 @@
-import { Props as IconProps } from '@fortawesome/react-native-fontawesome';
 import { View } from 'react-native';
+
+import { Props as IconProps } from '@fortawesome/react-native-fontawesome';
 
 import { IS_IOS } from '../../core/constants';
 import { Icon } from './Icon';
