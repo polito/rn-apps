@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AccessibilityInfo,
@@ -51,6 +51,8 @@ export const NewOverlayScreen = ({ route, navigation }: Props) => {
   const announcement = announcementsQuery.data?.find(item => item.id === id);
   const [coverAspectRatio, setCoverAspectRatio] = useState<number>();
   const titleRef = useRef<View>(null);
+  const announcementId = announcement?.id;
+  const [transitionEnded, setTransitionEnded] = useState(false);
 
   useEffect(() => {
     if (announcement && !announcement.seen) {
@@ -64,14 +66,25 @@ export const NewOverlayScreen = ({ route, navigation }: Props) => {
     }
   }, [announcement, announce, isEnabled, t]);
 
-  useLayoutEffect(() => {
-    if (!announcement) return;
-    const timer = setTimeout(() => {
-      const node = findNodeHandle(titleRef.current);
-      if (node) AccessibilityInfo.setAccessibilityFocus(node);
-    }, 100);
-    return () => clearTimeout(timer);
-  }, [announcement]);
+  useEffect(
+    () =>
+      navigation.addListener('transitionEnd', ({ data }) => {
+        if (!data.closing) {
+          setTransitionEnded(true);
+        }
+      }),
+    [navigation],
+  );
+
+  useEffect(() => {
+    if (!transitionEnded) return;
+
+    const node = findNodeHandle(titleRef.current);
+
+    if (node) {
+      AccessibilityInfo.setAccessibilityFocus(node);
+    }
+  }, [transitionEnded, announcementId]);
 
   const htmlViewProps = useMemo(
     () => ({
