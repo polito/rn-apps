@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 
-import { ignoreNotFound, pluckData } from '@polito/lib/core';
 import { PeopleApi } from '@polito/student-api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
+
+import { ignoreNotFound, pluckData } from '../../../core/utils/queries';
 
 const PEOPLE_QUERY_PREFIX = 'people';
 const PERSON_QUERY_PREFIX = 'person';

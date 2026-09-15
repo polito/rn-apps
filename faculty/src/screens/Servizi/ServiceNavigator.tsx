@@ -1,7 +1,14 @@
+import { useTranslation } from 'react-i18next';
 import { Platform, TouchableOpacity } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
+  ContactsScreen as LibContactsScreen,
+  PersonScreen,
+  UsefulContactScreen,
+  defaultUsefulContactsList,
+} from '@polito/lib/features/people';
 import { useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -20,7 +27,6 @@ import { EmergencyScreen } from './EmergencyScreen';
 import { IssueDetails } from './IssueDetails';
 import { IssueReport } from './IssueReport';
 import { IssueReportForm } from './IssueReportForm';
-import { PersoneScreen } from './PersoneScreen';
 import { ServiceScreen } from './ServiceScreen';
 import { SignatureScreen } from './SignatureScreen';
 import { SingleBooking0 } from './SingleBooking0';
@@ -31,7 +37,9 @@ import { SupportScreen } from './SupportScreen';
 export type ProfileStackParamList = {
   Servizi: undefined;
   Contatto: undefined;
-  Persone: undefined;
+  Contacts: undefined;
+  Person: { id: number };
+  UsefulContact: { id: string };
   Supporto: undefined;
   Prenotazione: undefined;
   PrenotaSpaziStrutture: undefined;
@@ -70,8 +78,15 @@ const CustomBackButton2 = () => {
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
 
 export const ServiceNavigator = () => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
+  const ContactsScreen = () => (
+    <LibContactsScreen
+      usefulContacts={defaultUsefulContactsList}
+      usefulContactsVisibility="onSearchFocus"
+    />
+  );
 
   return (
     <Stack.Navigator
@@ -86,9 +101,32 @@ export const ServiceNavigator = () => {
     >
       <Stack.Screen name="Servizi" component={ServiceScreen} />
       <Stack.Screen
-        name="Persone"
-        component={PersoneScreen}
+        name="Contacts"
+        component={ContactsScreen}
         options={{
+          headerTitle: t('contactsScreen.title'),
+          headerLeft: () => <CustomBackButton2 />,
+          headerShown: true,
+        }}
+      />
+
+      <Stack.Screen
+        name="Person"
+        component={PersonScreen}
+        getId={({ params: { id } }) => id.toString()}
+        options={{
+          headerLeft: () => <CustomBackButton2 />,
+          headerShown: true,
+        }}
+      />
+
+      <Stack.Screen
+        name="UsefulContact"
+        component={UsefulContactScreen}
+        getId={({ params: { id } }) => id}
+        options={{
+          headerTitle: '',
+          headerBackTitle: t('contactsScreen.title'),
           headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}

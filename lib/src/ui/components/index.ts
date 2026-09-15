@@ -31,6 +31,7 @@ export * from './Icon';
 export * from './IconButton';
 export * from './ImageLoader';
 export * from './IndentedDivider';
+export * from './InfoMessage';
 export * from './List';
 export * from './ListItem';
 export * from './LiveIndicator';

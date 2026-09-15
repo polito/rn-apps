@@ -13,6 +13,7 @@ import {
   convertMachineDateToFormatDate,
   usePreferencesContext,
 } from '@polito/lib/core';
+import { useGetPerson } from '@polito/lib/features/people';
 import { resolvePlaceId } from '@polito/lib/features/places';
 import {
   BottomBarSpacer,
@@ -36,7 +37,6 @@ import { AppPreferences } from '~/core/types/preferences.ts';
 import { EventDetails } from '../../../core/components/EventDetails.tsx';
 import { VideoPlayer } from '../../../core/components/VideoPlayer';
 import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
-import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { CourseIcon } from '../../courses/components/CourseIcon';
 import { isRecordedVC } from '../../courses/utils/lectures';
 import { AgendaStackParamList } from '../components/AgendaNavigator';

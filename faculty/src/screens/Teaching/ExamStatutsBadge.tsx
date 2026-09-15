@@ -7,8 +7,8 @@ import {
   faCircleXmark,
   faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
-import { ExamStatusEnum } from '@polito/api-client';
 import { Badge, lightTheme, useTheme } from '@polito/lib/ui';
+import { ExamStatusEnum } from '@polito/student-api-client';
 
 import { Exam } from '../../core/types/api';
 

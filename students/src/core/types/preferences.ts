@@ -19,6 +19,7 @@ export const editablePreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
+  'peoplePreferred',
   'emailGuideRead',
   'placesSearched',
   'agendaScreen',
@@ -37,6 +38,7 @@ export const objectPreferenceKeys = [
   'notifications',
   'favoriteServices',
   'peopleSearched',
+  'peoplePreferred',
   'emailGuideRead',
   'placesSearched',
   'agendaScreen',
@@ -72,6 +74,7 @@ export type AppPreferences = {
   };
   favoriteServices: string[];
   peopleSearched: PersonOverview[];
+  peoplePreferred: PersonOverview[];
   emailGuideRead?: boolean;
   agendaScreen: {
     layout: 'weekly' | 'daily';
@@ -96,6 +99,7 @@ export const initialAppPreferences: AppPreferences = {
   courses: {},
   favoriteServices: [],
   peopleSearched: [],
+  peoplePreferred: [],
   agendaScreen: {
     layout: 'daily',
     filters: {

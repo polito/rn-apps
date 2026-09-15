@@ -26,6 +26,7 @@ import {
 import { type Event, ExamStatusEnum } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { CourseOverview } from '~/core/types/api';
 import { AppPreferences } from '~/core/types/preferences';
 
 import { DateTime } from 'luxon';
@@ -78,9 +79,9 @@ export const TeachingScreen = ({ navigation }: Props) => {
     return [...byContext.entries()];
   }, [eventAdmissionsQuery.data]);
 
-  const hasValidModules = (course: any) => {
+  const hasValidModules = (course: CourseOverview) => {
     if (!course.modules || course.modules.length === 0) return true;
-    return course.modules.some((module: any) => module.id !== null);
+    return course.modules.some(module => module.id !== null);
   };
 
   const courses = useMemo(() => {
@@ -93,6 +94,37 @@ export const TeachingScreen = ({ navigation }: Props) => {
         !coursePreferences[c.uniqueShortcode]?.isHidden,
     );
   }, [coursesQuery, coursePreferences]);
+
+  const visibleCourses = useMemo(
+    () => courses.filter(hasValidModules),
+    [courses],
+  );
+
+  const hiddenCoursesCount = useMemo(() => {
+    if (!coursesQuery.data) return undefined;
+
+    const totalCount = coursesQuery.data.reduce(
+      (count, course) => count + (course.modules?.length || 1),
+      0,
+    );
+
+    const shownCount = visibleCourses.reduce((count, course) => {
+      if (!course.modules?.length) return count + 1;
+
+      return (
+        count +
+        course.modules.filter(
+          (module, index) =>
+            module.id !== null &&
+            !coursePreferences[`${course.shortcode}${index + 1}`]?.isHidden,
+        ).length
+      );
+    }, 0);
+
+    const hiddenCount = totalCount - shownCount;
+
+    return hiddenCount > 0 ? hiddenCount : undefined;
+  }, [coursesQuery.data, visibleCourses, coursePreferences]);
 
   const exams = useMemo(() => {
     if (!coursesQuery.data || !examsQuery.data) return [];
@@ -155,44 +187,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
           <SectionHeader
             title={t('coursesScreen.title')}
             linkTo={{ screen: 'Courses' }}
-            linkToMoreCount={
-              coursesQuery.data
-                ? (() => {
-                    // Compute hidden items directly
-                    let hiddenCount = 0;
-
-                    coursesQuery.data.forEach(course => {
-                      if (
-                        !isCourseDetailed(course) ||
-                        !course.uniqueShortcode
-                      ) {
-                        hiddenCount += 1 + (course.modules?.length || 0);
-                        return;
-                      }
-
-                      // Corsi nascosti
-                      if (coursePreferences[course.uniqueShortcode]?.isHidden) {
-                        hiddenCount += 1 + (course.modules?.length || 0);
-                        return;
-                      }
-
-                      // Moduli nascosti nei corsi visibili
-                      if (course.modules) {
-                        course.modules.forEach((module, index) => {
-                          const moduleShortcode = `${course.shortcode}${index + 1}`;
-                          if (coursePreferences[moduleShortcode]?.isHidden) {
-                            hiddenCount += 1;
-                          }
-                        });
-                      }
-                    });
-
-                    const count = hiddenCount;
-
-                    return count > 0 ? count : undefined;
-                  })()
-                : undefined
-            }
+            linkToMoreCount={hiddenCoursesCount}
           />
           <OverviewList
             loading={coursesQuery.isLoading && !isOffline}
@@ -205,7 +200,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                 : t('coursesScreen.emptyState');
             })()}
           >
-            {courses.filter(hasValidModules).map(course => (
+            {visibleCourses.map(course => (
               <CourseListItem
                 key={course.shortcode + '' + course.id}
                 course={course}

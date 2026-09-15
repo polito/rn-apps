@@ -24,6 +24,7 @@ import {
   usePreferencesContext,
 } from '@polito/lib/core';
 import { courseColors } from '@polito/lib/features/courses';
+import { useGetPersons } from '@polito/lib/features/people';
 import {
   DisclosureIndicator,
   IconButton,
@@ -38,7 +39,6 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useNotifications } from '~/core/hooks/useNotifications';
-import { useGetPersons } from '~/core/queries/peopleHooks';
 import { AppPreferences } from '~/core/types/preferences';
 
 import { getCourseKey } from '../../../core/queries/courseHooks';

@@ -1,4 +1,4 @@
-import { Exam as ApiExam } from '@polito/api-client/models/Exam';
+import { Exam as ApiExam } from '@polito/student-api-client';
 
 export interface Exam extends ApiExam {
   isTimeToBeDefined: boolean;

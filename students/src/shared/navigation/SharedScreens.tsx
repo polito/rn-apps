@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
+import { PersonScreen, UsefulContactScreen } from '@polito/lib/features/people';
 import { HeaderLogoNoProps, createHeaderCloseButton } from '@polito/lib/ui';
 import { MfaChallenge, OfferingCourseStaff } from '@polito/student-api-client';
 import { ParamListBase } from '@react-navigation/native';
@@ -12,12 +13,12 @@ import { CourseStatisticsScreen } from '../../features/courses/screens/CourseSta
 import { DegreeCourseGuideScreen } from '../../features/offering/screens/DegreeCourseGuideScreen';
 import { DegreeCourseScreen } from '../../features/offering/screens/DegreeCourseScreen';
 import { StaffScreen } from '../../features/offering/screens/StaffScreen';
-import { PersonScreen } from '../../features/people/screens/PersonScreen';
 import { ImageScreen } from '../../features/tickets/components/ImageScreen';
 import { UnreadMessagesModal } from '../../features/user/screens/UnreadMessagesModal';
 
 export interface SharedScreensParamList extends ParamListBase {
   Person: { id: number };
+  UsefulContact: { id: string };
   DegreeCourse: {
     courseShortcode: string;
     year?: string;
@@ -66,11 +67,23 @@ export const SharedScreens = () => {
       />
       <Stack.Screen
         name="Person"
-        component={PersonScreen}
         getId={({ params: { id } }) => id.toString()}
         options={{
           headerLargeTitle: false,
           headerTitle: t('common.contact'),
+          headerBackButtonDisplayMode: 'minimal',
+        }}
+      >
+        {props => <PersonScreen {...props} showPreferredContacts={false} />}
+      </Stack.Screen>
+      <Stack.Screen
+        name="UsefulContact"
+        component={UsefulContactScreen}
+        getId={({ params: { id } }) => id}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: '',
+          headerBackTitle: t('contactsScreen.title'),
           headerBackButtonDisplayMode: 'minimal',
         }}
       />

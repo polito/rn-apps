@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 import { Linking } from 'react-native';
 
-import { IS_IOS } from '@polito/lib/core';
-import { useTheme } from '@polito/lib/ui';
-
 import * as WebBrowser from 'expo-web-browser';
+
+import { useTheme } from '../../ui/hooks/useTheme';
+import { IS_IOS } from '../constants';
 
 export enum WebviewType {
   NORMAL,

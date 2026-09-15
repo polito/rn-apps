@@ -17,6 +17,7 @@ import {
   useOfflineDisabled,
   usePreferencesContext,
 } from '@polito/lib/core';
+import { useGetPerson } from '@polito/lib/features/people';
 import { PlacesListItem } from '@polito/lib/features/places';
 import {
   BottomBarSpacer,
@@ -43,7 +44,6 @@ import { ExamStatusEnum } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useGetExams } from '~/core/queries/examHooks';
-import { useGetPerson } from '~/core/queries/peopleHooks';
 import { useGetAllCpdSurveys } from '~/core/queries/surveysHooks';
 import { AppPreferences } from '~/core/types/preferences';
 

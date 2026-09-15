@@ -8,21 +8,21 @@ import {
 } from 'react-native';
 
 import { faUser } from '@fortawesome/free-regular-svg-icons';
-import {
-  MAX_RECENT_SEARCHES,
-  useOfflineDisabled,
-  usePreferencesContext,
-} from '@polito/lib/core';
-import { Icon, ListItem, useStylesheet, useTheme } from '@polito/lib/ui';
 import { PersonOverview } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { AppPreferences } from '~/core/types/preferences';
-
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
-import { getPersonKey } from '../../../core/queries/peopleHooks';
+import { MAX_RECENT_SEARCHES } from '../../../core/constants';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useAccessibility } from '../../../core/hooks/useAccessibility';
+import { useOfflineDisabled } from '../../../core/hooks/useOfflineDisabled';
+import { Icon } from '../../../ui/components/Icon';
+import { ListItem } from '../../../ui/components/ListItem';
+import { useStylesheet } from '../../../ui/hooks/useStylesheet';
+import { useTheme } from '../../../ui/hooks/useTheme';
+import { getPersonKey } from '../queries/peopleHooks';
+import { PeoplePreferences } from '../types';
 import { HighlightedText } from './HighlightedText';
 
 interface Props {
@@ -48,7 +48,7 @@ export const PersonOverviewListItem = ({
   const styles = useStylesheet(createStyles);
   const { accessibilityListLabel } = useAccessibility();
   const { updatePreference, peopleSearched } =
-    usePreferencesContext<AppPreferences>();
+    usePreferencesContext<PeoplePreferences>();
   const accessibilityLabel = accessibilityListLabel(index, totalData);
   const subtitle = person.role ?? '';
   const firstName = person?.firstName ?? '';

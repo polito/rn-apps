@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
 import { usePreferencesContext } from '@polito/lib/core';
+import { useAccessibility } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   ListItem,
@@ -13,7 +14,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';
 
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetGuides } from '../../../core/queries/studentHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 

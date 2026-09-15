@@ -74,6 +74,8 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
+  - ExpoWebBrowser (15.0.11):
+    - ExpoModulesCore
   - fast_float (8.0.0)
   - FBLazyVector (0.81.6)
   - fmt (11.0.2)
@@ -1874,6 +1876,8 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
+  - react-native-context-menu-view (1.21.0):
+    - React
   - react-native-menu (2.0.0):
     - boost
     - DoubleConversion
@@ -3140,6 +3144,7 @@ DEPENDENCIES:
   - ExpoFileSystem (from `../../node_modules/expo-file-system/ios`)
   - ExpoImage (from `../../node_modules/expo-image/ios`)
   - ExpoModulesCore (from `../../node_modules/expo-modules-core`)
+  - ExpoWebBrowser (from `../../node_modules/expo-web-browser/ios`)
   - fast_float (from `../../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
   - FBLazyVector (from `../../node_modules/react-native/Libraries/FBLazyVector`)
   - fmt (from `../../node_modules/react-native/third-party-podspecs/fmt.podspec`)
@@ -3180,6 +3185,7 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - "react-native-blur (from `../../node_modules/@react-native-community/blur`)"
+  - react-native-context-menu-view (from `../../node_modules/react-native-context-menu-view`)
   - "react-native-menu (from `../../node_modules/@react-native-menu/menu`)"
   - react-native-override-color-scheme (from `../../node_modules/react-native-override-color-scheme`)
   - react-native-pager-view (from `../../node_modules/react-native-pager-view`)
@@ -3265,6 +3271,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/expo-image/ios"
   ExpoModulesCore:
     :path: "../../node_modules/expo-modules-core"
+  ExpoWebBrowser:
+    :path: "../../node_modules/expo-web-browser/ios"
   fast_float:
     :podspec: "../../node_modules/react-native/third-party-podspecs/fast_float.podspec"
   FBLazyVector:
@@ -3344,6 +3352,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
   react-native-blur:
     :path: "../../node_modules/@react-native-community/blur"
+  react-native-context-menu-view:
+    :path: "../../node_modules/react-native-context-menu-view"
   react-native-menu:
     :path: "../../node_modules/@react-native-menu/menu"
   react-native-override-color-scheme:
@@ -3454,6 +3464,7 @@ SPEC CHECKSUMS:
   ExpoFileSystem: a8e7fb1e958471764fb48d281cf9fa81a9e4d77c
   ExpoImage: 686f972bff29525733aa13357f6691dc90aa03d8
   ExpoModulesCore: d86dab8a6c8f1184f9b0b0503ace93919882aa15
+  ExpoWebBrowser: 970dd4c64c29c955c3af664c8058ba768a4c9187
   fast_float: b32c788ed9c6a8c584d114d0047beda9664e7cc6
   FBLazyVector: 812782f0506ba4c4a1b9f4b793e6de1bfdfc4c25
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
@@ -3499,6 +3510,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 8f8bba0802f49d7926602c5c276f2a2083a5ac55
   React-microtasksnativemodule: 1e4d3178ba5d5000b351b902c603fb0c9d60649e
   react-native-blur: 6af83e7e3c4c1446a188d9b2c493600fc4beb173
+  react-native-context-menu-view: da39a4612c1294d651907162529cfba8421e9b89
   react-native-menu: 8d2c831a735c9e6528c28b26ca14e57591d87e14
   react-native-override-color-scheme: 53dc74663e03040074efbfb81cfb35b97d9bbaa5
   react-native-pager-view: a0516effb17ca5120ac2113bfd21b91130ad5748

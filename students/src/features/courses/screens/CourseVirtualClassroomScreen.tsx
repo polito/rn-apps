@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 
 import { formatDateWithTimeIfNotNull } from '@polito/lib/core';
+import { useGetPerson } from '@polito/lib/features/people';
 import {
   BottomBarSpacer,
   GlobalStyles,
@@ -15,7 +16,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { EventDetails } from '../../../core/components/EventDetails';
 import { VideoPlayer } from '../../../core/components/VideoPlayer';
 import { useGetCourseVirtualClassrooms } from '../../../core/queries/courseHooks';
-import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { isLiveVC, isRecordedVC } from '../utils/lectures';
 

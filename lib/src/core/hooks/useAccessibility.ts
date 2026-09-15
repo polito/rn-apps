@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export function useAccessibility() {
+export const useAccessibility = () => {
   const { t } = useTranslation();
 
   const accessibilityListLabel = useCallback(
@@ -18,4 +18,4 @@ export function useAccessibility() {
   return {
     accessibilityListLabel,
   };
-}
+};

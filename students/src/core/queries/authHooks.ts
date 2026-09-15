@@ -9,6 +9,7 @@ import {
   rethrowApiError,
   usePreferencesContext,
 } from '@polito/lib/core';
+import { WebviewType, useOpenInAppLink } from '@polito/lib/core';
 import {
   AppInfoRequest,
   AuthApi,
@@ -35,7 +36,6 @@ import { deleteProfilePictureFile } from '../../utils/profilePicture.ts';
 import { DEFAULT_CHPASS_URL, DEFAULT_SSO_LOGIN_URL } from '../constants.ts';
 import { useApiContext } from '../contexts/ApiContext';
 import { UnsupportedUserTypeError } from '../errors/UnsupportedUserTypeError';
-import { WebviewType, useOpenInAppLink } from '../hooks/useOpenInAppLink.ts';
 import { QueryStorage } from '../providers/ApiProvider.tsx';
 import { AppPreferences } from '../types/preferences.ts';
 

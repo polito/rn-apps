@@ -12,6 +12,7 @@ import { Defs, LinearGradient, Rect, Stop, Svg } from 'react-native-svg';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { getHtmlTextContent } from '@polito/lib/core';
+import { useAccessibility } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   CtaButton,
@@ -30,7 +31,6 @@ import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onlineManager } from '@tanstack/react-query';
 
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import {
   getTicketStatusGroup,
