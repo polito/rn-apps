@@ -1,7 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { APP_TIMEZONE, getHtmlTextContent } from '@polito/lib/core';
+import {
+  APP_TIMEZONE,
+  getHtmlTextContent,
+  useAccessibility,
+} from '@polito/lib/core';
 import { Text, Theme, useStylesheet } from '@polito/lib/ui';
 import { Announcement } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
@@ -10,8 +14,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Image } from 'expo-image';
 import { TFunction } from 'i18next';
 import { DateTime } from 'luxon';
-
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 
 interface Props {
   announcement: Announcement;

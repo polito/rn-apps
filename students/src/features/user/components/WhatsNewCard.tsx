@@ -11,7 +11,12 @@ import {
 } from 'react-native';
 
 import { faBullhorn } from '@fortawesome/free-solid-svg-icons';
-import { IS_IOS, dateFormatter, useScreenReader } from '@polito/lib/core';
+import {
+  IS_IOS,
+  dateFormatter,
+  useAccessibility,
+  useScreenReader,
+} from '@polito/lib/core';
 import {
   CarouselDots,
   Icon,
@@ -23,8 +28,6 @@ import {
 import { Announcement } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 
 interface Props {
   announcements: Announcement[];
