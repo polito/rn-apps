@@ -44,7 +44,7 @@
     "date-fns": "^4.1.0",
     "expo": "~54.0.0",
     "expo-constants": "~18.0.13",
-    "expo-web-browser": "^14.2.0",
+    "expo-web-browser": "~15.0.10",
     "i18next": "^23.16.4",
     "lodash": "^4.17.23",
     "luxon": "^3.7.2",
