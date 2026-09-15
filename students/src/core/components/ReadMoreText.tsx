@@ -5,6 +5,7 @@ import { StyleProp, StyleSheet, TextLayoutLine, TextStyle } from 'react-native';
 import { IS_ANDROID, IS_IOS, usePreferencesContext } from '@polito/lib/core';
 import { Text, Theme, useStylesheet } from '@polito/lib/ui';
 
+import { hideFromScreenReader } from '../accessibility/hideFromScreenReader';
 import { AppPreferences } from '../types/preferences.ts';
 
 type ReadMoreTextProps = {
@@ -50,6 +51,7 @@ export const ReadMoreText = ({
     <>
       {IS_IOS && (
         <Text
+          {...hideFromScreenReader}
           style={{ height: 0 }}
           onTextLayout={({ nativeEvent: { lines } }) => {
             if (text.length > 0) {
@@ -78,6 +80,7 @@ export const ReadMoreText = ({
           : message}
         <Text
           style={[styles.readMore, styleReadMore]}
+          accessibilityRole="button"
           onPress={() => {
             setReadMore(!readMore);
           }}

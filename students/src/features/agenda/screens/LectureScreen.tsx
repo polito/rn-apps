@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  AccessibilityInfo,
   Dimensions,
   ListRenderItemInfo,
   SafeAreaView,
@@ -70,6 +71,10 @@ export const LectureScreen = ({ route, navigation }: Props) => {
 
   const handleSetCurrentPageIndex = (newIndex: number) => {
     setCurrentVideoIndex(newIndex);
+    const title = associatedVirtualClassrooms?.[newIndex]?.title;
+    if (title) {
+      AccessibilityInfo.announceForAccessibility(title);
+    }
   };
 
   const toggleFullScreen = (value: boolean) => {
@@ -241,6 +246,13 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           <OverviewList indented>
             {lecture?.place && (
               <ListItem
+                accessibilityRole="button"
+                accessible
+                accessibilityLabel={
+                  lecture.place?.name
+                    ? t('agendaScreen.room', { roomName: lecture.place.name })
+                    : '-'
+                }
                 leadingItem={
                   <Icon icon={faLocationDot} size={fontSizes['2xl']} />
                 }
@@ -268,6 +280,12 @@ export const LectureScreen = ({ route, navigation }: Props) => {
               />
             )}
             <ListItem
+              accessibilityRole="button"
+              accessible
+              accessibilityLabel={[
+                t('lectureScreen.courseFilesCta'),
+                lecture.title,
+              ].join(', ')}
               title={lecture.title}
               subtitle={t('lectureScreen.courseFilesCta')}
               leadingItem={
@@ -292,6 +310,7 @@ export const LectureScreen = ({ route, navigation }: Props) => {
           action={hideEvent}
           destructive
           absolute={false}
+          accessibilityHint={t('lectureScreen.hideEventHint')}
           containerStyle={{
             paddingVertical: 0,
             display: isFullScreen ? 'none' : undefined,

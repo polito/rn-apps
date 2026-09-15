@@ -1,7 +1,13 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useTranslation } from 'react-i18next';
-import { Pressable, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import {
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -17,6 +23,7 @@ import {
 
 import { useDeleteMessage, useGetMessages } from '~/core/queries/studentHooks';
 
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { MessageListItem } from '../components/MessageListItem';
 
 export const MessagesScreen = () => {
@@ -26,6 +33,7 @@ export const MessagesScreen = () => {
 
   const { isLoading, data: messages } = messagesQuery;
   const { t } = useTranslation();
+  const { getListAccessibilityProps } = useAccessibility();
 
   const handleDelete = async (messageId: number) => {
     await deleteMessage(messageId);
@@ -40,40 +48,49 @@ export const MessagesScreen = () => {
         <GestureHandlerRootView>
           <SwipeableProvider>
             <Section style={{ marginTop: spacing['2'] }}>
-              <OverviewList
-                loading={isLoading}
-                emptyStateText={t('messagesScreen.empty')}
+              <View
+                {...getListAccessibilityProps(
+                  t('messagesScreen.title'),
+                  messages?.length ?? 0,
+                )}
               >
-                {messages?.map((message, index) => (
-                  <Swipeable
-                    key={message.id}
-                    rightAction={
-                      <Pressable
-                        style={[
-                          styles.deleteButton,
-                          { backgroundColor: palettes.danger[600] },
-                        ]}
-                        onPress={() => handleDelete(message.id)}
-                      >
-                        <FontAwesomeIcon
-                          icon={faTrash}
-                          color={colors.white}
-                          size={20}
+                <OverviewList
+                  loading={isLoading}
+                  emptyStateText={t('messagesScreen.empty')}
+                >
+                  {messages?.map((message, index) => (
+                    <Swipeable
+                      key={message.id}
+                      rightAction={
+                        <Pressable
+                          style={[
+                            styles.deleteButton,
+                            { backgroundColor: palettes.danger[600] },
+                          ]}
+                          accessibilityRole="button"
+                          accessibilityLabel={t('messagesScreen.deleteMessage')}
+                          onPress={() => handleDelete(message.id)}
+                        >
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            color={colors.white}
+                            size={20}
+                          />
+                        </Pressable>
+                      }
+                    >
+                      {({ isSwiping }) => (
+                        <MessageListItem
+                          messageItem={message}
+                          index={index}
+                          totalData={messages.length}
+                          isSwiping={isSwiping}
                         />
-                      </Pressable>
-                    }
-                  >
-                    {({ isSwiping }) => (
-                      <MessageListItem
-                        messageItem={message}
-                        index={index}
-                        totalData={messages.length}
-                        isSwiping={isSwiping}
-                      />
-                    )}
-                  </Swipeable>
-                ))}
-              </OverviewList>
+                      )}
+                    </Swipeable>
+                  ))}
+                </OverviewList>
+              </View>
             </Section>
           </SwipeableProvider>
         </GestureHandlerRootView>

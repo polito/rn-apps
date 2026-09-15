@@ -22,6 +22,7 @@ export const Checkbox = ({
   dimension = 'default',
   icon,
   iconColor,
+  accessibilityLabel,
 }: {
   text?: string;
   onPress: () => void;
@@ -33,6 +34,7 @@ export const Checkbox = ({
   dimension?: 'default' | 'small';
   icon?: IconDefinition;
   iconColor?: string;
+  accessibilityLabel?: string;
 }) => {
   const styles = useStylesheet(createStyles);
 
@@ -48,6 +50,10 @@ export const Checkbox = ({
         onPress={() => {
           onPress();
         }}
+        accessibilityRole="checkbox"
+        accessibilityState={{ checked: isChecked, disabled: disable ?? false }}
+        accessibilityLabel={accessibilityLabel ?? text}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       >
         <View
           style={{
@@ -55,6 +61,8 @@ export const Checkbox = ({
             justifyContent: 'center',
             alignItems: 'center',
           }}
+          importantForAccessibility="no-hide-descendants"
+          accessibilityElementsHidden={true}
         >
           {isChecked ? (
             <Icon
@@ -73,7 +81,13 @@ export const Checkbox = ({
           )}
         </View>
       </TouchableOpacity>
-      <Text style={[styles.text, textStyle]}>{text}</Text>
+      <Text
+        style={[styles.text, textStyle]}
+        importantForAccessibility="no-hide-descendants"
+        accessibilityElementsHidden={true}
+      >
+        {text}
+      </Text>
     </View>
   );
 };

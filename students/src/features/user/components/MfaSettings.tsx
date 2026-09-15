@@ -153,7 +153,11 @@ export const MfaSettings = () => {
           <Section>
             <SectionHeader title={t('mfaScreen.settings.information')} />
             <OverviewList indented>
-              <View style={styles.content} accessible>
+              <View
+                style={styles.content}
+                accessible
+                accessibilityLabel={t('mfaScreen.settings.description')}
+              >
                 <RTFTrans
                   style={[styles.text, { fontSize: fontSizes.md }]}
                   i18nKey="mfaScreen.settings.description"

@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AccessibilityInfo,
-  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -30,7 +29,10 @@ import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onlineManager } from '@tanstack/react-query';
 
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
+import {
+  useAccessibility,
+  useAnnounceLoading,
+} from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import {
   getTicketStatusGroup,
@@ -72,17 +74,12 @@ const ListItem = ({
   ].join(', ');
 
   return (
-    <Pressable
-      accessibilityRole="button"
+    <TicketListItem
       accessibilityLabel={accessibilityLabel}
-    >
-      <TicketListItem
-        accessibilityLabel={accessibilityLabel}
-        ticket={ticket}
-        key={ticket.id}
-        unread={unread}
-      />
-    </Pressable>
+      ticket={ticket}
+      key={ticket.id}
+      unread={unread}
+    />
   );
 };
 
@@ -113,6 +110,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const ticketsQuery = useGetTickets();
+  useAnnounceLoading(ticketsQuery.isLoading);
 
   const tickets = useMemo(
     () =>

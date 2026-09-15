@@ -43,7 +43,27 @@ export const DegreeInfoScreen = () => {
               style={styles.heading}
               title={degree?.name || degree?.id}
             />
-            <Card padded style={styles.overviewCard}>
+            <Card
+              spaced
+              padded
+              style={styles.overviewCard}
+              accessible={true}
+              accessibilityRole="none"
+              accessibilityLabel={[
+                degree?.location &&
+                  `${t('common.location')}: ${degree.location}`,
+                degree?.department?.name &&
+                  `${t('common.department')}: ${degree.department.name}`,
+                degree?.faculty?.name &&
+                  `${t('common.faculty')}: ${degree.faculty.name}`,
+                degree?.duration &&
+                  `${t('common.duration')}: ${degree.duration}`,
+                degree?._class &&
+                  `${t('degreeScreen.degreeClass')}: ${degree._class.name} (${degree._class.code})`,
+              ]
+                .filter(Boolean)
+                .join(', ')}
+            >
               {degree?.location && (
                 <Text>
                   <Text style={styles.label}>{t('common.location')}: </Text>
@@ -81,8 +101,17 @@ export const DegreeInfoScreen = () => {
             </Card>
           </>
           <Section>
-            <Card padded gapped>
-              <View>
+            <Card spaced accessible={false} padded gapped>
+              <View
+                accessible={true}
+                accessibilityRole="none"
+                importantForAccessibility="no-hide-descendants"
+                accessibilityLabel={`${t('common.notes')}: ${
+                  degree?.notes
+                    ?.map(note => getHtmlTextContent(note))
+                    .join('. ') || t('common.noData')
+                }`}
+              >
                 <Text variant="subHeading">{t('common.notes')}</Text>
                 {degree?.notes?.map((note, index) => (
                   <Text key={index} variant="longProse">
@@ -91,7 +120,14 @@ export const DegreeInfoScreen = () => {
                 ))}
               </View>
               {degree?.objectives?.content && (
-                <View>
+                <View
+                  accessible={true}
+                  accessibilityRole="none"
+                  importantForAccessibility="no-hide-descendants"
+                  accessibilityLabel={`${t('common.objectives')}: ${getHtmlTextContent(
+                    degree.objectives.content,
+                  )}`}
+                >
                   <Text variant="subHeading">{t('common.objectives')}</Text>
                   <Text variant="longProse">
                     {getHtmlTextContent(degree?.objectives?.content)}

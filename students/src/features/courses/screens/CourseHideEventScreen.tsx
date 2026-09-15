@@ -33,7 +33,7 @@ import { CourseHiddenEvent } from '../types/Recurrence';
 type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseHideEvent'>;
 
 interface HideEventProps {
-  key: number;
+  key: string;
   item: CourseHiddenEvent;
   updateItemVisibility: (
     element: CourseHiddenEvent,
@@ -63,13 +63,27 @@ const HideEventCard = ({ item, updateItemVisibility }: HideEventProps) => {
     return dayName.charAt(0).toUpperCase() + dayName.slice(1);
   };
 
+  const eventTime = `${
+    typeof item.day === 'string'
+      ? getLongDayTime(DateTime.fromISO(item.day).weekday)
+      : getLongDayTime(item.day)
+  } ${item.start}-${item.end}`;
+  const placeName = place?.room.name || '';
+  const checkboxLabel = placeName
+    ? t('courseHideEventScreen.eventWithRoom', {
+        time: eventTime,
+        room: placeName,
+      })
+    : t('courseHideEventScreen.eventWithoutRoom', { time: eventTime });
+
   return (
     <Row style={styles.card}>
       <Checkbox
-        onPress={() => handleVisibilityChange()}
+        onPress={handleVisibilityChange}
         isChecked={item.restoreVisibility}
         containerStyle={styles.checkbox}
         iconColor={palettes.navy[dark ? '50' : '400']}
+        accessibilityLabel={checkboxLabel}
       />
       <Col style={styles.cardCol}>
         <Row align="center" gap={2}>
@@ -268,9 +282,9 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
             iconColor={palettes.navy[dark ? '50' : '400']}
           />
           <OverviewList>
-            {items.map((item, index) => (
+            {items.map(item => (
               <HideEventCard
-                key={index}
+                key={`${item.day}-${item.start}-${item.end}-${item.room}`}
                 item={item}
                 updateItemVisibility={updateItemVisibility}
               />
@@ -282,6 +296,14 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
         title={t('courseHideEventScreen.button')}
         action={onPress}
         disabled={!items.filter(item => item.restoreVisibility).length}
+        accessibilityState={{
+          disabled: !items.filter(item => item.restoreVisibility).length,
+        }}
+        accessibilityHint={
+          !items.filter(item => item.restoreVisibility).length
+            ? t('courseHideEventScreen.buttonDisabledHint')
+            : undefined
+        }
       />
       <CtaButtonSpacer />
       <BottomBarSpacer />

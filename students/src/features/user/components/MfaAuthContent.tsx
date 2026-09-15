@@ -181,6 +181,7 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
           variant="outlined"
           disabled={isPending}
           loading={isPending}
+          accessibilityState={{ disabled: isPending }}
           style={styles.secondaryButton}
           textStyle={styles.secondaryButton}
         />
@@ -190,10 +191,11 @@ export const MfaAuthScreen = ({ challenge, navigation }: Props) => {
           action={onYes}
           disabled={isPending}
           loading={isPending}
+          accessibilityState={{ disabled: isPending }}
           style={styles.primaryButton}
         />
       </View>
-      <Text style={styles.time}>
+      <Text style={styles.time} accessibilityLiveRegion="polite">
         {t('mfaScreen.auth.expiration', { time: formattedTime })}
       </Text>
       <RTFTrans style={styles.note} i18nKey="mfaScreen.auth.note" />

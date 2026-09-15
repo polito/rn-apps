@@ -1,5 +1,5 @@
-import { PropsWithChildren, ReactElement } from 'react';
-import { Platform, TextStyle, ViewProps, ViewStyle } from 'react-native';
+import { PropsWithChildren, ReactElement, useMemo } from 'react';
+import { TextStyle, ViewProps, ViewStyle } from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
 import { Card } from './Card';
@@ -21,17 +21,36 @@ export const ErrorCard = ({
   testStyle,
   children,
   spaced = true,
+  accessibilityLabel,
+  accessibilityRole = 'alert',
+  accessibilityLiveRegion = 'assertive',
+  accessible,
   ...rest
 }: Props) => {
-  // TODO aggiungere possibilità di utilizzo tramite enum che inidichi il tipo, fatto il fix con inserimento card nei modal della ESC da valutare se inserire qua tutto
-
   const { spacing, fontSizes, colors } = useTheme();
+
+  const formattedText = useMemo(
+    () =>
+      text
+        ? text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
+        : undefined,
+    [text],
+  );
+
+  const hasCustomContent = Boolean(children);
+
   return (
     <Card
-      accessible={Platform.select({ android: true, ios: false })}
+      accessible={accessible ?? (hasCustomContent ? undefined : true)}
+      accessibilityRole={accessibilityRole}
+      accessibilityLiveRegion={accessibilityLiveRegion}
+      accessibilityLabel={
+        hasCustomContent
+          ? accessibilityLabel
+          : (accessibilityLabel ?? formattedText)
+      }
       rounded
       spaced={spaced}
-      // rounded={rounded ?? Platform.select({ android: false })}
       translucent={false}
       style={[
         {
@@ -43,8 +62,9 @@ export const ErrorCard = ({
       ]}
       {...rest}
     >
-      {!children ? (
+      {!hasCustomContent ? (
         <Text
+          accessible={false}
           style={[
             {
               padding: spacing[5],
@@ -54,7 +74,7 @@ export const ErrorCard = ({
             testStyle,
           ]}
         >
-          {text && text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()}
+          {formattedText}
         </Text>
       ) : (
         children

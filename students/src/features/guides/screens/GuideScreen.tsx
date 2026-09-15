@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 import { usePreferencesContext } from '@polito/lib/core';
 import {
@@ -25,6 +26,7 @@ import { GuideSectionListItem } from '../components/GuideSectionListItem';
 type Props = NativeStackScreenProps<ServiceStackParamList, 'Guide'>;
 
 export const GuideScreen = ({ navigation, route }: Props) => {
+  const { t } = useTranslation();
   const { id } = route.params;
   const styles = useStylesheet(createStyles);
   const query = useGetGuides();
@@ -49,6 +51,10 @@ export const GuideScreen = ({ navigation, route }: Props) => {
     });
   }, [guide, navigation, emailGuideRead, updatePreference]);
 
+  const fieldsLabel = query.isLoading
+    ? t('guideScreen.fieldsLoading')
+    : `${t('guideScreen.guideFields')} - ${guide?.fields?.length ?? 0} ${t('guideScreen.fieldsAvailable')}`;
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -59,14 +65,21 @@ export const GuideScreen = ({ navigation, route }: Props) => {
           <ScreenTitle title={guide?.title ?? ''} padded />
         </Section>
         <Section>
-          <Card padded style={styles.card}>
+          <Card
+            padded
+            style={styles.card}
+            accessible={true}
+            accessibilityLabel={`${t('guideScreen.introduction')}: ${guide?.intro ?? ''}`}
+          >
             <Text>{guide?.intro}</Text>
           </Card>
-          <OverviewList indented loading={query.isLoading}>
-            {guide?.fields.map(field => {
-              return <GuideFieldListItem field={field} key={field.label} />;
-            })}
-          </OverviewList>
+          <View accessibilityRole="list" accessibilityLabel={fieldsLabel}>
+            <OverviewList indented loading={query.isLoading}>
+              {guide?.fields.map(field => {
+                return <GuideFieldListItem field={field} key={field.label} />;
+              })}
+            </OverviewList>
+          </View>
           <Card padded style={styles.card}>
             {guide?.sections.map(section => {
               return (

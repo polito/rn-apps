@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Modal, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { usePreferencesContext } from '@polito/lib/core';
+import { IS_ANDROID } from '@polito/lib/core';
 import { useTheme } from '@polito/lib/ui';
 
 import { AppPreferences } from '~/core/types/preferences';
@@ -76,7 +77,12 @@ const CustomAlert = ({
   });
 
   return (
-    <Modal visible={visible} transparent animationType="fade">
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      accessibilityViewIsModal={IS_ANDROID}
+    >
       <View style={styles.overlay}>
         <View style={styles.container}>
           <Text style={styles.messageText}>{message}</Text>
@@ -91,6 +97,7 @@ const CustomAlert = ({
               }}
               thumbColor={colors.white}
               ios_backgroundColor={colors.tabBarInactive}
+              accessibilityLabel={dontShowAgainLabel}
             />
             <Text style={styles.switchLabel}>{dontShowAgainLabel}</Text>
           </View>

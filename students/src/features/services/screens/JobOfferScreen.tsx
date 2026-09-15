@@ -7,6 +7,7 @@ import { formatDate } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   Card,
+  Col,
   RefreshControl,
   ScreenTitle,
   Section,
@@ -78,6 +79,7 @@ export const JobOfferScreen = ({ route }: Props) => {
       ),
     );
   }, [contactInformation, onPressEmail]);
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -87,68 +89,107 @@ export const JobOfferScreen = ({ route }: Props) => {
         <Section>
           <ScreenTitle title={title ?? ''} style={styles.heading} />
         </Section>
-        <Card accessible padded>
-          <Text variant="heading" weight="bold" numberOfLines={1}>
+        <Card padded>
+          <Text
+            variant="heading"
+            weight="bold"
+            numberOfLines={1}
+            accessibilityRole="header"
+          >
             {companyName}
           </Text>
         </Card>
-        <Card accessible padded gapped>
+        <Card padded gapped>
           {!!contractType && (
-            <Text variant="longProse" weight="semibold">
+            <Text
+              variant="longProse"
+              weight="semibold"
+              accessibilityLabel={`${t('jobOfferScreen.contractType')}: ${contractType}`}
+            >
               {t('jobOfferScreen.contractType')}
               <Text>{contractType}</Text>
             </Text>
           )}
           {!!salary && (
-            <Text variant="longProse" weight="semibold">
+            <Text
+              variant="longProse"
+              weight="semibold"
+              accessibilityLabel={`${t('jobOfferScreen.salary')}: ${salary}`}
+            >
               {t('jobOfferScreen.salary')}
               <Text variant="longProse">{salary}</Text>
             </Text>
           )}
           {!!location && (
-            <Text variant="longProse" weight="semibold">
+            <Text
+              variant="longProse"
+              weight="semibold"
+              accessibilityLabel={`${t('jobOfferScreen.location')}: ${location}`}
+            >
               {t('jobOfferScreen.location')}
               <Text>{location}</Text>
             </Text>
           )}
           {!!endsAtDate && (
-            <Text variant="longProse" weight="semibold">
+            <Text
+              variant="longProse"
+              weight="semibold"
+              accessibilityLabel={`${t('jobOfferScreen.endsAtDate')}: ${formatDate(endsAtDate)}`}
+            >
               {t('jobOfferScreen.endsAtDate')}
               <Text>{formatDate(endsAtDate)}</Text>
             </Text>
           )}
           {!!freePositions && (
-            <Text variant="longProse" weight="semibold">
+            <Text
+              variant="longProse"
+              weight="semibold"
+              accessibilityLabel={`${t('jobOfferScreen.freePositions')}: ${freePositions}`}
+            >
               {t('jobOfferScreen.freePositions')}
               <Text>{freePositions}</Text>
             </Text>
           )}
         </Card>
-        <Card accessible padded gapped>
-          <>
+        <Card padded gapped>
+          <Col
+            accessible={true}
+            accessibilityLabel={[
+              t('jobOfferScreen.description'),
+              ' - ',
+              companyMission || ' - ',
+            ].join(' ')}
+          >
             <Text variant="subHeading">{t('jobOfferScreen.description')}</Text>
             <Text variant="longProse">{companyMission ?? ' - '}</Text>
-          </>
-          <>
+          </Col>
+          <Col
+            accessible={true}
+            accessibilityLabel={[
+              t('jobOfferScreen.requirements'),
+              ' - ',
+              requirements || ' - ',
+            ].join(' ')}
+          >
             <Text variant="subHeading">{t('jobOfferScreen.requirements')}</Text>
-            <Text variant="longProse">
-              {requirements ? requirements : ' - '}
-            </Text>
-          </>
+            <Text variant="longProse">{requirements || ' - '}</Text>
+          </Col>
           <>
             {(contactInfo[0] || email || url) && (
-              <Text variant="subHeading">
+              <Text variant="subHeading" accessibilityRole="header">
                 {t('jobOfferScreen.application')}
               </Text>
             )}
             {!!url && (
-              <Text
-                numberOfLines={1}
-                accessibilityRole="link"
-                weight="semibold"
-              >
+              <Text numberOfLines={1} weight="semibold">
                 {t('jobOfferScreen.url')}
-                <Text variant="link" onPress={() => onPressUrl(url)}>
+                <Text
+                  variant="link"
+                  accessibilityRole="link"
+                  accessibilityLabel={`${t('jobOfferScreen.url')}: ${url}`}
+                  accessibilityHint={t('common.externalLink')}
+                  onPress={() => onPressUrl(url)}
+                >
                   {url}
                 </Text>
               </Text>
@@ -157,7 +198,13 @@ export const JobOfferScreen = ({ route }: Props) => {
             {!!email && (
               <Text weight="semibold">
                 {t('jobOfferScreen.email')}
-                <Text variant="link" onPress={() => onPressEmail(email)}>
+                <Text
+                  variant="link"
+                  accessibilityRole="link"
+                  accessibilityLabel={`${t('jobOfferScreen.email')}: ${email}`}
+                  accessibilityHint={t('jobOfferScreen.sendEmail')}
+                  onPress={() => onPressEmail(email)}
+                >
                   {email}
                 </Text>
               </Text>

@@ -1,10 +1,16 @@
 import { useTranslation } from 'react-i18next';
 
-import { formatDateTime, getHtmlTextContent } from '@polito/lib/core';
+import {
+  APP_TIMEZONE,
+  formatDateTime,
+  getHtmlTextContent,
+} from '@polito/lib/core';
 import { ListItem } from '@polito/lib/ui';
 import { Message } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { DateTime } from 'luxon';
 
 import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useMarkMessageAsRead } from '../../../core/queries/studentHooks';
@@ -25,12 +31,24 @@ export const MessageListItem = ({
 }: Props) => {
   const { t } = useTranslation();
   const { mutate: markAsRead } = useMarkMessageAsRead();
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
   const navigation =
     useNavigation<NativeStackNavigationProp<UserStackParamList>>();
-  const accessibilityLabel = accessibilityListLabel(index, totalData);
   const title = getHtmlTextContent(messageItem?.title);
   const sentAt = formatDateTime(messageItem.sentAt);
+  const accessibleDate = DateTime.fromJSDate(messageItem.sentAt, {
+    zone: APP_TIMEZONE,
+  }).toFormat('dd MMMM yyyy HH:mm');
+
+  const accessibilityLabel = buildCompositeListLabel(
+    [
+      title,
+      `${t('messagesScreen.sentAt')} ${accessibleDate}`,
+      !messageItem.isRead ? t('common.unread') : undefined,
+    ],
+    index,
+    totalData,
+  );
 
   const onPressItem = () => {
     if (isSwiping) return;
@@ -49,12 +67,9 @@ export const MessageListItem = ({
       title={title}
       isAction={true}
       onPress={onPressItem}
-      accessibilityLabel={[
-        accessibilityLabel,
-        title,
-        t('messagesScreen.sentAt'),
-        sentAt,
-      ].join(', ')}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={t('common.tapToNavigate')}
       subtitle={sentAt}
     />
   );

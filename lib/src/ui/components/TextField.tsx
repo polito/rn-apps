@@ -34,10 +34,17 @@ export const TextField = ({
   inputStyle,
   numberOfLines = 1,
   autoCapitalize = 'none',
+  editable,
+  accessibilityLabel,
+  accessibilityHint,
+  accessibilityState,
+  accessibilityRole,
   ...rest
 }: TextFieldProps) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
+
+  const isDisabled = editable === false;
 
   const textInputProps: TextInputProps = useMemo(() => {
     switch (type) {
@@ -53,19 +60,19 @@ export const TextField = ({
 
   return (
     <View
-      style={[
-        styles.container,
-        rest.editable === false && styles.disabled,
-        style,
-      ]}
-      accessibilityLabel={rest?.accessibilityLabel ?? label}
-      accessible={true}
-      importantForAccessibility="yes"
+      style={[styles.container, isDisabled && styles.disabled, style]}
+      accessible={false}
     >
       <TextInput
-        accessible={true}
         ref={inputRef}
-        importantForAccessibility="no"
+        accessibilityLabel={accessibilityLabel ?? label}
+        accessibilityHint={accessibilityHint}
+        accessibilityRole={accessibilityRole}
+        accessibilityState={{
+          disabled: isDisabled,
+          ...accessibilityState,
+        }}
+        editable={editable}
         autoCapitalize={autoCapitalize}
         selectionColor={colors.link}
         placeholder={label}

@@ -52,7 +52,7 @@ export const LoginScreen = () => {
       </View>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <Section style={styles.section}>
-          <Text variant="title" role="heading" style={styles.title}>
+          <Text variant="title" accessibilityRole="header" style={styles.title}>
             {t('loginScreen.title')}
           </Text>
           <OverviewList style={styles.sectionList} accessible={false}>
@@ -94,6 +94,7 @@ export const LoginScreen = () => {
               <IconButton
                 size={fontSizes.xl}
                 icon={passwordVisible ? faEyeSlash : faEye}
+                accessibilityRole="button"
                 accessibilityLabel={t(
                   passwordVisible
                     ? 'loginScreen.hidePassword'
@@ -105,8 +106,14 @@ export const LoginScreen = () => {
               />
             </Row>
           </OverviewList>
-          <TouchableOpacity style={styles.link} onPress={() => viewChpass()}>
-            <Text variant="link" style={styles.textLink}>
+          <TouchableOpacity
+            style={styles.link}
+            onPress={() => viewChpass()}
+            accessibilityRole="link"
+            accessibilityLabel={t('loginScreen.forgotYourPassword')}
+            accessibilityHint={t('loginScreen.forgotPasswordHint')}
+          >
+            <Text variant="link" style={styles.textLink} accessible={false}>
               {t('loginScreen.forgotYourPassword')}
             </Text>
           </TouchableOpacity>
@@ -116,12 +123,19 @@ export const LoginScreen = () => {
             action={handleLogin}
             loading={isLoading}
             disabled={!canLogin}
+            accessibilityState={{ disabled: !canLogin || isLoading }}
+            accessibilityHint={
+              !canLogin ? t('loginScreen.ctaDisabledHint') : undefined
+            }
           />
           <TouchableOpacity
             style={styles.linkToSSO}
             onPress={() => handleSSO()}
+            accessibilityRole="link"
+            accessibilityLabel={t('loginScreen.SSO')}
+            accessibilityHint={t('loginScreen.ssoHint')}
           >
-            <Text variant="link" style={styles.textLink}>
+            <Text variant="link" style={styles.textLink} accessible={false}>
               {t('loginScreen.SSO')}
             </Text>
           </TouchableOpacity>

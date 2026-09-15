@@ -68,6 +68,10 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
       headerRight: () => (
         <View
           accessibilityLabel={accessibilityLabel}
+          accessibilityHint={t('offeringScreen.yearSelectorHint')}
+          accessibilityState={{
+            disabled: yearOptions.length <= 1 || isOffline,
+          }}
           importantForAccessibility="yes"
           accessibilityRole="button"
           accessible={true}
@@ -115,6 +119,7 @@ export const DegreeTopTabsNavigator = ({ route, navigation }: Props) => {
     palettes.primary,
     palettes.text,
     yearOptions,
+    isOffline,
     accessibility?.fontSize,
   ]);
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
@@ -27,6 +28,7 @@ export const FileScreenHeader = ({
   isSelectDisabled = false,
 }: FileScreenHeaderProps) => {
   const { palettes, fontSizes, spacing } = useTheme();
+  const { t } = useTranslation();
   const [isSortMenuOpen, setSortMenuOpen] = useState(false);
 
   const headerContent = (
@@ -39,7 +41,15 @@ export const FileScreenHeader = ({
         onCloseMenu={() => setSortMenuOpen(false)}
         onOpenMenu={() => setSortMenuOpen(true)}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View
+          accessible
+          accessibilityRole="button"
+          accessibilityLabel={t('courseFilesTab.sortByLabel', {
+            option: activeSort,
+          })}
+          accessibilityHint={t('courseFilesTab.openSortMenuHint')}
+          style={{ flexDirection: 'row', alignItems: 'center' }}
+        >
           <TextButton>{activeSort}</TextButton>
           <Icon
             icon={isSortMenuOpen ? faChevronUp : faChevronDown}

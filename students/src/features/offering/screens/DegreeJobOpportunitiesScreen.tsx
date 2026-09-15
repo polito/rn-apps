@@ -32,7 +32,11 @@ export const DegreeJobOpportunitiesScreen = () => {
         <LoadingContainer loading={isLoading}>
           <Section>
             <Card padded>
-              <Text variant="subHeading" style={styles.subHeading}>
+              <Text
+                variant="subHeading"
+                style={styles.subHeading}
+                accessibilityRole="header"
+              >
                 {degree?.jobOpportunities?.title}
               </Text>
               <Text variant="longProse">

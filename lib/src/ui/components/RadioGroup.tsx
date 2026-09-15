@@ -13,6 +13,7 @@ interface Props<T> {
   value: T;
   setValue: (value: T) => void;
   showError?: boolean;
+  accessibilityLabel?: string;
 }
 
 export const RadioGroup = <T,>({
@@ -20,37 +21,62 @@ export const RadioGroup = <T,>({
   value,
   setValue,
   showError,
+  accessibilityLabel,
 }: Props<T>) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
 
   return (
     <Col>
-      {options.map((radioDefinition, index) => {
-        const isSelected = radioDefinition.value === value;
+      <View
+        accessibilityRole="radiogroup"
+        accessibilityLabel={accessibilityLabel}
+      >
+        {options.map((radioDefinition, index) => {
+          const isSelected = radioDefinition.value === value;
+          const positionLabel = t('common.elementCount', {
+            count: index + 1,
+            total: options.length,
+          });
 
-        return (
-          <ListItem
-            key={index}
-            onPress={() => setValue(radioDefinition.value)}
-            titleStyle={styles.radioText}
-            leadingItem={
-              <View
-                style={[
-                  styles.radio,
-                  isSelected && styles.radioSelected,
-                  showError && value === undefined && styles.radioError,
-                ]}
-              >
-                {isSelected && <View style={styles.radioSelectedInner} />}
-              </View>
-            }
-            title={radioDefinition.label}
-          />
-        );
-      })}
+          return (
+            <ListItem
+              key={index}
+              accessible
+              accessibilityRole="radio"
+              accessibilityState={{ selected: isSelected }}
+              accessibilityLabel={`${positionLabel}. ${radioDefinition.label}`}
+              onPress={() => setValue(radioDefinition.value)}
+              titleStyle={styles.radioText}
+              leadingItem={
+                <View
+                  accessible={false}
+                  importantForAccessibility="no-hide-descendants"
+                  style={[
+                    styles.radio,
+                    isSelected && styles.radioSelected,
+                    showError && value === undefined && styles.radioError,
+                  ]}
+                >
+                  {isSelected && (
+                    <View
+                      accessible={false}
+                      style={styles.radioSelectedInner}
+                    />
+                  )}
+                </View>
+              }
+              title={radioDefinition.label}
+            />
+          );
+        })}
+      </View>
       {showError && value === undefined && (
-        <Text style={styles.groupErrorFeedback}>
+        <Text
+          style={styles.groupErrorFeedback}
+          accessibilityLiveRegion="assertive"
+          accessibilityRole="alert"
+        >
           {t('common.selectAnOption')}
         </Text>
       )}

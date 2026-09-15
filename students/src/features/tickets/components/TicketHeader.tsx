@@ -38,11 +38,24 @@ export const TicketHeader = ({ ticket, onPress }: TicketHeaderProps) => {
   };
   const statusGroup = getTicketStatusGroup(ticket.status);
   const palette = groupPalettes[statusGroup];
+  const updatedAt = t('common.dateAtTime', {
+    date: formatDate(ticket.updatedAt),
+    time: dateFormatter('HH:mm')(ticket.updatedAt),
+    interpolation: { escapeValue: false },
+  });
+  const accessibilityLabel = [
+    ticket.subject,
+    t('common.status'),
+    t(`tickets.status.${statusGroup}`),
+    t('common.updatedAt'),
+    updatedAt,
+  ].join(', ');
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={t('ticketScreen.infoModalTitle')}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={onPress ? t('common.tapToNavigate') : undefined}
       onPress={onPress}
       style={styles.bar}
     >
@@ -61,13 +74,7 @@ export const TicketHeader = ({ ticket, onPress }: TicketHeaderProps) => {
           </Col>
           <Col gap={1}>
             <Text style={styles.label}>{t('common.updatedAt')}</Text>
-            <Text style={styles.value}>
-              {t('common.dateAtTime', {
-                date: formatDate(ticket.updatedAt),
-                time: dateFormatter('HH:mm')(ticket.updatedAt),
-                interpolation: { escapeValue: false },
-              })}
-            </Text>
+            <Text style={styles.value}>{updatedAt}</Text>
           </Col>
         </Row>
       </Col>

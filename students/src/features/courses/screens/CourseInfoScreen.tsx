@@ -168,6 +168,24 @@ export const CourseInfoScreen = () => {
   );
   const isGuideDisabled = useOfflineDisabled(isGuideDataMissing);
   const isStatisticsDisabled = !courseQuery.data?.shortcode;
+  const hasEditions = (editions?.length ?? 0) > 0;
+
+  const headingAccessibilityLabel = [
+    courseQuery.data?.name,
+    courseQuery.data?.shortcode
+      ? `${t('courseInfoTab.shortcode')}: ${courseQuery.data.shortcode}`
+      : undefined,
+    isModule ? parentCourse?.name : undefined,
+    !isModule && courseQuery.data?.cfu
+      ? `${courseQuery.data.cfu} ${t('common.cfu')}`
+      : undefined,
+  ]
+    .filter(Boolean)
+    .join(', ');
+
+  const editionAccessibilityLabel = `${t('degreeCourseScreen.period')}: ${
+    courseQuery.data?.teachingPeriod ?? '--'
+  } - ${courseQuery.data?.year ?? '--'}`;
 
   return (
     <ScrollView
@@ -180,26 +198,37 @@ export const CourseInfoScreen = () => {
       }
     >
       <SafeAreaView>
-        <Section style={styles.heading}>
-          <ScreenTitle title={courseQuery.data?.name} />
-          <Text variant="caption">
-            {courseQuery.data?.shortcode ?? ' '}
-            {isModule && ` - ${parentCourse?.name}`}
-            {!isModule && courseQuery.data?.cfu && (
-              <Text variant="caption">
-                {' - '}
-                {courseQuery.data.cfu} {t('common.cfu').toLowerCase()}
-              </Text>
-            )}
-          </Text>
+        <Section
+          style={styles.heading}
+          accessible
+          accessibilityRole="header"
+          accessibilityLabel={headingAccessibilityLabel}
+        >
+          <View importantForAccessibility="no-hide-descendants">
+            <ScreenTitle title={courseQuery.data?.name} />
+            <Text variant="caption">
+              {courseQuery.data?.shortcode ?? ' '}
+              {isModule && ` - ${parentCourse?.name}`}
+              {!isModule && courseQuery.data?.cfu && (
+                <Text variant="caption">
+                  {' - '}
+                  {courseQuery.data.cfu} {t('common.cfu').toLowerCase()}
+                </Text>
+              )}
+            </Text>
+          </View>
         </Section>
-        <Card style={styles.metricsCard} accessible={true}>
+        <Card style={styles.metricsCard} accessible={false}>
           <Grid>
             <View
               style={GlobalStyles.grow}
               importantForAccessibility="yes"
-              accessibilityRole="button"
+              accessibilityRole={hasEditions ? 'button' : 'none'}
               accessible={true}
+              accessibilityLabel={editionAccessibilityLabel}
+              accessibilityHint={
+                hasEditions ? t('courseInfoTab.selectYear') : undefined
+              }
             >
               <StatefulMenuView
                 actions={menuActions}
@@ -216,7 +245,11 @@ export const CourseInfoScreen = () => {
                   });
                 }}
               >
-                <Row justify="flex-start" align="center">
+                <Row
+                  justify="flex-start"
+                  align="center"
+                  importantForAccessibility="no-hide-descendants"
+                >
                   <Metric
                     title={t('common.period')}
                     value={`${courseQuery.data?.teachingPeriod ?? '--'} - ${
@@ -236,7 +269,7 @@ export const CourseInfoScreen = () => {
                         style={styles.dotIcon}
                       />
                     )}
-                    {(editions?.length ?? 0) > 0 && (
+                    {hasEditions && (
                       <Icon
                         icon={faAngleDown}
                         size={14}
@@ -351,6 +384,12 @@ export const CourseInfoScreen = () => {
             {courseQuery.data?.links.map((link, index) => (
               <ListItem
                 key={index}
+                accessibilityRole="link"
+                accessibilityLabel={[
+                  link.description ?? t('courseInfoTab.linkDefaultTitle'),
+                  link.url,
+                ].join(', ')}
+                accessibilityHint={t('common.externalLink')}
                 leadingItem={<Icon icon={faLink} size={fontSizes.xl} />}
                 title={link.description ?? t('courseInfoTab.linkDefaultTitle')}
                 subtitle={link.url}
@@ -364,11 +403,21 @@ export const CourseInfoScreen = () => {
           <SectionHeader title={t('courseInfoTab.moreSectionTitle')} />
           <OverviewList>
             <ListItem
+              accessibilityRole="button"
+              accessibilityLabel={t('courseGuideScreen.title')}
+              accessibilityHint={t('common.tapToNavigate')}
+              accessibilityState={{ disabled: isGuideDisabled }}
               title={t('courseGuideScreen.title')}
               linkTo={{ screen: 'CourseGuide', params: { courseId } }}
               disabled={isGuideDisabled}
             />
             <ListItem
+              accessibilityRole="button"
+              accessibilityLabel={`${t('courseStatisticsScreen.title')}, ${t(
+                'courseStatisticsScreen.subtitle',
+              )}`}
+              accessibilityHint={t('common.tapToNavigate')}
+              accessibilityState={{ disabled: isStatisticsDisabled }}
               title={t('courseStatisticsScreen.title')}
               subtitle={t('courseStatisticsScreen.subtitle')}
               linkTo={{

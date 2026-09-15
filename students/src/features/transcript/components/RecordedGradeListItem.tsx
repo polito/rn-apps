@@ -1,5 +1,6 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { formatDate } from '@polito/lib/core';
 import {
@@ -12,33 +13,72 @@ import {
 } from '@polito/lib/ui';
 import { ExamGrade } from '@polito/student-api-client';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
+import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { formatGrade } from '../../../utils/grades';
 
 type RecordedGradeProps = {
   grade: ExamGrade;
+  index: number;
+  total: number;
 };
 
-export const RecordedGradeListItem = ({ grade }: RecordedGradeProps) => {
+export const RecordedGradeListItem = ({
+  grade,
+  index,
+  total,
+}: RecordedGradeProps) => {
   const { t } = useTranslation();
+  const { buildCompositeListLabel } = useAccessibility();
   const styles = useStylesheet(createStyles);
+
+  const formattedGrade = t(formatGrade(grade.grade));
+  const dateLabel = formatDate(grade.date);
+  const creditsLabel = t('common.creditsWithUnit', { credits: grade.credits });
+
+  const accessibilityLabel = useMemo(
+    () =>
+      buildCompositeListLabel(
+        [
+          t('transcriptGradesScreen.recordedGradeItem', {
+            courseName: grade.courseName,
+            date: dateLabel,
+            credits: creditsLabel,
+            grade: formattedGrade,
+          }),
+        ],
+        index,
+        total,
+      ),
+    [
+      buildCompositeListLabel,
+      grade.courseName,
+      dateLabel,
+      creditsLabel,
+      formattedGrade,
+      index,
+      total,
+      t,
+    ],
+  );
 
   return (
     <ListItem
-      key={grade.courseName}
       title={grade.courseName}
-      subtitle={`${formatDate(grade.date)} - ${t('common.creditsWithUnit', {
-        credits: grade.credits,
-      })}`}
+      subtitle={`${dateLabel} - ${creditsLabel}`}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={t('common.tapToNavigate')}
       trailingItem={
         <Row align="center" pl={2}>
-          <Text
-            variant="title"
-            style={styles.grade}
-            accessibilityLabel={`${t('common.grade')}: ${grade?.grade}`}
-          >
-            {t(formatGrade(grade.grade))}
-          </Text>
-          <DisclosureIndicator />
+          <View {...hideFromScreenReader}>
+            <Text variant="title" style={styles.grade}>
+              {formattedGrade}
+            </Text>
+          </View>
+          <View {...hideFromScreenReader}>
+            <DisclosureIndicator />
+          </View>
         </Row>
       }
       linkTo={{

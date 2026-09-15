@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { AccessibilityInfo, SafeAreaView, ScrollView } from 'react-native';
 
 import {
   faComments,
   faPersonCirclePlus,
 } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled } from '@polito/lib/core';
+import { IS_ANDROID, useOfflineDisabled } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   Col,
@@ -33,6 +33,18 @@ export const NotificationsScreen = () => {
   const { fontSizes } = useTheme();
   const isOffline = useOfflineDisabled();
 
+  const announceToggle = (previousValue?: boolean) => {
+    if (IS_ANDROID) {
+      return;
+    }
+    const message = previousValue
+      ? t('common.deactivated')
+      : t('common.activated');
+    setTimeout(() => {
+      AccessibilityInfo.announceForAccessibility(message);
+    }, 200);
+  };
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -49,6 +61,15 @@ export const NotificationsScreen = () => {
               <SwitchListItem
                 leadingItem={<Icon icon={faComments} size={fontSizes['2xl']} />}
                 title={t('common.ticket_plural')}
+                accessibilityLabel={[
+                  t('common.ticket_plural'),
+                  data?.tickets ? t('common.enabled') : t('common.disabled'),
+                ].join(', ')}
+                accessibilityHint={
+                  data?.tickets
+                    ? t('common.click2Deactivate')
+                    : t('common.click2Active')
+                }
                 disabled={isOffline}
                 value={data?.tickets}
                 onChange={() => {
@@ -56,6 +77,7 @@ export const NotificationsScreen = () => {
                     notificationType: 'tickets',
                     targetValue: !data?.tickets,
                   });
+                  announceToggle(data?.tickets);
                 }}
               />
               <SwitchListItem
@@ -63,6 +85,15 @@ export const NotificationsScreen = () => {
                   <Icon icon={faPersonCirclePlus} size={fontSizes['2xl']} />
                 }
                 title={t('common.booking_plural')}
+                accessibilityLabel={[
+                  t('common.booking_plural'),
+                  data?.bookings ? t('common.enabled') : t('common.disabled'),
+                ].join(', ')}
+                accessibilityHint={
+                  data?.bookings
+                    ? t('common.click2Deactivate')
+                    : t('common.click2Active')
+                }
                 disabled={isOffline}
                 value={data?.bookings}
                 onChange={() => {
@@ -70,6 +101,7 @@ export const NotificationsScreen = () => {
                     notificationType: 'bookings',
                     targetValue: !data?.bookings,
                   });
+                  announceToggle(data?.bookings);
                 }}
               />
             </OverviewList>

@@ -34,13 +34,21 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
       <LoadingContainer loading={isLoading}>
         {!!offerings && offerings?.length > 0 ? (
           offerings?.map(item => (
-            <Section key={item.code} style={styles.section}>
-              <Text variant="subHeading" style={styles.offeringClass}>
+            <Section accessible={false} key={item.code} style={styles.section}>
+              <Text
+                accessible={true}
+                accessibilityRole="none"
+                accessibilityLabel={`${item?.name}, ${t('offeringScreen.section')}`}
+                variant="subHeading"
+                style={styles.offeringClass}
+              >
                 {item?.name || item.code}
               </Text>
               <OverviewList>
                 {item?.degrees.map((degree, index) => (
                   <ListItem
+                    accessible={true}
+                    accessibilityLabel={degree?.name || degree.id}
                     containerStyle={styles.offeringListItem}
                     key={index}
                     title={degree?.name || degree.id}
@@ -49,6 +57,8 @@ export const Offerings = ({ type }: { type: 'master' | 'bachelor' }) => {
                       numberOfLines: undefined,
                     }}
                     accessibilityRole="button"
+                    accessibilityHint={t('common.tapToNavigate')}
+                    accessibilityState={{ disabled: isOffline }}
                     linkTo={{
                       screen: 'Degree',
                       params: {

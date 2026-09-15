@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, TouchableOpacity } from 'react-native';
+import { AccessibilityInfo, FlatList, TouchableOpacity } from 'react-native';
 
 import {
   PreferencesContextBase,
@@ -60,12 +60,27 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
         data={filteredIcons}
         renderItem={({ item }) => (
           <TouchableOpacity
+            accessibilityLabel={t(
+              `icons.${(item?.[1] as { iconName?: string })?.iconName}`,
+            )}
+            accessible
+            accessibilityRole="button"
             style={{
               flex: 1,
               alignItems: 'center',
               padding: spacing[4],
             }}
             onPress={() => {
+              setTimeout(() => {
+                AccessibilityInfo.announceForAccessibility(
+                  [
+                    t('coursePreferencesScreen.selectedIcon'),
+                    t(
+                      `icons.${(item?.[1] as { iconName?: string })?.iconName}`,
+                    ),
+                  ].join(', '),
+                );
+              }, 200);
               updatePreference('courses', {
                 ...coursesPrefs,
                 [uniqueShortcode]: {

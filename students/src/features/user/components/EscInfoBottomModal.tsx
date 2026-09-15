@@ -20,6 +20,8 @@ import {
 import { useConfirmationDialog } from '~/core/hooks/useConfirmationDialog.ts';
 import { useDeleteEsc } from '~/core/queries/escHooks.ts';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
+
 type Props = PropsWithChildren<
   ViewProps & {
     onClose: () => void;
@@ -77,7 +79,7 @@ export const EscInfoBottomModal = ({ onClose, scrollTo, ...rest }: Props) => {
       <Col pt={4} pb={8} ph={4} gap={2}>
         <Card rounded spaced translucent={false} style={style.card} {...rest}>
           <Row gap={2} style={style.firstRow}>
-            <View style={style.iconContainer}>
+            <View style={style.iconContainer} {...hideFromScreenReader}>
               <Icon
                 icon={faInfoCircle}
                 color={palettes.orange[dark ? 400 : 600]}

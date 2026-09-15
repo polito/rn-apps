@@ -5,7 +5,7 @@ import { useTheme } from '@polito/lib/ui';
 export const PolitoLogo = (props: SvgProps) => {
   const { palettes, dark } = useTheme();
   return (
-    <Svg viewBox="0 0 125 167" fill="none" {...props}>
+    <Svg viewBox="0 0 125 167" fill="none" {...props} accessible={false}>
       <G
         fill={dark ? palettes.text[50] : palettes.primary[700]}
         clipPath="url(#logo_svg__a)"

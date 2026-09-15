@@ -108,7 +108,18 @@ const CleanCacheListItem = () => {
       subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
       })}
+      accessibilityLabel={[
+        t('common.cleanCourseFiles'),
+        t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
+          size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
+        }),
+      ].join(', ')}
       accessibilityRole="button"
+      accessibilityState={{
+        disabled:
+          (cacheSize !== undefined && cacheSize === 0) ||
+          isAnyDownloadInProgress,
+      }}
       disabled={
         (cacheSize !== undefined && cacheSize === 0) || isAnyDownloadInProgress
       }
@@ -228,6 +239,7 @@ const VisualizationListItem = () => {
       <ListItem
         title={t(`theme.${colorScheme}`)}
         isAction
+        accessibilityRole="button"
         accessibilityLabel={`${t('common.theme')}: ${t(
           `theme.${colorScheme}`,
         )}. ${t('settingsScreen.openThemeMenu')}`}
@@ -272,6 +284,8 @@ const LanguageListItem = () => {
       <ListItem
         isAction
         disabled={isDisabled}
+        accessibilityRole="button"
+        accessibilityState={{ disabled: isDisabled }}
         title={t(`common.${language}`)}
         accessibilityLabel={`${t('common.language')}: ${t(
           `common.${language}`,
@@ -302,10 +316,10 @@ const Notifications = () => {
       <SwitchListItem
         disabled
         accessible={true}
-        accessibilityLabel={`${t('notifications.important')}. ${t(
-          `common.activeStatus.${notifications?.important}`,
-        )} `}
-        accessibilityRole="switch"
+        accessibilityLabel={[
+          t('notifications.important'),
+          notifications?.important ? t('common.enabled') : t('common.disabled'),
+        ].join(', ')}
         title={t('notifications.important')}
         value={notifications?.important}
         onChange={onChangeNotification('important')}
@@ -316,10 +330,10 @@ const Notifications = () => {
       <SwitchListItem
         disabled
         accessible={true}
-        accessibilityLabel={`${t('notifications.events')}. ${t(
-          `common.activeStatus.${notifications?.events}`,
-        )} `}
-        accessibilityRole="switch"
+        accessibilityLabel={[
+          t('notifications.events'),
+          notifications?.events ? t('common.enabled') : t('common.disabled'),
+        ].join(', ')}
         title={t('notifications.events')}
         value={notifications?.events}
         onChange={onChangeNotification('events')}
@@ -328,10 +342,10 @@ const Notifications = () => {
       <SwitchListItem
         disabled
         accessible={true}
-        accessibilityLabel={`${t('notifications.presence')}. ${t(
-          `common.activeStatus.${notifications?.presence}`,
-        )} `}
-        accessibilityRole="switch"
+        accessibilityLabel={[
+          t('notifications.reservationPresence'),
+          notifications?.presence ? t('common.enabled') : t('common.disabled'),
+        ].join(', ')}
         title={t('notifications.reservationPresence')}
         value={notifications?.presence}
         onChange={onChangeNotification('presence')}
@@ -477,6 +491,13 @@ const StorageLocationListItem = () => {
       <ListItem
         isAction
         disabled={isMoving}
+        accessibilityRole="button"
+        accessibilityState={{ disabled: isMoving }}
+        accessibilityLabel={`${t('settingsScreen.storageTitle')}: ${
+          currentLocation === 'custom'
+            ? t('settingsScreen.storageCustom')
+            : t('settingsScreen.storageInternal')
+        }. ${t('settingsScreen.openStorageMenu')}`}
         title={
           currentLocation === 'custom'
             ? t('settingsScreen.storageCustom')
@@ -594,6 +615,7 @@ export const SettingsScreen = () => {
                 <ListItem
                   title={t('settingsScreen.authenticatorTitle')}
                   accessibilityRole="button"
+                  accessibilityHint={t('common.tapToNavigate')}
                   linkTo={{
                     screen: 'MfaSettings',
                   }}

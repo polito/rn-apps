@@ -68,6 +68,8 @@ export const DegreeTracksScreen = () => {
         marginTop: spacing[4],
         marginBottom: bottomBarHeight + spacing[2],
       }}
+      accessibilityRole="list"
+      accessibilityLabel={t('common.degreeTracksAndCourses')}
     >
       <SectionList
         refreshControl={<RefreshControl queries={[degreeQuery]} manual />}
@@ -84,6 +86,9 @@ export const DegreeTracksScreen = () => {
             accessibilityLabel={`${title}. ${t(
               `common.openedStatus.${isExpanded}`,
             )}. ${t(`common.openedStatusAction.${isExpanded}`)}`}
+            accessibilityRole="button"
+            accessibilityState={{ expanded: isExpanded }}
+            accessibilityHint={t('common.tapToToggleSection')}
           >
             <View
               style={{

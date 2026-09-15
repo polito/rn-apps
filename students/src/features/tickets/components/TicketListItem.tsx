@@ -23,7 +23,10 @@ import {
 import { TicketOverview } from '@polito/student-api-client';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { TICKET_QUERY_PREFIX } from '../../../core/queries/ticketHooks';
+import {
+  TICKET_QUERY_PREFIX,
+  getTicketStatusGroup,
+} from '../../../core/queries/ticketHooks';
 import { TicketStatusBadge } from './TicketStatusBadge';
 
 interface TicketListItemProps extends Partial<ListItemProps> {
@@ -46,19 +49,40 @@ export const TicketListItem = ({
     [ticket, queryClient],
   );
   const isDisabled = useOfflineDisabled(isDataMissing);
+  const subject = getHtmlTextContent(ticket?.subject);
+  const statusLabel = t(
+    `tickets.status.${getTicketStatusGroup(ticket.status)}`,
+  );
+  const subtitleLabel = ticket.needsFeedback
+    ? t('ticketsScreen.insertFeedback')
+    : t('ticketsScreen.openedOn', {
+        date: formatDate(ticket.createdAt),
+        interpolation: { escapeValue: false },
+      });
+  const accessibilityLabel = [
+    typeof props.accessibilityLabel === 'string'
+      ? props.accessibilityLabel
+      : null,
+    statusLabel,
+    subtitleLabel,
+    unread || ticket.unreadCount > 0 ? t('common.unread') : null,
+  ]
+    .filter(Boolean)
+    .join(', ');
 
   return (
     <ListItem
       {...props}
       accessibilityRole="button"
       accessible={true}
+      accessibilityLabel={accessibilityLabel}
       linkTo={{
         screen: 'Ticket',
         params: { id: ticket.id },
       }}
       disabled={isDisabled}
       unread={unread || ticket.unreadCount > 0}
-      title={getHtmlTextContent(ticket?.subject)}
+      title={subject}
       subtitle={
         ticket.needsFeedback ? (
           <Row align="center" gap={1} style={styles.feedbackTag}>

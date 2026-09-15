@@ -23,6 +23,7 @@ import {
 } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
 import { useRequestEsc } from '../../../core/queries/escHooks.ts';
 import { UserStackParamList } from '../components/UserNavigator.tsx';
 
@@ -94,7 +95,7 @@ export const RequestESCScreen = ({ navigation, ...rest }: Props) => {
               <View style={{ paddingLeft: spacing[2] }}>
                 {itemList.map((text, index) => (
                   <View style={styles.listItem} key={index}>
-                    <Text>{`\u2022`} </Text>
+                    <Text {...hideFromScreenReader}>{`\u2022`} </Text>
                     <View style={styles.text}>
                       <Text
                         accessibilityLabel={text}
@@ -110,6 +111,11 @@ export const RequestESCScreen = ({ navigation, ...rest }: Props) => {
           </OverviewList>
           <Card
             accessible={Platform.select({ android: true, ios: false })}
+            accessibilityLabel={[
+              t('escRequestScreen.cardRequest.firstSectionNormalText'),
+              t('escRequestScreen.cardRequest.sectionBoldText'),
+              t('escRequestScreen.cardRequest.secondSectionNormalText'),
+            ].join(' ')}
             rounded
             spaced={false}
             translucent={false}
@@ -127,7 +133,9 @@ export const RequestESCScreen = ({ navigation, ...rest }: Props) => {
               <View style={{ paddingLeft: spacing[3] }}>
                 {itemListCard.map((text, index) => (
                   <View style={styles.listItem} key={index}>
-                    <Text style={styles.cardText}>{`\u2022`} </Text>
+                    <Text style={styles.cardText} {...hideFromScreenReader}>
+                      {`\u2022`}{' '}
+                    </Text>
                     <View style={styles.text}>
                       <Text
                         accessibilityLabel={text}

@@ -2,7 +2,13 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { BarChart, barDataItem } from 'react-native-gifted-charts';
 
-import { Col, Text, useStylesheet, useTheme } from '@polito/lib/ui';
+import {
+  Col,
+  Text,
+  VisuallyHidden,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import type { Theme } from '@polito/lib/ui';
 import type { CourseStatistics } from '@polito/student-api-client';
 
@@ -117,44 +123,59 @@ export const EnrolledExamDetailChart = ({
 
   const hasData = barData.some(it => it.value !== undefined && it.value > 0);
 
-  return (
-    <View
-      style={styles.graphCard}
-      accessible={false}
-      accessibilityElementsHidden={true}
-      importantForAccessibility="no-hide-descendants"
-    >
-      <NoChartDataContainer hasData={hasData}>
-        <BarChart
-          animationDuration={kChartAnimationDuration}
-          initialSpacing={initialSpacing}
-          data={hasData ? barData : emptyChartData}
-          barWidth={barWidth}
-          barBorderTopLeftRadius={barRadius}
-          barBorderTopRightRadius={barRadius}
-          spacing={hasData ? graphSpacing : 0}
-          isAnimated
-          yAxisTextStyle={styles.chartAxisLabel}
-          rulesColor={colors.divider}
-          yAxisColor="rgba(255,255,255,0)"
-          xAxisColor={colors.divider}
-          rulesType="solid"
-          noOfSections={noOfSections}
-          maxValue={Math.max(...barData.map(d => d.value || 0)) * 1.1}
-        />
-      </NoChartDataContainer>
+  const a11ySummary = t(
+    'courseStatisticsScreen.enrolledExamDetailA11ySummary',
+    {
+      firstYearPassed: statistics?.firstYear?.succeeded ?? 0,
+      firstYearFailed: statistics?.firstYear?.failed ?? 0,
+      otherYearsPassed: statistics?.otherYears?.succeeded ?? 0,
+      otherYearsFailed: statistics?.otherYears?.failed ?? 0,
+    },
+  );
 
-      <Col>
-        <LegendItem
-          bulletColor={chartColors[0]}
-          text={t('courseStatisticsScreen.enrolledExamChartLegend.passed')}
-        />
-        <LegendItem
-          bulletColor={chartColors[1]}
-          text={t('courseStatisticsScreen.enrolledExamChartLegend.failed')}
-        />
-      </Col>
-    </View>
+  return (
+    <>
+      <VisuallyHidden>
+        <Text>{a11ySummary}</Text>
+      </VisuallyHidden>
+      <View
+        style={styles.graphCard}
+        accessible={false}
+        accessibilityElementsHidden={true}
+        importantForAccessibility="no-hide-descendants"
+      >
+        <NoChartDataContainer hasData={hasData}>
+          <BarChart
+            animationDuration={kChartAnimationDuration}
+            initialSpacing={initialSpacing}
+            data={hasData ? barData : emptyChartData}
+            barWidth={barWidth}
+            barBorderTopLeftRadius={barRadius}
+            barBorderTopRightRadius={barRadius}
+            spacing={hasData ? graphSpacing : 0}
+            isAnimated
+            yAxisTextStyle={styles.chartAxisLabel}
+            rulesColor={colors.divider}
+            yAxisColor="rgba(255,255,255,0)"
+            xAxisColor={colors.divider}
+            rulesType="solid"
+            noOfSections={noOfSections}
+            maxValue={Math.max(...barData.map(d => d.value || 0)) * 1.1}
+          />
+        </NoChartDataContainer>
+
+        <Col>
+          <LegendItem
+            bulletColor={chartColors[0]}
+            text={t('courseStatisticsScreen.enrolledExamChartLegend.passed')}
+          />
+          <LegendItem
+            bulletColor={chartColors[1]}
+            text={t('courseStatisticsScreen.enrolledExamChartLegend.failed')}
+          />
+        </Col>
+      </View>
+    </>
   );
 };
 

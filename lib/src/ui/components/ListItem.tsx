@@ -15,6 +15,7 @@ import { GlobalStyles } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { IS_IOS } from '../../core/constants';
 import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
 import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
@@ -70,12 +71,19 @@ export const ListItem = ({
   multilineTitle = false,
   titleProps,
   unread = false,
+  accessibilityLabel,
+  accessibilityState,
+  accessibilityRole,
+  accessibilityHint,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, fontFamilies, fontWeights, colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { accessibility } = usePreferencesContext();
+  const isDisabled = Boolean(disabled);
+  const hasCompositeLabel =
+    accessibilityLabel != null && accessibilityLabel !== '';
   const titleElement =
     typeof title === 'string' ? (
       <Row align="center" gap={2}>
@@ -151,14 +159,25 @@ export const ListItem = ({
       }
       style={[
         {
-          opacity: disabled ? 0.5 : 1,
+          opacity: isDisabled ? 0.5 : 1,
         },
         style,
       ]}
-      disabled={disabled}
+      disabled={isDisabled}
+      accessibilityRole={accessibilityRole}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{
+        disabled: isDisabled,
+        ...accessibilityState,
+      }}
       {...rest}
     >
       <View
+        importantForAccessibility={
+          hasCompositeLabel ? 'no-hide-descendants' : undefined
+        }
+        accessibilityElementsHidden={hasCompositeLabel ? IS_IOS : undefined}
         style={[
           {
             minHeight: 60,
