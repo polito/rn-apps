@@ -75,7 +75,9 @@ const createCustomImageRenderer = (variant: string) => {
       const imgStyle = {
         ...tnodeStyle,
         width: resolvedWidth,
-        ...(resolvedHeight != null && { height: resolvedHeight }),
+        ...(resolvedHeight != null
+          ? { height: resolvedHeight }
+          : { aspectRatio: 16 / 9 }),
       };
 
       return (
