@@ -76,6 +76,9 @@ import { BookingSlotModal } from '../components/BookingSlotModal';
 import { BookingSlotsLegendModal } from '../components/BookingSlotsLegendModal';
 import { BookingSlotsStatusLegend } from '../components/BookingSlotsStatusLegend';
 
+const MIN_SLOT_HEIGHT = 40;
+const SMALL_SLOT_MAX_DURATION = 15;
+
 const START_DATE = DateTime.now().setZone(APP_TIMEZONE).startOf('day');
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'BookingSlot'>;
@@ -124,8 +127,13 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     [topics, topicId],
   );
 
+  const hasSmallSlots =
+    !!currentTopic.slotLength &&
+    currentTopic.slotLength <= SMALL_SLOT_MAX_DURATION;
+  const defaultAgendaLayout = !!currentTopic.agendaView || hasSmallSlots;
+
   const showAgendaLayout =
-    showAgenda !== null ? showAgenda : !!currentTopic.agendaView;
+    showAgenda !== null ? showAgenda : defaultAgendaLayout;
 
   useFocusEffect(
     useCallback(() => {
@@ -155,6 +163,17 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
       };
     });
   }, [bookingSlots]);
+
+  const calendarCellHeight = useMemo(() => {
+    const shortestDuration = Math.min(
+      ...calendarEvents.map(e => e.duration).filter(d => d > 0),
+      currentTopic.slotLength || 60,
+    );
+    return Math.max(
+      CALENDAR_CELL_HEIGHT,
+      Math.ceil((MIN_SLOT_HEIGHT * 60) / shortestDuration),
+    );
+  }, [calendarEvents, currentTopic.slotLength]);
 
   const handlePress = useCallback(
     (evtOrItem: BookingCalendarEvent) => {
@@ -251,8 +270,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
           break;
         case 'toggleView':
           setShowAgenda(prev => {
-            const showingLayout =
-              prev !== null ? prev : !!currentTopic.agendaView;
+            const showingLayout = prev !== null ? prev : defaultAgendaLayout;
             return !showingLayout;
           });
           break;
@@ -260,7 +278,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
           break;
       }
     },
-    [refetch, currentTopic.agendaView],
+    [refetch, defaultAgendaLayout],
   );
 
   const onPressLegend = useCallback(() => {
@@ -523,7 +541,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               locale={language}
               hours={hours}
               bodyContainerStyle={{ backgroundColor: colors.yellow }}
-              cellMaxHeight={currentTopic.slotLength || CALENDAR_CELL_HEIGHT}
+              cellMaxHeight={calendarCellHeight}
               showAllDayEventCell={false}
               swipeEnabled={false}
               renderHeader={props => (
