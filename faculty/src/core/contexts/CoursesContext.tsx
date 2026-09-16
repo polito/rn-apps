@@ -211,6 +211,12 @@ interface Booking {
   details: string;
   status: string;
   chairType?: string;
+  eventType?: string;
+  recurringEvent?: boolean;
+  visibleToOthers?: boolean;
+  ownerName?: string;
+  spaceId?: string;
+  eventId?: string;
 }
 
 interface TbsDoc {
@@ -247,6 +253,7 @@ interface CoursesContextType {
   updateTbsDocStatus: (id: number, status: string) => void;
   bookings: Booking[];
   addBooking: (booking: Booking) => void;
+  updateBooking: (booking: Booking) => void;
   fakeCourses: Course[];
   addStudentsToCourse: (courseId: number, newStudents: Student[]) => void;
   managedCourses: Course[];
@@ -6457,121 +6464,116 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
   ]);
 
   const [bookings, setBookings] = useState<Booking[]>([
-    // Tipo 0: Prenotazione aule
     {
       id: 1,
+      type: 2,
+      title: 'Booking #00001',
+      date: '13/08/2026',
+      time: '08:30 - 10:30',
+      details: 'Indoor Maps Coordination Meeting',
+      status: 'accettata',
+      capacity: 10,
+      eventType: 'Meeting',
+      recurringEvent: false,
+      visibleToOthers: true,
+      ownerName: 'Marco Rossi',
+    },
+    {
+      id: 12345,
       type: 0,
-      title: 'Richiesta aula #34549',
-      powerOutput: true,
-      capacity: 30,
-      date: '2025-10-04',
-      where: 'Valentino',
+      title: 'Request #12345',
+      date: '12/03/2026',
       time: '16:00 - 17:30',
-      details: 'Lezione di matematica avanzata',
-      status: 'in attesa',
-      chairType: 'Indifferente',
-    },
-    {
-      id: 2,
-      type: 0,
-      title: 'Richiesta aula #34550',
-      powerOutput: false,
-      capacity: 25,
-      date: '2025-10-05',
-      where: 'Centrale',
-      time: '10:00 - 12:00',
-      details: 'Corso introduttivo di informatica',
-      status: 'accettata',
-      chairType: 'Indifferente',
-    },
-    {
-      id: 3,
-      type: 0,
-      title: 'Richiesta aula #34551',
-      powerOutput: true,
-      capacity: 20,
-      where: 'Aula C303',
-      date: '2025-10-06',
-      time: '14:00 - 15:30',
-      details: 'Laboratorio di fisica',
+      details: 'AI seminar',
       status: 'respinta',
-      chairType: 'Indifferente',
-    },
-
-    // Tipo 1: Spazi per eventi
-    {
-      id: 4,
-      type: 1,
-      title: 'Richiesta spazio #34567',
+      capacity: 70,
+      chairType: 'Table box',
       powerOutput: true,
+      where: 'Engineering',
+    },
+    {
+      id: 12344,
+      type: 0,
+      title: 'Request #12344',
+      date: '21/01/2026',
+      time: '16:00 - 17:30',
+      details: 'Exam preparation session',
+      status: 'accettata',
+      capacity: 50,
+      chairType: 'Table box',
+      powerOutput: true,
+      where: 'Engineering',
+    },
+    {
+      id: 12343,
+      type: 0,
+      title: 'Request #12343',
+      date: '01/12/2025',
+      time: '10:00 - 13:00',
+      details: 'Department meeting',
+      status: 'respinta',
+      capacity: 30,
+      chairType: 'Table box',
+      powerOutput: false,
+      where: 'Architecture',
+    },
+    {
+      id: 12342,
+      type: 0,
+      title: 'Request #12342',
+      date: '15/11/2025',
+      time: '09:00 - 11:00',
+      details: 'Guest lecture',
+      status: 'accettata',
       capacity: 100,
-      where: 'Aula Magna',
-      date: '2025-10-07',
-      time: '09:00 - 13:00',
-      details: 'Conferenza annuale dipartimentale',
-      status: 'accettata',
-      chairType: 'Indifferente',
-    },
-    {
-      id: 5,
-      type: 1,
-      title: 'Richiesta spazio #34569',
+      chairType: 'Table box',
       powerOutput: true,
-      capacity: 150,
-      where: 'Auditorium Cittadella',
-      date: '2025-10-08',
-      time: '15:00 - 18:00',
-      details: 'Evento culturale con ospiti esterni',
-      status: 'in attesa',
-      chairType: 'Indifferente',
+      where: 'Engineering',
     },
     {
-      id: 6,
+      id: 20001,
       type: 1,
-      title: 'Richiesta spazio #34569',
-      powerOutput: false,
-      capacity: 80,
-      where: 'Sala Conferenze',
-      date: '2025-10-09',
-      time: '11:00 - 14:00',
-      details: 'Seminario tecnico',
-      status: 'respinta',
-      chairType: 'Indifferente',
-    },
-
-    // Tipo 2: Spazi strutture
-    {
-      id: 7,
-      type: 2,
-      title: 'Prenotazione spazio #34589',
-      where: 'Sala Riunioni 1',
-      date: '2025-10-10',
-      time: '11:00 - 12:30',
-      details: 'Meeting del team di progetto',
+      title: 'Event 1',
+      date: '12/03/2026',
+      time: '13:00 - 14:30',
+      details: '',
       status: 'accettata',
-      chairType: 'Indifferente',
     },
     {
-      id: 8,
-      type: 2,
-      title: 'Prenotazione spazio #34565',
-      where: 'Ufficio Direzione',
-      date: '2025-10-11',
-      time: '10:00 - 11:00',
-      details: 'Colloquio riservato',
-      status: 'respinta',
-      chairType: 'Indifferente',
+      id: 20002,
+      type: 1,
+      title: 'Event 2',
+      date: '21/01/2026',
+      time: '16:00 - 17:30',
+      details: '',
+      status: 'accettata',
     },
     {
-      id: 9,
-      type: 2,
-      title: 'Prenotazione spazio #34533',
-      where: 'Studio Docente 3B',
-      date: '2025-10-12',
-      time: '09:30 - 10:30',
-      details: 'Incontro con studenti',
-      status: 'in attesa',
-      chairType: 'Indifferente',
+      id: 20003,
+      type: 1,
+      title: 'Event 3',
+      date: '01/12/2025',
+      time: '10:00 - 13:00',
+      details: '',
+      status: 'accettata',
+    },
+    {
+      id: 20004,
+      type: 1,
+      title: 'Event 4',
+      date: '20/10/2025',
+      time: '11:00-12:30',
+      details: '',
+      status: 'accettata',
+    },
+    {
+      id: 20005,
+      type: 1,
+      title: 'Event 5',
+      date: '05/10/2025',
+      time: '15:00-17:00',
+      details: '',
+      status: 'accettata',
     },
   ]);
 
@@ -6791,7 +6793,15 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
   };
 
   const addBooking = (newBooking: Booking) => {
-    setBookings(prevBookings => [...prevBookings, newBooking]);
+    setBookings(prevBookings => [newBooking, ...prevBookings]);
+  };
+
+  const updateBooking = (updatedBooking: Booking) => {
+    setBookings(prevBookings =>
+      prevBookings.map(booking =>
+        booking.id === updatedBooking.id ? updatedBooking : booking,
+      ),
+    );
   };
 
   const addMaterialToCourse = (
@@ -7403,6 +7413,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
         toggleFavoriteProfile,
         bookings,
         addBooking,
+        updateBooking,
         updateTbsDocStatus,
         tbsDocs,
         selectedBooking,
