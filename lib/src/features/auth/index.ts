@@ -6,7 +6,6 @@ export * from './components/MfaSettings';
 export * from './components/PolitoAuthenticatorContent';
 export * from './errors/UnsupportedIdentityTypeError';
 export * from './hooks/useAuth';
-export * from './hooks/useOpenInAppLink';
 export * from './queries/authHooks';
 export * from './translations';
 export * from './utils/crypto';

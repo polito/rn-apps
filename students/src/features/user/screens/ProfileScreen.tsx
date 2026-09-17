@@ -35,7 +35,6 @@ import {
   filterUnread,
   hasUnreadMessages,
 } from '../../../../src/utils/messages';
-import { deleteProfilePictureFile } from '../../../utils/profilePicture';
 import { CardSwiper } from '../../../core/components/CardSwiper';
 import { useMfaChallengeHandler } from '../../../core/hooks/useMfaChallengeHandler';
 import { useEscGet } from '../../../core/queries/escHooks';
@@ -48,6 +47,7 @@ import {
   useGetSmartCard,
   useGetStudent,
 } from '../../../core/queries/studentHooks';
+import { deleteProfilePictureFile } from '../../../utils/profilePicture';
 import { SmartCardQrModal } from '../components/SmartCardQrModal';
 import { UserStackParamList } from '../components/UserNavigator';
 

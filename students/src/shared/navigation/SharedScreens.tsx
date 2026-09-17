@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
-import { PersonScreen, UsefulContactScreen } from '@polito/lib/features/people';
 import { MfaChallenge } from '@polito/lib/core';
+import { PersonScreen, UsefulContactScreen } from '@polito/lib/features/people';
 import { HeaderLogoNoProps, createHeaderCloseButton } from '@polito/lib/ui';
 import { OfferingCourseStaff } from '@polito/student-api-client';
 import { ParamListBase } from '@react-navigation/native';

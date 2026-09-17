@@ -3,9 +3,9 @@ import { Linking } from 'react-native';
 
 import * as WebBrowser from 'expo-web-browser';
 
-<import { useTheme } from '../../ui/hooks/useTheme';
+import { useTheme } from '../../ui/hooks/useTheme';
 import { IS_IOS } from '../constants';
-=
+
 export enum WebviewType {
   NORMAL,
   LOGIN,
