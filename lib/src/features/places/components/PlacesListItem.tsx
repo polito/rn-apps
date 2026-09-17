@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 // TODO(map-api): Import this model from @polito/map-client when available.
-import { PlaceRef } from '@polito/student-api-client';
+import { PlaceRef } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
