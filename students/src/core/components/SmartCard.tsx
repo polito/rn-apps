@@ -21,7 +21,7 @@ import Svg, {
 
 import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 import { Icon, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
-import { StudentCareerStatusEnum } from '@polito/student-api-client';
+import { CareerStatus } from '@polito/student-api-client';
 
 import { useCareerStatusColors } from '../../features/user/hooks/useCareerStatusColors.ts';
 import { PiedmontMap, PolitoLogo } from './SmartCardGraphics.tsx';
@@ -50,7 +50,7 @@ type Props = {
   lastName: string;
   username: string;
   degreeName?: string;
-  status?: StudentCareerStatusEnum;
+  status?: CareerStatus;
   picture?: string;
   onShowQr?: () => void;
 };
@@ -69,7 +69,11 @@ export const SmartCard = ({
   const { colors, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const [, statusColor] = useCareerStatusColors(
-    status ?? StudentCareerStatusEnum.Active,
+    status ?? {
+      description: 'Active',
+      color: '#000000',
+      icon: 'fa-solid fa-check',
+    },
   );
 
   const studentId = username.replace(/^[sS]/, '');

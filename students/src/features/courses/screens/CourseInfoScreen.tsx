@@ -27,7 +27,6 @@ import {
   PersonListItem,
   RefreshControl,
   Row,
-  ScreenTitle,
   Section,
   SectionHeader,
   StatefulMenuView,
@@ -38,7 +37,7 @@ import {
 } from '@polito/lib/ui';
 import { Person } from '@polito/student-api-client';
 import { MenuAction } from '@react-native-menu/menu';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -55,8 +54,10 @@ import { LectureCard } from '../../agenda/components/LectureCard';
 import { useGetNextLecture } from '../../agenda/queries/lectureHooks';
 import { ExamListItem } from '../../teaching/components/ExamListItem';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
+import { CourseHeading } from '../components/CourseHeading';
 import { CourseStatisticsFilterType } from '../components/CourseStatisticsFilters.tsx';
 import { useCourseContext } from '../contexts/CourseContext';
+import { CourseTabsParamList } from '../navigation/CourseNavigator';
 
 type StaffMember = Person & { courseRole: 'roleHolder' | 'roleCollaborator' };
 
@@ -120,9 +121,12 @@ export const CourseInfoScreen = () => {
   }, [coursesQuery.data, courseId, isModule]);
 
   const { getParent } = useNavigation();
+  const { params } =
+    useRoute<RouteProp<CourseTabsParamList, 'CourseInfoScreen'>>();
+  const lockEdition = params?.lockEdition ?? false;
 
   const menuActions = useMemo(() => {
-    if (!editions) return [];
+    if (!editions || lockEdition) return [];
     return editions.map(e => {
       const editionsCount = getUnreadsCount(['teaching', 'courses', `${e.id}`]);
       return {
@@ -135,7 +139,7 @@ export const CourseInfoScreen = () => {
         imageColor: editionsCount ? palettes.rose[600] : undefined,
       } as MenuAction;
     });
-  }, [editions, courseId, palettes, getUnreadsCount]);
+  }, [editions, lockEdition, courseId, palettes, getUnreadsCount]);
   useEffect(() => {
     if (!courseQuery.data || isStaffLoading) {
       return;
@@ -180,25 +184,18 @@ export const CourseInfoScreen = () => {
       }
     >
       <SafeAreaView>
-        <Section style={styles.heading}>
-          <ScreenTitle title={courseQuery.data?.name} />
-          <Text variant="caption">
-            {courseQuery.data?.shortcode ?? ' '}
-            {isModule && ` - ${parentCourse?.name}`}
-            {!isModule && courseQuery.data?.cfu && (
-              <Text variant="caption">
-                {' - '}
-                {courseQuery.data.cfu} {t('common.cfu').toLowerCase()}
-              </Text>
-            )}
-          </Text>
-        </Section>
+        <CourseHeading
+          name={courseQuery.data?.name}
+          shortcode={courseQuery.data?.shortcode}
+          cfu={courseQuery.data?.cfu}
+          parentCourseName={isModule ? parentCourse?.name : undefined}
+        />
         <Card style={styles.metricsCard} accessible={true}>
           <Grid>
             <View
               style={GlobalStyles.grow}
               importantForAccessibility="yes"
-              accessibilityRole="button"
+              accessibilityRole={lockEdition ? undefined : 'button'}
               accessible={true}
             >
               <StatefulMenuView
@@ -228,7 +225,7 @@ export const CourseInfoScreen = () => {
                     style={styles.periodMetric}
                   />
                   <Col align="center">
-                    {unreadsPrevEditions > 0 && (
+                    {!lockEdition && unreadsPrevEditions > 0 && (
                       <Icon
                         icon={faCircle}
                         size={8}
@@ -236,7 +233,7 @@ export const CourseInfoScreen = () => {
                         style={styles.dotIcon}
                       />
                     )}
-                    {(editions?.length ?? 0) > 0 && (
+                    {!lockEdition && (editions?.length ?? 0) > 0 && (
                       <Icon
                         icon={faAngleDown}
                         size={14}
@@ -399,10 +396,6 @@ const createStyles = ({
   shapes,
 }: Theme) =>
   StyleSheet.create({
-    heading: {
-      paddingTop: spacing[5],
-      paddingHorizontal: spacing[4],
-    },
     metricsCard: {
       flexDirection: 'row',
       justifyContent: 'space-between',

@@ -552,9 +552,15 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseListItem": {
-    "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli",
     "extra": "Extra carico",
     "overbooking": "Overbooking"
+  },
+  "courseNoAssignmentScreen": {
+    "message": "Per l'a.a. {{year}} questo insegnamento non ha ancora un incarico assegnato: avvisi, materiale e calendario delle lezioni non sono al momento disponibili.",
+    "messagePreviousEditions": "Puoi selezionare un insegnamento passato per accedere ai contenuti già pubblicati.",
+    "previousEditions": "Edizioni passate",
+    "previousEditionsSubtitle": "Accedi ad un insegnamento passato",
+    "title": "Incarico non ancora assegnato"
   },
   "courseNoticesTab": {
     "emptyState": "Non ci sono avvisi",

@@ -6,7 +6,7 @@ import {
 
 import { Fragment, PropsWithChildren, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Platform, View } from 'react-native';
+import { Platform, View } from 'react-native';
 import ContextMenu from 'react-native-context-menu-view';
 import Animated, {
   useAnimatedStyle,
@@ -36,6 +36,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { CourseModuleOverview } from '@polito/student-api-client';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useNotifications } from '~/core/hooks/useNotifications';
@@ -43,7 +44,6 @@ import { AppPreferences } from '~/core/types/preferences';
 
 import { getCourseKey } from '../../../core/queries/courseHooks';
 import { CourseOverview } from '../../../core/types/api';
-import { getLatestCourseInfo, isCourseDetailed } from '../utils/courses';
 import { CourseIndicator } from './CourseIndicator';
 
 interface Props {
@@ -143,8 +143,6 @@ export const CourseListItem = ({
     [styles],
   );
 
-  const hasDetails = isCourseDetailed(course);
-  const courseInfo = getLatestCourseInfo(course);
   const queryClient = useQueryClient();
   const pressed = useSharedValue<boolean>(true);
 
@@ -193,6 +191,30 @@ export const CourseListItem = ({
     [course.shortcode],
   );
 
+  const getModuleLink = useCallback(
+    (module: CourseModuleOverview, moduleIndex: number) =>
+      module.id
+        ? {
+            screen: 'Course',
+            params: {
+              id: module.id,
+              title: course.name,
+              uniqueShortcode: getModuleUniqueShortcode(moduleIndex),
+            },
+          }
+        : {
+            screen: 'CourseNoAssignment',
+            params: {
+              uniqueShortcode: getModuleUniqueShortcode(moduleIndex),
+              courseName: module.name,
+              shortcode: module.shortcode,
+              year: module.year,
+              parentCourseName: course.name,
+            },
+          },
+    [course.name, getModuleUniqueShortcode],
+  );
+
   const getModuleBadge = useCallback(
     (moduleId: number, previousEditions?: any[]) => {
       return getUnreadsCountPerCourse(moduleId, previousEditions) ?? 0;
@@ -215,11 +237,10 @@ export const CourseListItem = ({
 
   const allModulesHidden = useMemo(() => {
     if (!hasModules || showAllModules) return false;
-    return course.modules!.every((module, index) => {
-      if (!module.id) return false;
-      const moduleUniqueShortcode = getModuleUniqueShortcode(index);
-      return preferences.courses[moduleUniqueShortcode]?.isHidden === true;
-    });
+    return course.modules!.every(
+      (_, index) =>
+        preferences.courses[getModuleUniqueShortcode(index)]?.isHidden === true,
+    );
   }, [
     hasModules,
     showAllModules,
@@ -255,20 +276,29 @@ export const CourseListItem = ({
       accessible={accessible}
       disabled={isDisabled || course.isOverBooking}
       linkTo={
-        hasDetails && !hasModules
-          ? {
-              screen: 'Course',
-              params: {
-                id: courseInfo?.id,
-              },
-            }
-          : undefined
+        hasModules
+          ? undefined
+          : course.id !== null
+            ? {
+                screen: 'Course',
+                params: {
+                  id: course.id,
+                },
+              }
+            : {
+                screen: 'CourseNoAssignment',
+                params: {
+                  uniqueShortcode: course.uniqueShortcode,
+                  courseName: course.name,
+                  shortcode: course.shortcode,
+                  cfu: course.cfu,
+                  year: course.year,
+                },
+              }
       }
       onPress={() => {
         if (hasModules) {
           pressed.value = !pressed.value;
-        } else if (!hasDetails && !hasModules) {
-          Alert.alert(t('courseListItem.courseWithoutDetailsAlertTitle'));
         }
       }}
       accessibilityLabel={`${accessibilityLabel} ${course.name}, ${
@@ -331,7 +361,7 @@ export const CourseListItem = ({
   const listItem = (
     <GestureHandlerRootView>
       <View>
-        {Platform.OS === 'ios' && hasDetails && !hasModules ? (
+        {Platform.OS === 'ios' && !hasModules ? (
           <Menu course={course}>{courseListItem}</Menu>
         ) : (
           courseListItem
@@ -342,9 +372,8 @@ export const CourseListItem = ({
         <Animated.View style={[animatedHeight, { overflow: 'hidden' }]}>
           {course.modules
             ?.map((module, originalIndex) => ({ module, originalIndex }))
-            .filter(({ module, originalIndex }) => {
+            .filter(({ originalIndex }) => {
               if (showAllModules) return true;
-              if (!module.id) return false;
               const moduleUniqueShortcode =
                 getModuleUniqueShortcode(originalIndex);
               return !preferences.courses[moduleUniqueShortcode]?.isHidden;
@@ -359,48 +388,23 @@ export const CourseListItem = ({
                     <Menu
                       course={{
                         ...course,
-                        uniqueShortcode: module.id
-                          ? getModuleUniqueShortcode(originalIndex)
-                          : course.uniqueShortcode,
+                        uniqueShortcode:
+                          getModuleUniqueShortcode(originalIndex),
                       }}
                     >
                       <ListItem
                         key={module.id}
                         accessible={accessible}
                         disabled={isDisabled || module.isOverBooking}
-                        linkTo={
-                          module.id
-                            ? {
-                                screen: 'Course',
-                                params: {
-                                  id: module.id,
-                                  title: course.name,
-                                  uniqueShortcode: getModuleUniqueShortcode(
-                                    module.id,
-                                  ),
-                                },
-                              }
-                            : undefined
-                        }
-                        onPress={() => {
-                          if (!module.id) {
-                            Alert.alert(
-                              t(
-                                'courseListItem.courseWithoutDetailsAlertTitle',
-                              ),
-                            );
-                          }
-                        }}
+                        linkTo={getModuleLink(module, originalIndex)}
                         accessibilityLabel={`${accessibilityLabel} ${module.name}`}
                         title={module.name}
                         subtitle={getTeacherName(module.teacherId) ?? undefined}
                         leadingItem={
                           <CourseIndicator
-                            uniqueShortcode={
-                              module.id
-                                ? getModuleUniqueShortcode(originalIndex)
-                                : course.uniqueShortcode
-                            }
+                            uniqueShortcode={getModuleUniqueShortcode(
+                              originalIndex,
+                            )}
                           />
                         }
                         trailingItem={
@@ -433,36 +437,15 @@ export const CourseListItem = ({
                       key={module.id}
                       accessible={accessible}
                       disabled={isDisabled || module.isOverBooking}
-                      linkTo={
-                        module.id
-                          ? {
-                              screen: 'Course',
-                              params: {
-                                id: module.id,
-                                title: course.name,
-                                uniqueShortcode:
-                                  getModuleUniqueShortcode(originalIndex),
-                              },
-                            }
-                          : undefined
-                      }
-                      onPress={() => {
-                        if (!module.id) {
-                          Alert.alert(
-                            t('courseListItem.courseWithoutDetailsAlertTitle'),
-                          );
-                        }
-                      }}
+                      linkTo={getModuleLink(module, originalIndex)}
                       accessibilityLabel={`${accessibilityLabel} ${module.name}`}
                       title={module.name}
                       subtitle={getTeacherName(module.teacherId) ?? undefined}
                       leadingItem={
                         <CourseIndicator
-                          uniqueShortcode={
-                            module.id
-                              ? getModuleUniqueShortcode(originalIndex)
-                              : course.uniqueShortcode
-                          }
+                          uniqueShortcode={getModuleUniqueShortcode(
+                            originalIndex,
+                          )}
                         />
                       }
                       trailingItem={
@@ -480,9 +463,8 @@ export const CourseListItem = ({
                           <Menu
                             course={{
                               ...course,
-                              uniqueShortcode: module.id
-                                ? getModuleUniqueShortcode(originalIndex)
-                                : course.uniqueShortcode,
+                              uniqueShortcode:
+                                getModuleUniqueShortcode(originalIndex),
                             }}
                           >
                             <IconButton

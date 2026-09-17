@@ -22,7 +22,7 @@ import { TeachingStackParamList } from './TeachingNavigator';
 
 export interface CourseTabsParamList
   extends ParamListBase, TeachingStackParamList {
-  CourseInfoScreen: undefined;
+  CourseInfoScreen: { courseId?: number } | undefined;
   CourseStaffScreen: undefined;
   CourseNoticesScreen: undefined;
   CourseFilesScreen: undefined;
@@ -35,7 +35,7 @@ const TopTabs = createMaterialTopTabNavigator<CourseTabsParamList>();
 
 type Props = NativeStackScreenProps<CourseSharedScreensParamList, 'Course'>;
 
-export const CourseNavigator = ({ navigation }: Props) => {
+export const CourseNavigator = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { palettes, fontSizes, spacing } = theme;
@@ -104,6 +104,7 @@ export const CourseNavigator = ({ navigation }: Props) => {
       <TopTabs.Screen
         name="CourseInfoScreen"
         component={CourseInfoScreen}
+        initialParams={{ courseId: route.params?.id }}
         options={{ title: 'Info' }}
         listeners={{
           tabPress: () => {

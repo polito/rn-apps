@@ -540,9 +540,15 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseListItem": {
-    "courseWithoutDetailsAlertTitle": "This course doesn't have any details",
     "extra": "Extra APSP",
     "overbooking": "Overbooking"
+  },
+  "courseNoAssignmentScreen": {
+    "message": "For the {{year}} academic year this course has no assigned teaching yet: news, material and lecture calendar are currently unavailable.",
+    "messagePreviousEditions": "You can select a past course to access already published contents.",
+    "previousEditions": "Previous editions",
+    "previousEditionsSubtitle": "Access a past course",
+    "title": "Teaching assignment not available yet"
   },
   "courseNoticesTab": {
     "emptyState": "There are no news here",
