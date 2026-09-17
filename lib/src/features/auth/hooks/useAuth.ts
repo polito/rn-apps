@@ -2,21 +2,17 @@ import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 
-import { useDeviceLanguage, usePreferencesContext } from '@polito/lib/core';
-
-import { UnsupportedUserTypeError } from '~/core/errors/UnsupportedUserTypeError';
+import { useDeviceLanguage, usePreferencesContext } from '../../../core';
+import { UnsupportedIdentityTypeError } from '../errors/UnsupportedIdentityTypeError';
 import {
   useLogin,
   useSSOLoginInitiator,
   useVisitChpass,
-} from '~/core/queries/authHooks';
-
-import { AppPreferences } from '../types/preferences';
+} from '../queries/authHooks';
 
 export const useAuth = (ssoKey?: string) => {
   const { t } = useTranslation();
-  const { updatePreference, loginUid } =
-    usePreferencesContext<AppPreferences>();
+  const { loginUid } = usePreferencesContext();
   const { mutateAsync: login, isPending: isLoading } = useLogin();
   const language = useDeviceLanguage();
   const handleSSO = useSSOLoginInitiator();
@@ -24,7 +20,7 @@ export const useAuth = (ssoKey?: string) => {
 
   const handleLoginError = useCallback(
     (e: Error) => {
-      if (e instanceof UnsupportedUserTypeError) {
+      if (e instanceof UnsupportedIdentityTypeError) {
         Alert.alert(t('common.error'), t('loginScreen.unsupportedUserType'));
       } else {
         console.error(e);
@@ -57,7 +53,7 @@ export const useAuth = (ssoKey?: string) => {
         loginType: 'sso',
       }).catch(handleLoginError);
     }
-  }, [loginUid, ssoKey, login, language, updatePreference, handleLoginError]);
+  }, [loginUid, ssoKey, login, language, handleLoginError]);
 
   return {
     handleBasicLogin,
