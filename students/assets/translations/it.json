@@ -556,11 +556,13 @@
     "overbooking": "Overbooking"
   },
   "courseNoAssignmentScreen": {
-    "message": "Per l'a.a. {{year}} questo insegnamento non ha ancora un incarico assegnato: avvisi, materiale e calendario delle lezioni non sono al momento disponibili.",
+    "message": "Per l’a.a. {{year}}, avvisi, materiali e calendario delle lezioni non sono al momento disponibili per questa attività/insegnamento. Potrebbero essere resi disponibili successivamente, se previsti.",
+    "imessage": "Per l’a.a. {{year}}, l’organizzazione di questo insegnamento non è ancora stata completata. Avvisi, materiali e calendario delle lezioni non sono pertanto ancora disponibili.",
     "messagePreviousEditions": "Puoi selezionare un insegnamento passato per accedere ai contenuti già pubblicati.",
     "previousEditions": "Edizioni passate",
     "previousEditionsSubtitle": "Accedi ad un insegnamento passato",
-    "title": "Incarico non ancora assegnato"
+    "title": "Dettagli non disponibili",
+    "ititle": "Dettagli non ancora disponibili"
   },
   "courseNoticesTab": {
     "emptyState": "Non ci sono avvisi",

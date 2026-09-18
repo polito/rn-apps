@@ -20,7 +20,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { CareerStatus, EuropeanStudentCard } from '@polito/student-api-client';
+import { EuropeanStudentCard, Symbol } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -35,7 +35,7 @@ interface CardSwiperProps {
   lastName: string;
   username: string;
   degreeName?: string;
-  status?: CareerStatus;
+  status?: Symbol;
   picture?: string;
   hasSmartCard: boolean;
   europeanStudentCard?: EuropeanStudentCard;
@@ -61,7 +61,7 @@ type CarouselProps = {
     lastname: string;
     username: string;
     degreeName?: string;
-    status?: CareerStatus;
+    status?: Symbol;
     picture?: string;
     card: Item;
   };

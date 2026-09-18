@@ -116,16 +116,27 @@ export const CourseNoAssignmentScreen = ({ route }: Props) => {
               weight="semibold"
               style={[styles.emptyStateText, styles.emptyStateTitle]}
             >
-              {t('courseNoAssignmentScreen.title')}
+              {course?.category === 'I'
+                ? t('courseNoAssignmentScreen.ititle')
+                : t('courseNoAssignmentScreen.title')}
             </Text>
-            <Text variant="prose" style={styles.emptyStateText}>
-              {t('courseNoAssignmentScreen.message', {
-                year: formatAcademicYear(year ?? course?.year),
-                interpolation: { escapeValue: false },
-              })}
-              {hasPreviousEditions &&
-                `\n${t('courseNoAssignmentScreen.messagePreviousEditions')}`}
-            </Text>
+            {course?.category === 'I' ? (
+              <Text variant="prose" style={styles.emptyStateText}>
+                {t('courseNoAssignmentScreen.imessage', {
+                  year: formatAcademicYear(year ?? course?.year),
+                  interpolation: { escapeValue: false },
+                })}
+                {hasPreviousEditions &&
+                  `\n${t('courseNoAssignmentScreen.messagePreviousEditions')}`}
+              </Text>
+            ) : (
+              <Text variant="prose" style={styles.emptyStateText}>
+                {t('courseNoAssignmentScreen.message', {
+                  year: formatAcademicYear(year ?? course?.year),
+                  interpolation: { escapeValue: false },
+                })}
+              </Text>
+            )}
           </View>
           {hasPreviousEditions && (
             <View style={styles.editions}>
