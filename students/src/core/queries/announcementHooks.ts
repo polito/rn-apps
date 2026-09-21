@@ -6,15 +6,19 @@ import {
 } from '@polito/student-api-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-const WHATS_NEW_SCOPES = new Set<AnnouncementScope>([
-  AnnouncementScope.Onboarding,
-  AnnouncementScope.AppInfo,
-]);
-
-export const getWhatsNewArchiveAnnouncements = (items: Announcement[] = []) =>
-  [...items]
-    .filter(item => WHATS_NEW_SCOPES.has(item.scope))
+const getAnnouncementsByScope = (
+  items: Announcement[] = [],
+  scope: AnnouncementScope,
+) =>
+  items
+    .filter(item => item.scope === scope)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+export const getWhatsNewArchiveAnnouncements = (items?: Announcement[]) =>
+  getAnnouncementsByScope(items, AnnouncementScope.Onboarding);
+
+export const getAppInfoAnnouncements = (items?: Announcement[]) =>
+  getAnnouncementsByScope(items, AnnouncementScope.AppInfo);
 
 export const ANNOUNCEMENTS_QUERY_PREFIX = 'announcements';
 export const ANNOUNCEMENTS_QUERY_KEY = [ANNOUNCEMENTS_QUERY_PREFIX];

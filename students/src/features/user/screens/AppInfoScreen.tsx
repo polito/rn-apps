@@ -33,13 +33,10 @@ import {
 } from '@polito/lib/ui';
 
 import {
+  getAppInfoAnnouncements,
   getWhatsNewArchiveAnnouncements,
   useGetAnnouncements,
 } from '../../../core/queries/announcementHooks';
-import {
-  getOperationalNotices,
-  useGetNews,
-} from '../../../core/queries/newsHooks';
 import { WhatsNewCard } from '../components/WhatsNewCard';
 
 const GITHUB_REPO_URL = 'https://github.com/polito/rn-apps';
@@ -64,57 +61,51 @@ const SUGGESTIONS_LINK = {
 export const AppInfoScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { fontSizes } = useTheme();
+  const { fontSizes, palettes } = useTheme();
   const version = DeviceInfo.getVersion();
   const buildNumber = DeviceInfo.getBuildNumber().slice(-2);
 
   const announcementsQuery = useGetAnnouncements();
-  const newsQuery = useGetNews();
 
   const announcements = useMemo(
     () => getWhatsNewArchiveAnnouncements(announcementsQuery.data),
     [announcementsQuery.data],
   );
 
-  const latestNews = useMemo(
-    () => getOperationalNotices(newsQuery.data)[0],
-    [newsQuery.data],
+  const communications = useMemo(
+    () => getAppInfoAnnouncements(announcementsQuery.data),
+    [announcementsQuery.data],
+  );
+
+  const showAllLink = (
+    <Row align="center" gap={0.5} style={styles.showAllRow}>
+      <Text variant="link" style={styles.showAll} accessible={false}>
+        {t('appInfoScreen.showAll')}
+      </Text>
+      <DecorativeIcon
+        icon={faChevronRight}
+        color={styles.showAll.color}
+        size={fontSizes.xs}
+      />
+    </Row>
   );
 
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      refreshControl={
-        <RefreshControl queries={[announcementsQuery, newsQuery]} manual />
-      }
+      refreshControl={<RefreshControl queries={[announcementsQuery]} manual />}
     >
       <SafeAreaView>
         <View style={styles.container}>
           <Section>
             <SectionHeader
               title={t('appInfoScreen.whatsNew')}
-              titleStyle={styles.sectionTitle}
               linkTo="WhatsNew"
               accessibilityLabel={[
                 t('appInfoScreen.whatsNew'),
                 t('appInfoScreen.showAll'),
               ].join(', ')}
-              trailingItem={
-                <Row align="center" gap={0.5} style={styles.showAllRow}>
-                  <Text
-                    variant="link"
-                    style={styles.showAll}
-                    accessible={false}
-                  >
-                    {t('appInfoScreen.showAll')}
-                  </Text>
-                  <DecorativeIcon
-                    icon={faChevronRight}
-                    color={styles.showAll.color}
-                    size={fontSizes.xs}
-                  />
-                </Row>
-              }
+              trailingItem={showAllLink}
             />
             {announcementsQuery.isLoading || announcements.length === 0 ? (
               <View
@@ -138,19 +129,26 @@ export const AppInfoScreen = () => {
           <Section>
             <SectionHeader
               title={t('appInfoScreen.recentCommunications')}
-              titleStyle={styles.sectionTitle}
+              {...(communications.length > 1 && {
+                linkTo: 'RecentCommunications',
+                accessibilityLabel: [
+                  t('appInfoScreen.recentCommunications'),
+                  t('appInfoScreen.showAll'),
+                ].join(', '),
+                trailingItem: showAllLink,
+              })}
             />
-            {newsQuery.isLoading || !latestNews ? (
+            {announcementsQuery.isLoading || communications.length === 0 ? (
               <View
                 accessibilityRole="list"
                 accessibilityLabel={
-                  newsQuery.isLoading
+                  announcementsQuery.isLoading
                     ? t('common.loading')
                     : t('appInfoScreen.recentCommunicationsListLabel')
                 }
               >
                 <OverviewList
-                  loading={newsQuery.isLoading}
+                  loading={announcementsQuery.isLoading}
                   emptyStateText={t('appInfoScreen.recentCommunicationsEmpty')}
                 />
               </View>
@@ -162,45 +160,47 @@ export const AppInfoScreen = () => {
                 )}
               >
                 <OverviewList>
-                  <ListItem
-                    title={getHtmlTextContent(latestNews.title ?? '')}
-                    titleStyle={styles.listItemTitle}
-                    subtitle={getHtmlTextContent(
-                      latestNews.shortDescription ?? '',
-                    )}
-                    subtitleStyle={styles.listItemSubtitle}
-                    subtitleProps={{ numberOfLines: 1 }}
-                    containerStyle={styles.listItemContainer}
-                    trailingItem={
-                      <DecorativeIcon
-                        icon={faChevronRight}
-                        size={fontSizes.md}
-                        color={styles.listItemTrailingIcon.color}
+                  {communications.slice(0, 1).map(communication => {
+                    const subtitle =
+                      communication.description?.trim() ||
+                      getHtmlTextContent(communication.contents ?? '');
+                    return (
+                      <ListItem
+                        key={communication.id}
+                        title={communication.title}
+                        titleStyle={styles.listItemTitle}
+                        subtitle={subtitle}
+                        subtitleStyle={styles.listItemSubtitle}
+                        subtitleProps={{ numberOfLines: 1 }}
+                        containerStyle={styles.listItemContainer}
+                        trailingItem={
+                          <DecorativeIcon
+                            icon={faChevronRight}
+                            size={fontSizes.md}
+                            color={styles.listItemTrailingIcon.color}
+                          />
+                        }
+                        accessibilityRole="button"
+                        accessibilityLabel={[communication.title, subtitle]
+                          .filter(Boolean)
+                          .join(', ')}
+                        accessibilityHint={t(
+                          'appInfoScreen.openCommunicationHint',
+                        )}
+                        linkTo={{
+                          screen: 'NewOverlay',
+                          params: { id: communication.id },
+                        }}
                       />
-                    }
-                    accessibilityRole="button"
-                    accessibilityLabel={[
-                      getHtmlTextContent(latestNews.title ?? ''),
-                      getHtmlTextContent(latestNews.shortDescription ?? ''),
-                    ]
-                      .filter(Boolean)
-                      .join(', ')}
-                    accessibilityHint={t('appInfoScreen.openCommunicationHint')}
-                    linkTo={{
-                      screen: 'NewsItem',
-                      params: { id: latestNews.id },
-                    }}
-                  />
+                    );
+                  })}
                 </OverviewList>
               </View>
             )}
           </Section>
 
           <Section>
-            <SectionHeader
-              title={t('appInfoScreen.feedback')}
-              titleStyle={styles.sectionTitle}
-            />
+            <SectionHeader title={t('appInfoScreen.feedback')} />
             <View
               accessibilityRole="list"
               accessibilityLabel={t('appInfoScreen.feedbackListLabel')}
@@ -217,7 +217,7 @@ export const AppInfoScreen = () => {
                     <DecorativeIcon
                       icon={faTriangleExclamation}
                       size={fontSizes['2xl']}
-                      color={styles.listItemIcon.color}
+                      color={palettes.gray[600]}
                     />
                   }
                   trailingItem={
@@ -246,7 +246,7 @@ export const AppInfoScreen = () => {
                     <DecorativeIcon
                       icon={faComments}
                       size={fontSizes['2xl']}
-                      color={styles.listItemIcon.color}
+                      color={palettes.gray[600]}
                     />
                   }
                   trailingItem={
@@ -319,14 +319,6 @@ const createStyles = ({ colors, spacing, fontSizes, fontWeights }: Theme) =>
   StyleSheet.create({
     container: {
       paddingVertical: spacing[5],
-    },
-    sectionTitle: {
-      color: colors.heading,
-      fontFamily: 'Montserrat-Bold',
-      fontSize: fontSizes.md,
-      fontStyle: 'normal',
-      fontWeight: fontWeights.bold,
-      lineHeight: fontSizes.xl,
     },
     showAll: {
       color: colors.link,

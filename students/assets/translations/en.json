@@ -993,6 +993,9 @@
     "whatsNewListLoaded": "News list loaded",
     "whatsNewLoading": "Loading news",
     "recentCommunicationsListLabel": "Recent communications",
+    "recentCommunicationsLoading": "Loading communications",
+    "recentCommunicationsListLoaded": "Communications list loaded",
+    "recentCommunicationsListCount": "{{count}} communications",
     "feedbackListLabel": "Feedback options"
   },
   "settingsScreen": {

@@ -27,6 +27,7 @@ export type UserStackParamList = OfferingStackParamList & {
   Settings: undefined;
   AppInfo: undefined;
   WhatsNew: undefined;
+  RecentCommunications: undefined;
   NewOverlay: { id: string };
   CreateTicket: {
     topicId?: number;
@@ -119,6 +120,16 @@ export const UserNavigator = () => {
         component={WhatsNewScreen}
         options={{
           headerTitle: t('appInfoScreen.news'),
+          headerBackTitle: t('profileScreen.title'),
+          headerTitleAlign: Platform.select({ android: 'center' }),
+          contentStyle: { backgroundColor: colors.background },
+        }}
+      />
+      <Stack.Screen
+        name="RecentCommunications"
+        component={WhatsNewScreen}
+        options={{
+          headerTitle: t('appInfoScreen.recentCommunications'),
           headerBackTitle: t('profileScreen.title'),
           headerTitleAlign: Platform.select({ android: 'center' }),
           contentStyle: { backgroundColor: colors.background },

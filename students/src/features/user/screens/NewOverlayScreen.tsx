@@ -22,6 +22,7 @@ import {
   HtmlView,
   Text,
   Theme,
+  useHideTabs,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
@@ -47,6 +48,7 @@ export const NewOverlayScreen = ({ route, navigation }: Props) => {
   const { width: screenWidth } = useWindowDimensions();
   const announcementsQuery = useGetAnnouncements();
   const { isEnabled, announce } = useScreenReader();
+  useHideTabs();
   const { mutate: markAsRead } = useMarkAnnouncementAsRead();
   const announcement = announcementsQuery.data?.find(item => item.id === id);
   const [coverAspectRatio, setCoverAspectRatio] = useState<number>();

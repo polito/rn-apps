@@ -158,6 +158,7 @@ export const WhatsNewCard = ({ announcements }: Props) => {
           <CarouselDots
             carouselLength={announcements.length}
             carouselIndex={index}
+            gap={10}
           />
         </View>
       )}

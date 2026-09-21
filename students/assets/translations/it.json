@@ -1014,6 +1014,9 @@
     "whatsNewListLoaded": "Elenco novità caricato",
     "whatsNewLoading": "Caricamento novità",
     "recentCommunicationsListLabel": "Comunicazioni recenti",
+    "recentCommunicationsLoading": "Caricamento comunicazioni",
+    "recentCommunicationsListLoaded": "Elenco comunicazioni caricato",
+    "recentCommunicationsListCount": "{{count}} comunicazioni",
     "feedbackListLabel": "Opzioni di feedback"
   },
   "settingsScreen": {
