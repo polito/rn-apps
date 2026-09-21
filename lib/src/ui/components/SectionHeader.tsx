@@ -68,74 +68,73 @@ export const SectionHeader = ({
       }
     : {};
 
-  const Header = () => {
-    return (
-      <View style={{ ...styles.innerContainer }}>
-        <View style={styles.titleContainer}>
-          {separator && <Separator />}
+  // element not an inner component. Inner component remounts on every render
+  const header = (
+    <View style={{ ...styles.innerContainer }}>
+      <View style={styles.titleContainer}>
+        {separator && <Separator />}
 
-          <View style={{ ...styles.innerTitleContainer }}>
-            <Text
-              accessible={false}
-              variant="heading"
-              style={[styles.title, titleStyle, styles.titleContainer]}
-              accessibilityRole="header"
-              {...ellipsis}
-            >
-              {title}
-            </Text>
-            {trailingIcon && (
-              <IconButton
-                {...{
-                  size:
-                    accessibility?.fontSize && accessibility.fontSize >= 150
-                      ? 40
-                      : 16,
-                  ...trailingIcon,
-                  noPadding: true,
-                }}
-              />
-            )}
-          </View>
-
-          {subtitle && (
-            <Text
-              accessible={false}
-              variant="secondaryText"
-              style={subtitleStyle}
-              accessibilityRole="header"
-              {...ellipsis}
-            >
-              {subtitle}
-            </Text>
+        <View style={{ ...styles.innerTitleContainer }}>
+          <Text
+            accessible={false}
+            variant="heading"
+            style={[styles.title, titleStyle, styles.titleContainer]}
+            accessibilityRole="header"
+            {...ellipsis}
+          >
+            {title}
+          </Text>
+          {trailingIcon && (
+            <IconButton
+              {...{
+                size:
+                  accessibility?.fontSize && accessibility.fontSize >= 150
+                    ? 40
+                    : 16,
+                ...trailingIcon,
+                noPadding: true,
+              }}
+            />
           )}
         </View>
-        {trailingItem && trailingItem}
-        {linkTo && linkToMoreCount != null && linkToMoreCount > 0 && (
-          <TouchableOpacity
-            accessible={true}
-            accessibilityRole="button"
-            onPress={() => {
-              if (typeof linkTo === 'string') {
-                navigation.navigate(linkTo as any);
-              } else {
-                navigation.navigate(linkTo.screen as any, linkTo.params);
-              }
-            }}
+
+        {subtitle && (
+          <Text
+            accessible={false}
+            variant="secondaryText"
+            style={subtitleStyle}
+            accessibilityRole="header"
+            {...ellipsis}
           >
-            <Text variant="link">
-              {t('sectionHeader.cta')}
-              {(linkToMoreCount ?? 0) > 0 &&
-                ' ' +
-                  t('sectionHeader.ctaMoreSuffix', {
-                    count: linkToMoreCount,
-                  })}
-            </Text>
-          </TouchableOpacity>
+            {subtitle}
+          </Text>
         )}
       </View>
-    );
-  };
+      {trailingItem && trailingItem}
+      {linkTo && linkToMoreCount != null && linkToMoreCount > 0 && (
+        <TouchableOpacity
+          accessible={true}
+          accessibilityRole="button"
+          onPress={() => {
+            if (typeof linkTo === 'string') {
+              navigation.navigate(linkTo as any);
+            } else {
+              navigation.navigate(linkTo.screen as any, linkTo.params);
+            }
+          }}
+        >
+          <Text variant="link">
+            {t('sectionHeader.cta')}
+            {(linkToMoreCount ?? 0) > 0 &&
+              ' ' +
+                t('sectionHeader.ctaMoreSuffix', {
+                  count: linkToMoreCount,
+                })}
+          </Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  );
 
   if (!linkTo) {
     return (
@@ -145,7 +144,7 @@ export const SectionHeader = ({
         accessibilityRole={linkTo ? 'button' : 'header'}
         accessibilityLabel={accessibilityLabel}
       >
-        <Header />
+        {header}
       </View>
     );
   }
@@ -166,7 +165,7 @@ export const SectionHeader = ({
         }
       }}
     >
-      <Header />
+      {header}
     </TouchableOpacity>
   );
 };

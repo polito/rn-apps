@@ -8,15 +8,16 @@
     "faculty"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run test --workspace=students --workspace=faculty",
     "fixpilot": "node ./tools/scripts/fixpilot.js",
-    "lint:check": "eslint --max-warnings=0 '**/*.{ts,tsx}'",
+    "lint:check": "eslint --max-warnings=0 . --ext .ts,.tsx",
     "lint": "npm run lint:check -- --fix",
     "knip": "knip --no-config-hints",
     "commit": "commit",
     "format:check": "prettier --check '**/*.{ts,tsx,md}'",
     "format": "prettier --write '**/*.{ts,tsx,md}'",
     "types:check": "npm run types:check --workspaces --if-present && npm run lib:check",
+    "test:check": "npm run test --workspace=students --workspace=faculty -- --ci --maxWorkers=2",
     "check": "npm run lint:check && npm run format:check && npm run types:check && npm run deps:check",
     "lib:check": "tsc -p lib/tsconfig.json --noEmit",
     "start:students": "npm start --workspace=students",
