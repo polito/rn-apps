@@ -264,8 +264,9 @@ export const wrapText = (html: string): string => {
       const node = nodes[i];
 
       if (node.type === 'text') {
-        const content = (node as domText).data?.trim();
-        const isSafeToWrap = content && !INLINE_TAGS.has(parentTag ?? '');
+        const content = (node as domText).data ?? '';
+        const hasContent = content.trim().length > 0;
+        const isSafeToWrap = hasContent && !INLINE_TAGS.has(parentTag ?? '');
 
         if (isSafeToWrap) {
           const span = new Element('span', {});
