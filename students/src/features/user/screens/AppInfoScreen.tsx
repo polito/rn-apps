@@ -61,7 +61,7 @@ const SUGGESTIONS_LINK = {
 export const AppInfoScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { fontSizes, palettes } = useTheme();
+  const { fontSizes } = useTheme();
   const version = DeviceInfo.getVersion();
   const buildNumber = DeviceInfo.getBuildNumber().slice(-2);
 
@@ -217,7 +217,7 @@ export const AppInfoScreen = () => {
                     <DecorativeIcon
                       icon={faTriangleExclamation}
                       size={fontSizes['2xl']}
-                      color={palettes.gray[600]}
+                      color={styles.listItemIcon.color}
                     />
                   }
                   trailingItem={
@@ -246,7 +246,7 @@ export const AppInfoScreen = () => {
                     <DecorativeIcon
                       icon={faComments}
                       size={fontSizes['2xl']}
-                      color={palettes.gray[600]}
+                      color={styles.listItemIcon.color}
                     />
                   }
                   trailingItem={
