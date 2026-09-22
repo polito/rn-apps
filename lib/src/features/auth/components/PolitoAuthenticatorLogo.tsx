@@ -1,7 +1,7 @@
 // made with https://react-svgr.com/playground)
 import Svg, { Path, SvgProps } from 'react-native-svg';
 
-import { useTheme } from '@polito/lib/ui';
+import { useTheme } from '../../../ui';
 
 export const PolitoAuthenticatorLogo = (props: SvgProps) => {
   const { palettes, dark, colors } = useTheme();

@@ -1,4 +1,8 @@
 import { API_BASE_PATH } from '@env';
+import {
+  Configuration as AuthConfiguration,
+  DefaultConfig as AuthDefaultConfig,
+} from '@polito/auth-api-client';
 import { PlacesApiConfig } from '@polito/lib/features/places';
 import {
   BASE_PATH,
@@ -39,6 +43,7 @@ export const updateGlobalApiConfiguration = ({
     configurationParameters.accessToken = token;
   }
 
+  AuthDefaultConfig.config = new AuthConfiguration(configurationParameters);
   DefaultConfig.config = new Configuration(configurationParameters);
   PlacesApiConfig.config = new Configuration(configurationParameters);
 };

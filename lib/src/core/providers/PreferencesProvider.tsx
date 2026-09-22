@@ -64,6 +64,7 @@ export const PreferencesProvider = <Extra extends Record<string, any> = {}>({
       ({
         // basic defaults
         lastInstalledVersion: null,
+        username: '',
         colorScheme: 'system',
         language: deviceLanguage,
         accessibility: {},
