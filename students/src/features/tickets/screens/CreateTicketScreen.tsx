@@ -21,12 +21,14 @@ import {
 } from '@polito/lib/ui';
 import { CreateTicketRequest } from '@polito/student-api-client';
 import { MenuAction } from '@react-native-menu/menu';
+import { NavigationProp } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
   useCreateTicket,
   useGetTicketTopics,
 } from '../../../core/queries/ticketHooks';
+import type { RootParamList } from '../../../core/types/navigation';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { Attachment } from '../../services/types/Attachment';
 import { MessagingView } from '../components/MessagingView';
@@ -36,7 +38,7 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'CreateTicket'>;
 export const CreateTicketScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { topicId: initialTopicId, subtopicId: initialSubtopicId } =
-    route.params;
+    route.params ?? {};
   const ticketTopicQuery = useGetTicketTopics();
   const topics = useMemo(() => {
     if (!ticketTopicQuery.data) return [];
@@ -65,8 +67,20 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
 
   useEffect(() => {
     if (isSuccess && data?.id) {
-      navigation.navigate(initialTopicId ? 'Services' : 'Tickets');
-      navigation.navigate('Ticket', { id: data.id });
+      const routeNames = navigation.getState().routeNames;
+      if (routeNames.includes('Ticket')) {
+        navigation.navigate(initialTopicId ? 'Services' : 'Tickets');
+        navigation.navigate('Ticket', { id: data.id });
+        return;
+      }
+
+      navigation
+        .getParent<NavigationProp<RootParamList>>()
+        ?.navigate('ServicesTab', {
+          screen: 'Ticket',
+          params: { id: data.id },
+          initial: false,
+        });
     }
   }, [isSuccess, data, initialTopicId, navigation]);
 
