@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 import {
+  ActivityIndicator,
   BottomBarSpacer,
   Card,
   DisclosureIndicator,
@@ -21,13 +22,123 @@ import {
 } from '@polito/lib/ui';
 import { Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 import { Person } from '@polito/student-api-client';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { useGetCourse } from '../../core/queries/courseHooks';
+import { useGetPersons } from '../../core/queries/peopleHooks';
+import { CourseTabsParamList } from './CourseNavigator';
 import { ExamListItem } from './ExamListItem';
 import { MoodleStatusBadge } from './MoodleStatusBagde';
 
+const ApiCourseInfo = ({ courseId }: { courseId: number }) => {
+  const { t } = useTranslation();
+  const { palettes, fontFamilies } = useTheme();
+  const styles = useStylesheet(createStyles);
+  const { setOptions } = useNavigation();
+  const courseQuery = useGetCourse(courseId);
+  const course = courseQuery.data;
+  const staffIds = course?.staff.map(member => member.id);
+  const { queries: staffQueries } = useGetPersons(staffIds);
+
+  useLayoutEffect(() => {
+    const headerTitle = course?.name ?? t('common.course');
+    setOptions({
+      headerTitle,
+      headerBackTitleVisible: headerTitle.length <= 20,
+    });
+  }, [course?.name, setOptions, t]);
+
+  if (courseQuery.isLoading) {
+    return <ActivityIndicator style={styles.loader} />;
+  }
+
+  if (!course) {
+    return null;
+  }
+
+  return (
+    <ScrollView
+      style={styles.container}
+      contentInsetAdjustmentBehavior="automatic"
+    >
+      <SafeAreaView>
+        <Section style={styles.screenTitle}>
+          <ScreenTitle title={course.name} />
+          <Text variant="caption">
+            {course.shortcode}
+            {course.cfu
+              ? ` - ${course.cfu} ${t('common.cfu').toLowerCase()}`
+              : ''}
+          </Text>
+        </Section>
+        <Card style={styles.metricsCard}>
+          <View style={GlobalStyles.grow}>
+            <Row justify="space-between" align="center">
+              <Metric
+                title={t('common.period')}
+                value={`${course.teachingPeriod ?? '--'} - ${course.year ?? '--'}`}
+                valueStyle={{ fontFamily: fontFamilies.heading }}
+                style={styles.periodMetric}
+                color={palettes.secondary[700]}
+              />
+            </Row>
+          </View>
+        </Card>
+
+        {course.staff.length > 0 && (
+          <Section>
+            <SectionHeader title={t('courseInfoTab.staffSectionTitle')} />
+            <OverviewList indented style={styles.listContainer}>
+              {course.staff.map((member, index) => {
+                const person = staffQueries[index]?.data;
+                if (!person) return null;
+                return (
+                  <React.Fragment key={member.id}>
+                    <PersonListItem
+                      person={person}
+                      subtitle={t(
+                        member.role === 'Titolare'
+                          ? 'common.roleHolder'
+                          : 'common.roleCollaborator',
+                      )}
+                    />
+                    {index < course.staff.length - 1 && <IndentedDivider />}
+                  </React.Fragment>
+                );
+              })}
+            </OverviewList>
+          </Section>
+        )}
+
+        <Section>
+          <SectionHeader title={t('other.other')} />
+          <OverviewList indented style={styles.listContainer}>
+            <ListItem
+              title={t('courseGuideScreen.title')}
+              linkTo={{ screen: 'CourseGuide', params: { courseId } }}
+              trailingItem={<DisclosureIndicator />}
+            />
+          </OverviewList>
+        </Section>
+        <BottomBarSpacer />
+      </SafeAreaView>
+    </ScrollView>
+  );
+};
+
 export const CourseInfoScreen = () => {
+  const { params } =
+    useRoute<RouteProp<CourseTabsParamList, 'CourseInfoScreen'>>();
+
+  if (params?.courseId !== undefined) {
+    return <ApiCourseInfo courseId={params.courseId} />;
+  }
+
+  return <FakeCourseInfo />;
+};
+
+const FakeCourseInfo = () => {
   const { t } = useTranslation();
   const { palettes, spacing, fontFamilies } = useTheme();
   const { selectedCourse } = useCourses();
@@ -205,6 +316,9 @@ const createStyles = ({ colors, spacing, shapes, palettes }: Theme) =>
   StyleSheet.create({
     container: {
       paddingTop: spacing[5],
+    },
+    loader: {
+      marginVertical: spacing[8],
     },
     screenTitle: {
       marginHorizontal: spacing[4],

@@ -198,6 +198,7 @@ export const useGetCourseEditions = (courseId: number) => {
         editions.push({
           id: course.id,
           year: course.year,
+          name: course.name,
         });
         editions.push(...course.previousEditions);
       } else {
@@ -517,12 +518,11 @@ export const useGetCourseLectures = (courseId: number) => {
   const videoLecturesQuery = useGetCourseVideolectures(courseId);
   const virtualClassroomsQuery = useGetCourseVirtualClassrooms(courseId);
 
+  const vcPreviousYears = courseQuery.data?.vcPreviousYears ?? [];
   const relatedVCDefinitions: (
     | CourseModuleEdition
     | CourseAllOfVcOtherCourses
-  )[] = (courseQuery.data?.vcPreviousYears ?? []).concat(
-    courseQuery.data?.vcOtherCourses ?? [],
-  );
+  )[] = [...vcPreviousYears, ...(courseQuery.data?.vcOtherCourses ?? [])];
 
   const relatedVCQueries =
     useGetCourseRelatedVirtualClassrooms(relatedVCDefinitions);
@@ -556,9 +556,9 @@ export const useGetCourseLectures = (courseId: number) => {
           lectureSections.push({
             courseId: d.id,
             title:
-              'name' in d
-                ? `${d.name} ${d.year}`
-                : `${t('common.virtualClassroom_plural')} - ${d.year}`,
+              index < vcPreviousYears.length
+                ? `${t('common.virtualClassroom_plural')} - ${d.year}`
+                : `${d.name} ${d.year}`,
             type: 'VirtualClassroom',
             data: relatedVCs,
           });

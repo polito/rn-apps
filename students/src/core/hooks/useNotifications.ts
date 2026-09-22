@@ -12,7 +12,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { get, has, setWith } from 'lodash';
 
 import { CourseTabsParamList } from '../../features/courses/navigation/CourseNavigator';
-import { useMfaChallengeHandler } from '../queries/authHooks';
 import {
   NOTIFICATIONS_QUERY_KEY,
   useGetNotifications,
@@ -24,6 +23,7 @@ import {
   RemoteMessage,
   UnreadNotificationsByScope,
 } from '../types/notifications';
+import { useMfaChallengeHandler } from './useMfaChallengeHandler';
 
 const CourseTransactionId = {
   avvisidoc: 'avvisidoc',

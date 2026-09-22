@@ -10,7 +10,9 @@ import {
   faMessage,
   faPersonThroughWindow,
 } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled } from '@polito/lib/core';
+import { AuthProfile } from '@polito/auth-api-client';
+import { useApiContext, useOfflineDisabled } from '@polito/lib/core';
+import { useLogout } from '@polito/lib/features/auth';
 import {
   BottomBarSpacer,
   Icon,
@@ -25,7 +27,6 @@ import {
   UnreadBadge,
   useTheme,
 } from '@polito/lib/ui';
-import { AuthProfile } from '@polito/student-api-client';
 import { MenuAction, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
@@ -35,12 +36,9 @@ import {
   hasUnreadMessages,
 } from '../../../../src/utils/messages';
 import { CardSwiper } from '../../../core/components/CardSwiper';
-import {
-  useLogout,
-  useMfaChallengeHandler,
-  useSwitchCareer,
-} from '../../../core/queries/authHooks';
+import { useMfaChallengeHandler } from '../../../core/hooks/useMfaChallengeHandler';
 import { useEscGet } from '../../../core/queries/escHooks';
+import { useSwitchCareer } from '../../../core/queries/studentAuthHooks';
 import {
   MESSAGES_QUERY_KEY,
   useGetMessages,
@@ -49,6 +47,8 @@ import {
   useGetSmartCard,
   useGetStudent,
 } from '../../../core/queries/studentHooks';
+import { deleteProfilePictureFile } from '../../../utils/profilePicture';
+import { CareerStatus } from '../components/CareerStatus';
 import { SmartCardQrModal } from '../components/SmartCardQrModal';
 import { UserStackParamList } from '../components/UserNavigator';
 
@@ -135,7 +135,16 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
   const { firstRequest } = route.params;
   const { fontSizes, palettes } = useTheme();
   const [isQrVisible, setIsQrVisible] = useState(false);
-  const { mutate: handleLogout } = useLogout();
+  const { username } = useApiContext();
+  const { mutate: logout } = useLogout();
+  const handleLogout = () =>
+    logout(undefined, {
+      onSuccess: () => {
+        if (username) {
+          deleteProfilePictureFile(username);
+        }
+      },
+    });
   const profileQuery = useGetProfile();
   const profile = profileQuery.data;
   const studentQuery = useGetStudent();
@@ -205,7 +214,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
               lastName={profile.lastName}
               username={profile.username}
               degreeName={student?.degreeName}
-              status={student?.status}
+              status={student?.state}
               picture={pictureQuery.data}
               hasSmartCard={!!smartCardUrl}
               europeanStudentCard={esc}
@@ -226,7 +235,14 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
           />
         )}
         <Section accessible={false}>
-          <SectionHeader title={t('common.career')} />
+          <SectionHeader
+            title={t('common.career')}
+            trailingItem={
+              student?.state ? (
+                <CareerStatus status={student.state} />
+              ) : undefined
+            }
+          />
           <OverviewList>
             <ListItem
               title={student?.degreeLevel ?? ''}

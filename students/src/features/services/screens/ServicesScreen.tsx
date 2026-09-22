@@ -31,11 +31,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { AppPreferences } from '~/core/types/preferences.ts';
 
 import { useNotifications } from '../../../core/hooks/useNotifications';
+import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import {
   WEBMAIL_LINK_QUERY_KEY,
   useGetWebmailLink,
-} from '../../../core/queries/authHooks.ts';
-import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
+} from '../../../core/queries/studentAuthHooks';
 import { useGetUnreadEmails } from '../../../core/queries/studentHooks.ts';
 import { TICKETS_QUERY_KEY } from '../../../core/queries/ticketHooks';
 import { ServiceCard } from '../components/ServiceCard';

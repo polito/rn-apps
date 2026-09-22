@@ -15,11 +15,14 @@ import {
 import { useTranslation } from 'react-i18next';
 import { open } from 'react-native-file-viewer';
 
-import { useFeedbackContext, usePreferencesContext } from '@polito/lib/core';
+import {
+  useApiContext,
+  useFeedbackContext,
+  usePreferencesContext,
+} from '@polito/lib/core';
 
 import { dirname, mkdirRecursive } from '../../utils/files';
 import { buildCourseFilePath, stripIdInParentheses } from '../../utils/files';
-import { useApiContext } from '../contexts/ApiContext';
 import {
   Download,
   DownloadContext,
