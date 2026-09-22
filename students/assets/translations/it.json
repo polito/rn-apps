@@ -157,8 +157,8 @@
     "dateToBeDefined": "Data da definire",
     "dateToBeDefinedShort": "Da definire",
     "day": "Giorno",
-    "deadline": "Scadenza",
-    "deadline_plural": "Scadenze",
+    "deadline": "Segreteria",
+    "deadline_plural": "Segreteria",
     "delete": "Elimina",
     "department": "Dipartimento",
     "desk": "Cattedra",
@@ -552,9 +552,17 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseListItem": {
-    "courseWithoutDetailsAlertTitle": "Questo corso non ha dettagli",
     "extra": "Extra carico",
     "overbooking": "Overbooking"
+  },
+  "courseNoAssignmentScreen": {
+    "message": "Per l’a.a. {{year}}, avvisi, materiali e calendario delle lezioni non sono al momento disponibili per questa attività/insegnamento. Potrebbero essere resi disponibili successivamente, se previsti.",
+    "imessage": "Per l’a.a. {{year}}, l’organizzazione di questo insegnamento non è ancora stata completata. Avvisi, materiali e calendario delle lezioni non sono pertanto ancora disponibili.",
+    "messagePreviousEditions": "Puoi selezionare un'edizione passata per accedere ai contenuti già pubblicati.",
+    "previousEditions": "Edizioni passate",
+    "previousEditionsSubtitle": "Accedi ai contenuti precedenti",
+    "title": "Dettagli non disponibili",
+    "ititle": "Dettagli non ancora disponibili"
   },
   "courseNoticesTab": {
     "emptyState": "Non ci sono avvisi",

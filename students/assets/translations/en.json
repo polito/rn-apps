@@ -151,8 +151,8 @@
     "dateToBeDefined": "Date to be defined",
     "dateToBeDefinedShort": "To be defined",
     "day": "Day",
-    "deadline": "Deadline",
-    "deadline_plural": "Deadlines",
+    "deadline": "Student Office",
+    "deadline_plural": "Student Office",
     "delete": "Delete",
     "department": "Department",
     "desk": "Desk",
@@ -540,9 +540,17 @@
     "virtualClassroomsSectionTitle": "Virtual classrooms"
   },
   "courseListItem": {
-    "courseWithoutDetailsAlertTitle": "This course doesn't have any details",
     "extra": "Extra APSP",
     "overbooking": "Overbooking"
+  },
+  "courseNoAssignmentScreen": {
+    "message": "For the {{year}} academic year, news, materials and lecture calendar are currently unavailable for this activity/course. They may be made available later, if foreseen.",
+    "imessage": "For the {{year}} academic year, the organization of this course has not yet been completed. News, materials and lecture calendar are therefore currently unavailable.",
+    "messagePreviousEditions": "You can select a past edition to access already published contents.",
+    "previousEditions": "Previous editions",
+    "previousEditionsSubtitle": "Access previous contents",
+    "title": "Details not available",
+    "ititle": "Details not available yet"
   },
   "courseNoticesTab": {
     "emptyState": "There are no news here",

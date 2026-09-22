@@ -142,7 +142,7 @@ export const useGetStudent = () => {
   if (query.data && query.isSuccess) {
     Sentry.setTag('student_degree_id', query.data.degreeName);
     Sentry.setTag('student_degree_name', query.data.degreeId);
-    Sentry.setTag('student_status', query.data.status);
+    Sentry.setTag('student_status', query.data.state?.label);
     Sentry.setTag(
       'student_is_currently_enrolled',
       query.data.isCurrentlyEnrolled,

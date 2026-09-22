@@ -48,6 +48,7 @@ import {
   useGetStudent,
 } from '../../../core/queries/studentHooks';
 import { deleteProfilePictureFile } from '../../../utils/profilePicture';
+import { CareerStatus } from '../components/CareerStatus';
 import { SmartCardQrModal } from '../components/SmartCardQrModal';
 import { UserStackParamList } from '../components/UserNavigator';
 
@@ -213,7 +214,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
               lastName={profile.lastName}
               username={profile.username}
               degreeName={student?.degreeName}
-              status={student?.status}
+              status={student?.state}
               picture={pictureQuery.data}
               hasSmartCard={!!smartCardUrl}
               europeanStudentCard={esc}
@@ -234,7 +235,14 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
           />
         )}
         <Section accessible={false}>
-          <SectionHeader title={t('common.career')} />
+          <SectionHeader
+            title={t('common.career')}
+            trailingItem={
+              student?.state ? (
+                <CareerStatus status={student.state} />
+              ) : undefined
+            }
+          />
           <OverviewList>
             <ListItem
               title={student?.degreeLevel ?? ''}
