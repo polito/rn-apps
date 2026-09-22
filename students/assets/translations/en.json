@@ -546,9 +546,9 @@
   "courseNoAssignmentScreen": {
     "message": "For the {{year}} academic year, news, materials and lecture calendar are currently unavailable for this activity/course. They may be made available later, if foreseen.",
     "imessage": "For the {{year}} academic year, the organization of this course has not yet been completed. News, materials and lecture calendar are therefore currently unavailable.",
-    "messagePreviousEditions": "You can select a past course to access already published contents.",
+    "messagePreviousEditions": "You can select a past edition to access already published contents.",
     "previousEditions": "Previous editions",
-    "previousEditionsSubtitle": "Access a past course",
+    "previousEditionsSubtitle": "Access previous contents",
     "title": "Details not available",
     "ititle": "Details not available yet"
   },
