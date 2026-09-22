@@ -13,6 +13,7 @@ export * from './ChatBubble';
 export * from './Col';
 export * from './CtaButton';
 export * from './CtaButtonContainer';
+export * from './DecorativeIcon';
 export * from './DirectoryListItem';
 export * from './DisclosureIndicator';
 export * from './Divider';
