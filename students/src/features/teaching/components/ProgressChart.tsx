@@ -89,6 +89,10 @@ export const ProgressChart = ({
         <View
           key={`progress-wrapper-${i}-${index}`}
           importantForAccessibility="no-hide-descendants"
+          style={{
+            position: 'absolute',
+            ...uniformInsets(0),
+          }}
         >
           <RNCKProgressChart
             key={`progress-${i}-${index}`}
@@ -102,7 +106,6 @@ export const ProgressChart = ({
             radius={radius}
             style={{
               margin: -20,
-              position: 'absolute',
             }}
             chartConfig={{
               backgroundGradientFromOpacity: 0,
