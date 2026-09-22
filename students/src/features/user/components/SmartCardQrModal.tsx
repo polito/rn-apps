@@ -1,5 +1,7 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text as RNText, StyleSheet, View } from 'react-native';
+import { isTablet as isTabletHelper } from 'react-native-device-info';
 import { SvgXml } from 'react-native-svg';
 
 import {
@@ -12,12 +14,13 @@ import {
 import { QrCodeModal } from '../../../core/components/QrCodeModal';
 import { useGetSmartCardQrCode } from '../../../core/queries/studentHooks';
 
-const QR_SIZE = 206;
+const QR_SIZE_PHONE = 206;
+const QR_SIZE_TABLET = 340;
 /**
- * Figma card width: QR (206) plus two 18px padding layers per side (72 total) — the
+ * Figma card width: QR size plus two 18px padding layers per side (72 total) — the
  * card's own padding and the QR's inset within the content.
  */
-const CARD_WIDTH = QR_SIZE + 72;
+const CARD_PADDING = 72;
 
 type Props = {
   visible: boolean;
@@ -37,12 +40,17 @@ export const SmartCardQrModal = ({
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const qrCodeQuery = useGetSmartCardQrCode(visible);
+  const qrSize = useMemo(
+    () => (isTabletHelper() ? QR_SIZE_TABLET : QR_SIZE_PHONE),
+    [],
+  );
+  const cardWidth = qrSize + CARD_PADDING;
 
   return (
     <QrCodeModal
       visible={visible}
       onClose={onClose}
-      maxWidth={CARD_WIDTH}
+      maxWidth={cardWidth}
       showCloseButton={false}
     >
       <View>
@@ -54,13 +62,13 @@ export const SmartCardQrModal = ({
         </Text>
         {!!degreeName && <Text style={styles.degree}>{degreeName}</Text>}
       </View>
-      <View style={styles.qrColumn}>
+      <View style={[styles.qrColumn, { width: qrSize }]}>
         <View
-          style={styles.qrContainer}
+          style={[styles.qrContainer, { minHeight: qrSize }]}
           accessibilityLabel={t('profileScreen.qrCode')}
         >
           {qrCodeQuery.data ? (
-            <SvgXml xml={qrCodeQuery.data} width={QR_SIZE} height={QR_SIZE} />
+            <SvgXml xml={qrCodeQuery.data} width={qrSize} height={qrSize} />
           ) : (
             <ActivityIndicator style={styles.qrLoader} />
           )}
@@ -89,13 +97,11 @@ const createStyles = ({ dark, spacing, fontSizes, palettes }: Theme) =>
     },
     qrColumn: {
       alignSelf: 'center',
-      width: QR_SIZE,
       gap: spacing[2],
     },
     qrContainer: {
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: QR_SIZE,
     },
     qrLoader: {
       flex: 1,
