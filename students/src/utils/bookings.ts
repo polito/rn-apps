@@ -2,6 +2,7 @@ import { APP_TIMEZONE } from '@polito/lib/core';
 import { Theme } from '@polito/lib/ui';
 import { Booking, BookingTopic } from '@polito/student-api-client';
 
+import color from 'color';
 import { inRange } from 'lodash';
 import { DateTime } from 'luxon';
 
@@ -43,6 +44,11 @@ export const canBeBookedWithSeatSelection = (slot: BookingCalendarEvent) => {
   );
 };
 
+const opaqueTint = (tint: string, background: string, alpha: number) =>
+  color(tint)
+    .mix(color(background), 1 - alpha)
+    .hex();
+
 export const getBookingStyle = (
   item: BookingCalendarEvent,
   palettes: Theme['palettes'],
@@ -63,7 +69,9 @@ export const getBookingStyle = (
   }
   if (canBeBooked) {
     return {
-      backgroundColor: dark ? palettes.navy[500] + '99' : palettes.navy[50],
+      backgroundColor: dark
+        ? opaqueTint(palettes.navy[500], colors.background, 0.6)
+        : palettes.navy[50],
       color: palettes.navy[dark ? '50' : '600'],
     };
   }
@@ -75,14 +83,16 @@ export const getBookingStyle = (
   }
   if (isFull) {
     return {
-      backgroundColor: dark ? palettes.rose[800] + 'CC' : palettes.rose['200'],
+      backgroundColor: dark
+        ? opaqueTint(palettes.rose[800], colors.background, 0.8)
+        : palettes.rose['200'],
       color: palettes.rose[dark ? '200' : '600'],
     };
   }
   if (notYetBookable) {
     return {
       backgroundColor: dark
-        ? palettes.darkOrange[800] + 'CC'
+        ? opaqueTint(palettes.darkOrange[800], colors.background, 0.8)
         : palettes.orange['100'],
       color: palettes.orange[dark ? '200' : '700'],
     };
