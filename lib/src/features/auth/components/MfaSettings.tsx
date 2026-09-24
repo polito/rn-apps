@@ -1,0 +1,258 @@
+import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { useFocusEffect } from '@react-navigation/native';
+
+import {
+  usePolitoAppMfaPrivateKeyKeychain,
+  usePreferencesContext,
+} from '../../../core';
+import {
+  CtaButton,
+  ListItem,
+  OverviewList,
+  Section,
+  SectionHeader,
+  type Theme,
+  useStylesheet,
+  useTheme,
+} from '../../../ui';
+import { useCheckMfa, useLogout } from '../queries/authHooks';
+import { RTFTrans } from './RTFTrans';
+
+export type MfaSettingsProps = {
+  onEnroll: () => void;
+};
+
+export const MfaSettings = ({ onEnroll }: MfaSettingsProps) => {
+  const { t } = useTranslation();
+  const styles = useStylesheet(createStyles);
+  const { fontSizes, palettes, colors, spacing } = useTheme();
+  const { data: mfa, refetch: refetchMfa } = useCheckMfa(true);
+  const { hasPrivateKeyMFA } = usePolitoAppMfaPrivateKeyKeychain();
+  const { mutate: logout } = useLogout();
+  const { politoAuthnEnrolmentStatus, updatePreference } =
+    usePreferencesContext();
+  const [hasLocalMfaKey, setHasLocalMfaKey] = useState<boolean>(false);
+  const { bottom } = useSafeAreaInsets();
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchMfa();
+    }, [refetchMfa]),
+  );
+
+  useEffect(() => {
+    hasPrivateKeyMFA().then(res => setHasLocalMfaKey(res));
+  }, [hasPrivateKeyMFA, mfa]);
+
+  const buttonHeight = spacing[4] + bottom;
+
+  const getStatusText = () => {
+    if (mfa?.status === 'available' || mfa?.status === 'needsReauth') {
+      return t('mfaScreen.settings.disabled');
+    }
+    if (hasLocalMfaKey) {
+      return t('mfaScreen.settings.active');
+    }
+    return t('common.error');
+  };
+
+  const renderErrorBlock = (i18nKey: string) => (
+    <View style={styles.errorContainer}>
+      <Text style={styles.errorLabel}>{t('mfaScreen.settings.textError')}</Text>
+      <View style={styles.errorTextContainer}>
+        <RTFTrans
+          style={[
+            styles.text,
+            {
+              fontSize: fontSizes.md,
+              color: colors.longProse,
+              marginLeft: spacing[5],
+            },
+          ]}
+          i18nKey={i18nKey}
+        />
+      </View>
+    </View>
+  );
+
+  return (
+    <>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={{ marginBottom: buttonHeight }}
+      >
+        <View style={styles.container}>
+          <Section>
+            <SectionHeader title={t('mfaScreen.settings.details')} />
+            <OverviewList indented>
+              <ListItem
+                title={t('mfaScreen.settings.status')}
+                trailingItem={
+                  <Text style={styles.infoValue}>{getStatusText()}</Text>
+                }
+              />
+              {mfa?.status !== 'locked' &&
+                (hasLocalMfaKey ||
+                  mfa?.status === 'available' ||
+                  mfa?.status === 'needsReauth') && (
+                  <>
+                    <ListItem
+                      title={t('mfaScreen.serial')}
+                      trailingItem={
+                        <Text
+                          style={[
+                            styles.infoValue,
+                            {
+                              color: !mfa?.details?.serial
+                                ? palettes.gray[400]
+                                : colors.longProse,
+                            },
+                          ]}
+                        >
+                          {mfa?.details?.serial ?? t('mfaScreen.settings.none')}
+                        </Text>
+                      }
+                    />
+                    <ListItem
+                      title={t('mfaScreen.enroll.deviceName')}
+                      trailingItem={
+                        <Text
+                          style={[
+                            styles.infoValue,
+                            {
+                              color: !mfa?.details?.description
+                                ? palettes.gray[400]
+                                : colors.longProse,
+                            },
+                          ]}
+                        >
+                          {politoAuthnEnrolmentStatus?.insertedDeviceName ??
+                            mfa?.details?.description ??
+                            t('mfaScreen.settings.notSet')}
+                        </Text>
+                      }
+                    />
+                  </>
+                )}
+              {mfa?.status === 'locked' &&
+                renderErrorBlock('mfaScreen.settings.lockedDescription')}
+              {mfa?.status !== 'locked' &&
+                mfa?.status !== 'active' &&
+                mfa?.status !== 'available' &&
+                mfa?.status !== 'needsReauth' &&
+                renderErrorBlock('mfaScreen.settings.notAccessible')}
+              {mfa?.status === 'active' &&
+                !hasLocalMfaKey &&
+                renderErrorBlock('mfaScreen.settings.notAccessible')}
+            </OverviewList>
+          </Section>
+
+          <Section>
+            <SectionHeader title={t('mfaScreen.settings.information')} />
+            <OverviewList indented>
+              <View style={styles.content} accessible>
+                <RTFTrans
+                  style={[styles.text, { fontSize: fontSizes.md }]}
+                  i18nKey="mfaScreen.settings.description"
+                />
+              </View>
+            </OverviewList>
+          </Section>
+        </View>
+      </ScrollView>
+      {((mfa?.status !== 'active' && mfa?.status !== 'locked') ||
+        (mfa?.status === 'active' && !hasLocalMfaKey)) && (
+        <View style={styles.buttonContainer}>
+          <CtaButton
+            title={
+              mfa?.status === 'available' || mfa?.status === 'needsReauth'
+                ? t('mfaScreen.settings.enableNow')
+                : t('mfaScreen.settings.correctError')
+            }
+            action={() => {
+              updatePreference('politoAuthnEnrolmentStatus', {
+                ...politoAuthnEnrolmentStatus,
+                inSettings: true,
+              });
+              if (
+                mfa?.status === 'available' ||
+                mfa?.status === 'needsReauth'
+              ) {
+                onEnroll();
+              } else {
+                logout();
+              }
+            }}
+            variant="filled"
+            absolute={false}
+            containerStyle={
+              [styles.buttonWrapper, { top: -spacing[16] - bottom }] as any
+            }
+          />
+        </View>
+      )}
+    </>
+  );
+};
+const createStyles = ({ dark, colors, spacing, fontSizes }: Theme) =>
+  StyleSheet.create({
+    container: {
+      paddingVertical: spacing[5],
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: dark ? colors.surfaceDark : colors.background,
+      paddingVertical: spacing[2],
+    },
+    content: {
+      padding: spacing[7],
+      gap: spacing[4],
+    },
+    listItem: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      padding: spacing['1'],
+    },
+    text: {
+      flexDirection: 'column',
+      color: colors.longProse,
+    },
+    errorContainer: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      paddingVertical: spacing[2],
+      paddingHorizontal: spacing[4],
+    },
+    errorLabel: {
+      fontSize: fontSizes.md,
+      color: colors.longProse,
+      marginRight: spacing[4],
+      minWidth: 80,
+    },
+    errorTextContainer: {
+      flex: 1,
+      paddingLeft: 9,
+    },
+    formula: {
+      marginTop: spacing[1],
+    },
+    bold: {
+      fontWeight: 'bold',
+    },
+    buttonContainer: {
+      margin: spacing[2],
+    },
+    buttonWrapper: {
+      padding: 0,
+      elevation: 0,
+    },
+    infoValue: {
+      color: colors.longProse,
+      fontWeight: 'bold',
+    },
+  });

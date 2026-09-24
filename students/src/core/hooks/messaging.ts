@@ -5,6 +5,7 @@ import {
   requestNotifications,
 } from 'react-native-permissions';
 
+import { useUpdateAppInfo } from '@polito/lib/features/auth';
 import { MessageType } from '@polito/student-api-client';
 import {
   AuthorizationStatus,
@@ -19,7 +20,6 @@ import {
 } from '@react-native-firebase/messaging';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { useUpdateAppInfo } from '../queries/authHooks.ts';
 import {
   MESSAGES_QUERY_KEY,
   NOTIFICATIONS_QUERY_KEY,

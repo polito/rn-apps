@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { usePreferencesContext, useSplashContext } from '@polito/lib/core';
+import {
+  useApiContext,
+  usePreferencesContext,
+  useSplashContext,
+} from '@polito/lib/core';
 import { BottomModal, useBottomModal } from '@polito/lib/ui';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { useApiContext } from '../contexts/ApiContext';
 import { useCheckForUpdate } from '../hooks/useCheckForUpdate';
 import { MigrationService } from '../migrations/MigrationService';
 import { DownloadsProvider } from '../providers/DownloadsProvider';
