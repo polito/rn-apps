@@ -22,7 +22,7 @@ export const Badge = ({
   foregroundColor,
   style,
 }: Props) => {
-  const { spacing, shapes, fontSizes, fontFamilies } = useTheme();
+  const { spacing, shapes, fontSizes } = useTheme();
   const { accessibility } = usePreferencesContext();
   return (
     <Row
@@ -47,11 +47,7 @@ export const Badge = ({
     >
       {icon && <Icon icon={icon} size={fontSizes.md} color={foregroundColor} />}
       <Text
-        style={{
-          color: foregroundColor,
-          fontSize: fontSizes.xs,
-          fontFamily: fontFamilies.title,
-        }}
+        style={{ color: foregroundColor, fontSize: fontSizes.xs }}
         weight="medium"
       >
         {text}
