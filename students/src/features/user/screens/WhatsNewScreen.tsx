@@ -50,7 +50,7 @@ export const WhatsNewScreen = ({ route }: Props) => {
   const styles = useStylesheet(createStyles);
   const { isEnabled, announce } = useScreenReader();
   const announcementsQuery = useGetAnnouncements();
-  useHideTabs();
+  useHideTabs(undefined, undefined, { hideOnIos: true });
 
   const announcements = useMemo(
     () => config.getAnnouncements(announcementsQuery.data),
