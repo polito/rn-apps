@@ -7,7 +7,6 @@ import {
   StyleSheet,
   View,
   findNodeHandle,
-  useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -45,13 +44,13 @@ export const NewOverlayScreen = ({ route, navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { spacing, shapes } = useTheme();
   const { bottom } = useSafeAreaInsets();
-  const { width: screenWidth } = useWindowDimensions();
   const announcementsQuery = useGetAnnouncements();
   const { isEnabled, announce } = useScreenReader();
   useHideTabs();
   const { mutate: markAsRead } = useMarkAnnouncementAsRead();
   const announcement = announcementsQuery.data?.find(item => item.id === id);
   const [coverAspectRatio, setCoverAspectRatio] = useState<number>();
+  const [contentWidth, setContentWidth] = useState<number>();
   const titleRef = useRef<View>(null);
   const announcementId = announcement?.id;
   const [transitionEnded, setTransitionEnded] = useState(false);
@@ -91,6 +90,9 @@ export const NewOverlayScreen = ({ route, navigation }: Props) => {
   const htmlViewProps = useMemo(
     () => ({
       source: { html: announcement?.contents ?? '' },
+      ...(contentWidth != null && {
+        contentWidth: contentWidth - spacing[5] * 2,
+      }),
       baseStyle: {
         paddingHorizontal: spacing[5],
         paddingVertical: 0,
@@ -102,10 +104,9 @@ export const NewOverlayScreen = ({ route, navigation }: Props) => {
         lineHeight: styles.body.lineHeight,
       },
     }),
-    [announcement?.contents, spacing, styles.body],
+    [announcement?.contents, contentWidth, spacing, styles.body],
   );
 
-  const coverWidth = screenWidth - spacing[5] * 2;
   const htmlText = getHtmlTextContent(announcement?.contents ?? '');
 
   if (!announcement) {
@@ -140,7 +141,7 @@ export const NewOverlayScreen = ({ route, navigation }: Props) => {
               source={{ uri: announcement.cover }}
               style={{
                 borderRadius: shapes.lg,
-                width: coverWidth,
+                width: '100%',
                 aspectRatio: coverAspectRatio ?? 16 / 9,
               }}
               contentFit="cover"
@@ -169,6 +170,7 @@ export const NewOverlayScreen = ({ route, navigation }: Props) => {
           accessible
           accessibilityLabel={htmlText}
           importantForAccessibility="no-hide-descendants"
+          onLayout={e => setContentWidth(e.nativeEvent.layout.width)}
         >
           <HtmlView variant="onboarding" props={htmlViewProps} />
         </View>

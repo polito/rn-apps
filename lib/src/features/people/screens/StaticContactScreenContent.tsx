@@ -6,9 +6,9 @@ import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { BottomBarSpacer } from '../../../ui/components/BottomBarSpacer';
 import { Card } from '../../../ui/components/Card';
 import { Icon } from '../../../ui/components/Icon';
-import { IndentedDivider } from '../../../ui/components/IndentedDivider';
 import { InfoMessage } from '../../../ui/components/InfoMessage';
 import { ListItem } from '../../../ui/components/ListItem';
+import { OverviewList } from '../../../ui/components/OverviewList';
 import { Text } from '../../../ui/components/Text';
 import { useStylesheet } from '../../../ui/hooks/useStylesheet';
 import { useTheme } from '../../../ui/hooks/useTheme';
@@ -73,27 +73,25 @@ export const StaticContactScreenContent = ({ detail }: Props) => {
         )}
 
         {detail.contacts.length > 0 && (
-          <Card style={styles.contactsCard} padded={false}>
+          <OverviewList indented style={styles.contactsCard}>
             {detail.contacts.map((contact, index) => (
-              <View key={index}>
-                {index > 0 && <IndentedDivider indent={20} />}
-                <ListItem
-                  title={contact.title}
-                  subtitle={contact.value}
-                  onPress={() => openContact(contact)}
-                  accessibilityRole="button"
-                  leadingItem={<Icon icon={contact.icon} size={fontSizes.lg} />}
-                  trailingItem={
-                    <Icon
-                      icon={faChevronRight}
-                      color={colors.secondaryText}
-                      size={fontSizes.sm}
-                    />
-                  }
-                />
-              </View>
+              <ListItem
+                key={index}
+                title={contact.title}
+                subtitle={contact.value}
+                onPress={() => openContact(contact)}
+                accessibilityRole="button"
+                leadingItem={<Icon icon={contact.icon} size={fontSizes.lg} />}
+                trailingItem={
+                  <Icon
+                    icon={faChevronRight}
+                    color={colors.secondaryText}
+                    size={fontSizes.sm}
+                  />
+                }
+              />
             ))}
-          </Card>
+          </OverviewList>
         )}
       </View>
       <BottomBarSpacer />
@@ -107,9 +105,6 @@ const createStyles = ({ spacing, shapes }: Theme) =>
       flexGrow: 1,
     },
     content: {
-      alignSelf: 'center',
-      width: '100%',
-      maxWidth: 390,
       padding: spacing[5],
       gap: spacing[3],
     },
@@ -136,8 +131,9 @@ const createStyles = ({ spacing, shapes }: Theme) =>
     infoTitle: {
       marginBottom: spacing[1],
     },
-    contactsCard: Platform.select({
-      ios: { marginHorizontal: 0, borderRadius: shapes.md },
-      android: { marginHorizontal: 0 },
-    })!,
+    contactsCard: {
+      marginHorizontal: 0,
+      marginVertical: 0,
+      borderRadius: Platform.select({ ios: shapes.md }),
+    },
   });

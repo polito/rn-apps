@@ -856,6 +856,58 @@
     },
     "yourCareer": "Your career"
   },
+  "usefulContacts": {
+    "consiglieraFiducia": {
+      "title": "Confidential Counsellor",
+      "description": {
+        "paragraph1": "The Confidential Counsellor is the external consultant of reference for cases of violence, harassment — including sexual harassment — and discrimination occurring within the University. She provides a free counselling and support service, by appointment, to students, teaching staff and technical-administrative staff.",
+        "paragraph2": "The Counsellor guarantees the privacy of the person reporting and acts exclusively with their consent."
+      },
+      "info": {
+        "title": "Booking an appointment",
+        "body": "Appointments are booked by email. The Counsellor will reply to your request within two days. The meeting can also take place remotely."
+      },
+      "contacts": {
+        "email": "Email"
+      }
+    },
+    "sportelloAntiviolenza": {
+      "title": "Anti-violence Support Desk",
+      "description": {
+        "paragraph1": "The University’s anti-violence support desk “Non sei sola”, run by <i>E.M.M.A. Onlus</i>, offers a <b>safe space to be heard</b> and <b>free counselling</b> to <b>prevent and address gender-based violence</b>, always safeguarding the person’s privacy and consent.",
+        "warning": "Even ambiguous or seemingly minor episodes matter: talk about them with people you trust and contact the University’s Anti-violence Support Desk, open to everyone for information, guidance and prevention."
+      },
+      "info": {
+        "title": "Booking an appointment",
+        "noBooking": "<b>No</b> booking required!",
+        "openingHours": "The desk is walk-in and <b>open from 2:30 pm to 5:30 pm</b>:",
+        "firstWednesdays": "First three Wednesdays of the month: entrance hall of the corridor leading to the Central Engineering Library, <b>Corso Duca degli Abruzzi 24</b>",
+        "lastWednesday": "Last Wednesday of the month: Castello del Valentino, <b>Viale Mattioli 39</b>"
+      },
+      "contacts": {
+        "email": "Email",
+        "phone": "Phone for information or appointments",
+        "emergency": "Emergency number"
+      }
+    },
+    "garanteStudenti": {
+      "title": "Students’ Guarantor",
+      "description": {
+        "paragraph1": "The Students’ Guarantor is the point of reference for guarantee functions on behalf of the student population. They are appointed by the Joint Committee for Teaching from among the University’s full professors who have put themselves forward. On the basis of the reports received, they look into the issues raised and intervene to address and resolve the problems identified. After the necessary checks, they propose appropriate measures to the competent bodies and report annually to the Joint Committee for Teaching. For matters involving personal confidentiality, they report directly to the Rector.",
+        "paragraph2": "The Guarantor takes every useful measure to safeguard, wherever possible, the confidentiality of those who turn to them."
+      },
+      "info": {
+        "title": "How to get in touch",
+        "paragraph1": "You can submit a report by email, describing the issue to be examined in reasonable detail.",
+        "paragraph2": "The message must be signed and include the details the Guarantor needs to get in touch with the sender, if necessary. The text of the report must be written entirely in the body of the email. Attachments are allowed in PDF format only."
+      },
+      "contacts": {
+        "email": "Email",
+        "moreInfo": "More information",
+        "moreInfoValue": "For more information, see the dedicated page on the Politecnico website."
+      }
+    }
+  },
   "videoControls": {
     "changePlaybackRate": "Change playback rate",
     "tenSec": "10s",
