@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
+import { Platform, TouchableOpacity } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -11,14 +11,9 @@ import {
   defaultUsefulContactsList,
 } from '@polito/lib/features/people';
 import { useTheme, useTitlesStyles } from '@polito/lib/ui';
-import {
-  RouteProp,
-  getFocusedRouteNameFromRoute,
-  useNavigation,
-} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import type { RootParamList } from '../../core/components/RootNavigator';
 import { BookingScreen } from '../../features/bookings/screens/BookingScreen';
 import { FacilitySpaceCalendarScreen } from '../../features/bookings/screens/FacilitySpaceCalendarScreen';
 import { FacilitySpaceTimelineScreen } from '../../features/bookings/screens/FacilitySpaceTimelineScreen';
@@ -74,28 +69,6 @@ const CustomBackButton2 = () => {
 };
 
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
-
-// Per-screen effect-based hiding (useHideTabs / useFocusEffect) proved
-// unreliable across this chain of screens on both platforms: independent
-// screens each toggling the same parent tabBarStyle option can race against
-// a sibling's cleanup. Computing it declaratively from the currently focused
-// route avoids that entirely. Owned here (not in RootNavigator) since this
-// navigator already registers these exact routes.
-const HIDDEN_TAB_BAR_ROUTES = new Set([
-  'CalendarioSpaziStrutture',
-  'VistaCalendarioSpazio',
-  'NuovaPrenotazioneSpazio',
-]);
-
-export const getServiceTabBarStyle = (
-  route: RouteProp<RootParamList, 'Services'>,
-  defaultStyle: StyleProp<ViewStyle>,
-): StyleProp<ViewStyle> => {
-  const focusedRouteName = getFocusedRouteNameFromRoute(route);
-  return focusedRouteName && HIDDEN_TAB_BAR_ROUTES.has(focusedRouteName)
-    ? { display: 'none' }
-    : defaultStyle;
-};
 
 export const ServiceNavigator = () => {
   const { t } = useTranslation();

@@ -15,6 +15,7 @@ import {
   CtaButton,
   Text,
   Theme,
+  useHideTabs,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
@@ -122,6 +123,8 @@ export const FacilitySpaceTimelineScreen = () => {
   const { data: spaceTypes } = useGetInterdepartmentalSpaceTypes();
   const daysScrollRef = useRef<ScrollView>(null);
   const { width: windowWidth } = useWindowDimensions();
+
+  useHideTabs(undefined, undefined, { hideOnIos: true });
 
   const typeLabels = useMemo(
     () =>

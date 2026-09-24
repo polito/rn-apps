@@ -27,6 +27,7 @@ import {
   TextButton,
   Theme,
   faSeat,
+  useHideTabs,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
@@ -88,6 +89,8 @@ export const NewFacilityBookingScreen = () => {
   const isEditing = !!editingSlot;
   const canEdit = !editingSlot || editingSlot.bookedBy.email === user.email;
   const availableSeats = space?.numSeats ?? 10;
+
+  useHideTabs();
 
   const eventTypes = useMemo(
     () =>

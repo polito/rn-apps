@@ -11,6 +11,7 @@ import {
   Section,
   Text,
   Theme,
+  useHideTabs,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
@@ -28,6 +29,8 @@ export const FacilitySpaceCalendarScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const { data: filter, isLoading } = useGetInterdepartmentalSpaces();
+
+  useHideTabs(undefined, undefined, { hideOnIos: true });
 
   const [site, setSite] = useState<string>();
   const [location, setLocation] = useState<string>();
