@@ -2,8 +2,7 @@ import { Button, StyleSheet, Text, View } from 'react-native';
 
 import { useStylesheet } from '@polito/lib/ui';
 import { Theme } from '@polito/lib/ui';
-
-import { useIBeaconScanner } from '../hooks/useIBeaconScanner';
+import { useIBeaconScanner } from '@polito/react-native-ibeacon';
 
 export const BleScreenTest = () => {
   const styles = useStylesheet(createStyles);

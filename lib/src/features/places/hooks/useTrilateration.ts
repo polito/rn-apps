@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { ScanMode } from 'react-native-ble-plx';
 
-import { bleManager } from '../utils/bleManager';
-import { parseIBeacon } from '../utils/parseIBeaconData';
+//import { parseIBeacon } from '../utils/parseIBeaconData';
 
 // Il tuo singleton
 
@@ -31,7 +29,7 @@ export const DB_BEACONS = [
 ];
 
 export function useRealTimeTrilateration() {
-  const [userLocation, setUserLocation] = useState<{
+  const [userLocation, _setUserLocation] = useState<{
     lat: number;
     lng: number;
   } | null>(null);
@@ -51,6 +49,7 @@ export function useRealTimeTrilateration() {
     setIsScanning(true);
 
     // 1. ACCENDI LO SCANNER
+    /*
     bleManager.startDeviceScan(
       null,
       { scanMode: ScanMode.LowLatency, allowDuplicates: true },
@@ -122,13 +121,13 @@ export function useRealTimeTrilateration() {
       clearInterval(interval);
       bleManager.stopDeviceScan();
       setIsScanning(false);
-    };
+    };*/
   };
 
-  const stopTracking = () => {
+  /*  const stopTracking = () => {
     bleManager.stopDeviceScan();
     setIsScanning(false);
-  };
+  };*/
 
-  return { userLocation, isScanning, startTracking, stopTracking };
+  return { userLocation, isScanning, startTracking /*stopTracking*/ };
 }

@@ -200,7 +200,7 @@ export const useGetPath = (params: {
             avoidStairs: params.avoidStairs,
           })
           .then(pluckData)
-          .catch(error => {
+          .catch((error: any) => {
             // Custom handling for 404 errors to return a more descriptive message
             if (error.response?.status === 404) {
               params.generateFeedback();
