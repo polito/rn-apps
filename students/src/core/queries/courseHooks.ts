@@ -442,6 +442,44 @@ export const useUploadAssignment = (courseId: number) => {
   });
 };
 
+export const useWithdrawAssignment = (courseId: number) => {
+  const coursesClient = useCoursesClient();
+  const client = useQueryClient();
+
+  return useMutation({
+    mutationFn: (assignmentId: number) =>
+      coursesClient.updateAssignment({
+        courseId,
+        assignmentId,
+        updateAssignmentRequest: { deletedAt: new Date() },
+      }),
+    onSuccess() {
+      return client.invalidateQueries({
+        queryKey: getCourseKey(courseId, CourseSectionEnum.Assignments),
+      });
+    },
+  });
+};
+
+export const useRestoreAssignment = (courseId: number) => {
+  const coursesClient = useCoursesClient();
+  const client = useQueryClient();
+
+  return useMutation({
+    mutationFn: (assignmentId: number) =>
+      coursesClient.updateAssignment({
+        courseId,
+        assignmentId,
+        updateAssignmentRequest: { deletedAt: null },
+      }),
+    onSuccess() {
+      return client.invalidateQueries({
+        queryKey: getCourseKey(courseId, CourseSectionEnum.Assignments),
+      });
+    },
+  });
+};
+
 export const useGetCourseGuide = (courseId: number) => {
   const coursesClient = useCoursesClient();
 

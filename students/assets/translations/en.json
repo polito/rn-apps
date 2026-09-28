@@ -298,7 +298,7 @@
     "downloadAttachment": "Download attachment",
     "removeAttachment": "Remove attachment",
     "reset": "Reset",
-    "retract": "Retract",
+    "restore": "Restore",
     "roleCollaborator": "Collaborator",
     "roleHolder": "Holder",
     "search": "Search",
@@ -336,6 +336,7 @@
     "virtualClassroom_plural": "Virtual classrooms",
     "visualization": "Visualization",
     "warning": "Warning",
+    "withdraw": "Withdraw",
     "year": "year",
     "yesterday": "Yesterday",
     "sizeExc": "Excessive file size, maximum 32 MB"

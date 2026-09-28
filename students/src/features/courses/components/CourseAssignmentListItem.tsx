@@ -8,31 +8,48 @@ import { IS_ANDROID, formatDateTime } from '@polito/lib/core';
 import { FileListItem, IconButton, useTheme } from '@polito/lib/ui';
 import { CourseAssignment } from '@polito/student-api-client';
 
+import {
+  useRestoreAssignment,
+  useWithdrawAssignment,
+} from '~/core/queries/courseHooks';
 import { formatFileSize } from '~/utils/files';
+
+import { useCourseContext } from '../contexts/CourseContext';
 
 interface Props {
   item: CourseAssignment;
   accessibilityListLabel?: string;
 }
 
-const Menu = ({ children }: PropsWithChildren) => {
+const Menu = ({
+  assignmentId,
+  isWithdrawn,
+  children,
+}: PropsWithChildren<{ assignmentId: number; isWithdrawn: boolean }>) => {
   const { t } = useTranslation();
   const { dark, colors } = useTheme();
+  const courseId = useCourseContext();
+  const { mutate: withdrawAssignment } = useWithdrawAssignment(courseId);
+  const { mutate: restoreAssignment } = useRestoreAssignment(courseId);
 
   return (
     <ContextMenu
       dropdownMenuMode={IS_ANDROID}
       actions={[
         {
-          title: t('common.retract'),
+          title: isWithdrawn ? t('common.restore') : t('common.withdraw'),
           titleColor: dark ? colors.white : colors.black,
-          destructive: true,
+          destructive: !isWithdrawn,
         },
       ]}
       onPress={({ nativeEvent: { index } }) => {
         switch (index) {
           case 0:
-            // TODO retract assignment
+            if (isWithdrawn) {
+              restoreAssignment(assignmentId);
+            } else {
+              withdrawAssignment(assignmentId);
+            }
             break;
           default:
         }
@@ -66,28 +83,24 @@ export const CourseAssignmentListItem = ({
         subtitle={subTitle}
         accessibilityLabel={`${accessibilityListLabel}. ${item.description}, ${subTitle}`}
         mimeType={item.mimeType}
-        trailingItem={
-          item.deletedAt == null
-            ? Platform.select({
-                android: (
-                  <Menu>
-                    <IconButton
-                      style={{
-                        padding: spacing[3],
-                      }}
-                      icon={faEllipsisVertical}
-                      color={colors.secondaryText}
-                      size={fontSizes.xl}
-                      hitSlop={{
-                        right: +spacing[2],
-                        left: +spacing[2],
-                      }}
-                    />
-                  </Menu>
-                ),
-              })
-            : undefined
-        }
+        trailingItem={Platform.select({
+          android: (
+            <Menu assignmentId={item.id} isWithdrawn={item.deletedAt != null}>
+              <IconButton
+                style={{
+                  padding: spacing[3],
+                }}
+                icon={faEllipsisVertical}
+                color={colors.secondaryText}
+                size={fontSizes.xl}
+                hitSlop={{
+                  right: +spacing[2],
+                  left: +spacing[2],
+                }}
+              />
+            </Menu>
+          ),
+        })}
         {...rest}
       />
     ),
@@ -103,7 +116,11 @@ export const CourseAssignmentListItem = ({
   );
 
   if (Platform.OS === 'ios') {
-    return <Menu>{listItem}</Menu>;
+    return (
+      <Menu assignmentId={item.id} isWithdrawn={item.deletedAt != null}>
+        {listItem}
+      </Menu>
+    );
   }
   return listItem;
 };
