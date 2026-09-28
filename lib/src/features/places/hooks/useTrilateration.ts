@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-//import { parseIBeacon } from '../utils/parseIBeaconData';
+import { useIBeaconScanner } from '@polito/react-native-ibeacon';
 
 // Il tuo singleton
 
@@ -8,126 +8,188 @@ import { useEffect, useRef, useState } from 'react';
 // Sostituisci lat e lng con le coordinate Mapbox reali della tua stanza
 export const DB_BEACONS = [
   {
-    uuid: '00A82381-B393-4AA3-893F-8ED7F01E8966',
+    uuid: 'CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478',
+    major: 15,
+    minor: 30,
     lat: 45.061993,
     lng: 7.661547,
     txPower: -59,
   }, //BEACON GIACOMO
   {
-    uuid: '7F65CFA2-CB2C-4D2A-A488-8B79B96047E7',
+    uuid: 'CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478',
+    major: 1,
+    minor: 1,
     lat: 45.061969,
     lng: 7.66154,
     txPower: -59,
   }, //BEACON FEDERICO
   {
-    uuid: '07DA29F7-3A6C-46CB-920C-8386273FC84E',
+    uuid: 'CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478',
+    major: 1,
+    minor: 1,
     lat: 45.061918,
     lng: 7.661676,
     txPower: -59,
   }, //BEACON GIUSEPPE
-  // { uuid: 'BEA_STAMPANTE', lat: 45.061942, lng: 7.661606 }, //BEACON STAMPANTE (mio telefono)
+  {
+    uuid: 'BEA_STAMPANTE',
+    major: 10,
+    minor: 28,
+    lat: 45.061942,
+    lng: 7.661606,
+    txPower: -59,
+  }, //BEACON STAMPANTE (mio telefono)
 ];
 
 export function useRealTimeTrilateration() {
-  const [userLocation, _setUserLocation] = useState<{
+  const [userLocation, setUserLocation] = useState<{
     lat: number;
     lng: number;
   } | null>(null);
+
   const [isScanning, setIsScanning] = useState(false);
 
-  // Buffer per la Media Mobile: memorizza gli ultimi N valori RSSI per ogni beacon
   const rssiBuffer = useRef<Record<string, number[]>>({});
 
+  const {
+    startScanner,
+    stopScanner,
+    isScanning: scannerIsScanning,
+    beacons,
+  } = useIBeaconScanner();
+
+  const getBeaconKey = (uuid: string, major: number, minor: number) => {
+    return `${uuid.toUpperCase()}-${major}-${minor}`;
+  };
+
   useEffect(() => {
-    // Buffer setup
-    DB_BEACONS.forEach(b => {
-      rssiBuffer.current[b.uuid] = [];
+    rssiBuffer.current = {};
+
+    DB_BEACONS.forEach(beacon => {
+      const key = getBeaconKey(beacon.uuid, beacon.major, beacon.minor);
+
+      rssiBuffer.current[key] = [];
     });
   }, []);
 
-  const startTracking = () => {
-    setIsScanning(true);
+  useEffect(() => {
+    setIsScanning(scannerIsScanning);
+  }, [scannerIsScanning]);
 
-    // 1. ACCENDI LO SCANNER
-    /*
-    bleManager.startDeviceScan(
-      null,
-      { scanMode: ScanMode.LowLatency, allowDuplicates: true },
-      (error, device) => {
-        if (error) return;
+  useEffect(() => {
+    if (beacons.length === 0) {
+      return;
+    }
 
-        // Se il dispositivo ha un nome e fa parte dei nostri beacon (BEA_A, BEA_B, BEA_C)
-        if (device && device.manufacturerData && device.rssi) {
-          const beacon = parseIBeacon(device.manufacturerData, device.rssi);
+    beacons.forEach(beacon => {
+      const dbBeacon = DB_BEACONS.find(
+        candidate =>
+          candidate.uuid.toUpperCase() === beacon.uuid.toUpperCase() &&
+          candidate.major === beacon.major &&
+          candidate.minor === beacon.minor,
+      );
 
-          if (!beacon) return;
-          if (rssiBuffer.current[beacon.uuid]) {
-            // Aggiungi il nuovo RSSI all'array (teniamo solo gli ultimi 10 valori per averlo reattivo ma stabile)
-            rssiBuffer.current[beacon.uuid].push(device.rssi ?? 0);
+      if (!dbBeacon) {
+        return;
+      }
 
-            if (rssiBuffer.current[beacon.uuid].length > 10) {
-              rssiBuffer.current[beacon.uuid].shift(); // Rimuovi il più vecchio
-            }
-          }
-        }
-      },
-    );
+      const key = getBeaconKey(beacon.uuid, beacon.major, beacon.minor);
 
-    // 2. IL MOTORE DI CALCOLO (Gira ogni 500 millisecondi)
+      if (!rssiBuffer.current[key]) {
+        rssiBuffer.current[key] = [];
+      }
+
+      rssiBuffer.current[key].push(beacon.rssi);
+
+      if (rssiBuffer.current[key].length > 10) {
+        rssiBuffer.current[key].shift();
+      }
+    });
+  }, [beacons]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
-      const activeBeacons: any[] = [];
+      const activeBeacons: Array<
+        (typeof DB_BEACONS)[number] & {
+          distance: number;
+        }
+      > = [];
 
       DB_BEACONS.forEach(beacon => {
-        const readings = rssiBuffer.current[beacon.uuid];
-        if (readings && readings.length > 0) {
-          // Calcola la media dell'RSSI
-          const sum = readings.reduce((a, b) => a + b, 0);
-          const avgRssi = sum / readings.length;
+        const key = getBeaconKey(beacon.uuid, beacon.major, beacon.minor);
 
-          // Converti in Metri
-          // Usiamo n=2.5 come fattore di decadimento standard per una stanza
-          const distance = Math.pow(
-            10,
-            (beacon.txPower - avgRssi) / (10 * 2.5),
-          );
+        const readings = rssiBuffer.current[key];
 
-          activeBeacons.push({ ...beacon, distance });
+        if (!readings || readings.length === 0) {
+          return;
         }
+
+        const sum = readings.reduce((total, rssi) => total + rssi, 0);
+
+        const avgRssi = sum / readings.length;
+
+        const distance = Math.pow(10, (beacon.txPower - avgRssi) / (10 * 2.5));
+
+        activeBeacons.push({
+          ...beacon,
+          distance,
+        });
       });
 
-      // Se vediamo almeno 2 beacon, calcoliamo la posizione
-      if (activeBeacons.length >= 2) {
-        let sumLat = 0;
-        let sumLng = 0;
-        let sumWeights = 0;
-
-        activeBeacons.forEach(b => {
-          // Peso = inverso della distanza al quadrato
-          const weight = 1 / (Math.pow(b.distance, 2) + 0.001);
-          sumLat += b.lat * weight;
-          sumLng += b.lng * weight;
-          sumWeights += weight;
-        });
-
-        setUserLocation({
-          lat: sumLat / sumWeights,
-          lng: sumLng / sumWeights,
-        });
+      if (activeBeacons.length < 2) {
+        return;
       }
+
+      let sumLat = 0;
+      let sumLng = 0;
+      let sumWeights = 0;
+
+      activeBeacons.forEach(beacon => {
+        const weight = 1 / (Math.pow(beacon.distance, 2) + 0.001);
+
+        sumLat += beacon.lat * weight;
+        sumLng += beacon.lng * weight;
+        sumWeights += weight;
+      });
+
+      if (sumWeights === 0) {
+        return;
+      }
+
+      setUserLocation({
+        lat: sumLat / sumWeights,
+        lng: sumLng / sumWeights,
+      });
     }, 500);
 
-    // Salva l'ID dell'intervallo nel ref per pulirlo dopo se necessario
     return () => {
       clearInterval(interval);
-      bleManager.stopDeviceScan();
-      setIsScanning(false);
-    };*/
+    };
+  }, []);
+
+  const startTracking = () => {
+    if (scannerIsScanning) {
+      return;
+    }
+
+    const uuid = DB_BEACONS[0]?.uuid;
+
+    if (!uuid) {
+      console.warn('[iBeacon] Nessun beacon configurato');
+      return;
+    }
+
+    startScanner(uuid);
   };
 
-  /*  const stopTracking = () => {
-    bleManager.stopDeviceScan();
-    setIsScanning(false);
-  };*/
+  const stopTracking = () => {
+    stopScanner();
+  };
 
-  return { userLocation, isScanning, startTracking /*stopTracking*/ };
+  return {
+    userLocation,
+    isScanning,
+    startTracking,
+    stopTracking,
+  };
 }
