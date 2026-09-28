@@ -76,13 +76,16 @@ export const CourseAssignmentListItem = ({
           await Linking.openURL(item.url);
         }}
         title={item.description}
-        titleStyle={{
-          textDecorationLine:
-            item.deletedAt != null ? 'line-through' : undefined,
-        }}
+        titleStyle={
+          item.deletedAt != null && {
+            color: colors.secondaryText,
+            textDecorationLine: 'line-through',
+          }
+        }
         subtitle={subTitle}
         accessibilityLabel={`${accessibilityListLabel}. ${item.description}, ${subTitle}`}
         mimeType={item.mimeType}
+        iconColor={item.deletedAt != null ? colors.secondaryText : undefined}
         trailingItem={Platform.select({
           android: (
             <Menu assignmentId={item.id} isWithdrawn={item.deletedAt != null}>
