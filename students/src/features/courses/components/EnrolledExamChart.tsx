@@ -28,8 +28,8 @@ export const EnrolledExamChart = ({
   const { fontWeights } = useTheme();
 
   const selectedSwitchColor = dark ? palettes.primary[600] : colors.surface;
-  const chartColors = [palettes.success[400], palettes.error[500]];
-  const passedBorderColor = palettes.success[600];
+  const chartColors = [palettes.success[dark ? 600 : 400], palettes.error[500]];
+  const passedBorderColor = palettes.success[dark ? 400 : 600];
   const passedBorderWidth = 2;
   const topLabelSpacing = spacing['1'];
   const barRadius = spacing[1];

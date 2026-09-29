@@ -19,12 +19,12 @@ export const EnrolledExamDetailChart = ({
   statistics: undefined | CourseStatistics;
   noOfSections?: number;
 }) => {
-  const { palettes, colors, fontSizes, spacing } = useTheme();
+  const { dark, palettes, colors, fontSizes, spacing } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { fontWeights } = useTheme();
-  const chartColors = [palettes.success[400], palettes.error[500]];
-  const passedBorderColor = palettes.success[600];
+  const chartColors = [palettes.success[dark ? 600 : 400], palettes.error[500]];
+  const passedBorderColor = palettes.success[dark ? 400 : 600];
   const passedBorderWidth = 2;
   const topLabelSpacing = spacing['3'];
   const barRadius = spacing[1];
