@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
+import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
 import {
   BottomBarSpacer,
   HtmlView,
+  Icon,
   ListItem,
   OverviewList,
   Section,
@@ -41,6 +43,7 @@ export const TicketFaqScreen = ({ route, navigation }: Props) => {
           <ListItem
             inverted
             isAction
+            leadingItem={<Icon icon={faCircleQuestion} size={20} />}
             title={t('ticketFaqsScreen.writeTicket')}
             subtitle={t('ticketFaqsScreen.stillNeedHelp')}
             accessibilityRole="button"

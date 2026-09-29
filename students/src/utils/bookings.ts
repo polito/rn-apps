@@ -16,6 +16,13 @@ import { BookingCalendarEvent } from '../features/bookings/screens/BookingSlotSc
 
 export const MIN_CELL_HEIGHT = 20;
 
+export const DARK_SLOT_BACKGROUNDS = {
+  available: '#00538C',
+  booked: '#125938',
+  full: '#7F173C',
+  notYetBookable: '#7B321D',
+};
+
 export const isSlotBookable = (item: BookingCalendarEvent) => {
   const bookingStartsAt = DateTime.fromJSDate(item.bookingStartsAt as Date, {
     zone: APP_TIMEZONE,
@@ -64,39 +71,43 @@ export const getBookingStyle = (
 
   if (isBooked && !isPast) {
     return {
-      backgroundColor: palettes.tertiary[dark ? '700' : '100'],
-      color: palettes.tertiary[dark ? '100' : '700'],
+      backgroundColor: dark
+        ? DARK_SLOT_BACKGROUNDS.booked
+        : palettes.tertiary['100'],
+      color: palettes.tertiary[dark ? '200' : '700'],
     };
   }
   if (canBeBooked) {
     return {
-      backgroundColor: dark ? palettes.navy[500] + '99' : palettes.navy[50],
+      backgroundColor: dark
+        ? DARK_SLOT_BACKGROUNDS.available
+        : palettes.navy[50],
       color: palettes.navy[dark ? '50' : '600'],
     };
   }
   if (isPast) {
     return {
       backgroundColor: colors.background,
-      color: palettes.gray[dark ? 500 : 400],
+      color: palettes.gray[400],
     };
   }
   if (isFull) {
     return {
-      backgroundColor: dark ? palettes.rose[800] + 'CC' : palettes.rose['200'],
-      color: palettes.rose[dark ? '200' : '600'],
+      backgroundColor: dark ? DARK_SLOT_BACKGROUNDS.full : palettes.rose['200'],
+      color: palettes.rose[dark ? '200' : '800'],
     };
   }
   if (notYetBookable) {
     return {
       backgroundColor: dark
-        ? palettes.darkOrange[800] + 'CC'
-        : palettes.orange['100'],
-      color: palettes.orange[dark ? '200' : '700'],
+        ? DARK_SLOT_BACKGROUNDS.notYetBookable
+        : palettes.secondary['100'],
+      color: palettes.secondary[dark ? '200' : '800'],
     };
   }
   return {
-    backgroundColor: palettes.rose[dark ? '600' : '200'],
-    color: palettes.rose[dark ? '200' : '600'],
+    backgroundColor: colors.background,
+    color: palettes.gray[400],
   };
 };
 
