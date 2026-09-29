@@ -38,7 +38,6 @@ const createCustomImageRenderer = (variant: string) => {
       height: number;
     }>();
     const { spacing } = useTheme();
-    const { width: screenWidth } = useWindowDimensions();
     const onImageLoad = useCallback((e: ImageLoadEventData) => {
       const { width: w, height: h } = e.source;
       if (w > 0 && h > 0) {
@@ -54,30 +53,17 @@ const createCustomImageRenderer = (variant: string) => {
 
     if (variant === 'onboarding') {
       const tnodeStyle = props.tnode.styles?.nativeBlockRet ?? {};
-      const contentWidth = screenWidth - spacing[5] * 2;
       const rawWidth = tnodeStyle.width;
-      const resolvedWidth =
-        typeof rawWidth === 'string' && rawWidth.endsWith('%')
-          ? (parseFloat(rawWidth) / 100) * contentWidth
-          : typeof rawWidth === 'number'
-            ? rawWidth
-            : contentWidth;
       const naturalAspectRatio =
         naturalSize && naturalSize.height > 0
           ? naturalSize.width / naturalSize.height
           : undefined;
-      const resolvedHeight =
-        typeof tnodeStyle.height === 'number'
-          ? tnodeStyle.height
-          : naturalAspectRatio
-            ? resolvedWidth / naturalAspectRatio
-            : undefined;
       const imgStyle = {
         ...tnodeStyle,
-        width: resolvedWidth,
-        ...(resolvedHeight != null
-          ? { height: resolvedHeight }
-          : { aspectRatio: 16 / 9 }),
+        width: rawWidth ?? '100%',
+        maxWidth: '100%',
+        height: undefined,
+        aspectRatio: naturalAspectRatio ?? 16 / 9,
       };
 
       return (

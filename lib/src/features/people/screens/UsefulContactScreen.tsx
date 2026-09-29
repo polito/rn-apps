@@ -4,7 +4,7 @@ import { Text } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { defaultUsefulContactsContent } from '../data/defaultUsefulContacts';
+import { useUsefulContactsContent } from '../data/defaultUsefulContacts';
 import { PeopleStackParamList } from '../types';
 import { StaticContactScreenContent } from './StaticContactScreenContent';
 
@@ -13,7 +13,8 @@ export const UsefulContactScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<PeopleStackParamList>>();
   const params = (route.params ?? {}) as { id?: string };
-  const detail = params.id ? defaultUsefulContactsContent[params.id] : null;
+  const usefulContactsContent = useUsefulContactsContent();
+  const detail = params.id ? usefulContactsContent[params.id] : null;
 
   useLayoutEffect(() => {
     if (detail) {
