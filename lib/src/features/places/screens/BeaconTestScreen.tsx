@@ -1,9 +1,9 @@
-import React, { useLayoutEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { useScreenTitle } from '@polito/lib/core';
-import { useStylesheet } from '@polito/lib/ui';
+import { useStylesheet, useTheme } from '@polito/lib/ui';
 import { Theme } from '@polito/lib/ui';
 import { CircleLayer, ShapeSource } from '@rnmapbox/maps';
 
@@ -19,8 +19,9 @@ type Props = MapScreenProps<PlacesStackParamList, 'BLETest'>;
 export const BeaconTestScreen = ({ navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
+  const { colors } = useTheme();
 
-  const { userLocation, isScanning } = useRealTimeTrilateration();
+  const { userLocation, isScanning ,startTracking } = useRealTimeTrilateration();
 
   useLayoutEffect(() => {
     const parent = navigation.getParent();
@@ -38,43 +39,35 @@ export const BeaconTestScreen = ({ navigation }: Props) => {
 
   useScreenTitle(t('itineraryScreen.title'));
 
-  /*
-  // Opzionale: Avvia il tracking in automatico quando apri lo schermo
   useEffect(() => {
     startTracking();
-  }, [startTracking]);*/
+  }, [startTracking]);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      mapContent: () => (
-        <React.Fragment>
-          {DB_BEACONS.map((b, index) => (
-            <ShapeSource
-              id={`BEA_${index}`}
-              shape={{
-                type: 'Feature',
-                geometry: {
-                  type: 'Point',
-                  coordinates: [b.lng, b.lat],
-                },
-                properties: {},
-              }}
-            >
-              <CircleLayer
-                id={`BEA_${index}_CIRCLE`}
-                style={styles.beaconDot}
-              />
-            </ShapeSource>
-          ))}
-        </React.Fragment>
-      ),
-    });
-  }, [navigation, styles]);
+ useLayoutEffect(() => {
+  navigation.setOptions({
+    mapContent: () => (
+      <>
+        {DB_BEACONS.map((b, index) => (
+          <ShapeSource
+            key={`BEA_${index}`}
+            id={`BEA_${index}`}
+            shape={{
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [b.lng, b.lat],
+              },
+              properties: {},
+            }}
+          >
+            <CircleLayer
+              id={`BEA_${index}_CIRCLE`}
+              style={{circleColor: colors.black}}
+            />
+          </ShapeSource>
+        ))}
 
-  useLayoutEffect(() => {
-    if (userLocation)
-      navigation.setOptions({
-        mapContent: () => (
+        {userLocation && (
           <ShapeSource
             id="USR_location"
             shape={{
@@ -86,11 +79,17 @@ export const BeaconTestScreen = ({ navigation }: Props) => {
               properties: {},
             }}
           >
-            <CircleLayer id="USR_DOT" style={styles.userDotCore} />
+            <CircleLayer
+              id="USR_DOT"
+              style={{circleColor: colors.yellow}}
+            />
           </ShapeSource>
-        ),
-      });
-  }, [navigation, userLocation, styles]);
+        )}
+      </>
+    ),
+  });
+}, [navigation, userLocation, styles, colors]);
+
 
   return (
     <View style={styles.container}>
@@ -124,14 +123,4 @@ const createStyles = ({ colors }: Theme) =>
     },
     title: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
     coords: { fontFamily: 'monospace', marginTop: 10, color: colors.black },
-
-    beaconDot: {
-      backgroundColor: colors.yellow,
-    },
-    userDot: {
-      backgroundColor: colors.divider,
-    },
-    userDotCore: {
-      backgroundColor: colors.surface,
-    },
   });

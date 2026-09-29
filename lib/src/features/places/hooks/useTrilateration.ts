@@ -2,10 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useIBeaconScanner } from '@polito/react-native-ibeacon';
 
-// Il tuo singleton
-
-// 1. IL DATABASE DEI BEACON
-// Sostituisci lat e lng con le coordinate Mapbox reali della tua stanza
+// BEACON DATABASE
 export const DB_BEACONS = [
   {
     uuid: 'CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478',
@@ -15,21 +12,23 @@ export const DB_BEACONS = [
     lng: 7.661547,
     txPower: -59,
   }, //BEACON GIACOMO
-  {
+  /*{
     uuid: 'CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478',
     major: 1,
     minor: 1,
     lat: 45.061969,
     lng: 7.66154,
     txPower: -59,
-  }, //BEACON FEDERICO
+  }, //BEACON FEDERICO*/
   {
     uuid: 'CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478',
-    major: 1,
-    minor: 1,
-    lat: 45.061918,
-    lng: 7.661676,
-    txPower: -59,
+    major: 12,
+    minor: 40,
+        lat: 45.061969,
+    lng: 7.66154,
+    //lat: 45.061918,
+    //lng: 7.661676,
+    txPower: -70,
   }, //BEACON GIUSEPPE
   {
     uuid: 'BEA_STAMPANTE',
@@ -82,18 +81,22 @@ export function useRealTimeTrilateration() {
     }
 
     beacons.forEach(beacon => {
+      const beaconUuid = beacon.uuid.toUpperCase();
+      const beaconMajor = Number(beacon.major);
+      const beaconMinor = Number(beacon.minor);
+
       const dbBeacon = DB_BEACONS.find(
         candidate =>
           candidate.uuid.toUpperCase() === beacon.uuid.toUpperCase() &&
-          candidate.major === beacon.major &&
-          candidate.minor === beacon.minor,
+          candidate.major === beaconMajor &&
+          candidate.minor === beaconMinor,
       );
 
       if (!dbBeacon) {
         return;
       }
 
-      const key = getBeaconKey(beacon.uuid, beacon.major, beacon.minor);
+      const key = getBeaconKey(beaconUuid, beaconMajor, beaconMinor);
 
       if (!rssiBuffer.current[key]) {
         rssiBuffer.current[key] = [];
@@ -136,7 +139,7 @@ export function useRealTimeTrilateration() {
         });
       });
 
-      if (activeBeacons.length < 2) {
+      if (activeBeacons.length < 1) {
         return;
       }
 
@@ -172,14 +175,7 @@ export function useRealTimeTrilateration() {
       return;
     }
 
-    const uuid = DB_BEACONS[0]?.uuid;
-
-    if (!uuid) {
-      console.warn('[iBeacon] Nessun beacon configurato');
-      return;
-    }
-
-    startScanner(uuid);
+    startScanner('CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478');
   };
 
   const stopTracking = () => {
