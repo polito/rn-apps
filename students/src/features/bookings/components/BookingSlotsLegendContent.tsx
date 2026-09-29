@@ -14,27 +14,53 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 
+import { DARK_SLOT_BACKGROUNDS } from '../../../utils/bookings';
 import { BookingSlotIcon } from './BookingSlotIcon';
 
 type LegendItem = {
   id: 'available' | 'booked' | 'full' | 'notAvailable' | 'concluded';
   color: string;
   icon: IconDefinition;
+  backgroundColor?: string;
 };
 
 export const BookingSlotsLegendContent = () => {
   const { t } = useTranslation();
-  const { palettes, fontSizes } = useTheme();
+  const { palettes, fontSizes, dark } = useTheme();
   const styles = useStylesheet(createStyles);
 
   const items: LegendItem[] = [
-    { id: 'available', color: palettes.primary['400'], icon: faSeat },
-    { id: 'booked', color: palettes.tertiary['500'], icon: faSeatCheck },
-    { id: 'full', color: palettes.danger['500'], icon: faSeatFull },
+    {
+      id: 'available',
+      color: palettes.primary[dark ? '50' : '600'],
+      icon: faSeat,
+      backgroundColor: dark
+        ? DARK_SLOT_BACKGROUNDS.available
+        : palettes.primary['50'],
+    },
+    {
+      id: 'booked',
+      color: palettes.tertiary[dark ? '200' : '700'],
+      icon: faSeatCheck,
+      backgroundColor: dark
+        ? DARK_SLOT_BACKGROUNDS.booked
+        : palettes.tertiary['100'],
+    },
+    {
+      id: 'full',
+      color: palettes.danger[dark ? '200' : '800'],
+      icon: faSeatFull,
+      backgroundColor: dark
+        ? DARK_SLOT_BACKGROUNDS.full
+        : palettes.danger['200'],
+    },
     {
       id: 'notAvailable',
-      color: palettes.secondary['400'],
+      color: palettes.secondary[dark ? '200' : '800'],
       icon: faSeatClock,
+      backgroundColor: dark
+        ? DARK_SLOT_BACKGROUNDS.notYetBookable
+        : palettes.secondary['100'],
     },
     { id: 'concluded', color: palettes.gray['400'], icon: faSeatOutline },
   ];
@@ -49,18 +75,25 @@ export const BookingSlotsLegendContent = () => {
           <Text style={styles.label}>
             {t(`bookingScreen.bookingStatus.${item.id}`)}
           </Text>
-          <BookingSlotIcon
-            icon={item.icon}
-            color={item.color}
-            size={fontSizes.lg}
-          />
+          <View
+            style={[
+              styles.iconContainer,
+              { backgroundColor: item.backgroundColor },
+            ]}
+          >
+            <BookingSlotIcon
+              icon={item.icon}
+              color={item.color}
+              size={fontSizes.lg}
+            />
+          </View>
         </View>
       ))}
     </View>
   );
 };
 
-const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
+const createStyles = ({ spacing, fontSizes, colors, shapes }: Theme) =>
   StyleSheet.create({
     container: {
       padding: spacing[5],
@@ -76,6 +109,10 @@ const createStyles = ({ spacing, fontSizes, colors }: Theme) =>
     },
     lastRow: {
       borderBottomWidth: 0,
+    },
+    iconContainer: {
+      padding: spacing[1.5],
+      borderRadius: shapes.sm / 2,
     },
     label: {
       fontSize: fontSizes.md,

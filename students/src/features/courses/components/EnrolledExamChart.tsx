@@ -28,7 +28,9 @@ export const EnrolledExamChart = ({
   const { fontWeights } = useTheme();
 
   const selectedSwitchColor = dark ? palettes.primary[600] : colors.surface;
-  const chartColors = [palettes.green[500], palettes.red[500]];
+  const chartColors = [palettes.success[400], palettes.error[500]];
+  const passedBorderColor = palettes.success[600];
+  const passedBorderWidth = 2;
   const topLabelSpacing = spacing['1'];
   const barRadius = spacing[1];
   const [mode, setMode] = useState<VisualizationMode>('single');
@@ -54,7 +56,9 @@ export const EnrolledExamChart = ({
     barData = [
       {
         value: statistics?.totalSucceeded ?? 0,
-        frontColor: palettes.green[500],
+        frontColor: chartColors[0],
+        barBorderWidth: passedBorderWidth,
+        barBorderColor: passedBorderColor,
         topLabelComponent: () => (
           <Text
             style={{
@@ -69,7 +73,7 @@ export const EnrolledExamChart = ({
       },
       {
         value: statistics?.totalFailed ?? 0,
-        frontColor: palettes.red[500],
+        frontColor: chartColors[1],
         topLabelComponent: () => (
           <Text
             style={{
@@ -105,7 +109,9 @@ export const EnrolledExamChart = ({
                 textAlign: 'center' as const,
                 color: colors.title,
               },
-              frontColor: `${palettes.green[500]}a6`,
+              frontColor: `${chartColors[0]}a6`,
+              barBorderWidth: passedBorderWidth,
+              barBorderColor: `${passedBorderColor}a6`,
               topLabelComponent: () => (
                 <Text
                   style={{
@@ -121,7 +127,7 @@ export const EnrolledExamChart = ({
             {
               value: prevYear.failed,
               spacing: betweenYearsSpacing,
-              frontColor: `${palettes.red[500]}a6`,
+              frontColor: `${chartColors[1]}a6`,
               topLabelComponent: () => (
                 <Text
                   style={{
@@ -151,7 +157,9 @@ export const EnrolledExamChart = ({
           textAlign: 'center',
           color: colors.title,
         },
-        frontColor: palettes.green[500],
+        frontColor: chartColors[0],
+        barBorderWidth: passedBorderWidth,
+        barBorderColor: passedBorderColor,
         topLabelComponent: () => (
           <Text
             style={{
@@ -167,7 +175,7 @@ export const EnrolledExamChart = ({
       {
         value: statistics?.totalFailed ?? 0,
         spacing: betweenYearsSpacing,
-        frontColor: palettes.red[500],
+        frontColor: chartColors[1],
         topLabelComponent: () => (
           <Text
             style={{
@@ -276,6 +284,7 @@ export const EnrolledExamChart = ({
       <Col>
         <LegendItem
           bulletColor={chartColors[0]}
+          bulletBorderColor={passedBorderColor}
           text={t('courseStatisticsScreen.enrolledExamChartLegend.passed')}
           trailingText={(statistics?.totalSucceeded ?? 0).toString()}
         />
