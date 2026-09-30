@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-
 import { useIBeaconScanner } from '@polito/react-native-ibeacon';
 
 // BEACON DATABASE
@@ -10,37 +9,33 @@ export const DB_BEACONS = [
     minor: 30,
     lat: 45.061993,
     lng: 7.661547,
-    txPower: -59,
-  }, //BEACON GIACOMO
-  /*{
+  }, 
+  {
+    uuid: 'CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478',
+    major: 12,
+    minor: 40,
+    lat: 45.061969,
+    lng: 7.66154,
+  },
+    /*{
     uuid: 'CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478',
     major: 1,
     minor: 1,
     lat: 45.061969,
     lng: 7.66154,
-    txPower: -59,
   }, //BEACON FEDERICO*/
-  {
-    uuid: 'CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478',
-    major: 12,
-    minor: 40,
-        lat: 45.061969,
-    lng: 7.66154,
-    //lat: 45.061918,
-    //lng: 7.661676,
-    txPower: -70,
-  }, //BEACON GIUSEPPE
   {
     uuid: 'BEA_STAMPANTE',
     major: 10,
     minor: 28,
     lat: 45.061942,
     lng: 7.661606,
-    txPower: -59,
-  }, //BEACON STAMPANTE (mio telefono)
+  },
 ];
 
-export function useRealTimeTrilateration() {
+const BUFFER_SIZE = 5; //   Reduced to 5 for a better positioning
+
+export function useRealTimePositioning() {
   const [userLocation, setUserLocation] = useState<{
     lat: number;
     lng: number;
@@ -48,7 +43,8 @@ export function useRealTimeTrilateration() {
 
   const [isScanning, setIsScanning] = useState(false);
 
-  const rssiBuffer = useRef<Record<string, number[]>>({});
+  // Buffering proximity field of the iBeacon type
+  const distanceBuffer = useRef<Record<string, number[]>>({});
 
   const {
     startScanner,
@@ -61,87 +57,72 @@ export function useRealTimeTrilateration() {
     return `${uuid.toUpperCase()}-${major}-${minor}`;
   };
 
+  //Starting buffering
   useEffect(() => {
-    rssiBuffer.current = {};
-
+    distanceBuffer.current = {};
     DB_BEACONS.forEach(beacon => {
       const key = getBeaconKey(beacon.uuid, beacon.major, beacon.minor);
-
-      rssiBuffer.current[key] = [];
+      distanceBuffer.current[key] = [];
     });
   }, []);
 
+  // Synchronizing scan state
   useEffect(() => {
     setIsScanning(scannerIsScanning);
   }, [scannerIsScanning]);
 
   useEffect(() => {
-    if (beacons.length === 0) {
-      return;
-    }
+    if (!beacons || beacons.length === 0) return;
 
     beacons.forEach(beacon => {
+      // We skip non valid proximity distances
+      if (beacon.proximity === undefined || beacon.proximity <= 0) return;
+
       const beaconUuid = beacon.uuid.toUpperCase();
       const beaconMajor = Number(beacon.major);
       const beaconMinor = Number(beacon.minor);
 
       const dbBeacon = DB_BEACONS.find(
         candidate =>
-          candidate.uuid.toUpperCase() === beacon.uuid.toUpperCase() &&
+          candidate.uuid.toUpperCase() === beaconUuid &&
           candidate.major === beaconMajor &&
           candidate.minor === beaconMinor,
       );
 
-      if (!dbBeacon) {
-        return;
-      }
+      if (!dbBeacon) return;
 
       const key = getBeaconKey(beaconUuid, beaconMajor, beaconMinor);
 
-      if (!rssiBuffer.current[key]) {
-        rssiBuffer.current[key] = [];
+      if (!distanceBuffer.current[key]) {
+        distanceBuffer.current[key] = [];
       }
 
-      rssiBuffer.current[key].push(beacon.rssi);
-
-      if (rssiBuffer.current[key].length > 10) {
-        rssiBuffer.current[key].shift();
+      distanceBuffer.current[key].push(beacon.proximity);
+      if (distanceBuffer.current[key].length > BUFFER_SIZE) {
+        distanceBuffer.current[key].shift();
       }
     });
   }, [beacons]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const activeBeacons: Array<
-        (typeof DB_BEACONS)[number] & {
-          distance: number;
-        }
-      > = [];
+      const activeBeacons: Array<(typeof DB_BEACONS)[number] & { distance: number }> = [];
 
       DB_BEACONS.forEach(beacon => {
         const key = getBeaconKey(beacon.uuid, beacon.major, beacon.minor);
+        const readings = distanceBuffer.current[key];
+        if (!readings || readings.length === 0) return;
 
-        const readings = rssiBuffer.current[key];
-
-        if (!readings || readings.length === 0) {
-          return;
-        }
-
-        const sum = readings.reduce((total, rssi) => total + rssi, 0);
-
-        const avgRssi = sum / readings.length;
-
-        const distance = Math.pow(10, (beacon.txPower - avgRssi) / (10 * 2.5));
+        const sum = readings.reduce((total, dist) => total + dist, 0);
+        const avgDistance = sum / readings.length;
 
         activeBeacons.push({
           ...beacon,
-          distance,
+          distance: avgDistance,
         });
       });
 
-      if (activeBeacons.length < 1) {
-        return;
-      }
+      if (activeBeacons.length < 2) return;
 
       let sumLat = 0;
       let sumLng = 0;
@@ -155,27 +136,25 @@ export function useRealTimeTrilateration() {
         sumWeights += weight;
       });
 
-      if (sumWeights === 0) {
-        return;
+      if (sumWeights > 0) {
+        setUserLocation({
+          lat: sumLat / sumWeights,
+          lng: sumLng / sumWeights,
+        });
       }
-
-      setUserLocation({
-        lat: sumLat / sumWeights,
-        lng: sumLng / sumWeights,
-      });
     }, 500);
 
-    return () => {
-      clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, []);
 
-  const startTracking = () => {
-    if (scannerIsScanning) {
-      return;
-    }
-
-    startScanner('CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478');
+  const startTracking = (uuidToTrack: string = 'CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478') => {
+    if (scannerIsScanning) return;
+    
+    Object.keys(distanceBuffer.current).forEach(key => {
+      distanceBuffer.current[key] = [];
+    });
+    
+    startScanner(uuidToTrack);
   };
 
   const stopTracking = () => {

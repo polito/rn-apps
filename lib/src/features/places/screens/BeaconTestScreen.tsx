@@ -11,7 +11,7 @@ import { MapScreenProps } from '../components/MapNavigator';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
 import {
   DB_BEACONS,
-  useRealTimeTrilateration,
+  useRealTimePositioning,
 } from '../hooks/useTrilateration';
 
 type Props = MapScreenProps<PlacesStackParamList, 'BLETest'>;
@@ -21,7 +21,7 @@ export const BeaconTestScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
-  const { userLocation, isScanning ,startTracking } = useRealTimeTrilateration();
+  const { userLocation, isScanning ,startTracking } = useRealTimePositioning();
 
   useLayoutEffect(() => {
     const parent = navigation.getParent();
