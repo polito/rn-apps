@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import {
   DisclosureIndicator,
@@ -24,6 +24,8 @@ interface Props {
   accessibilityLabel?: string;
   badge?: number;
   showAllModules?: boolean;
+  disabled?: boolean;
+  onPress?: () => void;
 }
 
 /**
@@ -31,7 +33,12 @@ interface Props {
  * elements. If a linkTo is provided, a forward icon is automatically
  * displayed as a trailing element on iOS.
  */
-export const CourseListItem = ({ course, accessible }: Props) => {
+export const CourseListItem = ({
+  course,
+  accessible,
+  disabled,
+  onPress,
+}: Props) => {
   const styles = useStylesheet(createStyles);
   const { setSelectedCourse } = useCourses();
   const navigation =
@@ -44,12 +51,8 @@ export const CourseListItem = ({ course, accessible }: Props) => {
 
   const subtitle = useMemo(() => {
     return (
-      <Row style={styles.subtitle}>
-        <Tag
-          text={isOwner()}
-          backgroundColor={styles.tag.backgroundColor}
-          foregroundColor={styles.tag.color}
-        />
+      <Row style={styles.subtitle} pt={1}>
+        <Tag text={isOwner()} />
         <Text style={styles.subtitleText} numberOfLines={1}>
           {course.code}
         </Text>
@@ -57,11 +60,9 @@ export const CourseListItem = ({ course, accessible }: Props) => {
     );
   }, [styles, course.code, isOwner]);
 
-  const listItem = (
-    <View>
-      <ListItem
-        key={course.code}
-        /*
+  return (
+    <ListItem
+      /*
 
         ***** THIS SHOULD BE THE WAY TO NAVIGATE INSTEAD OF USING onPress AS DONE FOR STUDENTS APP ******
         ** maintain onPress for now to keep existing behavior **
@@ -74,28 +75,29 @@ export const CourseListItem = ({ course, accessible }: Props) => {
         }}
         */
 
-        accessible={accessible}
-        title={course.title}
-        subtitle={subtitle}
-        leadingItem={<CourseIndicator />}
-        trailingItem={<DisclosureIndicator />}
-        onPress={() => {
+      accessible={accessible}
+      title={course.title}
+      subtitle={subtitle}
+      leadingItem={
+        <CourseIndicator
+          uniqueShortcode={course.uniqueShortcode ?? course.code}
+        />
+      }
+      trailingItem={<DisclosureIndicator />}
+      disabled={disabled}
+      onPress={
+        onPress ??
+        (() => {
           setSelectedCourse(course);
           navigation.navigate('Course', { from: 'MyCourses' });
-        }}
-      />
-    </View>
+        })
+      }
+    />
   );
-
-  return listItem;
 };
 
 const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
   StyleSheet.create({
-    tag: {
-      backgroundColor: palettes.info[50],
-      color: palettes.info[600],
-    },
     subtitle: {
       display: 'flex',
       alignItems: 'center',
