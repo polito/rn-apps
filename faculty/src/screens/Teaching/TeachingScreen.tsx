@@ -8,12 +8,13 @@ import {
 
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import { formatDateFromString } from '@polito/lib/core';
+import { formatDateFromString, useOfflineDisabled } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   DisclosureIndicator,
   Icon,
   ListItem,
+  OverviewList,
   Row,
   Section,
   SectionHeader,
@@ -26,6 +27,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { useGetCourses } from '../../core/queries/courseHooks';
 import { CourseIndicator } from './CourseIndicator';
 import { CourseListItem } from './CourseListItem';
 import { TeachingStackParamList, useTeachingScroll } from './TeachingNavigator';
@@ -34,7 +36,9 @@ const MAX_SECTION_ITEMS = 3;
 
 export const TeachingScreen = () => {
   const { t } = useTranslation();
-  const { fakeCourses, fakeExams, setSelectedExam } = useCourses();
+  const coursesQuery = useGetCourses();
+  const isOffline = useOfflineDisabled();
+  const { fakeExams, setSelectedCourse, setSelectedExam } = useCourses();
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
   const { colors, palettes } = useTheme();
@@ -51,7 +55,8 @@ export const TeachingScreen = () => {
     palettes.green[600],
   ];
 
-  const extraCourses = Math.max(0, fakeCourses.length - MAX_SECTION_ITEMS);
+  const courses = coursesQuery.data ?? [];
+  const extraCourses = Math.max(0, courses.length - MAX_SECTION_ITEMS);
   const extraExams = Math.max(0, fakeExams.length - MAX_SECTION_ITEMS);
 
   return (
@@ -70,15 +75,31 @@ export const TeachingScreen = () => {
           linkTo="MyCourses"
           linkToMoreCount={extraCourses}
         />
-        <SectionList>
-          {fakeCourses.slice(0, MAX_SECTION_ITEMS).map((course, index) => (
+        <OverviewList
+          loading={coursesQuery.isLoading && !isOffline}
+          indented
+          emptyStateText={
+            isOffline ? t('common.cacheMiss') : t('coursesScreen.emptyState')
+          }
+        >
+          {courses.slice(0, MAX_SECTION_ITEMS).map((course, index) => (
             <CourseListItem
-              key={course.id}
-              course={course}
+              key={`${course.shortcode}${course.id}`}
+              course={{
+                id: course.id,
+                title: course.name,
+                code: course.shortcode,
+              }}
               color={courseColors[index % courseColors.length]}
+              disabled={course.id === null}
+              onPress={() => {
+                if (course.id === null) return;
+                setSelectedCourse(null);
+                navigation.navigate('Course', { id: course.id });
+              }}
             />
           ))}
-        </SectionList>
+        </OverviewList>
       </Section>
 
       <Section>

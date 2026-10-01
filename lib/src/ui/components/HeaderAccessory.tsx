@@ -33,7 +33,7 @@ const createStyles = ({ colors }: Theme) =>
         ios: StyleSheet.hairlineWidth,
       }),
       borderBottomColor: colors.divider,
-      elevation: 3,
+      elevation: 0,
       zIndex: 1,
     },
   });

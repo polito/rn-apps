@@ -14,6 +14,9 @@ export const PUBLIC_APP_DIRECTORY_PATH = IS_IOS
     : ExternalDirectoryPath;
 export const MAX_CONCURRENT_DOWNLOADS = 3;
 
+export const GITHUB_REPOSITORY_URL = 'https://github.com/polito/rn-apps';
+export const GITHUB_URL = `${GITHUB_REPOSITORY_URL}/releases/latest`;
+
 // Navigator IDs
 export const AgendaNavigatorID = 'AgendaTabNavigator';
 export const FileNavigatorID = 'FileTabNavigator';

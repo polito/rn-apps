@@ -17,6 +17,7 @@ import { render as domToHtml } from 'dom-serializer';
 import { ChildNode, Document, Element, hasChildren } from 'domhandler';
 import { Text as domText } from 'domhandler';
 import { replaceElement } from 'domutils';
+import type { ImageLoadEventData } from 'expo-image';
 import { parseDocument } from 'htmlparser2';
 
 import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
@@ -38,9 +39,9 @@ const createCustomImageRenderer = (variant: string) => {
     }>();
     const { spacing } = useTheme();
     const { width: screenWidth } = useWindowDimensions();
-    const onImageLoad = useCallback((e: any) => {
-      const { width: w, height: h } = e.nativeEvent ?? {};
-      if (w && h) {
+    const onImageLoad = useCallback((e: ImageLoadEventData) => {
+      const { width: w, height: h } = e.source;
+      if (w > 0 && h > 0) {
         setNaturalSize({ width: w, height: h });
       }
     }, []);
@@ -74,7 +75,9 @@ const createCustomImageRenderer = (variant: string) => {
       const imgStyle = {
         ...tnodeStyle,
         width: resolvedWidth,
-        ...(resolvedHeight != null && { height: resolvedHeight }),
+        ...(resolvedHeight != null
+          ? { height: resolvedHeight }
+          : { aspectRatio: 16 / 9 }),
       };
 
       return (
@@ -261,8 +264,9 @@ export const wrapText = (html: string): string => {
       const node = nodes[i];
 
       if (node.type === 'text') {
-        const content = (node as domText).data?.trim();
-        const isSafeToWrap = content && !INLINE_TAGS.has(parentTag ?? '');
+        const content = (node as domText).data ?? '';
+        const hasContent = content.trim().length > 0;
+        const isSafeToWrap = hasContent && !INLINE_TAGS.has(parentTag ?? '');
 
         if (isSafeToWrap) {
           const span = new Element('span', {});

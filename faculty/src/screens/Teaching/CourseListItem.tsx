@@ -29,6 +29,8 @@ interface Props {
   accessibilityLabel?: string;
   badge?: number;
   showAllModules?: boolean;
+  disabled?: boolean;
+  onPress?: () => void;
 }
 
 /**
@@ -36,7 +38,14 @@ interface Props {
  * elements. If a linkTo is provided, a forward icon is automatically
  * displayed as a trailing element on iOS.
  */
-export const CourseListItem = ({ course, color, icon, accessible }: Props) => {
+export const CourseListItem = ({
+  course,
+  color,
+  icon,
+  accessible,
+  disabled,
+  onPress,
+}: Props) => {
   const styles = useStylesheet(createStyles);
   const { dark, palettes } = useTheme();
   const { setSelectedCourse } = useCourses();
@@ -93,10 +102,14 @@ export const CourseListItem = ({ course, color, icon, accessible }: Props) => {
       subtitle={subtitle}
       leadingItem={<CourseIndicator color={color} icon={icon} />}
       trailingItem={<DisclosureIndicator />}
-      onPress={() => {
-        setSelectedCourse(course);
-        navigation.navigate('Course', { from: 'MyCourses' });
-      }}
+      disabled={disabled}
+      onPress={
+        onPress ??
+        (() => {
+          setSelectedCourse(course);
+          navigation.navigate('Course', { from: 'MyCourses' });
+        })
+      }
     />
   );
 };

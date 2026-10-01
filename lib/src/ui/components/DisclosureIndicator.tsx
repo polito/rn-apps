@@ -8,17 +8,13 @@ export type DisclosureIndicatorProps = {
 };
 
 export const DisclosureIndicator = ({ size }: DisclosureIndicatorProps) => {
-  const { colors, spacing } = useTheme();
+  const { colors } = useTheme();
 
   return (
     <Icon
       icon={faChevronRight}
       color={colors.secondaryText}
       {...(size !== undefined ? { size } : {})}
-      style={{
-        marginLeft: spacing[1],
-        marginRight: -spacing[1],
-      }}
     />
   );
 };

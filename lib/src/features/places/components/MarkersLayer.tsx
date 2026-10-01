@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { PlaceCategory, PlaceOverview } from '@polito/student-api-client';
+// TODO(map-api): Import this model from @polito/map-client when available.
+import { PlaceCategory, PlaceOverview } from '@polito/api-client';
 import { useNavigation } from '@react-navigation/native';
 import { ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 
