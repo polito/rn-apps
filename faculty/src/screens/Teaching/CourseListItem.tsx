@@ -23,8 +23,6 @@ import { TeachingStackParamList } from './TeachingNavigator';
 
 interface Props {
   course: any;
-  color?: string;
-  icon?: string;
   accessible?: boolean;
   accessibilityLabel?: string;
   badge?: number;
@@ -40,8 +38,6 @@ interface Props {
  */
 export const CourseListItem = ({
   course,
-  color,
-  icon,
   accessible,
   disabled,
   onPress,
@@ -100,7 +96,11 @@ export const CourseListItem = ({
       accessible={accessible}
       title={course.title}
       subtitle={subtitle}
-      leadingItem={<CourseIndicator color={color} icon={icon} />}
+      leadingItem={
+        <CourseIndicator
+          uniqueShortcode={course.uniqueShortcode ?? course.code}
+        />
+      }
       trailingItem={<DisclosureIndicator />}
       disabled={disabled}
       onPress={

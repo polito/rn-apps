@@ -1,14 +1,28 @@
+import { usePreferencesContext } from '@polito/lib/core';
 import { useTheme } from '@polito/lib/ui';
+
+import { AppPreferences } from '~/core/types/preferences';
 
 import { CourseIcon } from './CourseIcon';
 
 interface Props {
-  color?: string;
-  icon?: string;
+  uniqueShortcode: string;
 }
 
-export const CourseIndicator = ({ color, icon = 'faVial' }: Props) => {
+export const CourseIndicator = ({ uniqueShortcode }: Props) => {
   const { palettes } = useTheme();
+  const prefs = usePreferencesContext<AppPreferences>();
+  const coursePrefs = prefs.courses[uniqueShortcode];
 
-  return <CourseIcon color={color ?? palettes.primary[500]} icon={icon} />;
+  if (!coursePrefs) {
+    return <CourseIcon color={palettes.primary[500]} />;
+  }
+
+  return (
+    <CourseIcon
+      color={coursePrefs.color}
+      icon={coursePrefs.icon}
+      isHidden={coursePrefs.isHidden}
+    />
+  );
 };
