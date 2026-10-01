@@ -4,8 +4,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 import {
+  Col,
   HeaderLogo,
   IconButton,
+  Row,
   TranslucentView,
   useStylesheet,
   useTheme,
@@ -28,7 +30,7 @@ export const TeachingAppBar = () => {
       {showGlass && <TranslucentView blurAmount={10} />}
       <View style={[styles.overlay, !showGlass && styles.overlayOpaque]} />
       <View style={{ height: top }} />
-      <View style={styles.navRow}>
+      <Row align="center" justify="space-between" ph={5} style={styles.navRow}>
         <HeaderLogo />
         <IconButton
           icon={faBell}
@@ -38,16 +40,14 @@ export const TeachingAppBar = () => {
           style={{ marginRight: -spacing[2] }}
           onPress={() => {}}
         />
-      </View>
-      <View style={styles.titleContainer}>
+      </Row>
+      <Col ph={5} pb={2}>
         <Text style={styles.title}>{t('teachingScreen.title')}</Text>
-      </View>
+      </Col>
       <View style={[styles.separator, !isScrolled && { opacity: 0 }]} />
     </View>
   );
 };
-
-const SHADOW_COLOR = 'rgba(0, 0, 0, 0.10)';
 
 const createStyles = ({ colors, fontFamilies, fontWeights }: Theme) =>
   StyleSheet.create({
@@ -60,15 +60,7 @@ const createStyles = ({ colors, fontFamilies, fontWeights }: Theme) =>
       opacity: 1,
     },
     navRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: 18,
       height: 42,
-    },
-    titleContainer: {
-      paddingHorizontal: 18,
-      paddingBottom: 8,
     },
     title: {
       fontFamily: fontFamilies.heading,
@@ -79,6 +71,6 @@ const createStyles = ({ colors, fontFamilies, fontWeights }: Theme) =>
     },
     separator: {
       height: 0.5,
-      backgroundColor: SHADOW_COLOR,
+      backgroundColor: colors.translucentSurface,
     },
   });
