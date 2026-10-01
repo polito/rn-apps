@@ -8,14 +8,11 @@ import {
   Text,
   Theme,
   useStylesheet,
-  useTheme,
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Tag } from '~/core/components/Tag';
-
-import Color from 'color';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { CourseIndicator } from '../../screens/Teaching/CourseIndicator';
@@ -43,7 +40,6 @@ export const CourseListItem = ({
   onPress,
 }: Props) => {
   const styles = useStylesheet(createStyles);
-  const { dark, palettes } = useTheme();
   const { setSelectedCourse } = useCourses();
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
@@ -53,30 +49,16 @@ export const CourseListItem = ({
     return 'Owner';
   }, []);
 
-  const tagColors = useMemo(
-    () => ({
-      background: Color(palettes.primary[dark ? 600 : 50])
-        .alpha(0.4)
-        .toString(),
-      text: dark ? palettes.primary[400] : palettes.primary[500],
-    }),
-    [dark, palettes],
-  );
-
   const subtitle = useMemo(() => {
     return (
       <Row style={styles.subtitle} pt={1}>
-        <Tag
-          text={isOwner()}
-          backgroundColor={tagColors.background}
-          foregroundColor={tagColors.text}
-        />
+        <Tag text={isOwner()} />
         <Text style={styles.subtitleText} numberOfLines={1}>
           {course.code}
         </Text>
       </Row>
     );
-  }, [styles, course.code, isOwner, tagColors]);
+  }, [styles, course.code, isOwner]);
 
   return (
     <ListItem
