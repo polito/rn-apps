@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { isTablet as isTabletHelper } from 'react-native-device-info';
 
@@ -30,7 +31,9 @@ export const UserQrModal = ({
   dismissable,
   student,
 }: Props) => {
+  const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+  const headerRef = useRef<View>(null);
   const qrSize = useMemo(
     () => (isTabletHelper() ? QR_SIZE_TABLET : QR_SIZE_PHONE),
     [],
@@ -49,15 +52,27 @@ export const UserQrModal = ({
       onClose={handleClose}
       maxWidth={cardWidth}
       showCloseButton={false}
+      firstFocusRef={headerRef}
     >
-      <View>
-        <Text variant="prose" style={styles.name}>
+      <View
+        ref={headerRef}
+        accessible
+        accessibilityRole="header"
+        accessibilityLabel={t('userQrModal.studentIdentity', {
+          firstName: student?.nome ?? '',
+          lastName: student?.cognome ?? '',
+          studentId: student?.matricola ?? '',
+        })}
+      >
+        <Text variant="prose" style={styles.name} accessible={false}>
           {student.cognome.toUpperCase()}
         </Text>
-        <Text variant="prose" style={styles.name}>
+        <Text variant="prose" style={styles.name} accessible={false}>
           {student.nome}
         </Text>
-        <Text style={styles.subtitle}>polito.it - {student.matricola}</Text>
+        <Text style={styles.subtitle} accessible={false}>
+          polito.it - {student.matricola}
+        </Text>
       </View>
       <View style={[styles.qrColumn, { width: qrSize }]}>
         <View style={styles.qrContainer}>

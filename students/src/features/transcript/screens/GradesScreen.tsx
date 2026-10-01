@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
-import { useOfflineDisabled } from '@polito/lib/core';
+import { useAccessibility, useOfflineDisabled } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   OverviewList,
@@ -22,6 +22,7 @@ import { RecordedGradeListItem } from '../components/RecordedGradeListItem';
 export const GradesScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+  const { getListAccessibilityProps } = useAccessibility();
   const gradesQuery = useGetGrades();
   const provisionalGradesQuery = useGetProvisionalGrades();
 
@@ -47,18 +48,30 @@ export const GradesScreen = () => {
               { total: provisionalGradesQuery.data?.length || 0 },
             )}`}
           />
-          <OverviewList
-            loading={!isOffline && provisionalGradesQuery.isLoading}
-            emptyStateText={
-              isOffline && provisionalGradesQuery.isLoading
-                ? t('common.cacheMiss')
-                : t('transcriptGradesScreen.provisionalEmptyState')
-            }
+          <View
+            {...getListAccessibilityProps(
+              t('transcriptGradesScreen.provisionalTitle'),
+              provisionalGradesQuery.data?.length ?? 0,
+            )}
           >
-            {provisionalGradesQuery.data?.map(grade => (
-              <ProvisionalGradeListItem key={grade.id} grade={grade} />
-            ))}
-          </OverviewList>
+            <OverviewList
+              loading={!isOffline && provisionalGradesQuery.isLoading}
+              emptyStateText={
+                isOffline && provisionalGradesQuery.isLoading
+                  ? t('common.cacheMiss')
+                  : t('transcriptGradesScreen.provisionalEmptyState')
+              }
+            >
+              {provisionalGradesQuery.data?.map((grade, index) => (
+                <ProvisionalGradeListItem
+                  key={grade.id}
+                  grade={grade}
+                  index={index}
+                  total={provisionalGradesQuery.data?.length ?? 0}
+                />
+              ))}
+            </OverviewList>
+          </View>
         </Section>
         <Section>
           <SectionHeader
@@ -68,18 +81,30 @@ export const GradesScreen = () => {
               { total: gradesQuery.data?.length || 0 },
             )}`}
           />
-          <OverviewList
-            loading={!isOffline && gradesQuery.isLoading}
-            emptyStateText={
-              isOffline && gradesQuery.isLoading
-                ? t('common.cacheMiss')
-                : t('transcriptGradesScreen.emptyState')
-            }
+          <View
+            {...getListAccessibilityProps(
+              t('transcriptGradesScreen.recordedTitle'),
+              gradesQuery.data?.length ?? 0,
+            )}
           >
-            {gradesQuery.data?.map((grade, index) => (
-              <RecordedGradeListItem grade={grade} key={index} />
-            ))}
-          </OverviewList>
+            <OverviewList
+              loading={!isOffline && gradesQuery.isLoading}
+              emptyStateText={
+                isOffline && gradesQuery.isLoading
+                  ? t('common.cacheMiss')
+                  : t('transcriptGradesScreen.emptyState')
+              }
+            >
+              {gradesQuery.data?.map((grade, index) => (
+                <RecordedGradeListItem
+                  grade={grade}
+                  key={grade.courseName}
+                  index={index}
+                  total={gradesQuery.data?.length ?? 0}
+                />
+              ))}
+            </OverviewList>
+          </View>
         </Section>
         <BottomBarSpacer />
       </SafeAreaView>

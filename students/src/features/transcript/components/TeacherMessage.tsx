@@ -15,7 +15,7 @@ export const TeacherMessage = ({ message }: Props) => {
 
   return (
     <View>
-      <Text variant="title" role="heading" style={styles.title}>
+      <Text variant="title" accessibilityRole="header" style={styles.title}>
         {t('provisionalGradeScreen.teacherMessage.title')}
       </Text>
       <Card>

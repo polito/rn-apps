@@ -16,7 +16,8 @@
     "paragraphSpacingSubtitle": "Add extra space between paragraphs",
     "themeCustomizationTitle": "Theme customization",
     "wordSpacingTitle": "Word spacing",
-    "wordSpacingSubtitle": "Increase distance between words"
+    "wordSpacingSubtitle": "Increase distance between words",
+    "customFontDefault": "No custom font"
   },
   "agendaScreen": {
     "backToToday": "Back to today",
@@ -29,8 +30,12 @@
     "selectDate": "Select date",
     "title": "Agenda",
     "weeklyLayout": "Weekly layout",
+    "weekRange": "From {{start}} to {{end}}",
+    "calendarCellHint": "Tap to select this time slot",
     "hideEvent": "Agenda preferences",
-    "noHiddenEvents": "There are no hidden events"
+    "nextWeekHint": "Go to next week",
+    "noHiddenEvents": "There are no hidden events",
+    "prevWeekHint": "Go to previous week"
   },
   "agendaDialog": {
     "hideEventTitle": "Hide event",
@@ -55,13 +60,24 @@
     "cancelBooking": "Cancel booking",
     "cancelBookingText": "Are you sure you want to cancel this booking?",
     "cancelFeedback": "Booking canceled",
+    "cancelHint": "Cancels your booking, this action cannot be undone",
+    "cancelDisabledHint": "Cancel is unavailable while offline",
     "checkIn": "Check-in",
     "checkInFeedback": "Check in done!",
+    "checkInHint": "Validates your presence at the booking location",
+    "checkInSuccess": "Check-in completed successfully",
     "checkLocationErrorFeedback": "You are not in the right place to check in the booking",
+    "locationHint": "View location on map",
     "locationType": {
       "place": "Place",
       "virtualPlace": "Link virtual place"
-    }
+    },
+    "seatHint": "Navigate to seat selection",
+    "nextWeek": "Next week",
+    "previousWeek": "Previous week"
+  },
+  "bookingTopicScreen": {
+    "selectTopicHint": "Opens the booking calendar for this topic"
   },
   "bookingSeatScreen": {
     "confirm": "Confirm booking",
@@ -71,15 +87,20 @@
     "seatStatus": {
       "available": "Available",
       "booked": "Booked",
-      "notAvailable": "Non bookable"
+      "notAvailable": "Non bookable",
+      "unavailable": "Not bookable"
     },
     "slotBookableFrom": "This slot will be bookable starting from ",
     "title": "Select a seat",
-    "zoomInToEnableSeatSelection": "Zoom in to enable seat selection"
+    "zoomInToEnableSeatSelection": "Zoom in to enable seat selection",
+    "confirmSuccess": "Booking confirmed",
+    "confirmDisabledHint": "Select a seat to enable confirmation"
   },
   "bookingsScreen": {
+    "emptySlot": "no slot",
     "emptyState": "You have no active bookings",
     "emptyWeek": "You have no events available during this week",
+    "slotSeatsA11y": "{{booked}} of {{total}} seats booked",
     "newBooking": "New booking",
     "sectionTitle": "Active",
     "title": "Bookings"
@@ -108,6 +129,7 @@
   "common": {
     "accessibility": "Accessibility",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
+    "activate": "Activate",
     "activeStatus": {
       "false": "Non active",
       "true": "Active"
@@ -120,6 +142,8 @@
     "back": "Back",
     "booking": "Booking",
     "booking_plural": "Bookings",
+    "bottomSheetHint": "Drag up or down to expand or minimize the panel",
+    "bottomSheetLabel": "Bottom sheet",
     "building": "Building",
     "cache": "Cache",
     "cacheMiss": "Come back online to view",
@@ -153,6 +177,7 @@
     "day": "Day",
     "deadline": "Student Office",
     "deadline_plural": "Student Office",
+    "degreeTracksAndCourses": "Degree tracks and courses",
     "delete": "Delete",
     "department": "Department",
     "desk": "Desk",
@@ -219,6 +244,7 @@
     "file_plural": "Files",
     "floor": "Floor",
     "follow": "Follow",
+    "forCourse": "for course",
     "free": "Free",
     "goToGithub": "Go to Github",
     "goToStore": "Go to the store",
@@ -236,9 +262,11 @@
     "lecture": "Lecture",
     "lecture_plural": "Lectures",
     "less": "Less",
+    "listWithCount": "{{name}}, {{count}} elements",
     "legend": "Legend",
     "loading": "Loading",
     "location": "Location",
+    "locationHint": "View location on map",
     "logout": "Logout",
     "mightTakeAWhile": "This might take a while",
     "minutes": "Minutes",
@@ -246,8 +274,9 @@
     "more": "More",
     "navigate": "Navigate",
     "newest": "Newest",
-    "newItems": "New item",
-    "newItems_plural": "New items",
+    "newItems": "{{count}} new notification",
+    "newItems_plural": "{{count}} new notifications",
+    "newItemsIndicator": "New notifications",
     "newVersionTitle": "New version available!",
     "newVersionBody": "A new version of PoliTO Students ({{newVersion}}) is available.\n\nUpdate it to access all the new features and avoid malfunctions.",
     "next": "Next",
@@ -269,6 +298,7 @@
     "open": "Open",
     "openSettings": "Open settings",
     "openSource": "Open Source",
+    "openingExternalLink": "Opening the link in a new browser window",
     "openedStatus": {
       "false": "Closed",
       "true": "Open"
@@ -289,6 +319,10 @@
     "preferences": "Preferences",
     "preferencesAgenda": "Agenda preferences",
     "profilePic": "Profile picture",
+    "profilePicture": "Profile picture",
+    "noImage": "No image available",
+    "progressChart": "Progress chart",
+    "progressChartMulti": "Progress chart, first value {{first}}, second value {{last}}",
     "recentlyViewed": "Recently viewed",
     "refresh": "Refresh",
     "remaining": "{{value}} remaining",
@@ -302,6 +336,8 @@
     "roleCollaborator": "Collaborator",
     "roleHolder": "Holder",
     "search": "Search",
+    "selected": "Selected",
+    "searchSuggestionsHint": "On typing, suggestions will appear below",
     "select": "Select",
     "seat": "Seat",
     "selectAnOption": "Please select an option",
@@ -310,12 +346,20 @@
     "show": "Show",
     "shortUsername": "ID",
     "somethingWentWrong": "Something went wrong, try again later",
+    "staffMemberUnavailable": "Staff member unavailable",
     "startRefresh": "Loading",
     "status": "Status",
     "stop": "Stop",
     "stopFollowing": "Stop following",
     "structure": "Structure",
     "switchCareerLabel": "Tap to switch career",
+    "atTime": "at {{time}}",
+    "tab": "tab",
+    "searchField": "search field",
+    "tapToNavigate": "Tap to navigate",
+    "tapToToggle": "Tap to toggle",
+    "tapToToggleSection": "Tap to toggle section",
+    "tapToViewContact": "Tap to view contact details",
     "teacher": "Teacher",
     "theme": "Theme",
     "ticket_plural": "Tickets",
@@ -325,6 +369,7 @@
     "tomorrow": "Tomorrow",
     "transcript": "Transcript",
     "unnamedFile": "Unnamed file",
+    "unread": "Unread",
     "untitled": "Untitled",
     "dateAtTime": "{{date}} at {{time}}",
     "updatedAt": "Updated at",
@@ -339,6 +384,27 @@
     "withdraw": "Withdraw",
     "year": "year",
     "yesterday": "Yesterday",
+    "on": "out of",
+    "notAvailable": "Not yet available",
+    "and": "and",
+    "activated": "Activated",
+    "active": "Active",
+    "areYouSureColorAccessibility": "Are you sure? The selected color has not been tested for accessibility.",
+    "clickForChange": "Tap to change state",
+    "deactivated": "Deactivated",
+    "directory": "Folder",
+    "disabledPreviousValue": "Disabled because previous values were not entered",
+    "document": "Attachment",
+    "downloadClick": "Double tap to download",
+    "fromTime": "from",
+    "hiddenEvent": "Hide event",
+    "note": "Notes",
+    "openSourceAccessibilityLabel": "Open Source, tap to go to the app GitHub repository",
+    "retracted": "Withdrawn",
+    "selectColor": "Select a color",
+    "tenth": "Tenth",
+    "toTime": "to",
+    "week": "Week",
     "sizeExc": "Excessive file size, maximum 32 MB"
   },
   "contactsScreen": {
@@ -346,10 +412,21 @@
     "cancelRecentSearchText": "Remove recent search",
     "clearSearch": "Clear search",
     "clearSearches": "Clear searches",
+    "clearSearchesHint": "Clears all recent searches",
+    "contactsFound": "contacts",
     "emptyState": "No people found",
+    "moreOptions": "More options",
+    "moreOptionsHint": "Opens menu with additional actions",
+    "noResultsFound": "No results found",
     "recentSearch": "Recent search",
     "recentSearches": "Recent searches",
+    "removeFromRecent": "Remove from recent searches",
+    "resultFound": "Found",
+    "resultFoundRes": "results",
     "search": "Search people",
+    "searchHint": "Type at least 2 characters to search contacts",
+    "searchPlaceholder": "Search people by name",
+    "searchResults": "Search results",
     "usefulContacts": "Useful contacts",
     "preferredContacts": "Favorite contacts",
     "addPreferred": "Add to favorites",
@@ -381,7 +458,9 @@
   },
   "courseAssignmentsTab": {
     "emptyState": "There are no assignments here",
-    "title": "Assignments"
+    "title": "Assignments",
+    "longPress": "Long press to open the menu to withdraw the assignment",
+    "menuInfo": "Assignment settings, through the menu you can choose which assignments to withdraw"
   },
   "courseColorPickerScreen": {
     "accessibleColor": "Accessible colors",
@@ -389,7 +468,8 @@
     "areYouSureTitle": "Do you want to proceed?",
     "customColorTitle": "Custom colors",
     "dontShowAgain": "Don't show again",
-    "title": "Pick a color"
+    "title": "Pick a color",
+    "confirmDisabledHint": "Change the color to enable confirmation"
   },
   "courseDirectoryListItem": {
     "subtitle": "{{count}} file",
@@ -415,19 +495,30 @@
   "courseFileListItem": {
     "openFileError": "Cannot open the file.",
     "reDownloadFile": "Redownload file",
-    "fileSavedPrefix": "File saved in"
+    "fileSavedPrefix": "File saved in",
+    "downloadPending": "Download in progress"
   },
   "courseFilesTab": {
     "browseFiles": "Browse files",
     "empty": "There are no files",
+    "fileListView": "File list view",
+    "viewModeLabel": "View mode",
+    "folderTreeView": "Folder tree view",
     "navigateFolders": "Navigate folders",
+    "openSortMenuHint": "Open sort menu",
     "recentSectionTitle": "Recent files",
     "removeFilesTitle": "Remove files",
+    "sortByLabel": "Sort by: {{option}}",
     "removeFileConfirmation": "The file will be removed locally from your device. Do you want to continue?",
     "removeFilesConfirmation": "The {{count}} files will be removed locally from your device. Do you want to continue?",
     "title": "Files",
+    "toggleViewHint": "Change the display mode",
     "updateDownloadedTitle": "Update downloaded files",
+    "longPress": "Long press to open the menu to update or delete the file",
+    "openDirectory": "Double tap to open the folder",
     "updateDownloadedMessage": "{{count}} selected files are already downloaded. Do you want to update them?",
+    "downloadDisabledHint": "Select files to enable download",
+    "removeDisabledHint": "Select downloaded files to enable removal",
     "updateDownloadedInfoTitle": "Download",
     "updateDownloadedInfoMessage": "1 already downloaded file will be updated and 1 new file will be downloaded.",
     "updateDownloadedInfoMessageOnlyUpdate": "1 already downloaded file will be updated.",
@@ -449,10 +540,13 @@
     "teacher": "Professor",
     "enrolledExamTitle": "Passed exam",
     "enrolledExamInfo": "Information on passing the exam",
+    "enrolledExamChartA11y": "Exam outcomes for year {{year}}: {{succeeded}} passed, {{failed}} failed",
     "enrolledExamDetailTitle": "Exam passing details",
     "enrolledExamDetailInfo": "Detailed information on passing the exam",
+    "enrolledExamDetailChartA11y": "Outcomes by year of study. First year: {{firstSucceeded}} passed, {{firstFailed}} failed. Other years: {{otherSucceeded}} passed, {{otherFailed}} failed",
     "examGradeDetailTitle": "Details of votes",
     "examGradeDetailInfo": "Vote detail information",
+    "examGradeDetailChartA11y": "Grade distribution. First-year average: {{firstAvg}}. Other years average: {{otherAvg}}",
     "enrolledExamBottomSheet": {
       "title": "Passed exam",
       "content": "Statistics regarding the total number of exam passes with two types of display:",
@@ -515,9 +609,11 @@
   },
   "courseHideEventScreen": {
     "button": "Show in agenda",
+    "buttonDisabledHint": "Select at least one event to show in the agenda",
     "selectItems": "Select all"
   },
   "courseIconPickerScreen": {
+    "iconSelected": "Icon {{icon}} selected",
     "title": "Pick an icon"
   },
   "courseInfoTab": {
@@ -533,6 +629,7 @@
     "title": "Info",
     "yearLabel": "Year",
     "nextLectureLabel": "Course in agenda",
+    "preferencesHint": "View course preferences",
     "nextLectureEmptyState": "No course found in agenda"
   },
   "courseLecturesTab": {
@@ -555,7 +652,8 @@
   },
   "courseNoticesTab": {
     "emptyState": "There are no news here",
-    "title": "News"
+    "title": "News",
+    "messageReadAfterGoBack": "The message will be marked as read after leaving this screen"
   },
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
@@ -569,7 +667,9 @@
     "lecturesSubtitle": "New lectures available",
     "noticesSubtitle": "News sent by the professor",
     "showInExtracts": "Show in extracts",
-    "showInExtractsSubtitle": "In home screen and agenda"
+    "showInExtractsSubtitle": "In home screen and agenda",
+    "choseIcon": "Choose an icon for the course",
+    "selectedIcon": "Selected icon"
   },
   "courseScreen": {
     "fileDownloadFailed": "The download failed. Please try again later.",
@@ -584,7 +684,12 @@
     "emptyState": "No courses available",
     "otherCoursesSectionTitle": "Other courses",
     "title": "Courses",
-    "total": "There are {{total}} courses"
+    "total": "There are {{total}} courses",
+    "totalNotVisible": "There are {{total}} hidden courses",
+    "hiddenCredits": "Credits hidden",
+    "visibleCredits": "Credits visible",
+    "longPress": "Long press this button to open a menu that lets you follow or unfollow the course",
+    "notVisible": "Hidden course"
   },
   "cpdSurveysScreen": {
     "emptyState": "There are no surveys",
@@ -605,7 +710,10 @@
     "title": "Create ticket",
     "topicDescription": "Select topic",
     "topicDropdownLabel": "Topic",
-    "topicDropdownPlaceholder": "Pick a topic"
+    "topicDropdownPlaceholder": "Pick a topic",
+    "addFile": "Add file",
+    "subtopicDropdownLabelAccessibility": "Subtopic, open and choose from the options",
+    "topicDropdownLabelAccessibility": "Topic, open and choose from the options"
   },
   "degreeCourseScreen": {
     "classroomExercise": "Classroom excercise",
@@ -618,6 +726,7 @@
     "staff": "Staff",
     "title": "Course",
     "tutoring": "Tutoring",
+    "periodSelect": "Double tap to change the course year",
     "statistics": "Statistics",
     "statisticsSubtitle": "See exam statistics"
   },
@@ -662,9 +771,12 @@
   },
   "europeanCardScreen": {
     "title": "THE EUROPEAN STUDENT CARD",
+    "expiresOn": "Expires on",
     "expiredTitle": "Your Card has expired",
     "expiredText": "Student not enrolled in the current school year",
-    "inactive": "Your Card is suspended"
+    "inactive": "Your Card is suspended",
+    "cardInfoButton": "Card information",
+    "showQrCode": "Show QR code"
   },
   "eventPlacesScreen": {
     "title": "Event locations"
@@ -680,8 +792,10 @@
   },
   "examRescheduleScreen": {
     "button": "Send request",
+    "ctaDisabledHint": "Check the responsibility declaration to enable submission",
     "ctaRescheduleSuccess": "Request sent",
     "ctaRequest": "Request exam call date change",
+    "ctaRequestHint": "Tap to request a change to the exam call date",
     "error": "Fill in the text field before proceeding with the request.",
     "requestDetails": "Enter the dates to be suggested here",
     "requestDetailsTitle": "What dates would you recommend to the coordinator?",
@@ -694,14 +808,18 @@
     "bookedCount": "Booked students",
     "bookingEndsAt": "Booking ends on",
     "ctaBook": "Book exam",
+    "ctaBookHint": "Tap to book this exam call",
     "ctaBookSuccess": "Exam booked",
     "ctaCancel": "Cancel booking",
+    "ctaCancelHint": "Tap to cancel your exam booking",
     "ctaCancelSuccess": "Booking cancelled",
     "ctaRequest": "Request",
+    "ctaRequestHint": "Tap to request exam booking",
     "location": "Location",
     "noClassroom": "No place specified for this exam call",
     "noLocation": "Room to be defined",
     "notAvailable": "Booking not available",
+    "notAvailableHint": "This exam call is not available for booking",
     "notes": "Notes",
     "title": "Exam call",
     "noBookedCount": "Data not available",
@@ -711,7 +829,8 @@
   "examsScreen": {
     "emptyState": "There are no open exam calls",
     "title": "Exam calls",
-    "total": "There are {{ total }} exam calls"
+    "total": "There are {{ total }} exam calls",
+    "totalNotVisible": "There are {{ total }} hidden exam calls"
   },
   "freeRoomsScreen": {
     "noFreeRooms": "No free rooms found",
@@ -723,13 +842,24 @@
     "fail": "Fail",
     "pass": "Pass"
   },
+  "guideFieldListItem": {
+    "tapToCopy": "Tap to copy to clipboard"
+  },
   "guideScreen": {
     "copiedFieldFeedback": "{{field}} copied",
+    "fieldsAvailable": "fields available",
+    "fieldsLoading": "Guide fields loading",
+    "guideFields": "Guide fields",
+    "introduction": "Introduction",
     "title": "Guide"
   },
   "guidesScreen": {
+    "guidesList": "Guides list",
+    "listLoaded": "{{count}} guides loaded",
+    "tapToOpenGuide": "Tap to open guide",
     "title": "Guides",
-    "total": "There are {{ total }} guides"
+    "total": "There are {{ total }} guides",
+    "unreadGuide": "unread"
   },
   "jobOfferScreen": {
     "application": "Application",
@@ -743,11 +873,19 @@
     "location": "Company location: ",
     "requirements": "Requirements",
     "salary": "Salary: ",
+    "sendEmail": "Opens the email app to send an email",
     "title": "Job offers",
     "url": "Website: "
   },
+  "jobOfferListItem": {
+    "tapToViewDetails": "Tap to view job offer details"
+  },
   "jobOffersScreen": {
+    "emptyState": "No job offers available",
     "endsAtDate": "expiration: ",
+    "jobOffersAvailable": "job offers available",
+    "jobOffersList": "Job offers list",
+    "listLoaded": "{{count}} job offers loaded",
     "title": "Job offers"
   },
   "josOffersScreen": {
@@ -757,7 +895,8 @@
     "courseFilesCta": "Go to course files",
     "hideEventAlertTitle": "Hide event",
     "hideEventAlertMessage": " You are hiding the {{ day }} {{ title }} event from {{ fromTime }} to {{ toTime }}",
-    "hideEventButtonTitle": "Hide from the agenda"
+    "hideEventButtonTitle": "Hide from the agenda",
+    "hideEventHint": "Hides this lecture from your agenda"
   },
   "libraryScreen": {
     "title": "Library"
@@ -768,13 +907,18 @@
     "cta": "Login",
     "forgotYourPassword": "Forgot your password?",
     "hidePassword": "Hide password",
+    "logoAccessibility": "Politecnico di Torino logo",
     "passwordLabel": "Password",
     "passwordLabelAccessibility": "Enter your password here",
     "showPassword": "Show password",
     "title": "Log in with your polito.it credentials",
     "unsupportedUserType": "User type not supported: only students can log in to PoliTO Students.",
     "usernameLabel": "Username(s+<Student ID>)",
-    "usernameLabelAccessibility": "Enter your username here",
+    "usernameLabelAccessibility": "Enrollment number, enter your username",
+    "onboarding": "Onboarding",
+    "ctaDisabledHint": "Enter your student ID and password to enable login",
+    "forgotPasswordHint": "Opens the password recovery page",
+    "ssoHint": "Opens the single sign-on login page",
     "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received.",
     "SSO": "Login with SSO"
   },
@@ -792,7 +936,8 @@
     "sentAt": "Sent at",
     "title": "Messages archive",
     "unreadMessages": "Message ({{read}} of {{total}})",
-    "youHaveUnreadMessages": "You have {{total}} unread messages"
+    "youHaveUnreadMessages": "You have {{total}} unread messages",
+    "deleteMessage": "Delete message"
   },
   "messagingView": {
     "pickFile": "Pick file max 32MB",
@@ -800,13 +945,16 @@
     "pickPhoto": "Pick image",
     "pickPhotoHint": "From your library",
     "takePhoto": "Take photo",
-    "takePhotoHint": "Take one or more photos and generate a file"
+    "takePhotoHint": "Take one or more photos and generate a file",
+    "activeReplay": "Active, double tap to activate"
   },
   "newsScreen": {
     "createdAt": "Published on ",
     "eventStartTime": "Starts on ",
     "information": "Information",
     "logo": "Logo",
+    "openLink": "Opens the link in your browser",
+    "openFile": "Opens the attached file",
     "title": "News & Events"
   },
   "notifications": {
@@ -828,15 +976,23 @@
   },
   "offeringScreen": {
     "bachelor": "Bachelor degree",
+    "coursesList": "{{count}} courses",
     "emptyState": "No course available",
+    "expandCollapseHint": "Tap to expand or collapse the course group",
+    "groupLabel": "{{name}}, {{count}} courses",
     "master": "Master degree",
-    "title": "Offering"
+    "section": "section",
+    "tapToViewCourse": "Tap to view course details",
+    "title": "Offering",
+    "yearSelectorHint": "Tap to change the academic year"
   },
   "personScreen": {
     "call": "Call",
+    "callHint": "Opens the phone app to call this number",
     "contacts": "Contacts",
     "coursesLabel": "List of courses offered by the teacher",
     "department": "Department",
+    "emailHint": "Opens the email app to send an email",
     "moreInfo": "More information",
     "role": "Role",
     "sentEmail": "Send e-mail",
@@ -869,6 +1025,7 @@
     "searchPlaceholder": "Try with \"Room 1\""
   },
   "profileScreen": {
+    "cards": "Cards",
     "careerStatus": "Career status:",
     "careerStatusEnum": {
       "active": "Active",
@@ -914,16 +1071,22 @@
     "teacher": "Holder",
     "textModal": "Having taken the exam by the first useful session, you are awarded an additional score of 0.5, which will be added to your final grade.\nYou can consult your total on-time points on career.\nMore information is available in the Student Guide.",
     "titleOnTimePoint": "On-time Exam points",
-    "ctaButtonModal": "Access your career"
+    "ctaButtonModal": "Access your career",
+    "gradeValue": "Grade: {{grade}}"
   },
   "sectionHeader": {
     "cta": "See all",
+    "moreInfo": "More information about {{title}}",
     "ctaMoreSuffix": "({{- count}} more)"
   },
   "servicesScreen": {
     "subTitleOne": "Information services",
     "subTitleTwo": "Operational services",
-    "title": "Services"
+    "title": "Services",
+    "newElement": ", you have a new item to view",
+    "favoriteActive": "Remove from favorites",
+    "favoriteInactive": "Add to favorites",
+    "webMail": "Web\nMail"
   },
   "appInfoScreen": {
     "title": "App info",
@@ -962,6 +1125,7 @@
     "appVersion": "Version {{version}}",
     "cleanCacheConfirmMessage": "You will need to download files again to be able to open them",
     "openLanguageMenu": "Tap twice to open the language selection menu",
+    "openStorageMenu": "Tap twice to open the storage location menu",
     "openThemeMenu": "Tap twice to open the theme selection menu",
     "title": "Settings",
     "securityTitle": "Security",
@@ -988,7 +1152,10 @@
     "compiledTitle": "Compiled surveys",
     "title": "Surveys",
     "toBeCompiledEmptyState": "There are no surveys to be compiled",
-    "toBeCompiledTitle": "Surveys to be compiled"
+    "toBeCompiledTitle": "Surveys to be compiled",
+    "tapToOpenSurvey": "Tap to open survey",
+    "surveysList": "There are {{count}} surveys",
+    "remainingCount": "{{count}} remaining"
   },
   "graduationCodeScreen": {
     "dateTime": "Date and time",
@@ -1012,6 +1179,7 @@
     },
     "qrCode": "QR code",
     "share": "Share",
+    "shareDisabledHint": "Wait for the QR code to load",
     "shareFailure": "Unable to share the PDF: {{reason}}",
     "title": "Graduation session",
     "validUntil": "Valid until {{date}} at {{time}}"
@@ -1020,6 +1188,7 @@
     "allCoursesHidden": "You've hidden all your courses",
     "cpdTitle": "CPD Surveys",
     "eventTitle": "QR Code Event Passes",
+    "tapToOpenGraduationCode": "Tap to open graduation QR code",
     "title": "Teaching"
   },
   "theme": {
@@ -1031,7 +1200,8 @@
     "headerBackTitle": "New",
     "noResultFound": "Didn't find what you are looking for?",
     "title": "FAQ",
-    "writeTicket": "Open ticket"
+    "writeTicket": "Open ticket",
+    "writeTicketMessage": "Write a ticket if you didn't find what you're looking for"
   },
   "ticketFaqsScreen": {
     "emptyState": "No results found",
@@ -1042,7 +1212,8 @@
     "searchMinLengthHint": "Please, insert at least 3 characters.",
     "stillNeedHelp": "Still need help?",
     "title": "FAQs",
-    "writeTicket": "Write a ticket"
+    "writeTicket": "Write a ticket",
+    "searchButton": "Activate to search the entered keywords among the FAQs"
   },
   "ticketScreen": {
     "headerBackTitle": "Tickets",
@@ -1067,6 +1238,7 @@
     "rateBarCta": "Send feedback",
     "infoModalTitle": "Ticket details",
     "markAsResolved": "Mark as resolved",
+    "markAsResolvedHint": "Permanently closes the ticket; you will no longer be able to send replies.",
     "infoResolveHint": "If the problem is solved before you receive a reply, we recommend marking the ticket as resolved. This way you help the office focus on requests that are still open.",
     "feedbackInfoTitle": "Feedback sent",
     "feedbackInfoRatingPrefix": "You sent a rating of",
@@ -1083,7 +1255,13 @@
     "duplicateBarSubtitle": "Your request has already been handled in another ticket. Check the linked ticket to read the reply and continue the conversation.",
     "duplicateBarCta": "Go to ticket",
     "waitingOperatorBarTitle": "Waiting for an operator",
-    "waitingOperatorBarSubtitle": "Since the automatic response was not helpful, your request has been forwarded to one of our operators."
+    "waitingOperatorBarSubtitle": "Since the automatic response was not helpful, your request has been forwarded to one of our operators.",
+    "feedbackPositive": "Helpful",
+    "feedbackNegative": "Not helpful",
+    "incomingMessage": "Your reply",
+    "outgoingMessage": "Reply from operator number",
+    "send": "Send",
+    "yourQuestion": "Your question"
   },
   "ticketResolvedScreen": {
     "title": "Ticket resolved",
@@ -1112,11 +1290,16 @@
   },
   "ticketsScreen": {
     "addNew": "Add ticket",
+    "closed": "Closed tickets",
+    "closedEmptyState": "There are no closed tickets",
     "emptyState": "There are no tickets",
     "insertFeedback": "Insert feedback",
     "myTickets": "My tickets",
+    "openEmptyState": "There are no open tickets",
+    "opened": "Open tickets",
     "openedOn": "Opened on {{date}}",
-    "title": "Ticket"
+    "title": "Ticket",
+    "unreadCount": "{{count}} unread"
   },
   "transcriptGradeScreen": {
     "title": "Evaluation"
@@ -1131,17 +1314,24 @@
     "rejectedSubtitle": "Rejected on {{-date}} at {{-time}}",
     "rejectionCountdown": "Rejectable by:",
     "title": "Grades",
-    "total": "There are {{total}} grades"
+    "total": "There are {{total}} grades",
+    "gradeValue": "Grade: {{grade}}",
+    "provisionalGradeItem": "{{courseName}}, {{state}}",
+    "recordedGradeItem": "{{courseName}}, {{date}}, {{credits}}, {{grade}}"
   },
   "transcriptMetricsScreen": {
     "acquiredCreditsLabel": "Acquired credits",
     "attendedCreditsLabel": "Attended credits",
     "averages": "Averages",
+    "estimatedFinalGrade": "Estimated final grade",
+    "estimatedFinalGradePurged": "Estimated final grade purged",
+    "finalAverageLabel": "Admission average",
     "averageLabel": "Average grade for admission to the Final Examination",
     "finalAverageLabelDescription": {
       "description": "It is the average grade, weighted according to the credits relating to each exam with a grade*, adjusted for the {{-excludedCreditsNumber}} worst credits",
       "formula": "(sum (grade * credits) / sum of credits) * (110/30) ,\nexcluding the {{-excludedCreditsNumber}} worst credits"
     },
+    "hideAndShowButton": "grades visibility toggle",
     "laude": "*Honours does not count toward the calculation",
     "masterAdmissionAverage": "Master admission average grade",
     "masterAdmissionAverageLabelDescription": {
@@ -1150,11 +1340,14 @@
     },
     "NB": "Note",
     "NBDescription": "These definitions are indicative. To find out more, refer to the Student Guide.\nOnly graded exams are considered in all average grade above.",
+    "notShown": "Grades hidden",
     "onTimeScores": "On-time Exams points",
     "pointTitle": "Scores",
+    "showDetails": "Click to open the complete transcript",
     "pointModal": "The total of the Exam on-time points earned. This value can never exceed the maximum allowed by the degree program.\nMore information is available in the Student Guide",
     "thisYear": "This academic year",
     "title": "Career",
+    "totalCredits": "Total credits",
     "weightedAverageLabelDescription": {
       "description": "This is the average, weighted according to the credits relating to each exam with a grade*",
       "formula": "(sum (grade * credits) / sum of credits) * (110/30)"
@@ -1164,6 +1357,7 @@
       "description": "It is the average grade, weighted according to the credits relating to each exam with a grade*, expressed in thirtieths.",
       "formula": "sum (grade * credits) / sum of credits"
     },
+    "weightedAverageLabel": "Weighted average of grades",
     "yourCareer": "Your career"
   },
   "videoControls": {
@@ -1175,5 +1369,22 @@
   },
   "videoPlayer": {
     "speedSectionTitle": "Speed"
+  },
+  "userQrModal": {
+    "studentIdentity": "{{firstName}} {{lastName}}, {{studentId}}"
+  },
+  "staffScreen": {
+    "staffList": "Staff list, {{count}} members"
+  },
+  "agendaTypeFilter": {
+    "filterButton": "Event type filter",
+    "filterHint": "Open menu to select which event types to show in agenda"
+  },
+  "agendaPreferencesScreen": {
+    "courseItem": "Course",
+    "hiddenEventsHint": "Navigate to hidden events"
+  },
+  "hiddenEventsScreen": {
+    "restoreHint": "Restores selected hidden events to the agenda"
   }
 }

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Platform } from 'react-native';
 
-import { useScreenTitle } from '@polito/lib/core';
+import { useAccessibility, useScreenTitle } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   IndentedDivider,
@@ -24,6 +24,7 @@ export const SurveyListScreen = ({ route }: Props) => {
 
   const surveysQuery = useGetSurveys();
   const { paddingHorizontal } = useSafeAreaSpacing();
+  const { buildCompositeListLabel } = useAccessibility();
 
   const compiledSurveys = (surveysQuery.data || [])
     .filter(survey => survey.isCompiled === isCompiled)
@@ -37,7 +38,7 @@ export const SurveyListScreen = ({ route }: Props) => {
     return {
       title: isCompiled
         ? t('surveysScreen.compiledTitle')
-        : t('cpdSurveysScreen.toBeCompiledTitle'),
+        : t('surveysScreen.toBeCompiledTitle'),
       emptyState: isCompiled
         ? t('ticketsScreen.closedEmptyState')
         : t('ticketsScreen.openEmptyState'),
@@ -51,15 +52,27 @@ export const SurveyListScreen = ({ route }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={paddingHorizontal}
       refreshControl={<RefreshControl queries={[surveysQuery]} manual />}
+      accessibilityRole="list"
+      accessibilityLabel={t('surveysScreen.surveysList', {
+        count: compiledSurveys.length,
+      })}
       data={compiledSurveys}
-      renderItem={({ item }) => <SurveyListItem survey={item} key={item.id} />}
+      renderItem={({ item, index }) => (
+        <SurveyListItem
+          survey={item}
+          key={item.id}
+          accessibilityLabel={buildCompositeListLabel(
+            [item.title, item.subtitle ?? undefined],
+            index,
+            compiledSurveys.length,
+          )}
+        />
+      )}
       ItemSeparatorComponent={Platform.select({
         ios: IndentedDivider,
       })}
       ListFooterComponent={<BottomBarSpacer />}
-      ListEmptyComponent={
-        <OverviewList emptyStateText={t('surveysScreen.compiledEmptyState')} />
-      }
+      ListEmptyComponent={<OverviewList emptyStateText={labels.emptyState} />}
     />
   );
 };

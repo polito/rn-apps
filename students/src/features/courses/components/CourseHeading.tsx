@@ -28,7 +28,18 @@ export const CourseHeading = ({
   return (
     <Section style={styles.heading}>
       <ScreenTitle title={name} />
-      <Text variant="caption">
+      <Text
+        variant="caption"
+        accessibilityLabel={[
+          shortcode,
+          parentCourseName ?? undefined,
+          !parentCourseName && cfu
+            ? `${cfu} ${t('common.cfu').toLowerCase()}`
+            : undefined,
+        ]
+          .filter(Boolean)
+          .join(' - ')}
+      >
         {shortcode ?? ' '}
         {parentCourseName && ` - ${parentCourseName}`}
         {!parentCourseName && cfu && (

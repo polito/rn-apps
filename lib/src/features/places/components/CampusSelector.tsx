@@ -1,7 +1,10 @@
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { faChevronDown, faSchool } from '@fortawesome/free-solid-svg-icons';
+import { MenuComponentRef } from '@react-native-menu/menu';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
 import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
 import { Icon, Row, StatefulMenuView, Text } from '../../../ui/components';
 import { useTheme } from '../../../ui/hooks/useTheme';
@@ -13,9 +16,18 @@ export const CampusSelector = () => {
   const { data: sites } = useGetSites();
   const { campusId, updatePreference } = usePreferencesContext();
   const campus = useGetSite(campusId);
+  const menuRef = useRef<MenuComponentRef>(null);
 
   return (
     <StatefulMenuView
+      ref={menuRef}
+      accessible
+      accessibilityRole="button"
+      accessibilityLabel={[t('common.campus'), campus?.name]
+        .filter(Boolean)
+        .join(', ')}
+      accessibilityActions={[{ name: 'activate' }]}
+      onAccessibilityAction={() => menuRef.current?.show()}
       title={t('common.campus')}
       onPressAction={({ nativeEvent: { event: newCampusId } }) => {
         updatePreference(
@@ -31,7 +43,13 @@ export const CampusSelector = () => {
         })) ?? []
       }
     >
-      <Row align="center" mr={2} gap={0.5} style={{ maxWidth: '73%' }}>
+      <Row
+        align="center"
+        mr={2}
+        gap={0.5}
+        style={{ maxWidth: '73%' }}
+        {...hideFromScreenReader}
+      >
         <Icon icon={faSchool} color={colors.link} />
         <Text
           variant="link"

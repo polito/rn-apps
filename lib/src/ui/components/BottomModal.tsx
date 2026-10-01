@@ -1,5 +1,15 @@
-import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import {
+  PropsWithChildren,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
+import {
+  AccessibilityInfo,
   Animated,
   Dimensions,
   KeyboardAvoidingView,
@@ -10,14 +20,23 @@ import {
   Pressable,
   StyleSheet,
   View,
+  findNodeHandle,
 } from 'react-native';
 
+import { IS_ANDROID } from '../../core/constants';
 import { useTheme } from '../hooks/useTheme';
 
 const ANIMATION_DURATION = 300;
 const BACKDROP_OPACITY = 0.4;
 const SWIPE_CLOSE_DISTANCE_RATIO = 0.3;
 const SWIPE_CLOSE_VELOCITY = 0.5;
+
+type RegisterFocusTarget = (node: View | null) => void;
+
+export const BottomModalFocusContext =
+  createContext<RegisterFocusTarget | null>(null);
+
+export const useBottomModalFocus = () => useContext(BottomModalFocusContext);
 
 export type BottomModalProps = PropsWithChildren<{
   visible: boolean;
@@ -43,6 +62,12 @@ export const BottomModal = ({
   );
 
   const progress = useRef(new Animated.Value(0)).current;
+  const sheetRef = useRef<View>(null);
+  const focusTargetRef = useRef<View | null>(null);
+
+  const registerFocusTarget = useCallback<RegisterFocusTarget>(node => {
+    focusTargetRef.current = node;
+  }, []);
 
   const sheetHeightRef = useRef(sheetHeight);
   sheetHeightRef.current = sheetHeight;
@@ -82,6 +107,20 @@ export const BottomModal = ({
       }).start();
     }
   }, [mounted, visible, progress]);
+
+  useLayoutEffect(() => {
+    if (!mounted || !visible) return;
+
+    const timer = setTimeout(() => {
+      const target = focusTargetRef.current ?? sheetRef.current;
+      const node = findNodeHandle(target);
+      if (node) {
+        AccessibilityInfo.setAccessibilityFocus(node);
+      }
+    }, ANIMATION_DURATION + 50);
+
+    return () => clearTimeout(timer);
+  }, [mounted, visible]);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -155,11 +194,15 @@ export const BottomModal = ({
           pointerEvents="box-none"
         >
           <Animated.View
+            ref={sheetRef}
             onLayout={onSheetLayout}
+            accessibilityViewIsModal={IS_ANDROID}
             style={[styles.sheet, { transform: [{ translateY }] }]}
             {...panResponder.panHandlers}
           >
-            {children}
+            <BottomModalFocusContext.Provider value={registerFocusTarget}>
+              {children}
+            </BottomModalFocusContext.Provider>
           </Animated.View>
         </KeyboardAvoidingView>
       </View>

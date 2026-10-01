@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { AccessibilityInfo } from 'react-native';
 
 import {
   useApiContext,
@@ -16,11 +18,15 @@ import { GuestNavigator } from './GuestNavigator';
 import { NewVersionModal } from './NewVersionModal';
 import { RootNavigator } from './RootNavigator';
 
+const LOADING_ANNOUNCEMENT_DELAY = 600;
+
 export const AppContent = () => {
+  const { t } = useTranslation();
   const { isLogged } = useApiContext();
   const preferences = usePreferencesContext<AppPreferences>();
   const queryClient = useQueryClient();
   const { isSplashLoaded } = useSplashContext();
+  const needsMigration = MigrationService.needsMigration(preferences);
 
   const {
     close: closeModal,
@@ -68,7 +74,19 @@ export const AppContent = () => {
     MigrationService.migrateIfNeeded(preferences, queryClient);
   }, [preferences, queryClient]);
 
-  if (MigrationService.needsMigration(preferences)) return null;
+  useEffect(() => {
+    if (!needsMigration && isSplashLoaded) return;
+
+    const timeout = setTimeout(async () => {
+      if (await AccessibilityInfo.isScreenReaderEnabled()) {
+        AccessibilityInfo.announceForAccessibility(t('common.loading'));
+      }
+    }, LOADING_ANNOUNCEMENT_DELAY);
+
+    return () => clearTimeout(timeout);
+  }, [needsMigration, isSplashLoaded, t]);
+
+  if (needsMigration) return null;
   return (
     <>
       <BottomModal

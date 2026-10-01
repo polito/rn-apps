@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { faCalendar, faLocationDot } from '@fortawesome/free-solid-svg-icons';
@@ -25,6 +26,7 @@ interface EventInfoProps {
 export const EventInfo = ({ item, place, placeLoading }: EventInfoProps) => {
   const styles = useStylesheet(createStyles);
   const { colors, fontSizes } = useTheme();
+  const { t } = useTranslation();
 
   if (placeLoading) {
     return <ActivityIndicator size="small" />;
@@ -35,7 +37,20 @@ export const EventInfo = ({ item, place, placeLoading }: EventInfoProps) => {
   }
 
   return (
-    <Text style={styles.label} numberOfLines={1} ellipsizeMode="tail">
+    <Text
+      style={styles.label}
+      numberOfLines={1}
+      ellipsizeMode="tail"
+      accessibilityLabel={[
+        item.type === 'single' &&
+          DateTime.fromISO(item.day as string)
+            .setZone('local')
+            .toFormat('dd/MM/yyyy'),
+        t('agendaScreen.room', { roomName: place.room.name }),
+      ]
+        .filter(Boolean)
+        .join(', ')}
+    >
       {item.type === 'single' && (
         <>
           <Icon

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet } from 'react-native';
+import { PixelRatio, Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
@@ -10,7 +10,12 @@ import {
   faCompass,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { useApiContext, usePreferencesContext } from '@polito/lib/core';
+import {
+  hideFromScreenReader,
+  useAccessibility,
+  useApiContext,
+  usePreferencesContext,
+} from '@polito/lib/core';
 import {
   PlacesNavigator,
   useGetCurrentCampus,
@@ -42,6 +47,7 @@ import { useGetMessages, useGetStudent } from '../queries/studentHooks';
 import { OnboardingModal } from '../screens/OnboardingModal';
 import { RootParamList } from '../types/navigation';
 import { AppPreferences } from '../types/preferences';
+import { TabBarButton } from './TabBarButton';
 
 const TabNavigator = createBottomTabNavigator<RootParamList>();
 const androidTabBarHeight = 60;
@@ -61,6 +67,7 @@ export const RootNavigator = ({
   const { updatePreference, accessibility } =
     usePreferencesContext<AppPreferences>();
   const { getUnreadsCount } = useNotifications();
+  const { getBadgeAccessibilityLabel } = useAccessibility();
   const hasSyncedFiles = useRef(false);
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
@@ -103,15 +110,31 @@ export const RootNavigator = ({
     [bottom],
   );
 
+  const teachingLabel = t('teachingScreen.title');
+  const agendaLabel = t('agendaScreen.title');
+  const placesLabel = t('placesScreen.title');
+  const servicesLabel = t('common.services');
+  const profileLabel = t('profileScreen.title');
+
+  const teachingUnreadCount = getUnreadsCount(['teaching']) ?? 0;
+  const servicesUnreadCount = getUnreadsCount(['services']) ?? 0;
+  const profileUnreadCount = filterUnread(profileMessages.data || []).length;
+
+  const renderTabIcon = (icon: typeof faBookOpen, color: string) => (
+    <View {...hideFromScreenReader}>
+      <Icon icon={icon} color={color} size={tabBarIconSize} />
+    </View>
+  );
+
   return (
     <>
       <TabNavigator.Navigator
         backBehavior="history"
         screenOptions={{
-          tabBarShowLabel:
-            accessibility?.fontSize && accessibility.fontSize > 125
-              ? false
-              : true,
+          tabBarShowLabel: !(
+            (accessibility?.fontSize && accessibility.fontSize > 125) ||
+            PixelRatio.getFontScale() >= 1.3
+          ),
           headerShown: false,
           tabBarHideOnKeyboard: true,
           tabBarVisibilityAnimationConfig: {
@@ -124,36 +147,37 @@ export const RootNavigator = ({
           tabBarLabelStyle: [styles.tabBarLabelStyle],
           tabBarInactiveTintColor: colors.tabBarInactive,
           tabBarBadgeStyle: styles.tabBarBadgeStyle,
+          tabBarButton: props => <TabBarButton {...props} />,
         }}
       >
         <TabNavigator.Screen
           name="TeachingTab"
           component={TeachingNavigator}
           options={{
-            tabBarLabel: t('teachingScreen.title'),
-            tabBarIcon: ({ color }) => (
-              <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
+            tabBarLabel: teachingLabel,
+            tabBarAccessibilityLabel: getBadgeAccessibilityLabel(
+              teachingUnreadCount,
+              teachingLabel,
             ),
-            tabBarBadge: getUnreadsCount(['teaching']),
+            tabBarIcon: ({ color }) => renderTabIcon(faBookOpen, color),
+            tabBarBadge: teachingUnreadCount || undefined,
           }}
         />
         <TabNavigator.Screen
           name="AgendaTab"
           component={AgendaNavigator}
           options={{
-            tabBarLabel: t('agendaScreen.title'),
-            tabBarIcon: ({ color }) => (
-              <Icon icon={faCalendar} color={color} size={tabBarIconSize} />
-            ),
+            tabBarLabel: agendaLabel,
+            tabBarAccessibilityLabel: agendaLabel,
+            tabBarIcon: ({ color }) => renderTabIcon(faCalendar, color),
           }}
         />
         <TabNavigator.Screen
           name="PlacesTab"
           options={{
-            tabBarLabel: t('placesScreen.title'),
-            tabBarIcon: ({ color }) => (
-              <Icon icon={faCompass} color={color} size={tabBarIconSize} />
-            ),
+            tabBarLabel: placesLabel,
+            tabBarAccessibilityLabel: placesLabel,
+            tabBarIcon: ({ color }) => renderTabIcon(faCompass, color),
           }}
         >
           {() => <PlacesNavigator unreadMessagesModal={UnreadMessagesModal} />}
@@ -163,23 +187,26 @@ export const RootNavigator = ({
           component={ServicesNavigator}
           options={{
             headerLeft: () => <HeaderLogo />,
-            tabBarLabel: t('common.services'),
-            tabBarIcon: ({ color }) => (
-              <Icon icon={faCircleInfo} color={color} size={tabBarIconSize} />
+            tabBarLabel: servicesLabel,
+            tabBarAccessibilityLabel: getBadgeAccessibilityLabel(
+              servicesUnreadCount,
+              servicesLabel,
             ),
-            tabBarBadge: getUnreadsCount(['services']),
+            tabBarIcon: ({ color }) => renderTabIcon(faCircleInfo, color),
+            tabBarBadge: servicesUnreadCount || undefined,
           }}
         />
         <TabNavigator.Screen
           name="ProfileTab"
           component={UserNavigator}
           options={{
-            tabBarLabel: t('profileScreen.title'),
-            tabBarIcon: ({ color }) => (
-              <Icon icon={faUser} color={color} size={tabBarIconSize} />
+            tabBarLabel: profileLabel,
+            tabBarAccessibilityLabel: getBadgeAccessibilityLabel(
+              profileUnreadCount,
+              profileLabel,
             ),
-            tabBarBadge:
-              filterUnread(profileMessages.data || []).length || undefined,
+            tabBarIcon: ({ color }) => renderTabIcon(faUser, color),
+            tabBarBadge: profileUnreadCount || undefined,
           }}
         />
       </TabNavigator.Navigator>

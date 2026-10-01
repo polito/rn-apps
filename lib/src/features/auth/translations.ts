@@ -22,6 +22,7 @@ export const mfaScreenTranslations = {
       devicePrompt:
         'The name below will be used to <b>identify this device</b> among your authentication factors. <b>You can change it</b> if you want to make it more recognizable.',
       deviceName: 'Device name',
+      confirmDisabledHint: 'Enter a device name to enable confirmation',
     },
     auth: {
       prompt:
@@ -86,6 +87,8 @@ export const mfaScreenTranslations = {
       devicePrompt:
         'Il nome sottostante verrà utilizzato per <b>identificare questo dispositivo</b> tra i tuoi fattori di autenticazione. <b>Puoi cambiarlo</b> se vuoi renderlo più riconoscibile.',
       deviceName: 'Nome dispositivo',
+      confirmDisabledHint:
+        'Inserisci un nome dispositivo per abilitare la conferma',
     },
     auth: {
       prompt:

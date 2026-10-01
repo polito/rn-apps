@@ -1,9 +1,20 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Ref, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, StyleSheet, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  FlatList,
+  Platform,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { FileNavigatorID, usePreferencesContext } from '@polito/lib/core';
+import {
+  FileNavigatorID,
+  useAccessibilityFocusOnScreenFocus,
+  usePreferencesContext,
+} from '@polito/lib/core';
 import { ITEM_TYPES } from '@polito/lib/features/courses';
 import {
   ActivityIndicator,
@@ -28,6 +39,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { AccessibleFlatList } from '~/core/components/AccessibleFlatList';
 import { useDownloadsContext } from '~/core/contexts/DownloadsContext';
 import { useNotifications } from '~/core/hooks/useNotifications';
 import { useOnLeaveScreen } from '~/core/hooks/useOnLeaveScreen';
@@ -54,6 +66,7 @@ type Props = NativeStackScreenProps<
 
 const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
   const { courseId, directoryId, directoryName } = route.params;
+  const screenRef = useAccessibilityFocusOnScreenFocus<TextInput>();
   const { t } = useTranslation();
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [searchFilter, setSearchFilter] = useState('');
@@ -233,6 +246,7 @@ const CourseDirectoryScreenContent = ({ route, navigation }: Props) => {
     <>
       {isFileNavigator && (
         <CourseSearchBar
+          inputRef={screenRef}
           searchFilter={searchFilter}
           setSearchFilter={setSearchFilter}
         />
@@ -345,9 +359,14 @@ interface SearchFlatListProps {
 interface SearchBarProps {
   searchFilter: string;
   setSearchFilter: (search: string) => void;
+  inputRef?: Ref<TextInput>;
 }
 
-const CourseSearchBar = ({ searchFilter, setSearchFilter }: SearchBarProps) => {
+const CourseSearchBar = ({
+  searchFilter,
+  setSearchFilter,
+  inputRef,
+}: SearchBarProps) => {
   const { paddingHorizontal } = useSafeAreaSpacing();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
@@ -355,9 +374,12 @@ const CourseSearchBar = ({ searchFilter, setSearchFilter }: SearchBarProps) => {
   return (
     <Row align="center" style={[paddingHorizontal, styles.searchBar]}>
       <TranslucentTextField
+        inputRef={inputRef}
         autoFocus={searchFilter.length !== 0}
         autoCorrect={false}
         leadingIcon={faSearch}
+        accessibilityRole="search"
+        accessibilityHint={t('common.searchSuggestionsHint')}
         value={searchFilter}
         onChangeText={setSearchFilter}
         style={[GlobalStyles.grow, styles.textField]}
@@ -393,11 +415,25 @@ const CourseFileSearchFlatList = ({
     );
   }, [recentFilesQuery.data, searchFilter]);
 
+  useEffect(() => {
+    if (!searchFilter || !recentFilesQuery.data) return;
+    if (searchResults.length > 0) {
+      AccessibilityInfo.announceForAccessibility(
+        `${t('contactsScreen.resultFound')} ${searchResults.length} ${t('contactsScreen.resultFoundRes')}`,
+      );
+    } else {
+      AccessibilityInfo.announceForAccessibility(
+        t('courseDirectoryScreen.noResult'),
+      );
+    }
+  }, [searchResults, searchFilter, recentFilesQuery.data, t]);
+
   const onSwipeStart = useCallback(() => setScrollEnabled(false), []);
   const onSwipeEnd = useCallback(() => setScrollEnabled(true), []);
 
   return (
-    <FlatList
+    <AccessibleFlatList
+      listName={t('common.search')}
       contentInsetAdjustmentBehavior="automatic"
       data={searchResults}
       scrollEnabled={scrollEnabled}

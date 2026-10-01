@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
-import { useAccessibility } from '@polito/lib/core';
+import { useAnnounceLoading } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   OverviewList,
@@ -15,7 +15,7 @@ import { ExamListItem } from '../components/ExamListItem';
 export const ExamsScreen = () => {
   const { t } = useTranslation();
   const examsQuery = useGetExams();
-  const { accessibilityListLabel } = useAccessibility();
+  useAnnounceLoading(examsQuery.isLoading);
 
   return (
     <ScrollView
@@ -42,10 +42,8 @@ export const ExamsScreen = () => {
                 key={`${exam.id}` + exam.moduleNumber}
                 exam={exam}
                 accessible={true}
-                accessibilityLabel={accessibilityListLabel(
-                  index,
-                  examsQuery.data.length,
-                )}
+                index={index}
+                total={examsQuery.data.length}
               />
             ))}
           </OverviewList>

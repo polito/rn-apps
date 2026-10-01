@@ -15,7 +15,9 @@ import { GlobalStyles } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { IS_IOS } from '../../core/constants';
 import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { useKeyboardActivation } from '../hooks/useKeyboardActivation';
 import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
 import { Theme } from '../types/Theme';
@@ -70,12 +72,19 @@ export const ListItem = ({
   multilineTitle = false,
   titleProps,
   unread = false,
+  accessibilityLabel,
+  accessibilityState,
+  accessibilityRole,
+  accessibilityHint,
   ...rest
 }: ListItemProps) => {
   const { fontSizes, fontFamilies, fontWeights, colors, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { accessibility } = usePreferencesContext();
+  const isDisabled = Boolean(disabled);
+  const hasCompositeLabel =
+    accessibilityLabel != null && accessibilityLabel !== '';
   const titleElement =
     typeof title === 'string' ? (
       <Row align="center" gap={2}>
@@ -138,27 +147,63 @@ export const ListItem = ({
     )
   ) : null;
 
+  const handlePress = linkTo
+    ? () => {
+        const resolved = resolveLinkTo(linkTo);
+        navigation.navigate(resolved.name as any, resolved.params);
+      }
+    : onPress;
+
+  const contentElements = (
+    <>
+      {children}
+      {leadingItem && <View style={styles.leadingSlot}>{leadingItem}</View>}
+      <Col flex={1} style={inverted && { flexDirection: 'column-reverse' }}>
+        {titleElement}
+        {subtitleElement}
+      </Col>
+    </>
+  );
+
+  const keyboardActivationProps = useKeyboardActivation({
+    onActivate: handlePress as (() => void) | undefined,
+    disabled,
+    accessibilityActions: rest.accessibilityActions,
+    onAccessibilityAction: rest.onAccessibilityAction,
+  });
+
   return (
     <TouchableHighlight
       underlayColor={colors.touchableHighlight}
-      onPress={
-        linkTo
-          ? () => {
-              const resolved = resolveLinkTo(linkTo);
-              navigation.navigate(resolved.name as any, resolved.params);
-            }
-          : onPress
-      }
+      onPress={handlePress}
       style={[
         {
-          opacity: disabled ? 0.5 : 1,
+          opacity: isDisabled ? 0.5 : 1,
         },
         style,
       ]}
-      disabled={disabled}
+      disabled={isDisabled}
+      accessible
+      accessibilityRole={
+        accessibilityRole ??
+        (onPress || linkTo || isAction ? 'button' : undefined)
+      }
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{
+        disabled: isDisabled,
+        ...accessibilityState,
+      }}
       {...rest}
+      {...keyboardActivationProps}
     >
       <View
+        importantForAccessibility={
+          hasCompositeLabel && card ? 'no-hide-descendants' : undefined
+        }
+        accessibilityElementsHidden={
+          hasCompositeLabel && card ? IS_IOS : undefined
+        }
         style={[
           {
             minHeight: 60,
@@ -170,12 +215,19 @@ export const ListItem = ({
           containerStyle,
         ]}
       >
-        {children}
-        {leadingItem && <View style={styles.leadingSlot}>{leadingItem}</View>}
-        <Col flex={1} style={inverted && { flexDirection: 'column-reverse' }}>
-          {titleElement}
-          {subtitleElement}
-        </Col>
+        {card ? (
+          contentElements
+        ) : (
+          <View
+            importantForAccessibility={
+              hasCompositeLabel ? 'no-hide-descendants' : undefined
+            }
+            accessibilityElementsHidden={hasCompositeLabel ? IS_IOS : undefined}
+            style={styles.contentSlot}
+          >
+            {contentElements}
+          </View>
+        )}
         {!card &&
           (() => {
             const content =
@@ -196,6 +248,11 @@ export const ListItem = ({
 
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
+    contentSlot: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
     leadingSlot: {
       width: 38,
       height: 38,

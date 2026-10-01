@@ -1,7 +1,9 @@
-import { StyleSheet } from 'react-native';
+import { useMemo } from 'react';
+import { StyleSheet, View, ViewProps } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
+import { hideFromScreenReader } from '../../core/accessibility/hideFromScreenReader';
 import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
 import { Theme } from '../types/Theme';
@@ -9,7 +11,7 @@ import { Col } from './Col';
 import { Icon } from './Icon';
 import { Text } from './Text';
 
-interface Props {
+interface Props extends ViewProps {
   icon?: IconDefinition;
   iconColor?: string;
   iconSize?: number;
@@ -25,33 +27,49 @@ export const EmptyState = ({
   caption,
   spacing = 12,
   iconSize,
+  accessibilityLabel,
+  accessible = true,
+  ...rest
 }: Props) => {
   const { colors, fontSizes, spacing: _spacing } = useTheme();
   const styles = useStylesheet(createStyles);
 
+  const label = useMemo(
+    () => accessibilityLabel ?? [message, caption].filter(Boolean).join(', '),
+    [accessibilityLabel, message, caption],
+  );
+
   return (
     <Col
-      accessibilityRole="text"
-      accessible={true}
-      accessibilityLabel={message}
+      accessible={accessible}
+      accessibilityRole="none"
+      accessibilityLabel={accessible ? label : undefined}
       align="center"
       style={{
         padding: _spacing[spacing as unknown as keyof Theme['spacing']],
       }}
+      {...rest}
     >
       {icon && (
-        <Icon
-          icon={icon}
-          color={iconColor ?? colors.secondaryText}
-          size={iconSize || fontSizes['3xl']}
-          style={styles.icon}
-        />
+        <View {...hideFromScreenReader}>
+          <Icon
+            icon={icon}
+            color={iconColor ?? colors.secondaryText}
+            size={iconSize || fontSizes['3xl']}
+            style={styles.icon}
+          />
+        </View>
       )}
-      <Text style={{ textAlign: 'center' }} variant="secondaryText">
+      <Text
+        accessible={false}
+        style={{ textAlign: 'center' }}
+        variant="secondaryText"
+      >
         {message}
       </Text>
       {caption && (
         <Text
+          accessible={false}
           style={{ textAlign: 'center', fontSize: fontSizes.xs }}
           variant="secondaryText"
         >

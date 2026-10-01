@@ -1,4 +1,5 @@
 import { PropsWithChildren, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, TouchableHighlight, ViewProps } from 'react-native';
 import { isTablet as isTabletHelper } from 'react-native-device-info';
 
@@ -75,6 +76,7 @@ export interface AgendaCardProps {
    * The date of the next lecture
    */
   nextDate?: string;
+  accessibilityLabel?: string;
   style?: ViewProps['style'];
 }
 
@@ -96,10 +98,12 @@ export const AgendaCard = ({
   style,
   nextLecture = false,
   nextDate,
+  accessibilityLabel,
 }: PropsWithChildren<AgendaCardProps>) => {
   const styles = useStylesheet(createStyles);
   const { colors, dark, palettes, shapes, spacing, fontSizes } = useTheme();
   const { accessibility } = usePreferencesContext();
+  const { t, i18n } = useTranslation();
   const isTablet = useMemo(() => isTabletHelper(), []);
   const showsIcon = useMemo(() => iconColor && icon, [icon, iconColor]);
 
@@ -107,6 +111,13 @@ export const AgendaCard = ({
     () => ({ color: colors.lectureCardSecondary }),
     [colors.lectureCardSecondary],
   );
+
+  const computedAccessibilityLabel = useMemo(() => {
+    const parts = [type, title];
+    if (time) parts.push(time);
+    if (location) parts.push(location);
+    return parts.join(', ');
+  }, [type, title, time, location]);
 
   return (
     <Card
@@ -141,9 +152,17 @@ export const AgendaCard = ({
             },
         ]}
         onPress={onPress}
+        accessible
+        accessibilityRole={onPress ? 'button' : undefined}
+        accessibilityLabel={accessibilityLabel ?? computedAccessibilityLabel}
+        accessibilityHint={onPress ? t('common.tapToNavigate') : undefined}
+        accessibilityLanguage={i18n.language}
+        accessibilityState={{ disabled: !onPress }}
+        disabled={!onPress}
       >
         <Col
           gap={isCompact ? 0.5 : 2}
+          importantForAccessibility="no-hide-descendants"
           style={
             isCompact && { height: '100%', justifyContent: 'space-between' }
           }

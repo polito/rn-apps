@@ -73,6 +73,10 @@ export const BookingSeatsCta = ({
             })
         }
         disabled={!ctaEnabled}
+        accessibilityState={{ disabled: !ctaEnabled }}
+        accessibilityHint={
+          !ctaEnabled ? t('bookingSeatScreen.confirmDisabledHint') : undefined
+        }
         loading={createBookingMutation.isPending}
         containerStyle={{ paddingTop: 0 }}
       />

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { formatDate, getHtmlTextContent } from '@polito/lib/core';
@@ -15,6 +15,8 @@ import {
 } from '@polito/lib/ui';
 import { JobOfferOverview } from '@polito/student-api-client';
 
+import { hideFromScreenReader } from '../../../core/accessibility/hideFromScreenReader';
+
 interface Props {
   jobOffer: JobOfferOverview;
   index: number;
@@ -25,9 +27,8 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
 
-  const accessibilityLabel = accessibilityListLabel(index, totalData);
   const location = jobOffer?.location;
   const title = getHtmlTextContent(jobOffer?.title);
   const companyInfos = `${jobOffer?.companyName} - ${t(
@@ -36,6 +37,8 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
 
   return (
     <ListItem
+      accessible={true}
+      accessibilityRole="button"
       title={title}
       titleStyle={styles.title}
       linkTo={{
@@ -44,12 +47,12 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
           id: jobOffer?.id,
         },
       }}
-      accessibilityLabel={[
-        accessibilityLabel,
-        title,
-        location,
-        companyInfos,
-      ].join(', ')}
+      accessibilityLabel={buildCompositeListLabel(
+        [title, location, companyInfos],
+        index,
+        totalData,
+      )}
+      accessibilityHint={t('jobOfferListItem.tapToViewDetails')}
       subtitle={
         <Col>
           <Text
@@ -71,11 +74,13 @@ export const JobOfferListItem = ({ jobOffer, index, totalData }: Props) => {
       }
       subtitleStyle={styles.subtitle}
       trailingItem={
-        <Icon
-          icon={faChevronRight}
-          color={colors.secondaryText}
-          style={styles.icon}
-        />
+        <View {...hideFromScreenReader}>
+          <Icon
+            icon={faChevronRight}
+            color={colors.secondaryText}
+            style={styles.icon}
+          />
+        </View>
       }
     />
   );

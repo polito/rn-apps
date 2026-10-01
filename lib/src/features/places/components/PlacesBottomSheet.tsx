@@ -76,6 +76,7 @@ export const PlacesBottomSheet = forwardRef<
           <BottomSheetTextField
             label={searchFieldLabel ?? t('common.search')}
             returnKeyType="search"
+            accessibilityRole="search"
             onSubmitEditing={() => {
               onSearchTrigger?.();
             }}

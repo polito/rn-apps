@@ -283,6 +283,12 @@ export const GraduationCodeScreen = ({ navigation, route }: Props) => {
           action={onShare}
           loading={isSharing}
           disabled={!qrCodeQuery.data}
+          accessibilityState={{ disabled: !qrCodeQuery.data }}
+          accessibilityHint={
+            !qrCodeQuery.data
+              ? t('graduationCodeScreen.shareDisabledHint')
+              : undefined
+          }
           containerStyle={styles.buttonContainer}
           style={styles.ctaButton}
         />

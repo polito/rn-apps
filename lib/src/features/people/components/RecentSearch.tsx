@@ -39,11 +39,16 @@ export const RecentSearch = ({ listHeader, showRecents = false }: Props) => {
                 <Text
                   style={[styles.heading, { color: infoColor }]}
                   variant="heading"
+                  accessibilityRole="header"
                 >
                   {t('contactsScreen.recentSearches')}
                 </Text>
               </Row>
-              <View style={styles.list}>
+              <View
+                style={styles.list}
+                accessibilityRole="list"
+                accessibilityLabel={`${t('contactsScreen.recentSearches')} - ${peopleSearched.length} ${t('contactsScreen.contactsFound')}`}
+              >
                 {peopleSearched.map((person, index) => {
                   const isFirst = index === 0;
                   const isLast = index === peopleSearched.length - 1;

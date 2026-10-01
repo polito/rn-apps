@@ -67,7 +67,7 @@ export const PersonScreen = ({
   const personQuery = useGetPerson(id);
   const { peoplePreferred = [], updatePreference } =
     usePreferencesContext<PeoplePreferences>();
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
   const openInAppLink = useOpenInAppLink();
   const person = personQuery.data;
   const isPreferred = person
@@ -92,7 +92,14 @@ export const PersonScreen = ({
   const header = (
     <Col ph={5} gap={6} mb={6}>
       <Row align="center" justify="space-between">
-        <Text weight="bold" variant="title" style={styles.title}>
+        <Text
+          weight="bold"
+          variant="title"
+          style={styles.title}
+          accessible={true}
+          accessibilityRole="header"
+          accessibilityLabel={`${fullName}, ${person?.role || ''}`}
+        >
           {fullName}
         </Text>
         {person && showPreferredContacts && (
@@ -109,12 +116,15 @@ export const PersonScreen = ({
         )}
       </Row>
       {(!person ||
-        person?.picture ||
-        person?.role ||
-        person?.facilityShortName ||
-        person?.profileUrl) && (
+        !!person?.picture ||
+        !!person?.role ||
+        !!person?.facilityShortName ||
+        !!person?.profileUrl) && (
         <Row gap={6}>
-          <View accessible={true} accessibilityLabel={t('common.profilePic')}>
+          <View
+            accessible={false}
+            importantForAccessibility="no-hide-descendants"
+          >
             {person?.picture ? (
               <Image
                 source={{ uri: person.picture }}
@@ -137,6 +147,7 @@ export const PersonScreen = ({
                 value={person.role}
                 style={styles.spaceBottom}
                 accessible={true}
+                accessibilityLabel={`${t('personScreen.role')}: ${person.role}`}
               />
             )}
             {person?.facilityShortName && (
@@ -145,6 +156,7 @@ export const PersonScreen = ({
                 value={person.facilityShortName}
                 style={styles.spaceBottom}
                 accessible={true}
+                accessibilityLabel={`${t('personScreen.department')}: ${person.facilityShortName}`}
               />
             )}
 
@@ -153,8 +165,13 @@ export const PersonScreen = ({
                 onPress={() => openInAppLink(person.profileUrl)}
                 accessible={true}
                 accessibilityRole="link"
+                accessibilityLabel={t('personScreen.moreInfo')}
+                accessibilityHint={t('common.externalLink')}
               >
-                <Row align="center">
+                <Row
+                  align="center"
+                  importantForAccessibility="no-hide-descendants"
+                >
                   <Icon
                     icon={faLink}
                     size={20}
@@ -172,15 +189,25 @@ export const PersonScreen = ({
   );
 
   const renderPhoneNumber = (phoneNumber: PhoneNumber, index: number) => {
+    const phoneLabel = [phoneNumber.full, phoneNumber?.internal]
+      .filter(notNullish)
+      .join(' / ');
     return (
       <ListItem
+        accessible={true}
+        accessibilityRole="button"
         key={index}
         isAction
         leadingItem={<Icon icon={faPhone} size={fontSizes.xl} />}
         title={t('common.phone')}
-        subtitle={[phoneNumber.full, phoneNumber?.internal]
-          .filter(notNullish)
-          .join(' / ')}
+        subtitle={phoneLabel}
+        accessibilityLabel={buildCompositeListLabel(
+          [`${t('personScreen.call')} ${phoneLabel}`],
+          index,
+          phoneNumbers?.length || 0,
+        )}
+        accessibilityHint={t('personScreen.callHint')}
+        accessibilityState={{ disabled: isOffline }}
         onPress={() => Linking.openURL(`tel:${phoneNumber.full}`)}
       />
     );
@@ -197,13 +224,17 @@ export const PersonScreen = ({
 
     return (
       <ListItem
+        accessible={true}
+        accessibilityRole="button"
         title={course.name}
         subtitle={`${course.year} - ${t('common.' + role)}`}
         isAction
-        accessibilityLabel={`${accessibilityListLabel(
+        accessibilityLabel={buildCompositeListLabel(
+          [course.name, `${course.year} - ${t('common.' + role)}`],
           index,
           courses?.length || 0,
-        )}. ${course.name}, ${course.year} -${t('common.' + role)}`}
+        )}
+        accessibilityHint={t('common.tapToNavigate')}
         linkTo={{
           screen: 'DegreeCourse',
           params: {
@@ -227,20 +258,32 @@ export const PersonScreen = ({
           <Section>
             <SectionHeader
               title={t('personScreen.contacts')}
+              accessible={true}
               accessibilityLabel={`${t('personScreen.contacts')}. ${
-                phoneNumbers?.length && t('common.phoneContacts')
-              }. ${t('personScreen.sentEmail')}`}
+                phoneNumbers?.length
+                  ? `${phoneNumbers.length} ${t('common.phone')}, `
+                  : ''
+              }${t('common.email')}`}
             />
-            <OverviewList indented loading={personQuery.isLoading}>
-              {phoneNumbers?.map(renderPhoneNumber)}
-              <ListItem
-                isAction
-                leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
-                title={t('common.email')}
-                subtitle={person?.email}
-                onPress={() => Linking.openURL(`mailto:${person?.email}`)}
-              />
-            </OverviewList>
+            <View accessibilityRole="list">
+              <OverviewList indented loading={personQuery.isLoading}>
+                {phoneNumbers?.map(renderPhoneNumber)}
+                {person?.email && (
+                  <ListItem
+                    accessible={true}
+                    accessibilityRole="button"
+                    isAction
+                    leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
+                    title={t('common.email')}
+                    subtitle={person.email}
+                    accessibilityLabel={`${t('personScreen.sentEmail')} ${person.email}`}
+                    accessibilityHint={t('personScreen.emailHint')}
+                    accessibilityState={{ disabled: isOffline }}
+                    onPress={() => Linking.openURL(`mailto:${person.email}`)}
+                  />
+                )}
+              </OverviewList>
+            </View>
           </Section>
           {courses.length > 0 && (
             <Section>
@@ -252,16 +295,18 @@ export const PersonScreen = ({
                   { total: courses.length },
                 )}`}
               />
-              <OverviewList>
-                {courses.map((course, index) => (
-                  <RenderedCourse
-                    key={course.id}
-                    course={course}
-                    index={index}
-                    disabled={isOffline}
-                  />
-                ))}
-              </OverviewList>
+              <View accessibilityRole="list">
+                <OverviewList>
+                  {courses.map((course, index) => (
+                    <RenderedCourse
+                      key={course.id}
+                      course={course}
+                      index={index}
+                      disabled={isOffline}
+                    />
+                  ))}
+                </OverviewList>
+              </View>
             </Section>
           )}
         </Col>

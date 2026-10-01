@@ -11,8 +11,11 @@ import {
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled } from '@polito/lib/core';
-import { useOpenInAppLink } from '@polito/lib/core';
+import {
+  useAccessibilityFocusOnScreenFocus,
+  useOfflineDisabled,
+  useOpenInAppLink,
+} from '@polito/lib/core';
 import { useGetPersons } from '@polito/lib/features/people';
 import {
   BottomBarSpacer,
@@ -62,6 +65,7 @@ import { CourseTabsParamList } from '../navigation/CourseNavigator';
 type StaffMember = Person & { courseRole: 'roleHolder' | 'roleCollaborator' };
 
 export const CourseInfoScreen = () => {
+  const screenRef = useAccessibilityFocusOnScreenFocus<ScrollView>();
   const { t } = useTranslation();
   const courseId = useCourseContext();
   const styles = useStylesheet(createStyles);
@@ -175,6 +179,7 @@ export const CourseInfoScreen = () => {
 
   return (
     <ScrollView
+      ref={screenRef}
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={
         <RefreshControl
@@ -190,12 +195,18 @@ export const CourseInfoScreen = () => {
           cfu={courseQuery.data?.cfu}
           parentCourseName={isModule ? parentCourse?.name : undefined}
         />
-        <Card style={styles.metricsCard} accessible={true}>
+        <Card style={styles.metricsCard}>
           <Grid>
             <View
               style={GlobalStyles.grow}
               importantForAccessibility="yes"
               accessibilityRole={lockEdition ? undefined : 'button'}
+              accessibilityLabel={t('common.period')}
+              accessibilityValue={{
+                text: `${courseQuery.data?.teachingPeriod ?? '--'} - ${
+                  courseQuery.data?.year ?? '--'
+                }`,
+              }}
               accessible={true}
             >
               <StatefulMenuView
@@ -348,6 +359,11 @@ export const CourseInfoScreen = () => {
             {courseQuery.data?.links.map((link, index) => (
               <ListItem
                 key={index}
+                accessibilityRole="link"
+                accessibilityLabel={
+                  link.description ?? t('courseInfoTab.linkDefaultTitle')
+                }
+                accessibilityHint={t('common.externalLink')}
                 leadingItem={<Icon icon={faLink} size={fontSizes.xl} />}
                 title={link.description ?? t('courseInfoTab.linkDefaultTitle')}
                 subtitle={link.url}

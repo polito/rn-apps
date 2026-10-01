@@ -134,6 +134,7 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
                   <BookingSeatCell
                     seat={seatCell}
                     size={seatSize}
+                    gap={gap}
                     isSelected={seat?.id === seatCell.id}
                     key={seatCell.id}
                     disabled={seatCell.status !== 'available'}

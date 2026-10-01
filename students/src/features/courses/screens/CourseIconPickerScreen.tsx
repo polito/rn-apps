@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, TouchableOpacity } from 'react-native';
+import { AccessibilityInfo, FlatList, TouchableOpacity } from 'react-native';
 
 import {
   PreferencesContextBase,
+  useAccessibilityFocusOnScreenFocus,
   usePreferencesContext,
+  useScreenReader,
 } from '@polito/lib/core';
 import { courseIcons } from '@polito/lib/features/courses';
 import {
@@ -27,16 +29,29 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseIconPicker'>;
 
 export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
+  const { announce } = useScreenReader();
   const { spacing, fontSizes, dark, palettes, colors } = useTheme();
   const [searchFilter, setSearchFilter] = useState('');
   const { courses: coursesPrefs, updatePreference } =
     usePreferencesContext<AppPreferences>();
   const { marginHorizontal } = useSafeAreaSpacing();
+  const screenRef = useAccessibilityFocusOnScreenFocus<FlatList>();
   const { uniqueShortcode } = route.params;
   const coursePrefs = useMemo(
     () => coursesPrefs[uniqueShortcode],
     [uniqueShortcode, coursesPrefs],
   );
+  const getIconLabel = useCallback(
+    (item: (typeof icons)[number]) => {
+      const iconName =
+        (item?.[1] as { iconName?: string })?.iconName ?? item[0];
+      return t(`icons.${iconName}`, {
+        defaultValue: iconName.replace(/-/g, ' '),
+      });
+    },
+    [t],
+  );
+
   const filteredIcons = useMemo(
     () =>
       searchFilter
@@ -48,26 +63,40 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
   useEffect(() => {
     navigation.setOptions({
       headerSearchBarOptions: {
+        placeholder: t('common.search'),
         onChangeText: e => setSearchFilter(e.nativeEvent.text.toLowerCase()),
         textColor: colors.prose,
         hintTextColor: dark ? palettes.gray[400] : palettes.gray[600],
       },
     });
-  }, [navigation, colors, dark, palettes]);
+  }, [navigation, colors, dark, palettes, t]);
 
   return (
     <>
       <FlatList
+        ref={screenRef}
         contentInsetAdjustmentBehavior="automatic"
         data={filteredIcons}
         renderItem={({ item }) => (
           <TouchableOpacity
+            accessible
+            accessibilityRole="button"
+            accessibilityLabel={getIconLabel(item)}
+            accessibilityState={{ selected: coursePrefs?.icon === item[0] }}
             style={{
               flex: 1,
               alignItems: 'center',
               padding: spacing[4],
             }}
             onPress={() => {
+              setTimeout(() => {
+                AccessibilityInfo.announceForAccessibility(
+                  [
+                    t('coursePreferencesScreen.selectedIcon'),
+                    getIconLabel(item),
+                  ].join(', '),
+                );
+              }, 200);
               updatePreference('courses', {
                 ...coursesPrefs,
                 [uniqueShortcode]: {
@@ -75,6 +104,11 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
                   icon: item[0],
                 },
               });
+              announce(
+                t('courseIconPickerScreen.iconSelected', {
+                  icon: getIconLabel(item),
+                }),
+              );
               navigation.goBack();
             }}
           >

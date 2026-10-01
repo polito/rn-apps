@@ -2,6 +2,7 @@ import { ViewProps } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
+import { hideFromScreenReader } from '../../core/accessibility/hideFromScreenReader';
 import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
 import { useTheme } from '../hooks/useTheme';
 import { Icon } from './Icon';
@@ -21,11 +22,16 @@ export const Badge = ({
   backgroundColor,
   foregroundColor,
   style,
+  accessible,
+  ...rest
 }: Props) => {
   const { spacing, shapes, fontSizes, fontFamilies } = useTheme();
   const { accessibility } = usePreferencesContext();
+
   return (
     <Row
+      {...(accessible === true ? {} : hideFromScreenReader)}
+      accessible={accessible}
       gap={2}
       style={[
         {
@@ -44,6 +50,7 @@ export const Badge = ({
         },
         style,
       ]}
+      {...rest}
     >
       {icon && <Icon icon={icon} size={fontSizes.md} color={foregroundColor} />}
       <Text

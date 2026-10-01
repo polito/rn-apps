@@ -5,7 +5,7 @@ import {
 
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 
 import { usePreferencesContext } from '@polito/lib/core';
@@ -27,7 +27,6 @@ import ColorPicker, {
   HueSlider,
   InputWidget,
   Panel1,
-  Swatches,
 } from 'reanimated-color-picker';
 
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
@@ -50,6 +49,7 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
   } = usePreferencesContext<AppPreferences>();
 
   const [isSafeColor, setIsSafeColor] = useState(true);
+  const [focusedColor, setFocusedColor] = useState<string | undefined>();
   const [temporaryColor, setTemporaryColor] = useState(
     coursesPrefs[route.params.uniqueShortcode]?.color ?? courseColors[0].color,
   );
@@ -108,12 +108,6 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
     runOnJS(setTemporaryColor)(color.hex);
   };
 
-  const onSwatchColorChange = (color: { hex: string }) => {
-    'worklet';
-    runOnJS(setIsSafeColor)(true);
-    runOnJS(setTemporaryColor)(color.hex);
-  };
-
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -129,18 +123,33 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
                   title={t('courseColorPickerScreen.accessibleColor')}
                 />
                 <OverviewList indented>
-                  <ColorPicker
-                    value={temporaryColor}
-                    onComplete={onSwatchColorChange}
-                  >
-                    <View style={styles.picker}>
-                      <Swatches
-                        style={styles.swatchesContainer}
-                        swatchStyle={styles.swatchItem}
-                        colors={courseColors.map(c => c.color)}
-                      />
-                    </View>
-                  </ColorPicker>
+                  <View style={[styles.picker, styles.swatchesContainer]}>
+                    {courseColors.map(({ name, color }) => {
+                      const selected =
+                        temporaryColor.slice(0, 7).toUpperCase() ===
+                        color.toUpperCase();
+                      return (
+                        <Pressable
+                          key={color}
+                          accessibilityRole="button"
+                          accessibilityLabel={t(name)}
+                          accessibilityState={{ selected }}
+                          onPress={() => {
+                            setIsSafeColor(true);
+                            setTemporaryColor(color);
+                          }}
+                          onFocus={() => setFocusedColor(color)}
+                          onBlur={() => setFocusedColor(undefined)}
+                          style={[
+                            styles.swatchItem,
+                            { backgroundColor: color },
+                            selected && styles.swatchItemSelected,
+                            focusedColor === color && styles.swatchItemFocused,
+                          ]}
+                        />
+                      );
+                    })}
+                  </View>
                 </OverviewList>
               </Section>
               <Section>
@@ -189,6 +198,12 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
             title={t('common.confirm')}
             action={handleConfirmColor}
             disabled={!hasChanged}
+            accessibilityState={{ disabled: !hasChanged }}
+            accessibilityHint={
+              !hasChanged
+                ? t('courseColorPickerScreen.confirmDisabledHint')
+                : undefined
+            }
             absolute={false}
             containerStyle={styles.buttonWrapper}
           />
@@ -241,14 +256,26 @@ const createStyles = ({
     swatchesContainer: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      justifyContent: 'space-between',
-      padding: 10,
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      gap: spacing[3],
+      padding: spacing[3],
     },
     swatchItem: {
-      width: '12%',
-      aspectRatio: 1,
-      borderRadius: 9999,
-      marginBottom: 10,
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+    },
+    swatchItemSelected: {
+      borderWidth: 3,
+      borderColor: colors.heading,
+    },
+    swatchItemFocused: {
+      borderWidth: 3,
+      borderColor: colors.heading,
+      outlineWidth: 2,
+      outlineColor: colors.background,
+      outlineStyle: 'solid',
     },
     widget: {
       marginTop: 10,

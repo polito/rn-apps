@@ -109,7 +109,7 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
         onLayout={e => setViewHeight(Math.round(e.nativeEvent.layout.height))}
       >
         <ReactNativeZoomableView
-          accessible={true}
+          accessible={false}
           contentWidth={SCREEN_WIDTH}
           contentHeight={viewHeight}
           bindToBorders={true}
@@ -141,6 +141,7 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
                   <BookingSeatCell
                     seat={seatCell}
                     size={seatSize}
+                    gap={gap}
                     isSelected={seatId === seatCell.id}
                     key={seatCell.id}
                   />
@@ -179,6 +180,12 @@ export const BookingSeatScreen = ({ route, navigation }: Props) => {
             loading={deleteBookingMutation.isPending}
             absolute={false}
             disabled={isDisabled || deleteBookingMutation.isPending}
+            accessibilityState={{
+              disabled: isDisabled || deleteBookingMutation.isPending,
+            }}
+            accessibilityHint={
+              isDisabled ? t('bookingScreen.cancelDisabledHint') : undefined
+            }
             destructive={true}
           />
         )}

@@ -39,6 +39,10 @@ export const DeadlineScreen = ({ route }: Props) => {
         {deadline?.url && (
           <OverviewList>
             <ListItem
+              accessible
+              accessibilityRole="link"
+              accessibilityLabel={[deadline?.type, deadline?.title].join(', ')}
+              accessibilityHint={t('common.externalLink')}
               leadingItem={
                 <Icon
                   icon={faLink}

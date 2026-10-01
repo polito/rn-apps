@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ViewStyle } from 'react-native';
 
 import {
@@ -20,6 +21,7 @@ export function useCalendarTouchableOpacityProps<T extends ICalendarEventBase>({
   injectedStyles = [],
   onPressEvent,
 }: UseCalendarTouchableOpacityPropsProps<T>) {
+  const { t } = useTranslation();
   const getEventStyle = useMemo(
     () =>
       typeof eventCellStyle === 'function'
@@ -32,11 +34,20 @@ export function useCalendarTouchableOpacityProps<T extends ICalendarEventBase>({
     onPressEvent && onPressEvent(event);
   }, [onPressEvent, event]);
 
+  const accessibilityLabel = [
+    event.title || t('common.event'),
+    event.start.toFormat('cccc d MMMM'),
+    `${t('common.fromTime')} ${event.start.toFormat('HH:mm')} ${t('common.toTime')} ${event.end.toFormat('HH:mm')}`,
+  ].join(', ');
+
   const touchableOpacityProps: CalendarTouchableOpacityProps = {
     delayPressIn: 20,
     style: [...injectedStyles, getEventStyle(event)],
     onPress: _onPress,
     disabled: !onPressEvent,
+    accessible: true,
+    accessibilityLabel,
+    focusable: !!onPressEvent,
   };
 
   return touchableOpacityProps;

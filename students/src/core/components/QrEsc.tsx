@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { DimensionValue, View } from 'react-native';
 import Svg, { Image, Path, Rect, SvgProps } from 'react-native-svg';
 
@@ -11,8 +12,14 @@ export const QrEsc = ({
   width?: DimensionValue;
   height?: DimensionValue;
 }) => {
+  const { t } = useTranslation();
   return (
-    <View style={{ aspectRatio: 0.8, width: width ?? '100%' }}>
+    <View
+      style={{ aspectRatio: 0.8, width: width ?? '100%' }}
+      accessible={true}
+      accessibilityRole="image"
+      accessibilityLabel={t('europeanCardScreen.showQrCode')}
+    >
       <Svg
         viewBox="0 0 256 319"
         width="100%"

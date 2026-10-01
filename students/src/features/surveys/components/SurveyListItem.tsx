@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { useOpenInAppLink } from '@polito/lib/core';
 import { ListItem, type ListItemProps } from '@polito/lib/ui';
 import { Survey } from '@polito/student-api-client';
@@ -8,12 +10,16 @@ type Props = {
 
 export const SurveyListItem = ({ survey, ...props }: Props) => {
   const openInAppLink = useOpenInAppLink();
+  const { t } = useTranslation();
+
   return (
     <ListItem
+      accessibilityHint={t('surveysScreen.tapToOpenSurvey')}
       {...props}
       title={survey.title}
       subtitle={survey.subtitle ?? undefined}
       onPress={() => openInAppLink(survey.url)}
+      accessibilityRole="link"
       isAction
     />
   );

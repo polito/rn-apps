@@ -415,6 +415,14 @@ export const CourseDirectoryListItem = ({
 
   return (
     <DirectoryListItem
+      accessibilityRole="button"
+      accessible
+      accessibilityLabel={[
+        t('common.directory'),
+        stripIdInParentheses(item.name),
+        subtitle,
+        t('courseFilesTab.openDirectory'),
+      ].join(', ')}
       title={stripIdInParentheses(item.name)}
       subtitle={subtitle}
       onPress={() => {
@@ -434,6 +442,16 @@ export const CourseDirectoryListItem = ({
           ? () => onLongPress(getAllFilesInDirectory().map(f => f.id))
           : undefined
       }
+      accessibilityActions={
+        onLongPress
+          ? [{ name: 'longPress', label: t('common.selectAll') }]
+          : undefined
+      }
+      onAccessibilityAction={event => {
+        if (event.nativeEvent.actionName === 'longPress' && onLongPress) {
+          onLongPress(getAllFilesInDirectory().map(f => f.id));
+        }
+      }}
       trailingItem={trailingItem || undefined}
       isDownloaded={allFilesDownloaded}
       unread={hasUnreadFiles}

@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AccessibilityInfo,
-  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -11,8 +10,6 @@ import {
 import { Defs, LinearGradient, Rect, Stop, Svg } from 'react-native-svg';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { getHtmlTextContent } from '@polito/lib/core';
-import { useAccessibility } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   CtaButton,
@@ -65,24 +62,14 @@ const ListItem = ({
     () => !!getUnreadsCount(['services', 'tickets', ticket.id.toString()]),
     [getUnreadsCount, ticket.id],
   );
-  const { accessibilityListLabel } = useAccessibility();
-  const accessibilityLabel = [
-    accessibilityListLabel(index, totalData),
-    getHtmlTextContent(ticket?.subject),
-  ].join(', ');
 
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
-    >
-      <TicketListItem
-        accessibilityLabel={accessibilityLabel}
-        ticket={ticket}
-        key={ticket.id}
-        unread={unread}
-      />
-    </Pressable>
+    <TicketListItem
+      ticket={ticket}
+      index={index}
+      total={totalData}
+      unread={unread}
+    />
   );
 };
 

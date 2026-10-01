@@ -1,8 +1,13 @@
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 
-import { useOfflineDisabled } from '@polito/lib/core';
-import { useAccessibility } from '@polito/lib/core';
+import {
+  useAccessibility,
+  useAccessibilityFocusOnScreenFocus,
+  useAnnounceLoading,
+  useOfflineDisabled,
+} from '@polito/lib/core';
 import {
   BottomBarSpacer,
   CtaButton,
@@ -11,6 +16,7 @@ import {
   RefreshControl,
 } from '@polito/lib/ui';
 import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
 import { CourseAssignmentListItem } from '../components/CourseAssignmentListItem';
@@ -23,36 +29,58 @@ type Props = MaterialTopTabScreenProps<
 >;
 
 export const CourseAssignmentsScreen = ({ navigation }: Props) => {
+  const screenRef = useAccessibilityFocusOnScreenFocus<ScrollView>();
   const { t } = useTranslation();
   const courseId = useCourseContext();
   const assignmentsQuery = useGetCourseAssignments(courseId);
-  const { accessibilityListLabel } = useAccessibility();
+  useAnnounceLoading(assignmentsQuery.isLoading);
+  const { getListAccessibilityProps, announceIfEnabled } = useAccessibility();
   const isDisabled = useOfflineDisabled();
   const isCacheMissing = useOfflineDisabled(
     () => assignmentsQuery.data === undefined,
   );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!assignmentsQuery?.data) {
+        return;
+      }
+      if (assignmentsQuery?.data?.length === 0) {
+        setTimeout(() => {
+          announceIfEnabled(t('courseAssignmentsTab.emptyState'));
+        }, 500);
+      }
+    }, [assignmentsQuery, t, announceIfEnabled]),
+  );
+
   return (
     <>
       <ScrollView
+        ref={screenRef}
         refreshControl={<RefreshControl manual queries={[assignmentsQuery]} />}
       >
         <SafeAreaView>
           {!assignmentsQuery.isLoading &&
             assignmentsQuery.data &&
             (assignmentsQuery.data.length > 0 ? (
-              <List indented>
-                {assignmentsQuery.data.map((assignment, index) => (
-                  <CourseAssignmentListItem
-                    key={assignment.id}
-                    item={assignment}
-                    accessibilityListLabel={accessibilityListLabel(
-                      index,
-                      assignmentsQuery.data.length,
-                    )}
-                    disabled={isDisabled}
-                  />
-                ))}
-              </List>
+              <View
+                {...getListAccessibilityProps(
+                  t('courseAssignmentsTab.title'),
+                  assignmentsQuery.data.length,
+                )}
+              >
+                <List indented>
+                  {assignmentsQuery.data.map((assignment, index) => (
+                    <CourseAssignmentListItem
+                      key={assignment.id}
+                      item={assignment}
+                      index={index}
+                      total={assignmentsQuery.data.length}
+                      disabled={isDisabled}
+                    />
+                  ))}
+                </List>
+              </View>
             ) : (
               <OverviewList
                 emptyStateText={t('courseAssignmentsTab.emptyState')}
@@ -73,6 +101,7 @@ export const CourseAssignmentsScreen = ({ navigation }: Props) => {
           })
         }
         disabled={isDisabled}
+        accessibilityState={{ disabled: isDisabled }}
       />
     </>
   );

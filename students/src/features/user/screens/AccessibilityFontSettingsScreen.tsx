@@ -183,10 +183,7 @@ const CustomFontSizeListItem = ({
         isAction
         title={t(`accessibilitySettingsScreen.customFontSizeTitle`)}
         subtitle={effectiveLabel}
-        // // subtitleProps={{ capitalize: true }}
-        /* TODO accessibilityLabel={`${t('common.language')}: ${t(
-          `common.${language}`,
-        )}. ${t('settingsScreen.openLanguageMenu')}`}*/
+        accessibilityLabel={`${t('accessibilitySettingsScreen.customFontSizeTitle')}: ${effectiveLabel}`}
       />
     </MenuView>
   );

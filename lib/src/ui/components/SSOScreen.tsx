@@ -38,8 +38,14 @@ export const SSOScreen = ({
           action={onSsoPress}
           loading={isLoading}
         />
-        <TouchableOpacity style={styles.link} onPress={onLoginPress}>
-          <Text variant="link" style={styles.textLink}>
+        <TouchableOpacity
+          style={styles.link}
+          onPress={onLoginPress}
+          accessibilityRole="button"
+          accessibilityLabel={t('ssoScreen.ssoLink')}
+          accessibilityHint={t('common.tapToNavigate')}
+        >
+          <Text variant="link" style={styles.textLink} accessible={false}>
             {t('ssoScreen.ssoLink')}
           </Text>
         </TouchableOpacity>

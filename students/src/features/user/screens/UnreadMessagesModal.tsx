@@ -116,6 +116,7 @@ export const UnreadMessagesModal = ({ navigation }: Props) => {
           <CtaButton
             absolute={false}
             title=""
+            accessibilityLabel={t('common.next')}
             variant="outlined"
             action={onConfirm}
             icon={faChevronRight}

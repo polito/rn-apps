@@ -7,12 +7,13 @@ import {
   faCircleCheck,
   faCircleXmark,
 } from '@fortawesome/free-regular-svg-icons';
-import { Icon, useTheme } from '@polito/lib/ui';
+import { Icon, useKeyboardActivation, useTheme } from '@polito/lib/ui';
 import { BookingSeatCell as BookingSeatCellType } from '@polito/student-api-client';
 
 type BookingSeatProps = PressableProps & {
   seat: BookingSeatCellType;
   size: number;
+  gap: number;
   isSelected: boolean;
 };
 
@@ -21,6 +22,7 @@ const ICON_SIZE_RATIO = 0.6;
 export const BookingSeatCell = ({
   seat,
   size,
+  gap,
   isSelected,
   ...rest
 }: BookingSeatProps) => {
@@ -65,11 +67,23 @@ export const BookingSeatCell = ({
     dark,
   ]);
 
+  const keyboardActivationProps = useKeyboardActivation({
+    onActivate: rest.onPress as (() => void) | undefined,
+    disabled: seat.status !== 'available',
+    accessibilityActions: rest.accessibilityActions,
+    onAccessibilityAction: rest.onAccessibilityAction,
+  });
+
   return (
     <Pressable
       accessible
       accessibilityRole="button"
       accessibilityLabel={[seat.label, seatStatus].join(', ')}
+      accessibilityState={{
+        selected: isSelected,
+        disabled: seat.status !== 'available' || !!rest.disabled,
+      }}
+      hitSlop={Math.max(0, Math.min((24 - size) / 2, gap / 2))}
       style={{
         height: size,
         width: size,
@@ -81,6 +95,7 @@ export const BookingSeatCell = ({
         borderColor,
       }}
       {...rest}
+      {...keyboardActivationProps}
     >
       {icon && (
         <Icon icon={icon} color={iconColor} size={size * ICON_SIZE_RATIO} />

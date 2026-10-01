@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { PixelRatio, Platform, StyleSheet, View } from 'react-native';
 
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
@@ -13,6 +14,7 @@ type Props = NativeStackScreenProps<SharedScreensParamList, 'ImageScreen'>;
 
 export const ImageScreen = ({ route }: Props) => {
   const { uri, width, height } = route.params;
+  const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const [viewSize, setViewSize] = useState<
     { height: number; width: number } | undefined
@@ -67,6 +69,8 @@ export const ImageScreen = ({ route }: Props) => {
                   width: imageProps.imageWidth,
                 }}
                 resizeMode="contain"
+                accessibilityLabel={t('common.image')}
+                accessibilityRole="image"
               />
             </ReactNativeZoomableView>
           )}

@@ -38,7 +38,7 @@ const TopTabs = createMaterialTopTabNavigator<CourseTabsParamList>();
 export const CourseNavigator = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { palettes, fontSizes } = theme;
+  const { palettes, fontSizes, spacing } = theme;
   const { width } = useWindowDimensions();
   const { getUnreadsCount } = useNotifications();
   const titleStyles = useTitlesStyles(theme);
@@ -115,6 +115,11 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
           size={fontSizes.lg}
           accessibilityRole="button"
           accessibilityLabel={t('common.preferences')}
+          accessibilityHint={t('courseInfoTab.preferencesHint')}
+          hitSlop={{
+            left: +spacing[3],
+            right: +spacing[3],
+          }}
           adjustSpacing="right"
           onPress={() => {
             navigation.navigate('CoursePreferences', {
@@ -131,6 +136,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
     id,
     navigation,
     palettes.primary,
+    spacing,
     t,
     title,
     paramUniqueShortcode,

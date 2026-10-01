@@ -282,6 +282,14 @@ export const CourseHideEventScreen = ({ navigation, route }: Props) => {
         title={t('courseHideEventScreen.button')}
         action={onPress}
         disabled={!items.filter(item => item.restoreVisibility).length}
+        accessibilityState={{
+          disabled: !items.filter(item => item.restoreVisibility).length,
+        }}
+        accessibilityHint={
+          !items.filter(item => item.restoreVisibility).length
+            ? t('courseHideEventScreen.buttonDisabledHint')
+            : undefined
+        }
       />
       <CtaButtonSpacer />
       <BottomBarSpacer />

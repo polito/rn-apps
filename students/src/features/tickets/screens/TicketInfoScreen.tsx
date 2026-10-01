@@ -223,9 +223,8 @@ const createStyles = ({
       letterSpacing: 0.16,
       color: palettes.primary[500],
     },
-    // eslint-disable-next-line react-native/no-color-literals
     markResolvedDisabled: {
-      color: '#90A1B9',
+      color: palettes.gray[400],
     },
     title: {
       fontSize: fontSizes.xl,

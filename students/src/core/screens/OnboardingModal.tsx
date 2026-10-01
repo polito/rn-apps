@@ -1,8 +1,22 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Platform, StyleSheet, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  Image,
+  Platform,
+  StyleSheet,
+  View,
+  findNodeHandle,
+} from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -18,6 +32,7 @@ import BaseBottomSheet, {
   BottomSheetScrollView,
   SCREEN_HEIGHT,
 } from '@gorhom/bottom-sheet';
+import { IS_ANDROID } from '@polito/lib/core';
 import { CtaButton, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 
 // import { AnnouncementScope } from '@polito/student-api-client';
@@ -38,6 +53,7 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
   const { colors, shapes } = useTheme();
   const { t } = useTranslation();
   const bottomSheetRef = useRef<BaseBottomSheet>(null);
+  const headerRef = useRef<View>(null);
   const animatedPosition = useSharedValue(SCREEN_HEIGHT);
 
   // why: scope filter momentarily disabled to show both `onboarding` and
@@ -158,6 +174,7 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
               variant="outlined"
               action={onPreviousPage}
               containerStyle={{ paddingRight: 0 }}
+              accessibilityLabel={t('common.back')}
             />
           )}
           <CtaButton
@@ -182,6 +199,15 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
 
   const currentAnnouncement = unseenAnnouncements[currentStep];
 
+  useLayoutEffect(() => {
+    if (!visible || !mediaReady) return;
+    const timer = setTimeout(() => {
+      const node = findNodeHandle(headerRef.current);
+      if (node) AccessibilityInfo.setAccessibilityFocus(node);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [visible, mediaReady, currentStep]);
+
   if (!visible || totalSteps === 0 || !currentAnnouncement) {
     return null;
   }
@@ -194,6 +220,7 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
         !mediaReady && { opacity: 0 },
       ]}
       pointerEvents={mediaReady ? 'auto' : 'none'}
+      accessibilityViewIsModal={IS_ANDROID}
     >
       <Animated.View style={[styles.backdrop, backdropStyle]} />
       {/* Hidden native video preloaders */}
@@ -236,6 +263,7 @@ export const OnboardingModal = ({ visible, onClose }: Props) => {
           html={currentAnnouncement.contents}
           cover={currentAnnouncement.cover}
           ScrollViewComponent={BottomSheetScrollView}
+          headerRef={headerRef}
         />
       </BaseBottomSheet>
     </GestureHandlerRootView>

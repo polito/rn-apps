@@ -824,7 +824,12 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
           actions={headerMenuActions}
           onPressAction={onHeaderMenuAction}
         >
-          <View style={styles.ellipsisTrigger}>
+          <View
+            style={styles.ellipsisTrigger}
+            accessible
+            accessibilityRole="button"
+            accessibilityLabel={t('common.options')}
+          >
             <Icon
               icon={faEllipsisVertical}
               color={palettes.primary[400]}
@@ -841,6 +846,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
     palettes.primary,
     fontSizes.lg,
     styles.ellipsisTrigger,
+    t,
   ]);
 
   return (
@@ -865,6 +871,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
           <TranslucentTextField
             autoCorrect={false}
             leadingIcon={faSearch}
+            accessibilityRole="search"
             value={searchFilter}
             onChangeText={setSearchFilter}
             style={[GlobalStyles.grow, styles.textField]}
@@ -905,6 +912,12 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
             icon={faCloudArrowDown}
             action={handleDownloadPress}
             disabled={isModalDownloadButtonDisabled}
+            accessibilityState={{ disabled: isModalDownloadButtonDisabled }}
+            accessibilityHint={
+              isModalDownloadButtonDisabled
+                ? t('courseFilesTab.downloadDisabledHint')
+                : undefined
+            }
             absolute={false}
             variant="filled"
             style={modalDownloadButtonStyle}
@@ -918,6 +931,12 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
             action={handleRemovePress}
             style={[modalRemoveButtonStyle, styles.ctaButton]}
             disabled={isModalRemoveButtonDisabled}
+            accessibilityState={{ disabled: isModalRemoveButtonDisabled }}
+            accessibilityHint={
+              isModalRemoveButtonDisabled
+                ? t('courseFilesTab.removeDisabledHint')
+                : undefined
+            }
             absolute={false}
             destructive={true}
             containerStyle={styles.ctaButtonContainer}

@@ -1,5 +1,6 @@
 import {
   Ref,
+  RefObject,
   createContext,
   forwardRef,
   useContext,
@@ -7,6 +8,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BackHandler, Platform } from 'react-native';
 import {
   Extrapolation,
@@ -19,6 +21,7 @@ import {
 
 import BaseBottomSheet, {
   BottomSheetProps as BaseBottomSheetProps,
+  BottomSheetHandle,
   SNAP_POINT_TYPE,
 } from '@gorhom/bottom-sheet';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
@@ -55,6 +58,7 @@ export const BottomSheet = forwardRef(
     ref: Ref<BottomSheetMethods>,
   ) => {
     const { colors, palettes, shapes, spacing } = useTheme();
+    const { t } = useTranslation();
     const defaultPosition = useSharedValue(0);
     const panelPosition = animatedPosition ?? defaultPosition;
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -121,9 +125,33 @@ export const BottomSheet = forwardRef(
         }
       >
         <BaseBottomSheet
-          ref={ref}
+          ref={instance => {
+            baseBottomSheetRef.current = instance;
+            if (typeof ref === 'function') {
+              ref(instance);
+            } else if (ref && typeof ref === 'object') {
+              (ref as RefObject<BottomSheetMethods | null>).current = instance;
+            }
+          }}
           index={1}
           snapPoints={snapPoints}
+          accessible={false}
+          handleComponent={handleProps => (
+            <BottomSheetHandle
+              {...handleProps}
+              accessibilityLabel={t('common.bottomSheetLabel')}
+              accessibilityHint={t('common.bottomSheetHint')}
+              accessibilityActions={[{ name: 'activate' }]}
+              onAccessibilityAction={({ nativeEvent: { actionName } }) => {
+                if (actionName !== 'activate') return;
+                if (currentIndex > 0) {
+                  baseBottomSheetRef.current?.collapse();
+                } else {
+                  baseBottomSheetRef.current?.expand();
+                }
+              }}
+            />
+          )}
           overDragResistanceFactor={0.9}
           style={[
             {

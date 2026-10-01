@@ -241,6 +241,12 @@ export const MfaEnrollContent = ({
               containerStyle={styles.confirmButtonContainer}
               loading={isLoading}
               disabled={deviceName.length === 0}
+              accessibilityState={{ disabled: deviceName.length === 0 }}
+              accessibilityHint={
+                deviceName.length === 0
+                  ? t('mfaScreen.enroll.confirmDisabledHint')
+                  : undefined
+              }
             />
           </View>
         </Animated.View>

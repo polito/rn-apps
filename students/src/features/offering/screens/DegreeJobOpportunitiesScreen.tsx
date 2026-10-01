@@ -1,6 +1,9 @@
 import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { getHtmlTextContent } from '@polito/lib/core';
+import {
+  getHtmlTextContent,
+  useAccessibilityFocusOnScreenFocus,
+} from '@polito/lib/core';
 import {
   BottomBarSpacer,
   Card,
@@ -16,6 +19,7 @@ import { useGetOfferingDegree } from '../../../core/queries/offeringHooks';
 import { useDegreeContext } from '../contexts/DegreeContext';
 
 export const DegreeJobOpportunitiesScreen = () => {
+  const screenRef = useAccessibilityFocusOnScreenFocus<ScrollView>();
   const { degreeId, year } = useDegreeContext();
   const degreeQuery = useGetOfferingDegree({ degreeId, year });
   const styles = useStylesheet(createStyles);
@@ -24,6 +28,7 @@ export const DegreeJobOpportunitiesScreen = () => {
 
   return (
     <ScrollView
+      ref={screenRef}
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={<RefreshControl queries={[degreeQuery]} manual />}
       contentContainerStyle={styles.list}
@@ -32,12 +37,21 @@ export const DegreeJobOpportunitiesScreen = () => {
         <LoadingContainer loading={isLoading}>
           <Section>
             <Card padded>
-              <Text variant="subHeading" style={styles.subHeading}>
+              <Text
+                variant="subHeading"
+                style={styles.subHeading}
+                accessibilityRole="header"
+              >
                 {degree?.jobOpportunities?.title}
               </Text>
-              <Text variant="longProse">
-                {getHtmlTextContent(degree?.jobOpportunities?.content ?? '')}
-              </Text>
+              {getHtmlTextContent(degree?.jobOpportunities?.content ?? '')
+                .split(/\n+/)
+                .filter(paragraph => paragraph.trim().length > 0)
+                .map((paragraph, index) => (
+                  <Text variant="longProse" key={index}>
+                    {paragraph}
+                  </Text>
+                ))}
             </Card>
           </Section>
         </LoadingContainer>

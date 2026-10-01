@@ -1,4 +1,4 @@
-import { ComponentType, ReactNode, useMemo, useState } from 'react';
+import { ComponentType, ReactNode, RefObject, useMemo, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -17,6 +17,8 @@ import {
 
 import { Image } from 'expo-image';
 
+import { hideFromScreenReader } from '../accessibility/hideFromScreenReader';
+
 interface Props {
   title: string;
   description?: string;
@@ -24,6 +26,7 @@ interface Props {
   cover?: string;
   ScrollViewComponent?: ComponentType<any>;
   children?: ReactNode;
+  headerRef?: RefObject<View | null>;
 }
 
 export const OnboardingStep = ({
@@ -32,6 +35,7 @@ export const OnboardingStep = ({
   cover,
   ScrollViewComponent = ScrollView,
   children,
+  headerRef,
 }: Props) => {
   const styles = useStylesheet(createStyles);
   const { shapes, spacing } = useTheme();
@@ -59,23 +63,31 @@ export const OnboardingStep = ({
     >
       {cover && (
         <View style={styles.coverImageContainer}>
-          <Image
-            source={{ uri: cover }}
-            style={{
-              borderRadius: shapes.lg,
-              width: coverWidth,
-              aspectRatio: coverAspectRatio ?? 16 / 9,
-            }}
-            contentFit="cover"
-            onLoad={e => {
-              const { width: w, height: h } = e.source;
-              if (w > 0 && h > 0) setCoverAspectRatio(w / h);
-            }}
-          />
+          <View {...hideFromScreenReader}>
+            <Image
+              source={{ uri: cover }}
+              style={{
+                borderRadius: shapes.lg,
+                width: coverWidth,
+                aspectRatio: coverAspectRatio ?? 16 / 9,
+              }}
+              contentFit="cover"
+              onLoad={e => {
+                const { width: w, height: h } = e.source;
+                if (w > 0 && h > 0) setCoverAspectRatio(w / h);
+              }}
+            />
+          </View>
         </View>
       )}
-      <View style={styles.header}>
-        <Text variant="title" role="heading">
+      <View
+        ref={headerRef}
+        style={styles.header}
+        accessible
+        accessibilityRole="header"
+        accessibilityLabel={title}
+      >
+        <Text variant="title" role="heading" accessible={false}>
           {title}
         </Text>
       </View>

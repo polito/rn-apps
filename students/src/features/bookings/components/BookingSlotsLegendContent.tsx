@@ -14,6 +14,8 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 
+import { hideFromScreenReader } from '~/core/accessibility/hideFromScreenReader';
+
 import { DARK_SLOT_BACKGROUNDS } from '../../../utils/bookings';
 import { BookingSlotIcon } from './BookingSlotIcon';
 
@@ -80,6 +82,7 @@ export const BookingSlotsLegendContent = () => {
               styles.iconContainer,
               { backgroundColor: item.backgroundColor },
             ]}
+            {...hideFromScreenReader}
           >
             <BookingSlotIcon
               icon={item.icon}

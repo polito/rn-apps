@@ -10,7 +10,6 @@ import { useTheme } from '../hooks/useTheme';
 import { Theme } from '../types/Theme';
 import { Row } from './Row';
 import { Text } from './Text';
-import { VisuallyHidden } from './VisuallyHidden';
 
 interface Props {
   text?: string | number;
@@ -50,6 +49,14 @@ export const UnreadBadge = ({
       align="center"
       justify="center"
       flexShrink={0}
+      accessible
+      accessibilityLabel={
+        isDigit || isNumeric
+          ? t('common.newItems', { count: Number(text) })
+          : text
+            ? String(text)
+            : t('common.newItemsIndicator')
+      }
       style={[
         styles.badge,
         {
@@ -76,11 +83,6 @@ export const UnreadBadge = ({
           ]}
         >
           {text}
-          {isDigit && (
-            <VisuallyHidden>
-              {t('common.newItems', { count: Number(text) })}
-            </VisuallyHidden>
-          )}
         </Text>
       )}
     </Row>

@@ -5,6 +5,10 @@ export const setTimeoutAccessibilityInfoHelper = (
   ms: number,
 ) => {
   setTimeout(() => {
-    AccessibilityInfo.announceForAccessibility(message);
+    AccessibilityInfo.isScreenReaderEnabled().then(enabled => {
+      if (enabled) {
+        AccessibilityInfo.announceForAccessibility(message);
+      }
+    });
   }, ms);
 };

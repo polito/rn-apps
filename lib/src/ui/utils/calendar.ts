@@ -1,8 +1,15 @@
+import { PixelRatio } from 'react-native';
+
 import { DateTime, Duration } from 'luxon';
 
 import { ICalendarEventBase, Mode, WeekNum } from '../types/Calendar';
 
 export const CALENDAR_CELL_HEIGHT = 60;
+
+const HOUR_GUIDE_BASE_WIDTH = 35;
+
+export const getHourGuideWidth = () =>
+  Math.round(HOUR_GUIDE_BASE_WIDTH * Math.min(PixelRatio.getFontScale(), 1.4));
 
 export function getDatesInMonth(date: DateTime = DateTime.now()): DateTime[] {
   return Array(date.daysInMonth! - 1)

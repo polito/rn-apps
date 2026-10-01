@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   StyleProp,
@@ -14,6 +14,8 @@ import { Props as FAProps } from '@fortawesome/react-native-fontawesome';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { hideFromScreenReader } from '../../core/accessibility/hideFromScreenReader';
+import { IS_IOS } from '../../core/constants';
 import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
 import { To } from '../../core/utils/resolveLinkTo';
 import { useStylesheet } from '../hooks/useStylesheet';
@@ -31,7 +33,9 @@ interface Props {
   linkToMoreCount?: number;
   separator?: boolean;
   accessible?: boolean;
-  accessibilityLabel?: string | undefined;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
+  accessibilityState?: TouchableOpacityProps['accessibilityState'];
   linkTo?: To<any>;
   trailingItem?: ReactElement;
   trailingIcon?: Pick<FAProps, 'size' | 'icon' | 'color'> &
@@ -49,7 +53,9 @@ export const SectionHeader = ({
   subtitle,
   subtitleStyle,
   ellipsizeTitle = true,
-  accessibilityLabel = undefined,
+  accessibilityLabel,
+  accessibilityHint,
+  accessibilityState,
   linkTo,
   accessible = true,
   linkToMoreCount,
@@ -61,6 +67,12 @@ export const SectionHeader = ({
   const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { accessibility } = usePreferencesContext();
+
+  const label = useMemo(
+    () => accessibilityLabel ?? [title, subtitle].filter(Boolean).join(', '),
+    [accessibilityLabel, title, subtitle],
+  );
+
   const ellipsis: Partial<TextProps> = ellipsizeTitle
     ? {
         numberOfLines: 1,
@@ -68,106 +80,179 @@ export const SectionHeader = ({
       }
     : {};
 
-  const Header = () => {
-    return (
-      <View style={{ ...styles.innerContainer }}>
-        <View style={styles.titleContainer}>
-          {separator && <Separator />}
+  const hasInteractiveTrailing = Boolean(trailingIcon?.onPress);
+  const showsCta = linkTo != null && (linkToMoreCount ?? 0) > 0;
+  const hasSeparateAction =
+    showsCta || hasInteractiveTrailing || trailingItem != null;
+  const isAccessible = accessible;
 
-          <View style={{ ...styles.innerTitleContainer }}>
-            <Text
-              accessible={false}
-              variant="heading"
-              style={[styles.title, titleStyle, styles.titleContainer]}
-              accessibilityRole="header"
-              {...ellipsis}
-            >
-              {title}
-            </Text>
-            {trailingIcon && (
-              <IconButton
-                {...{
-                  size:
-                    accessibility?.fontSize && accessibility.fontSize >= 150
-                      ? 40
-                      : 16,
-                  ...trailingIcon,
-                  noPadding: true,
-                }}
-              />
+  const navigate = () => {
+    if (!linkTo) return;
+    if (typeof linkTo === 'string') {
+      navigation.navigate(linkTo as any);
+    } else {
+      navigation.navigate(linkTo.screen as any, linkTo.params);
+    }
+  };
+
+  const titleContent = (
+    <View style={styles.titleContainer}>
+      {separator && <Separator />}
+
+      <View style={styles.innerTitleContainer}>
+        <Text
+          accessible={false}
+          variant="heading"
+          style={[styles.title, titleStyle, styles.titleContainer]}
+          {...ellipsis}
+        >
+          {title}
+        </Text>
+        {trailingIcon && !hasInteractiveTrailing && (
+          <View {...hideFromScreenReader}>
+            <IconButton
+              {...{
+                size:
+                  accessibility?.fontSize && accessibility.fontSize >= 150
+                    ? 40
+                    : 16,
+                accessibilityLabel:
+                  trailingIcon.accessibilityLabel ??
+                  t('sectionHeader.moreInfo', { title }),
+                ...trailingIcon,
+                noPadding: true,
+              }}
+            />
+          </View>
+        )}
+      </View>
+
+      {subtitle && (
+        <Text
+          accessible={false}
+          variant="secondaryText"
+          style={subtitleStyle}
+          {...ellipsis}
+        >
+          {subtitle}
+        </Text>
+      )}
+    </View>
+  );
+
+  if (hasSeparateAction) {
+    return (
+      <View style={styles.container} accessible={false}>
+        <View style={styles.innerContainer}>
+          <View style={styles.titleContainer}>
+            {separator && <Separator />}
+            <View style={styles.innerTitleContainer}>
+              <Text
+                accessible={isAccessible}
+                accessibilityRole="header"
+                accessibilityLabel={label}
+                variant="heading"
+                style={[styles.title, titleStyle, styles.titleContainer]}
+                {...ellipsis}
+              >
+                {title}
+              </Text>
+              {trailingIcon && (
+                <IconButton
+                  {...{
+                    size:
+                      accessibility?.fontSize && accessibility.fontSize >= 150
+                        ? 40
+                        : 16,
+                    accessibilityLabel:
+                      trailingIcon.accessibilityLabel ??
+                      t('sectionHeader.moreInfo', { title }),
+                    ...trailingIcon,
+                    noPadding: true,
+                  }}
+                />
+              )}
+            </View>
+            {subtitle && (
+              <Text
+                accessible={false}
+                variant="secondaryText"
+                style={subtitleStyle}
+                {...ellipsis}
+              >
+                {subtitle}
+              </Text>
             )}
           </View>
-
-          {subtitle && (
-            <Text
-              accessible={false}
-              variant="secondaryText"
-              style={subtitleStyle}
-              accessibilityRole="header"
-              {...ellipsis}
+          {trailingItem}
+          {showsCta && (
+            <TouchableOpacity
+              accessible
+              accessibilityRole="button"
+              accessibilityHint={accessibilityHint ?? t('common.tapToNavigate')}
+              accessibilityState={accessibilityState}
+              onPress={navigate}
             >
-              {subtitle}
-            </Text>
-          )}
-        </View>
-        {trailingItem && trailingItem}
-        {linkTo && linkToMoreCount != null && linkToMoreCount > 0 && (
-          <TouchableOpacity
-            accessible={true}
-            accessibilityRole="button"
-            onPress={() => {
-              if (typeof linkTo === 'string') {
-                navigation.navigate(linkTo as any);
-              } else {
-                navigation.navigate(linkTo.screen as any, linkTo.params);
-              }
-            }}
-          >
-            <Text variant="link">
-              {t('sectionHeader.cta')}
-              {(linkToMoreCount ?? 0) > 0 &&
-                ' ' +
+              <Text variant="link">
+                {t('sectionHeader.cta')}
+                {' ' +
                   t('sectionHeader.ctaMoreSuffix', {
                     count: linkToMoreCount,
                   })}
-            </Text>
-          </TouchableOpacity>
-        )}
-      </View>
-    );
-  };
-
-  if (!linkTo) {
-    return (
-      <View
-        style={styles.container}
-        accessible={accessible}
-        accessibilityRole={linkTo ? 'button' : 'header'}
-        accessibilityLabel={accessibilityLabel}
-      >
-        <Header />
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     );
   }
 
+  if (linkTo) {
+    return (
+      <TouchableOpacity
+        style={styles.container}
+        accessible={isAccessible}
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        accessibilityHint={accessibilityHint ?? t('common.tapToNavigate')}
+        accessibilityState={accessibilityState}
+        onPress={navigate}
+      >
+        <View
+          style={styles.innerContainer}
+          importantForAccessibility="no-hide-descendants"
+          accessibilityElementsHidden={IS_IOS}
+        >
+          {titleContent}
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
   return (
-    <TouchableOpacity
+    <View
       style={styles.container}
-      accessible={accessible}
-      accessibilityRole={linkTo ? 'button' : 'header'}
-      accessibilityLabel={accessibilityLabel}
-      onPress={() => {
-        if (linkTo) {
-          if (typeof linkTo === 'string') {
-            navigation.navigate(linkTo as any);
-          } else {
-            navigation.navigate(linkTo.screen as any, linkTo.params);
-          }
-        }
-      }}
+      accessible={isAccessible}
+      accessibilityRole="header"
+      accessibilityLabel={label}
+      accessibilityState={accessibilityState}
     >
-      <Header />
-    </TouchableOpacity>
+      <View
+        style={styles.innerContainer}
+        importantForAccessibility={
+          isAccessible ? 'no-hide-descendants' : undefined
+        }
+        accessibilityElementsHidden={isAccessible ? IS_IOS : undefined}
+      >
+        {titleContent}
+        {trailingItem &&
+          (isAccessible ? (
+            <View {...hideFromScreenReader}>{trailingItem}</View>
+          ) : (
+            trailingItem
+          ))}
+      </View>
+    </View>
   );
 };
 

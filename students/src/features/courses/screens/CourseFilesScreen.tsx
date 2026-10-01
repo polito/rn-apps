@@ -1,9 +1,21 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, StyleSheet, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  FlatList,
+  Platform,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@polito/lib/core';
+import {
+  useAccessibility,
+  useAccessibilityFocusOnScreenFocus,
+  useAnnounceLoading,
+  usePreferencesContext,
+} from '@polito/lib/core';
 import {
   BottomBarSpacer,
   GlobalStyles,
@@ -50,6 +62,9 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
   const multiSelectNav =
     (navigation.getParent()?.getParent() as any) ?? navigation;
   const recentFilesQuery = useGetCourseFilesRecent(courseId);
+  useAnnounceLoading(recentFilesQuery.isLoading);
+  const screenRef = useAccessibilityFocusOnScreenFocus<TextInput>();
+  const { getListAccessibilityProps } = useAccessibility();
   const { paddingHorizontal } = useSafeAreaSpacing();
   const { clearNotificationScope } = useNotifications();
   const { updatePreference } = usePreferencesContext<AppPreferences>();
@@ -90,6 +105,18 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
     clearNotificationScope(['teaching', 'courses', `${courseId}`, 'files']);
   });
 
+  useFocusEffect(
+    useCallback(() => {
+      if (!recentFilesQuery.isLoading && fileListData.length === 0) {
+        const timeoutId = setTimeout(() => {
+          AccessibilityInfo.announceForAccessibility(t('courseFilesTab.empty'));
+        }, 500);
+        return () => clearTimeout(timeoutId);
+      }
+      return undefined;
+    }, [recentFilesQuery.isLoading, fileListData.length, t]),
+  );
+
   const onToggleView = useCallback(() => {
     navigation.replace('DirectoryFiles', { courseId });
     updatePreference('filesScreen', 'directoryView');
@@ -103,9 +130,11 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
     <>
       <Row align="center" style={[paddingHorizontal, styles.searchBar]}>
         <TranslucentTextField
+          inputRef={screenRef}
           autoFocus={searchFilter.length !== 0}
           autoCorrect={false}
           leadingIcon={faSearch}
+          accessibilityRole="search"
           value={searchFilter}
           onChangeText={setSearchFilter}
           style={[GlobalStyles.grow, styles.textField]}
@@ -125,7 +154,13 @@ const CourseFilesScreenContent = ({ navigation, route }: Props) => {
         isSelectDisabled={isDownloading || isRemoving}
       />
 
-      <View style={{ flex: 1 }}>
+      <View
+        style={{ flex: 1 }}
+        {...getListAccessibilityProps(
+          t('courseInfoTab.files'),
+          fileListData.length,
+        )}
+      >
         <FlatList
           contentInsetAdjustmentBehavior="automatic"
           data={fileListData}

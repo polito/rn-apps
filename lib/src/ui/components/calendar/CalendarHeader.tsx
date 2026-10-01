@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -10,7 +9,7 @@ import {
 import { DateTime } from 'luxon';
 
 import { useTheme } from '../../hooks/useTheme';
-import { isToday } from '../../utils/calendar';
+import { getHourGuideWidth, isToday } from '../../utils/calendar';
 import { Text } from '../Text';
 
 export interface CalendarHeaderProps {
@@ -23,6 +22,84 @@ export interface CalendarHeaderProps {
   locale?: string;
 }
 
+export const CalendarHeaderDay = ({
+  date,
+  cellHeight,
+  locale,
+  activeDate,
+  isLast = false,
+  onPress,
+}: {
+  date: DateTime;
+  cellHeight: number;
+  locale?: string;
+  activeDate?: DateTime;
+  isLast?: boolean;
+  onPress?: (date: DateTime) => void;
+}) => {
+  const theme = useTheme();
+  const shouldHighlight = activeDate
+    ? date.hasSame(activeDate, 'day')
+    : isToday(date);
+
+  return (
+    <TouchableOpacity
+      // Theme-independent hardcoded color
+      // eslint-disable-next-line react-native/no-color-literals
+      style={{
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        paddingVertical: theme.spacing[1],
+        borderRightWidth: StyleSheet.hairlineWidth,
+        borderColor: !isLast ? theme.colors.divider : 'transparent',
+      }}
+      onPress={() => onPress?.(date)}
+      disabled={onPress === undefined}
+      accessibilityRole={onPress ? 'button' : 'header'}
+      accessibilityLabel={date
+        .setLocale(locale ?? 'en')
+        .toFormat('cccc d MMMM')}
+      accessibilityState={{ selected: shouldHighlight }}
+    >
+      <View
+        style={[
+          {
+            height: cellHeight,
+            borderRadius: theme.shapes.md,
+            paddingHorizontal: theme.spacing[1],
+            paddingVertical: theme.spacing[1],
+          },
+          shouldHighlight && {
+            backgroundColor: theme.colors.heading,
+          },
+        ]}
+      >
+        <Text
+          weight="semibold"
+          numberOfLines={2}
+          maxFontSizeMultiplier={1.4}
+          accessible={false}
+          style={[
+            {
+              fontSize: theme.fontSizes.sm,
+              textAlign: 'center',
+            },
+            shouldHighlight && {
+              color: theme.colors.surface,
+            },
+          ]}
+        >
+          {date.toLocaleString(
+            { weekday: 'short', day: 'numeric' },
+            { locale },
+          )}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
 export const CalendarHeader = ({
   dateRange,
   cellHeight,
@@ -32,13 +109,6 @@ export const CalendarHeader = ({
   hideHours = false,
   locale,
 }: CalendarHeaderProps) => {
-  const _onPressHeader = useCallback(
-    (date: DateTime) => {
-      onPressDateHeader && onPressDateHeader(date);
-    },
-    [onPressDateHeader],
-  );
-
   const theme = useTheme();
 
   const borderColor = { borderColor: theme.palettes.gray['200'] };
@@ -59,68 +129,23 @@ export const CalendarHeader = ({
         <View
           style={[
             {
-              width: 35,
+              width: getHourGuideWidth(),
             },
             borderColor,
           ]}
         />
       )}
-      {dateRange.map((date, i) => {
-        const shouldHighlight = activeDate
-          ? date.hasSame(activeDate, 'day')
-          : isToday(date);
-
-        return (
-          <TouchableOpacity
-            // Theme-independent hardcoded color
-            // eslint-disable-next-line react-native/no-color-literals
-            style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              paddingVertical: theme.spacing[1],
-              borderRightWidth: StyleSheet.hairlineWidth,
-              borderColor:
-                i < dateRange.length - 1 ? theme.colors.divider : 'transparent',
-            }}
-            onPress={() => _onPressHeader(date)}
-            disabled={onPressDateHeader === undefined}
-            key={date.toString()}
-          >
-            <View
-              style={[
-                {
-                  height: cellHeight,
-                  borderRadius: theme.shapes.md,
-                  paddingHorizontal: theme.spacing[1],
-                  paddingVertical: theme.spacing[1],
-                },
-                shouldHighlight && {
-                  backgroundColor: theme.colors.heading,
-                },
-              ]}
-            >
-              <Text
-                weight="semibold"
-                style={[
-                  {
-                    fontSize: theme.fontSizes.sm,
-                    textAlign: 'center',
-                  },
-                  shouldHighlight && {
-                    color: theme.colors.surface,
-                  },
-                ]}
-              >
-                {date.toLocaleString(
-                  { weekday: 'short', day: 'numeric' },
-                  { locale },
-                )}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        );
-      })}
+      {dateRange.map((date, i) => (
+        <CalendarHeaderDay
+          key={date.toString()}
+          date={date}
+          cellHeight={cellHeight}
+          locale={locale}
+          activeDate={activeDate}
+          isLast={i === dateRange.length - 1}
+          onPress={onPressDateHeader}
+        />
+      ))}
     </SafeAreaView>
   );
 };

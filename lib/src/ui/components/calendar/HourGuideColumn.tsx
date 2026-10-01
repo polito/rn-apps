@@ -4,7 +4,7 @@ import { isNumber } from 'lodash';
 
 import { useStylesheet } from '../../hooks/useStylesheet';
 import { Theme } from '../../types/Theme';
-import { formatHour } from '../../utils/calendar';
+import { formatHour, getHourGuideWidth } from '../../utils/calendar';
 import { Text } from '../Text';
 
 interface HourGuideColumnProps {
@@ -23,8 +23,10 @@ export const HourGuideColumn = ({
   const styles = useStylesheet(createStyles);
 
   return (
-    <View style={{ height: cellHeight, width: 35 }}>
+    <View style={{ height: cellHeight, width: getHourGuideWidth() }}>
       <Text
+        numberOfLines={1}
+        maxFontSizeMultiplier={1.4}
         style={[
           styles.hourLabel,
           centerVertically && {

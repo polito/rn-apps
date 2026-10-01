@@ -3,6 +3,7 @@ import {
   useEffect,
   useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +16,7 @@ import {
 } from 'react-native';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { hideFromScreenReader } from '@polito/lib/core';
 import {
   ActivityIndicator,
   AgendaCard,
@@ -27,6 +29,7 @@ import {
   HeaderAccessory,
   IconButton,
   Row,
+  StatefulMenuView,
   Tabs,
   Text,
   WeekNum,
@@ -35,7 +38,7 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 import { BookingSlot } from '@polito/student-api-client';
-import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
+import { MenuComponentRef, NativeActionEvent } from '@react-native-menu/menu';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
@@ -281,6 +284,8 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     [refetch, defaultAgendaLayout],
   );
 
+  const optionsMenuRef = useRef<MenuComponentRef>(null);
+
   const onPressLegend = useCallback(() => {
     if (Platform.OS === 'android') {
       showBottomModal(<BookingSlotsLegendModal close={closeBottomModal} />);
@@ -292,15 +297,24 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <MenuView actions={screenOptions} onPressAction={onPressOption}>
+        <StatefulMenuView
+          ref={optionsMenuRef}
+          actions={screenOptions}
+          onPressAction={onPressOption}
+          accessible
+          accessibilityRole="button"
+          accessibilityLabel={t('common.options')}
+          accessibilityActions={[{ name: 'activate' }]}
+          onAccessibilityAction={() => optionsMenuRef.current?.show()}
+        >
           <IconButton
+            {...hideFromScreenReader}
             icon={faEllipsisVertical}
             color={palettes.primary['500']}
             size={fontSizes.lg}
             adjustSpacing="right"
-            accessibilityLabel={t('common.options')}
           />
-        </MenuView>
+        </StatefulMenuView>
       ),
     });
   }, [navigation, palettes, screenOptions, onPressOption, fontSizes.lg, t]);
@@ -427,10 +441,29 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                 ),
               );
 
+              const dayLabel = dt.toFormat('cccc d MMMM');
+              const cardAccessibilityLabel = [
+                dayLabel,
+                timeRange,
+                item.title,
+                statusLabel,
+                t('bookingsScreen.slotSeatsA11y', {
+                  booked: item.bookedPlaces,
+                  total: item.places || 0,
+                }),
+              ]
+                .filter(Boolean)
+                .join(', ');
+
               return (
                 <Row style={{ marginVertical: 8, marginHorizontal: 16 }}>
                   {isFirstOfDay ? (
-                    <Col style={styles.dayColumn}>
+                    <Col
+                      style={styles.dayColumn}
+                      accessible
+                      accessibilityRole="header"
+                      accessibilityLabel={dayLabel}
+                    >
                       {item.start.hasSame(DateTime.local(), 'day') ? (
                         <View style={[styles.dayBox, styles.todayBox]}>
                           <Text
@@ -470,6 +503,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
                     <AgendaCard
                       title={item.title}
                       type={statusLabel}
+                      accessibilityLabel={cardAccessibilityLabel}
                       color={borderColor}
                       style={{
                         backgroundColor: borderColor,
@@ -544,6 +578,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               cellMaxHeight={calendarCellHeight}
               showAllDayEventCell={false}
               swipeEnabled={false}
+              accessibleCells
               renderHeader={props => (
                 <CalendarHeader {...props} cellHeight={-1} />
               )}

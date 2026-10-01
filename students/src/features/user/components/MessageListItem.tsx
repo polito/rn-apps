@@ -25,12 +25,17 @@ export const MessageListItem = ({
 }: Props) => {
   const { t } = useTranslation();
   const { mutate: markAsRead } = useMarkMessageAsRead();
-  const { accessibilityListLabel } = useAccessibility();
+  const { buildCompositeListLabel } = useAccessibility();
   const navigation =
     useNavigation<NativeStackNavigationProp<UserStackParamList>>();
-  const accessibilityLabel = accessibilityListLabel(index, totalData);
   const title = getHtmlTextContent(messageItem?.title);
   const sentAt = formatDateTime(messageItem.sentAt);
+
+  const accessibilityLabel = buildCompositeListLabel(
+    [title, `${t('messagesScreen.sentAt')} ${sentAt}`],
+    index,
+    totalData,
+  );
 
   const onPressItem = () => {
     if (isSwiping) return;
@@ -49,12 +54,9 @@ export const MessageListItem = ({
       title={title}
       isAction={true}
       onPress={onPressItem}
-      accessibilityLabel={[
-        accessibilityLabel,
-        title,
-        t('messagesScreen.sentAt'),
-        sentAt,
-      ].join(', ')}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={t('common.tapToNavigate')}
       subtitle={sentAt}
     />
   );
