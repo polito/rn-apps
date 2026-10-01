@@ -6,7 +6,6 @@ import { Card, List, useTheme } from '@polito/lib/ui';
 type Props = PropsWithChildren<{
   dividers?: boolean;
   loading?: boolean;
-  dividerSize?: number;
 }>;
 
 /**
@@ -17,7 +16,6 @@ export const SectionList = ({
   children,
   loading = false,
   dividers = true,
-  dividerSize = 1,
 }: Props) => {
   const { spacing } = useTheme();
 
@@ -36,9 +34,7 @@ export const SectionList = ({
           }}
         />
       ) : (
-        <List dividers={dividers} dividerSize={dividerSize}>
-          {children}
-        </List>
+        <List dividers={dividers}>{children}</List>
       )}
     </Card>
   );

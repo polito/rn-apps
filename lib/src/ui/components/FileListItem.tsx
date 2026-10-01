@@ -71,7 +71,6 @@ interface Props {
   containerStyle?: StyleProp<ViewStyle>;
   mimeType?: string;
   isCorrupted?: boolean;
-  iconColor?: string;
 }
 
 export const FileListItem = ({
@@ -80,7 +79,6 @@ export const FileListItem = ({
   subtitle,
   mimeType,
   isCorrupted = false,
-  iconColor,
   ...rest
 }: ListItemProps & Props) => {
   const { palettes, fontSizes } = useTheme();
@@ -95,11 +93,7 @@ export const FileListItem = ({
       accessibilityLabel={`${rest.title} ${subtitle}.${mimeType} ${downloadLabel}`}
       leadingItem={
         <View>
-          <Icon
-            icon={getIconFromMimeType(mimeType)}
-            size={fontSizes['2xl']}
-            color={iconColor}
-          />
+          <Icon icon={getIconFromMimeType(mimeType)} size={fontSizes['2xl']} />
           {downloadProgress != null &&
           (downloadProgress < 1 || !isDownloaded) ? (
             <View style={styles.downloadedIconContainer}>

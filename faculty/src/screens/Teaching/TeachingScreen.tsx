@@ -118,7 +118,7 @@ export const TeachingScreen = () => {
                   color={courseColors[index % courseColors.length]}
                 />
               }
-              trailingItem={<DisclosureIndicator size={16} />}
+              trailingItem={<DisclosureIndicator />}
               subtitle={
                 <Row gap={2} pt={1} align="center">
                   <Row gap={1} align="center">

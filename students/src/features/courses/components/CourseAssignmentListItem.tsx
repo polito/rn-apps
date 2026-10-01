@@ -85,7 +85,6 @@ export const CourseAssignmentListItem = ({
         subtitle={subTitle}
         accessibilityLabel={`${accessibilityListLabel}. ${item.description}, ${subTitle}`}
         mimeType={item.mimeType}
-        iconColor={item.deletedAt != null ? colors.secondaryText : undefined}
         trailingItem={Platform.select({
           android: (
             <Menu assignmentId={item.id} isWithdrawn={item.deletedAt != null}>
