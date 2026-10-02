@@ -1,9 +1,10 @@
-import { Platform, StyleSheet, ViewStyle } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
 import { Theme } from '../types/Theme';
 import { ActivityIndicator } from './ActivityIndicator';
 import { Icon } from './Icon';
@@ -32,18 +33,24 @@ export const TranslucentTextField = ({
   ...props
 }: TranslucentTextFieldProps) => {
   const styles = useStylesheet(createStyles);
+  const { dark, fontSizes, palettes } = useTheme();
   return (
     <Row
       style={[styles.container, containerStyle]}
       align="center"
-      gap={2}
-      mh={3}
-      ph={3}
+      justify="center"
     >
       {isLoading ? (
         <ActivityIndicator />
       ) : (
-        leadingIcon && <Icon icon={leadingIcon} style={styles.icon} />
+        leadingIcon && (
+          <Icon
+            icon={leadingIcon}
+            color={dark ? palettes.gray[400] : palettes.gray[500]}
+            style={styles.icon}
+            size={fontSizes.md}
+          />
+        )
       )}
       <TextField
         clearButtonMode="never"
@@ -59,32 +66,36 @@ export const TranslucentTextField = ({
           color={styles.cancelIcon.color}
           accessibilityRole="button"
           accessibilityLabel={onClearLabel}
+          size={fontSizes.md}
         />
       )}
     </Row>
   );
 };
 
-const createStyles = ({ colors, dark, palettes, spacing }: Theme) =>
+const createStyles = ({ colors, dark, palettes, spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     container: {
-      backgroundColor: colors.translucentSurface,
-      borderRadius: 12,
+      backgroundColor: dark ? colors.translucentSurface : palettes.gray[200],
+      borderRadius: spacing[1.5],
+      paddingVertical: spacing[1],
+      paddingHorizontal: spacing[2],
+      gap: spacing[2],
     },
     textField: {
       flex: 1,
       paddingVertical: 0,
+      fontSize: fontSizes.md,
     },
     icon: {
-      opacity: 0.8,
-      marginRight: spacing[1],
+      color: dark ? palettes.gray[400] : palettes.gray[500],
     },
     input: {
+      paddingVertical: 0,
       margin: 0,
       paddingLeft: 0,
       paddingRight: spacing[2],
       borderBottomWidth: 0,
-      paddingVertical: spacing[Platform.OS === 'ios' ? 2 : 1],
     },
     cancelIcon: {
       color: dark ? palettes.gray[400] : palettes.gray[500],

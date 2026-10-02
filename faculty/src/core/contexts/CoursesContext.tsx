@@ -19,6 +19,8 @@ import {
   faVideo,
 } from '@fortawesome/free-solid-svg-icons';
 
+import { TEACHING_TYPES } from '../constants/teachingTypes';
+
 export interface Notice {
   id: number;
   title: string;
@@ -34,7 +36,33 @@ export interface Staff {
   role: string;
   access: string;
   idProfile?: number;
+  teachingType?: (typeof TEACHING_TYPES)[number]['code'];
 }
+
+// Converts a `Person` (from student API) into the local `Staff` shape.
+// The function is intentionally lightweight: it prefers `firstName`/`lastName`
+// when available and falls back to `name`/`surname`. `access` defaults to
+// an empty string (which is normalized elsewhere to a partial access).
+export const personToStaff = (
+  person: any,
+  role: string = 'Collaboratore',
+  access: string = '',
+): Staff => {
+  const rawId = (person && (person.id ?? person._id)) ?? 0;
+  const id = typeof rawId === 'number' ? rawId : Number(rawId) || 0;
+
+  const firstName = person?.firstName ?? person?.name ?? '';
+  const lastName = person?.lastName ?? person?.surname ?? '';
+  const name = `${firstName} ${lastName}`.trim() || String(person?.name ?? '');
+
+  return {
+    id,
+    name,
+    role,
+    access,
+    idProfile: typeof rawId === 'number' ? rawId : undefined,
+  };
+};
 
 interface ExamCall {
   id: number;
@@ -68,7 +96,7 @@ interface Directory {
   files: File[];
 }
 
-interface Lesson {
+export interface Lesson {
   id: number;
   title: string;
   date: string;
@@ -77,6 +105,8 @@ interface Lesson {
   staff?: Staff[];
   room?: string;
   language?: string;
+  status?: 'compiled' | 'to compile' | 'draft';
+  team?: number;
 }
 
 interface Student {
@@ -91,7 +121,7 @@ interface Student {
   passedExamsDate: string[];
 }
 
-interface Group {
+interface Team {
   id: number;
   title: string;
   students: Student[];
@@ -143,7 +173,7 @@ interface Course {
   lessons: Lesson[];
   assignments: Assignment[];
   students: Student[];
-  groups: Group[];
+  teams: Team[];
 }
 
 interface Exam {
@@ -324,12 +354,12 @@ interface CoursesContextType {
   ) => void;
   addDirectoryToCourse: (courseId: number, directory: Directory) => void;
   removeDirectoryFromCourse: (courseId: number, directoryId: number) => void;
-  addGroupToCourse: (courseId: number, newGroup: Group) => void;
-  removeGroupFromCourse: (courseId: number, groupId: number) => void;
-  updateGroupInCourse: (
+  addTeamToCourse: (courseId: number, newTeam: Team) => void;
+  removeTeamFromCourse: (courseId: number, teamId: number) => void;
+  updateTeamInCourse: (
     courseId: number,
-    groupId: number,
-    updatedGroup: Group,
+    teamId: number,
+    updatedTeam: Team,
   ) => void;
   toggleFavoriteProfile: () => void;
   getCourseById: (id: number) => Course | undefined;
@@ -467,6 +497,58 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
           title: 'Lezione 1',
           date: '2024-10-04',
           time: '17:30-19:00',
+          status: 'compiled',
+          content:
+            'Spiegazione iniziale della struttura del corso. Slide da 1 a 89 del primo plico.',
+          staff: [
+            {
+              id: 1,
+              name: 'Tu',
+              role: 'Titolare',
+              access: 'Completo',
+              teachingType: 'TL',
+            },
+            {
+              id: 2,
+              name: 'Mario Rossi',
+              role: 'Collaboratore',
+              access: 'Può leggere',
+              idProfile: 9,
+              teachingType: 'EA',
+            },
+          ],
+          room: 'Aula 3',
+          language: 'Italiano',
+          team: 1,
+        },
+        {
+          id: 2,
+          title: 'Lezione 2',
+          date: '2024-10-05',
+          time: '17:30-19:00',
+          status: 'draft',
+          content:
+            'Spiegazione iniziale della struttura del corso. Slide da 1 a 89 del primo plico.',
+          staff: [
+            { id: 1, name: 'Tu', role: 'Titolare', access: 'Completo' },
+            {
+              id: 2,
+              name: 'Mario Rossi',
+              role: 'Collaboratore',
+              access: 'Può leggere',
+              idProfile: 9,
+            },
+          ],
+          room: 'Aula 3',
+          language: 'Italiano',
+          team: 2,
+        },
+        {
+          id: 3,
+          title: 'Lezione 3',
+          date: '2024-10-06',
+          time: '17:30-19:00',
+          status: 'to compile',
           content:
             'Spiegazione iniziale della struttura del corso. Slide da 1 a 89 del primo plico.',
           staff: [
@@ -721,10 +803,10 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
           passedExamsDate: ['2024-01-21', '2024-02-15', '2024-03-01'],
         },
       ],
-      groups: [
+      teams: [
         {
           id: 1,
-          title: 'Gruppo 1',
+          title: 'Team 1',
           students: [
             {
               id: 'S317601',
@@ -774,7 +856,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
         },
         {
           id: 2,
-          title: 'Gruppo 2',
+          title: 'Team 2',
           students: [
             {
               id: 'S317605',
@@ -813,7 +895,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
         },
         {
           id: 3,
-          title: 'Gruppo 3',
+          title: 'Team 3',
           students: [
             {
               id: 'S317608',
@@ -864,7 +946,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
         },
         {
           id: 4,
-          title: 'Gruppo 4',
+          title: 'Team 4',
           students: [
             {
               id: 'S317611',
@@ -907,7 +989,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
         },
         {
           id: 5,
-          title: 'Gruppo 5',
+          title: 'Team 5',
           students: [
             {
               id: 'S317614',
@@ -950,7 +1032,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
         },
         {
           id: 6,
-          title: 'Gruppo 6',
+          title: 'Team 6',
           students: [
             {
               id: 'S317617',
@@ -989,7 +1071,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
         },
         {
           id: 7,
-          title: 'Gruppo 7',
+          title: 'Team 7',
           students: [
             {
               id: 'S317620',
@@ -1003,7 +1085,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
               passedExamsDate: ['2024-01-21', '2024-02-15', '2024-03-01'],
             },
             // Attenzione: nello snippet originale Nicola è presente in due gruppi,
-            // qui lo inserisco solo nel gruppo 6 per coerenza (ma puoi decidere tu)
+            // qui lo inserisco solo nel Team 6 per coerenza (ma puoi decidere tu)
           ],
         },
       ],
@@ -1342,7 +1424,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
           passedExamsDate: ['2024-01-21', '2024-02-15', '2024-03-01'],
         },
       ],
-      groups: [],
+      teams: [],
     },
     {
       id: 3,
@@ -1686,7 +1768,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
           passedExamsDate: ['2024-01-21', '2024-02-15', '2024-03-01'],
         },
       ],
-      groups: [],
+      teams: [],
     },
     {
       id: 4,
@@ -2030,7 +2112,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
           passedExamsDate: ['2024-01-21', '2024-02-15', '2024-03-01'],
         },
       ],
-      groups: [],
+      teams: [],
     },
   ]);
 
@@ -2377,7 +2459,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
           passedExamsDate: ['2024-01-21', '2024-02-15', '2024-03-01'],
         },
       ],
-      groups: [],
+      teams: [],
     },
     {
       id: 6,
@@ -2722,7 +2804,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
           passedExamsDate: ['2024-01-21', '2024-02-15', '2024-03-01'],
         },
       ],
-      groups: [],
+      teams: [],
     },
   ]);
 
@@ -6657,9 +6739,11 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
       prevCourses.map(course => {
         if (course.id !== courseId) return course;
 
-        const existingStaffIds = new Set(course.staff.map(member => member.id));
+        const existingStaffIds = new Set(
+          course.staff.map(member => member.idProfile ?? member.id),
+        );
         const uniqueNewStaff = newStaff.filter(
-          member => !existingStaffIds.has(member.id),
+          member => !existingStaffIds.has(member.idProfile ?? member.id),
         );
 
         return {
@@ -6671,10 +6755,10 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
 
     if (selectedCourse && selectedCourse.id === courseId) {
       const existingStaffIds = new Set(
-        selectedCourse.staff.map(member => member.id),
+        selectedCourse.staff.map(member => member.idProfile ?? member.id),
       );
       const uniqueNewStaff = newStaff.filter(
-        member => !existingStaffIds.has(member.id),
+        member => !existingStaffIds.has(member.idProfile ?? member.id),
       );
 
       setSelectedCourse(prev =>
@@ -6883,11 +6967,11 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     }
   };
 
-  const addGroupToCourse = (courseId: number, newGroup: Group) => {
+  const addTeamToCourse = (courseId: number, newTeam: Team) => {
     setFakeCourses(prevCourses =>
       prevCourses.map(course =>
         course.id === courseId
-          ? { ...course, groups: [...(course.groups || []), newGroup] }
+          ? { ...course, teams: [...(course.teams || []), newTeam] }
           : course,
       ),
     );
@@ -6897,20 +6981,20 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
         prevSelectedCourse
           ? {
               ...prevSelectedCourse,
-              groups: [...(prevSelectedCourse.groups || []), newGroup],
+              teams: [...(prevSelectedCourse.teams || []), newTeam],
             }
           : prevSelectedCourse,
       );
     }
   };
 
-  const removeGroupFromCourse = (courseId: number, groupId: number) => {
+  const removeTeamFromCourse = (courseId: number, teamId: number) => {
     setFakeCourses(prevCourses =>
       prevCourses.map(course =>
         course.id === courseId
           ? {
               ...course,
-              groups: course.groups?.filter(group => group.id !== groupId),
+              teams: course.teams?.filter(team => team.id !== teamId),
             }
           : course,
       ),
@@ -6921,26 +7005,26 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
         prevSelectedCourse
           ? {
               ...prevSelectedCourse,
-              groups: prevSelectedCourse.groups?.filter(
-                group => group.id !== groupId,
+              teams: prevSelectedCourse.teams?.filter(
+                team => team.id !== teamId,
               ),
             }
           : prevSelectedCourse,
       );
     }
   };
-  const updateGroupInCourse = (
+  const updateTeamInCourse = (
     courseId: number,
-    groupId: number,
-    updatedGroup: Group,
+    teamId: number,
+    updatedTeam: Team,
   ) => {
     setFakeCourses(prevCourses =>
       prevCourses.map(course =>
         course.id === courseId
           ? {
               ...course,
-              groups: course.groups?.map(group =>
-                group.id === groupId ? { ...group, ...updatedGroup } : group,
+              teams: course.teams?.map(team =>
+                team.id === teamId ? { ...team, ...updatedTeam } : team,
               ),
             }
           : course,
@@ -6952,8 +7036,8 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
         prevSelectedCourse
           ? {
               ...prevSelectedCourse,
-              groups: prevSelectedCourse.groups?.map(group =>
-                group.id === groupId ? { ...group, ...updatedGroup } : group,
+              teams: prevSelectedCourse.teams?.map(team =>
+                team.id === teamId ? { ...team, ...updatedTeam } : team,
               ),
             }
           : prevSelectedCourse,
@@ -7393,9 +7477,9 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
         setSelectedExam,
         addDirectoryToCourse,
         removeDirectoryFromCourse,
-        addGroupToCourse,
-        removeGroupFromCourse,
-        updateGroupInCourse,
+        addTeamToCourse,
+        removeTeamFromCourse,
+        updateTeamInCourse,
         fakeProfiles,
         setFakeProfiles,
         selectedProfile,

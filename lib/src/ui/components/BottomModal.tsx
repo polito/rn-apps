@@ -23,6 +23,7 @@ export type BottomModalProps = PropsWithChildren<{
   visible: boolean;
   onClose?: () => void;
   dismissable?: boolean;
+  avoidKeyboard?: boolean;
   scrollOffset?: number;
   scrollViewRef?: any;
   onModalHide?: () => void;
@@ -33,6 +34,7 @@ export const BottomModal = ({
   visible,
   onClose,
   dismissable,
+  avoidKeyboard = true,
   scrollOffset = 0,
   onModalHide,
 }: BottomModalProps) => {
@@ -151,7 +153,9 @@ export const BottomModal = ({
         </Animated.View>
         <KeyboardAvoidingView
           style={styles.keyboardAvoider}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior={
+            avoidKeyboard && Platform.OS === 'ios' ? 'padding' : undefined
+          }
           pointerEvents="box-none"
         >
           <Animated.View

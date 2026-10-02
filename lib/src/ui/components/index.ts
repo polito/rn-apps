@@ -77,3 +77,5 @@ export * from './UnreadBadge';
 export * from './VerticalDashedLine';
 export * from './VisuallyHidden';
 export * from './calendar';
+export * from './Overlay';
+export * from './DropDownIcon';
