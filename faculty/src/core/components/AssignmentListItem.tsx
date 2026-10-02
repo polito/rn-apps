@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TouchableHighlightProps,
   TouchableOpacity,
-  View,
   ViewStyle,
 } from 'react-native';
 import Popover from 'react-native-popover-view';
@@ -14,8 +13,11 @@ import Popover from 'react-native-popover-view';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { ListItem, Text, Theme, useStylesheet } from '@polito/lib/ui';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { TeachingStackParamList } from '../../screens/Teaching/TeachingNavigator';
 
 interface Props {
   title: string | JSX.Element;
@@ -42,19 +44,34 @@ export const AssignmentListItem = ({
   const [isMenuVisible, setMenuVisible] = useState(false);
   const buttonRef = useRef(null);
   const { t } = useTranslation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
   if (selectedCourse == null) return null;
+
   return (
     <>
       <ListItem
         title={title}
         subtitle={`${t('newsScreen.createdAt')} ${date} by ${student}`}
         trailingItem={
-          <View ref={buttonRef}>
+          <TouchableOpacity
+            ref={buttonRef}
+            onPress={e => {
+              e.stopPropagation(); // Prevents navigation when opening the menu
+              setMenuVisible(true);
+            }}
+          >
             <FontAwesomeIcon icon={faEllipsisV} size={24} />
-          </View>
+          </TouchableOpacity>
         }
         onPress={() => {
-          setMenuVisible(true);
+          // Passing everything the detail screen needs through params
+          navigation.navigate('Assignment', {
+            assignmentId,
+            title,
+            date,
+            student,
+          });
         }}
       />
       <Popover
@@ -65,10 +82,7 @@ export const AssignmentListItem = ({
         <TouchableOpacity
           onPress={() => {
             Alert.alert(t('other.confirm'), t('other.alertAssignment'), [
-              {
-                text: t('common.cancel'),
-                style: 'cancel',
-              },
+              { text: t('common.cancel'), style: 'cancel' },
               {
                 text: t('other.confirm'),
                 style: 'destructive',
