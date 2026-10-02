@@ -2094,7 +2094,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-document-picker (12.0.1):
+  - react-native-document-picker (10.1.7):
     - boost
     - DoubleConversion
     - fast_float
@@ -4010,7 +4010,7 @@ SPEC CHECKSUMS:
   react-native-blur: 6af83e7e3c4c1446a188d9b2c493600fc4beb173
   react-native-context-menu-view: da39a4612c1294d651907162529cfba8421e9b89
   react-native-date-picker: 9e761de1a6b100b2f61669de1f2c3e5717e2b525
-  react-native-document-picker: 686c62761cf3bbb914588c252eca45fc1991436c
+  react-native-document-picker: 1734eb0aa3dbd1cd7bf1b105936f9b55031ae616
   react-native-geolocation: 95e48fe2687e5a8280103085372fa62c2297c5d6
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
   react-native-menu: 8d2c831a735c9e6528c28b26ca14e57591d87e14
