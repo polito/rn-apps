@@ -2,7 +2,7 @@ import { ReactElement } from 'react';
 import { Image, StyleSheet, TouchableHighlightProps } from 'react-native';
 
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
-import { Person } from '@polito/student-api-client';
+import { Person } from '@polito/api-client';
 
 import { useTheme } from '../hooks/useTheme';
 import { Icon } from './Icon';
@@ -25,7 +25,7 @@ export const PersonListItem = ({
   onPress,
   trailingItem,
 }: TouchableHighlightProps & Props) => {
-  const { fontSizes, palettes } = useTheme();
+  const { fontSizes, colors } = useTheme();
 
   return (
     <ListItem
@@ -36,7 +36,7 @@ export const PersonListItem = ({
           <Icon
             icon={faCircleUser}
             size={fontSizes['2xl']}
-            color={holder ? palettes.text[600] : palettes.primary[700]}
+            color={holder ? colors.secondaryText : undefined}
           />
         )
       }
@@ -55,12 +55,7 @@ export const PersonListItem = ({
           : undefined
       }
       subtitle={subtitle}
-      titleStyle={{
-        color: holder ? palettes.gray[600] : palettes.text[800],
-      }}
-      subtitleStyle={{
-        color: palettes.gray[500],
-      }}
+      titleStyle={holder ? { color: colors.secondaryText } : undefined}
       trailingItem={trailingItem}
       onPress={onPress}
     />

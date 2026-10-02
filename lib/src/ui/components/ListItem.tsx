@@ -1,6 +1,7 @@
 import { ReactElement } from 'react';
 import {
   StyleProp,
+  StyleSheet,
   TextProps,
   TextStyle,
   TouchableHighlight,
@@ -15,7 +16,9 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
 import { Col } from './Col';
 import { DisclosureIndicator } from './DisclosureIndicator';
 import { Row } from './Row';
@@ -69,7 +72,8 @@ export const ListItem = ({
   unread = false,
   ...rest
 }: ListItemProps) => {
-  const { fontSizes, fontWeights, colors, spacing } = useTheme();
+  const { fontSizes, fontFamilies, fontWeights, colors, spacing } = useTheme();
+  const styles = useStylesheet(createStyles);
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { accessibility } = usePreferencesContext();
   const titleElement =
@@ -82,8 +86,7 @@ export const ListItem = ({
             GlobalStyles.grow,
             {
               fontSize: fontSizes.md,
-              fontFamily: 'Montserrat-Medium',
-              fontWeight: fontWeights.medium,
+              fontFamily: fontFamilies.title,
               lineHeight:
                 accessibility?.fontSize && accessibility.fontSize <= 125
                   ? fontSizes.sm * 1.4
@@ -121,7 +124,6 @@ export const ListItem = ({
               accessibility?.fontSize && accessibility.fontSize <= 125
                 ? fontSizes.sm * 1.4
                 : fontSizes.sm * 2.5,
-            fontFamily: 'Montserrat-Regular',
           },
           subtitleStyle,
         ]}
@@ -169,27 +171,45 @@ export const ListItem = ({
         ]}
       >
         {children}
-        {leadingItem && (
-          <View
-            style={{
-              width: 38,
-              height: 38,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginLeft: card ? undefined : -7,
-              marginRight: card ? undefined : spacing[2],
-            }}
-          >
-            {leadingItem}
-          </View>
-        )}
+        {leadingItem && <View style={styles.leadingSlot}>{leadingItem}</View>}
         <Col flex={1} style={inverted && { flexDirection: 'column-reverse' }}>
           {titleElement}
           {subtitleElement}
         </Col>
         {!card &&
-          (!trailingItem && isAction ? <DisclosureIndicator /> : trailingItem)}
+          (() => {
+            const content =
+              !trailingItem && (linkTo || isAction) ? (
+                <DisclosureIndicator />
+              ) : (
+                trailingItem
+              );
+
+            return content ? (
+              <View style={styles.trailingSlot}>{content}</View>
+            ) : null;
+          })()}
       </View>
     </TouchableHighlight>
   );
 };
+
+const createStyles = ({ spacing }: Theme) =>
+  StyleSheet.create({
+    leadingSlot: {
+      width: 38,
+      height: 38,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft: -7,
+      marginRight: spacing[2],
+    },
+    trailingSlot: {
+      height: 38,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft: spacing[2],
+      marginRight: -7,
+    },
+  });

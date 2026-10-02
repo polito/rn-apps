@@ -3,9 +3,10 @@ import {
   StyleProp,
   TextStyle,
   TouchableHighlightProps,
-  TouchableOpacity,
   View,
 } from 'react-native';
+
+import { PillButton } from '@polito/lib/ui';
 
 import color from 'color';
 
@@ -30,7 +31,7 @@ export const Tab = ({
   badge,
   ...rest
 }: PropsWithChildren<TouchableHighlightProps & TabProps>) => {
-  const { dark, palettes, spacing, fontWeights } = useTheme();
+  const { dark, palettes, fontSizes, fontWeights } = useTheme();
   const backgroundColor = useMemo(
     () =>
       selected
@@ -41,8 +42,15 @@ export const Tab = ({
     [selected, dark, palettes],
   );
 
+  const borderColor = useMemo(
+    () => (selected ? 'transparent' : palettes.primary[50]),
+    [selected, palettes],
+  );
+
+  const borderWidth = useMemo(() => (selected ? 0 : 1), [selected]);
+
   return (
-    <TouchableOpacity
+    <PillButton
       accessibilityRole="tab"
       accessible={true}
       accessibilityState={{
@@ -51,9 +59,8 @@ export const Tab = ({
       style={[
         {
           backgroundColor,
-          borderRadius: 10,
-          paddingHorizontal: spacing[2.5],
-          paddingVertical: spacing[1.5],
+          borderColor,
+          borderWidth,
         },
         style,
       ]}
@@ -61,6 +68,7 @@ export const Tab = ({
     >
       <View style={{ position: 'relative' }}>
         <Text
+          weight="medium"
           style={[
             {
               color: selected
@@ -69,6 +77,9 @@ export const Tab = ({
                   ? palettes.primary[400]
                   : palettes.primary[500],
               fontWeight: fontWeights.medium,
+              fontSize: fontSizes.xs + 1,
+              lineHeight: 19.5,
+              fontFamily: 'Montserrat-Medium',
             },
             textStyle,
           ]}
@@ -86,6 +97,6 @@ export const Tab = ({
           />
         )}
       </View>
-    </TouchableOpacity>
+    </PillButton>
   );
 };

@@ -14,6 +14,7 @@ import { CourseFileMultiSelectScreen } from '../screens/CourseFileMultiSelectScr
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
 import { CourseHideEventScreen } from '../screens/CourseHideEventScreen';
 import { CourseIconPickerScreen } from '../screens/CourseIconPickerScreen';
+import { CourseNoAssignmentScreen } from '../screens/CourseNoAssignmentScreen';
 import { CoursePreferencesScreen } from '../screens/CoursePreferencesScreen';
 import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
 import { CourseVirtualClassroomScreen } from '../screens/CourseVirtualClassroomScreen';
@@ -27,6 +28,15 @@ export interface CourseSharedScreensParamList extends ParamListBase {
     animated?: boolean;
     title?: string;
     uniqueShortcode?: string;
+    lockEdition?: boolean;
+  };
+  CourseNoAssignment: {
+    uniqueShortcode: string;
+    courseName: string;
+    shortcode: string;
+    cfu?: number;
+    year?: string;
+    parentCourseName?: string;
   };
   Notice: { noticeId: number; courseId: number };
   CoursePreferences: { courseId: number; uniqueShortcode: string };
@@ -84,6 +94,17 @@ export const CourseSharedScreens = () => {
           headerBackButtonDisplayMode: 'minimal',
           animation: (params?.animated ?? true) ? 'default' : 'none',
         })}
+      />
+      <Stack.Screen
+        name="CourseNoAssignment"
+        component={CourseNoAssignmentScreen}
+        getId={({ params }: { params: any }) => `${params.uniqueShortcode}`}
+        options={{
+          headerTitle: '',
+          headerLargeTitle: false,
+          headerShadowVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
+        }}
       />
       <Stack.Screen
         name="Notice"

@@ -362,6 +362,7 @@ interface CoursesContextType {
     updatedTeam: Team,
   ) => void;
   toggleFavoriteProfile: () => void;
+  getCourseById: (id: number) => Course | undefined;
   getProfileById: (id: number) => Profile | undefined;
   getExamFromId: (idExam: number, exams: Exam[]) => Exam | undefined;
   addStudentsToExam: (examId: number, newStudents: Student[]) => void;
@@ -5882,9 +5883,9 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     },
     {
       id: 'People',
-      name: 'Persone',
+      name: t('contactsScreen.title'),
       icon: faIdCard,
-      linkTo: 'Persone',
+      linkTo: 'Contacts',
       favorite: true,
     },
     {
@@ -7430,6 +7431,10 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     }
   };
 
+  const getCourseById = (courseId: number): Course | undefined => {
+    return fakeCourses.find(course => course.id === courseId);
+  };
+
   return (
     <CoursesContext.Provider
       value={{
@@ -7511,6 +7516,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
         setSelectedStudent,
         addStudentsToCourse,
         addStudentsToExam,
+        getCourseById,
       }}
     >
       {children}

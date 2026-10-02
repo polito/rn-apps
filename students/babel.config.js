@@ -3,7 +3,6 @@ module.exports = function (api) {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
-      '@babel/plugin-transform-export-namespace-from',
       [
         'module-resolver',
         {
@@ -14,7 +13,6 @@ module.exports = function (api) {
         },
       ],
       'module:react-native-dotenv',
-      'react-native-reanimated/plugin',
     ],
     env: {
       production: {

@@ -9,6 +9,7 @@
         "project": "students-app",
         "organization": "polito"
       }
-    ]
+    ],
+    "react-native-edge-to-edge"
   ]
 }

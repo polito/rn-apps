@@ -2,9 +2,9 @@ import { StyleSheet, ViewStyle } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
-import { useTheme } from '@polito/lib/ui';
 
 import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
 import { Theme } from '../types/Theme';
 import { ActivityIndicator } from './ActivityIndicator';
 import { Icon } from './Icon';
@@ -33,7 +33,7 @@ export const TranslucentTextField = ({
   ...props
 }: TranslucentTextFieldProps) => {
   const styles = useStylesheet(createStyles);
-  const { fontSizes, palettes } = useTheme();
+  const { dark, fontSizes, palettes } = useTheme();
   return (
     <Row
       style={[styles.container, containerStyle]}
@@ -46,7 +46,7 @@ export const TranslucentTextField = ({
         leadingIcon && (
           <Icon
             icon={leadingIcon}
-            color={palettes.gray[500]}
+            color={dark ? palettes.gray[400] : palettes.gray[500]}
             style={styles.icon}
             size={fontSizes.md}
           />
@@ -73,14 +73,14 @@ export const TranslucentTextField = ({
   );
 };
 
-const createStyles = ({ dark, palettes, spacing, fontSizes }: Theme) =>
+const createStyles = ({ colors, dark, palettes, spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     container: {
-      backgroundColor: palettes.gray[200],
+      backgroundColor: dark ? colors.translucentSurface : palettes.gray[200],
       borderRadius: spacing[1.5],
       paddingVertical: spacing[1],
-      paddingHorizontal: spacing[2], //spacing[2] seems more accurate wrt the design
-      gap: spacing[2], //spacing[2] seems more accurate wrt the design
+      paddingHorizontal: spacing[2],
+      gap: spacing[2],
     },
     textField: {
       flex: 1,
@@ -88,7 +88,7 @@ const createStyles = ({ dark, palettes, spacing, fontSizes }: Theme) =>
       fontSize: fontSizes.md,
     },
     icon: {
-      color: palettes.gray[500],
+      color: dark ? palettes.gray[400] : palettes.gray[500],
     },
     input: {
       paddingVertical: 0,

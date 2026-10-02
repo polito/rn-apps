@@ -1,4 +1,5 @@
 import { PropsWithChildren, ReactNode, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { HeaderAccessory } from '../../ui/components/HeaderAccessory';
@@ -7,7 +8,7 @@ import { useStylesheet } from '../../ui/hooks/useStylesheet';
 import { Theme } from '../../ui/types/Theme';
 
 type Props = {
-  title: string;
+  title?: string;
   close: () => void;
   scrollViewRef?: any;
   setScrollOffset?: (value: number) => void;
@@ -19,6 +20,7 @@ type Props = {
 export const ModalContent = ({
   children,
   close,
+  title,
   scrollViewRef,
   setScrollOffset,
   rightItemTitle,
@@ -26,6 +28,7 @@ export const ModalContent = ({
   footer,
 }: PropsWithChildren<Props>) => {
   const styles = useStylesheet(createStyles);
+  const { t } = useTranslation();
 
   const handleOnScroll = useCallback(
     (event: any) => {
@@ -43,15 +46,35 @@ export const ModalContent = ({
         align="center"
         style={styles.header}
       >
-        <Text style={styles.headerLeft} onPress={close}>
-          Close
-        </Text>
-
-        {rightItemTitle && (
-          <Text style={styles.headerRight} onPress={rightItemOnPress}>
-            {rightItemTitle}
+        <View style={styles.headerSide}>
+          <Text
+            style={styles.headerLeft}
+            onPress={close}
+            accessibilityRole="button"
+          >
+            {t('common.close')}
           </Text>
-        )}
+        </View>
+        {title ? (
+          <Text
+            style={styles.modalTitle}
+            numberOfLines={1}
+            accessibilityRole="header"
+          >
+            {title}
+          </Text>
+        ) : null}
+        <View style={[styles.headerSide, styles.headerSideRight]}>
+          {rightItemTitle && (
+            <Text
+              style={styles.headerRight}
+              onPress={rightItemOnPress}
+              accessibilityRole="button"
+            >
+              {rightItemTitle}
+            </Text>
+          )}
+        </View>
       </HeaderAccessory>
       <ScrollView
         onScroll={handleOnScroll}
@@ -70,6 +93,7 @@ const createStyles = ({
   spacing,
   shapes,
   fontSizes,
+  fontFamilies,
   fontWeights,
   palettes,
 }: Theme) =>
@@ -85,12 +109,20 @@ const createStyles = ({
       borderTopRightRadius: shapes.md,
       borderTopLeftRadius: shapes.md,
     },
+    headerSide: {
+      flex: 1,
+    },
+    headerSideRight: {
+      alignItems: 'flex-end',
+    },
     headerLeft: {
       padding: spacing[4],
       paddingVertical: 0,
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: fontFamilies.body,
     },
     modalTitle: {
+      flexShrink: 1,
+      textAlign: 'center',
       fontSize: fontSizes.md,
       fontWeight: fontWeights.semibold,
       color: colors.prose,
@@ -99,6 +131,6 @@ const createStyles = ({
       padding: spacing[4],
       paddingVertical: 0,
       color: palettes.lightBlue[500],
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: fontFamilies.body,
     },
   });

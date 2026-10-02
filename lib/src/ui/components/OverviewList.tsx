@@ -1,8 +1,8 @@
 import { Children, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, ViewProps } from 'react-native';
+import { ViewProps } from 'react-native';
 
-import { useScreenReader } from '../../core/hooks/useScreenReader';
+import { useScreenReader } from '../../../src/core/hooks/useScreenReader';
 import { useTheme } from '../hooks/useTheme';
 import { ActivityIndicator } from './ActivityIndicator';
 import { Card } from './Card';
@@ -41,13 +41,12 @@ export const OverviewList = ({
   const { isEnabled, announce } = useScreenReader();
   return (
     <Card
-      accessible={Platform.select({ android: true, ios: false })}
-      rounded={rounded ?? Platform.select({ android: false })}
+      rounded={rounded}
       translucent={translucent}
       style={[
         {
-          marginVertical: spacing[2],
-          marginHorizontal: Platform.select({ ios: spacing[4] }),
+          marginBottom: spacing[0],
+          marginHorizontal: spacing[4],
         },
         style,
       ]}

@@ -1,86 +1,94 @@
-import { StyleSheet } from 'react-native';
+import { PropsWithChildren } from 'react';
+import { StyleSheet, View, ViewProps } from 'react-native';
 
-import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import {
-  Icon,
-  Row,
-  Text,
-  Theme,
-  useStylesheet,
-  useTheme,
-} from '@polito/lib/ui';
+  faCircleInfo,
+  faTriangleExclamation,
+} from '@fortawesome/free-solid-svg-icons';
 
-interface InfoMessageProps {
-  type?: 'info' | 'warning' | 'error';
-  showIcon?: boolean;
-  label: string;
-  labelStyle?: any;
-  iconStyle?: any;
-}
+import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
+import { Icon } from './Icon';
+import { Text } from './Text';
+
+export type InfoMessageVariant = 'warning' | 'info' | 'error';
+
+type Props = ViewProps & {
+  variant?: InfoMessageVariant;
+  icon?: IconDefinition;
+};
 
 export const InfoMessage = ({
-  type = 'info',
-  showIcon = true,
-  label,
-  labelStyle,
-  iconStyle,
-}: InfoMessageProps) => {
+  children,
+  variant = 'info',
+  icon,
+  style,
+  ...rest
+}: PropsWithChildren<Props>) => {
   const styles = useStylesheet(createStyles);
-  const { palettes, fontSizes } = useTheme();
-  const color = {
-    info: palettes.info[700],
-    warning: palettes.warning[600],
-    error: palettes.error[700],
-  }[type];
+  const { palettes, dark } = useTheme();
 
-  const backgroundColor = {
-    info: palettes.info[50],
-    warning: '#FFF7ED80',
-    error: palettes.error[50],
-  }[type];
+  const palette =
+    variant === 'warning'
+      ? palettes.warning
+      : variant === 'error'
+        ? palettes.error
+        : palettes.info;
 
-  const textColor = {
-    info: palettes.info[700],
-    warning: palettes.warning[700],
-    error: palettes.error[700],
-  }[type];
+  const borderColor = palette[dark ? 500 : 600];
+  const textColor = palette[dark ? 200 : 800];
+  const backgroundColor = palette[dark ? 900 : 50];
+
+  const defaultIcon =
+    variant === 'warning'
+      ? faTriangleExclamation
+      : variant === 'error'
+        ? faTriangleExclamation
+        : faCircleInfo;
 
   return (
-    <Row style={[styles.container, { borderColor: color, backgroundColor }]}>
-      {showIcon && (
-        <Icon
-          icon={faCircleInfo}
-          size={fontSizes.md}
-          color={color}
-          style={[styles.icon, iconStyle]}
-        />
-      )}
-      <Text style={[styles.label, { color: textColor }, labelStyle]}>
-        {label}
-      </Text>
-    </Row>
+    <View
+      style={[styles.container, { borderColor, backgroundColor }, style]}
+      accessibilityRole="alert"
+      {...rest}
+    >
+      <View style={styles.iconWrapper}>
+        <Icon icon={icon ?? defaultIcon} color={textColor} size={16} />
+      </View>
+      <View style={styles.body}>
+        {typeof children === 'string' ? (
+          <Text style={[styles.text, { color: textColor }]} weight="medium">
+            {children}
+          </Text>
+        ) : (
+          children
+        )}
+      </View>
+    </View>
   );
 };
 
-const createStyles = ({ palettes, spacing, shapes, fontSizes }: Theme) =>
+const createStyles = ({ spacing, shapes, fontSizes }: Theme) =>
   StyleSheet.create({
     container: {
+      flexDirection: 'row',
       alignItems: 'flex-start',
+      gap: spacing[3],
+      paddingHorizontal: spacing[4],
       paddingVertical: spacing[3],
-      gap: spacing[5],
-      borderRadius: shapes.lg,
+      borderRadius: shapes.md,
       borderWidth: 1,
-      paddingHorizontal: 21,
-      marginHorizontal: spacing[5],
     },
-
-    label: {
-      flexShrink: 1,
-      color: palettes.gray[700],
-      fontFamily: 'Montserrat-Medium',
+    iconWrapper: {
+      paddingTop: spacing[1],
+    },
+    body: {
+      flex: 1,
+    },
+    text: {
       fontSize: fontSizes.sm,
-    },
-    icon: {
-      marginTop: spacing[1.5],
+      lineHeight: fontSizes.sm * 1.5,
     },
   });

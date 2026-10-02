@@ -191,15 +191,11 @@ export const DefineAccessModal = ({ addeddStaff, close, onBack }: Props) => {
       footer={
         <CtaButtonContainer absolute modal>
           {!canConfirm && (
-            <InfoMessage
-              labelStyle={styles.infoMessage}
-              type="warning"
-              label={
-                addeddStaff
-                  ? t('courseStaffTab.accessInfoMessage')
-                  : t('courseStaffTab.typeInfoMessage')
-              }
-            />
+            <InfoMessage variant="warning" style={styles.infoMessage}>
+              {addeddStaff
+                ? t('courseStaffTab.accessInfoMessage')
+                : t('courseStaffTab.typeInfoMessage')}
+            </InfoMessage>
           )}
           <View style={styles.footerRow}>
             <CtaButton
@@ -302,7 +298,7 @@ export const DefineAccessModal = ({ addeddStaff, close, onBack }: Props) => {
   );
 };
 
-const createStyles = ({ spacing, colors, shapes, fontSizes }: Theme) =>
+const createStyles = ({ spacing, colors, shapes }: Theme) =>
   StyleSheet.create({
     container: {
       padding: spacing[5],
@@ -335,7 +331,7 @@ const createStyles = ({ spacing, colors, shapes, fontSizes }: Theme) =>
       marginRight: -spacing[1],
     },
     infoMessage: {
-      fontSize: fontSizes.sm,
+      marginHorizontal: spacing[5],
     },
     footerRow: {
       flexDirection: 'row',
