@@ -2,8 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 
+import { useApiContext } from '@polito/lib/core';
+
 import { dirname, mkdirRecursive } from '../../utils/files';
-import { useApiContext } from '../contexts/ApiContext';
 import {
   Download,
   DownloadPhase,

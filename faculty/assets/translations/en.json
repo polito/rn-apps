@@ -76,6 +76,11 @@
     "violet": "Violet",
     "yellow": "Yellow"
   },
+  "AgendaPreferences": {
+    "hideInAgenda": "Hide in agenda",
+    "hideEvent": "Hide event",
+    "showInAgenda": "Show in agenda"
+  },
   "common": {
     "active": "Active",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
@@ -171,7 +176,6 @@
     "grade": "Grade",
     "hiddenEvents": "Hidden events",
     "hide": "Hide",
-    "hideInAgenda": "Hide in Agenda",
     "hour": "Hour",
     "hours": "Hour",
     "info": "Info",
@@ -193,6 +197,7 @@
     "newItems": "New item",
     "newItems_plural": "New items",
     "next": "Next",
+    "news": "News",
     "noInternet": "You are offline, some features may not be available",
     "noValue": "No value",
     "notFound": "Not found",
@@ -283,6 +288,10 @@
     "recentSearch": "Recent search",
     "recentSearches": "Recent searches",
     "search": "Search people",
+    "usefulContacts": "Useful contacts",
+    "preferredContacts": "Favorite contacts",
+    "addPreferred": "Add to favorites",
+    "removePreferred": "Remove from favorites",
     "title": "Contacts"
   },
   "courseAssignmentPdfCreationScreen": {
@@ -417,12 +426,15 @@
     "cleanCacheFeedback": "Files were successfully deleted",
     "cleanCourseFiles": "Clean course files",
     "cleanCourseFilesSubtitle": "This will free approximately {{size}} of memory",
-    "filesSubtitle": "New material available",
+    "colorSubtitle": "Select a color for the course",
+    "iconSubtitle": "Select an icon for the course",
+    "filesSubtitle": "New material added by collaborators",
     "hideInExtracts": "Hide in extracts",
-    "lecturesSubtitle": "New lectures available",
-    "noticesSubtitle": "Notices sent by the professor",
+    "lecturesSubtitle": "New lectures added by collaborators",
+    "newsSubtitle": "Activities from collaborators",
     "showInExtracts": "Show in extracts",
-    "showInExtractsSubtitle": "In home screen and agenda"
+    "showInExtractsSubtitle": "In home screen and agenda",
+    "showExamCalls": "Show exam calls"
   },
   "courseScreen": {
     "fileDownloadFailed": "The download failed. Please try again later."
@@ -620,11 +632,16 @@
     "passwordLabel": "Password",
     "passwordLabelAccessibility": "Enter your password here",
     "showPassword": "Show password",
+    "SSO": "Login with SSO",
     "title": "Log in with your polito.it credentials",
-    "unsupportedUserType": "User type not supported: only students can log in to PoliTO Students.",
-    "usernameLabel": "Student ID",
+    "unsupportedUserType": "This user type is not supported by PoliTO Faculty.",
+    "usernameLabel": "PoliTO username",
     "usernameLabelAccessibility": "Enter your username here",
     "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received."
+  },
+  "ssoScreen": {
+    "ssoButton": "Sign in with Single-Sign-On",
+    "ssoLink": "or sign in with your credentials"
   },
   "messageScreen": {
     "backTitle": "Archive",
@@ -649,12 +666,12 @@
     "takePhoto": "Take photo",
     "takePhotoHint": "Take one or more photos and generate a file"
   },
-  "newsScreen": {
+  "noticesScreen": {
     "createdAt": "Published on ",
     "eventStartTime": "Starts on ",
     "information": "Information",
     "logo": "Logo",
-    "title": "News & Events"
+    "title": "Notices & Events"
   },
   "notifications": {
     "events": "Events",

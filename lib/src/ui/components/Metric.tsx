@@ -10,12 +10,20 @@ type Props = ViewProps & {
   value: string | number | ReactElement;
   color?: string;
   valueStyle?: TextProps['style'];
+  valueNumberOfLines?: number;
 };
 
 /**
  * A view used to present a simple textual metric
  */
-export const Metric = ({ title, value, color, ...rest }: CardProps & Props) => {
+export const Metric = ({
+  title,
+  value,
+  color,
+  valueStyle,
+  valueNumberOfLines,
+  ...rest
+}: CardProps & Props) => {
   const { dark, palettes, fontSizes, fontWeights } = useTheme();
 
   return (
@@ -24,13 +32,15 @@ export const Metric = ({ title, value, color, ...rest }: CardProps & Props) => {
       {['string', 'number'].includes(typeof value) ? (
         <Text
           accessible={false}
+          numberOfLines={valueNumberOfLines}
+          ellipsizeMode={valueNumberOfLines != null ? 'tail' : undefined}
           style={[
             {
               color: color ?? palettes.secondary[dark ? 500 : 600],
               fontSize: fontSizes.lg,
               fontWeight: fontWeights.semibold,
             },
-            rest.valueStyle,
+            valueStyle,
           ]}
         >
           {value}

@@ -65,7 +65,7 @@ export type TeachingStackParamList = {
   Lecture: undefined;
   Notices: undefined;
   Info: undefined;
-  Course: { from?: string };
+  Course: { from?: string; id?: number };
   CourseGuide: { courseId: number };
   CourseVideolecture: { courseId: number; lectureId: number };
   CourseVirtualClassroom: { courseId: number; lectureId: number };

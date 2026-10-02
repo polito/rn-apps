@@ -19,21 +19,26 @@ import {
 import {
   ParamListBase,
   getFocusedRouteNameFromRoute,
-  useNavigation,
 } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
 
+import { useCourses } from '../../core/contexts/CoursesContext';
 import { StudentsNavigator } from '../../features/students';
 import { CourseAssignmentsTab } from './CourseAssignmentsTab';
 import { CourseFilesTab } from './CourseFilesTab';
 import { CourseInfoScreen } from './CourseInfoScreen';
 import { CourseLecturesTab } from './CourseLecturesTab';
 import { CourseNoticesTab } from './CourseNoticesTab';
+import { CourseSharedScreensParamList } from './CourseSharedScreens';
 import { StaffScreen } from './CourseStaffScreen';
 import { TeachingStackParamList } from './TeachingNavigator';
 
-interface CourseTabsParamList extends ParamListBase, TeachingStackParamList {
-  CourseInfoScreen: undefined;
+export interface CourseTabsParamList
+  extends ParamListBase, TeachingStackParamList {
+  CourseInfoScreen: { courseId?: number } | undefined;
   CourseStaffScreen: undefined;
   CourseNoticesScreen: undefined;
   CourseFilesScreen: undefined;
@@ -156,14 +161,15 @@ const CourseTopTabBar = ({
   );
 };
 
-export const CourseNavigator = () => {
+type Props = NativeStackScreenProps<CourseSharedScreensParamList, 'Course'>;
+
+export const CourseNavigator = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { dark, palettes, fontSizes, spacing, fontFamilies, fontWeights } =
     theme;
-  const navigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
   const headerSideWidth = 44;
+  const { selectedCourse } = useCourses();
 
   const [showPlusButton, setShowPlusButton] = useState<boolean>(false); // <--- Stato
   const [_formPage, setFormPage] = useState('');
@@ -251,6 +257,14 @@ export const CourseNavigator = () => {
               size={fontSizes.lg}
               accessibilityLabel={t('common.preferences')}
               hitSlop={{ left: spacing[3], right: spacing[3] }}
+              onPress={() => {
+                if (selectedCourse) {
+                  navigation.navigate('CoursePreferences', {
+                    courseId: selectedCourse.id,
+                    uniqueShortcode: selectedCourse.code,
+                  });
+                }
+              }}
             />
           </View>
         ) : (
@@ -260,9 +274,9 @@ export const CourseNavigator = () => {
   }, [
     tab,
     headerSideWidth,
+    selectedCourse,
     showPlusButton, // 🔥 Trigga il re-render dell'header
     fontSizes.lg,
-    fontSizes.md,
     navigation,
     spacing,
     fontFamilies.body,
@@ -279,6 +293,7 @@ export const CourseNavigator = () => {
       <TopTabs.Screen
         name="CourseInfoScreen"
         component={CourseInfoScreen}
+        initialParams={{ courseId: route.params?.id }}
         options={{ title: 'Info' }}
         listeners={{
           tabPress: () => {

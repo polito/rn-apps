@@ -58,6 +58,7 @@ export interface Theme {
   fontFamilies: {
     heading: string;
     body: string;
+    title: string;
   };
   fontWeights: {
     normal: TextStyle['fontWeight'];
@@ -115,6 +116,7 @@ export interface Palettes {
   gray: Palette;
   lightBlue: Palette;
   violet: Palette;
+  purple: Palette;
   text: Palette;
   primary: Palette;
   secondary: Palette;

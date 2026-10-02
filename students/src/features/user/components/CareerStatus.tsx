@@ -1,60 +1,37 @@
-import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import {
+  IconName,
+  IconPrefix,
+  findIconDefinition,
+} from '@fortawesome/fontawesome-svg-core';
+import { Icon, Row, Text, useTheme } from '@polito/lib/ui';
+import { Symbol } from '@polito/student-api-client';
 
-import { Row, Text, useStylesheet, useTheme } from '@polito/lib/ui';
-import { StudentStatusEnum } from '@polito/student-api-client';
+import { useSymbolColor } from '../hooks/useSymbolColor.ts';
+
+const resolveIcon = (value?: string) => {
+  const [prefix, iconName] = value?.split('/') ?? [];
+  if (!prefix || !iconName) return undefined;
+  return findIconDefinition({
+    prefix: prefix as IconPrefix,
+    iconName: iconName as IconName,
+  });
+};
 
 type Props = {
-  status: StudentStatusEnum;
+  status: Symbol;
 };
-export const CareerStatus = ({ status }: Props) => {
-  const styles = useStylesheet(createStyles);
-  const { t, i18n } = useTranslation();
 
-  const { dark, palettes } = useTheme();
-  const [color, backgroundColor] = useMemo(() => {
-    switch (status) {
-      case StudentStatusEnum.Active:
-        return [palettes.success[dark ? 300 : 600], palettes.success[500]];
-      case StudentStatusEnum.Closed:
-      case StudentStatusEnum.Cancelled:
-      case StudentStatusEnum.CareerClosed:
-        return [palettes.danger[dark ? 400 : 600], palettes.danger[600]];
-      case StudentStatusEnum.Graduated:
-        return [
-          palettes.primary[dark ? 300 : 600],
-          palettes.primary[dark ? 400 : 500],
-        ];
-      default:
-        return [palettes.gray[dark ? 400 : 500], palettes.gray[500]];
-    }
-  }, [dark, palettes, status]);
+export const CareerStatus = ({ status }: Props) => {
+  const { fontSizes } = useTheme();
+  const color = useSymbolColor(status);
+  const icon = resolveIcon(status.icon);
 
   return (
-    <Row align="baseline" gap={2}>
-      <View
-        style={[
-          styles.statusCircle,
-          {
-            backgroundColor,
-          },
-        ]}
-      />
-      <Text variant="secondaryText" style={{ color }}>
-        {i18n.exists(`profileScreen.careerStatusEnum.${status}`)
-          ? t(`profileScreen.careerStatusEnum.${status}`).toLowerCase()
-          : status.toLowerCase()}
+    <Row align="center" gap={1.5}>
+      {icon && <Icon icon={icon} size={fontSizes.md} color={color} />}
+      <Text variant="secondaryText" style={{ color, fontSize: fontSizes.sm }}>
+        {status.label}
       </Text>
     </Row>
   );
 };
-
-const createStyles = () =>
-  StyleSheet.create({
-    statusCircle: {
-      width: 8,
-      height: 8,
-      borderRadius: 8,
-    },
-  });

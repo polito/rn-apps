@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import { useAuth } from '@polito/lib/features/auth';
 import {
   CtaButton,
   IconButton,
@@ -26,7 +27,6 @@ import {
 } from '@polito/lib/ui';
 
 import { PolitoLogo } from '~/core/components/Logo.tsx';
-import { useAuth } from '~/core/hooks/useAuth.ts';
 
 export const LoginScreen = () => {
   const { t } = useTranslation();
