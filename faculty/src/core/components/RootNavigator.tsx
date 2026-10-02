@@ -1,11 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Platform,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
@@ -31,9 +26,11 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 import {
+  BottomTabBarButtonProps,
   BottomTabNavigationProp,
   createBottomTabNavigator,
 } from '@react-navigation/bottom-tabs';
+import { PlatformPressable } from '@react-navigation/elements';
 import {
   NavigatorScreenParams,
   getFocusedRouteNameFromRoute,
@@ -68,14 +65,24 @@ export const RootNavigator = () => {
   const { colors } = useTheme();
   const { bottom } = useSafeAreaInsets();
   const styles = useStylesheet(createStyles);
-  const { updatePreference } = usePreferencesContext<AppPreferences>();
+  const { updatePreference, accessibility } =
+    usePreferencesContext<AppPreferences>();
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
+  const [tabBarIconSize, setTabBarIconSize] = useState(20);
   useEffect(() => {
     if (!campus && sites?.data?.length) {
       updatePreference('campusId', sites?.data[0].id);
     }
   }, [campus, sites?.data, updatePreference]);
+
+  useEffect(() => {
+    if (accessibility?.fontSize && accessibility.fontSize > 125) {
+      setTabBarIconSize(accessibility.fontSize === 150 ? 30 : 40);
+    } else {
+      setTabBarIconSize(20);
+    }
+  }, [accessibility?.fontSize]);
 
   const [isDID, setIsDID] = useState(true);
 
@@ -84,27 +91,38 @@ export const RootNavigator = () => {
   const bottomNavigation =
     useNavigation<BottomTabNavigationProp<RootParamList>>();
   const placesNavigation = useNavigation<BottomTabNavigationProp<any>>();
+  const instantAnimation = {
+    animation: 'timing' as const,
+    config: { duration: 0 },
+  };
+
   const androidTabBarBottom = useMemo(
     () =>
       Platform.select({ android: { height: androidTabBarHeight + bottom } }),
     [bottom],
   );
+
+  const renderTabButton =
+    (onPress: () => void) => (props: BottomTabBarButtonProps) => (
+      <PlatformPressable {...props} onPress={onPress} />
+    );
+
   return (
     <TabNavigator.Navigator
       backBehavior="history"
       screenOptions={{
-        tabBarShowLabel: true,
+        tabBarShowLabel:
+          accessibility?.fontSize && accessibility.fontSize > 125
+            ? false
+            : true,
         headerShown: false,
         tabBarHideOnKeyboard: true,
-        // tabBarVisibilityAnimationConfig: {
-        //   show: instantAnimation,
-        //   hide: instantAnimation,
-        // },
+        tabBarVisibilityAnimationConfig: {
+          show: instantAnimation,
+          hide: instantAnimation,
+        },
         tabBarStyle: [styles.tabBarStyle, androidTabBarBottom],
-        tabBarBackground:
-          Platform.OS === 'ios'
-            ? () => <TranslucentView blurAmount={20} fallbackOpacity={0.85} />
-            : undefined,
+        tabBarBackground: () => <TranslucentView fallbackOpacity={1} />,
         tabBarItemStyle: styles.tabBarItemStyle,
         tabBarLabelStyle: [styles.tabBarLabelStyle],
         tabBarInactiveTintColor: colors.tabBarInactive,
@@ -119,7 +137,7 @@ export const RootNavigator = () => {
             headerShown: false,
             tabBarLabel: t('teachingScreen.title'),
             tabBarIcon: ({ color }) => (
-              <Icon icon={faBookOpen} color={color} size={20} />
+              <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
             ),
             tabBarStyle: [
               styles.tabBarStyle,
@@ -132,19 +150,10 @@ export const RootNavigator = () => {
                 ? { display: 'none' }
                 : null,
             ],
-            tabBarButton: props => (
-              <TouchableWithoutFeedback
-                onPress={() => {
-                  setIsDID(true);
-                  teachingNavigation.navigate('Roles');
-                  // You can navigate to a specific screen or perform any action here
-                }}
-              >
-                <View style={props.style} testID={props.testID}>
-                  {props.children}
-                </View>
-              </TouchableWithoutFeedback>
-            ),
+            tabBarButton: renderTabButton(() => {
+              setIsDID(true);
+              teachingNavigation.navigate('Roles');
+            }),
           })}
         />
       ) : (
@@ -155,7 +164,7 @@ export const RootNavigator = () => {
             headerShown: false,
             tabBarLabel: t('teachingScreen.title'),
             tabBarIcon: ({ color }) => (
-              <Icon icon={faBookOpen} color={color} size={20} />
+              <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
             ),
             tabBarStyle: [
               styles.tabBarStyle,
@@ -168,25 +177,14 @@ export const RootNavigator = () => {
                 ? { display: 'none' }
                 : null,
             ],
-            tabBarButton: props => (
-              <TouchableWithoutFeedback
-                onPress={() => {
-                  // Prima esegui il setIsDID(false)
-                  setIsDID(true);
-
-                  // Poi procedi con la navigazione
-                  bottomNavigation.navigate({
-                    name: 'Didattica',
-                    params: { screen: 'Roles' },
-                    merge: true,
-                  }); // Se desideri navigare in modo esplicito
-                }}
-              >
-                <View style={props.style} testID={props.testID}>
-                  {props.children}
-                </View>
-              </TouchableWithoutFeedback>
-            ),
+            tabBarButton: renderTabButton(() => {
+              setIsDID(true);
+              bottomNavigation.navigate({
+                name: 'Didattica',
+                params: { screen: 'Roles' },
+                merge: true,
+              });
+            }),
           })}
         />
       )}
@@ -197,23 +195,12 @@ export const RootNavigator = () => {
           headerShown: false,
           tabBarLabel: t('agendaScreen.title'),
           tabBarIcon: ({ color }) => (
-            <Icon icon={faCalendar} color={color} size={20} />
+            <Icon icon={faCalendar} color={color} size={tabBarIconSize} />
           ),
-          tabBarButton: props => (
-            <TouchableWithoutFeedback
-              onPress={() => {
-                // Prima esegui il setIsDID(false)
-                setIsDID(false);
-
-                // Poi procedi con la navigazione
-                bottomNavigation.navigate('Agenda', { screen: 'Agenda2' }); // Se desideri navigare in modo esplicito
-              }}
-            >
-              <View style={props.style} testID={props.testID}>
-                {props.children}
-              </View>
-            </TouchableWithoutFeedback>
-          ),
+          tabBarButton: renderTabButton(() => {
+            setIsDID(false);
+            bottomNavigation.navigate('Agenda', { screen: 'Agenda2' });
+          }),
         }}
       />
 
@@ -223,27 +210,16 @@ export const RootNavigator = () => {
           headerShown: false,
           tabBarLabel: t('other.places'),
           tabBarIcon: ({ color }) => (
-            <Icon icon={faCompass} color={color} size={20} />
+            <Icon icon={faCompass} color={color} size={tabBarIconSize} />
           ),
-          tabBarButton: props => (
-            <TouchableWithoutFeedback
-              onPress={() => {
-                // Prima esegui il setIsDID(false)
-                setIsDID(false);
-
-                // Poi procedi con la navigazione
-                placesNavigation.navigate({
-                  name: 'Places',
-                  params: { screen: 'Places1' },
-                  merge: true,
-                }); // Se desideri navigare in modo esplicito
-              }}
-            >
-              <View style={props.style} testID={props.testID}>
-                {props.children}
-              </View>
-            </TouchableWithoutFeedback>
-          ),
+          tabBarButton: renderTabButton(() => {
+            setIsDID(false);
+            placesNavigation.navigate({
+              name: 'Places',
+              params: { screen: 'Places1' },
+              merge: true,
+            });
+          }),
         }}
       >
         {() => <PlacesNavigator unreadMessagesModal={View} />}
@@ -255,23 +231,12 @@ export const RootNavigator = () => {
           headerShown: false,
           tabBarLabel: t('other.services'),
           tabBarIcon: ({ color }) => (
-            <Icon icon={faCircleInfo} color={color} size={20} />
+            <Icon icon={faCircleInfo} color={color} size={tabBarIconSize} />
           ),
-          tabBarButton: props => (
-            <TouchableWithoutFeedback
-              onPress={() => {
-                // Prima esegui il setIsDID(false)
-                setIsDID(false);
-
-                // Poi procedi con la navigazione
-                bottomNavigation.navigate('Services'); // Se desideri navigare in modo esplicito
-              }}
-            >
-              <View style={props.style} testID={props.testID}>
-                {props.children}
-              </View>
-            </TouchableWithoutFeedback>
-          ),
+          tabBarButton: renderTabButton(() => {
+            setIsDID(false);
+            bottomNavigation.navigate('Services');
+          }),
         }}
       />
       <TabNavigator.Screen
@@ -281,23 +246,12 @@ export const RootNavigator = () => {
           headerShown: false,
           tabBarLabel: t('other.profile'),
           tabBarIcon: ({ color }) => (
-            <Icon icon={faUser} color={color} size={20} />
+            <Icon icon={faUser} color={color} size={tabBarIconSize} />
           ),
-          tabBarButton: props => (
-            <TouchableWithoutFeedback
-              onPress={() => {
-                // Prima esegui il setIsDID(false)
-                setIsDID(false);
-
-                // Poi procedi con la navigazione
-                bottomNavigation.navigate('Profile'); // Se desideri navigare in modo esplicito
-              }}
-            >
-              <View style={props.style} testID={props.testID}>
-                {props.children}
-              </View>
-            </TouchableWithoutFeedback>
-          ),
+          tabBarButton: renderTabButton(() => {
+            setIsDID(false);
+            bottomNavigation.navigate('Profile');
+          }),
         }}
       />
     </TabNavigator.Navigator>
@@ -316,7 +270,6 @@ const createStyles = ({
       ...tabBarStyle,
       position: 'absolute',
       borderTopColor: colors.divider,
-      ...(Platform.OS === 'android' ? { backgroundColor: colors.surface } : {}),
     },
     tabBarItemStyle: {
       paddingVertical: 3,

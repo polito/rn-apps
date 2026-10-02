@@ -26,8 +26,6 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { AndroidTopBar } from '../components/AndroidTopBar';
-import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
 import {
   NOTIFY_MAX_CHARACTERS,
   NOTIFY_WARNING_BACKGROUND_COLOR,
@@ -39,7 +37,7 @@ import { StudentsStackParamList } from '../types/navigation';
 export const NotifyComposeScreen = () => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { palettes, dark, colors } = useTheme();
+  const { palettes, dark } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
@@ -49,8 +47,6 @@ export const NotifyComposeScreen = () => {
     useState(false);
 
   const isSendEnabled = message.trim().length > 0;
-
-  const handleBack = () => navigation.goBack();
 
   const handleMessageChange = (text: string) => {
     setMessage(text);
@@ -81,35 +77,6 @@ export const NotifyComposeScreen = () => {
 
   return (
     <SafeAreaView style={styles.root} edges={['bottom']}>
-      {Platform.OS === 'ios' ? (
-        <IosTopBar
-          backgroundColor={colors.surface}
-          grabberColor={dark ? palettes.gray[500] : palettes.gray[400]}
-          dividerColor={dark ? palettes.gray[500] : palettes.gray[300]}
-          left={
-            <IosTopBarTextAction
-              label={t('common.back', { defaultValue: 'Back' })}
-              onPress={handleBack}
-              color={palettes.gray[500]}
-              align="left"
-            />
-          }
-          center={
-            <Text
-              style={[styles.iosHeaderTitle, dark && styles.iosHeaderTitleDark]}
-            >
-              {t('other.newNotify', { defaultValue: 'New notify' })}
-            </Text>
-          }
-        />
-      ) : (
-        <AndroidTopBar
-          onBack={handleBack}
-          backAccessibilityLabel={t('common.back', { defaultValue: 'Back' })}
-          title={t('other.newNotify', { defaultValue: 'New notify' })}
-        />
-      )}
-
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -213,18 +180,6 @@ const createStyles = ({
       flexGrow: 1,
       padding: spacing[5],
       paddingBottom: spacing[2],
-    },
-    iosHeaderTitle: {
-      color: palettes.primary[700],
-      textAlign: 'center',
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 22,
-      letterSpacing: -0.43,
-    },
-    iosHeaderTitleDark: {
-      color: palettes.gray[50],
     },
     messageCard: {
       backgroundColor: colors.surface,

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Platform,
@@ -9,30 +9,37 @@ import {
 } from 'react-native';
 
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
-import { faEnvelope, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChevronDown,
+  faChevronUp,
+  faEllipsis,
+  faEnvelope,
+  faPlus,
+  faSearch,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   CtaButton,
+  GlobalStyles,
+  Icon,
   IndentedDivider,
   ListItem,
   OverviewList,
+  StatefulMenuView,
   Text,
+  TextButton,
   Theme,
+  TranslucentTextField,
   TranslucentView,
   useSafeAreaSpacing,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { MenuAction, MenuView } from '@react-native-menu/menu';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import {
-  ContextMenuItem,
-  CourseFilesContextMenu,
-} from '../../../core/components/CourseFilesContextMenu';
-import { CourseFilesMenu } from '../../../core/components/CourseFilesMenu';
-import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import {
   TeachingNavigatorID,
@@ -57,27 +64,15 @@ export const CourseStudentsTab = () => {
   const [searchText, setSearchText] = useState('');
   const styles = useStylesheet(createStyles);
   const ctaStyles = useStylesheet(createAddStudentCtaStyles);
-  const { palettes, spacing, dark } = useTheme();
+  const { palettes, spacing, fontSizes, dark } = useTheme();
+  const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
   const addStudentFooterHeight = SCREEN_HORIZONTAL_PADDING * 2 + 48;
-  const [isFilterMenuVisible, setFilterMenuVisible] = useState(false);
-  const [isEllipsisMenuVisible, setEllipsisMenuVisible] = useState(false);
-  const [filterAnchorPosition, setFilterAnchorPosition] = useState<{
-    top: number;
-    left: number;
-  }>({ top: 170, left: SCREEN_HORIZONTAL_PADDING });
-  const [ellipsisAnchorPosition, setEllipsisAnchorPosition] = useState<{
-    top: number;
-    left: number;
-  }>({ top: 170, left: SCREEN_HORIZONTAL_PADDING });
   const [filterType, setFilterType] = useState<
     'all' | 'currentYear' | 'notExamined' | 'examined'
   >('all');
   const { t } = useTranslation();
   const navigation =
     useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
-  const filterButtonRef = useRef<View>(null);
-  const ellipsisButtonRef = useRef<View>(null);
-
   const students = selectedCourse?.students;
   const query = searchText.toLowerCase();
 
@@ -122,297 +117,291 @@ export const CourseStudentsTab = () => {
     }
   }, [filterType, t]);
 
-  const filterMenuItems: ContextMenuItem[] = useMemo(
+  const filterActions: MenuAction[] = useMemo(
     () => [
       {
-        label: t('other.noFilters', { defaultValue: 'No filter' }),
-        checked: filterType === 'all',
-        onPress: () => setFilterType('all'),
+        id: 'all',
+        title: t('other.noFilters', { defaultValue: 'No filter' }),
+        state: filterType === 'all' ? 'on' : 'off',
       },
       {
-        label: t('other.currentY', { defaultValue: 'Current Year' }),
-        checked: filterType === 'currentYear',
-        onPress: () => setFilterType('currentYear'),
+        id: 'currentYear',
+        title: t('other.currentY', { defaultValue: 'Current Year' }),
+        state: filterType === 'currentYear' ? 'on' : 'off',
       },
       {
-        label: t('other.examined', { defaultValue: 'Examined' }),
-        checked: filterType === 'examined',
-        onPress: () => setFilterType('examined'),
+        id: 'examined',
+        title: t('other.examined', { defaultValue: 'Examined' }),
+        state: filterType === 'examined' ? 'on' : 'off',
       },
       {
-        label: t('other.notExaminated', { defaultValue: 'Not Examined' }),
-        checked: filterType === 'notExamined',
-        onPress: () => setFilterType('notExamined'),
+        id: 'notExamined',
+        title: t('other.notExaminated', { defaultValue: 'Not Examined' }),
+        state: filterType === 'notExamined' ? 'on' : 'off',
       },
     ],
     [filterType, t],
   );
 
-  const ellipsisMenuItems: ContextMenuItem[] = useMemo(
+  const moreActions: MenuAction[] = useMemo(
     () => [
       {
-        label: t('courseFilesTab.select', { defaultValue: 'Select' }),
-        onPress: () => {
-          setEllipsisMenuVisible(false);
-          navigation.navigate('SelectStudents', { initialSelectAll: false });
-        },
+        id: 'select',
+        title: t('courseFilesTab.select', { defaultValue: 'Select' }),
       },
       {
-        label: t('courseFilesTab.selectAll', { defaultValue: 'Select All' }),
-        onPress: () => {
-          setEllipsisMenuVisible(false);
-          navigation.navigate('SelectStudents', { initialSelectAll: true });
-        },
+        id: 'selectAll',
+        title: t('courseFilesTab.selectAll', { defaultValue: 'Select All' }),
       },
     ],
-    [navigation, t],
+    [t],
   );
 
   if (!selectedCourse) return null;
 
   return (
-    <>
-      <View style={[styles.root, paddingHorizontal]}>
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={[
-            styles.scrollContent,
-            {
-              paddingBottom:
-                addStudentFooterHeight + bottomBarHeight + spacing[2],
-            },
-          ]}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Info Card */}
-          <View
-            style={[
-              styles.infoCard,
-              dark && { backgroundColor: palettes.info[100] },
-              {
-                marginLeft: infoCardMarginLeft,
-                marginRight: infoCardMarginRight,
-              },
-            ]}
-          >
-            <View style={styles.infoRowWithGap}>
-              <Text style={styles.infoLabelBold}>
-                {t('other.totalEnrolledStudents')}
-              </Text>
-              <Text style={styles.infoValueBold}>{totalEnrolled}</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>
-                {t('other.studentsAttendanceIssues')}
-              </Text>
-              <Text style={styles.infoValue}>0</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>
-                {t('other.studentsTakenExam')}
-              </Text>
-              <Text style={styles.infoValue}>{takenExam}</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>
-                {t('other.studentsExamDebts')}
-              </Text>
-              <Text style={styles.infoValue}>0</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>
-                {t('other.studentsEligible')}
-              </Text>
-              <Text style={styles.infoValue}>{eligible}</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>
-                {t('other.studentsFirstTime')}
-              </Text>
-              <Text style={styles.infoValue}>{firstTime}</Text>
-            </View>
-          </View>
-
-          {/* Search bar */}
-          <View
-            style={{
-              marginLeft: infoCardMarginLeft,
-              marginRight: infoCardMarginRight,
-            }}
-          >
-            <SearchBar
-              value={searchText}
-              onChangeText={setSearchText}
-              placeholder={t('other.searchForStudent')}
-            />
-          </View>
-
-          {/* Filter row */}
-          <View
-            style={{
-              marginLeft: infoCardMarginLeft,
-              marginRight: infoCardMarginRight,
-              marginBottom: -spacing[2.5],
-            }}
-          >
-            <CourseFilesMenu
-              sortLabel={filterLabel}
-              onSortPress={() => {
-                setEllipsisMenuVisible(false);
-                const node = filterButtonRef.current;
-                if (node?.measureInWindow) {
-                  node.measureInWindow(
-                    (x: number, y: number, w: number, h: number) => {
-                      setFilterAnchorPosition({
-                        top: y + h - 2,
-                        left: SCREEN_HORIZONTAL_PADDING,
-                      });
-                      setFilterMenuVisible(true);
-                    },
-                  );
-                } else {
-                  setFilterMenuVisible(true);
-                }
-              }}
-              onMorePress={() => {
-                setFilterMenuVisible(false);
-                const node = ellipsisButtonRef.current;
-                if (node?.measureInWindow) {
-                  node.measureInWindow(
-                    (x: number, y: number, w: number, h: number) => {
-                      setEllipsisAnchorPosition({
-                        top: y + h - 2,
-                        left: Math.max(SCREEN_HORIZONTAL_PADDING, x + w - 250),
-                      });
-                      setEllipsisMenuVisible(true);
-                    },
-                  );
-                } else {
-                  setEllipsisMenuVisible(true);
-                }
-              }}
-              sortButtonRef={filterButtonRef}
-              moreButtonRef={ellipsisButtonRef}
-            />
-          </View>
-
-          {/* Student list */}
-          <OverviewList
-            indented
-            rounded={Platform.OS === 'android' ? true : undefined}
-            emptyStateText={t('other.noStudentsFound')}
-            style={Platform.select({
-              android: {
-                marginLeft: infoCardMarginLeft,
-                marginRight: infoCardMarginRight,
-                elevation: 0,
-              },
-            })}
-          >
-            {filteredStudents.map((student, index) => (
-              <View key={student.id}>
-                <ListItem
-                  onPress={() => {
-                    setSelectedStudent(student);
-                    // Look up the Teaching stack by id rather than counting
-                    // `getParent()` hops, so route changes in the navigator
-                    // tree don't silently land us on the wrong navigator.
-                    const getParentById = navigation.getParent as unknown as (
-                      id: typeof TeachingNavigatorID,
-                    ) =>
-                      | NativeStackNavigationProp<TeachingStackParamList>
-                      | undefined;
-                    const teachingNavigation =
-                      getParentById(TeachingNavigatorID);
-
-                    if (!teachingNavigation) {
-                      console.warn(
-                        new StudentsFeatureError(
-                          `Could not find ancestor navigator with id "${TeachingNavigatorID}"; cannot navigate to StudentContact.`,
-                          studentsErrorCodes.PARENT_NAVIGATOR_NOT_FOUND,
-                        ),
-                      );
-                      return;
-                    }
-
-                    teachingNavigation.navigate('StudentContact');
-                  }}
-                  title={`${student.name} ${student.surname}`}
-                  subtitle={student.id}
-                  leadingItem={
-                    <FontAwesomeIcon
-                      icon={faCircleUser}
-                      size={20}
-                      color={dark ? palettes.gray[50] : palettes.primary[700]}
-                    />
-                  }
-                  trailingItem={
-                    <View onStartShouldSetResponder={() => true}>
-                      <TouchableOpacity
-                        onPress={() =>
-                          navigation.navigate('EmailCompose', {
-                            selectedIds: [student.id],
-                          })
-                        }
-                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                        accessibilityRole="button"
-                        accessibilityLabel={t('other.contactStudent', {
-                          defaultValue: 'Contact student by email',
-                        })}
-                      >
-                        <FontAwesomeIcon
-                          icon={faEnvelope}
-                          size={16}
-                          color={
-                            dark ? palettes.gray[50] : palettes.primary[700]
-                          }
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  }
-                />
-                {index < filteredStudents.length - 1 ? (
-                  <IndentedDivider style={styles.studentDivider} />
-                ) : null}
-              </View>
-            ))}
-          </OverviewList>
-        </ScrollView>
-
+    <View style={[styles.root, paddingHorizontal]}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={[
+          styles.scrollContent,
+          {
+            paddingBottom:
+              addStudentFooterHeight + bottomBarHeight + spacing[2],
+          },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Info Card */}
         <View
           style={[
-            ctaStyles.blurFooter,
+            styles.infoCard,
+            dark && { backgroundColor: palettes.info[100] },
             {
-              marginLeft: -safeHorizontal.paddingLeft,
-              marginRight: -safeHorizontal.paddingRight,
-              bottom: bottomBarHeight,
+              marginLeft: infoCardMarginLeft,
+              marginRight: infoCardMarginRight,
             },
           ]}
         >
-          <TranslucentView blurAmount={10} fallbackOpacity={0.1} />
-          <CtaButton
-            title={t('other.addStudent')}
-            icon={faPlus}
-            action={() => navigation.navigate('AddStudents')}
-            absolute={false}
-            style={ctaStyles.ctaButton}
-            containerStyle={ctaStyles.ctaButtonContainer}
+          <View style={styles.infoRowWithGap}>
+            <Text style={styles.infoLabelBold}>
+              {t('other.totalEnrolledStudents')}
+            </Text>
+            <Text style={styles.infoValueBold}>{totalEnrolled}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>
+              {t('other.studentsAttendanceIssues')}
+            </Text>
+            <Text style={styles.infoValue}>0</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>{t('other.studentsTakenExam')}</Text>
+            <Text style={styles.infoValue}>{takenExam}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>{t('other.studentsExamDebts')}</Text>
+            <Text style={styles.infoValue}>0</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>{t('other.studentsEligible')}</Text>
+            <Text style={styles.infoValue}>{eligible}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>{t('other.studentsFirstTime')}</Text>
+            <Text style={styles.infoValue}>{firstTime}</Text>
+          </View>
+        </View>
+
+        {/* Search bar */}
+        <View
+          style={{
+            marginLeft: infoCardMarginLeft,
+            marginRight: infoCardMarginRight,
+          }}
+        >
+          <TranslucentTextField
+            autoCorrect={false}
+            leadingIcon={faSearch}
+            value={searchText}
+            onChangeText={setSearchText}
+            style={GlobalStyles.grow}
+            label={t('other.searchForStudent')}
+            editable
+            isClearable={searchText.length > 0}
+            onClear={() => setSearchText('')}
+            onClearLabel={t('contactsScreen.clearSearch')}
           />
         </View>
+
+        {/* Filter row */}
+        <View
+          style={{
+            marginLeft: infoCardMarginLeft,
+            marginRight: infoCardMarginRight,
+            marginBottom: -spacing[2.5],
+          }}
+        >
+          <View style={styles.menuRow}>
+            <StatefulMenuView
+              actions={filterActions}
+              onPressAction={({ nativeEvent }) => {
+                const id = nativeEvent.event;
+                if (
+                  id === 'all' ||
+                  id === 'currentYear' ||
+                  id === 'examined' ||
+                  id === 'notExamined'
+                ) {
+                  setFilterType(id);
+                }
+              }}
+              onCloseMenu={() => setFilterMenuOpen(false)}
+              onOpenMenu={() => setFilterMenuOpen(true)}
+            >
+              <View style={styles.filterTrigger}>
+                <TextButton>{filterLabel}</TextButton>
+                <Icon
+                  icon={isFilterMenuOpen ? faChevronUp : faChevronDown}
+                  size={fontSizes.md}
+                  color={palettes.primary[400]}
+                  style={styles.filterIcon}
+                />
+              </View>
+            </StatefulMenuView>
+            <MenuView
+              actions={moreActions}
+              onPressAction={({ nativeEvent }) => {
+                if (nativeEvent.event === 'select') {
+                  navigation.navigate('SelectStudents', {
+                    initialSelectAll: false,
+                  });
+                }
+                if (nativeEvent.event === 'selectAll') {
+                  navigation.navigate('SelectStudents', {
+                    initialSelectAll: true,
+                  });
+                }
+              }}
+            >
+              <View
+                style={styles.ellipsisTrigger}
+                accessibilityRole="button"
+                accessibilityLabel={t('common.moreOptions', {
+                  defaultValue: 'More options',
+                })}
+              >
+                <Icon
+                  icon={faEllipsis}
+                  color={palettes.primary[400]}
+                  size={fontSizes.lg}
+                />
+              </View>
+            </MenuView>
+          </View>
+        </View>
+
+        {/* Student list */}
+        <OverviewList
+          indented
+          rounded={Platform.OS === 'android' ? true : undefined}
+          emptyStateText={t('other.noStudentsFound')}
+          style={Platform.select({
+            android: {
+              marginLeft: infoCardMarginLeft,
+              marginRight: infoCardMarginRight,
+              elevation: 0,
+            },
+          })}
+        >
+          {filteredStudents.map((student, index) => (
+            <View key={student.id}>
+              <ListItem
+                onPress={() => {
+                  setSelectedStudent(student);
+                  // Look up the Teaching stack by id rather than counting
+                  // `getParent()` hops, so route changes in the navigator
+                  // tree don't silently land us on the wrong navigator.
+                  const getParentById = navigation.getParent as unknown as (
+                    id: typeof TeachingNavigatorID,
+                  ) =>
+                    | NativeStackNavigationProp<TeachingStackParamList>
+                    | undefined;
+                  const teachingNavigation = getParentById(TeachingNavigatorID);
+
+                  if (!teachingNavigation) {
+                    console.warn(
+                      new StudentsFeatureError(
+                        `Could not find ancestor navigator with id "${TeachingNavigatorID}"; cannot navigate to StudentContact.`,
+                        studentsErrorCodes.PARENT_NAVIGATOR_NOT_FOUND,
+                      ),
+                    );
+                    return;
+                  }
+
+                  teachingNavigation.navigate('StudentContact');
+                }}
+                title={`${student.name} ${student.surname}`}
+                subtitle={student.id}
+                leadingItem={
+                  <FontAwesomeIcon
+                    icon={faCircleUser}
+                    size={20}
+                    color={dark ? palettes.gray[50] : palettes.primary[700]}
+                  />
+                }
+                trailingItem={
+                  <View onStartShouldSetResponder={() => true}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate('EmailCompose', {
+                          selectedIds: [student.id],
+                        })
+                      }
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      accessibilityRole="button"
+                      accessibilityLabel={t('other.contactStudent', {
+                        defaultValue: 'Contact student by email',
+                      })}
+                    >
+                      <FontAwesomeIcon
+                        icon={faEnvelope}
+                        size={16}
+                        color={dark ? palettes.gray[50] : palettes.primary[700]}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                }
+              />
+              {index < filteredStudents.length - 1 ? (
+                <IndentedDivider style={styles.studentDivider} />
+              ) : null}
+            </View>
+          ))}
+        </OverviewList>
+      </ScrollView>
+
+      <View
+        style={[
+          ctaStyles.blurFooter,
+          {
+            marginLeft: -safeHorizontal.paddingLeft,
+            marginRight: -safeHorizontal.paddingRight,
+            bottom: bottomBarHeight,
+          },
+        ]}
+      >
+        <TranslucentView blurAmount={10} fallbackOpacity={0.1} />
+        <CtaButton
+          title={t('other.addStudent')}
+          icon={faPlus}
+          action={() => navigation.navigate('AddStudents')}
+          absolute={false}
+          style={ctaStyles.ctaButton}
+          containerStyle={ctaStyles.ctaButtonContainer}
+        />
       </View>
-      <CourseFilesContextMenu
-        visible={isFilterMenuVisible}
-        onClose={() => setFilterMenuVisible(false)}
-        items={filterMenuItems}
-        anchorPosition={filterAnchorPosition}
-      />
-      <CourseFilesContextMenu
-        visible={isEllipsisMenuVisible}
-        onClose={() => setEllipsisMenuVisible(false)}
-        items={ellipsisMenuItems}
-        anchorPosition={ellipsisAnchorPosition}
-      />
-    </>
+    </View>
   );
 };
 
@@ -451,6 +440,23 @@ const createStyles = ({
     scrollContent: {
       paddingTop: spacing[4],
       paddingBottom: spacing[2],
+    },
+    menuRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      alignSelf: 'stretch',
+    },
+    filterTrigger: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    filterIcon: {
+      marginLeft: 4,
+    },
+    ellipsisTrigger: {
+      padding: spacing[3],
+      marginHorizontal: -spacing[3],
     },
     // Info Card
     infoCard: {

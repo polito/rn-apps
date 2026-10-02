@@ -9,6 +9,7 @@ import {
 import { useFeedbackContext } from '@polito/lib/core';
 import {
   BottomBarSpacer,
+  Checkbox,
   CtaButton,
   CtaButtonSpacer,
   useSafeBottomBarHeight,
@@ -16,7 +17,6 @@ import {
 } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { Checkbox } from '../../../core/components/Checkbox';
 import {
   useGetExams,
   useRescheduleRequest,

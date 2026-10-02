@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Platform,
@@ -9,39 +9,36 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { faSquare } from '@fortawesome/free-regular-svg-icons';
 import {
   faEllipsisVertical,
   faEnvelope,
-  faSquareCheck,
+  faSearch,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
+  Checkbox,
   CtaButton,
   CtaButtonContainer,
+  GlobalStyles,
+  Icon,
   Text,
+  TextButton,
   Theme,
+  TranslucentTextField,
   useBottomBarAwareStyles,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { MenuView } from '@react-native-menu/menu';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import {
-  ContextMenuItem,
-  CourseFilesContextMenu,
-} from '../../../core/components/CourseFilesContextMenu';
-import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { AndroidTopBar } from '../components/AndroidTopBar';
 import {
   ContactMethod,
   ContactMethodOverlay,
 } from '../components/ContactMethodOverlay';
 import { HighlightedName } from '../components/HighlightedName';
-import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
 import { SCREEN_HORIZONTAL_PADDING } from '../constants';
 import { useFilteredStudents } from '../hooks';
 import { StudentsStackParamList } from '../types/navigation';
@@ -57,7 +54,7 @@ export const SelectStudentsModalContent = ({
 }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { palettes, dark, colors } = useTheme();
+  const { palettes, dark } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
   const route = useRoute<RouteProp<StudentsStackParamList, 'SelectStudents'>>();
@@ -65,28 +62,25 @@ export const SelectStudentsModalContent = ({
   const bottomTabBarHeight = useBottomTabBarHeight();
   const { selectedCourse } = useCourses();
 
-  const students = selectedCourse?.students ?? [];
+  const students = useMemo(
+    () => selectedCourse?.students ?? [],
+    [selectedCourse?.students],
+  );
   const resolvedInitialSelectAll =
     initialSelectAll ?? route.params?.initialSelectAll ?? false;
   const [searchText, setSearchText] = useState('');
-  const [isEllipsisMenuVisible, setEllipsisMenuVisible] = useState(false);
-  const [ellipsisAnchorPosition, setEllipsisAnchorPosition] = useState<{
-    top: number;
-    left: number;
-  }>({ top: 170, left: SCREEN_HORIZONTAL_PADDING });
-  const ellipsisButtonRef = useRef<View>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(
     () => new Set(resolvedInitialSelectAll ? students.map(s => s.id) : []),
   );
   const [isContactMethodVisible, setContactMethodVisible] = useState(false);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     if (close) {
       close();
       return;
     }
     navigation.goBack();
-  };
+  }, [close, navigation]);
 
   const filteredStudents = useFilteredStudents(students, searchText);
 
@@ -106,21 +100,6 @@ export const SelectStudentsModalContent = ({
     });
   }, [filteredStudents, isAllSelected]);
 
-  const ellipsisMenuItems: ContextMenuItem[] = useMemo(
-    () => [
-      {
-        label: isAllSelected
-          ? t('common.deselectAll', { defaultValue: 'Deselect all' })
-          : t('common.selectAll', { defaultValue: 'Select all' }),
-        onPress: () => {
-          setEllipsisMenuVisible(false);
-          handleToggleAll();
-        },
-      },
-    ],
-    [handleToggleAll, isAllSelected, t],
-  );
-
   const handleToggleStudent = (id: string) => {
     setSelectedIds(prev => {
       const next = new Set(prev);
@@ -137,6 +116,52 @@ export const SelectStudentsModalContent = ({
     setContactMethodVisible(true);
   };
 
+  useLayoutEffect(() => {
+    const actionLabel = isAllSelected
+      ? t('common.deselectAll')
+      : t('common.selectAll');
+
+    navigation.setOptions({
+      ...(close
+        ? {
+            headerLeft: () => (
+              <TextButton onPress={handleClose}>{t('common.close')}</TextButton>
+            ),
+          }
+        : {}),
+      headerRight: () =>
+        Platform.OS === 'ios' ? (
+          <TextButton onPress={handleToggleAll}>{actionLabel}</TextButton>
+        ) : (
+          <MenuView
+            actions={[{ id: 'toggleAll', title: actionLabel }]}
+            onPressAction={() => handleToggleAll()}
+          >
+            <View
+              style={styles.headerMenu}
+              accessibilityRole="button"
+              accessibilityLabel={t('common.moreOptions')}
+            >
+              <Icon
+                icon={faEllipsisVertical}
+                size={18}
+                color={palettes.primary[400]}
+              />
+            </View>
+          </MenuView>
+        ),
+    });
+  }, [
+    close,
+    handleClose,
+    handleToggleAll,
+    isAllSelected,
+    navigation,
+    palettes.primary,
+    styles.headerMenu,
+    t,
+  ]);
+
   const handleContactMethodContinue = (method: ContactMethod) => {
     setContactMethodVisible(false);
     const ids = Array.from(selectedIds);
@@ -151,75 +176,18 @@ export const SelectStudentsModalContent = ({
 
   return (
     <SafeAreaView style={styles.root} edges={['bottom']}>
-      {Platform.OS === 'ios' ? (
-        <IosTopBar
-          backgroundColor={colors.surface}
-          grabberColor={dark ? palettes.gray[500] : palettes.gray[400]}
-          dividerColor={dark ? palettes.gray[500] : palettes.gray[300]}
-          left={
-            <IosTopBarTextAction
-              label={t('common.close')}
-              onPress={handleClose}
-              color={palettes.gray[500]}
-              align="left"
-            />
-          }
-          right={
-            <IosTopBarTextAction
-              label={
-                isAllSelected ? t('common.deselectAll') : t('common.selectAll')
-              }
-              onPress={handleToggleAll}
-              color={palettes.primary[500]}
-              align="right"
-            />
-          }
-        />
-      ) : (
-        <AndroidTopBar
-          onBack={handleClose}
-          backAccessibilityLabel={t('common.close', { defaultValue: 'Close' })}
-          title={t('common.selectAll', { defaultValue: 'Select all' })}
-          right={
-            <TouchableOpacity
-              ref={ellipsisButtonRef}
-              onPress={() => {
-                const node = ellipsisButtonRef.current;
-                if (node?.measureInWindow) {
-                  node.measureInWindow(
-                    (x: number, y: number, w: number, h: number) => {
-                      setEllipsisAnchorPosition({
-                        top: y + h - 2,
-                        left: Math.max(SCREEN_HORIZONTAL_PADDING, x + w - 250),
-                      });
-                      setEllipsisMenuVisible(true);
-                    },
-                  );
-                } else {
-                  setEllipsisMenuVisible(true);
-                }
-              }}
-              style={styles.topBarAction}
-              accessibilityRole="button"
-              accessibilityLabel={t('common.moreOptions', {
-                defaultValue: 'More options',
-              })}
-            >
-              <FontAwesomeIcon
-                icon={faEllipsisVertical}
-                size={18}
-                color={palettes.primary[400]}
-              />
-            </TouchableOpacity>
-          }
-        />
-      )}
-
       <View style={styles.searchWrapper}>
-        <SearchBar
+        <TranslucentTextField
+          autoCorrect={false}
+          leadingIcon={faSearch}
           value={searchText}
           onChangeText={setSearchText}
-          placeholder={t('other.searchForStudent')}
+          style={GlobalStyles.grow}
+          label={t('other.searchForStudent')}
+          editable
+          isClearable={searchText.length > 0}
+          onClear={() => setSearchText('')}
+          onClearLabel={t('contactsScreen.clearSearch')}
         />
       </View>
 
@@ -254,15 +222,12 @@ export const SelectStudentsModalContent = ({
                     />
                     <Text style={styles.studentId}>{student.id}</Text>
                   </View>
-                  <View style={styles.checkboxContainer}>
-                    <FontAwesomeIcon
-                      icon={
-                        selectedIds.has(student.id) ? faSquareCheck : faSquare
-                      }
-                      size={16}
-                      color={palettes.gray[500]}
-                    />
-                  </View>
+                  <Checkbox
+                    isChecked={selectedIds.has(student.id)}
+                    onPress={() => handleToggleStudent(student.id)}
+                    containerStyle={styles.checkboxContainer}
+                    textStyle={styles.checkboxText}
+                  />
                 </TouchableOpacity>
                 {index < filteredStudents.length - 1 && (
                   <View style={[styles.divider, dark && styles.dividerDark]} />
@@ -299,12 +264,6 @@ export const SelectStudentsModalContent = ({
           }
         />
       </CtaButtonContainer>
-      <CourseFilesContextMenu
-        visible={isEllipsisMenuVisible}
-        onClose={() => setEllipsisMenuVisible(false)}
-        items={ellipsisMenuItems}
-        anchorPosition={ellipsisAnchorPosition}
-      />
       <ContactMethodOverlay
         visible={isContactMethodVisible}
         selectedCount={selectedIds.size}
@@ -329,12 +288,8 @@ const createStyles = ({
       flex: 1,
       backgroundColor: colors.background,
     },
-    topBarAction: {
-      width: 44,
-      minHeight: 44,
-      justifyContent: 'center',
-      alignItems: 'flex-end',
-      paddingRight: spacing[4],
+    headerMenu: {
+      padding: spacing[2],
     },
     searchWrapper: {
       paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
@@ -385,10 +340,12 @@ const createStyles = ({
       lineHeight: 21,
     },
     checkboxContainer: {
-      width: 24,
-      alignItems: 'center',
-      justifyContent: 'center',
+      marginHorizontal: 0,
+      marginVertical: 0,
       flexShrink: 0,
+    },
+    checkboxText: {
+      marginHorizontal: 0,
     },
     divider: {
       height: 1,

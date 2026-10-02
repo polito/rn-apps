@@ -247,10 +247,13 @@ export const TeachingNavigator = () => {
         name="StudentContact"
         component={StudentContact}
         options={{
+          title: t('other.student'),
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackButtonDisplayMode: 'minimal',
           presentation: 'card',
           animation: 'slide_from_right',
           fullScreenGestureEnabled: true,
-          headerShown: false,
         }}
       />
 
@@ -258,9 +261,13 @@ export const TeachingNavigator = () => {
         name="SpecialNeeds"
         component={SpecialNeedsScreen}
         options={{
+          title: t('other.specialNeedsTitle'),
+          headerShown: true,
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackButtonDisplayMode: 'minimal',
           presentation: Platform.OS === 'android' ? 'card' : 'modal',
           animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
-          headerShown: false,
         }}
       />
 
@@ -268,9 +275,13 @@ export const TeachingNavigator = () => {
         name="AddStudents"
         component={AddStudentsScreen}
         options={{
+          title: t('other.addStudent'),
+          headerShown: true,
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackButtonDisplayMode: 'minimal',
           presentation: Platform.OS === 'android' ? 'card' : 'modal',
           animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
-          headerShown: false,
         }}
       />
 
@@ -278,9 +289,13 @@ export const TeachingNavigator = () => {
         name="SelectStudents"
         component={SelectStudentsScreen}
         options={{
+          title: t('other.selectStudents'),
+          headerShown: true,
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackButtonDisplayMode: 'minimal',
           presentation: Platform.OS === 'android' ? 'card' : 'modal',
           animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
-          headerShown: false,
         }}
       />
 
@@ -298,9 +313,13 @@ export const TeachingNavigator = () => {
         name="EmailCompose"
         component={EmailComposeScreen}
         options={{
+          title: t('other.newEmail'),
+          headerShown: true,
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackButtonDisplayMode: 'minimal',
           presentation: Platform.OS === 'android' ? 'card' : 'modal',
           animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
-          headerShown: false,
         }}
       />
 
@@ -308,9 +327,13 @@ export const TeachingNavigator = () => {
         name="NotifyCompose"
         component={NotifyComposeScreen}
         options={{
+          title: t('other.newNotify'),
+          headerShown: true,
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackButtonDisplayMode: 'minimal',
           presentation: Platform.OS === 'android' ? 'card' : 'modal',
           animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
-          headerShown: false,
         }}
       />
 

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Platform,
@@ -10,13 +10,21 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
-import { faCheck, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheck,
+  faMinus,
+  faPlus,
+  faSearch,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   CtaButton,
   CtaButtonContainer,
+  GlobalStyles,
   Text,
+  TextButton,
   Theme,
+  TranslucentTextField,
   useBottomBarAwareStyles,
   useStylesheet,
   useTheme,
@@ -25,11 +33,8 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { AndroidTopBar } from '../components/AndroidTopBar';
 import { HighlightedName } from '../components/HighlightedName';
-import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
 import { CURRENT_ACADEMIC_YEAR, SCREEN_HORIZONTAL_PADDING } from '../constants';
 import { StudentsFeatureError, studentsErrorCodes } from '../errors';
 import { useFilteredStudents } from '../hooks';
@@ -57,7 +62,7 @@ type Props = {
 export const AddStudentsModalContent = ({ close }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { palettes, dark, colors } = useTheme();
+  const { palettes, dark } = useTheme();
   const bottomTabBarHeight = useBottomTabBarHeight();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const { addStudentsToCourse, selectedCourse } = useCourses();
@@ -74,13 +79,22 @@ export const AddStudentsModalContent = ({ close }: Props) => {
     return `${prefix}${padded}`;
   };
   const isConfirmEnabled = selectedStudents.length > 0;
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     if (close) {
       close();
       return;
     }
     navigation.goBack();
-  };
+  }, [close, navigation]);
+
+  useLayoutEffect(() => {
+    if (!close) return;
+    navigation.setOptions({
+      headerLeft: () => (
+        <TextButton onPress={handleClose}>{t('common.close')}</TextButton>
+      ),
+    });
+  }, [close, handleClose, navigation, t]);
 
   const selectedIds = useMemo(
     () => new Set(selectedStudents.map(student => student.id)),
@@ -127,24 +141,6 @@ export const AddStudentsModalContent = ({ close }: Props) => {
 
   return (
     <SafeAreaView style={styles.root} edges={['bottom']}>
-      {Platform.OS === 'ios' ? (
-        <IosTopBar
-          backgroundColor={colors.surface}
-          grabberColor={dark ? palettes.gray[500] : palettes.gray[400]}
-          dividerColor={dark ? palettes.gray[500] : palettes.gray[300]}
-          left={
-            <IosTopBarTextAction
-              label={t('common.close', { defaultValue: 'Close' })}
-              onPress={handleClose}
-              color={palettes.gray[500]}
-              align="left"
-            />
-          }
-        />
-      ) : (
-        <AndroidTopBar onBack={handleClose} />
-      )}
-
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={[
@@ -155,10 +151,17 @@ export const AddStudentsModalContent = ({ close }: Props) => {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.searchWrapper}>
-          <SearchBar
+          <TranslucentTextField
+            autoCorrect={false}
+            leadingIcon={faSearch}
             value={searchText}
             onChangeText={setSearchText}
-            placeholder={t('other.lookForStudent')}
+            style={GlobalStyles.grow}
+            label={t('other.lookForStudent')}
+            editable
+            isClearable={searchText.length > 0}
+            onClear={() => setSearchText('')}
+            onClearLabel={t('contactsScreen.clearSearch')}
           />
         </View>
 

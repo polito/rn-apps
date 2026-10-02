@@ -24,16 +24,12 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { useNavigation } from '@react-navigation/native';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { AndroidTopBar } from '../components/AndroidTopBar';
-import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
 import { SCREEN_HORIZONTAL_PADDING } from '../constants';
 
 export const SpecialNeedsScreen = () => {
-  const { palettes, dark, colors } = useTheme();
-  const navigation = useNavigation();
+  const { palettes, dark } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
   const { selectedStudent } = useCourses();
@@ -87,39 +83,6 @@ export const SpecialNeedsScreen = () => {
 
   return (
     <SafeAreaView style={styles.root} edges={['bottom']}>
-      {Platform.OS === 'ios' ? (
-        <IosTopBar
-          backgroundColor={colors.surface}
-          grabberColor={dark ? palettes.gray[500] : palettes.gray[400]}
-          dividerColor={dark ? palettes.gray[500] : palettes.gray[300]}
-          left={
-            <IosTopBarTextAction
-              label={t('common.close', { defaultValue: 'Close' })}
-              onPress={() => navigation.goBack()}
-              color={palettes.gray[500]}
-              align="left"
-            />
-          }
-          center={
-            <Text
-              style={[styles.iosHeaderTitle, dark && styles.iosHeaderTitleDark]}
-            >
-              {t('other.specialNeedsTitle', {
-                defaultValue: 'Compensative measures',
-              })}
-            </Text>
-          }
-        />
-      ) : (
-        <AndroidTopBar
-          onBack={() => navigation.goBack()}
-          backAccessibilityLabel={t('common.close', { defaultValue: 'Close' })}
-          title={t('other.specialNeedsTitle', {
-            defaultValue: 'Compensative measures',
-          })}
-        />
-      )}
-
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={[
@@ -275,18 +238,6 @@ const createStyles = ({
       padding: spacing[5],
       gap: spacing[4],
       paddingBottom: spacing[2],
-    },
-    iosHeaderTitle: {
-      color: palettes.primary[700],
-      textAlign: 'center',
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      lineHeight: 22,
-      letterSpacing: -0.43,
-    },
-    iosHeaderTitleDark: {
-      color: palettes.gray[50],
     },
     infoCard: {
       backgroundColor: palettes.info[100],

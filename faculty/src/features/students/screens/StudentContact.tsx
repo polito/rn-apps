@@ -24,7 +24,6 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { AndroidTopBar } from '../components/AndroidTopBar';
 import type { StudentsStackParamList } from '../types/navigation';
 import { formatExamDate } from '../utils';
 
@@ -50,14 +49,6 @@ export const StudentContact = () => {
 
   return (
     <View style={styles.root}>
-      <AndroidTopBar
-        onBack={() => navigation.goBack()}
-        title={t('other.student', { defaultValue: 'Student' })}
-        iconSize={22}
-        containerStyle={styles.topBar}
-        titleStyle={styles.topBarTitle}
-      />
-
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={[styles.contentContainer, bottomBarAwareStyles]}
@@ -348,16 +339,6 @@ const createStyles = ({
     contentContainer: {
       paddingHorizontal: spacing[4],
       paddingTop: spacing[1],
-    },
-    topBar: {
-      backgroundColor: colors.background,
-      marginBottom: spacing[3],
-    },
-    topBarTitle: {
-      fontFamily: fontFamilies.body,
-      fontSize: 16,
-      fontWeight: '500',
-      lineHeight: 24,
     },
     titleSection: {
       marginBottom: spacing[4],
