@@ -17,7 +17,8 @@
       "available": "Available",
       "booked": "Booked",
       "full": "Full",
-      "notAvailable": "Not available"
+      "notAvailable": "Not available",
+      "notAvailableBooking": "Not bookable"
     },
     "cancelBooking": "Cancel booking",
     "cancelBookingText": "Are you sure you want to cancel this booking?",
@@ -28,17 +29,21 @@
     "locationType": {
       "place": "Place",
       "virtualPlace": "Link virtual place"
-    }
+    },
+    "nextWeek": "Next week",
+    "previousWeek": "Previous week"
   },
   "bookingSeatScreen": {
     "confirm": "Confirm booking",
+    "confirmSuccess": "Booking confirmed",
     "deadlineExpired": "We're sorry,\nthe deadline to book for this round has passed",
     "noSeatSelected": "No seat",
     "noSeatsAvailable": "We're sorry,\nthere are no places available",
     "seatStatus": {
       "available": "Available",
       "booked": "Booked",
-      "notAvailable": "Non bookable"
+      "notAvailable": "Non bookable",
+      "unavailable": "Not bookable"
     },
     "slotBookableFrom": "This slot will be bookable starting from ",
     "title": "Select a seat",
@@ -77,6 +82,7 @@
     "showInAgenda": "Show in agenda"
   },
   "common": {
+    "active": "Active",
     "actionPotentiallyNotUndoable": "This action may not be undoable",
     "activeStatus": {
       "false": "Non active",
@@ -120,8 +126,11 @@
     "deadline": "Deadline",
     "deadline_plural": "Deadlines",
     "delete": "Delete",
+    "deselectAll": "Deselect all",
     "department": "Department",
     "desk": "Desk",
+    "disabledPreviousValue": "Disabled because previous values were not entered",
+    "document": "Attachment",
     "done": "Done",
     "doubleClickToSeeLinks": "Tap twice to see links",
     "doubleTapToActive": "Tap twice to activate",
@@ -169,6 +178,7 @@
     "hide": "Hide",
     "hour": "Hour",
     "hours": "Hour",
+    "info": "Info",
     "icon": "Icon",
     "image": "Image",
     "inYourAgenda": "in your agenda",
@@ -199,9 +209,13 @@
     "objectives": "Objectives",
     "of": "Of",
     "ok": "Ok",
+    "oldestFirst": "Oldest first",
     "open": "Open",
+    "yes": "Yes",
+    "no": "No",
     "openSettings": "Open settings",
     "openSource": "Open Source",
+    "openSourceAccessibilityLabel": "Open Source, tap to go to the app GitHub repository",
     "openedStatus": {
       "false": "Closed",
       "true": "Open"
@@ -211,6 +225,7 @@
       "true": "Double tap to close"
     },
     "options": "Options",
+    "moreOptions": "More options",
     "other": "Other",
     "pause": "Pause",
     "period": "Period",
@@ -228,6 +243,7 @@
     "roleCollaborator": "Collaborator",
     "roleHolder": "Holder",
     "search": "Search",
+    "selectAll": "Select all",
     "seat": "Seat",
     "selectAnOption": "Please select an option",
     "services": "Services",
@@ -259,7 +275,9 @@
     "virtualClassroom_plural": "Virtual classrooms",
     "visualization": "Visualization",
     "year": "year",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "fromTime": "from",
+    "toTime": "to"
   },
   "contactsScreen": {
     "cancelRecentSearch": "Remove",
@@ -322,11 +340,46 @@
     "fileSaved": "File saved in {{cachedFilePath}}"
   },
   "courseFilesTab": {
+    "addFileOrFolder": "File or Folder",
+    "addFile": "Add file",
+    "addMoreFiles": "Add more files",
+    "addNewFolder": "Add New Folder",
     "browseFiles": "Browse files",
+    "chooseFolder": "Choose Folder",
+    "chooseUploadMethod": "Choose how to upload",
+    "clickToChooseFile": "Click here to choose your file",
+    "confirmEdit": "Confirm edit",
+    "confirmPublishFiles": "Are you sure you want to publish the selected files?",
+    "confirmPublishFolder": "Are you sure you want to publish the folder?",
+    "createFolder": "Create folder",
+    "createYourFolder": "Create your folder",
+    "delete": "Delete",
+    "download": "Download",
     "empty": "There are no files",
+    "filesUploaded": "files uploaded",
+    "insertFileTitle": "Enter file title",
+    "manageFiles": "Manage Files",
+    "modifyFileTitle": "Edit file",
+    "mostRecent": "Most Recent",
+    "move": "Move",
+    "nameAZ": "Name A-Z",
+    "nameYourFolder": "Name your folder",
+    "nameZA": "Name Z-A",
     "navigateFolders": "Navigate folders",
+    "newFile": "New file",
+    "newFolder": "New Folder",
+    "overwriteMessage": "This file has been already downloaded. Do you want to overwrite it?",
     "recentSectionTitle": "Recent files",
-    "title": "Files"
+    "removeFileConfirmation": "Are you sure you want to delete the selected files?",
+    "removeFilesConfirmation": "Remove {{count}} files?",
+    "removeFilesTitle": "Confirm",
+    "select": "Select",
+    "selectAll": "Select all",
+    "title": "Files",
+    "typeFolderName": "Type folder name",
+    "uploadYourFile": "Upload your file",
+    "viewFiles": "View Files",
+    "viewFolders": "View Folders"
   },
   "courseGuideScreen": {
     "title": "Course guide"
@@ -401,6 +454,7 @@
     "total": "There are {{ total }} surveys"
   },
   "createTicketScreen": {
+    "addFile": "Add file",
     "insert": "Insert ticket",
     "messageLabel": "Describe your problem and, if you want, attach a file",
     "sendTicket": "Send ticket",
@@ -409,10 +463,12 @@
     "subtitle": "Enter your request",
     "subtopicDescription": "Select the subtopic",
     "subtopicDropdownLabel": "Subtopic",
+    "subtopicDropdownLabelAccessibility": "Subtopic, open and choose from the options",
     "subtopicDropdownPlaceholder": "Pick a subtopic",
     "title": "Create ticket",
     "topicDescription": "Select topic",
     "topicDropdownLabel": "Topic",
+    "topicDropdownLabelAccessibility": "Topic, open and choose from the options",
     "topicDropdownPlaceholder": "Pick a topic"
   },
   "degreeCourseScreen": {
@@ -567,6 +623,7 @@
     "title": "Library"
   },
   "loginScreen": {
+    "onboarding": "Onboarding",
     "authnError": "Authentication error",
     "authnErrorDescription": "The credentials you provided may be wrong.",
     "cta": "Login",
@@ -601,6 +658,7 @@
     "youHaveUnreadMessages": "You have {{total}} unread messages"
   },
   "messagingView": {
+    "activeReplay": "Active, (double tap to activate)",
     "pickFile": "Pick file",
     "pickFileHint": "From your device or from the cloud",
     "pickPhoto": "Pick image",
@@ -737,7 +795,10 @@
   "servicesScreen": {
     "subTitleOne": "Information services",
     "subTitleTwo": "Operational services",
-    "title": "Services"
+    "title": "Services",
+    "newElement": ", you have a new item to view",
+    "favoriteActive": "Set favorite, Active",
+    "favoriteInactive": "Set favorite, Inactive"
   },
   "settingsScreen": {
     "appVersion": "Version {{version}}",
@@ -767,9 +828,11 @@
     "headerBackTitle": "New",
     "noResultFound": "Didn't find what you are looking for?",
     "title": "FAQ",
-    "writeTicket": "Open ticket"
+    "writeTicket": "Open ticket",
+    "writeTicketMessage": "Open a ticket if you didn't find what you're looking for"
   },
   "ticketFaqsScreen": {
+    "searchButton": "Activate to search the keywords entered among the FAQs",
     "emptyState": "No results found",
     "findFAQ": "Search the FAQs",
     "findFAQSubtitle": "Before posting a ticket, look for an answer in the FAQs.",
@@ -780,6 +843,10 @@
     "writeTicket": "Write ticket"
   },
   "ticketScreen": {
+    "incomingMessage": "your reply",
+    "outgoingMessage": "Reply from operator number",
+    "yourQuestion": "Your question",
+    "send": "Send",
     "headerBackTitle": "Tickets",
     "new": "New ticket",
     "pickFileTitle": "You can include one attachment per message",
@@ -803,7 +870,9 @@
     "addNew": "Add ticket",
     "closed": "Closed tickets",
     "closedEmptyState": "There are no closed tickets",
+    "noClosedTickets": "There are no closed tickets",
     "openEmptyState": "There are no open tickets",
+    "noOpenTickets": "There are no open tickets",
     "opened": "Open tickets",
     "title": "Ticket"
   },
@@ -867,6 +936,12 @@
     "speedSectionTitle": "Speed"
   },
   "other": {
+    "course": "Course",
+    "email": "Email",
+    "exams": "Exams",
+    "info": "Info",
+    "subscription": "Subscription",
+    "comingSoon": "Coming soon.",
     "personalInfo": "Personal info",
     "residence": "Residence",
     "fiscalResidence": "Fiscal residence",
@@ -984,13 +1059,13 @@
     "modify": "Modify",
     "showFolders": "Show Folders",
     "showFiles": "Show Files",
-    "searchForStudent": "Search by Name or ID",
+    "searchForStudent": "Search students",
     "addStudent": "Add Students",
     "selectStudents": "Select Students",
-    "noFilters": "No Filters",
+    "noFilters": "No filter",
     "currentY": "Current Year",
     "notExaminated": "Not Examined",
-    "Examinated": "Examined",
+    "examined": "Examined",
     "delete": "Delete",
     "download": "Download",
     "owner": "Owner",
@@ -1023,7 +1098,7 @@
     "uploadMaterial": "Upload Material",
     "folder": "Folder",
     "selectDirectory": "Select Directory",
-    "uploadFile": "Upload File",
+    "uploadFile": "Upload file",
     "upload": "Upload",
     "createLesson": "Create Lesson",
     "selectType": "Select Type",
@@ -1087,7 +1162,53 @@
     "add": "Add",
     "lookForPeople": "Look for people...",
     "renderingToMail": "Rendering to mail...",
+    "contactSelected": "Contact selected",
+    "contactStudent": "Contact student by email",
+    "willBeContactedBy": "will be contacted by:",
+    "notify": "Notify",
+    "notifySubtitle": "If the student has not installed the app, they will be sent an SMS",
+    "continue": "Continue",
+    "newEmail": "New email",
+    "newNotify": "New notify",
+    "notifyMaxCharacters": "You have reached the maximum character limit of 4000",
+    "emailTitle": "Title",
+    "message": "Message",
+    "writeTitleHere": "Write your title here",
+    "writeMessageHere": "Write your message here",
+    "send": "Send",
+    "student": "Student",
+    "cds": "CDS",
+    "specialNeeds": "Special Needs",
+    "specialNeedsSubtitle": "List of all compensative measures",
+    "examsSubtitle": "View the student's plan",
+    "examResult": "Exam result",
+    "citizenship": "Citizenship",
+    "gender": "Gender",
+    "countryFallback": "Italy",
+    "noExams": "No exams available",
     "examInfo": "Exam info",
-    "modifyLecture": "Modify Lecture"
+    "modifyLecture": "Modify Lecture",
+    "noStudentsFound": "No students found",
+    "totalEnrolledStudents": "Total enrolled students",
+    "studentsAttendanceIssues": "Students with attendance issues",
+    "studentsTakenExam": "Students who have taken the exam",
+    "studentsExamDebts": "Students with exam debts",
+    "studentsEligible": "Students eligible to take the exam",
+    "studentsFirstTime": "First-time students in the academic year",
+    "specialNeedsTitle": "Compensative measures",
+    "specialNeedsInfoCardHeader": "List of compensatory measures granted to",
+    "specialNeedsCalculator": "Calculator",
+    "specialNeedsCalculatorSuffix": "allowed",
+    "specialNeedsReadabilityCriteria": "Readability criteria",
+    "specialNeedsReadabilityCriteriaDetail": "(Arial, 12-point font, 1.5 line spacing, non-justified text, expanded spacing)",
+    "specialNeedsCheatSheet": "Cheat sheet for formulas",
+    "specialNeedsCheatSheetSuffix": "for written and oral exams",
+    "specialNeedsAdditionalTime": "30% additional time for completing exams",
+    "specialNeedsAdditionalTimeSuffix": "Alternatively, for written exams, consider a quantitative (but not qualitative) reduction of the test itself",
+    "specialNeedsContentAssessment": "Assessment of content vs. form",
+    "specialNeedsContentAssessmentSuffix": "prioritize content over form and spelling in the evaluation of tests",
+    "specialNeedsMoreDetails": "More Details",
+    "specialNeedsMoreDetailsSubtitle": "Click here to view the list of requests for this course",
+    "specialNeedsHandbook": "Reporting procedure handbook"
   }
 }

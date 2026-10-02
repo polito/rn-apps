@@ -128,22 +128,23 @@ export const AddStudentsToExamModalContent = ({ close }: Props) => {
         action={() => {
           if (!selectedExam) return;
 
-          const newStaff = selectedStaff.map(fullName => {
-            const [name, ...surnameParts] = fullName.trim().split(' ');
-            const surname = surnameParts.join(' ');
+          const newStaff: Parameters<typeof addStudentsToExam>[1] =
+            selectedStaff.map(fullName => {
+              const [name, ...surnameParts] = fullName.trim().split(' ');
+              const surname = surnameParts.join(' ');
 
-            return {
-              id: generateStudentId(),
-              name,
-              surname,
-              year: '2025',
-              exam: '',
-              cityOfBirth: 'Torino',
-              degreeCourse: 'Informatica',
-              passedExams: [],
-              passedExamsDate: [],
-            };
-          });
+              return {
+                id: generateStudentId(),
+                name,
+                surname,
+                year: '2025',
+                exam: 'no',
+                cityOfBirth: 'Torino',
+                degreeCourse: 'Informatica',
+                passedExams: [],
+                passedExamsDate: [],
+              };
+            });
 
           addStudentsToExam(selectedExam.id, newStaff);
 

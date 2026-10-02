@@ -24,6 +24,15 @@ import {
 } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
+import {
+  AddStudentsScreen,
+  EmailComposeScreen,
+  NotifyComposeScreen,
+  SelectContactMethodScreen,
+  SelectStudentsScreen,
+} from '../../features/students';
+import { SpecialNeedsScreen } from '../../features/students/screens/SpecialNeedsScreen';
+import { StudentContact } from '../../features/students/screens/StudentContact';
 import { ExamScreen } from '../ExamScreen';
 import { ExamScreen2 } from '../ExamScreen2';
 import { ExamScreen3 } from '../ExamScreen3';
@@ -34,7 +43,6 @@ import { CourseGuideScreen } from './CourseGuideScreen';
 import { CourseSharedScreens } from './CourseSharedScreens';
 import { StaffScreen } from './CourseStaffScreen';
 import { CoursesScreen } from './CoursesScreen';
-import { FilesFormScreen } from './FilesFormScreen';
 import { FormScreen } from './FormScreen';
 import { LectureFormScreen } from './LectureFormScreen';
 import { LessonScreen } from './LessonScreen';
@@ -43,7 +51,6 @@ import { ModifyLectureScreen } from './ModifyLectureScreen';
 import { ModifyNoticeScreen } from './ModifyNoticeScreen';
 import { NoticeFormScreen } from './NoticeFormScreen';
 import { NoticeScreen } from './NoticeScreen';
-import { StudentContact } from './StudentContact';
 import { TeachingScreen } from './TeachingScreen';
 
 export type TeachingStackParamList = {
@@ -66,6 +73,13 @@ export type TeachingStackParamList = {
 
   Grades: undefined;
   CourseDirectory: undefined;
+  CourseFileMultiSelectScreen: {
+    courseId: number;
+    path?: string;
+    action?: 'move' | 'delete';
+    initialSelectedIds?: string[];
+  };
+  CourseFilesUploadScreen: { courseId: number; path?: string };
   CourseDirectoryRoot: undefined;
   ModifyNotice: undefined;
   ModifyFile: undefined;
@@ -74,8 +88,13 @@ export type TeachingStackParamList = {
   Exam3: undefined;
   Exam2: undefined;
   StudentContact: undefined;
+  AddStudents: undefined;
+  SelectStudents: { initialSelectAll?: boolean } | undefined;
+  SelectContactMethod: { selectedIds: string[] };
+  EmailCompose: { selectedIds: string[] };
+  NotifyCompose: { selectedIds: string[] };
+  SpecialNeeds: undefined;
   NoticeForm: undefined;
-  FilesForm: undefined;
   LectureForm: undefined;
   StudentsForm: undefined;
   Contatto: undefined;
@@ -193,14 +212,6 @@ export const TeachingNavigator = () => {
       />
 
       <Stack.Screen
-        name="FilesForm"
-        component={FilesFormScreen}
-        options={{
-          headerShown: true,
-        }}
-      />
-
-      <Stack.Screen
         name="LectureForm"
         component={LectureFormScreen}
         options={{
@@ -232,7 +243,99 @@ export const TeachingNavigator = () => {
         }}
       />
 
-      <Stack.Screen name="StudentContact" component={StudentContact} />
+      <Stack.Screen
+        name="StudentContact"
+        component={StudentContact}
+        options={{
+          title: t('other.student'),
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackButtonDisplayMode: 'minimal',
+          presentation: 'card',
+          animation: 'slide_from_right',
+          fullScreenGestureEnabled: true,
+        }}
+      />
+
+      <Stack.Screen
+        name="SpecialNeeds"
+        component={SpecialNeedsScreen}
+        options={{
+          title: t('other.specialNeedsTitle'),
+          headerShown: true,
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackButtonDisplayMode: 'minimal',
+          presentation: Platform.OS === 'android' ? 'card' : 'modal',
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
+        }}
+      />
+
+      <Stack.Screen
+        name="AddStudents"
+        component={AddStudentsScreen}
+        options={{
+          title: t('other.addStudent'),
+          headerShown: true,
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackButtonDisplayMode: 'minimal',
+          presentation: Platform.OS === 'android' ? 'card' : 'modal',
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
+        }}
+      />
+
+      <Stack.Screen
+        name="SelectStudents"
+        component={SelectStudentsScreen}
+        options={{
+          title: t('other.selectStudents'),
+          headerShown: true,
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackButtonDisplayMode: 'minimal',
+          presentation: Platform.OS === 'android' ? 'card' : 'modal',
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
+        }}
+      />
+
+      <Stack.Screen
+        name="SelectContactMethod"
+        component={SelectContactMethodScreen}
+        options={{
+          presentation: 'transparentModal',
+          animation: 'fade',
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="EmailCompose"
+        component={EmailComposeScreen}
+        options={{
+          title: t('other.newEmail'),
+          headerShown: true,
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackButtonDisplayMode: 'minimal',
+          presentation: Platform.OS === 'android' ? 'card' : 'modal',
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
+        }}
+      />
+
+      <Stack.Screen
+        name="NotifyCompose"
+        component={NotifyComposeScreen}
+        options={{
+          title: t('other.newNotify'),
+          headerShown: true,
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackButtonDisplayMode: 'minimal',
+          presentation: Platform.OS === 'android' ? 'card' : 'modal',
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
+        }}
+      />
 
       <Stack.Screen
         name="Staff"

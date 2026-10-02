@@ -1,0 +1,1 @@
+export { useFilteredStudents } from './useFilteredStudents';

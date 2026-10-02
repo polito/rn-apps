@@ -9,7 +9,11 @@ import {
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faSquare, faSquareCheck } from '@fortawesome/free-regular-svg-icons';
-import { Icon, Text, Theme, useStylesheet } from '@polito/lib/ui';
+
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
+import { Icon } from './Icon';
+import { Text } from './Text';
 
 export const Checkbox = ({
   text,
