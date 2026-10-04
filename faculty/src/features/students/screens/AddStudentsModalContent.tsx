@@ -25,11 +25,10 @@ import {
   ListItem,
   OverviewList,
   Row,
+  TextButton,
   Theme,
   TranslucentTextField,
-  createHeaderCloseButton,
   useHideTabs,
-  useSafeAreaSpacing,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
@@ -62,8 +61,7 @@ export const AddStudentsModalContent = ({ navigation }: Props) => {
   useHideTabs();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { palettes, dark } = useTheme();
-  const { paddingHorizontal } = useSafeAreaSpacing();
+  const { palettes, dark, colors } = useTheme();
   const bottomTabBarHeight = useBottomTabBarHeight();
   const { setFeedback } = useFeedbackContext();
   const { addStudentsToCourse, selectedCourse } = useCourses();
@@ -77,10 +75,23 @@ export const AddStudentsModalContent = ({ navigation }: Props) => {
     navigation.setOptions({
       headerTransparent: false,
       headerShadowVisible: false,
-      headerRight:
-        Platform.OS === 'ios' ? createHeaderCloseButton(navigation) : undefined,
+      ...(Platform.OS === 'ios'
+        ? {
+            headerBackVisible: false,
+            headerTitle: '',
+            headerLeft: () => (
+              <TextButton
+                color={colors.secondaryText}
+                onPress={() => navigation.goBack()}
+              >
+                {t('common.close')}
+              </TextButton>
+            ),
+            headerRight: () => null,
+          }
+        : {}),
     });
-  }, [navigation]);
+  }, [navigation, t, colors.secondaryText]);
 
   const selectedIds = useMemo(
     () => new Set(selectedStudents.map(student => student.id)),
@@ -156,7 +167,7 @@ export const AddStudentsModalContent = ({ navigation }: Props) => {
 
   return (
     <SafeAreaView style={styles.root} edges={['bottom']}>
-      <View style={[styles.searchBarWrap, paddingHorizontal]}>
+      <View style={styles.searchBarWrap}>
         <Row align="center" style={styles.searchBar}>
           <TranslucentTextField
             autoCorrect={false}
@@ -164,6 +175,7 @@ export const AddStudentsModalContent = ({ navigation }: Props) => {
             value={searchText}
             onChangeText={setSearchText}
             style={[GlobalStyles.grow, styles.textField]}
+            containerStyle={styles.searchField}
             label={t('other.lookForStudent')}
             editable
             isClearable={searchText.length > 0}
@@ -308,6 +320,9 @@ const createStyles = ({ colors, spacing, palettes, shapes }: Theme) =>
     },
     textField: {
       borderRadius: shapes.lg,
+    },
+    searchField: {
+      marginHorizontal: spacing[5],
     },
     keyboardAvoiding: {
       flex: 1,

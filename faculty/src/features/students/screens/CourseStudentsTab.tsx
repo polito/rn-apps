@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { Defs, LinearGradient, Rect, Stop, Svg } from 'react-native-svg';
 
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -26,10 +27,10 @@ import {
   Row,
   StatefulMenuView,
   Text,
-  TextButton,
   Theme,
   TranslucentTextField,
   useSafeAreaSpacing,
+  useSafeBottomBarHeight,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
@@ -46,10 +47,44 @@ import { ParentNavigatorNotFoundError } from '../errors/ParentNavigatorNotFoundE
 import type { StudentsStackParamList } from '../navigation/StudentsNavigator';
 import { getCurrentAcademicYear } from '../utils';
 
+const CtaFade = () => {
+  const { colors, spacing } = useTheme();
+  const bottomBarHeight = useSafeBottomBarHeight();
+  const styles = useStylesheet(createStyles);
+
+  return (
+    <View
+      pointerEvents="none"
+      style={[styles.fade, { bottom: bottomBarHeight, height: spacing[24] }]}
+    >
+      <Svg
+        width="100%"
+        height={spacing[24]}
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+      >
+        <Defs>
+          <LinearGradient id="studentsCtaFade" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor={colors.background} stopOpacity="0" />
+            <Stop offset="1" stopColor={colors.background} stopOpacity="1" />
+          </LinearGradient>
+        </Defs>
+        <Rect
+          x="0"
+          y="0"
+          width="100"
+          height="100"
+          fill="url(#studentsCtaFade)"
+        />
+      </Svg>
+    </View>
+  );
+};
+
 export const CourseStudentsTab = () => {
   const { selectedCourse, setSelectedStudent } = useCourses();
   const { paddingHorizontal } = useSafeAreaSpacing();
-  const { palettes, fontSizes, dark } = useTheme();
+  const { palettes, fontSizes, dark, spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const { setFeedback } = useFeedbackContext();
   const [searchText, setSearchText] = useState('');
@@ -231,6 +266,7 @@ export const CourseStudentsTab = () => {
             value={searchText}
             onChangeText={setSearchText}
             style={GlobalStyles.grow}
+            containerStyle={styles.searchField}
             label={t('other.searchForStudent')}
             editable
             isClearable={searchText.length > 0}
@@ -239,7 +275,12 @@ export const CourseStudentsTab = () => {
           />
         </View>
 
-        <Row mh={4} justify="space-between" align="center">
+        <Row
+          mh={4}
+          justify="space-between"
+          align="center"
+          style={styles.filterRow}
+        >
           <StatefulMenuView
             actions={filterActions}
             onPressAction={({ nativeEvent }) => {
@@ -257,10 +298,12 @@ export const CourseStudentsTab = () => {
             onOpenMenu={() => setFilterMenuOpen(true)}
           >
             <Row align="center" gap={1}>
-              <TextButton>{filterLabel}</TextButton>
+              <Text weight="semibold" style={styles.filterLabel}>
+                {filterLabel}
+              </Text>
               <Icon
                 icon={isFilterMenuOpen ? faChevronUp : faChevronDown}
-                size={fontSizes.md}
+                size={fontSizes.sm}
                 color={palettes.primary[400]}
               />
             </Row>
@@ -284,6 +327,7 @@ export const CourseStudentsTab = () => {
               icon={faEllipsis}
               color={palettes.primary[400]}
               size={fontSizes.lg}
+              iconPadding={spacing[1.5]}
               accessibilityLabel={t('common.moreOptions', {
                 defaultValue: 'More options',
               })}
@@ -341,7 +385,11 @@ export const CourseStudentsTab = () => {
         <BottomBarSpacer />
       </ScrollView>
 
+      <CtaFade />
+
       <CtaButton
+        absolute={true}
+        containerStyle={styles.ctaButton}
         title={t('other.addStudent')}
         icon={faPlus}
         action={() => navigation.navigate('AddStudents')}
@@ -350,10 +398,11 @@ export const CourseStudentsTab = () => {
   );
 };
 
-const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
+const createStyles = ({ spacing, palettes, fontSizes, colors, dark }: Theme) =>
   StyleSheet.create({
     root: {
       flex: 1,
+      backgroundColor: colors.background,
     },
     scroll: {
       flex: 1,
@@ -363,22 +412,46 @@ const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
     },
     searchBar: {
       marginHorizontal: spacing[4],
+    },
+    filterRow: {
+      marginTop: spacing[2],
       marginBottom: spacing[2],
+    },
+    searchField: {
+      marginHorizontal: 0,
+      marginTop: spacing[2],
+    },
+    filterLabel: {
+      color: palettes.primary[400],
+      fontSize: fontSizes.sm,
+      marginLeft: spacing[3],
     },
     list: {
       marginHorizontal: spacing[4],
+      marginTop: 0,
     },
     infoCard: {
       marginHorizontal: spacing[4],
       marginBottom: spacing[3],
       padding: spacing[5],
-      backgroundColor: palettes.info[100],
+      backgroundColor: dark ? colors.surface : palettes.info[100],
       borderWidth: 1,
-      borderColor: palettes.primary[500],
+      borderColor: palettes.primary[dark ? 400 : 500],
       elevation: 0,
     },
     infoLabel: {
       flex: 1,
       fontSize: fontSizes.sm,
+    },
+    fade: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      zIndex: 1,
+      elevation: 3,
+    },
+    ctaButton: {
+      zIndex: 2,
+      elevation: 4,
     },
   });

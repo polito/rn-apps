@@ -16,6 +16,7 @@ import { formatDateFromString } from '@polito/lib/core';
 import {
   Badge,
   BottomBarSpacer,
+  Card,
   Col,
   Icon,
   ListItem,
@@ -41,7 +42,7 @@ type Props = NativeStackScreenProps<StudentsStackParamList, 'StudentContact'>;
 
 export const StudentContact = ({ navigation }: Props) => {
   useHideTabs();
-  const { colors, fontSizes, palettes, dark } = useTheme();
+  const { colors, fontSizes, palettes, dark, shapes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { selectedStudent, selectedCourse } = useCourses();
   const { t } = useTranslation();
@@ -66,17 +67,17 @@ export const StudentContact = ({ navigation }: Props) => {
       contentInsetAdjustmentBehavior="automatic"
       showsVerticalScrollIndicator={false}
     >
-      <SafeAreaView>
-        <Col pv={5}>
-          <Col ph={5} gap={6} mb={6}>
-            <Col gap={1}>
-              <Text weight="bold" variant="title" style={styles.title}>
-                {selectedStudent.name} {selectedStudent.surname}
-              </Text>
-              <Text variant="secondaryText" uppercase weight="bold">
-                {selectedStudent.id}
-              </Text>
-            </Col>
+      <SafeAreaView edges={['bottom', 'left', 'right']}>
+        <Col pt={4} pb={5}>
+          <Col ph={5} gap={1} mb={6}>
+            <Text weight="bold" variant="title" style={styles.title}>
+              {selectedStudent.name} {selectedStudent.surname}
+            </Text>
+            <Text variant="secondaryText" uppercase weight="bold">
+              {selectedStudent.id}
+            </Text>
+          </Col>
+          <Card style={styles.profileCard}>
             <Row gap={6} align="center">
               <View
                 accessible
@@ -95,17 +96,19 @@ export const StudentContact = ({ navigation }: Props) => {
                 <Metric
                   title={t('other.course', { defaultValue: 'Course' })}
                   value={courseCode}
+                  color={palettes.primary[dark ? 400 : 500]}
                   valueStyle={styles.metricValue}
                   style={styles.spaceBottom}
                 />
                 <Metric
                   title={t('other.cds', { defaultValue: 'Cds' })}
                   value={selectedStudent.degreeCourse}
+                  color={palettes.primary[dark ? 400 : 500]}
                   valueStyle={styles.metricValue}
                 />
               </Col>
             </Row>
-          </Col>
+          </Card>
 
           <Section>
             <SectionHeader title={t('other.info', { defaultValue: 'Info' })} />
@@ -166,6 +169,7 @@ export const StudentContact = ({ navigation }: Props) => {
                       foregroundColor={
                         dark ? palettes.gray[800] : palettes.gray[700]
                       }
+                      style={{ borderRadius: shapes.md }}
                     />
                   ) : undefined
                 }
@@ -229,13 +233,18 @@ const createStyles = ({ spacing, colors, fontSizes }: Theme) => {
     title: {
       fontSize: fontSizes['2xl'],
     },
+    profileCard: {
+      marginTop: 0,
+      marginBottom: spacing[6],
+      padding: spacing[5],
+    },
     info: {
       flex: 1,
       justifyContent: 'center',
     },
     profileImagePlaceholder: {
       ...profileImage,
-      backgroundColor: colors.surface,
+      backgroundColor: colors.background,
       justifyContent: 'center',
       alignItems: 'center',
     },

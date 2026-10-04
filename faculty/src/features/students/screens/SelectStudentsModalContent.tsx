@@ -26,7 +26,6 @@ import {
   TextButton,
   Theme,
   TranslucentTextField,
-  createHeaderCloseButton,
   useBottomModal,
   useHideTabs,
   useStylesheet,
@@ -49,7 +48,7 @@ export const SelectStudentsModalContent = ({ navigation, route }: Props) => {
   useHideTabs();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { palettes, fontSizes } = useTheme();
+  const { palettes, fontSizes, colors } = useTheme();
   const bottomTabBarHeight = useBottomTabBarHeight();
   const { selectedCourse } = useCourses();
 
@@ -140,8 +139,20 @@ export const SelectStudentsModalContent = ({ navigation, route }: Props) => {
     navigation.setOptions({
       headerTransparent: false,
       headerShadowVisible: false,
-      headerLeft:
-        Platform.OS === 'ios' ? createHeaderCloseButton(navigation) : undefined,
+      ...(Platform.OS === 'ios'
+        ? {
+            headerBackVisible: false,
+            headerTitle: '',
+            headerLeft: () => (
+              <TextButton
+                color={colors.secondaryText}
+                onPress={() => navigation.goBack()}
+              >
+                {t('common.close')}
+              </TextButton>
+            ),
+          }
+        : {}),
       headerRight: () =>
         Platform.OS === 'ios' ? (
           <TextButton onPress={handleToggleAll}>{actionLabel}</TextButton>
@@ -160,6 +171,7 @@ export const SelectStudentsModalContent = ({ navigation, route }: Props) => {
         ),
     });
   }, [
+    colors.secondaryText,
     fontSizes.lg,
     handleToggleAll,
     isAllSelected,
@@ -183,6 +195,7 @@ export const SelectStudentsModalContent = ({ navigation, route }: Props) => {
               value={searchText}
               onChangeText={setSearchText}
               style={GlobalStyles.grow}
+              containerStyle={styles.searchField}
               label={t('other.searchForStudent')}
               editable
               isClearable={searchText.length > 0}
@@ -269,9 +282,11 @@ const createStyles = ({ colors, spacing }: Theme) =>
       flex: 1,
     },
     searchBar: {
-      marginHorizontal: spacing[5],
       marginTop: spacing[3],
       paddingVertical: spacing[2],
+    },
+    searchField: {
+      marginHorizontal: spacing[5],
     },
     scroll: {
       flex: 1,

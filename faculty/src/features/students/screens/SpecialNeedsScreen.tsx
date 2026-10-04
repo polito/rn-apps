@@ -18,8 +18,8 @@ import {
   OverviewList,
   Row,
   Text,
+  TextButton,
   Theme,
-  createHeaderCloseButton,
   useHideTabs,
   useStylesheet,
   useTheme,
@@ -33,7 +33,7 @@ type Props = NativeStackScreenProps<StudentsStackParamList, 'SpecialNeeds'>;
 
 export const SpecialNeedsScreen = ({ navigation }: Props) => {
   useHideTabs();
-  const { palettes, dark, fontSizes } = useTheme();
+  const { palettes, dark, fontSizes, colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const { setFeedback } = useFeedbackContext();
   const { selectedStudent } = useCourses();
@@ -43,10 +43,22 @@ export const SpecialNeedsScreen = ({ navigation }: Props) => {
     navigation.setOptions({
       headerTransparent: false,
       headerShadowVisible: false,
-      headerRight:
-        Platform.OS === 'ios' ? createHeaderCloseButton(navigation) : undefined,
+      ...(Platform.OS === 'ios'
+        ? {
+            headerBackVisible: false,
+            headerLeft: () => (
+              <TextButton
+                color={colors.secondaryText}
+                onPress={() => navigation.goBack()}
+              >
+                {t('common.close')}
+              </TextButton>
+            ),
+            headerRight: () => null,
+          }
+        : {}),
     });
-  }, [navigation]);
+  }, [navigation, t, colors.secondaryText]);
 
   const showComingSoon = () => {
     setFeedback({
@@ -113,9 +125,11 @@ export const SpecialNeedsScreen = ({ navigation }: Props) => {
           {t('other.specialNeedsInfoCardHeader', {
             defaultValue: 'List of compensatory measures granted to',
           })}{' '}
-          <Text weight="semibold">{studentFullName}</Text>
+          <Text weight="medium" style={styles.infoHeader}>
+            {studentFullName}
+          </Text>
         </Text>
-        <Col gap={1}>
+        <Col gap={1} style={styles.measures}>
           {measures.map(measure => (
             <Row key={measure.bold} gap={2}>
               <Text variant="secondaryText">•</Text>
@@ -173,7 +187,7 @@ export const SpecialNeedsScreen = ({ navigation }: Props) => {
   );
 };
 
-const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
+const createStyles = ({ spacing, palettes, fontSizes, colors, dark }: Theme) =>
   StyleSheet.create({
     scroll: {
       flex: 1,
@@ -186,14 +200,17 @@ const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
       marginHorizontal: spacing[5],
       marginBottom: spacing[4],
       padding: spacing[4],
-      backgroundColor: palettes.info[100],
+      backgroundColor: dark ? colors.surface : palettes.info[100],
       borderWidth: 1,
-      borderColor: palettes.info[500],
+      borderColor: palettes.primary[dark ? 400 : 500],
       elevation: 0,
     },
     infoHeader: {
       fontSize: fontSizes.sm,
       marginBottom: spacing[2],
+    },
+    measures: {
+      marginLeft: spacing[2],
     },
     measureText: {
       flex: 1,
