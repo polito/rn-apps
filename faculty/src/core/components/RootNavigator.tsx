@@ -13,7 +13,6 @@ import {
 import { usePreferencesContext } from '@polito/lib/core';
 import {
   PlacesNavigator,
-  PlacesStackParamList,
   useGetCurrentCampus,
   useGetSites,
 } from '@polito/lib/features/places';
@@ -25,38 +24,15 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import {
-  BottomTabBarButtonProps,
-  BottomTabNavigationProp,
-  createBottomTabNavigator,
-} from '@react-navigation/bottom-tabs';
-import { PlatformPressable } from '@react-navigation/elements';
-import {
-  NavigatorScreenParams,
-  getFocusedRouteNameFromRoute,
-  useNavigation,
-} from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import {
-  AgendaNavigator,
-  AgendaStackParamList,
-} from '../../screens/Agenda/AgendaNavigator';
+import { AgendaNavigator } from '../../screens/Agenda/AgendaNavigator';
 import { ProfileNavigator } from '../../screens/Profile/ProfileNavigator';
 import { ServiceNavigator } from '../../screens/Servizi/ServiceNavigator';
-import {
-  TeachingNavigator,
-  TeachingStackParamList,
-} from '../../screens/Teaching/TeachingNavigator';
+import { TeachingNavigator } from '../../screens/Teaching/TeachingNavigator';
+import { type RootParamList } from '../types/navigation';
 import { AppPreferences } from '../types/preferences';
 
-export type RootParamList = {
-  Didattica: NavigatorScreenParams<TeachingStackParamList>;
-  Agenda: NavigatorScreenParams<AgendaStackParamList>;
-  Places: NavigatorScreenParams<PlacesStackParamList>;
-  Services: undefined;
-  Profile: undefined;
-};
 const TabNavigator = createBottomTabNavigator<RootParamList>();
 const androidTabBarHeight = 60;
 
@@ -70,6 +46,7 @@ export const RootNavigator = () => {
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
   const [tabBarIconSize, setTabBarIconSize] = useState(20);
+
   useEffect(() => {
     if (!campus && sites?.data?.length) {
       updatePreference('campusId', sites?.data[0].id);
@@ -84,13 +61,6 @@ export const RootNavigator = () => {
     }
   }, [accessibility?.fontSize]);
 
-  const [isDID, setIsDID] = useState(true);
-
-  const teachingNavigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-  const bottomNavigation =
-    useNavigation<BottomTabNavigationProp<RootParamList>>();
-  const placesNavigation = useNavigation<BottomTabNavigationProp<any>>();
   const instantAnimation = {
     animation: 'timing' as const,
     config: { duration: 0 },
@@ -101,11 +71,6 @@ export const RootNavigator = () => {
       Platform.select({ android: { height: androidTabBarHeight + bottom } }),
     [bottom],
   );
-
-  const renderTabButton =
-    (onPress: () => void) => (props: BottomTabBarButtonProps) => (
-      <PlatformPressable {...props} onPress={onPress} />
-    );
 
   return (
     <TabNavigator.Navigator
@@ -129,129 +94,55 @@ export const RootNavigator = () => {
         tabBarBadgeStyle: styles.tabBarBadgeStyle,
       }}
     >
-      {isDID ? (
-        <TabNavigator.Screen
-          name="Didattica"
-          component={TeachingNavigator}
-          options={({ route }) => ({
-            headerShown: false,
-            tabBarLabel: t('teachingScreen.title'),
-            tabBarIcon: ({ color }) => (
-              <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
-            ),
-            tabBarStyle: [
-              styles.tabBarStyle,
-              androidTabBarBottom,
-              [
-                'CourseFileMultiSelectScreen',
-                'CourseFilesUploadScreen',
-                'CourseFolderFilesScreen',
-              ].includes(getFocusedRouteNameFromRoute(route) ?? '')
-                ? { display: 'none' }
-                : null,
-            ],
-            tabBarButton: renderTabButton(() => {
-              setIsDID(true);
-              teachingNavigation.navigate('Roles');
-            }),
-          })}
-        />
-      ) : (
-        <TabNavigator.Screen
-          name="Didattica"
-          component={TeachingNavigator}
-          options={({ route }) => ({
-            headerShown: false,
-            tabBarLabel: t('teachingScreen.title'),
-            tabBarIcon: ({ color }) => (
-              <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
-            ),
-            tabBarStyle: [
-              styles.tabBarStyle,
-              androidTabBarBottom,
-              [
-                'CourseFileMultiSelectScreen',
-                'CourseFilesUploadScreen',
-                'CourseFolderFilesScreen',
-              ].includes(getFocusedRouteNameFromRoute(route) ?? '')
-                ? { display: 'none' }
-                : null,
-            ],
-            tabBarButton: renderTabButton(() => {
-              setIsDID(true);
-              bottomNavigation.navigate({
-                name: 'Didattica',
-                params: { screen: 'Roles' },
-                merge: true,
-              });
-            }),
-          })}
-        />
-      )}
       <TabNavigator.Screen
-        name="Agenda"
+        name="TeachingTab"
+        component={TeachingNavigator}
+        options={{
+          tabBarLabel: t('teachingScreen.title'),
+          tabBarIcon: ({ color }) => (
+            <Icon icon={faBookOpen} color={color} size={tabBarIconSize} />
+          ),
+        }}
+      />
+      <TabNavigator.Screen
+        name="AgendaTab"
         component={AgendaNavigator}
         options={{
-          headerShown: false,
           tabBarLabel: t('agendaScreen.title'),
           tabBarIcon: ({ color }) => (
             <Icon icon={faCalendar} color={color} size={tabBarIconSize} />
           ),
-          tabBarButton: renderTabButton(() => {
-            setIsDID(false);
-            bottomNavigation.navigate('Agenda', { screen: 'Agenda2' });
-          }),
         }}
       />
-
       <TabNavigator.Screen
-        name="Places"
+        name="PlacesTab"
         options={{
-          headerShown: false,
           tabBarLabel: t('other.places'),
           tabBarIcon: ({ color }) => (
             <Icon icon={faCompass} color={color} size={tabBarIconSize} />
           ),
-          tabBarButton: renderTabButton(() => {
-            setIsDID(false);
-            placesNavigation.navigate({
-              name: 'Places',
-              params: { screen: 'Places1' },
-              merge: true,
-            });
-          }),
         }}
       >
         {() => <PlacesNavigator unreadMessagesModal={View} />}
       </TabNavigator.Screen>
       <TabNavigator.Screen
-        name="Services"
+        name="ServicesTab"
         component={ServiceNavigator}
         options={{
-          headerShown: false,
           tabBarLabel: t('other.services'),
           tabBarIcon: ({ color }) => (
             <Icon icon={faCircleInfo} color={color} size={tabBarIconSize} />
           ),
-          tabBarButton: renderTabButton(() => {
-            setIsDID(false);
-            bottomNavigation.navigate('Services');
-          }),
         }}
       />
       <TabNavigator.Screen
-        name="Profile"
+        name="ProfileTab"
         component={ProfileNavigator}
         options={{
-          headerShown: false,
           tabBarLabel: t('other.profile'),
           tabBarIcon: ({ color }) => (
             <Icon icon={faUser} color={color} size={tabBarIconSize} />
           ),
-          tabBarButton: renderTabButton(() => {
-            setIsDID(false);
-            bottomNavigation.navigate('Profile');
-          }),
         }}
       />
     </TabNavigator.Navigator>

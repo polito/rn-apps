@@ -1,52 +1,55 @@
-import { useState } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
-  TextInput,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
+import { useFeedbackContext } from '@polito/lib/core';
 import {
   CtaButton,
-  CtaButtonContainer,
-  Text,
+  InfoMessage,
+  OverviewList,
+  TextField,
   Theme,
-  useBottomBarAwareStyles,
+  createHeaderCloseButton,
+  useHideTabs,
   useStylesheet,
-  useTheme,
 } from '@polito/lib/ui';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import {
-  NOTIFY_MAX_CHARACTERS,
-  NOTIFY_WARNING_BACKGROUND_COLOR,
-  NOTIFY_WARNING_COLOR,
-  SCREEN_HORIZONTAL_PADDING,
-} from '../constants';
-import { StudentsStackParamList } from '../types/navigation';
+import type { StudentsStackParamList } from '../navigation/StudentsNavigator';
 
-export const NotifyComposeScreen = () => {
+const NOTIFY_MAX_CHARACTERS = 4000;
+
+type Props = NativeStackScreenProps<StudentsStackParamList, 'NotifyCompose'>;
+
+export const NotifyComposeScreen = ({ navigation }: Props) => {
+  useHideTabs();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { palettes, dark } = useTheme();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const bottomTabBarHeight = useBottomTabBarHeight();
+  const { setFeedback } = useFeedbackContext();
   const [message, setMessage] = useState('');
   const [showCharacterLimitWarning, setShowCharacterLimitWarning] =
     useState(false);
 
   const isSendEnabled = message.trim().length > 0;
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTransparent: false,
+      headerShadowVisible: false,
+      headerRight:
+        Platform.OS === 'ios' ? createHeaderCloseButton(navigation) : undefined,
+    });
+  }, [navigation]);
 
   const handleMessageChange = (text: string) => {
     setMessage(text);
@@ -55,7 +58,7 @@ export const NotifyComposeScreen = () => {
     }
   };
 
-  const handleSend = () => {
+  const handleSend = useCallback(() => {
     if (!isSendEnabled) return;
 
     if (message.length > NOTIFY_MAX_CHARACTERS) {
@@ -63,17 +66,11 @@ export const NotifyComposeScreen = () => {
       return;
     }
 
-    Alert.alert(
-      t('other.info', { defaultValue: 'Info' }),
-      t('other.comingSoon', { defaultValue: 'Coming soon.' }),
-      [
-        {
-          text: t('common.ok', { defaultValue: 'OK' }),
-          onPress: () => navigation.popToTop(),
-        },
-      ],
-    );
-  };
+    setFeedback({
+      text: t('other.comingSoon', { defaultValue: 'Coming soon.' }),
+    });
+    navigation.popToTop();
+  }, [isSendEnabled, message.length, navigation, setFeedback, t]);
 
   return (
     <SafeAreaView style={styles.root} edges={['bottom']}>
@@ -83,57 +80,41 @@ export const NotifyComposeScreen = () => {
       >
         <ScrollView
           style={styles.scroll}
-          contentContainerStyle={[
-            Platform.OS === 'ios'
-              ? styles.scrollContentIos
-              : styles.scrollContent,
-            bottomBarAwareStyles,
-          ]}
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.messageCard}>
-            <Text style={[styles.fieldLabel, dark && styles.fieldLabelDark]}>
-              {t('other.message', { defaultValue: 'Message' })}
-            </Text>
-            <TextInput
-              value={message}
-              onChangeText={handleMessageChange}
-              placeholder={t('other.writeMessageHere', {
+          <OverviewList style={styles.messageField}>
+            <TextField
+              label={t('other.writeMessageHere', {
                 defaultValue: 'Write your message here',
               })}
-              placeholderTextColor={palettes.gray[500]}
-              selectionColor={palettes.secondary[600]}
-              style={[styles.messageInput, dark && styles.inputDark]}
+              accessibilityLabel={t('other.message', {
+                defaultValue: 'Message',
+              })}
+              value={message}
+              onChangeText={handleMessageChange}
+              autoCapitalize="sentences"
               multiline
-              textAlignVertical="top"
+              numberOfLines={8}
+              inputStyle={styles.messageInput}
             />
-          </View>
+          </OverviewList>
         </ScrollView>
 
         {showCharacterLimitWarning ? (
-          <View
-            style={[styles.warningBanner, dark && styles.warningBannerDark]}
-          >
-            <FontAwesomeIcon
-              icon={faTriangleExclamation}
-              size={16}
-              color={palettes.warning[600]}
-              style={styles.warningIcon}
-            />
-            <Text style={styles.warningText}>
-              {t('other.notifyMaxCharacters', {
-                defaultValue:
-                  'You have reached the maximum character limit of 4000',
-              })}
-            </Text>
-          </View>
+          <InfoMessage variant="warning" style={styles.warning}>
+            {t('other.notifyMaxCharacters', {
+              defaultValue:
+                'You have reached the maximum character limit of 4000',
+            })}
+          </InfoMessage>
         ) : null}
 
-        <CtaButtonContainer
-          absolute={false}
+        <View
           style={[
-            styles.ctaContainer,
+            styles.ctaRow,
             Platform.OS === 'android'
               ? { paddingBottom: bottomTabBarHeight }
               : undefined,
@@ -142,25 +123,18 @@ export const NotifyComposeScreen = () => {
           <CtaButton
             title={t('other.send', { defaultValue: 'Send' })}
             action={handleSend}
+            icon={faPaperPlane}
             disabled={!isSendEnabled}
             absolute={false}
             containerStyle={styles.ctaButtonContainer}
           />
-        </CtaButtonContainer>
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
-const createStyles = ({
-  colors,
-  spacing,
-  palettes,
-  fontSizes,
-  fontWeights,
-  fontFamilies,
-  shapes,
-}: Theme) =>
+const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
     root: {
       flex: 1,
@@ -172,81 +146,32 @@ const createStyles = ({
     scroll: {
       flex: 1,
     },
-    scrollContent: {
-      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-      paddingTop: spacing[2],
+    content: {
+      paddingTop: spacing[4],
+      paddingBottom: spacing[4],
     },
-    scrollContentIos: {
-      flexGrow: 1,
-      padding: spacing[5],
-      paddingBottom: spacing[2],
-    },
-    messageCard: {
-      backgroundColor: colors.surface,
-      borderRadius: shapes.lg,
-      paddingHorizontal: spacing[4],
-      paddingTop: spacing[3],
-      paddingBottom: spacing[3],
-      height: 239,
-    },
-    fieldLabel: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      color: palettes.primary[700],
-      lineHeight: 20,
-      marginBottom: 0,
-    },
-    fieldLabelDark: {
-      color: palettes.gray[50],
+    messageField: {
+      marginHorizontal: spacing[5],
+      minHeight: 239,
     },
     messageInput: {
-      flex: 1,
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.normal,
-      color: palettes.text[800],
-      lineHeight: 24,
-      paddingVertical: 0,
+      borderBottomWidth: 0,
+      minHeight: 180,
+      textAlignVertical: 'top',
     },
-    inputDark: {
-      color: palettes.gray[50],
-    },
-    warningBanner: {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
-      marginHorizontal: SCREEN_HORIZONTAL_PADDING,
+    warning: {
+      marginHorizontal: spacing[5],
       marginBottom: spacing[3],
-      paddingHorizontal: 21,
-      paddingVertical: spacing[3],
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: NOTIFY_WARNING_COLOR,
-      backgroundColor: NOTIFY_WARNING_BACKGROUND_COLOR,
-      gap: spacing[5],
     },
-    warningBannerDark: {
+    ctaRow: {
       backgroundColor: colors.background,
-    },
-    warningIcon: {
-      marginTop: 4,
-    },
-    warningText: {
-      flex: 1,
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.medium,
-      color: palettes.darkOrange[700],
-      lineHeight: 21,
-    },
-    ctaContainer: {
-      paddingHorizontal: 0,
-      paddingTop: 0,
+      paddingHorizontal: spacing[5],
+      paddingTop: spacing[2],
       paddingBottom: spacing[4],
     },
     ctaButtonContainer: {
       paddingTop: 0,
-      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+      paddingHorizontal: 0,
       paddingBottom: 0,
     },
   });

@@ -1,196 +1,189 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  FlatList,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
+import { faMinus, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { useFeedbackContext } from '@polito/lib/core';
+import { HighlightedText } from '@polito/lib/features/people';
 import {
-  Badge,
   Col,
   CtaButton,
+  GlobalStyles,
   Icon,
+  ListItem,
   ModalContent,
-  Text,
-  Theme,
+  OverviewList,
+  TranslucentTextField,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { getCurrentAcademicYear } from '../../features/students/utils';
 
 type Props = {
   close: () => void;
 };
 
-const mockStaffList = [
-  'Paolo Serra',
-  'Angela Vitale',
-  'Riccardo Pini',
-  'Beatrice Leone',
-  'Tommaso Riva',
-  'Camilla Marchi',
+const mockStudents = [
+  { name: 'Paolo', surname: 'Serra' },
+  { name: 'Angela', surname: 'Vitale' },
+  { name: 'Riccardo', surname: 'Pini' },
+  { name: 'Beatrice', surname: 'Leone' },
+  { name: 'Tommaso', surname: 'Riva' },
+  { name: 'Camilla', surname: 'Marchi' },
 ];
 
-let studentCounter = 1;
+type MockStudent = (typeof mockStudents)[number];
 
-const generateStudentId = (): string => {
-  const prefix = 'S32';
-  const padded = studentCounter.toString().padStart(4, '0');
-  studentCounter++;
-  return `${prefix}${padded}`;
-};
+const studentKey = (student: MockStudent) =>
+  `${student.name} ${student.surname}`;
 
 export const AddStudentsToExamModalContent = ({ close }: Props) => {
   const { t } = useTranslation();
-  const { palettes, colors } = useTheme();
   const styles = useStylesheet(createStyles);
+  const { palettes, dark } = useTheme();
+  const { setFeedback } = useFeedbackContext();
   const { addStudentsToExam, selectedExam } = useCourses();
   const [searchText, setSearchText] = useState('');
-  const [selectedStaff, setSelectedStaff] = useState<string[]>([]);
+  const [selectedStudents, setSelectedStudents] = useState<MockStudent[]>([]);
+  // TODO: replace with server-issued IDs once the API is available.
+  const studentCounterRef = useRef(1);
 
-  const filteredStaff = useMemo(() => {
-    return mockStaffList.filter(
-      name =>
-        name.toLowerCase().includes(searchText.toLowerCase()) &&
-        !selectedStaff.includes(name),
-    );
-  }, [searchText, selectedStaff]);
+  const selectedKeys = useMemo(
+    () => new Set(selectedStudents.map(studentKey)),
+    [selectedStudents],
+  );
 
-  const handleAdd = (name: string) => {
-    setSelectedStaff(prev => [...prev, name]);
+  const filteredStudents = useMemo(() => {
+    const q = searchText.trim().toLowerCase();
+    if (!q) return [];
+    return mockStudents.filter(student => {
+      if (selectedKeys.has(studentKey(student))) return false;
+      return studentKey(student).toLowerCase().includes(q);
+    });
+  }, [searchText, selectedKeys]);
+
+  const handleAdd = (student: MockStudent) => {
+    setSelectedStudents(prev => [...prev, student]);
     setSearchText('');
   };
 
-  const handleRemove = (name: string) => {
-    setSelectedStaff(prev => prev.filter(n => n !== name));
+  const handleRemove = (student: MockStudent) => {
+    setSelectedStudents(prev =>
+      prev.filter(item => studentKey(item) !== studentKey(student)),
+    );
   };
+
+  const handleAddToExam = () => {
+    if (!selectedExam) {
+      setFeedback({
+        text: t('other.examNotSelected', {
+          defaultValue: 'Select an exam before adding students',
+        }),
+        isError: true,
+      });
+      return;
+    }
+
+    const newStudents: Parameters<typeof addStudentsToExam>[1] =
+      selectedStudents.map(student => {
+        const nextId = studentCounterRef.current.toString().padStart(4, '0');
+        studentCounterRef.current += 1;
+        return {
+          id: `S32${nextId}`,
+          name: student.name,
+          surname: student.surname,
+          year: getCurrentAcademicYear(),
+          exam: 'no' as const,
+          cityOfBirth: 'Torino',
+          degreeCourse: 'Informatica',
+          passedExams: [],
+          passedExamsDate: [],
+        };
+      });
+
+    addStudentsToExam(selectedExam.id, newStudents);
+    close();
+  };
+
+  const iconColor = dark ? palettes.gray[50] : palettes.primary[700];
+  const actionColor = dark ? palettes.gray[400] : palettes.primary[600];
 
   return (
     <ModalContent title={t('other.addStudent')} close={close}>
-      <Col pt={4} pb={8} ph={4} gap={3}>
-        <Col align="center" gap={3} />
-
-        {/* Barra di ricerca */}
-        <View style={styles.searchContainer}>
-          <Icon
-            icon={faSearch}
-            size={16}
-            color={palettes.gray[500]}
-            style={styles.searchIcon}
-          />
-          <TextInput
-            placeholder={t('other.lookForStudent')}
+      <Col pt={4} pb={4} ph={4} gap={3}>
+        <View>
+          <TranslucentTextField
+            autoCorrect={false}
+            leadingIcon={faSearch}
             value={searchText}
             onChangeText={setSearchText}
-            style={styles.searchInput}
-            placeholderTextColor={palettes.gray[800]}
+            style={GlobalStyles.grow}
+            label={t('other.lookForStudent')}
+            editable
+            isClearable={searchText.length > 0}
+            onClear={() => setSearchText('')}
+            onClearLabel={t('contactsScreen.clearSearch')}
           />
         </View>
 
-        {/* Lista filtrata */}
-        {searchText.length > 0 && (
-          <FlatList
-            data={filteredStaff}
-            keyExtractor={item => item}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.resultItem}
-                onPress={() => handleAdd(item)}
-              >
-                <Text>{item}</Text>
-              </TouchableOpacity>
-            )}
-          />
+        {selectedStudents.length > 0 && (
+          <OverviewList dividers indented style={styles.list}>
+            {selectedStudents.map(student => (
+              <ListItem
+                key={studentKey(student)}
+                title={studentKey(student)}
+                leadingItem={
+                  <Icon icon={faCircleUser} size={20} color={iconColor} />
+                }
+                trailingItem={
+                  <Icon icon={faMinus} size={16} color={actionColor} />
+                }
+                onPress={() => handleRemove(student)}
+              />
+            ))}
+          </OverviewList>
         )}
 
-        {/* Persone selezionate */}
-        <View style={styles.selectedContainer}>
-          {selectedStaff.map(name => (
-            <TouchableOpacity key={name} onPress={() => handleRemove(name)}>
-              <Badge
-                text={name}
-                icon={faTimes}
-                backgroundColor={palettes.lightBlue[500]}
-                foregroundColor={colors.white}
+        {filteredStudents.length > 0 && (
+          <OverviewList dividers indented style={styles.list}>
+            {filteredStudents.map(student => (
+              <ListItem
+                key={studentKey(student)}
+                title={
+                  <HighlightedText
+                    text={studentKey(student)}
+                    highlight={searchText}
+                  />
+                }
+                leadingItem={
+                  <Icon icon={faCircleUser} size={20} color={iconColor} />
+                }
+                trailingItem={
+                  <Icon icon={faPlus} size={16} color={actionColor} />
+                }
+                onPress={() => handleAdd(student)}
               />
-            </TouchableOpacity>
-          ))}
-        </View>
+            ))}
+          </OverviewList>
+        )}
+
+        <CtaButton
+          absolute={false}
+          title={t('other.add')}
+          action={handleAddToExam}
+          disabled={selectedStudents.length === 0}
+        />
       </Col>
-      <CtaButton
-        absolute={false}
-        title={t('other.add')}
-        action={() => {
-          if (!selectedExam) return;
-
-          const newStaff: Parameters<typeof addStudentsToExam>[1] =
-            selectedStaff.map(fullName => {
-              const [name, ...surnameParts] = fullName.trim().split(' ');
-              const surname = surnameParts.join(' ');
-
-              return {
-                id: generateStudentId(),
-                name,
-                surname,
-                year: '2025',
-                exam: 'no',
-                cityOfBirth: 'Torino',
-                degreeCourse: 'Informatica',
-                passedExams: [],
-                passedExamsDate: [],
-              };
-            });
-
-          addStudentsToExam(selectedExam.id, newStaff);
-
-          close();
-        }}
-      />
     </ModalContent>
   );
 };
 
-const createStyles = ({ palettes, colors, dark }: Theme) =>
+const createStyles = () =>
   StyleSheet.create({
-    message: {
-      color: dark ? colors.prose : colors.prose,
-    },
-    searchContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: palettes.gray[200],
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: palettes.gray[300],
-      paddingHorizontal: 12,
-      height: 40,
-    },
-    searchIcon: {
-      marginRight: 8,
-    },
-    searchInput: {
-      flex: 1,
-      fontSize: 16,
-      color: palettes.gray[800],
-      paddingVertical: 8,
-      height: 50,
-      textAlignVertical: 'center',
-    },
-    resultItem: {
-      padding: 10,
-      backgroundColor: palettes.gray[200],
-      borderBottomWidth: 1,
-      borderBottomColor: palettes.gray[300],
-    },
-    selectedContainer: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      marginTop: 10,
-      gap: 8,
+    list: {
+      marginHorizontal: 0,
     },
   });

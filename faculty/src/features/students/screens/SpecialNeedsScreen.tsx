@@ -1,13 +1,6 @@
+import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Alert,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Platform, ScrollView, StyleSheet } from 'react-native';
 
 import { faFile } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -15,29 +8,56 @@ import {
   faChevronRight,
   faCircleInfo,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useFeedbackContext } from '@polito/lib/core';
 import {
-  IndentedDivider,
+  BottomBarSpacer,
+  Card,
+  Col,
+  Icon,
+  ListItem,
+  OverviewList,
+  Row,
   Text,
   Theme,
-  useBottomBarAwareStyles,
+  createHeaderCloseButton,
+  useHideTabs,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { SCREEN_HORIZONTAL_PADDING } from '../constants';
+import type { StudentsStackParamList } from '../navigation/StudentsNavigator';
 
-export const SpecialNeedsScreen = () => {
-  const { palettes, dark } = useTheme();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
+type Props = NativeStackScreenProps<StudentsStackParamList, 'SpecialNeeds'>;
+
+export const SpecialNeedsScreen = ({ navigation }: Props) => {
+  useHideTabs();
+  const { palettes, dark, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
+  const { setFeedback } = useFeedbackContext();
   const { selectedStudent } = useCourses();
   const { t } = useTranslation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTransparent: false,
+      headerShadowVisible: false,
+      headerRight:
+        Platform.OS === 'ios' ? createHeaderCloseButton(navigation) : undefined,
+    });
+  }, [navigation]);
+
+  const showComingSoon = () => {
+    setFeedback({
+      text: t('other.comingSoon', { defaultValue: 'Coming soon.' }),
+    });
+  };
 
   if (!selectedStudent) return null;
 
   const studentFullName = `${selectedStudent.name} ${selectedStudent.surname}`;
+  const iconColor = dark ? palettes.gray[50] : palettes.primary[700];
 
   const measures = [
     {
@@ -82,261 +102,107 @@ export const SpecialNeedsScreen = () => {
   ];
 
   return (
-    <SafeAreaView style={styles.root} edges={['bottom']}>
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={[
-          Platform.OS === 'ios'
-            ? styles.scrollContentIos
-            : styles.contentContainer,
-          bottomBarAwareStyles,
-        ]}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Info card */}
-        <View
-          style={[
-            styles.infoCard,
-            dark && { backgroundColor: palettes.info[100] },
-          ]}
-        >
-          <Text style={styles.infoCardHeader}>
-            {t('other.specialNeedsInfoCardHeader', {
-              defaultValue: 'List of compensatory measures granted to',
-            })}{' '}
-            <Text style={styles.infoCardHeaderBold}>{studentFullName}</Text>
-          </Text>
-
-          <View style={styles.measuresList}>
-            {measures.map((measure, index) => (
-              <View key={index} style={styles.measureRow}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.measureText}>
-                  <Text style={styles.measureBold}>{measure.bold}</Text>
-                  {measure.rest}
+    <ScrollView
+      style={styles.scroll}
+      contentInsetAdjustmentBehavior="automatic"
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
+    >
+      <Card spaced={false} style={styles.infoCard}>
+        <Text weight="medium" style={styles.infoHeader}>
+          {t('other.specialNeedsInfoCardHeader', {
+            defaultValue: 'List of compensatory measures granted to',
+          })}{' '}
+          <Text weight="semibold">{studentFullName}</Text>
+        </Text>
+        <Col gap={1}>
+          {measures.map(measure => (
+            <Row key={measure.bold} gap={2}>
+              <Text variant="secondaryText">•</Text>
+              <Text variant="secondaryText" style={styles.measureText}>
+                <Text weight="medium" style={styles.measureBold}>
+                  {measure.bold}
                 </Text>
-              </View>
-            ))}
-          </View>
-        </View>
+                {measure.rest}
+              </Text>
+            </Row>
+          ))}
+        </Col>
+      </Card>
 
-        {/* Details card */}
-        <View style={styles.detailsCard}>
-          <TouchableOpacity
-            style={styles.listItem}
-            onPress={() =>
-              Alert.alert(
-                t('common.info', { defaultValue: 'Info' }),
-                t('other.comingSoon', { defaultValue: 'Coming soon.' }),
-              )
-            }
-            accessibilityRole="button"
-            accessibilityLabel={t('other.specialNeedsMoreDetails', {
-              defaultValue: 'More Details',
-            })}
-          >
-            <View style={styles.leadingIcon}>
-              <FontAwesomeIcon
-                icon={faCircleInfo}
-                size={20}
-                color={dark ? palettes.gray[50] : palettes.primary[700]}
-              />
-            </View>
-            <View style={styles.listItemContent}>
-              <Text
-                style={[styles.listItemTitle, dark && styles.listItemTitleDark]}
-                numberOfLines={1}
-              >
-                {t('other.specialNeedsMoreDetails', {
-                  defaultValue: 'More Details',
-                })}
-              </Text>
-              <Text style={styles.listItemSubtitle}>
-                {t('other.specialNeedsMoreDetailsSubtitle', {
-                  defaultValue:
-                    'Click here to view the list of requests for this course',
-                })}
-              </Text>
-            </View>
-            <FontAwesomeIcon
+      <OverviewList dividers indented style={styles.list}>
+        <ListItem
+          title={t('other.specialNeedsMoreDetails', {
+            defaultValue: 'More Details',
+          })}
+          subtitle={t('other.specialNeedsMoreDetailsSubtitle', {
+            defaultValue:
+              'Click here to view the list of requests for this course',
+          })}
+          onPress={showComingSoon}
+          leadingItem={
+            <Icon icon={faCircleInfo} size={fontSizes.xl} color={iconColor} />
+          }
+          trailingItem={
+            <Icon
               icon={faArrowUpRightFromSquare}
               size={16}
               color={palettes.gray[500]}
             />
-          </TouchableOpacity>
-
-          <IndentedDivider
-            style={[styles.divider, dark && styles.dividerDark]}
-          />
-
-          <TouchableOpacity
-            style={styles.listItem}
-            onPress={() =>
-              Alert.alert(
-                t('common.info', { defaultValue: 'Info' }),
-                t('other.comingSoon', { defaultValue: 'Coming soon.' }),
-              )
-            }
-            accessibilityRole="button"
-            accessibilityLabel={t('other.specialNeedsHandbook', {
-              defaultValue: 'Reporting procedure handbook',
-            })}
-          >
-            <View style={styles.leadingIcon}>
-              <FontAwesomeIcon
-                icon={faFile}
-                size={20}
-                color={palettes.darkOrange[600]}
-              />
-            </View>
-            <View style={styles.listItemContent}>
-              <Text
-                style={[styles.listItemTitle, dark && styles.listItemTitleDark]}
-                numberOfLines={1}
-              >
-                {t('other.specialNeedsHandbook', {
-                  defaultValue: 'Reporting procedure handbook',
-                })}
-              </Text>
-            </View>
-            <FontAwesomeIcon
-              icon={faChevronRight}
-              size={16}
-              color={palettes.gray[500]}
+          }
+        />
+        <ListItem
+          title={t('other.specialNeedsHandbook', {
+            defaultValue: 'Reporting procedure handbook',
+          })}
+          onPress={showComingSoon}
+          leadingItem={
+            <Icon
+              icon={faFile}
+              size={fontSizes.xl}
+              color={palettes.darkOrange[600]}
             />
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+          }
+          trailingItem={
+            <Icon icon={faChevronRight} size={16} color={palettes.gray[500]} />
+          }
+        />
+      </OverviewList>
+      <BottomBarSpacer />
+    </ScrollView>
   );
 };
 
-const createStyles = ({
-  colors,
-  spacing,
-  palettes,
-  fontSizes,
-  fontWeights,
-  fontFamilies,
-  shapes,
-}: Theme) =>
+const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
   StyleSheet.create({
-    root: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
     scroll: {
       flex: 1,
     },
-    contentContainer: {
-      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-      paddingTop: spacing[2],
-      gap: spacing[4],
-    },
-    scrollContentIos: {
-      flexGrow: 1,
-      padding: spacing[5],
-      gap: spacing[4],
-      paddingBottom: spacing[2],
+    content: {
+      paddingTop: spacing[4],
+      paddingBottom: spacing[4],
     },
     infoCard: {
+      marginHorizontal: spacing[5],
+      marginBottom: spacing[4],
+      padding: spacing[4],
       backgroundColor: palettes.info[100],
       borderWidth: 1,
       borderColor: palettes.info[500],
-      borderRadius: 12,
-      padding: spacing[4],
-      gap: spacing[2],
+      elevation: 0,
     },
-    infoCardHeader: {
-      fontFamily: fontFamilies.body,
+    infoHeader: {
       fontSize: fontSizes.sm,
-      fontWeight: fontWeights.medium,
-      color: palettes.text[800],
-      lineHeight: fontSizes.sm * 1.5,
-    },
-    infoCardHeaderBold: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.semibold,
-      color: palettes.text[800],
-      lineHeight: fontSizes.sm * 1.5,
-    },
-    measuresList: {
-      gap: 2,
-    },
-    measureRow: {
-      flexDirection: 'row',
-      gap: spacing[2],
-    },
-    bullet: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      color: palettes.text[600],
-      lineHeight: fontSizes.sm * 1.5,
-      marginTop: 1,
+      marginBottom: spacing[2],
     },
     measureText: {
       flex: 1,
-      fontFamily: fontFamilies.body,
       fontSize: fontSizes.sm,
-      fontWeight: fontWeights.normal,
-      color: palettes.text[600],
-      lineHeight: fontSizes.sm * 1.5,
     },
     measureBold: {
-      fontFamily: fontFamilies.body,
       fontSize: fontSizes.sm,
-      fontWeight: fontWeights.medium,
-      color: palettes.text[600],
-      lineHeight: fontSizes.sm * 1.5,
     },
-    detailsCard: {
-      backgroundColor: colors.surface,
-      borderRadius: shapes.lg,
-      overflow: 'hidden',
-    },
-    listItem: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      minHeight: 60,
-      paddingRight: spacing[3],
-      paddingVertical: spacing[3],
-    },
-    leadingIcon: {
-      width: 30,
-      height: 30,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginLeft: spacing[4],
-    },
-    listItemContent: {
-      flex: 1,
-      justifyContent: 'center',
-      paddingLeft: spacing[4],
-    },
-    listItemTitle: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.medium,
-      color: palettes.text[800],
-      lineHeight: fontSizes.md * 1.5,
-    },
-    listItemTitleDark: {
-      color: palettes.gray[50],
-    },
-    listItemSubtitle: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.normal,
-      color: palettes.gray[500],
-      lineHeight: fontSizes.sm * 1.5,
-    },
-    divider: {
-      alignSelf: 'stretch',
-      marginLeft: spacing[4],
-      minHeight: 1,
-    },
-    dividerDark: {
-      backgroundColor: palettes.gray[500],
+    list: {
+      marginHorizontal: spacing[5],
     },
   });

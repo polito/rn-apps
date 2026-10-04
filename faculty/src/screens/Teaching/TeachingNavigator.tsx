@@ -1,22 +1,15 @@
-import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Alert,
-  Platform,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import Popover from 'react-native-popover-view';
+import { Alert, Platform } from 'react-native';
 
-import { faArrowLeft, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { TeachingNavigatorID } from '@polito/lib/core';
 import {
   HeaderLogoNoProps,
-  Text,
+  IconButton,
   useTheme,
   useTitlesStyles,
 } from '@polito/lib/ui';
+import { MenuView } from '@react-native-menu/menu';
 import { useNavigation } from '@react-navigation/native';
 import {
   NativeStackNavigationProp,
@@ -39,8 +32,10 @@ import { ExamScreen3 } from '../ExamScreen3';
 import { ExamsScreen } from '../ExamsScreen';
 import { GradesScreen } from '../GradesScreen';
 import { ContactScreen2 } from './ContactScreen2';
-import { CourseGuideScreen } from './CourseGuideScreen';
-import { CourseSharedScreens } from './CourseSharedScreens';
+import {
+  CourseSharedScreens,
+  CourseSharedScreensParamList,
+} from './CourseSharedScreens';
 import { StaffScreen } from './CourseStaffScreen';
 import { CoursesScreen } from './CoursesScreen';
 import { FormScreen } from './FormScreen';
@@ -53,34 +48,28 @@ import { NoticeFormScreen } from './NoticeFormScreen';
 import { NoticeScreen } from './NoticeScreen';
 import { TeachingScreen } from './TeachingScreen';
 
-export type TeachingStackParamList = {
+export { TeachingNavigatorID };
+
+export type TeachingStackParamList = Omit<
+  CourseSharedScreensParamList,
+  'Course'
+> & {
+  Course: {
+    id?: number;
+    from?: string;
+    animated?: boolean;
+    title?: string;
+    uniqueShortcode?: string;
+  };
   Home: undefined;
   MyCourses: undefined;
   ExamsCalls: undefined;
   Exam: { id: number };
-
   Form: undefined;
   Roles: undefined;
   Notice: undefined;
   Lecture: undefined;
-  Notices: undefined;
-  Info: undefined;
-  Course: { from?: string; id?: number };
-  CourseGuide: { courseId: number };
-  CourseVideolecture: { courseId: number; lectureId: number };
-  CourseVirtualClassroom: { courseId: number; lectureId: number };
-  CourseAssignmentUpload: { courseId: number };
-
   Grades: undefined;
-  CourseDirectory: undefined;
-  CourseFileMultiSelectScreen: {
-    courseId: number;
-    path?: string;
-    action?: 'move' | 'delete';
-    initialSelectedIds?: string[];
-  };
-  CourseFilesUploadScreen: { courseId: number; path?: string };
-  CourseDirectoryRoot: undefined;
   ModifyNotice: undefined;
   ModifyFile: undefined;
   ModifyLecture: undefined;
@@ -96,27 +85,8 @@ export type TeachingStackParamList = {
   SpecialNeeds: undefined;
   NoticeForm: undefined;
   LectureForm: undefined;
-  StudentsForm: undefined;
   Contatto: undefined;
 };
-
-export const CustomBackButton = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('Home');
-      }}
-      style={{ paddingHorizontal: 10 }}
-    >
-      <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
-    </TouchableOpacity>
-  );
-};
-
-export const TeachingNavigatorID = 'TeachingTabNavigator';
 
 const Stack = createNativeStackNavigator<
   TeachingStackParamList,
@@ -152,97 +122,35 @@ export const TeachingNavigator = () => {
         name="MyCourses"
         component={CoursesScreen}
         options={{
-          headerLeft: () => {
-            return (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <CustomBackButton />
-              </View>
-            );
-          },
           headerTitle: t('other.myCourses'),
         }}
       />
-
       <Stack.Screen
         name="Notice"
         component={NoticeScreen}
         options={{
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{ textAlign: 'center', width: '100%', marginLeft: -10 }}
-            >
-              {t('common.notice')}
-            </Text>
-          ),
+          headerTitle: t('common.notice'),
+          headerLargeTitle: false,
+          headerBackButtonDisplayMode: 'minimal',
           headerRight: () => <NoticeMenu />,
-          headerShown: true,
         }}
       />
-
       <Stack.Screen
         name="Lecture"
         component={LessonScreen}
         options={{
+          headerTitle: t('common.lecture'),
+          headerLargeTitle: false,
+          headerBackButtonDisplayMode: 'minimal',
           headerRight: () => <LectureMenu />,
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{ textAlign: 'center', width: '100%', marginLeft: -10 }}
-            >
-              {t('common.lecture')}
-            </Text>
-          ),
-          headerShown: true,
         }}
       />
-      <Stack.Screen
-        name="Form"
-        component={FormScreen}
-        options={{
-          headerShown: true,
-        }}
-      />
-      <Stack.Screen
-        name="NoticeForm"
-        component={NoticeFormScreen}
-        options={{
-          headerShown: true,
-        }}
-      />
-
-      <Stack.Screen
-        name="LectureForm"
-        component={LectureFormScreen}
-        options={{
-          headerShown: true,
-        }}
-      />
-
-      <Stack.Screen
-        name="ModifyNotice"
-        component={ModifyNoticeScreen}
-        options={{
-          headerShown: true,
-        }}
-      />
-
-      <Stack.Screen
-        name="ModifyFile"
-        component={ModifyFileScreen}
-        options={{
-          headerShown: true,
-        }}
-      />
-
-      <Stack.Screen
-        name="ModifyLecture"
-        component={ModifyLectureScreen}
-        options={{
-          headerShown: true,
-        }}
-      />
-
+      <Stack.Screen name="Form" component={FormScreen} />
+      <Stack.Screen name="NoticeForm" component={NoticeFormScreen} />
+      <Stack.Screen name="LectureForm" component={LectureFormScreen} />
+      <Stack.Screen name="ModifyNotice" component={ModifyNoticeScreen} />
+      <Stack.Screen name="ModifyFile" component={ModifyFileScreen} />
+      <Stack.Screen name="ModifyLecture" component={ModifyLectureScreen} />
       <Stack.Screen
         name="StudentContact"
         component={StudentContact}
@@ -256,13 +164,11 @@ export const TeachingNavigator = () => {
           fullScreenGestureEnabled: true,
         }}
       />
-
       <Stack.Screen
         name="SpecialNeeds"
         component={SpecialNeedsScreen}
         options={{
           title: t('other.specialNeedsTitle'),
-          headerShown: true,
           headerLargeTitle: false,
           headerTransparent: false,
           headerBackButtonDisplayMode: 'minimal',
@@ -270,13 +176,11 @@ export const TeachingNavigator = () => {
           animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
         }}
       />
-
       <Stack.Screen
         name="AddStudents"
         component={AddStudentsScreen}
         options={{
           title: t('other.addStudent'),
-          headerShown: true,
           headerLargeTitle: false,
           headerTransparent: false,
           headerBackButtonDisplayMode: 'minimal',
@@ -284,13 +188,11 @@ export const TeachingNavigator = () => {
           animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
         }}
       />
-
       <Stack.Screen
         name="SelectStudents"
         component={SelectStudentsScreen}
         options={{
           title: t('other.selectStudents'),
-          headerShown: true,
           headerLargeTitle: false,
           headerTransparent: false,
           headerBackButtonDisplayMode: 'minimal',
@@ -298,7 +200,6 @@ export const TeachingNavigator = () => {
           animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
         }}
       />
-
       <Stack.Screen
         name="SelectContactMethod"
         component={SelectContactMethodScreen}
@@ -308,13 +209,11 @@ export const TeachingNavigator = () => {
           headerShown: false,
         }}
       />
-
       <Stack.Screen
         name="EmailCompose"
         component={EmailComposeScreen}
         options={{
           title: t('other.newEmail'),
-          headerShown: true,
           headerLargeTitle: false,
           headerTransparent: false,
           headerBackButtonDisplayMode: 'minimal',
@@ -322,13 +221,11 @@ export const TeachingNavigator = () => {
           animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
         }}
       />
-
       <Stack.Screen
         name="NotifyCompose"
         component={NotifyComposeScreen}
         options={{
           title: t('other.newNotify'),
-          headerShown: true,
           headerLargeTitle: false,
           headerTransparent: false,
           headerBackButtonDisplayMode: 'minimal',
@@ -336,25 +233,15 @@ export const TeachingNavigator = () => {
           animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
         }}
       />
-
       <Stack.Screen
         name="Staff"
         component={StaffScreen}
         options={{
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{ textAlign: 'center', width: '100%', marginLeft: -20 }}
-            >
-              {t('other.managingAccesses')}
-            </Text>
-          ),
-          headerShown: true,
+          headerTitle: t('other.managingAccesses'),
+          headerLargeTitle: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
-
-      <Stack.Screen name="CourseGuide" component={CourseGuideScreen} />
-
       <Stack.Screen
         name="ExamsCalls"
         component={ExamsScreen}
@@ -371,42 +258,101 @@ export const TeachingNavigator = () => {
           headerTitle: t('common.examCall'),
         }}
       />
-
       <Stack.Screen name="Exam2" component={ExamScreen2} />
-
       <Stack.Screen name="Exam3" component={ExamScreen3} />
-
       <Stack.Screen
         name="Grades"
         component={GradesScreen}
         options={{
-          headerTitle: t('Transcript'),
+          headerTitle: t('common.transcript'),
         }}
       />
       <Stack.Screen
         name="Contatto"
         component={ContactScreen2}
         options={{
-          headerTitle: t('Transcript'),
+          headerTitle: t('common.transcript'),
         }}
       />
-
       {CourseSharedScreens()}
     </Stack.Navigator>
   );
 };
 
 const NoticeMenu = () => {
-  const [isMenuVisible, setMenuVisible] = useState(false);
-  const buttonRef = useRef(null); // Riferimento ai tre puntini
+  const { t } = useTranslation();
+  const { palettes, fontSizes } = useTheme();
   const { selectedNotice, deleteNoticeFromCourse, selectedCourse } =
     useCourses();
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-  const { t } = useTranslation();
+
   const handleDelete = () => {
-    if (selectedCourse && selectedNotice) {
-      Alert.alert(t('other.confirm'), t('other.alertNotice2'), [
+    if (!selectedCourse || !selectedNotice) return;
+    Alert.alert(t('other.confirm'), t('other.alertNotice2'), [
+      {
+        text: t('common.cancel'),
+        style: 'cancel',
+      },
+      {
+        text: t('common.delete'),
+        style: 'destructive',
+        onPress: () => {
+          deleteNoticeFromCourse(selectedCourse.id, selectedNotice.id);
+          navigation.goBack();
+        },
+      },
+    ]);
+  };
+
+  return (
+    <MenuView
+      actions={[
+        { id: 'modify', title: t('other.modify') },
+        {
+          id: 'delete',
+          title: t('common.delete'),
+          attributes: { destructive: true },
+        },
+      ]}
+      onPressAction={({ nativeEvent }) => {
+        if (
+          nativeEvent.event === 'modify' &&
+          selectedCourse &&
+          selectedNotice
+        ) {
+          navigation.navigate('ModifyNotice');
+        }
+        if (nativeEvent.event === 'delete') {
+          handleDelete();
+        }
+      }}
+    >
+      <IconButton
+        icon={faEllipsisVertical}
+        color={palettes.primary[400]}
+        size={fontSizes.lg}
+        adjustSpacing="right"
+        accessibilityLabel={t('common.options')}
+      />
+    </MenuView>
+  );
+};
+
+const LectureMenu = () => {
+  const { t } = useTranslation();
+  const { palettes, fontSizes } = useTheme();
+  const { selectedLecture, deleteLessonFromCourse, selectedCourse } =
+    useCourses();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
+
+  const handleDelete = () => {
+    if (!selectedCourse || !selectedLecture) return;
+    Alert.alert(
+      t('other.confirm'),
+      'Sei sicuro di voler eliminare questa lezione?',
+      [
         {
           text: t('common.cancel'),
           style: 'cancel',
@@ -415,113 +361,44 @@ const NoticeMenu = () => {
           text: t('common.delete'),
           style: 'destructive',
           onPress: () => {
-            deleteNoticeFromCourse(selectedCourse.id, selectedNotice.id);
+            deleteLessonFromCourse(selectedCourse.id, selectedLecture.id);
             navigation.goBack();
-            setMenuVisible(false);
           },
         },
-      ]);
-    }
-  };
-
-  const handleUpdate = () => {
-    if (selectedCourse && selectedNotice) {
-      navigation.navigate('ModifyNotice');
-      setMenuVisible(false);
-    }
+      ],
+    );
   };
 
   return (
-    <View>
-      {/* Pulsante con tre puntini */}
-      <TouchableOpacity ref={buttonRef} onPress={() => setMenuVisible(true)}>
-        <FontAwesomeIcon icon={faEllipsisV} size={24} />
-      </TouchableOpacity>
-
-      {/* Popover che si apre sotto i tre puntini */}
-      <Popover
-        isVisible={isMenuVisible}
-        from={buttonRef.current}
-        onRequestClose={() => setMenuVisible(false)}
-      >
-        <TouchableOpacity onPress={handleUpdate}>
-          <Text style={styles.menuItem}>{t('other.modify')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleDelete}>
-          <Text style={styles.menuItem}>{t('other.delete')}</Text>
-        </TouchableOpacity>
-      </Popover>
-    </View>
+    <MenuView
+      actions={[
+        { id: 'modify', title: t('other.modify') },
+        {
+          id: 'delete',
+          title: t('common.delete'),
+          attributes: { destructive: true },
+        },
+      ]}
+      onPressAction={({ nativeEvent }) => {
+        if (
+          nativeEvent.event === 'modify' &&
+          selectedCourse &&
+          selectedLecture
+        ) {
+          navigation.navigate('ModifyLecture');
+        }
+        if (nativeEvent.event === 'delete') {
+          handleDelete();
+        }
+      }}
+    >
+      <IconButton
+        icon={faEllipsisVertical}
+        color={palettes.primary[400]}
+        size={fontSizes.lg}
+        adjustSpacing="right"
+        accessibilityLabel={t('common.options')}
+      />
+    </MenuView>
   );
 };
-
-const LectureMenu = () => {
-  const [isMenuVisible, setMenuVisible] = useState(false);
-  const buttonRef = useRef(null); // Riferimento ai tre puntini
-  const { t } = useTranslation();
-  const { selectedLecture, deleteLessonFromCourse, selectedCourse } =
-    useCourses();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-
-  const handleDelete = () => {
-    if (selectedCourse && selectedLecture) {
-      Alert.alert(
-        'Conferma eliminazione',
-        'Sei sicuro di voler eliminare questa lezione?',
-        [
-          {
-            text: 'Annulla',
-            style: 'cancel',
-          },
-          {
-            text: 'Conferma',
-            style: 'destructive',
-            onPress: () => {
-              deleteLessonFromCourse(selectedCourse.id, selectedLecture.id);
-              navigation.goBack();
-              setMenuVisible(false);
-            },
-          },
-        ],
-      );
-    }
-  };
-
-  const handleUpdate = () => {
-    if (selectedCourse && selectedLecture) {
-      navigation.navigate('ModifyLecture');
-      setMenuVisible(false);
-    }
-  };
-
-  return (
-    <View>
-      {/* Pulsante con tre puntini */}
-      <TouchableOpacity ref={buttonRef} onPress={() => setMenuVisible(true)}>
-        <FontAwesomeIcon icon={faEllipsisV} size={24} />
-      </TouchableOpacity>
-
-      {/* Popover che si apre sotto i tre puntini */}
-      <Popover
-        isVisible={isMenuVisible}
-        from={buttonRef.current}
-        onRequestClose={() => setMenuVisible(false)}
-      >
-        <TouchableOpacity onPress={handleUpdate}>
-          <Text style={styles.menuItem}>{t('other.modify')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleDelete}>
-          <Text style={styles.menuItem}>{t('other.delete')}</Text>
-        </TouchableOpacity>
-      </Popover>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  menuItem: {
-    padding: 10,
-    fontSize: 16,
-  },
-});

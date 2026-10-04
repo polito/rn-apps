@@ -1,10 +1,10 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,29 +16,30 @@ import {
   faPlus,
   faSearch,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useFeedbackContext } from '@polito/lib/core';
+import { HighlightedText } from '@polito/lib/features/people';
 import {
   CtaButton,
-  CtaButtonContainer,
   GlobalStyles,
-  Text,
-  TextButton,
+  Icon,
+  ListItem,
+  OverviewList,
+  Row,
   Theme,
   TranslucentTextField,
-  useBottomBarAwareStyles,
+  createHeaderCloseButton,
+  useHideTabs,
+  useSafeAreaSpacing,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { HighlightedName } from '../components/HighlightedName';
-import { CURRENT_ACADEMIC_YEAR, SCREEN_HORIZONTAL_PADDING } from '../constants';
-import { StudentsFeatureError, studentsErrorCodes } from '../errors';
-import { useFilteredStudents } from '../hooks';
-import { StudentsStackParamList } from '../types/navigation';
+import { CourseNotSelectedError } from '../errors/CourseNotSelectedError';
+import type { StudentsStackParamList } from '../navigation/StudentsNavigator';
+import { getCurrentAcademicYear } from '../utils';
 
 const mockStudents = [
   { id: 's123456', name: 'Paolo', surname: 'Serra' },
@@ -55,54 +56,48 @@ const mockStudents = [
 
 type MockStudent = (typeof mockStudents)[0];
 
-type Props = {
-  close?: () => void;
-};
+type Props = NativeStackScreenProps<StudentsStackParamList, 'AddStudents'>;
 
-export const AddStudentsModalContent = ({ close }: Props) => {
+export const AddStudentsModalContent = ({ navigation }: Props) => {
+  useHideTabs();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { palettes, dark } = useTheme();
+  const { paddingHorizontal } = useSafeAreaSpacing();
   const bottomTabBarHeight = useBottomTabBarHeight();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
+  const { setFeedback } = useFeedbackContext();
   const { addStudentsToCourse, selectedCourse } = useCourses();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
   const [searchText, setSearchText] = useState('');
   const [selectedStudents, setSelectedStudents] = useState<MockStudent[]>([]);
   // TODO: replace with server-issued IDs once the API is available.
   const studentCounterRef = useRef(100);
-  const generateStudentId = (): string => {
-    const prefix = 'S32';
-    const padded = studentCounterRef.current.toString().padStart(4, '0');
-    studentCounterRef.current++;
-    return `${prefix}${padded}`;
-  };
   const isConfirmEnabled = selectedStudents.length > 0;
-  const handleClose = useCallback(() => {
-    if (close) {
-      close();
-      return;
-    }
-    navigation.goBack();
-  }, [close, navigation]);
 
   useLayoutEffect(() => {
-    if (!close) return;
     navigation.setOptions({
-      headerLeft: () => (
-        <TextButton onPress={handleClose}>{t('common.close')}</TextButton>
-      ),
+      headerTransparent: false,
+      headerShadowVisible: false,
+      headerRight:
+        Platform.OS === 'ios' ? createHeaderCloseButton(navigation) : undefined,
     });
-  }, [close, handleClose, navigation, t]);
+  }, [navigation]);
 
   const selectedIds = useMemo(
     () => new Set(selectedStudents.map(student => student.id)),
     [selectedStudents],
   );
-  const filteredStudents = useFilteredStudents(mockStudents, searchText, {
-    excludedIds: selectedIds,
-  });
+  const filteredStudents = useMemo(() => {
+    const q = searchText.trim().toLowerCase();
+    return mockStudents.filter(student => {
+      if (selectedIds.has(student.id)) return false;
+      if (!q) return true;
+      return (
+        student.id.toLowerCase().includes(q) ||
+        student.name.toLowerCase().includes(q) ||
+        student.surname.toLowerCase().includes(q)
+      );
+    });
+  }, [searchText, selectedIds]);
 
   const handleAdd = (student: MockStudent) => {
     setSelectedStudents(prev => [...prev, student]);
@@ -112,313 +107,240 @@ export const AddStudentsModalContent = ({ close }: Props) => {
     setSelectedStudents(prev => prev.filter(s => s.id !== student.id));
   };
 
-  const handleConfirm = () => {
-    if (!selectedCourse) {
-      console.warn(
-        new StudentsFeatureError(
-          'Cannot add students without a selected course',
-          studentsErrorCodes.COURSE_NOT_SELECTED,
-        ),
-      );
-      return;
+  const handleConfirm = useCallback(() => {
+    try {
+      if (!selectedCourse) {
+        throw new CourseNotSelectedError(
+          t('other.courseNotSelected', {
+            defaultValue: 'Select a course before adding students',
+          }),
+        );
+      }
+
+      const newStudents: Parameters<typeof addStudentsToCourse>[1] =
+        selectedStudents.map(s => {
+          const nextId = studentCounterRef.current.toString().padStart(4, '0');
+          studentCounterRef.current += 1;
+          return {
+            id: `S32${nextId}`,
+            name: s.name,
+            surname: s.surname,
+            year: getCurrentAcademicYear(),
+            exam: 'no',
+            // TODO: replace mock defaults with API-provided student profile fields.
+            cityOfBirth: 'Torino',
+            degreeCourse: 'Informatica',
+            passedExams: [],
+            passedExamsDate: [],
+          };
+        });
+      addStudentsToCourse(selectedCourse.id, newStudents);
+      navigation.goBack();
+    } catch (e) {
+      if (e instanceof CourseNotSelectedError) {
+        setFeedback({ text: e.message, isError: true });
+        return;
+      }
+      throw e;
     }
-    const newStudents: Parameters<typeof addStudentsToCourse>[1] =
-      selectedStudents.map(s => ({
-        id: generateStudentId(),
-        name: s.name,
-        surname: s.surname,
-        year: CURRENT_ACADEMIC_YEAR,
-        exam: 'no',
-        // TODO: replace mock defaults with API-provided student profile fields.
-        cityOfBirth: 'Torino',
-        degreeCourse: 'Informatica',
-        passedExams: [],
-        passedExamsDate: [],
-      }));
-    addStudentsToCourse(selectedCourse.id, newStudents);
-    handleClose();
-  };
+  }, [
+    addStudentsToCourse,
+    navigation,
+    selectedCourse,
+    selectedStudents,
+    setFeedback,
+    t,
+  ]);
+
+  const query = searchText.trim();
 
   return (
     <SafeAreaView style={styles.root} edges={['bottom']}>
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={[
-          styles.contentContainer,
-          bottomBarAwareStyles,
-          { paddingBottom: 0 },
-        ]}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.searchWrapper}>
+      <View style={[styles.searchBarWrap, paddingHorizontal]}>
+        <Row align="center" style={styles.searchBar}>
           <TranslucentTextField
             autoCorrect={false}
             leadingIcon={faSearch}
             value={searchText}
             onChangeText={setSearchText}
-            style={GlobalStyles.grow}
+            style={[GlobalStyles.grow, styles.textField]}
             label={t('other.lookForStudent')}
             editable
             isClearable={searchText.length > 0}
             onClear={() => setSearchText('')}
             onClearLabel={t('contactsScreen.clearSearch')}
           />
-        </View>
+        </Row>
+      </View>
 
-        <View style={styles.listContainer}>
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoiding}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           {selectedStudents.length > 0 && (
-            <View
-              style={[styles.selectedCard, dark && styles.selectedCardDark]}
-            >
-              {selectedStudents.map((student, index) => (
-                <View key={student.id}>
-                  <View style={styles.selectedRow}>
-                    <View style={styles.leadingIconContainer}>
-                      <FontAwesomeIcon
-                        icon={faCircleUser}
-                        size={20}
-                        color={dark ? palettes.gray[50] : palettes.primary[700]}
-                      />
-                    </View>
-                    <View style={styles.studentContent}>
-                      <HighlightedName
-                        name={student.name}
-                        surname={student.surname}
-                        query={searchText}
-                        nameStyle={[
-                          styles.studentName,
-                          dark && styles.studentNameDark,
-                        ]}
-                        highlightStyle={styles.studentNameHighlight}
-                      />
-                      <Text style={styles.studentId}>{student.id}</Text>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => handleRemove(student)}
-                      style={styles.trailingIconContainer}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                      accessibilityRole="button"
-                    >
-                      <FontAwesomeIcon
-                        icon={faMinus}
-                        size={16}
-                        color={
-                          dark ? palettes.gray[400] : palettes.primary[600]
-                        }
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  {index < selectedStudents.length - 1 && (
-                    <View
-                      style={[styles.divider, dark && styles.dividerDark]}
-                    />
-                  )}
-                </View>
-              ))}
-            </View>
-          )}
-
-          {filteredStudents.length > 0 && (
-            <View
+            <OverviewList
+              dividers
+              indented
               style={[
-                styles.availableCard,
-                selectedStudents.length > 0 && styles.availableCardWithSelected,
+                styles.list,
+                styles.selectedList,
+                dark && styles.selectedListDark,
               ]}
             >
-              {filteredStudents.map((student, index) => (
-                <View key={student.id}>
-                  <View style={styles.availableRow}>
-                    <View style={styles.leadingIconContainer}>
-                      <FontAwesomeIcon
-                        icon={faCircleUser}
-                        size={20}
-                        color={dark ? palettes.gray[50] : palettes.primary[700]}
-                      />
-                    </View>
-                    <View style={styles.studentContent}>
-                      <HighlightedName
-                        name={student.name}
-                        surname={student.surname}
-                        query={searchText}
-                        nameStyle={[
-                          styles.studentName,
-                          dark && styles.studentNameDark,
-                        ]}
-                        highlightStyle={styles.studentNameHighlight}
-                      />
-                      <Text style={styles.studentId}>{student.id}</Text>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => handleAdd(student)}
-                      style={styles.trailingIconContainer}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                      accessibilityRole="button"
-                    >
-                      <FontAwesomeIcon
-                        icon={faPlus}
-                        size={16}
-                        color={
-                          dark ? palettes.gray[400] : palettes.primary[600]
-                        }
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  {index < filteredStudents.length - 1 && (
-                    <View
-                      style={[styles.divider, dark && styles.dividerDark]}
+              {selectedStudents.map(student => (
+                <ListItem
+                  key={student.id}
+                  title={
+                    <HighlightedText
+                      text={`${student.name} ${student.surname}`}
+                      highlight={searchText}
                     />
-                  )}
-                </View>
+                  }
+                  subtitle={student.id}
+                  leadingItem={
+                    <Icon
+                      icon={faCircleUser}
+                      size={20}
+                      color={dark ? palettes.gray[50] : palettes.primary[700]}
+                    />
+                  }
+                  trailingItem={
+                    <Icon
+                      icon={faMinus}
+                      size={16}
+                      color={dark ? palettes.gray[400] : palettes.primary[600]}
+                    />
+                  }
+                  onPress={() => handleRemove(student)}
+                />
               ))}
-            </View>
+            </OverviewList>
           )}
-        </View>
-      </ScrollView>
 
-      <CtaButtonContainer
-        absolute={false}
-        style={[
-          styles.footer,
-          Platform.OS === 'android'
-            ? { paddingBottom: bottomTabBarHeight }
-            : undefined,
-        ]}
-      >
-        <CtaButton
-          title={t('other.confirm', { defaultValue: 'Confirm' })}
-          action={handleConfirm}
-          icon={faCheck}
-          disabled={!isConfirmEnabled}
-          absolute={false}
-          containerStyle={styles.confirmButtonContainer}
-          textStyle={
-            !isConfirmEnabled && dark
-              ? styles.confirmButtonTextDisabledDark
-              : undefined
-          }
-        />
-      </CtaButtonContainer>
+          {filteredStudents.length > 0 ? (
+            <OverviewList
+              dividers
+              indented
+              style={[
+                styles.list,
+                selectedStudents.length > 0 && styles.availableListWithSelected,
+              ]}
+            >
+              {filteredStudents.map(student => (
+                <ListItem
+                  key={student.id}
+                  title={
+                    <HighlightedText
+                      text={`${student.name} ${student.surname}`}
+                      highlight={searchText}
+                    />
+                  }
+                  subtitle={student.id}
+                  leadingItem={
+                    <Icon
+                      icon={faCircleUser}
+                      size={20}
+                      color={dark ? palettes.gray[50] : palettes.primary[700]}
+                    />
+                  }
+                  trailingItem={
+                    <Icon
+                      icon={faPlus}
+                      size={16}
+                      color={dark ? palettes.gray[400] : palettes.primary[600]}
+                    />
+                  }
+                  onPress={() => handleAdd(student)}
+                />
+              ))}
+            </OverviewList>
+          ) : query ? (
+            <OverviewList
+              emptyStateText={t('other.noStudentsFound')}
+              style={[
+                styles.list,
+                selectedStudents.length > 0 && styles.availableListWithSelected,
+              ]}
+            />
+          ) : null}
+        </ScrollView>
+
+        <View
+          style={[
+            styles.ctaRow,
+            Platform.OS === 'android'
+              ? { paddingBottom: bottomTabBarHeight }
+              : undefined,
+          ]}
+        >
+          <CtaButton
+            title={t('other.confirm', { defaultValue: 'Confirm' })}
+            action={handleConfirm}
+            icon={faCheck}
+            disabled={!isConfirmEnabled}
+            absolute={false}
+            containerStyle={styles.ctaButtonContainer}
+          />
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
-const createStyles = ({
-  colors,
-  spacing,
-  palettes,
-  fontFamilies,
-  fontSizes,
-  fontWeights,
-  shapes,
-}: Theme) =>
+const createStyles = ({ colors, spacing, palettes, shapes }: Theme) =>
   StyleSheet.create({
     root: {
       flex: 1,
       backgroundColor: colors.background,
     },
+    searchBarWrap: {
+      overflow: 'hidden',
+      paddingTop: spacing[3],
+    },
+    searchBar: {
+      paddingBottom: spacing[2],
+    },
+    textField: {
+      borderRadius: shapes.lg,
+    },
+    keyboardAvoiding: {
+      flex: 1,
+      minHeight: 0,
+    },
     scroll: {
       flex: 1,
+      minHeight: 0,
     },
-    contentContainer: {
-      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-      paddingTop: spacing[2],
-      paddingBottom: spacing[3],
+    content: {
+      paddingBottom: spacing[4],
     },
-    searchWrapper: {
-      paddingVertical: spacing[2],
-      marginBottom: spacing[3],
+    list: {
+      marginHorizontal: spacing[5],
     },
-    listContainer: {
-      gap: spacing[2],
-    },
-    selectedCard: {
+    selectedList: {
       backgroundColor: palettes.gray[200],
-      borderRadius: shapes.lg,
-      overflow: 'hidden',
     },
-    selectedCardDark: {
+    selectedListDark: {
       backgroundColor: palettes.gray[600],
     },
-    selectedRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      height: 60,
-      paddingRight: spacing[2],
-    },
-    availableCard: {
-      backgroundColor: colors.surface,
-      borderRadius: shapes.lg,
-      overflow: 'hidden',
-    },
-    availableCardWithSelected: {
+    availableListWithSelected: {
       marginTop: spacing[3],
     },
-    availableRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      height: 60,
-      paddingRight: spacing[2],
-    },
-    leadingIconContainer: {
-      width: 30,
-      height: 30,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginLeft: spacing[4],
-      flexShrink: 0,
-    },
-    studentContent: {
-      flex: 1,
-      flexDirection: 'column',
-      justifyContent: 'center',
-      paddingLeft: spacing[4],
-      overflow: 'hidden',
-    },
-    studentName: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.medium,
-      color: palettes.text[800],
-      lineHeight: 24,
-    },
-    studentNameDark: {
-      color: palettes.gray[50],
-    },
-    studentNameHighlight: {
-      color: palettes.secondary[600],
-    },
-    studentId: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.sm,
-      fontWeight: fontWeights.normal,
-      color: palettes.gray[500],
-      lineHeight: 21,
-    },
-    trailingIconContainer: {
-      width: 24,
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0,
-    },
-    divider: {
-      height: 1,
-      backgroundColor: palettes.gray[300],
-      marginLeft: spacing[4],
-    },
-    dividerDark: {
-      backgroundColor: palettes.gray[500],
-    },
-    footer: {
-      paddingHorizontal: 0,
+    ctaRow: {
+      backgroundColor: colors.background,
+      paddingHorizontal: spacing[5],
+      paddingTop: spacing[2],
       paddingBottom: spacing[4],
-      paddingTop: 0,
     },
-    confirmButtonTextDisabledDark: {
-      color: palettes.gray[700],
-    },
-    confirmButtonContainer: {
+    ctaButtonContainer: {
       paddingTop: 0,
-      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+      paddingHorizontal: 0,
       paddingBottom: 0,
     },
   });

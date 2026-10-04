@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -11,27 +12,36 @@ import {
   faHandHoldingHeart,
   faPersonHalfDress,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { formatDateFromString } from '@polito/lib/core';
 import {
-  IndentedDivider,
+  Badge,
+  BottomBarSpacer,
+  Col,
+  Icon,
+  ListItem,
+  Metric,
+  OverviewList,
+  Row,
+  Section,
+  SectionHeader,
   Text,
   Theme,
-  useBottomBarAwareStyles,
+  useHideTabs,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import type { StudentsStackParamList } from '../types/navigation';
-import { formatExamDate } from '../utils';
+import type { StudentsStackParamList } from '../navigation/StudentsNavigator';
 
-export const StudentContact = () => {
-  const { palettes, dark } = useTheme();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
+const profileImageSize = 120;
+
+type Props = NativeStackScreenProps<StudentsStackParamList, 'StudentContact'>;
+
+export const StudentContact = ({ navigation }: Props) => {
+  useHideTabs();
+  const { colors, fontSizes, palettes, dark } = useTheme();
   const styles = useStylesheet(createStyles);
   const { selectedStudent, selectedCourse } = useCourses();
   const { t } = useTranslation();
@@ -42,465 +52,198 @@ export const StudentContact = () => {
     ? `${selectedCourse.code} - ${selectedCourse.cfu} CFU`
     : '—';
   const studentEmail = `${selectedStudent.id}@studenti.polito.it`;
-  const latestExamDate = formatExamDate(selectedStudent.passedExamsDate[0]);
+  const latestExamDate = selectedStudent.passedExamsDate[0]
+    ? formatDateFromString(selectedStudent.passedExamsDate[0])
+    : '—';
   const subscriptionYear = selectedStudent.year
     ? `${selectedStudent.year}/${String(Number(selectedStudent.year) + 1)}`
     : '—';
+  const iconColor = dark ? palettes.gray[50] : colors.heading;
 
   return (
-    <View style={styles.root}>
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={[styles.contentContainer, bottomBarAwareStyles]}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Name + ID */}
-        <View style={styles.titleSection}>
-          <Text style={[styles.studentName, dark && styles.studentNameDark]}>
-            {selectedStudent.name} {selectedStudent.surname}
-          </Text>
-          <Text style={styles.studentId}>{selectedStudent.id}</Text>
-        </View>
-
-        {/* Profile card */}
-        <View style={styles.profileCard}>
-          <View style={styles.photoContainer}>
-            <FontAwesomeIcon
-              icon={faCircleUser}
-              size={80}
-              color={dark ? palettes.gray[50] : palettes.primary[700]}
-            />
-          </View>
-          <View style={styles.profileDetails}>
-            <View style={styles.metricRow}>
-              <Text
-                style={[styles.metricLabel, dark && styles.metricLabelDark]}
+    <ScrollView
+      style={styles.scroll}
+      contentInsetAdjustmentBehavior="automatic"
+      showsVerticalScrollIndicator={false}
+    >
+      <SafeAreaView>
+        <Col pv={5}>
+          <Col ph={5} gap={6} mb={6}>
+            <Col gap={1}>
+              <Text weight="bold" variant="title" style={styles.title}>
+                {selectedStudent.name} {selectedStudent.surname}
+              </Text>
+              <Text variant="secondaryText" uppercase weight="bold">
+                {selectedStudent.id}
+              </Text>
+            </Col>
+            <Row gap={6} align="center">
+              <View
+                accessible
+                accessibilityLabel={t('common.profilePic', {
+                  defaultValue: 'Profile picture',
+                })}
+                style={styles.profileImagePlaceholder}
               >
-                {t('other.course', { defaultValue: 'Course' })}
-              </Text>
-              <Text style={styles.metricValue}>{courseCode}</Text>
-            </View>
-            <View style={styles.metricRow}>
-              <Text
-                style={[styles.metricLabel, dark && styles.metricLabelDark]}
-              >
-                {t('other.cds', { defaultValue: 'Cds' })}
-              </Text>
-              <Text style={styles.metricValue}>
-                {selectedStudent.degreeCourse}
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Info Section */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <View style={styles.sectionAccent} />
-            <Text
-              style={[styles.sectionTitle, dark && styles.sectionTitleDark]}
-            >
-              {t('other.info', { defaultValue: 'Info' })}
-            </Text>
-          </View>
-
-          <View style={styles.infoCard}>
-            {/* Special Needs */}
-            <TouchableOpacity
-              style={styles.listItem}
-              onPress={() => navigation.navigate('SpecialNeeds')}
-            >
-              <View style={styles.leadingIcon}>
-                <FontAwesomeIcon
-                  icon={faHandHoldingHeart}
-                  size={20}
-                  color={dark ? palettes.gray[50] : palettes.primary[700]}
+                <Icon
+                  icon={faCircleUser}
+                  size={fontSizes['3xl']}
+                  color={colors.title}
                 />
               </View>
-              <View style={styles.listItemContent}>
-                <Text
-                  style={[
-                    styles.listItemTitle,
-                    dark && styles.listItemTitleDark,
-                  ]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {t('other.specialNeeds', { defaultValue: 'Special Needs' })}
-                </Text>
-                <Text style={styles.listItemSubtitle} numberOfLines={1}>
-                  {t('other.specialNeedsSubtitle', {
-                    defaultValue: 'List of all compensative measures',
-                  })}
-                </Text>
-              </View>
-              <FontAwesomeIcon
-                icon={faChevronRight}
-                size={16}
-                color={palettes.gray[500]}
+              <Col style={styles.info}>
+                <Metric
+                  title={t('other.course', { defaultValue: 'Course' })}
+                  value={courseCode}
+                  valueStyle={styles.metricValue}
+                  style={styles.spaceBottom}
+                />
+                <Metric
+                  title={t('other.cds', { defaultValue: 'Cds' })}
+                  value={selectedStudent.degreeCourse}
+                  valueStyle={styles.metricValue}
+                />
+              </Col>
+            </Row>
+          </Col>
+
+          <Section>
+            <SectionHeader title={t('other.info', { defaultValue: 'Info' })} />
+            <OverviewList indented>
+              <ListItem
+                title={t('other.specialNeeds', {
+                  defaultValue: 'Special Needs',
+                })}
+                subtitle={t('other.specialNeedsSubtitle', {
+                  defaultValue: 'List of all compensative measures',
+                })}
+                leadingItem={
+                  <Icon
+                    icon={faHandHoldingHeart}
+                    size={fontSizes.xl}
+                    color={iconColor}
+                  />
+                }
+                trailingItem={
+                  <Icon
+                    icon={faChevronRight}
+                    size={16}
+                    color={palettes.gray[500]}
+                  />
+                }
+                onPress={() => navigation.navigate('SpecialNeeds')}
               />
-            </TouchableOpacity>
-
-            <IndentedDivider
-              style={[styles.infoDivider, dark && styles.infoDividerDark]}
-            />
-
-            {/* Email */}
-            <TouchableOpacity
-              style={styles.listItem}
-              onPress={() =>
-                navigation.navigate('EmailCompose', {
-                  selectedIds: [selectedStudent.id],
-                })
-              }
-            >
-              <View style={styles.leadingIcon}>
-                <FontAwesomeIcon
-                  icon={faEnvelope}
-                  size={20}
-                  color={dark ? palettes.gray[50] : palettes.primary[700]}
-                />
-              </View>
-              <View style={styles.listItemContent}>
-                <Text
-                  style={[
-                    styles.listItemTitle,
-                    dark && styles.listItemTitleDark,
-                  ]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {t('other.email', { defaultValue: 'Email' })}
-                </Text>
-                <Text style={styles.listItemSubtitle} numberOfLines={1}>
-                  {studentEmail}
-                </Text>
-              </View>
-            </TouchableOpacity>
-
-            <IndentedDivider
-              style={[styles.infoDivider, dark && styles.infoDividerDark]}
-            />
-
-            {/* Exam result */}
-            <View style={styles.listItem}>
-              <View style={styles.leadingIcon}>
-                <FontAwesomeIcon
-                  icon={faAward}
-                  size={20}
-                  color={dark ? palettes.gray[50] : palettes.primary[700]}
-                />
-              </View>
-              <View style={styles.listItemContent}>
-                <Text
-                  style={[
-                    styles.listItemTitle,
-                    dark && styles.listItemTitleDark,
-                  ]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {t('other.examResult', { defaultValue: 'Exam result' })}
-                </Text>
-                <Text style={styles.listItemSubtitle} numberOfLines={1}>
-                  {latestExamDate}
-                </Text>
-              </View>
-              {selectedStudent.exam === 'yes' && (
-                <View
-                  style={[styles.gradeBadge, dark && styles.gradeBadgeDark]}
-                >
-                  <Text
-                    style={[
-                      styles.gradeBadgeText,
-                      dark && styles.gradeBadgeTextDark,
-                    ]}
-                  >
-                    30L
-                  </Text>
-                </View>
-              )}
-            </View>
-
-            <IndentedDivider
-              style={[styles.infoDivider, dark && styles.infoDividerDark]}
-            />
-
-            {/* Subscription */}
-            <View style={styles.listItem}>
-              <View style={styles.leadingIcon}>
-                <FontAwesomeIcon
-                  icon={faCalendarCheck}
-                  size={20}
-                  color={dark ? palettes.gray[50] : palettes.primary[700]}
-                />
-              </View>
-              <View style={styles.listItemContent}>
-                <Text
-                  style={[
-                    styles.listItemTitle,
-                    dark && styles.listItemTitleDark,
-                  ]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {t('other.subscription', { defaultValue: 'Subscription' })}
-                </Text>
-                <Text style={styles.listItemSubtitle} numberOfLines={1}>
-                  {subscriptionYear}
-                </Text>
-              </View>
-            </View>
-
-            <IndentedDivider
-              style={[styles.infoDivider, dark && styles.infoDividerDark]}
-            />
-
-            {/* Citizenship */}
-            <View style={styles.listItem}>
-              <View style={styles.leadingIcon}>
-                <FontAwesomeIcon
-                  icon={faFlag}
-                  size={20}
-                  color={dark ? palettes.gray[50] : palettes.primary[700]}
-                />
-              </View>
-              <View style={styles.listItemContent}>
-                <Text
-                  style={[
-                    styles.listItemTitle,
-                    dark && styles.listItemTitleDark,
-                  ]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {t('other.citizenship', { defaultValue: 'Citizenship' })}
-                </Text>
-                <Text style={styles.listItemSubtitle} numberOfLines={1}>
-                  {selectedStudent.countryOfBirth ||
-                    t('other.countryFallback', { defaultValue: 'Italy' })}
-                </Text>
-              </View>
-            </View>
-
-            <IndentedDivider
-              style={[styles.infoDivider, dark && styles.infoDividerDark]}
-            />
-
-            {/* Gender */}
-            <View style={styles.listItem}>
-              <View style={styles.leadingIcon}>
-                <FontAwesomeIcon
-                  icon={faPersonHalfDress}
-                  size={20}
-                  color={dark ? palettes.gray[50] : palettes.primary[700]}
-                />
-              </View>
-              <View style={styles.listItemContent}>
-                <Text
-                  style={[
-                    styles.listItemTitle,
-                    dark && styles.listItemTitleDark,
-                  ]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {t('other.gender', { defaultValue: 'Gender' })}
-                </Text>
-                <Text style={styles.listItemSubtitle} numberOfLines={1}>
-                  {selectedStudent.gender || '—'}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
-      </ScrollView>
-    </View>
+              <ListItem
+                isAction
+                title={t('other.email', { defaultValue: 'Email' })}
+                subtitle={studentEmail}
+                leadingItem={
+                  <Icon
+                    icon={faEnvelope}
+                    size={fontSizes.xl}
+                    color={iconColor}
+                  />
+                }
+                onPress={() =>
+                  navigation.navigate('EmailCompose', {
+                    selectedIds: [selectedStudent.id],
+                  })
+                }
+              />
+              <ListItem
+                title={t('other.examResult', { defaultValue: 'Exam result' })}
+                subtitle={latestExamDate}
+                leadingItem={
+                  <Icon icon={faAward} size={fontSizes.xl} color={iconColor} />
+                }
+                trailingItem={
+                  selectedStudent.exam === 'yes' ? (
+                    <Badge
+                      text="30L"
+                      backgroundColor={
+                        dark ? palettes.gray[500] : colors.background
+                      }
+                      foregroundColor={
+                        dark ? palettes.gray[800] : palettes.gray[700]
+                      }
+                    />
+                  ) : undefined
+                }
+              />
+              <ListItem
+                title={t('other.subscription', {
+                  defaultValue: 'Subscription',
+                })}
+                subtitle={subscriptionYear}
+                leadingItem={
+                  <Icon
+                    icon={faCalendarCheck}
+                    size={fontSizes.xl}
+                    color={iconColor}
+                  />
+                }
+              />
+              <ListItem
+                title={t('other.citizenship', {
+                  defaultValue: 'Citizenship',
+                })}
+                subtitle={
+                  selectedStudent.countryOfBirth ||
+                  t('other.countryFallback', { defaultValue: 'Italy' })
+                }
+                leadingItem={
+                  <Icon icon={faFlag} size={fontSizes.xl} color={iconColor} />
+                }
+              />
+              <ListItem
+                title={t('other.gender', { defaultValue: 'Gender' })}
+                subtitle={selectedStudent.gender || '—'}
+                leadingItem={
+                  <Icon
+                    icon={faPersonHalfDress}
+                    size={fontSizes.xl}
+                    color={iconColor}
+                  />
+                }
+              />
+            </OverviewList>
+          </Section>
+        </Col>
+        <BottomBarSpacer />
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 
-const createStyles = ({
-  colors,
-  spacing,
-  palettes,
-  fontSizes,
-  fontWeights,
-  fontFamilies,
-  shapes,
-}: Theme) =>
-  StyleSheet.create({
-    root: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
+const createStyles = ({ spacing, colors, fontSizes }: Theme) => {
+  const profileImage = {
+    width: profileImageSize,
+    height: profileImageSize,
+    borderRadius: profileImageSize,
+  };
+
+  return StyleSheet.create({
     scroll: {
       flex: 1,
     },
-    contentContainer: {
-      paddingHorizontal: spacing[4],
-      paddingTop: spacing[1],
+    title: {
+      fontSize: fontSizes['2xl'],
     },
-    titleSection: {
-      marginBottom: spacing[4],
+    info: {
+      flex: 1,
+      justifyContent: 'center',
     },
-    studentName: {
-      fontFamily: fontFamilies.body,
-      fontSize: 20,
-      fontStyle: 'normal',
-      fontWeight: '600',
-      lineHeight: 25,
-      color: palettes.primary[700],
-    },
-    studentNameDark: {
-      color: palettes.gray[50],
-    },
-    studentId: {
-      fontFamily: fontFamilies.body,
-      fontSize: 14,
-      fontStyle: 'normal',
-      fontWeight: '700',
-      lineHeight: 17.5,
-      color: palettes.gray[600],
-      textTransform: 'uppercase',
-    },
-    profileCard: {
+    profileImagePlaceholder: {
+      ...profileImage,
       backgroundColor: colors.surface,
-      borderRadius: 12,
-      padding: spacing[3],
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing[4],
-      marginTop: spacing[1.5],
-      marginBottom: spacing[5],
-    },
-    photoContainer: {
-      width: 123,
-      height: 123,
-      borderRadius: 61.5,
-      backgroundColor: colors.background,
       justifyContent: 'center',
       alignItems: 'center',
     },
-    profileDetails: {
-      flex: 1,
-      gap: spacing[2],
-    },
-    metricRow: {
-      gap: 2,
-    },
-    metricLabel: {
-      fontFamily: fontFamilies.body,
-      fontSize: 14,
-      fontStyle: 'normal',
-      fontWeight: '400',
-      color: palettes.primary[700],
-      lineHeight: 21,
-    },
-    metricLabelDark: {
-      color: palettes.gray[50],
+    spaceBottom: {
+      marginBottom: spacing[2],
     },
     metricValue: {
-      fontFamily: fontFamilies.body,
-      fontSize: 14,
-      fontStyle: 'normal',
-      fontWeight: '700',
-      color: palettes.info[700],
       textTransform: 'uppercase',
-      lineHeight: 21,
-    },
-    section: {
-      gap: spacing[2],
-    },
-    sectionHeader: {
-      gap: spacing[2],
-      marginBottom: spacing[1],
-    },
-    sectionAccent: {
-      width: 32,
-      height: 4,
-      backgroundColor: palettes.secondary[600],
-    },
-    sectionTitle: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      color: palettes.primary[700],
-      lineHeight: fontSizes.md * 1.25,
-    },
-    sectionTitleDark: {
-      color: palettes.gray[50],
-    },
-    infoCard: {
-      backgroundColor: colors.surface,
-      borderRadius: shapes.md,
-      overflow: 'hidden',
-    },
-    listItem: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      height: 60,
-      paddingRight: spacing[3],
-    },
-    leadingIcon: {
-      width: 30,
-      height: 30,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginLeft: spacing[4],
-    },
-    listItemContent: {
-      flex: 1,
-      justifyContent: 'center',
-      paddingLeft: spacing[4],
-      height: 60,
-    },
-    listItemTitle: {
-      overflow: 'hidden',
-      fontFamily: fontFamilies.body,
-      fontSize: 16,
-      fontStyle: 'normal',
-      fontWeight: '500',
-      color: palettes.text[800],
-      lineHeight: 24,
-    },
-    listItemTitleDark: {
-      color: palettes.gray[50],
-    },
-    listItemSubtitle: {
-      overflow: 'hidden',
-      fontFamily: fontFamilies.body,
-      fontSize: 14,
-      fontStyle: 'normal',
-      fontWeight: '400',
-      color: palettes.gray[500],
-      lineHeight: 21,
-    },
-    infoDivider: {
-      alignSelf: 'stretch',
-      marginLeft: spacing[4],
-      minHeight: 1,
-    },
-    infoDividerDark: {
-      backgroundColor: palettes.gray[500],
-    },
-    gradeBadge: {
-      backgroundColor: colors.background,
-      borderRadius: 8,
-      paddingHorizontal: spacing[2.5],
-      paddingVertical: spacing[1.5],
-      marginRight: spacing[1],
-    },
-    gradeBadgeDark: {
-      backgroundColor: palettes.gray[500],
-    },
-    gradeBadgeText: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      color: palettes.gray[700],
-      textAlign: 'center',
-    },
-    gradeBadgeTextDark: {
-      color: palettes.gray[800],
     },
   });
+};

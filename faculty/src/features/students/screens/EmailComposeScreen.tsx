@@ -1,118 +1,113 @@
-import { useState } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
-  TextInput,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
+import { useFeedbackContext } from '@polito/lib/core';
 import {
   CtaButton,
-  CtaButtonContainer,
-  Text,
+  OverviewList,
+  TextField,
   Theme,
-  useBottomBarAwareStyles,
+  createHeaderCloseButton,
+  useHideTabs,
   useStylesheet,
-  useTheme,
 } from '@polito/lib/ui';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { SCREEN_HORIZONTAL_PADDING } from '../constants';
-import { StudentsStackParamList } from '../types/navigation';
+import type { StudentsStackParamList } from '../navigation/StudentsNavigator';
 
-export const EmailComposeScreen = () => {
+type Props = NativeStackScreenProps<StudentsStackParamList, 'EmailCompose'>;
+
+export const EmailComposeScreen = ({ navigation }: Props) => {
+  useHideTabs();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { palettes, dark } = useTheme();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<StudentsStackParamList>>();
-  const bottomBarAwareStyles = useBottomBarAwareStyles();
   const bottomTabBarHeight = useBottomTabBarHeight();
+  const { setFeedback } = useFeedbackContext();
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
 
   const isSendEnabled = title.trim().length > 0 && message.trim().length > 0;
 
-  const handleSend = () => {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTransparent: false,
+      headerShadowVisible: false,
+      headerRight:
+        Platform.OS === 'ios' ? createHeaderCloseButton(navigation) : undefined,
+    });
+  }, [navigation]);
+
+  const handleSend = useCallback(() => {
     if (!isSendEnabled) return;
 
-    Alert.alert(
-      t('other.info', { defaultValue: 'Info' }),
-      t('other.renderingToMail', { defaultValue: 'Rendering to mail...' }),
-      [
-        {
-          text: t('common.ok', { defaultValue: 'OK' }),
-          onPress: () => navigation.popToTop(),
-        },
-      ],
-    );
-  };
+    setFeedback({
+      text: t('other.renderingToMail', {
+        defaultValue: 'Rendering to mail...',
+      }),
+    });
+    navigation.popToTop();
+  }, [isSendEnabled, navigation, setFeedback, t]);
 
   return (
     <SafeAreaView style={styles.root} edges={['bottom']}>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
         <ScrollView
           style={styles.scroll}
-          contentContainerStyle={[
-            Platform.OS === 'ios'
-              ? styles.scrollContentIos
-              : styles.scrollContent,
-            bottomBarAwareStyles,
-          ]}
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.fieldCard}>
-            <Text style={[styles.fieldLabel, dark && styles.fieldLabelDark]}>
-              {t('other.emailTitle', { defaultValue: 'Title' })}
-            </Text>
-            <TextInput
-              value={title}
-              onChangeText={setTitle}
-              placeholder={t('other.writeTitleHere', {
+          <OverviewList style={styles.field}>
+            <TextField
+              label={t('other.writeTitleHere', {
                 defaultValue: 'Write your title here',
               })}
-              placeholderTextColor={palettes.gray[500]}
-              selectionColor={palettes.secondary[600]}
-              style={[styles.titleInput, dark && styles.inputDark]}
+              accessibilityLabel={t('other.emailTitle', {
+                defaultValue: 'Title',
+              })}
+              value={title}
+              onChangeText={setTitle}
+              autoCapitalize="sentences"
               returnKeyType="next"
+              inputStyle={styles.input}
             />
-          </View>
+          </OverviewList>
 
-          <View style={styles.messageCard}>
-            <Text style={[styles.fieldLabel, dark && styles.fieldLabelDark]}>
-              {t('other.message', { defaultValue: 'Message' })}
-            </Text>
-            <TextInput
-              value={message}
-              onChangeText={setMessage}
-              placeholder={t('other.writeMessageHere', {
+          <OverviewList style={styles.messageField}>
+            <TextField
+              label={t('other.writeMessageHere', {
                 defaultValue: 'Write your message here',
               })}
-              placeholderTextColor={palettes.gray[500]}
-              selectionColor={palettes.secondary[600]}
-              style={[styles.messageInput, dark && styles.inputDark]}
+              accessibilityLabel={t('other.message', {
+                defaultValue: 'Message',
+              })}
+              value={message}
+              onChangeText={setMessage}
+              autoCapitalize="sentences"
               multiline
-              textAlignVertical="top"
+              numberOfLines={8}
+              inputStyle={styles.messageInput}
             />
-          </View>
+          </OverviewList>
         </ScrollView>
 
-        <CtaButtonContainer
-          absolute={false}
+        <View
           style={[
-            styles.ctaContainer,
+            styles.ctaRow,
             Platform.OS === 'android'
               ? { paddingBottom: bottomTabBarHeight }
               : undefined,
@@ -121,25 +116,18 @@ export const EmailComposeScreen = () => {
           <CtaButton
             title={t('other.send', { defaultValue: 'Send' })}
             action={handleSend}
+            icon={faPaperPlane}
             disabled={!isSendEnabled}
             absolute={false}
             containerStyle={styles.ctaButtonContainer}
           />
-        </CtaButtonContainer>
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
-const createStyles = ({
-  colors,
-  spacing,
-  palettes,
-  fontSizes,
-  fontWeights,
-  fontFamilies,
-  shapes,
-}: Theme) =>
+const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
     root: {
       flex: 1,
@@ -151,74 +139,35 @@ const createStyles = ({
     scroll: {
       flex: 1,
     },
-    scrollContent: {
-      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
-      paddingTop: spacing[2],
+    content: {
+      paddingTop: spacing[4],
+      paddingBottom: spacing[4],
       gap: spacing[3],
     },
-    scrollContentIos: {
-      flexGrow: 1,
-      padding: spacing[5],
-      gap: spacing[3],
-      paddingBottom: spacing[2],
+    field: {
+      marginHorizontal: spacing[5],
     },
-    fieldCard: {
-      backgroundColor: colors.surface,
-      borderRadius: shapes.lg,
-      paddingHorizontal: spacing[4],
-      paddingTop: spacing[3],
-      paddingBottom: spacing[2],
-      minHeight: 48,
-    },
-    messageCard: {
-      backgroundColor: colors.surface,
-      borderRadius: shapes.lg,
-      paddingHorizontal: spacing[4],
-      paddingTop: spacing[3],
-      paddingBottom: spacing[3],
+    messageField: {
+      marginHorizontal: spacing[5],
       minHeight: 239,
     },
-    fieldLabel: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      color: palettes.primary[700],
-      lineHeight: 20,
-      marginBottom: 0,
-    },
-    fieldLabelDark: {
-      color: palettes.gray[50],
-    },
-    titleInput: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.normal,
-      color: palettes.text[800],
-      lineHeight: 24,
-      paddingVertical: 0,
-      minHeight: 24,
+    input: {
+      borderBottomWidth: 0,
     },
     messageInput: {
-      flex: 1,
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.normal,
-      color: palettes.text[800],
-      lineHeight: 24,
-      paddingVertical: 0,
-      minHeight: 160,
+      borderBottomWidth: 0,
+      minHeight: 180,
+      textAlignVertical: 'top',
     },
-    inputDark: {
-      color: palettes.gray[50],
-    },
-    ctaContainer: {
-      paddingHorizontal: 0,
-      paddingTop: 0,
+    ctaRow: {
+      backgroundColor: colors.background,
+      paddingHorizontal: spacing[5],
+      paddingTop: spacing[2],
       paddingBottom: spacing[4],
     },
     ctaButtonContainer: {
       paddingTop: 0,
-      paddingHorizontal: SCREEN_HORIZONTAL_PADDING,
+      paddingHorizontal: 0,
       paddingBottom: 0,
     },
   });
