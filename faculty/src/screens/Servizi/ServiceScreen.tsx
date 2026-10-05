@@ -16,8 +16,8 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 
 import { Logo } from '../../core/components/Logo';
-import { RootParamList } from '../../core/components/RootNavigator';
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { type RootParamList } from '../../core/types/navigation';
 import { AppPreferences } from '../../core/types/preferences';
 import { ServiceCard } from './ServiceCard';
 
@@ -41,7 +41,7 @@ export const ServiceScreen = () => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
       e.preventDefault();
       navigation.navigate({
-        name: 'Didattica',
+        name: 'TeachingTab',
         params: { screen: 'Roles' },
         merge: true,
       });

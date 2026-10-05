@@ -4,21 +4,9 @@ import { useTheme } from '@polito/lib/ui';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// import { CourseAssignmentPdfCreationScreen } from '../CourseAssignmentPdfCreationScreen';
-// import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
-// import { CourseAssignmentUploadScreen } from './CourseAssignmentUploadScreen';
-// import { CourseColorPickerScreen } from '../screens/CourseColorPickerScreen';
-// import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
-// import { CourseGuideScreen } from './CourseGuideScreen';
-// import { Assignment } from '../types/Assignment';
+import { CourseGuideScreen } from './CourseGuideScreen';
 import { CourseNavigator } from './CourseNavigator';
-// import { CourseHideEventScreen } from '../screens/CourseHideEventScreen';
-// import { CourseIconPickerScreen } from '../screens/CourseIconPickerScreen';
 import { CoursePreferencesScreen } from './CoursePreferencesScreen';
-
-// import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
-// import { CourseVirtualClassroomScreen } from './CourseVirtualClassroomScreen';
-// import { NoticeScreen } from './NoticeScreen';
 
 export interface CourseSharedScreensParamList extends ParamListBase {
   Course: {
@@ -27,37 +15,15 @@ export interface CourseSharedScreensParamList extends ParamListBase {
     title?: string;
     uniqueShortcode?: string;
   };
-  Notice: { noticeId: number; courseId: number };
   CoursePreferences: { courseId: number; uniqueShortcode: string };
   CourseGuide: { courseId: number };
-  CourseDirectory: {
-    courseId: number;
-    directoryId?: string;
-    directoryName?: string;
-  };
-  CourseVideolecture: {
-    courseId: number;
-    lectureId: number;
-    teacherId: number;
-  };
-  CourseVirtualClassroom: {
-    courseId: number;
-    lectureId: number;
-    teacherId: number;
-  };
-  // CourseAssignmentPdfCreation: { courseId: number; firstImageUri: string };
-  // CourseAssignmentUpload: { courseId: number };
-  // CourseAssignmentUploadConfirmation: { courseId: number; file: Assignment };
-  // CourseIconPicker: { courseId: number; uniqueShortcode: string };
-  // CourseColorPicker: { courseId: number; uniqueShortcode: string };
-  // CourseHideEvent: { courseId: number; uniqueShortcode: string };
 }
 
 const Stack = createNativeStackNavigator<CourseSharedScreensParamList>();
 
 export const CourseSharedScreens = () => {
-  const { colors, palettes, fontSizes, fontFamilies } = useTheme();
   const { t } = useTranslation();
+  const { colors } = useTheme();
 
   return (
     <>
@@ -84,55 +50,6 @@ export const CourseSharedScreens = () => {
           title: t('common.preferences'),
           headerLargeTitle: false,
           headerBackTitle: t('common.course'),
-          headerShadowVisible: false,
-          headerTitleAlign: 'center',
-          headerTitleStyle: {
-            fontFamily: fontFamilies.heading + '-SemiBold',
-            fontSize: fontSizes.md,
-            // fontWeight: fontWeights.semibold,
-            color: palettes.primary[700],
-          },
-        }}
-      />
-
-      {/* <Stack.Screen
-        name="Notice"
-        component={NoticeScreen}
-        getId={({ params }: { params: any }) =>
-          `${params.courseId}${params.noticeId}`
-        }
-        options={{
-          headerBackTitle: t('common.course'),
-          headerTitle: t('common.notice'),
-        }}
-      />
-      
-      <Stack.Screen
-        name="CourseIconPicker"
-        component={CourseIconPickerScreen}
-        getId={({ params }: { params: any }) => `${params.courseId}`}
-        options={{
-          title: t('courseIconPickerScreen.title'),
-          headerLargeTitle: false,
-          headerSearchBarOptions: {},
-        }}
-      />
-      <Stack.Screen
-        name="CourseDirectory"
-        component={CourseDirectoryScreen}
-        getId={({ params }: { params: any }) => `${params?.directoryId}`}
-        options={{
-          headerBackButtonDisplayMode: 'minimal',
-          headerLargeTitle: false,
-        }}
-      />
-      <Stack.Screen
-        name="CourseHideEvent"
-        component={CourseHideEventScreen}
-        getId={({ params }: { params: any }) => `${params.courseId}`}
-        options={{
-          title: t('common.hiddenEvents'),
-          headerLargeTitle: false,
         }}
       />
       <Stack.Screen
@@ -144,76 +61,6 @@ export const CourseSharedScreens = () => {
           headerBackTitle: t('common.course'),
         }}
       />
-
-      <Stack.Screen
-        name="CourseVideolecture"
-        component={CourseVideolectureScreen}
-        getId={({ params }: { params: any }) =>
-          `${params.courseId}${params.lectureId}`
-        }
-        options={{
-          headerLargeTitle: false,
-          headerBackTitle: t('common.course'),
-          title: t('common.videoLecture'),
-        }}
-      />
-      <Stack.Screen
-        name="CourseVirtualClassroom"
-        component={CourseVirtualClassroomScreen}
-        getId={({ params }: { params: any }) =>
-          `${params.courseId}${params.lectureId}`
-        }
-        options={{
-          headerLargeTitle: false,
-          headerBackTitle: t('common.course'),
-          title: t('courseVirtualClassroomScreen.title'),
-        }}
-      />
-      <Stack.Screen
-        name="CourseAssignmentPdfCreation"
-        component={CourseAssignmentPdfCreationScreen}
-        getId={({ params }: { params: any }) => `${params.courseId}`}
-        options={{
-          headerBackButtonDisplayMode: 'minimal',
-          headerTitle: t('courseAssignmentPdfCreationScreen.title'),
-          headerLargeTitle: false,
-          headerTransparent: false,
-        }}
-      />
-      <Stack.Screen
-        name="CourseAssignmentUpload"
-        component={CourseAssignmentUploadScreen}
-        getId={({ params }: { params: any }) => `${params.courseId}`}
-        options={{
-          headerBackTitle: t('common.course'),
-          headerTitle: t('courseAssignmentUploadScreen.title'),
-          headerLargeTitle: false,
-        }}
-      />
-      <Stack.Screen
-        name="CourseAssignmentUploadConfirmation"
-        component={CourseAssignmentUploadConfirmationScreen}
-        getId={({ params }: { params: any }) => `${params.courseId}`}
-        options={{
-          headerBackTitle: t('courseAssignmentUploadScreen.backTitle'),
-          headerTitle: t('courseAssignmentUploadScreen.title'),
-          headerLargeStyle: {
-            backgroundColor: colors.headersBackground,
-          },
-          headerTransparent: false,
-          headerLargeTitle: false,
-          headerShadowVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="CourseColorPicker"
-        component={CourseColorPickerScreen}
-        getId={({ params }) => `${params.courseId}`}
-        options={{
-          title: t('courseColorPickerScreen.title'),
-          headerLargeTitle: false,
-        }}
-      /> */}
     </>
   );
 };

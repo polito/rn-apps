@@ -26,8 +26,8 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { RootParamList } from '../../core/components/RootNavigator';
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { type RootParamList } from '../../core/types/navigation';
 import { AgendaStackParamList } from './AgendaNavigator';
 
 const CustomBackButton2 = () => {
@@ -53,7 +53,6 @@ export const SingleElementScreen = () => {
     useNavigation<NativeStackNavigationProp<AgendaStackParamList>>();
   const bottomNavigation =
     useNavigation<BottomTabNavigationProp<RootParamList>>();
-  const placesNavigation = useNavigation<any>();
   const { t } = useTranslation();
   if (!selectedAgendaItem) return null;
 
@@ -126,7 +125,7 @@ export const SingleElementScreen = () => {
                   title={t('other.lessonRoom')}
                   subtitle={selectedAgendaItem.location}
                   onPress={() => {
-                    placesNavigation.navigate('Places', {
+                    agendaNavigator.navigate('PlacesAgendaStack', {
                       screen: 'Place',
                       params: { placeId: 'TO_CEN03-XPTE-E002' },
                     });
@@ -142,7 +141,7 @@ export const SingleElementScreen = () => {
                   title={t('common.course')}
                   subtitle={selectedCourse.title}
                   onPress={() => {
-                    bottomNavigation.navigate('Didattica', {
+                    bottomNavigation.navigate('TeachingTab', {
                       screen: 'Course',
                       params: { from: 'Agenda' },
                     });
