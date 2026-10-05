@@ -226,6 +226,7 @@ export const TeachingNavigator = () => {
           headerShown: Platform.OS === 'android',
           headerLargeTitle: false,
           headerTransparent: false,
+          headerTitleAlign: 'center',
           title: t('other.newEmail'),
           headerLeft: () => null,
           headerRight:
@@ -242,6 +243,7 @@ export const TeachingNavigator = () => {
           headerShown: Platform.OS === 'android',
           headerLargeTitle: false,
           headerTransparent: false,
+          headerTitleAlign: 'center',
           title: t('other.newNotify'),
           headerLeft: () => null,
           headerRight:

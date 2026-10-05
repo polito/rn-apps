@@ -91,6 +91,14 @@ export const NotifyComposeScreen = ({ navigation }: Props) => {
           <TextButton onPress={() => navigation.goBack()}>
             {t('common.close')}
           </TextButton>
+          <Text
+            weight="semibold"
+            style={styles.headerTitle}
+            numberOfLines={1}
+            pointerEvents="none"
+          >
+            {t('other.newNotify', { defaultValue: 'New notify' })}
+          </Text>
         </View>
       ) : null}
       <KeyboardAvoidingView
@@ -159,10 +167,18 @@ const createStyles = ({ colors, spacing, fontSizes }: Theme) =>
     },
     header: {
       flexDirection: 'row',
-      justifyContent: 'space-between',
       alignItems: 'center',
+      justifyContent: 'flex-start',
       paddingHorizontal: spacing[5],
       paddingVertical: spacing[2],
+    },
+    headerTitle: {
+      position: 'absolute',
+      left: spacing[5],
+      right: spacing[5],
+      textAlign: 'center',
+      fontSize: fontSizes.md,
+      color: colors.title,
     },
     flex: {
       flex: 1,
