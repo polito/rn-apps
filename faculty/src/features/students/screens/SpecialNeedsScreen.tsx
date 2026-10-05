@@ -5,7 +5,6 @@ import { Platform, ScrollView, StyleSheet } from 'react-native';
 import { faFile } from '@fortawesome/free-regular-svg-icons';
 import {
   faArrowUpRightFromSquare,
-  faChevronRight,
   faCircleInfo,
 } from '@fortawesome/free-solid-svg-icons';
 import { useFeedbackContext } from '@polito/lib/core';
@@ -177,9 +176,7 @@ export const SpecialNeedsScreen = ({ navigation }: Props) => {
               color={palettes.darkOrange[600]}
             />
           }
-          trailingItem={
-            <Icon icon={faChevronRight} size={16} color={palettes.gray[500]} />
-          }
+          isAction
         />
       </OverviewList>
       <BottomBarSpacer />

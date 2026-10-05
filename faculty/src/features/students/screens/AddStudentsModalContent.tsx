@@ -37,7 +37,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { CourseNotSelectedError } from '../errors/CourseNotSelectedError';
 import type { StudentsStackParamList } from '../navigation/StudentsNavigator';
-import { getCurrentAcademicYear } from '../utils';
+import { enrollmentYearFromPeriod } from '../utils';
 
 const mockStudents = [
   { id: 's123456', name: 'Paolo', surname: 'Serra' },
@@ -112,7 +112,7 @@ export const AddStudentsModalContent = ({ navigation }: Props) => {
             id: `S32${nextId}`,
             name: s.name,
             surname: s.surname,
-            year: getCurrentAcademicYear(),
+            year: enrollmentYearFromPeriod(selectedCourse.year),
             exam: 'no',
             // TODO: replace mock defaults with API-provided student profile fields.
             cityOfBirth: 'Torino',

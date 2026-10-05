@@ -20,7 +20,7 @@ import {
 } from '@polito/lib/ui';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { getCurrentAcademicYear } from '../../features/students/utils';
+import { enrollmentYearFromPeriod } from '../../features/students/utils';
 
 type Props = {
   close: () => void;
@@ -45,7 +45,7 @@ export const AddStudentsToExamModalContent = ({ close }: Props) => {
   const styles = useStylesheet(createStyles);
   const { palettes, dark } = useTheme();
   const { setFeedback } = useFeedbackContext();
-  const { addStudentsToExam, selectedExam } = useCourses();
+  const { addStudentsToExam, selectedCourse, selectedExam } = useCourses();
   const [searchText, setSearchText] = useState('');
   const [selectedStudents, setSelectedStudents] = useState<MockStudent[]>([]);
   // TODO: replace with server-issued IDs once the API is available.
@@ -95,7 +95,7 @@ export const AddStudentsToExamModalContent = ({ close }: Props) => {
           id: `S32${nextId}`,
           name: student.name,
           surname: student.surname,
-          year: getCurrentAcademicYear(),
+          year: enrollmentYearFromPeriod(selectedCourse?.year),
           exam: 'no' as const,
           cityOfBirth: 'Torino',
           degreeCourse: 'Informatica',

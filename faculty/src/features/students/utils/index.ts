@@ -1,13 +1,18 @@
-import { APP_TIMEZONE } from '@polito/lib/core';
+/**
+ * Formats an enrolment year the same way as the students app.
+ * `firstEnrollmentYear` is the second year of the cohort (2026 → "2025/2026").
+ */
+export const getStudentEnrollmentYear = (
+  firstEnrollmentYear?: number | string | null,
+) => {
+  if (firstEnrollmentYear == null || firstEnrollmentYear === '') return '...';
+  const year = Number(firstEnrollmentYear);
+  if (!Number.isFinite(year)) return '...';
+  return `${year - 1}/${year}`;
+};
 
-import { DateTime } from 'luxon';
-
-/** September, when the academic year starts. Luxon months are 1-based. */
-const ACADEMIC_YEAR_START_MONTH = 9;
-
-export const getCurrentAcademicYear = (now: Date = new Date()): string => {
-  const zoned = DateTime.fromJSDate(now, { zone: APP_TIMEZONE });
-  const startYear =
-    zoned.month >= ACADEMIC_YEAR_START_MONTH ? zoned.year : zoned.year - 1;
-  return String(startYear);
+/** End year of a "2024/2025" period, stored like `firstEnrollmentYear`. */
+export const enrollmentYearFromPeriod = (period?: string | null) => {
+  const endYear = period?.split('/')[1]?.trim();
+  return endYear && Number.isFinite(Number(endYear)) ? endYear : '';
 };

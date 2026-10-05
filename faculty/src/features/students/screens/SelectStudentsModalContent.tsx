@@ -31,7 +31,6 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 import { MenuView } from '@react-native-menu/menu';
-import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
@@ -45,16 +44,6 @@ type Props = NativeStackScreenProps<StudentsStackParamList, 'SelectStudents'>;
 
 export const SelectStudentsModalContent = ({ navigation, route }: Props) => {
   useHideTabs();
-  useFocusEffect(
-    useCallback(() => {
-      if (Platform.OS !== 'android') return;
-      const parent = navigation.getParent();
-      const timer = setTimeout(() => {
-        parent?.setOptions({ tabBarStyle: { display: 'none' } });
-      }, 0);
-      return () => clearTimeout(timer);
-    }, [navigation]),
-  );
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { palettes, fontSizes } = useTheme();

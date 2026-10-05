@@ -21,7 +21,6 @@ import {
   useHideTabs,
   useStylesheet,
 } from '@polito/lib/ui';
-import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import type { StudentsStackParamList } from '../navigation/StudentsNavigator';
@@ -32,16 +31,6 @@ type Props = NativeStackScreenProps<StudentsStackParamList, 'NotifyCompose'>;
 
 export const NotifyComposeScreen = ({ navigation }: Props) => {
   useHideTabs();
-  useFocusEffect(
-    useCallback(() => {
-      if (Platform.OS !== 'android') return;
-      const parent = navigation.getParent();
-      const timer = setTimeout(() => {
-        parent?.setOptions({ tabBarStyle: { display: 'none' } });
-      }, 0);
-      return () => clearTimeout(timer);
-    }, [navigation]),
-  );
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { setFeedback } = useFeedbackContext();

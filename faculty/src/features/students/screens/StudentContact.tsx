@@ -6,7 +6,6 @@ import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import {
   faAward,
   faCalendarCheck,
-  faChevronRight,
   faEnvelope,
   faFlag,
   faHandHoldingHeart,
@@ -34,6 +33,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import type { StudentsStackParamList } from '../navigation/StudentsNavigator';
+import { getStudentEnrollmentYear } from '../utils';
 
 const profileImageSize = 120;
 
@@ -54,9 +54,7 @@ export const StudentContact = ({ navigation }: Props) => {
   const latestExamDate = selectedStudent.passedExamsDate[0]
     ? formatDateFromString(selectedStudent.passedExamsDate[0])
     : '—';
-  const subscriptionYear = selectedStudent.year
-    ? `${selectedStudent.year}/${String(Number(selectedStudent.year) + 1)}`
-    : '—';
+  const subscriptionYear = getStudentEnrollmentYear(selectedStudent.year);
   const iconColor = dark ? palettes.gray[50] : colors.heading;
 
   return (
@@ -125,13 +123,7 @@ export const StudentContact = ({ navigation }: Props) => {
                     color={iconColor}
                   />
                 }
-                trailingItem={
-                  <Icon
-                    icon={faChevronRight}
-                    size={16}
-                    color={palettes.gray[500]}
-                  />
-                }
+                isAction
                 onPress={() => navigation.navigate('SpecialNeeds')}
               />
               <ListItem

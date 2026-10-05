@@ -45,7 +45,7 @@ import {
 } from '../../../screens/Teaching/TeachingNavigator';
 import { ParentNavigatorNotFoundError } from '../errors/ParentNavigatorNotFoundError';
 import type { StudentsStackParamList } from '../navigation/StudentsNavigator';
-import { getCurrentAcademicYear } from '../utils';
+import { getStudentEnrollmentYear } from '../utils';
 
 const CtaFade = () => {
   const { colors, spacing } = useTheme();
@@ -110,20 +110,20 @@ export const CourseStudentsTab = () => {
         const passesFilter =
           filterType === 'all' ||
           (filterType === 'currentYear' &&
-            student.year === getCurrentAcademicYear()) ||
+            getStudentEnrollmentYear(student.year) === selectedCourse?.year) ||
           (filterType === 'notExamined' && student.exam === 'no') ||
           (filterType === 'examined' && student.exam === 'yes');
 
         return matchesSearch && passesFilter;
       }),
-    [filterType, query, students],
+    [filterType, query, selectedCourse?.year, students],
   );
 
   const totalEnrolled = (students ?? []).length;
   const takenExam = (students ?? []).filter(s => s.exam === 'yes').length;
   const eligible = (students ?? []).filter(s => s.exam === 'no').length;
   const firstTime = (students ?? []).filter(
-    s => s.year === getCurrentAcademicYear(),
+    s => getStudentEnrollmentYear(s.year) === selectedCourse?.year,
   ).length;
 
   const filterLabel = useMemo(() => {
