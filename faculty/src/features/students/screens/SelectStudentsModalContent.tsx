@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   KeyboardAvoidingView,
@@ -19,7 +19,7 @@ import {
   Checkbox,
   CtaButton,
   GlobalStyles,
-  IconButton,
+  Icon,
   ListItem,
   OverviewList,
   TextButton,
@@ -31,7 +31,7 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 import { MenuView } from '@react-native-menu/menu';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
@@ -45,10 +45,19 @@ type Props = NativeStackScreenProps<StudentsStackParamList, 'SelectStudents'>;
 
 export const SelectStudentsModalContent = ({ navigation, route }: Props) => {
   useHideTabs();
+  useFocusEffect(
+    useCallback(() => {
+      if (Platform.OS !== 'android') return;
+      const parent = navigation.getParent();
+      const timer = setTimeout(() => {
+        parent?.setOptions({ tabBarStyle: { display: 'none' } });
+      }, 0);
+      return () => clearTimeout(timer);
+    }, [navigation]),
+  );
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { palettes, fontSizes, colors } = useTheme();
-  const bottomTabBarHeight = useBottomTabBarHeight();
+  const { palettes, fontSizes } = useTheme();
   const { selectedCourse } = useCourses();
 
   const students = useMemo(
@@ -130,62 +139,54 @@ export const SelectStudentsModalContent = ({ navigation, route }: Props) => {
     );
   };
 
-  useLayoutEffect(() => {
-    const actionLabel = isAllSelected
-      ? t('common.deselectAll')
-      : t('common.selectAll');
+  const actionLabel = isAllSelected
+    ? t('common.deselectAll')
+    : t('common.selectAll');
 
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
     navigation.setOptions({
-      headerTransparent: false,
-      headerShadowVisible: false,
-      ...(Platform.OS === 'ios'
-        ? {
-            headerBackVisible: false,
-            headerTitle: '',
-            headerLeft: () => (
-              <TextButton
-                color={colors.secondaryText}
-                onPress={() => navigation.goBack()}
-              >
-                {t('common.close')}
-              </TextButton>
-            ),
-          }
-        : {}),
-      headerRight: () =>
-        Platform.OS === 'ios' ? (
-          <TextButton onPress={handleToggleAll}>{actionLabel}</TextButton>
-        ) : (
-          <MenuView
-            actions={[{ id: 'toggleAll', title: actionLabel }]}
-            onPressAction={() => handleToggleAll()}
-          >
-            <IconButton
+      headerRight: () => (
+        <MenuView
+          actions={[{ id: 'toggleAll', title: actionLabel }]}
+          onPressAction={() => handleToggleAll()}
+        >
+          <View style={styles.ellipsisTrigger}>
+            <Icon
               icon={faEllipsisVertical}
-              size={fontSizes.lg}
               color={palettes.primary[400]}
-              accessibilityLabel={t('common.moreOptions')}
+              size={fontSizes.lg}
             />
-          </MenuView>
-        ),
+          </View>
+        </MenuView>
+      ),
     });
   }, [
-    colors.secondaryText,
+    actionLabel,
     fontSizes.lg,
     handleToggleAll,
-    isAllSelected,
     navigation,
     palettes.primary,
-    t,
+    styles.ellipsisTrigger,
   ]);
 
   return (
     <>
       <BottomModal dismissable {...bottomModal} />
       <SafeAreaView style={styles.root} edges={['bottom']}>
+        {Platform.OS === 'ios' ? (
+          <View style={styles.header}>
+            <TextButton onPress={() => navigation.goBack()}>
+              {t('common.close')}
+            </TextButton>
+            <View style={styles.headerRight}>
+              <TextButton onPress={handleToggleAll}>{actionLabel}</TextButton>
+            </View>
+          </View>
+        ) : null}
         <KeyboardAvoidingView
           style={styles.flex}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
           <View style={styles.searchBar}>
             <TranslucentTextField
@@ -246,14 +247,7 @@ export const SelectStudentsModalContent = ({ navigation, route }: Props) => {
             </OverviewList>
           </ScrollView>
 
-          <View
-            style={[
-              styles.ctaRow,
-              Platform.OS === 'android'
-                ? { paddingBottom: bottomTabBarHeight }
-                : undefined,
-            ]}
-          >
+          <View style={styles.ctaRow}>
             <CtaButton
               title={t('other.contactSelected', {
                 defaultValue: 'Contact selected',
@@ -275,6 +269,22 @@ const createStyles = ({ colors, spacing }: Theme) =>
     root: {
       flex: 1,
       backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[2],
+    },
+    headerRight: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing[2],
+    },
+    ellipsisTrigger: {
+      padding: spacing[3],
+      marginHorizontal: -spacing[3],
     },
     flex: {
       flex: 1,

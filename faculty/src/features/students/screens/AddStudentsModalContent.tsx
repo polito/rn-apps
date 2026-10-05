@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   KeyboardAvoidingView,
@@ -32,7 +32,6 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
@@ -61,8 +60,7 @@ export const AddStudentsModalContent = ({ navigation }: Props) => {
   useHideTabs();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { palettes, dark, colors } = useTheme();
-  const bottomTabBarHeight = useBottomTabBarHeight();
+  const { palettes, dark } = useTheme();
   const { setFeedback } = useFeedbackContext();
   const { addStudentsToCourse, selectedCourse } = useCourses();
   const [searchText, setSearchText] = useState('');
@@ -70,28 +68,6 @@ export const AddStudentsModalContent = ({ navigation }: Props) => {
   // TODO: replace with server-issued IDs once the API is available.
   const studentCounterRef = useRef(100);
   const isConfirmEnabled = selectedStudents.length > 0;
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTransparent: false,
-      headerShadowVisible: false,
-      ...(Platform.OS === 'ios'
-        ? {
-            headerBackVisible: false,
-            headerTitle: '',
-            headerLeft: () => (
-              <TextButton
-                color={colors.secondaryText}
-                onPress={() => navigation.goBack()}
-              >
-                {t('common.close')}
-              </TextButton>
-            ),
-            headerRight: () => null,
-          }
-        : {}),
-    });
-  }, [navigation, t, colors.secondaryText]);
 
   const selectedIds = useMemo(
     () => new Set(selectedStudents.map(student => student.id)),
@@ -167,6 +143,14 @@ export const AddStudentsModalContent = ({ navigation }: Props) => {
 
   return (
     <SafeAreaView style={styles.root} edges={['bottom']}>
+      {Platform.OS === 'ios' ? (
+        <View style={styles.header}>
+          <TextButton onPress={() => navigation.goBack()}>
+            {t('common.close')}
+          </TextButton>
+        </View>
+      ) : null}
+
       <View style={styles.searchBarWrap}>
         <Row align="center" style={styles.searchBar}>
           <TranslucentTextField
@@ -187,7 +171,7 @@ export const AddStudentsModalContent = ({ navigation }: Props) => {
 
       <KeyboardAvoidingView
         style={styles.keyboardAvoiding}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScrollView
           style={styles.scroll}
@@ -283,14 +267,7 @@ export const AddStudentsModalContent = ({ navigation }: Props) => {
           ) : null}
         </ScrollView>
 
-        <View
-          style={[
-            styles.ctaRow,
-            Platform.OS === 'android'
-              ? { paddingBottom: bottomTabBarHeight }
-              : undefined,
-          ]}
-        >
+        <View style={styles.ctaRow}>
           <CtaButton
             title={t('other.confirm', { defaultValue: 'Confirm' })}
             action={handleConfirm}
@@ -310,6 +287,13 @@ const createStyles = ({ colors, spacing, palettes, shapes }: Theme) =>
     root: {
       flex: 1,
       backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[2],
     },
     searchBarWrap: {
       overflow: 'hidden',

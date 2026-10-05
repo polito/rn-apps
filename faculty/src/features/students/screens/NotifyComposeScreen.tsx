@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   KeyboardAvoidingView,
@@ -20,9 +20,8 @@ import {
   Theme,
   useHideTabs,
   useStylesheet,
-  useTheme,
 } from '@polito/lib/ui';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import type { StudentsStackParamList } from '../navigation/StudentsNavigator';
@@ -33,10 +32,18 @@ type Props = NativeStackScreenProps<StudentsStackParamList, 'NotifyCompose'>;
 
 export const NotifyComposeScreen = ({ navigation }: Props) => {
   useHideTabs();
+  useFocusEffect(
+    useCallback(() => {
+      if (Platform.OS !== 'android') return;
+      const parent = navigation.getParent();
+      const timer = setTimeout(() => {
+        parent?.setOptions({ tabBarStyle: { display: 'none' } });
+      }, 0);
+      return () => clearTimeout(timer);
+    }, [navigation]),
+  );
   const { t } = useTranslation();
-  const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
-  const bottomTabBarHeight = useBottomTabBarHeight();
   const { setFeedback } = useFeedbackContext();
   const [message, setMessage] = useState('');
   const [showCharacterLimitWarning, setShowCharacterLimitWarning] =
@@ -44,26 +51,17 @@ export const NotifyComposeScreen = ({ navigation }: Props) => {
 
   const isSendEnabled = message.trim().length > 0;
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTransparent: false,
-      headerShadowVisible: false,
-      ...(Platform.OS === 'ios'
-        ? {
-            headerBackVisible: false,
-            headerLeft: () => (
-              <TextButton
-                color={colors.secondaryText}
-                onPress={() => navigation.goBack()}
-              >
-                {t('common.back')}
-              </TextButton>
-            ),
-            headerRight: () => null,
-          }
-        : {}),
-    });
-  }, [colors.secondaryText, navigation, t]);
+  const dismissCompose = useCallback(() => {
+    const { index, routes } = navigation.getState();
+    const courseIndex = routes.findIndex(
+      route => (route.name as string) === 'Course',
+    );
+    if (courseIndex >= 0 && index > courseIndex) {
+      navigation.pop(index - courseIndex);
+      return;
+    }
+    navigation.popToTop();
+  }, [navigation]);
 
   const handleMessageChange = (text: string) => {
     setMessage(text);
@@ -83,14 +81,21 @@ export const NotifyComposeScreen = ({ navigation }: Props) => {
     setFeedback({
       text: t('other.comingSoon', { defaultValue: 'Coming soon.' }),
     });
-    navigation.popToTop();
-  }, [isSendEnabled, message.length, navigation, setFeedback, t]);
+    dismissCompose();
+  }, [dismissCompose, isSendEnabled, message.length, setFeedback, t]);
 
   return (
     <SafeAreaView style={styles.root} edges={['bottom']}>
+      {Platform.OS === 'ios' ? (
+        <View style={styles.header}>
+          <TextButton onPress={() => navigation.goBack()}>
+            {t('common.close')}
+          </TextButton>
+        </View>
+      ) : null}
       <KeyboardAvoidingView
         style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScrollView
           style={styles.scroll}
@@ -132,14 +137,7 @@ export const NotifyComposeScreen = ({ navigation }: Props) => {
           </InfoMessage>
         ) : null}
 
-        <View
-          style={[
-            styles.ctaRow,
-            Platform.OS === 'android'
-              ? { paddingBottom: bottomTabBarHeight }
-              : undefined,
-          ]}
-        >
+        <View style={styles.ctaRow}>
           <CtaButton
             title={t('other.send', { defaultValue: 'Send' })}
             action={handleSend}
@@ -158,6 +156,13 @@ const createStyles = ({ colors, spacing, fontSizes }: Theme) =>
     root: {
       flex: 1,
       backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[2],
     },
     flex: {
       flex: 1,

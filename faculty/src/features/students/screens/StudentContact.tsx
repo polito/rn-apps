@@ -27,7 +27,6 @@ import {
   SectionHeader,
   Text,
   Theme,
-  useHideTabs,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
@@ -41,7 +40,6 @@ const profileImageSize = 120;
 type Props = NativeStackScreenProps<StudentsStackParamList, 'StudentContact'>;
 
 export const StudentContact = ({ navigation }: Props) => {
-  useHideTabs();
   const { colors, fontSizes, palettes, dark, shapes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { selectedStudent, selectedCourse } = useCourses();

@@ -6,6 +6,7 @@ import { TeachingNavigatorID } from '@polito/lib/core';
 import {
   HeaderLogoNoProps,
   IconButton,
+  createHeaderCloseButton,
   useTheme,
   useTitlesStyles,
 } from '@polito/lib/ui';
@@ -179,26 +180,34 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="AddStudents"
         component={AddStudentsScreen}
-        options={{
-          title: t('other.addStudent'),
+        options={({ navigation }) => ({
+          presentation: 'modal',
+          headerShown: Platform.OS === 'android',
           headerLargeTitle: false,
           headerTransparent: false,
-          headerBackButtonDisplayMode: 'minimal',
-          presentation: Platform.OS === 'android' ? 'card' : 'modal',
-          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
-        }}
+          title: t('other.addStudent'),
+          headerLeft: () => null,
+          headerRight:
+            Platform.OS === 'android'
+              ? () => null
+              : createHeaderCloseButton(navigation),
+        })}
       />
       <Stack.Screen
         name="SelectStudents"
         component={SelectStudentsScreen}
-        options={{
-          title: t('other.selectStudents'),
+        options={({ navigation }) => ({
+          presentation: 'modal',
+          headerShown: Platform.OS === 'android',
           headerLargeTitle: false,
           headerTransparent: false,
-          headerBackButtonDisplayMode: 'minimal',
-          presentation: Platform.OS === 'android' ? 'card' : 'modal',
-          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
-        }}
+          title: t('other.selectStudents'),
+          headerLeft: () => null,
+          headerRight:
+            Platform.OS === 'android'
+              ? () => null
+              : createHeaderCloseButton(navigation),
+        })}
       />
       <Stack.Screen
         name="SelectContactMethod"
@@ -212,26 +221,34 @@ export const TeachingNavigator = () => {
       <Stack.Screen
         name="EmailCompose"
         component={EmailComposeScreen}
-        options={{
-          title: t('other.newEmail'),
+        options={({ navigation }) => ({
+          presentation: 'modal',
+          headerShown: Platform.OS === 'android',
           headerLargeTitle: false,
           headerTransparent: false,
-          headerBackButtonDisplayMode: 'minimal',
-          presentation: Platform.OS === 'android' ? 'card' : 'modal',
-          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
-        }}
+          title: t('other.newEmail'),
+          headerLeft: () => null,
+          headerRight:
+            Platform.OS === 'android'
+              ? () => null
+              : createHeaderCloseButton(navigation),
+        })}
       />
       <Stack.Screen
         name="NotifyCompose"
         component={NotifyComposeScreen}
-        options={{
-          title: t('other.newNotify'),
+        options={({ navigation }) => ({
+          presentation: 'modal',
+          headerShown: Platform.OS === 'android',
           headerLargeTitle: false,
           headerTransparent: false,
-          headerBackButtonDisplayMode: 'minimal',
-          presentation: Platform.OS === 'android' ? 'card' : 'modal',
-          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
-        }}
+          title: t('other.newNotify'),
+          headerLeft: () => null,
+          headerRight:
+            Platform.OS === 'android'
+              ? () => null
+              : createHeaderCloseButton(navigation),
+        })}
       />
       <Stack.Screen
         name="Staff"

@@ -311,15 +311,39 @@ export const CourseStudentsTab = () => {
           <MenuView
             actions={moreActions}
             onPressAction={({ nativeEvent }) => {
-              if (nativeEvent.event === 'select') {
-                navigation.navigate('SelectStudents', {
-                  initialSelectAll: false,
-                });
+              const initialSelectAll = nativeEvent.event === 'selectAll';
+              if (
+                nativeEvent.event !== 'select' &&
+                nativeEvent.event !== 'selectAll'
+              ) {
+                return;
               }
-              if (nativeEvent.event === 'selectAll') {
-                navigation.navigate('SelectStudents', {
-                  initialSelectAll: true,
+
+              try {
+                const getParentById = navigation.getParent as unknown as (
+                  id: typeof TeachingNavigatorID,
+                ) =>
+                  | NativeStackNavigationProp<TeachingStackParamList>
+                  | undefined;
+                const teachingNavigation = getParentById(TeachingNavigatorID);
+
+                if (!teachingNavigation) {
+                  throw new ParentNavigatorNotFoundError(
+                    t('other.parentNavigatorNotFound', {
+                      defaultValue: 'Could not open select students.',
+                    }),
+                  );
+                }
+
+                teachingNavigation.navigate('SelectStudents', {
+                  initialSelectAll,
                 });
+              } catch (e) {
+                if (e instanceof ParentNavigatorNotFoundError) {
+                  setFeedback({ text: e.message, isError: true });
+                  return;
+                }
+                throw e;
               }
             }}
           >
@@ -371,11 +395,36 @@ export const CourseStudentsTab = () => {
                     accessibilityLabel={t('other.contactStudent', {
                       defaultValue: 'Contact student by email',
                     })}
-                    onPress={() =>
-                      navigation.navigate('EmailCompose', {
-                        selectedIds: [student.id],
-                      })
-                    }
+                    onPress={() => {
+                      try {
+                        const getParentById =
+                          navigation.getParent as unknown as (
+                            id: typeof TeachingNavigatorID,
+                          ) =>
+                            | NativeStackNavigationProp<TeachingStackParamList>
+                            | undefined;
+                        const teachingNavigation =
+                          getParentById(TeachingNavigatorID);
+
+                        if (!teachingNavigation) {
+                          throw new ParentNavigatorNotFoundError(
+                            t('other.parentNavigatorNotFound', {
+                              defaultValue: 'Could not open email.',
+                            }),
+                          );
+                        }
+
+                        teachingNavigation.navigate('EmailCompose', {
+                          selectedIds: [student.id],
+                        });
+                      } catch (e) {
+                        if (e instanceof ParentNavigatorNotFoundError) {
+                          setFeedback({ text: e.message, isError: true });
+                          return;
+                        }
+                        throw e;
+                      }
+                    }}
                   />
                 </View>
               }
@@ -393,7 +442,30 @@ export const CourseStudentsTab = () => {
         containerStyle={styles.ctaButton}
         title={t('other.addOneStudent')}
         icon={faPlus}
-        action={() => navigation.navigate('AddStudents')}
+        action={() => {
+          try {
+            const getParentById = navigation.getParent as unknown as (
+              id: typeof TeachingNavigatorID,
+            ) => NativeStackNavigationProp<TeachingStackParamList> | undefined;
+            const teachingNavigation = getParentById(TeachingNavigatorID);
+
+            if (!teachingNavigation) {
+              throw new ParentNavigatorNotFoundError(
+                t('other.parentNavigatorNotFound', {
+                  defaultValue: 'Could not open add students.',
+                }),
+              );
+            }
+
+            teachingNavigation.navigate('AddStudents');
+          } catch (e) {
+            if (e instanceof ParentNavigatorNotFoundError) {
+              setFeedback({ text: e.message, isError: true });
+              return;
+            }
+            throw e;
+          }
+        }}
       />
     </View>
   );

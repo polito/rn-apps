@@ -4,12 +4,8 @@ import { Platform } from 'react-native';
 import { useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { AddStudentsModalContent } from '../screens/AddStudentsModalContent';
 import { CourseStudentsTab } from '../screens/CourseStudentsTab';
-import { EmailComposeScreen } from '../screens/EmailComposeScreen';
-import { NotifyComposeScreen } from '../screens/NotifyComposeScreen';
 import { SelectContactMethodScreen } from '../screens/SelectContactMethodScreen';
-import { SelectStudentsModalContent } from '../screens/SelectStudentsModalContent';
 import { SpecialNeedsScreen } from '../screens/SpecialNeedsScreen';
 import { StudentContact } from '../screens/StudentContact';
 
@@ -64,22 +60,6 @@ export const StudentsNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="AddStudents"
-        component={AddStudentsModalContent}
-        options={{
-          ...modalScreenOptions,
-          headerTitle: t('other.addStudent'),
-        }}
-      />
-      <Stack.Screen
-        name="SelectStudents"
-        component={SelectStudentsModalContent}
-        options={{
-          ...modalScreenOptions,
-          headerTitle: t('other.selectStudents'),
-        }}
-      />
-      <Stack.Screen
         name="SelectContactMethod"
         component={SelectContactMethodScreen}
         options={{
@@ -87,22 +67,6 @@ export const StudentsNavigator = () => {
           presentation: 'transparentModal',
           animation: 'fade',
           contentStyle: { backgroundColor: 'transparent' },
-        }}
-      />
-      <Stack.Screen
-        name="EmailCompose"
-        component={EmailComposeScreen}
-        options={{
-          ...modalScreenOptions,
-          headerTitle: t('other.newEmail'),
-        }}
-      />
-      <Stack.Screen
-        name="NotifyCompose"
-        component={NotifyComposeScreen}
-        options={{
-          ...modalScreenOptions,
-          headerTitle: t('other.newNotify'),
         }}
       />
       <Stack.Screen
