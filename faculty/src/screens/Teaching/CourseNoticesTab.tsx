@@ -70,6 +70,7 @@ export const CourseNoticesTab = () => {
       >
         <SafeAreaView>
           <Select
+            compact
             label={
               orderBy === 'newest'
                 ? t('common.newestFirst')

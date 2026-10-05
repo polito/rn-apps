@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 
+import { useOfflineDisabled } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   ListItem,
+  OverviewList,
   Section,
   SectionHeader,
 } from '@polito/lib/ui';
@@ -12,17 +14,15 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { useGetCourses } from '../../core/queries/courseHooks';
 import { TeachingStackParamList } from './TeachingNavigator';
 
 export const TeachingScreen = () => {
   const { t } = useTranslation();
-  const {
-    fakeCourses,
-    fakeExams,
-    setSelectedCourse,
-    managedCourses,
-    setSelectedExam,
-  } = useCourses(); // Usa il hook per ottenere i dati
+  const coursesQuery = useGetCourses();
+  const isOffline = useOfflineDisabled();
+  const { fakeExams, setSelectedCourse, managedCourses, setSelectedExam } =
+    useCourses(); // Usa il hook per ottenere i dati
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
 
@@ -32,27 +32,27 @@ export const TeachingScreen = () => {
 
       <Section>
         <SectionHeader title={t('other.myCourses')} linkTo="MyCourses" />
-        <SectionList>
-          {fakeCourses.map(course => (
+        <OverviewList
+          loading={coursesQuery.isLoading && !isOffline}
+          indented
+          emptyStateText={
+            isOffline ? t('common.cacheMiss') : t('coursesScreen.emptyState')
+          }
+        >
+          {coursesQuery.data?.map(course => (
             <ListItem
-              key={course.id}
-              title={course.title}
-              subtitle={(() => {
-                const parts = course.subtitle.split(' - ');
-                const enrolled = parts[0].replace(
-                  'Iscritti',
-                  t('other.enrolledStudents'),
-                );
-                const period = parts[1].replace('Periodo', t('other.period'));
-                return `${enrolled} - ${period}`;
-              })()}
+              key={`${course.shortcode}${course.id}`}
+              title={course.name}
+              subtitle={`${course.shortcode} - ${t('other.period')} ${course.teachingPeriod}`}
+              disabled={course.id === null}
               onPress={() => {
-                setSelectedCourse(course);
-                navigation.navigate('Course', { from: 'Incarichi' });
+                if (course.id === null) return;
+                setSelectedCourse(null);
+                navigation.navigate('Course', { id: course.id });
               }}
             />
           ))}
-        </SectionList>
+        </OverviewList>
       </Section>
 
       <Section>

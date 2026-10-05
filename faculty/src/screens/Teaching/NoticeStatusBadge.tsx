@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 
 import { faEye, faEyeSlash, faFile } from '@fortawesome/free-regular-svg-icons';
 import { useTheme } from '@polito/lib/ui';
+import { StatusBadge } from '@polito/lib/ui';
 
-import { StatusBadge } from '../../../../lib/src/ui/components/StatusBadge';
 import { Notice } from '../../core/contexts/CoursesContext';
 
 type Props = {

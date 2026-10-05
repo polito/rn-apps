@@ -58,9 +58,9 @@ const BottomSheetTextFieldComponent = ({
     [onChangeText],
   );
 
-  const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+  const handleFocus: NonNullable<TextInputProps['onFocus']> = e => {
     keyboardContext?.onTextFieldFocus();
-    onFocus?.(e);
+    onFocus?.(e as NativeSyntheticEvent<TextInputFocusEventData>);
   };
 
   return (

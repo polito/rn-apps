@@ -116,6 +116,7 @@ export interface Palettes {
   gray: Palette;
   lightBlue: Palette;
   violet: Palette;
+  purple: Palette;
   text: Palette;
   primary: Palette;
   secondary: Palette;

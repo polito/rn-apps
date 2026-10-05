@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { useStylesheet } from '../hooks/useStylesheet';
 import { Theme } from '../types/Theme';
@@ -25,8 +25,13 @@ export const HeaderAccessory = ({
 const createStyles = ({ colors }: Theme) =>
   StyleSheet.create({
     container: {
-      backgroundColor: colors.surface,
-      borderBottomWidth: StyleSheet.hairlineWidth,
+      backgroundColor: Platform.select({
+        ios: colors.headersBackground,
+        android: colors.surface,
+      }),
+      borderBottomWidth: Platform.select({
+        ios: StyleSheet.hairlineWidth,
+      }),
       borderBottomColor: colors.divider,
       elevation: 0,
       zIndex: 1,

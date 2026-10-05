@@ -3,8 +3,9 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
-import { useTheme } from '../../ui/hooks/useTheme';
+import { IS_ANDROID } from '../../core/constants';
 import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
 import { Theme } from '../types/Theme';
 import { Icon } from './Icon';
 import { ListItem } from './ListItem';
@@ -27,6 +28,8 @@ interface Props {
   description?: string;
   disabled?: boolean;
   accessibilityLabel?: string;
+  hideChevron?: boolean;
+  compact?: boolean;
 }
 
 export const Select = ({
@@ -37,6 +40,8 @@ export const Select = ({
   label,
   description,
   disabled,
+  hideChevron,
+  compact = false,
 }: Props) => {
   const displayedValue = useMemo(() => {
     return options?.find(opt => opt?.id === value)?.title;
@@ -57,44 +62,72 @@ export const Select = ({
           !disabled && onSelectOption?.(event);
         }}
       >
-        <ListItem
-          disabled={disabled}
-          style={styles.selectorContainer}
-          title={
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={styles.text}>{displayedValue || label}</Text>
-              <Icon
-                icon={faChevronDown}
-                style={styles.icon}
-                color={palettes.primary[400]}
-                size={fontSizes.md}
-              />
-            </View>
-          }
-          subtitle={description}
-        />
+        {compact ? (
+          <ListItem
+            disabled={disabled}
+            style={styles.compactContainer}
+            title={
+              <View style={styles.compactRow}>
+                <Text style={styles.compactText}>
+                  {displayedValue || label}
+                </Text>
+                {!hideChevron && (
+                  <Icon
+                    icon={faChevronDown}
+                    style={styles.compactIcon}
+                    color={palettes.primary[400]}
+                    size={fontSizes.md}
+                  />
+                )}
+              </View>
+            }
+            subtitle={description}
+          />
+        ) : (
+          <ListItem
+            isAction
+            disabled={disabled}
+            title={displayedValue || label}
+            subtitle={description}
+            trailingItem={
+              hideChevron ? (
+                <View />
+              ) : IS_ANDROID ? (
+                <Icon icon={faChevronDown} />
+              ) : undefined
+            }
+          />
+        )}
       </StatefulMenuView>
     </Pressable>
   );
 };
 
-const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
+const createStyles = ({
+  spacing,
+  palettes,
+  fontSizes,
+  fontFamilies,
+  fontWeights,
+}: Theme) =>
   StyleSheet.create({
-    icon: {
-      marginLeft: spacing[2.5],
-    },
-    text: {
-      color: palettes.primary[400],
-      fontSize: fontSizes.sm,
-      fontWeight: '500',
-      fontFamily: 'Montserrat-Medium',
-    },
-    selectorContainer: {
+    compactContainer: {
       height: 40,
-      display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: spacing[2.5],
+    },
+    compactRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    compactText: {
       color: palettes.primary[400],
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.medium,
+      fontFamily: fontFamilies.title,
+    },
+    compactIcon: {
+      marginLeft: spacing[2.5],
     },
   });
