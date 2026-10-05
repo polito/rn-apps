@@ -328,6 +328,7 @@ export const CourseStudentsTab = () => {
               color={palettes.primary[400]}
               size={fontSizes.lg}
               iconPadding={spacing[1.5]}
+              style={styles.moreButton}
               accessibilityLabel={t('common.moreOptions', {
                 defaultValue: 'More options',
               })}
@@ -390,7 +391,7 @@ export const CourseStudentsTab = () => {
       <CtaButton
         absolute={true}
         containerStyle={styles.ctaButton}
-        title={t('other.addStudent')}
+        title={t('other.addOneStudent')}
         icon={faPlus}
         action={() => navigation.navigate('AddStudents')}
       />
@@ -425,6 +426,9 @@ const createStyles = ({ spacing, palettes, fontSizes, colors, dark }: Theme) =>
       color: palettes.primary[400],
       fontSize: fontSizes.sm,
       marginLeft: spacing[3],
+    },
+    moreButton: {
+      marginRight: spacing[1],
     },
     list: {
       marginHorizontal: spacing[4],

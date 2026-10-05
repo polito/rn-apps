@@ -11,7 +11,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   faEllipsisVertical,
-  faEnvelope,
   faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import { HighlightedText } from '@polito/lib/features/people';
@@ -260,7 +259,6 @@ export const SelectStudentsModalContent = ({ navigation, route }: Props) => {
                 defaultValue: 'Contact selected',
               })}
               action={handleContact}
-              icon={faEnvelope}
               disabled={selectedIds.size === 0}
               absolute={false}
               containerStyle={styles.ctaButtonContainer}

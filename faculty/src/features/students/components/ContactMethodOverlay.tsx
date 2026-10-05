@@ -56,6 +56,8 @@ export const ContactMethodOverlay = ({
     <ModalContent
       title={t('other.contactSelected', { defaultValue: 'Contact selected' })}
       close={handleClose}
+      closeIconColor={palettes.primary[400]}
+      closeButtonStyle={styles.closeButton}
     >
       <Col ph={5} pt={3} pb={4} gap={3}>
         <Text style={styles.introText}>
@@ -101,6 +103,7 @@ export const ContactMethodOverlay = ({
           title={t('other.continue', { defaultValue: 'Continue' })}
           disabled={selectedMethod === null}
           action={handleContinue}
+          containerStyle={styles.ctaButtonContainer}
         />
       </Col>
     </ModalContent>
@@ -109,11 +112,17 @@ export const ContactMethodOverlay = ({
 
 const createStyles = ({ spacing, colors, shapes }: Theme) =>
   StyleSheet.create({
+    closeButton: {
+      marginRight: spacing[2],
+    },
     introText: {
       paddingLeft: spacing[3],
     },
     option: {
       backgroundColor: colors.background,
       borderRadius: shapes.lg,
+    },
+    ctaButtonContainer: {
+      paddingHorizontal: 0,
     },
   });

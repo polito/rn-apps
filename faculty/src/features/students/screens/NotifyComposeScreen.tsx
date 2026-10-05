@@ -9,17 +9,18 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import { useFeedbackContext } from '@polito/lib/core';
 import {
   CtaButton,
   InfoMessage,
   OverviewList,
+  Text,
+  TextButton,
   TextField,
   Theme,
-  createHeaderCloseButton,
   useHideTabs,
   useStylesheet,
+  useTheme,
 } from '@polito/lib/ui';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -33,6 +34,7 @@ type Props = NativeStackScreenProps<StudentsStackParamList, 'NotifyCompose'>;
 export const NotifyComposeScreen = ({ navigation }: Props) => {
   useHideTabs();
   const { t } = useTranslation();
+  const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const bottomTabBarHeight = useBottomTabBarHeight();
   const { setFeedback } = useFeedbackContext();
@@ -46,10 +48,22 @@ export const NotifyComposeScreen = ({ navigation }: Props) => {
     navigation.setOptions({
       headerTransparent: false,
       headerShadowVisible: false,
-      headerRight:
-        Platform.OS === 'ios' ? createHeaderCloseButton(navigation) : undefined,
+      ...(Platform.OS === 'ios'
+        ? {
+            headerBackVisible: false,
+            headerLeft: () => (
+              <TextButton
+                color={colors.secondaryText}
+                onPress={() => navigation.goBack()}
+              >
+                {t('common.back')}
+              </TextButton>
+            ),
+            headerRight: () => null,
+          }
+        : {}),
     });
-  }, [navigation]);
+  }, [colors.secondaryText, navigation, t]);
 
   const handleMessageChange = (text: string) => {
     setMessage(text);
@@ -85,21 +99,27 @@ export const NotifyComposeScreen = ({ navigation }: Props) => {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <OverviewList style={styles.messageField}>
-            <TextField
-              label={t('other.writeMessageHere', {
-                defaultValue: 'Write your message here',
-              })}
-              accessibilityLabel={t('other.message', {
-                defaultValue: 'Message',
-              })}
-              value={message}
-              onChangeText={handleMessageChange}
-              autoCapitalize="sentences"
-              multiline
-              numberOfLines={8}
-              inputStyle={styles.messageInput}
-            />
+          <OverviewList style={styles.messageField} dividers={false}>
+            <View>
+              <Text weight="semibold" style={styles.cardLabel}>
+                {t('other.message', { defaultValue: 'Message' })}
+              </Text>
+              <TextField
+                label={t('other.writeMessageHere', {
+                  defaultValue: 'Write your message here',
+                })}
+                accessibilityLabel={t('other.message', {
+                  defaultValue: 'Message',
+                })}
+                value={message}
+                onChangeText={handleMessageChange}
+                autoCapitalize="sentences"
+                multiline
+                numberOfLines={8}
+                style={styles.titleField}
+                inputStyle={styles.messageInput}
+              />
+            </View>
           </OverviewList>
         </ScrollView>
 
@@ -123,7 +143,6 @@ export const NotifyComposeScreen = ({ navigation }: Props) => {
           <CtaButton
             title={t('other.send', { defaultValue: 'Send' })}
             action={handleSend}
-            icon={faPaperPlane}
             disabled={!isSendEnabled}
             absolute={false}
             containerStyle={styles.ctaButtonContainer}
@@ -134,7 +153,7 @@ export const NotifyComposeScreen = ({ navigation }: Props) => {
   );
 };
 
-const createStyles = ({ colors, spacing }: Theme) =>
+const createStyles = ({ colors, spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     root: {
       flex: 1,
@@ -150,6 +169,16 @@ const createStyles = ({ colors, spacing }: Theme) =>
       paddingTop: spacing[4],
       paddingBottom: spacing[4],
     },
+    cardLabel: {
+      paddingHorizontal: spacing[5],
+      paddingTop: spacing[2],
+      fontSize: fontSizes.md,
+      color: colors.heading,
+    },
+    titleField: {
+      paddingTop: 0,
+      paddingBottom: spacing[1],
+    },
     messageField: {
       marginHorizontal: spacing[5],
       minHeight: 239,
@@ -157,6 +186,7 @@ const createStyles = ({ colors, spacing }: Theme) =>
     messageInput: {
       borderBottomWidth: 0,
       minHeight: 180,
+      paddingTop: spacing[0.5],
       textAlignVertical: 'top',
     },
     warning: {

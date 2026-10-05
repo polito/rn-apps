@@ -9,16 +9,17 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import { useFeedbackContext } from '@polito/lib/core';
 import {
   CtaButton,
   OverviewList,
+  Text,
+  TextButton,
   TextField,
   Theme,
-  createHeaderCloseButton,
   useHideTabs,
   useStylesheet,
+  useTheme,
 } from '@polito/lib/ui';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -30,6 +31,7 @@ type Props = NativeStackScreenProps<StudentsStackParamList, 'EmailCompose'>;
 export const EmailComposeScreen = ({ navigation }: Props) => {
   useHideTabs();
   const { t } = useTranslation();
+  const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
   const bottomTabBarHeight = useBottomTabBarHeight();
   const { setFeedback } = useFeedbackContext();
@@ -42,10 +44,22 @@ export const EmailComposeScreen = ({ navigation }: Props) => {
     navigation.setOptions({
       headerTransparent: false,
       headerShadowVisible: false,
-      headerRight:
-        Platform.OS === 'ios' ? createHeaderCloseButton(navigation) : undefined,
+      ...(Platform.OS === 'ios'
+        ? {
+            headerBackVisible: false,
+            headerLeft: () => (
+              <TextButton
+                color={colors.secondaryText}
+                onPress={() => navigation.goBack()}
+              >
+                {t('common.back')}
+              </TextButton>
+            ),
+            headerRight: () => null,
+          }
+        : {}),
     });
-  }, [navigation]);
+  }, [colors.secondaryText, navigation, t]);
 
   const handleSend = useCallback(() => {
     if (!isSendEnabled) return;
@@ -71,37 +85,49 @@ export const EmailComposeScreen = ({ navigation }: Props) => {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <OverviewList style={styles.field}>
-            <TextField
-              label={t('other.writeTitleHere', {
-                defaultValue: 'Write your title here',
-              })}
-              accessibilityLabel={t('other.emailTitle', {
-                defaultValue: 'Title',
-              })}
-              value={title}
-              onChangeText={setTitle}
-              autoCapitalize="sentences"
-              returnKeyType="next"
-              inputStyle={styles.input}
-            />
+          <OverviewList style={styles.field} dividers={false}>
+            <View>
+              <Text weight="semibold" style={styles.cardLabel}>
+                {t('other.emailTitle', { defaultValue: 'Title' })}
+              </Text>
+              <TextField
+                label={t('other.writeTitleHere', {
+                  defaultValue: 'Write your title here',
+                })}
+                accessibilityLabel={t('other.emailTitle', {
+                  defaultValue: 'Title',
+                })}
+                value={title}
+                onChangeText={setTitle}
+                autoCapitalize="sentences"
+                returnKeyType="next"
+                style={styles.titleField}
+                inputStyle={styles.input}
+              />
+            </View>
           </OverviewList>
 
-          <OverviewList style={styles.messageField}>
-            <TextField
-              label={t('other.writeMessageHere', {
-                defaultValue: 'Write your message here',
-              })}
-              accessibilityLabel={t('other.message', {
-                defaultValue: 'Message',
-              })}
-              value={message}
-              onChangeText={setMessage}
-              autoCapitalize="sentences"
-              multiline
-              numberOfLines={8}
-              inputStyle={styles.messageInput}
-            />
+          <OverviewList style={styles.messageField} dividers={false}>
+            <View>
+              <Text weight="semibold" style={styles.cardLabel}>
+                {t('other.message', { defaultValue: 'Message' })}
+              </Text>
+              <TextField
+                label={t('other.writeMessageHere', {
+                  defaultValue: 'Write your message here',
+                })}
+                accessibilityLabel={t('other.message', {
+                  defaultValue: 'Message',
+                })}
+                value={message}
+                onChangeText={setMessage}
+                autoCapitalize="sentences"
+                multiline
+                numberOfLines={8}
+                style={styles.titleField}
+                inputStyle={styles.messageInput}
+              />
+            </View>
           </OverviewList>
         </ScrollView>
 
@@ -116,7 +142,6 @@ export const EmailComposeScreen = ({ navigation }: Props) => {
           <CtaButton
             title={t('other.send', { defaultValue: 'Send' })}
             action={handleSend}
-            icon={faPaperPlane}
             disabled={!isSendEnabled}
             absolute={false}
             containerStyle={styles.ctaButtonContainer}
@@ -127,7 +152,7 @@ export const EmailComposeScreen = ({ navigation }: Props) => {
   );
 };
 
-const createStyles = ({ colors, spacing }: Theme) =>
+const createStyles = ({ colors, spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     root: {
       flex: 1,
@@ -147,16 +172,28 @@ const createStyles = ({ colors, spacing }: Theme) =>
     field: {
       marginHorizontal: spacing[5],
     },
+    cardLabel: {
+      paddingHorizontal: spacing[5],
+      paddingTop: spacing[2],
+      fontSize: fontSizes.md,
+      color: colors.heading,
+    },
+    titleField: {
+      paddingTop: 0,
+      paddingBottom: spacing[1],
+    },
     messageField: {
       marginHorizontal: spacing[5],
       minHeight: 239,
     },
     input: {
       borderBottomWidth: 0,
+      paddingTop: spacing[0.5],
     },
     messageInput: {
       borderBottomWidth: 0,
       minHeight: 180,
+      paddingTop: spacing[0.5],
       textAlignVertical: 'top',
     },
     ctaRow: {

@@ -1,6 +1,12 @@
 import { PropsWithChildren, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import {
+  ScrollView,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
@@ -15,6 +21,8 @@ type Props = {
   close: () => void;
   scrollViewRef?: any;
   setScrollOffset?: (value: number) => void;
+  closeIconColor?: string;
+  closeButtonStyle?: StyleProp<ViewStyle>;
 };
 
 export const ModalContent = ({
@@ -23,6 +31,8 @@ export const ModalContent = ({
   title,
   scrollViewRef,
   setScrollOffset,
+  closeIconColor,
+  closeButtonStyle,
 }: PropsWithChildren<Props>) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
@@ -49,8 +59,10 @@ export const ModalContent = ({
           accessibilityLabel={t('common.close')}
           accessibilityRole="button"
           icon={faTimes}
+          color={closeIconColor}
           onPress={close}
           adjustSpacing="left"
+          style={closeButtonStyle}
         />
       </HeaderAccessory>
       <ScrollView

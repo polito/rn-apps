@@ -137,7 +137,6 @@ export const StudentContact = ({ navigation }: Props) => {
                 onPress={() => navigation.navigate('SpecialNeeds')}
               />
               <ListItem
-                isAction
                 title={t('other.email', { defaultValue: 'Email' })}
                 subtitle={studentEmail}
                 leadingItem={
