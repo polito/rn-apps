@@ -14,10 +14,12 @@ export type GraduationCodePdfLabels = {
   map: string;
   qrTitle: string;
   codeId: string;
+  footer: string;
 };
 
 export type GraduationCodePdfContent = {
   fullName: string;
+  studentId: string;
   eventTitle: string;
   dateTime: string;
   maxAdmissionsText: string;
@@ -37,8 +39,8 @@ const escapeHtml = (value: string) =>
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 
-const renderRow = (label: string, value: string, alignTop = false) => `
-  <div class="row${alignTop ? ' row-top' : ''}">
+const renderRow = (label: string, value: string) => `
+  <div class="row">
     <div class="row-label">${escapeHtml(label)}</div>
     <div class="row-value">${escapeHtml(value)}</div>
   </div>
@@ -54,6 +56,11 @@ const renderMapSection = (label: string, mapUrl: string) =>
 `
     : '';
 
+const renderStudentId = (studentId: string) =>
+  studentId
+    ? `<div class="header-student-id">${escapeHtml(studentId)}</div>`
+    : '';
+
 const fillTemplate = (template: string, values: Record<string, string>) =>
   Object.entries(values).reduce(
     (html, [key, value]) => html.replaceAll(`{{${key}}}`, value),
@@ -62,6 +69,7 @@ const fillTemplate = (template: string, values: Record<string, string>) =>
 
 export const buildGraduationCodePdfHtml = ({
   fullName,
+  studentId,
   eventTitle,
   dateTime,
   maxAdmissionsText,
@@ -78,12 +86,13 @@ export const buildGraduationCodePdfHtml = ({
     renderRow(labels.date, dateTime),
     renderRow(labels.admissions, maxAdmissionsText),
     location ? renderRow(labels.location, location) : '',
-    accessInfo ? renderRow(labels.accessInfo, accessInfo, true) : '',
+    accessInfo ? renderRow(labels.accessInfo, accessInfo) : '',
   ].join('');
 
   return fillTemplate(GRADUATION_CODE_PDF_TEMPLATE, {
     LOGO_SRC: GRADUATION_CODE_PDF_LOGO,
     FULL_NAME: escapeHtml(fullName),
+    STUDENT_ID: renderStudentId(studentId),
     EVENT_TITLE: escapeHtml(eventTitle),
     DETAIL_ROWS: detailRows,
     MAP_SECTION: renderMapSection(labels.map, mapUrl),
@@ -92,6 +101,7 @@ export const buildGraduationCodePdfHtml = ({
     QR_CODE_SVG: qrCodeSvg,
     CODE_ID_LABEL: escapeHtml(labels.codeId),
     ADMISSION_CODE_ID: escapeHtml(admissionCodeId),
+    FOOTER_TEXT: escapeHtml(labels.footer),
   });
 };
 

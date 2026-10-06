@@ -9,14 +9,17 @@ type Props = {
   carouselIndex: number;
   expandedDotsCounts?: number;
   hasDecreasingDots?: boolean;
+  gap?: number;
 };
 
 export const CarouselDots = ({
   carouselLength,
   carouselIndex,
   expandedDotsCounts = carouselLength,
+  gap = 6,
 }: Props) => {
   const styles = useStylesheet(createStyles);
+  const margin = gap / 2;
 
   return (
     <AnimatedDotsCarousel
@@ -26,17 +29,20 @@ export const CarouselDots = ({
       activeIndicatorConfig={{
         size: 10,
         ...styles.indicator,
+        margin,
         ...styles.activeIndicator,
       }}
       inactiveIndicatorConfig={{
         size: 10,
         ...styles.indicator,
+        margin,
         ...styles.inactiveIndicator,
       }}
       decreasingDots={[
         {
           config: {
             ...styles.indicator,
+            margin,
             ...styles.inactiveIndicator,
             size: 8,
           },
@@ -45,6 +51,7 @@ export const CarouselDots = ({
         {
           config: {
             ...styles.indicator,
+            margin,
             ...styles.inactiveIndicator,
             size: 6,
           },
@@ -58,7 +65,6 @@ export const CarouselDots = ({
 const createStyles = ({ palettes, dark }: Theme) =>
   StyleSheet.create({
     indicator: {
-      margin: 3,
       opacity: 1,
     },
     activeIndicator: {

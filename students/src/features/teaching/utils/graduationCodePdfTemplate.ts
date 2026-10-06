@@ -35,7 +35,7 @@ export const GRADUATION_CODE_PDF_TEMPLATE = `<!DOCTYPE html>
 
       .header {
         background: #002b49;
-        padding: 18px;
+        padding: 18px 18px 10px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -77,6 +77,15 @@ export const GRADUATION_CODE_PDF_TEMPLATE = `<!DOCTYPE html>
         text-align: center;
       }
 
+      .header-student-id {
+        margin-top: 8px;
+        margin-bottom: 0;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 400;
+        text-align: center;
+      }
+
       .body {
         flex: 1;
         padding: 12px 18px;
@@ -97,10 +106,6 @@ export const GRADUATION_CODE_PDF_TEMPLATE = `<!DOCTYPE html>
         align-items: center;
         gap: 8px;
         padding: 3px 0;
-      }
-
-      .row-top {
-        align-items: flex-start;
       }
 
       .row-label {
@@ -203,6 +208,15 @@ export const GRADUATION_CODE_PDF_TEMPLATE = `<!DOCTYPE html>
         line-height: 1.25;
         word-break: break-all;
       }
+
+      .footer {
+        background: #002b49;
+        padding: 8px 18px;
+        text-align: center;
+        color: #ffffff;
+        font-size: 9px;
+        font-weight: 400;
+      }
     </style>
   </head>
   <body>
@@ -214,6 +228,7 @@ export const GRADUATION_CODE_PDF_TEMPLATE = `<!DOCTYPE html>
         <div class="header-text">
           <div class="header-context">{{EVENT_TITLE}}</div>
           <div class="header-name">{{FULL_NAME}}</div>
+          {{STUDENT_ID}}
         </div>
       </div>
       <div class="body">
@@ -229,6 +244,7 @@ export const GRADUATION_CODE_PDF_TEMPLATE = `<!DOCTYPE html>
         </div>
         {{MAP_SECTION}}
       </div>
+      <div class="footer">{{FOOTER_TEXT}}</div>
     </div>
   </body>
 </html>

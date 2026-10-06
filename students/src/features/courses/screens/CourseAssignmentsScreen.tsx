@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
 import { useOfflineDisabled } from '@polito/lib/core';
+import { useAccessibility } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   CtaButton,
@@ -11,7 +12,6 @@ import {
 } from '@polito/lib/ui';
 import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useGetCourseAssignments } from '../../../core/queries/courseHooks';
 import { CourseAssignmentListItem } from '../components/CourseAssignmentListItem';
 import { useCourseContext } from '../contexts/CourseContext';

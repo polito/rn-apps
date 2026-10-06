@@ -108,6 +108,7 @@ export const CtaButton = ({
         styles.container,
         absolute && {
           position: 'absolute',
+          width: Platform.select({ android: '100%' }),
           left: Platform.select({ ios: left }),
           right,
           bottom: bottomBarHeight + (isFeedbackVisible ? spacing[20] : 0),

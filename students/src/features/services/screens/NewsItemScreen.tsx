@@ -12,6 +12,7 @@ import {
   faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { formatDate, formatDateFromString } from '@polito/lib/core';
+import { useOpenInAppLink } from '@polito/lib/core';
 import {
   ActivityIndicator,
   BottomBarSpacer,
@@ -31,7 +32,6 @@ import {
 } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
 import { useGetNewsItem } from '../../../core/queries/newsHooks';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 

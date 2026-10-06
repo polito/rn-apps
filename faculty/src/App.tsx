@@ -1,18 +1,29 @@
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
 import { initReactI18next } from 'react-i18next';
 import { LogBox } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { APP_VERSION, BUILD_NO } from '@env';
-import { PreferencesProvider, Sentry, initSentry } from '@polito/lib/core';
+import { AuthApi } from '@polito/auth-api-client';
+import {
+  ApiProvider,
+  AuthIdentityValidator,
+  PolitoAppConfig,
+  PreferencesProvider,
+  Sentry,
+  createPolitoLinking,
+  extendSuperJSON,
+  initSentry,
+  isEnvProduction,
+} from '@polito/lib/core';
+import {
+  UnsupportedIdentityTypeError,
+  mfaScreenTranslations,
+} from '@polito/lib/features/auth';
 import { FeedbackProvider, SplashProvider, UiProvider } from '@polito/lib/ui';
 import Mapbox from '@rnmapbox/maps';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// <-- import React Query
-import { RootNavigator } from '~/core/components/RootNavigator';
-import { CoursesProvider } from '~/core/contexts/CoursesContext';
+import { updateGlobalApiConfiguration } from '~/config/api';
+import { AppContent } from '~/core/components/AppContent';
 import { RootParamList } from '~/core/types/navigation';
 import {
   AppPreferences,
@@ -20,26 +31,26 @@ import {
   objectPreferenceKeys as appObjectPreferenceKeys,
   initialAppPreferences,
 } from '~/core/types/preferences';
-import { setDeepLink } from '~/utils/linking';
 
 import i18n from 'i18next';
 
 import { en, it } from '../assets/translations';
-import { isEnvProduction } from './utils/env';
 
 LogBox.ignoreLogs([
   'VirtualizedLists should never be nested inside plain ScrollViews',
 ]);
+
+extendSuperJSON();
 
 i18n.use(initReactI18next).init({
   compatibilityJSON: 'v3',
   fallbackLng: 'en',
   resources: {
     en: {
-      translation: en,
+      translation: { ...en, mfaScreen: mfaScreenTranslations.en },
     },
     it: {
-      translation: it,
+      translation: { ...it, mfaScreen: mfaScreenTranslations.it },
     },
   },
 });
@@ -53,15 +64,24 @@ initSentry({
   environment: process.env.NODE_ENV || 'development',
 });
 
-// Crea l'istanza di QueryClient
-const queryClient = new QueryClient();
-
 Mapbox.setAccessToken(process.env.MAPBOX_TOKEN! || 'no_token');
+
+const appConfig = {
+  id: 'faculty',
+  keychainService: 'it.polito.faculty-app',
+} satisfies PolitoAppConfig;
+
+const createAuthClient = () => new AuthApi();
+const validateFacultyIdentity: AuthIdentityValidator = identity => {
+  if (identity.type !== 'faculty') {
+    throw new UnsupportedIdentityTypeError(
+      `User type ${identity.type} is not supported by the faculty app`,
+    );
+  }
+};
 
 const App = () => {
   return (
-    // Avvolgi tutto dentro QueryClientProvider e passa il client
-
     <Sentry.TouchEventBoundary>
       <SafeAreaProvider>
         <SplashProvider>
@@ -71,16 +91,19 @@ const App = () => {
             extraObjectKeys={appObjectPreferenceKeys}
             initialPreferences={initialAppPreferences}
           >
-            <UiProvider<RootParamList> linking={setDeepLink()}>
-              <QueryClientProvider client={queryClient}>
-                <CoursesProvider>
-                  <FeedbackProvider>
-                    <GestureHandlerRootView style={{ flex: 1 }}>
-                      <RootNavigator />
-                    </GestureHandlerRootView>
-                  </FeedbackProvider>
-                </CoursesProvider>
-              </QueryClientProvider>
+            <UiProvider<RootParamList>
+              linking={createPolitoLinking<RootParamList>(appConfig)}
+            >
+              <FeedbackProvider>
+                <ApiProvider<AppPreferences>
+                  config={appConfig}
+                  createAuthClient={createAuthClient}
+                  validateIdentity={validateFacultyIdentity}
+                  updateApiConfiguration={updateGlobalApiConfiguration}
+                >
+                  <AppContent />
+                </ApiProvider>
+              </FeedbackProvider>
             </UiProvider>
           </PreferencesProvider>
         </SplashProvider>

@@ -1,24 +1,17 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
-import ContextMenu from 'react-native-context-menu-view';
 
-import { faComments } from '@fortawesome/free-regular-svg-icons';
+import { faStar } from '@fortawesome/free-regular-svg-icons';
+import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import {
-  faChevronRight,
-  faEllipsisVertical,
-  faPaperclip,
-} from '@fortawesome/free-solid-svg-icons';
-import {
-  IS_IOS,
-  formatDateTime,
+  formatDate,
   getHtmlTextContent,
   useOfflineDisabled,
 } from '@polito/lib/core';
 import {
-  Col,
+  DisclosureIndicator,
   Icon,
-  IconButton,
   ListItem,
   type ListItemProps,
   Row,
@@ -27,29 +20,24 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { TicketOverview, TicketStatus } from '@polito/student-api-client';
+import { TicketOverview } from '@polito/student-api-client';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import {
-  TICKET_QUERY_PREFIX,
-  useMarkTicketAsClosed,
-} from '../../../core/queries/ticketHooks';
+import { TICKET_QUERY_PREFIX } from '../../../core/queries/ticketHooks';
+import { TicketStatusBadge } from './TicketStatusBadge';
 
 interface TicketListItemProps extends Partial<ListItemProps> {
   ticket: TicketOverview;
 }
 
-export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
-  const { fontSizes, colors, palettes, spacing, dark } = useTheme();
+export const TicketListItem = ({
+  ticket,
+  unread,
+  ...props
+}: TicketListItemProps) => {
+  const { palettes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-  const { mutateAsync: markTicketAsClosed } = useMarkTicketAsClosed(ticket?.id);
-  const confirm = useConfirmationDialog({
-    message: t('tickets.closeTip'),
-  });
-
-  const markTicketAsClosedEnabled = ticket?.status !== TicketStatus.Closed;
   const queryClient = useQueryClient();
 
   const isDataMissing = useCallback(
@@ -59,142 +47,63 @@ export const TicketListItem = ({ ticket, ...props }: TicketListItemProps) => {
   );
   const isDisabled = useOfflineDisabled(isDataMissing);
 
-  const actions = useMemo(() => {
-    if (markTicketAsClosedEnabled) {
-      return [
-        {
-          title: t('tickets.close'),
-          titleColor: dark ? colors.white : colors.black,
-          iconColor: 'red',
-          systemIcon: 'trash.fill',
-        },
-      ];
-    }
-    return [];
-  }, [markTicketAsClosedEnabled, t, dark, colors]);
-
-  const UnReadCount = useCallback(
-    () => (
-      <Col justify="center" align="center" style={styles.unreadCount}>
-        <Text style={styles.unreadCountText}>{ticket?.unreadCount || 0}</Text>
-      </Col>
-    ),
-    [styles, ticket],
-  );
-
-  const onPressCloseTicket = useCallback(async () => {
-    if (await confirm()) {
-      return markTicketAsClosed();
-    }
-    return Promise.reject();
-  }, [confirm, markTicketAsClosed]);
-
-  const Item = useCallback(
-    () => (
-      <ListItem
-        {...props}
-        accessibilityRole="button"
-        accessible={true}
-        linkTo={{
-          screen: 'Ticket',
-          params: { id: ticket.id },
-        }}
-        disabled={isDisabled}
-        title={getHtmlTextContent(ticket?.subject)}
-        subtitle={`${formatDateTime(ticket.updatedAt)} - ${getHtmlTextContent(
-          ticket?.message,
-        )}`}
-        subtitleStyle={styles.listItemSubtitle}
-        leadingItem={<Icon icon={faComments} size={20} />}
-        trailingItem={
-          <Row align="center">
-            {ticket?.hasAttachments && (
-              <Icon
-                icon={faPaperclip}
-                size={20}
-                color={palettes.text[400]}
-                style={
-                  ticket.unreadCount === 0 && {
-                    marginHorizontal: spacing[2],
-                  }
-                }
-              />
-            )}
-            {ticket.unreadCount > 0 && <UnReadCount />}
-            {IS_IOS && (
-              <Icon
-                icon={faChevronRight}
-                color={colors.secondaryText}
-                style={styles.icon}
-              />
-            )}
-            {!IS_IOS && markTicketAsClosedEnabled && (
-              <ContextMenu
-                title={t('tickets.menuAction')}
-                actions={actions}
-                onPress={onPressCloseTicket}
-                dropdownMenuMode
-              >
-                <IconButton
-                  style={styles.icon}
-                  icon={faEllipsisVertical}
-                  color={colors.secondaryText}
-                  size={fontSizes.xl}
-                />
-              </ContextMenu>
-            )}
+  return (
+    <ListItem
+      {...props}
+      accessibilityRole="button"
+      accessible={true}
+      linkTo={{
+        screen: 'Ticket',
+        params: { id: ticket.id },
+      }}
+      disabled={isDisabled}
+      unread={unread || ticket.unreadCount > 0}
+      title={getHtmlTextContent(ticket?.subject)}
+      subtitle={
+        ticket.needsFeedback ? (
+          <Row align="center" gap={1} style={styles.feedbackTag}>
+            <Icon icon={faStar} size={16} color={palettes.darkOrange[600]} />
+            <Text style={styles.feedbackTagText}>
+              {t('ticketsScreen.insertFeedback')}
+            </Text>
           </Row>
-        }
-      />
-    ),
-    [
-      props,
-      ticket,
-      isDisabled,
-      styles,
-      palettes,
-      spacing,
-      colors,
-      fontSizes,
-      UnReadCount,
-      markTicketAsClosedEnabled,
-      actions,
-      onPressCloseTicket,
-      t,
-    ],
+        ) : (
+          t('ticketsScreen.openedOn', {
+            date: formatDate(ticket.createdAt),
+            interpolation: { escapeValue: false },
+          })
+        )
+      }
+      trailingItem={
+        <Row align="center" gap={1}>
+          {ticket?.hasAttachments && (
+            <Icon icon={faPaperclip} size={20} color={palettes.text[400]} />
+          )}
+          <TicketStatusBadge status={ticket.status} />
+          <DisclosureIndicator />
+        </Row>
+      }
+    />
   );
-
-  if (IS_IOS) {
-    return (
-      <ContextMenu
-        title={t('tickets.menuAction')}
-        actions={actions}
-        onPress={actions.length > 0 ? onPressCloseTicket : undefined}
-      >
-        <Item />
-      </ContextMenu>
-    );
-  }
-
-  return <Item />;
 };
 
-const createStyles = ({ spacing, fontSizes, palettes }: Theme) =>
+const createStyles = ({
+  fontFamilies,
+  fontSizes,
+  fontWeights,
+  palettes,
+}: Theme) =>
   StyleSheet.create({
-    unreadCount: {
-      height: 22,
-      width: 22,
-      marginHorizontal: spacing[2],
-      borderRadius: 22 / 2,
-      backgroundColor: palettes.error[500],
+    feedbackTag: {
+      alignSelf: 'flex-start',
+      backgroundColor: palettes.darkOrange[50],
+      borderRadius: 6,
+      paddingHorizontal: 5,
     },
-    // Theme-independent hardcoded color
-    // eslint-disable-next-line react-native/no-color-literals
-    unreadCountText: { color: 'white' },
-    listItemSubtitle: {
-      fontSize: fontSizes.xs,
-    },
-    icon: {
-      marginRight: -spacing[1],
+    feedbackTagText: {
+      fontFamily: fontFamilies.title,
+      fontSize: fontSizes.sm,
+      fontWeight: fontWeights.medium,
+      color: palettes.darkOrange[600],
     },
   });

@@ -38,7 +38,6 @@ import { useGetStudent } from '../../../core/queries/studentHooks';
 import { useGetSurveyCategories } from '../../../core/queries/surveysHooks';
 import { formatFinalGrade, formatThirtiethsGrade } from '../../../utils/grades';
 import { CourseListItem } from '../../courses/components/CourseListItem';
-import { isCourseDetailed } from '../../courses/utils/courses';
 import { ExamListItem } from '../components/ExamListItem';
 import { GraduationSessionSection } from '../components/GraduationSessionSection';
 import { ProgressChart } from '../components/ProgressChart';
@@ -78,21 +77,38 @@ export const TeachingScreen = ({ navigation }: Props) => {
     return [...byContext.entries()];
   }, [eventAdmissionsQuery.data]);
 
-  const hasValidModules = (course: any) => {
-    if (!course.modules || course.modules.length === 0) return true;
-    return course.modules.some((module: any) => module.id !== null);
-  };
+  const courses = useMemo(
+    () =>
+      (coursesQuery.data ?? []).filter(
+        c =>
+          !c.uniqueShortcode || !coursePreferences[c.uniqueShortcode]?.isHidden,
+      ),
+    [coursesQuery.data, coursePreferences],
+  );
 
-  const courses = useMemo(() => {
-    if (!coursesQuery.data) return [];
-
-    return coursesQuery.data.filter(
-      c =>
-        isCourseDetailed(c) &&
-        c.uniqueShortcode &&
-        !coursePreferences[c.uniqueShortcode]?.isHidden,
-    );
-  }, [coursesQuery, coursePreferences]);
+  const hiddenCoursesCount = useMemo(() => {
+    if (!coursesQuery.data) return undefined;
+    let count = 0;
+    coursesQuery.data.forEach(course => {
+      if (
+        course.uniqueShortcode &&
+        coursePreferences[course.uniqueShortcode]?.isHidden
+      ) {
+        count += 1 + (course.modules?.length ?? 0);
+        return;
+      }
+      if (!course.modules?.length) return;
+      const hiddenModules = course.modules.filter(
+        (_, index) =>
+          coursePreferences[`${course.shortcode}${index + 1}`]?.isHidden,
+      ).length;
+      count += hiddenModules;
+      if (hiddenModules === course.modules.length) {
+        count += 1;
+      }
+    });
+    return count > 0 ? count : undefined;
+  }, [coursesQuery.data, coursePreferences]);
 
   const exams = useMemo(() => {
     if (!coursesQuery.data || !examsQuery.data) return [];
@@ -155,57 +171,19 @@ export const TeachingScreen = ({ navigation }: Props) => {
           <SectionHeader
             title={t('coursesScreen.title')}
             linkTo={{ screen: 'Courses' }}
-            linkToMoreCount={
-              coursesQuery.data
-                ? (() => {
-                    // Compute hidden items directly
-                    let hiddenCount = 0;
-
-                    coursesQuery.data.forEach(course => {
-                      if (
-                        !isCourseDetailed(course) ||
-                        !course.uniqueShortcode
-                      ) {
-                        hiddenCount += 1 + (course.modules?.length || 0);
-                        return;
-                      }
-
-                      // Corsi nascosti
-                      if (coursePreferences[course.uniqueShortcode]?.isHidden) {
-                        hiddenCount += 1 + (course.modules?.length || 0);
-                        return;
-                      }
-
-                      // Moduli nascosti nei corsi visibili
-                      if (course.modules) {
-                        course.modules.forEach((module, index) => {
-                          const moduleShortcode = `${course.shortcode}${index + 1}`;
-                          if (coursePreferences[moduleShortcode]?.isHidden) {
-                            hiddenCount += 1;
-                          }
-                        });
-                      }
-                    });
-
-                    const count = hiddenCount;
-
-                    return count > 0 ? count : undefined;
-                  })()
-                : undefined
-            }
+            linkToMoreCount={hiddenCoursesCount}
           />
           <OverviewList
             loading={coursesQuery.isLoading && !isOffline}
             indented
             emptyStateText={(() => {
               if (isOffline) return t('common.cacheMiss');
-
               return (coursesQuery.data?.length ?? 0) > 0
                 ? t('teachingScreen.allCoursesHidden')
                 : t('coursesScreen.emptyState');
             })()}
           >
-            {courses.filter(hasValidModules).map(course => (
+            {courses.map(course => (
               <CourseListItem
                 key={course.shortcode + '' + course.id}
                 course={course}

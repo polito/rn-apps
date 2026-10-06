@@ -18,6 +18,7 @@ import {
   faVideo,
 } from '@fortawesome/free-solid-svg-icons';
 import { formatDate, useOfflineDisabled } from '@polito/lib/core';
+import { useGetPerson } from '@polito/lib/features/people';
 import {
   BottomBarSpacer,
   Icon,
@@ -34,7 +35,6 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useGetCourseLectures } from '../../../core/queries/courseHooks';
-import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { useCourseContext } from '../contexts/CourseContext';
 import {
   CourseLecture,
