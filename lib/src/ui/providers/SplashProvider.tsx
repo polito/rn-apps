@@ -1,12 +1,25 @@
-import { PropsWithChildren, useState } from 'react';
-import { Animated, Easing, Image } from 'react-native';
-import BootSplash from 'react-native-bootsplash';
+import { PropsWithChildren, useEffect, useState } from 'react';
+
+import * as SplashScreen from 'expo-splash-screen';
 
 import { SplashContext } from '../../core/contexts/SplashContext';
+
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export function SplashProvider({ children }: PropsWithChildren) {
   const [isAppLoaded, setIsAppLoaded] = useState(false);
   const [isSplashLoaded, setIsSplashLoaded] = useState(false);
+
+  useEffect(() => {
+    if (isAppLoaded) {
+      SplashScreen.hideAsync()
+        .then(() => {
+          setIsSplashLoaded(true);
+        })
+        .catch(console.warn);
+    }
+  }, [isAppLoaded]);
+
   return (
     <SplashContext.Provider
       value={{
@@ -16,50 +29,6 @@ export function SplashProvider({ children }: PropsWithChildren) {
       }}
     >
       {children}
-      {isAppLoaded && !isSplashLoaded && (
-        <AnimatedBootSplash onAnimationEnd={() => setIsSplashLoaded(true)} />
-      )}
     </SplashContext.Provider>
   );
 }
-
-type Props = {
-  onAnimationEnd: () => void;
-};
-
-const AnimatedBootSplash = ({ onAnimationEnd }: Props) => {
-  const [opacity] = useState(() => new Animated.Value(1));
-  const [scale] = useState(() => new Animated.Value(1));
-
-  const { container, logo } = BootSplash.useHideAnimation({
-    manifest: require('assets/bootsplash/manifest.json'),
-    logo: require('assets/bootsplash/logo.png'),
-
-    animate: () => {
-      // Perform animations and call onAnimationEnd
-      Animated.timing(opacity, {
-        useNativeDriver: true,
-        toValue: 0,
-        duration: 300,
-        easing: Easing.inOut(Easing.ease),
-      }).start();
-      Animated.timing(scale, {
-        useNativeDriver: true,
-        toValue: 4,
-        duration: 500,
-        easing: Easing.inOut(Easing.ease),
-      }).start(() => {
-        onAnimationEnd();
-      });
-    },
-  });
-
-  return (
-    <Animated.View
-      {...container}
-      style={[container.style, { opacity, transform: [{ scale }] }]}
-    >
-      <Image {...logo} />
-    </Animated.View>
-  );
-};

@@ -73,3 +73,7 @@ dist/
 web-build/
 
 .env.local
+
+# Expo CNG automatically generates the following directories, which should be ignored by the source control system.
+ios/
+android/
