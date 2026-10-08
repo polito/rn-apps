@@ -10,7 +10,6 @@ export const editablePreferenceKeys = [
   // This version is used exclusively for migrations.
   // For all other cases, use DeviceInfo from react-native-device-info.
   'lastInstalledVersion',
-  'username',
   'campusId',
   'colorScheme',
   'showColorWarning',
@@ -25,8 +24,6 @@ export const editablePreferenceKeys = [
   'agendaScreen',
   'filesScreen',
   'hideGrades',
-  'loginUid',
-  'politoAuthnEnrolmentStatus',
   'fileStorageLocation',
   'customStoragePath',
   'customStorageDisplayPath',
@@ -44,7 +41,6 @@ export const objectPreferenceKeys = [
   'agendaScreen',
   'filesScreen',
   'hideGrades',
-  'politoAuthnEnrolmentStatus',
 ];
 export interface CoursePreferencesProps {
   color: string;
@@ -64,7 +60,6 @@ export type CoursesPreferences = {
  * This type is used as the Extra generic parameter in PreferencesProvider.
  */
 export type AppPreferences = {
-  username: string;
   courses: CoursesPreferences;
   campusId?: string;
   notifications?: {
@@ -83,19 +78,12 @@ export type AppPreferences = {
   filesScreen: 'filesView' | 'directoryView';
   showColorWarning?: boolean;
   hideGrades?: boolean;
-  loginUid?: string | null;
-  politoAuthnEnrolmentStatus?: {
-    inSettings?: boolean;
-    insertedDeviceName?: string;
-    hideInitialPrompt?: boolean;
-  };
   fileStorageLocation?: 'internal' | 'custom';
   customStoragePath?: string;
   customStorageDisplayPath?: string;
 };
 
 export const initialAppPreferences: AppPreferences = {
-  username: '',
   courses: {},
   favoriteServices: [],
   peopleSearched: [],

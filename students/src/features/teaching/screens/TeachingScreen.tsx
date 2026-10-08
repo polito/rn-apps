@@ -26,7 +26,6 @@ import {
 import { type Event, ExamStatusEnum } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { CourseOverview } from '~/core/types/api';
 import { AppPreferences } from '~/core/types/preferences';
 
 import { DateTime } from 'luxon';
@@ -39,7 +38,6 @@ import { useGetStudent } from '../../../core/queries/studentHooks';
 import { useGetSurveyCategories } from '../../../core/queries/surveysHooks';
 import { formatFinalGrade, formatThirtiethsGrade } from '../../../utils/grades';
 import { CourseListItem } from '../../courses/components/CourseListItem';
-import { isCourseDetailed } from '../../courses/utils/courses';
 import { ExamListItem } from '../components/ExamListItem';
 import { GraduationSessionSection } from '../components/GraduationSessionSection';
 import { ProgressChart } from '../components/ProgressChart';
@@ -79,52 +77,38 @@ export const TeachingScreen = ({ navigation }: Props) => {
     return [...byContext.entries()];
   }, [eventAdmissionsQuery.data]);
 
-  const hasValidModules = (course: CourseOverview) => {
-    if (!course.modules || course.modules.length === 0) return true;
-    return course.modules.some(module => module.id !== null);
-  };
-
-  const courses = useMemo(() => {
-    if (!coursesQuery.data) return [];
-
-    return coursesQuery.data.filter(
-      c =>
-        isCourseDetailed(c) &&
-        c.uniqueShortcode &&
-        !coursePreferences[c.uniqueShortcode]?.isHidden,
-    );
-  }, [coursesQuery, coursePreferences]);
-
-  const visibleCourses = useMemo(
-    () => courses.filter(hasValidModules),
-    [courses],
+  const courses = useMemo(
+    () =>
+      (coursesQuery.data ?? []).filter(
+        c =>
+          !c.uniqueShortcode || !coursePreferences[c.uniqueShortcode]?.isHidden,
+      ),
+    [coursesQuery.data, coursePreferences],
   );
 
   const hiddenCoursesCount = useMemo(() => {
     if (!coursesQuery.data) return undefined;
-
-    const totalCount = coursesQuery.data.reduce(
-      (count, course) => count + (course.modules?.length || 1),
-      0,
-    );
-
-    const shownCount = visibleCourses.reduce((count, course) => {
-      if (!course.modules?.length) return count + 1;
-
-      return (
-        count +
-        course.modules.filter(
-          (module, index) =>
-            module.id !== null &&
-            !coursePreferences[`${course.shortcode}${index + 1}`]?.isHidden,
-        ).length
-      );
-    }, 0);
-
-    const hiddenCount = totalCount - shownCount;
-
-    return hiddenCount > 0 ? hiddenCount : undefined;
-  }, [coursesQuery.data, visibleCourses, coursePreferences]);
+    let count = 0;
+    coursesQuery.data.forEach(course => {
+      if (
+        course.uniqueShortcode &&
+        coursePreferences[course.uniqueShortcode]?.isHidden
+      ) {
+        count += 1 + (course.modules?.length ?? 0);
+        return;
+      }
+      if (!course.modules?.length) return;
+      const hiddenModules = course.modules.filter(
+        (_, index) =>
+          coursePreferences[`${course.shortcode}${index + 1}`]?.isHidden,
+      ).length;
+      count += hiddenModules;
+      if (hiddenModules === course.modules.length) {
+        count += 1;
+      }
+    });
+    return count > 0 ? count : undefined;
+  }, [coursesQuery.data, coursePreferences]);
 
   const exams = useMemo(() => {
     if (!coursesQuery.data || !examsQuery.data) return [];
@@ -194,13 +178,12 @@ export const TeachingScreen = ({ navigation }: Props) => {
             indented
             emptyStateText={(() => {
               if (isOffline) return t('common.cacheMiss');
-
               return (coursesQuery.data?.length ?? 0) > 0
                 ? t('teachingScreen.allCoursesHidden')
                 : t('coursesScreen.emptyState');
             })()}
           >
-            {visibleCourses.map(course => (
+            {courses.map(course => (
               <CourseListItem
                 key={course.shortcode + '' + course.id}
                 course={course}

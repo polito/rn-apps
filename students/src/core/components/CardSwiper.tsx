@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FlatList, StyleSheet, View, useWindowDimensions } from 'react-native';
 import AnimatedDotsCarousel from 'react-native-animated-dots-carousel';
 import { isTablet as isTabletHelper } from 'react-native-device-info';
 import Animated, {
@@ -12,7 +12,6 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 
-import { useDeviceOrientation } from '@polito/lib/core';
 import {
   CtaButton,
   CtaButtonContainer,
@@ -20,10 +19,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import {
-  EuropeanStudentCard,
-  StudentCareerStatusEnum,
-} from '@polito/student-api-client';
+import { EuropeanStudentCard, Symbol } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -33,12 +29,17 @@ import { UserStackParamList } from '../../features/user/components/UserNavigator
 import { EscCard } from './EscCard.tsx';
 import { SmartCard } from './SmartCard.tsx';
 
+/** Matches the SmartCard / EscCard design width; keeps iPad landscape from scaling too large. */
+const MAX_CARD_WIDTH = 400;
+const CARD_WIDTH_RATIO = 0.8;
+const SPACING_RATIO = 0.02;
+
 interface CardSwiperProps {
   firstName: string;
   lastName: string;
   username: string;
   degreeName?: string;
-  status?: StudentCareerStatusEnum;
+  status?: Symbol;
   picture?: string;
   hasSmartCard: boolean;
   europeanStudentCard?: EuropeanStudentCard;
@@ -64,40 +65,35 @@ type CarouselProps = {
     lastname: string;
     username: string;
     degreeName?: string;
-    status?: StudentCareerStatusEnum;
+    status?: Symbol;
     picture?: string;
     card: Item;
   };
   index: number;
   scrollX: SharedValue<number>;
-  single: boolean;
+  isLast: boolean;
   scrollTo: (index: number, valInterval: number) => void;
   onShowQr?: () => void;
+  cardLength: number;
+  spacing: number;
+  snapInterval: number;
 };
-
-const SRC_WIDTH = Dimensions.get('window').width;
-const CARD_TARGET_WIDTH = 330;
-const CARD_LENGTH = Math.max(
-  SRC_WIDTH * 0.8,
-  Math.min(SRC_WIDTH * 0.88, CARD_TARGET_WIDTH),
-);
-const SPACING = SRC_WIDTH * 0.02;
-const SIDECARD_LENGHT = (SRC_WIDTH - CARD_LENGTH) / 2;
 
 const SlideItem = ({
   item,
   index,
   scrollX,
-  single,
+  isLast,
   scrollTo,
   onShowQr,
+  cardLength,
+  spacing,
+  snapInterval,
 }: CarouselProps) => {
   const styles = useStylesheet(createStyles);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<UserStackParamList>>();
-
-  const deviceOrientation = useDeviceOrientation();
 
   const rnAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -106,11 +102,11 @@ const SlideItem = ({
           translateX: interpolate(
             scrollX.value,
             [
-              (index - 1) * CARD_LENGTH,
-              index * CARD_LENGTH,
-              (index + 1) * CARD_LENGTH,
+              (index - 1) * snapInterval,
+              index * snapInterval,
+              (index + 1) * snapInterval,
             ],
-            [-CARD_LENGTH * 0.1, 0, CARD_LENGTH * 0.1],
+            [-cardLength * 0.1, 0, cardLength * 0.1],
             Extrapolation.CLAMP,
           ),
         },
@@ -118,9 +114,9 @@ const SlideItem = ({
           scale: interpolate(
             scrollX.value,
             [
-              (index - 1) * CARD_LENGTH,
-              index * CARD_LENGTH,
-              (index + 1) * CARD_LENGTH,
+              (index - 1) * snapInterval,
+              index * snapInterval,
+              (index + 1) * snapInterval,
             ],
             [0.8, 1, 0.8],
             Extrapolation.CLAMP,
@@ -136,22 +132,17 @@ const SlideItem = ({
     <Animated.View
       style={[
         {
-          width: CARD_LENGTH,
+          width: cardLength,
+          marginRight: isLast ? 0 : spacing,
           overflow: 'hidden',
           justifyContent: 'center',
         },
-        deviceOrientation === 'portrait' ? [rnAnimatedStyle] : undefined,
-        !single
-          ? {
-              marginLeft: index === 0 ? SIDECARD_LENGHT : SPACING,
-              marginRight: index === 1 ? SIDECARD_LENGHT : SPACING,
-            }
-          : { marginHorizontal: SIDECARD_LENGHT },
+        rnAnimatedStyle,
       ]}
     >
       {!item.card.isESC ? (
         <SmartCard
-          width={CARD_LENGTH}
+          width={cardLength}
           firstName={item.name}
           lastName={item.lastname}
           username={item.username}
@@ -163,6 +154,8 @@ const SlideItem = ({
       ) : (
         <View>
           <EscCard
+            width={cardLength}
+            height={cardLength * (207 / 328)}
             cognome={item.lastname.toUpperCase()}
             nome={item.name.toUpperCase()}
             matricola={item.username.replace(/^[sS]/, '')}
@@ -193,8 +186,8 @@ const SlideItem = ({
                 underlayColor={palettes.gray[200]}
                 containerStyle={{
                   paddingHorizontal: isTabletHelper()
-                    ? CARD_LENGTH / 3
-                    : CARD_LENGTH / 6,
+                    ? cardLength / 3
+                    : cardLength / 6,
                 }}
               />
             </CtaButtonContainer>
@@ -219,17 +212,37 @@ export const CardSwiper = ({
 }: CardSwiperProps) => {
   const styles = useStylesheet(createStyles);
   const scrollX = useSharedValue(0);
+  const snapIntervalSV = useSharedValue(0);
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
   const [isFirstRequest, setIsFirstRequest] = useState<boolean>(
     firstRequest ?? false,
   );
+  const { width: srcWidth } = useWindowDimensions();
+  const flatListRef = useRef<FlatList>(null);
+  const pageIndexRef = useRef(0);
+
+  const { cardLength, spacing, sideCardLength, snapInterval } = useMemo(() => {
+    const length = Math.min(srcWidth * CARD_WIDTH_RATIO, MAX_CARD_WIDTH);
+    // Two side margins in the old layout → keep the same visual gap between cards.
+    const gap = srcWidth * SPACING_RATIO * 2;
+    return {
+      cardLength: length,
+      spacing: gap,
+      sideCardLength: (srcWidth - length) / 2,
+      snapInterval: length + gap,
+    };
+  }, [srcWidth]);
+
+  snapIntervalSV.value = snapInterval;
+
   const onScrollHandler = useAnimatedScrollHandler({
     onScroll: e => {
       scrollX.value = e.contentOffset.x;
-      runOnJS(setCurrentPageIndex)(Math.round(e.contentOffset.x / SRC_WIDTH));
+      const interval = snapIntervalSV.value || 1;
+      const nextIndex = Math.round(e.contentOffset.x / interval);
+      runOnJS(setCurrentPageIndex)(nextIndex);
     },
   });
-  const flatListRef = useRef<FlatList>(null);
 
   const { colors } = useTheme();
 
@@ -247,20 +260,33 @@ export const CardSwiper = ({
       : []),
   ];
 
-  const scrollTo = useCallback((index = 1, valInterval = 1000) => {
-    let step = 0;
-    const interval = setInterval(() => {
-      if (step === 0) {
-        scrollToItem(index);
-      } else if (step === 1) {
-        setIsFirstRequest(false);
-        clearInterval(interval);
-      }
-      step++;
-    }, valInterval);
+  const scrollToItem = useCallback(
+    (index: number) => {
+      flatListRef.current?.scrollToOffset({
+        offset: index * snapInterval,
+        animated: true,
+      });
+    },
+    [snapInterval],
+  );
 
-    return () => clearInterval(interval);
-  }, []);
+  const scrollTo = useCallback(
+    (index = 1, valInterval = 1000) => {
+      let step = 0;
+      const interval = setInterval(() => {
+        if (step === 0) {
+          scrollToItem(index);
+        } else if (step === 1) {
+          setIsFirstRequest(false);
+          clearInterval(interval);
+        }
+        step++;
+      }, valInterval);
+
+      return () => clearInterval(interval);
+    },
+    [scrollToItem],
+  );
 
   useEffect(() => {
     if (isFirstRequest) {
@@ -268,13 +294,19 @@ export const CardSwiper = ({
     }
   }, [isFirstRequest, scrollTo]);
 
-  const scrollToItem = (index: number) => {
-    flatListRef.current?.scrollToIndex({
-      index,
-      animated: true,
-      viewPosition: 0.5,
+  useEffect(() => {
+    pageIndexRef.current = currentPageIndex;
+  }, [currentPageIndex]);
+
+  // Keep the active card centered after rotation / width changes.
+  useEffect(() => {
+    const index = pageIndexRef.current;
+    flatListRef.current?.scrollToOffset({
+      offset: index * snapInterval,
+      animated: false,
     });
-  };
+    scrollX.value = index * snapInterval;
+  }, [snapInterval, scrollX]);
 
   return (
     <View style={styles.container}>
@@ -295,27 +327,34 @@ export const CardSwiper = ({
               }}
               index={index}
               scrollX={scrollX}
-              single={items.length < 1}
+              isLast={index === items.length - 1}
               scrollTo={scrollTo}
               onShowQr={onShowQr}
+              cardLength={cardLength}
+              spacing={spacing}
+              snapInterval={snapInterval}
             />
           )}
           horizontal
           showsHorizontalScrollIndicator={false}
-          snapToInterval={CARD_LENGTH + SPACING * 1.5}
-          pagingEnabled
+          snapToInterval={snapInterval}
+          snapToAlignment="start"
+          disableIntervalMomentum
+          decelerationRate="fast"
           onScroll={onScrollHandler}
           initialNumToRender={3}
           disableScrollViewPanResponder={true}
           windowSize={10}
-          contentContainerStyle={styles.flatListContainer}
-          automaticallyAdjustContentInsets={true}
+          contentContainerStyle={[
+            styles.flatListContainer,
+            { paddingHorizontal: sideCardLength },
+          ]}
+          automaticallyAdjustContentInsets={false}
           contentInsetAdjustmentBehavior="never"
-          decelerationRate={0.8}
           scrollEventThrottle={16}
-          getItemLayout={(data, index) => ({
-            length: SRC_WIDTH,
-            offset: SRC_WIDTH * index,
+          getItemLayout={(_, index) => ({
+            length: index === items.length - 1 ? cardLength : snapInterval,
+            offset: snapInterval * index,
             index,
           })}
         />
@@ -386,7 +425,6 @@ const createStyles = ({ fontWeights, colors, spacing }: Theme) =>
     },
     flatListContainer: {
       paddingVertical: 16,
-      justifyContent: 'center',
       alignItems: 'center',
     },
     dotsContainer: {

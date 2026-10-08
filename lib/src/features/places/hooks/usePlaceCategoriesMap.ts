@@ -1,4 +1,5 @@
-import { PlaceCategory } from '@polito/student-api-client';
+// TODO(map-api): Import this model from @polito/map-client when available.
+import { PlaceCategory } from '@polito/api-client';
 
 import { useGetPlaceCategories } from '../queries/placesHooks';
 

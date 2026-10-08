@@ -2,11 +2,12 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { usePreferencesContext, useSplashContext } from '@polito/lib/core';
 // import { AnnouncementScope } from '@polito/student-api-client';
+
+import { useCheckMfa } from '@polito/lib/features/auth';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useGetAnnouncements } from '../queries/announcementHooks';
-import { useCheckMfa } from '../queries/authHooks';
 import { useGetModalMessages } from '../queries/studentHooks';
 import { RootParamList } from '../types/navigation';
 import { AppPreferences } from '../types/preferences';

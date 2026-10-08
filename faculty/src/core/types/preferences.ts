@@ -7,7 +7,6 @@ export const editablePreferenceKeys = [
   // This version is used exclusively for migrations.
   // For all other cases, use DeviceInfo from react-native-device-info.
   'lastInstalledVersion',
-  'username',
   'campusId',
   'colorScheme',
   'courses',
@@ -22,7 +21,6 @@ export const editablePreferenceKeys = [
   'agendaScreen',
   'filesScreen',
   'hideGrades',
-  'loginUid',
 ] as const;
 
 // Specify here complex keys, that require serialization/deserialization
@@ -58,7 +56,6 @@ export type CoursesPreferences = {
  * provided by @polito/lib core (lastInstalledVersion, colorScheme, language, accessibility).
  */
 export type AppPreferences = {
-  username: string;
   campusId?: string;
   courses: CoursesPreferences;
   notifications?: {
@@ -77,11 +74,9 @@ export type AppPreferences = {
   };
   filesScreen: 'filesView' | 'directoryView';
   hideGrades?: boolean;
-  loginUid?: string;
 };
 
 export const initialAppPreferences: AppPreferences = {
-  username: '',
   courses: {},
   favoriteServices: [],
   peopleSearched: [],
