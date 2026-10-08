@@ -181,13 +181,14 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
     };
 
     const navigateToHideEventScreen = () => {
-      navigation.navigate("AgendaPreferences");
+      navigation.navigate('AgendaPreferences');
     };
 
     const exportAgendaEvent = () => {
-      shareIcs(filteredCalendarData, `agenda-${currentWeek.toISODate()}.ics`).catch((e) =>
-        console.warn("ICS export failed", e),
-      );
+      shareIcs(
+        filteredCalendarData,
+        `agenda-${currentWeek.toISODate()}.ics`,
+      ).catch(e => console.warn('ICS export failed', e));
     };
 
     const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
@@ -201,7 +202,7 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
         case 'hide-event':
           navigateToHideEventScreen();
           break;
-        case "export":
+        case 'export':
           exportAgendaEvent();
           break;
       }
