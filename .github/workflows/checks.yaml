@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        check: [lint, format, types, deps]
+        check: [lint, format, types, deps, test]
     name: "Code linting: ${{ matrix.check }}"
     steps:
     - name: Checkout
@@ -31,6 +31,14 @@ jobs:
       with:
         path: ./node_modules
         key: ${{ runner.os }}-npm-${{ hashFiles('./package-lock.json') }}
+    - name: Cache Jest transform cache
+      if: matrix.check == 'test'
+      uses: actions/cache@v4
+      with:
+        path: |
+          ./students/.jest-cache
+          ./faculty/.jest-cache
+        key: ${{ runner.os }}-jest-${{ hashFiles('./package-lock.json', './students/jest.config.js', './faculty/jest.config.js', './students/babel.config.js', './faculty/babel.config.js') }}
     - name: Setup .npmrc
       run: printf '@polito:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}\n' > .npmrc
     - name: Install npm dependencies

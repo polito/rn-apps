@@ -72,3 +72,6 @@ ios/sentry.properties
 .expo
 dist/
 web-build/
+
+# Jest
+.jest-cache
