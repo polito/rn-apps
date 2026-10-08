@@ -47,6 +47,7 @@ import {
 } from '../queries/agendaHooks';
 import { AgendaItem } from '../types/AgendaItem';
 import { AgendaOption } from '../types/AgendaOption';
+import { shareIcs } from '../utils/ics.ts';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'AgendaWeek'>;
 
@@ -160,6 +161,10 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
         id: 'hide-event',
         title: t('agendaScreen.hideEvent'),
       },
+      {
+        id: 'export',
+        title: t('agendaScreen.export'),
+      },
     ],
     [t],
   );
@@ -176,7 +181,13 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
     };
 
     const navigateToHideEventScreen = () => {
-      navigation.navigate('AgendaPreferences');
+      navigation.navigate("AgendaPreferences");
+    };
+
+    const exportAgendaEvent = () => {
+      shareIcs(filteredCalendarData, `agenda-${currentWeek.toISODate()}.ics`).catch((e) =>
+        console.warn("ICS export failed", e),
+      );
     };
 
     const onPressOption = ({ nativeEvent: { event } }: NativeActionEvent) => {
@@ -189,6 +200,9 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
           break;
         case 'hide-event':
           navigateToHideEventScreen();
+          break;
+        case "export":
+          exportAgendaEvent();
           break;
       }
     };
@@ -226,6 +240,8 @@ export const AgendaWeekScreen = ({ navigation, route }: Props) => {
     refetch,
     screenOptions,
     updatePreference,
+    filteredCalendarData,
+    currentWeek,
   ]);
 
   const isPrevMissing = useCallback(
