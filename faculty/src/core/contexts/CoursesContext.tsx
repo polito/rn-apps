@@ -5946,9 +5946,9 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     },
     {
       id: 'People',
-      name: 'Persone',
+      name: t('contactsScreen.title'),
       icon: faIdCard,
-      linkTo: 'Persone',
+      linkTo: 'Contacts',
       favorite: true,
     },
     {

@@ -379,15 +379,11 @@ export const DefineAccessModal = () => {
       >
         <View style={styles.messageContainer}>
           {!canConfirm && (
-            <InfoMessage
-              labelStyle={styles.infoMessage}
-              type="warning"
-              label={
-                from === 'staffScreen'
-                  ? t('courseStaffTab.accessInfoMessage')
-                  : t('courseStaffTab.typeInfoMessage')
-              }
-            />
+            <InfoMessage variant="warning">
+              {from === 'staffScreen'
+                ? t('courseStaffTab.accessInfoMessage')
+                : t('courseStaffTab.typeInfoMessage')}
+            </InfoMessage>
           )}
         </View>
         <CtaButton
@@ -402,7 +398,7 @@ export const DefineAccessModal = () => {
   );
 };
 
-const createStyles = ({ spacing, colors, shapes, fontSizes }: Theme) =>
+const createStyles = ({ spacing, colors, shapes }: Theme) =>
   StyleSheet.create({
     safeArea: {
       flex: 1,
@@ -436,9 +432,6 @@ const createStyles = ({ spacing, colors, shapes, fontSizes }: Theme) =>
     },
     dropDownIcon: {
       marginRight: -spacing[1],
-    },
-    infoMessage: {
-      fontSize: fontSizes.sm,
     },
     messageContainer: {
       marginBottom: spacing[5],

@@ -144,6 +144,7 @@ export const CourseLecturesTab = () => {
           <Row align="center" justify="space-between" gap={2} pr={4}>
             <View style={{ flex: 1, minWidth: 0 }}>
               <Select
+                compact
                 label={getFilterLabel(filter)}
                 options={[
                   { id: 'noFilter', title: getFilterLabel('noFilter') },

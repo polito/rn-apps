@@ -125,7 +125,9 @@ export const Grid = ({
                     : 0;
                 return (
                   <Fragment key={ci}>
-                    {c}
+                    <View style={{ width: columnWidth, flexShrink: 0 }}>
+                      {c}
+                    </View>
                     {ci < _numColumns - 1 && <View style={{ width: _gap }} />}
                     {missingColumns > 0 ? (
                       <View

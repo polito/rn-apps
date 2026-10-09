@@ -1,5 +1,6 @@
 import { ReactNode, useMemo } from 'react';
 import {
+  Platform,
   StyleSheet,
   TextStyle,
   TouchableHighlight,
@@ -9,13 +10,19 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { TextWithLinks } from '@polito/lib/ui';
-import { shadeColor } from '@polito/lib/ui';
-import { Icon, Row, Text } from '@polito/lib/ui';
-import { Theme, useStylesheet, useTheme } from '@polito/lib/ui';
-
 import { useFeedbackContext } from '../../core/contexts/FeedbackContext';
-import { ActivityIndicator } from '../../ui/components/ActivityIndicator';
+import { usePreferencesContext } from '../../core/contexts/PreferencesContext';
+import { useSafeBottomBarHeight } from '../hooks/useSafeBottomBarHeight';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
+import { shadeColor } from '../utils/colors';
+import { ActivityIndicator } from './ActivityIndicator';
+import { Icon } from './Icon';
+import { IconWithProgress } from './IconWithProgress';
+import { Row } from './Row';
+import { Text } from './Text';
+import { TextWithLinks } from './TextWithLinks';
 
 interface Props extends TouchableHighlightProps {
   containerStyle?: ViewStyle;
@@ -51,13 +58,16 @@ export const CtaButton = ({
   containerStyle,
   variant = 'filled',
   textStyle,
+  progress,
   ...rest
 }: Props) => {
   const { palettes, colors, fontSizes, spacing, dark, fontWeights } =
     useTheme();
   const styles = useStylesheet(createStyles);
   const { left, right } = useSafeAreaInsets();
+  const bottomBarHeight = useSafeBottomBarHeight();
   const { isFeedbackVisible } = useFeedbackContext();
+  const { accessibility } = usePreferencesContext();
   const hasTitle = Boolean(title?.trim());
 
   const outlined = variant === 'outlined';
@@ -101,9 +111,10 @@ export const CtaButton = ({
         styles.container,
         absolute && {
           position: 'absolute',
-          left,
+          width: Platform.select({ android: '100%' }),
+          left: Platform.select({ ios: left }),
           right,
-          bottom: isFeedbackVisible ? spacing[20] : 0,
+          bottom: bottomBarHeight + (isFeedbackVisible ? spacing[20] : 0),
         },
         !!hint && { paddingTop: spacing[3] },
         containerStyle,
@@ -158,23 +169,43 @@ export const CtaButton = ({
             )}
           </View>
           <Row style={{ opacity: loading ? 0 : 1 }}>
-            {/* {!loading && ( */}
-            {/*   <View style={{ marginHorizontal: spacing[1] }}>{icon}</View> */}
-            {/* )} */}
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              {icon && (
-                <Icon
-                  icon={icon}
-                  size={fontSizes.md}
-                  color={
-                    variant === 'filled' ? (palettes.gray[50] as string) : color
-                  }
-                  style={{ marginRight: hasTitle ? spacing[2] : 0 }}
-                />
-              )}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: hasTitle ? undefined : 'center',
+              }}
+            >
+              {icon &&
+                Number(accessibility?.fontSize) < 150 &&
+                (progress !== undefined ? (
+                  <View
+                    style={{
+                      marginRight: hasTitle ? spacing[2] : 0,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <IconWithProgress
+                      icon={icon}
+                      size={fontSizes.md}
+                      color={variant === 'filled' ? palettes.gray[50] : color}
+                      progress={progress}
+                      progressColor={
+                        variant === 'filled' ? palettes.gray[50] : color
+                      }
+                    />
+                  </View>
+                ) : (
+                  <Icon
+                    icon={icon}
+                    size={fontSizes.md}
+                    color={variant === 'filled' ? palettes.gray[50] : color}
+                    style={{ marginRight: hasTitle ? spacing[2] : 0 }}
+                  />
+                ))}
               {hasTitle && (
                 <TextWithLinks
-                  isCta={true}
                   style={[
                     styles.textStyle,
                     variant === 'outlined' && {
@@ -184,15 +215,18 @@ export const CtaButton = ({
                       color: variant === 'filled' ? palettes.gray[50] : color,
                     },
                     disabled
-                      ? {
-                          color: success
-                            ? color
-                            : (colors.disableTitle as string),
-                        }
+                      ? { color: success ? color : colors.disableTitle }
                       : undefined,
                     textStyle,
                   ]}
-                  baseStyle={{ fontWeight: fontWeights.medium }}
+                  baseStyle={{
+                    fontWeight: fontWeights.medium,
+                    color: variant === 'filled' ? palettes.gray[50] : color,
+                    ...(disabled && {
+                      color: success ? color : colors.disableTitle,
+                    }),
+                  }}
+                  isCta={true}
                 >
                   {title}
                 </TextWithLinks>
@@ -220,12 +254,13 @@ const createStyles = ({
   shapes,
   spacing,
   fontSizes,
+  fontFamilies,
   fontWeights,
   palettes,
 }: Theme) =>
   StyleSheet.create({
     container: {
-      // padding: spacing[5],
+      padding: spacing[5],
     },
     button: {
       paddingHorizontal: spacing[5] + 3,
@@ -248,9 +283,9 @@ const createStyles = ({
     textStyle: {
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.semibold,
+      fontFamily: fontFamilies.heading,
       textAlign: 'center',
       color: palettes.gray[50],
-      fontFamily: 'Montserrat-SemiBold',
     },
     icon: {
       marginVertical: -2,

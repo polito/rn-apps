@@ -1,18 +1,20 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 
 import {
   faAngleDown,
   faBell,
+  faCircleInfo,
   faCog,
   faMessage,
-  faSignOut,
+  faPersonThroughWindow,
 } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled } from '@polito/lib/core';
+import { AuthProfile } from '@polito/auth-api-client';
+import { useApiContext, useOfflineDisabled } from '@polito/lib/core';
+import { useLogout } from '@polito/lib/features/auth';
 import {
   BottomBarSpacer,
-  CtaButton,
   Icon,
   ListItem,
   OverviewList,
@@ -25,7 +27,6 @@ import {
   UnreadBadge,
   useTheme,
 } from '@polito/lib/ui';
-import { Student } from '@polito/student-api-client';
 import { MenuAction, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
@@ -35,34 +36,37 @@ import {
   hasUnreadMessages,
 } from '../../../../src/utils/messages';
 import { CardSwiper } from '../../../core/components/CardSwiper';
-import {
-  useLogout,
-  useMfaChallengeHandler,
-  useSwitchCareer,
-} from '../../../core/queries/authHooks';
+import { useMfaChallengeHandler } from '../../../core/hooks/useMfaChallengeHandler';
+import { useEscGet } from '../../../core/queries/escHooks';
+import { useSwitchCareer } from '../../../core/queries/studentAuthHooks';
 import {
   MESSAGES_QUERY_KEY,
   useGetMessages,
+  useGetProfile,
+  useGetProfilePicture,
+  useGetSmartCard,
   useGetStudent,
 } from '../../../core/queries/studentHooks';
+import { deleteProfilePictureFile } from '../../../utils/profilePicture';
 import { CareerStatus } from '../components/CareerStatus';
+import { SmartCardQrModal } from '../components/SmartCardQrModal';
 import { UserStackParamList } from '../components/UserNavigator';
 
 type Props = NativeStackScreenProps<UserStackParamList, 'Profile'>;
 
 type UserDetailsProps = {
-  student?: Student;
+  profile?: AuthProfile;
 };
 
-const UserDetails = ({ student }: UserDetailsProps) => {
+const UserDetails = ({ profile }: UserDetailsProps) => {
   const { t } = useTranslation();
   const { spacing, fontSizes } = useTheme();
 
   return (
     <Section accessible={false} style={{ marginTop: spacing[3] }}>
       <SectionHeader
-        title={student?.lastName + ' ' + student?.firstName}
-        subtitle={t('common.shortUsername') + ' ' + student?.username}
+        title={profile?.lastName + ' ' + profile?.firstName}
+        subtitle={t('common.shortUsername') + ' ' + profile?.username}
         titleStyle={{ fontSize: fontSizes.xl }}
         subtitleStyle={{ fontSize: fontSizes.lg }}
       />
@@ -71,17 +75,20 @@ const UserDetails = ({ student }: UserDetailsProps) => {
 };
 
 const HeaderRightDropdown = ({
-  student,
+  profile,
   isOffline,
 }: {
-  student?: Student;
+  profile?: AuthProfile;
   isOffline: boolean;
 }) => {
   const { mutate } = useSwitchCareer();
   const { t } = useTranslation();
   const { palettes, spacing } = useTheme();
-  const username = student?.username || '';
-  const allCareerIds = (student?.allCareerIds || []).map(id => `s${id}`);
+  const username = profile?.username || '';
+  const allCareerIds = useMemo(
+    () => profile?.allUsernames ?? [],
+    [profile?.allUsernames],
+  );
   const canSwitchCareer = allCareerIds.length > 1 && !isOffline;
   const actions = useMemo((): MenuAction[] => {
     if (!canSwitchCareer) return [];
@@ -126,10 +133,27 @@ const HeaderRightDropdown = ({
 export const ProfileScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { firstRequest } = route.params;
-  const { fontSizes } = useTheme();
-  const { mutate: handleLogout } = useLogout();
+  const { fontSizes, palettes } = useTheme();
+  const [isQrVisible, setIsQrVisible] = useState(false);
+  const { username } = useApiContext();
+  const { mutate: logout } = useLogout();
+  const handleLogout = () =>
+    logout(undefined, {
+      onSuccess: () => {
+        if (username) {
+          deleteProfilePictureFile(username);
+        }
+      },
+    });
+  const profileQuery = useGetProfile();
+  const profile = profileQuery.data;
   const studentQuery = useGetStudent();
   const student = studentQuery.data;
+  const escQuery = useEscGet();
+  const esc = escQuery.data;
+  const smartCardQuery = useGetSmartCard();
+  const smartCardUrl = smartCardQuery.data?.url;
+  const pictureQuery = useGetProfilePicture(profile?.username);
   const queryClient = useQueryClient();
   const messages = useGetMessages();
   const mfaChallengeQuery = useMfaChallengeHandler();
@@ -148,8 +172,8 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
   const isOffline = useOfflineDisabled();
 
   const headerRight = useCallback(
-    () => <HeaderRightDropdown student={student} isOffline={isOffline} />,
-    [isOffline, student],
+    () => <HeaderRightDropdown profile={profile} isOffline={isOffline} />,
+    [isOffline, profile],
   );
 
   useEffect(() => {
@@ -160,7 +184,16 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       refreshControl={
-        <RefreshControl manual queries={[studentQuery, mfaChallengeQuery]} />
+        <RefreshControl
+          manual
+          queries={[
+            profileQuery,
+            studentQuery,
+            escQuery,
+            mfaChallengeQuery,
+            pictureQuery,
+          ]}
+        />
       }
     >
       <SafeAreaView>
@@ -168,29 +201,52 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
           accessible={true}
           accessibilityLabel={`${t('profileScreen.smartCard')}. ${t(
             'common.username',
-          )} ${student?.username?.substring(1, student?.username?.length)}, ${
-            student?.firstName
-          } ${student?.lastName}`}
+          )} ${profile?.username?.substring(1, profile?.username?.length)}, ${
+            profile?.firstName
+          } ${profile?.lastName}`}
         >
-          {student &&
-          (student?.smartCardPicture ||
-            student.europeanStudentCard.canBeRequested) ? (
-            <CardSwiper student={student} firstRequest={firstRequest} />
+          {!profile ||
+          smartCardQuery.isLoading ||
+          escQuery.isLoading ? null : smartCardUrl ||
+            (esc && (esc.canBeRequested || esc.details)) ? (
+            <CardSwiper
+              firstName={profile.firstName}
+              lastName={profile.lastName}
+              username={profile.username}
+              degreeName={student?.degreeName}
+              status={student?.state}
+              picture={pictureQuery.data}
+              hasSmartCard={!!smartCardUrl}
+              europeanStudentCard={esc}
+              firstRequest={firstRequest}
+              onShowQr={() => setIsQrVisible(true)}
+            />
           ) : (
-            <UserDetails student={student} />
+            <UserDetails profile={profile} />
           )}
         </View>
+        {profile && (
+          <SmartCardQrModal
+            visible={isQrVisible}
+            onClose={() => setIsQrVisible(false)}
+            firstName={profile.firstName}
+            lastName={profile.lastName}
+            degreeName={student?.degreeName}
+          />
+        )}
         <Section accessible={false}>
           <SectionHeader
             title={t('common.career')}
             trailingItem={
-              student?.status && <CareerStatus status={student?.status} />
+              student?.state ? (
+                <CareerStatus status={student.state} />
+              ) : undefined
             }
           />
           <OverviewList>
             <ListItem
-              title={student?.degreeName ?? ''}
-              subtitle={student?.degreeLevel + ' - ' + enrollmentYear}
+              title={student?.degreeLevel ?? ''}
+              subtitle={t('profileScreen.cohort') + ' - ' + enrollmentYear}
               linkTo={{
                 screen: 'Degree',
                 params: {
@@ -212,6 +268,12 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
               linkTo="Settings"
             />
             <ListItem
+              title={t('profileScreen.appInfo')}
+              leadingItem={<Icon icon={faCircleInfo} size={fontSizes.xl} />}
+              linkTo="AppInfo"
+              accessibilityRole="button"
+            />
+            <ListItem
               title={t('messagesScreen.title')}
               leadingItem={<Icon icon={faMessage} size={fontSizes.xl} />}
               linkTo="Messages"
@@ -222,14 +284,20 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
                 ) : undefined
               }
             />
+            <ListItem
+              title={t('common.logout')}
+              leadingItem={
+                <Icon
+                  icon={faPersonThroughWindow}
+                  size={fontSizes.xl}
+                  color={palettes.danger[700]}
+                />
+              }
+              titleStyle={{ color: palettes.danger[700] }}
+              onPress={() => handleLogout()}
+              disabled={isOffline}
+            />
           </OverviewList>
-          <CtaButton
-            absolute={false}
-            disabled={isOffline}
-            title={t('common.logout')}
-            action={handleLogout}
-            icon={faSignOut}
-          />
         </Section>
         <BottomBarSpacer />
       </SafeAreaView>

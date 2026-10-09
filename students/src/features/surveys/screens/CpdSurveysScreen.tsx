@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
 import { useScreenTitle } from '@polito/lib/core';
+import { useAccessibility } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   OverviewList,
@@ -11,7 +12,6 @@ import {
 } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import {
   useGetCpdSurveys,
   useGetSurveys,

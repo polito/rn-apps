@@ -45,8 +45,8 @@ export const OverviewList = ({
       translucent={translucent}
       style={[
         {
-          marginVertical: spacing[2],
-          marginHorizontal: spacing[5],
+          marginBottom: spacing[0],
+          marginHorizontal: spacing[4],
         },
         style,
       ]}

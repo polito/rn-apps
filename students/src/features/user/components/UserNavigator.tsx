@@ -2,24 +2,40 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import { UserNavigatorID } from '@polito/lib/core';
+import { MfaSettings } from '@polito/lib/features/auth';
 import { HeaderLogoNoProps, useTheme, useTitlesStyles } from '@polito/lib/ui';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+  NativeStackScreenProps,
+  createNativeStackNavigator,
+} from '@react-navigation/native-stack';
 
 import { SharedScreens } from '../../../shared/navigation/SharedScreens';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
+import { NewsItemScreen } from '../../services/screens/NewsItemScreen';
+import { CreateTicketScreen } from '../../tickets/screens/CreateTicketScreen';
 import { AccessibilitySettingsScreen } from '../screens/AccessibilityFontSettingsScreen.tsx';
+import { AppInfoScreen } from '../screens/AppInfoScreen.tsx';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';
+import { NewOverlayScreen } from '../screens/NewOverlayScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { RequestESCScreen } from '../screens/RequestESCScreen.tsx';
 import { SettingsScreen } from '../screens/SettingsScreen';
-import { MfaSettings } from './MfaSettings.tsx';
+import { WhatsNewScreen } from '../screens/WhatsNewScreen';
 
 export type UserStackParamList = OfferingStackParamList & {
   Profile: { firstRequest?: boolean };
   Settings: undefined;
+  AppInfo: undefined;
+  WhatsNew: undefined;
+  RecentCommunications: undefined;
+  NewOverlay: { id: string };
+  CreateTicket: {
+    topicId?: number;
+    subtopicId?: number;
+  };
   MfaSettings: undefined;
   Messages: undefined;
   RequestESC: undefined;
@@ -29,7 +45,18 @@ export type UserStackParamList = OfferingStackParamList & {
   MessagesModal: undefined;
   Notifications: undefined;
   Person: { id: number };
+  NewsItem: { id: number };
 };
+
+const MfaSettingsScreen = ({
+  navigation,
+}: NativeStackScreenProps<UserStackParamList, 'MfaSettings'>) => (
+  <MfaSettings
+    onEnroll={() =>
+      navigation.navigate('PolitoAuthenticator', { activeView: 'enroll' })
+    }
+  />
+);
 
 const Stack = createNativeStackNavigator<
   UserStackParamList,
@@ -85,6 +112,73 @@ export const UserNavigator = () => {
         }}
       />
       <Stack.Screen
+        name="AppInfo"
+        component={AppInfoScreen}
+        options={{
+          headerTitle: t('appInfoScreen.title'),
+          headerTitleAlign: Platform.select({ android: 'center' }),
+        }}
+      />
+      <Stack.Screen
+        name="CreateTicket"
+        component={CreateTicketScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: t('common.appFeedback'),
+          headerTitleAlign: Platform.select({ android: 'center' }),
+        }}
+      />
+      <Stack.Screen
+        name="WhatsNew"
+        component={WhatsNewScreen}
+        options={{
+          headerTitle: t('appInfoScreen.news'),
+          headerBackTitle: t('profileScreen.title'),
+          headerTitleAlign: Platform.select({ android: 'center' }),
+          contentStyle: { backgroundColor: colors.background },
+        }}
+      />
+      <Stack.Screen
+        name="RecentCommunications"
+        component={WhatsNewScreen}
+        options={{
+          headerTitle: t('appInfoScreen.recentCommunications'),
+          headerBackTitle: t('profileScreen.title'),
+          headerTitleAlign: Platform.select({ android: 'center' }),
+          contentStyle: { backgroundColor: colors.background },
+        }}
+      />
+      <Stack.Screen
+        name="NewOverlay"
+        component={NewOverlayScreen}
+        getId={({ params }) => params.id}
+        options={{
+          headerTitle: t('appInfoScreen.news'),
+          headerTitleAlign: 'center',
+          headerLeft: HeaderLogoNoProps,
+          headerBackVisible: false,
+          headerTransparent: false,
+          headerShadowVisible: true,
+          presentation: 'modal',
+          ...(Platform.OS === 'ios'
+            ? {
+                sheetGrabberVisible: true,
+              }
+            : {}),
+          contentStyle: { backgroundColor: colors.background },
+        }}
+      />
+      <Stack.Screen
+        name="NewsItem"
+        component={NewsItemScreen}
+        getId={({ params: { id } }) => id.toString()}
+        options={{
+          headerTitle: t('newsScreen.title'),
+          headerLargeTitle: false,
+          headerBackButtonDisplayMode: 'minimal',
+        }}
+      />
+      <Stack.Screen
         name="AccessibilitySettings"
         component={AccessibilitySettingsScreen}
         options={{
@@ -101,7 +195,7 @@ export const UserNavigator = () => {
       />
       <Stack.Screen
         name="MfaSettings"
-        component={MfaSettings}
+        component={MfaSettingsScreen}
         options={{
           headerTitle: t('settingsScreen.authenticatorTitle'),
         }}
