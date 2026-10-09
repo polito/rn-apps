@@ -22,11 +22,6 @@ module.exports = () => {
       primaryColor: '#002B49',
       backgroundColor: '#002B49',
       userInterfaceStyle: 'light',
-      splash: {
-        image: './assets/bootsplash/logo@4x.png',
-        resizeMode: 'contain',
-        backgroundColor: '#002B49',
-      },
       android: {
         package: isDev ? 'it.polito.students.dev' : 'it.polito.students',
         allowBackup: false,
@@ -89,6 +84,21 @@ module.exports = () => {
         color: '#002B49',
       },
       plugins: [
+        [
+          'expo-splash-screen',
+          {
+            backgroundColor: '#002B49',
+            android: {
+              image: './assets/bootsplash/splashscreen_logo.png',
+              width: 350,
+              resizeMode: 'contain',
+            },
+            ios: {
+              image: './assets/bootsplash/splashscreen_logo.png',
+              resizeMode: 'contain',
+            },
+          },
+        ],
         [
           '@sentry/react-native/expo',
           {
