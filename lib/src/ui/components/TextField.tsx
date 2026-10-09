@@ -36,7 +36,7 @@ export const TextField = ({
   autoCapitalize = 'none',
   ...rest
 }: TextFieldProps) => {
-  const { colors } = useTheme();
+  const { colors, palettes } = useTheme();
   const styles = useStylesheet(createStyles);
 
   const textInputProps: TextInputProps = useMemo(() => {
@@ -67,7 +67,7 @@ export const TextField = ({
         ref={inputRef}
         importantForAccessibility="no"
         autoCapitalize={autoCapitalize}
-        selectionColor={colors.link}
+        selectionColor={palettes.secondary[600]}
         placeholder={label}
         placeholderTextColor={colors.secondaryText}
         style={[

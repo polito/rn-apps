@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 import { Image, StyleSheet, TouchableHighlightProps } from 'react-native';
 
-import { faUser } from '@fortawesome/free-regular-svg-icons';
+import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import { Person } from '@polito/api-client';
 
 import { useTheme } from '../hooks/useTheme';
@@ -12,14 +12,20 @@ interface Props {
   person: Person | undefined;
   subtitle?: string | ReactElement;
   navigateEnabled?: boolean;
+  onPress?: () => void;
+  trailingItem?: ReactElement;
+  holder?: boolean;
 }
 
 export const PersonListItem = ({
   person,
   subtitle,
   navigateEnabled = true,
+  holder = false,
+  onPress,
+  trailingItem,
 }: TouchableHighlightProps & Props) => {
-  const { fontSizes } = useTheme();
+  const { fontSizes, colors } = useTheme();
 
   return (
     <ListItem
@@ -27,7 +33,11 @@ export const PersonListItem = ({
         person?.picture ? (
           <Image source={{ uri: person.picture }} style={styles.picture} />
         ) : (
-          <Icon icon={faUser} size={fontSizes['2xl']} />
+          <Icon
+            icon={faCircleUser}
+            size={fontSizes['2xl']}
+            color={holder ? colors.secondaryText : undefined}
+          />
         )
       }
       title={person ? `${person.firstName} ${person.lastName}` : ''}
@@ -45,6 +55,9 @@ export const PersonListItem = ({
           : undefined
       }
       subtitle={subtitle}
+      titleStyle={holder ? { color: colors.secondaryText } : undefined}
+      trailingItem={trailingItem}
+      onPress={onPress}
     />
   );
 };
