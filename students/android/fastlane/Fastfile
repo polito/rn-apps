@@ -26,6 +26,8 @@ buildProps = {
 platform :android do
   desc "Build and sign bundle"
   lane :verify do
+    buildProps["reactNativeArchitectures"] = "x86_64" # Build only one to speed up the process
+
     gradle(
       task: "bundleRelease",
       properties: buildProps,

@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import FastImage from '@d11/react-native-fast-image';
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import {
   faBookOpen,
@@ -11,7 +10,7 @@ import {
   faCompass,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@polito/lib/core';
+import { useApiContext, usePreferencesContext } from '@polito/lib/core';
 import {
   PlacesNavigator,
   useGetCurrentCampus,
@@ -35,7 +34,6 @@ import { AgendaNavigator } from '../../features/agenda/components/AgendaNavigato
 import { ServicesNavigator } from '../../features/services/components/ServicesNavigator';
 import { TeachingNavigator } from '../../features/teaching/components/TeachingNavigator';
 import { UserNavigator } from '../../features/user/components/UserNavigator';
-import { useApiContext } from '../contexts/ApiContext';
 import { useDownloadsContext } from '../contexts/DownloadsContext';
 import { useInitFirebaseMessaging } from '../hooks/messaging';
 import { useModalManager } from '../hooks/useModalManager';
@@ -70,16 +68,6 @@ export const RootNavigator = ({
   const { isOnboardingVisible, closeOnboarding } =
     useModalManager(versionModalIsOpen);
   const profileMessages = useGetMessages();
-
-  useEffect(() => {
-    if (student?.smartCardPicture) {
-      FastImage.preload([
-        {
-          uri: student?.smartCardPicture,
-        },
-      ]);
-    }
-  }, [student]);
 
   useInitFirebaseMessaging();
 

@@ -5,6 +5,7 @@ import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faFlagCheckered } from '@fortawesome/free-solid-svg-icons';
 import { usePreferencesContext } from '@polito/lib/core';
 import { formatDate } from '@polito/lib/core';
+import { useGetPerson } from '@polito/lib/features/people';
 import {
   ActivityIndicator,
   BottomBarSpacer,
@@ -31,7 +32,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';
 
-import { useGetPerson } from '../../../core/queries/peopleHooks';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 
 type Props = NativeStackScreenProps<TeachingStackParamList, 'RecordedGrade'>;

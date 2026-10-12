@@ -10,9 +10,12 @@ import {
   faFileAlt,
   faGear,
   faHome,
+  faPersonThroughWindow,
   faPhone,
 } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { useOfflineDisabled } from '@polito/lib/core';
+import { useLogout } from '@polito/lib/features/auth';
 import {
   Icon,
   IconButton,
@@ -42,6 +45,8 @@ export const ProfileScreen = () => {
   const styles = useStylesheet(createStyles);
   const { fontSizes } = useTheme();
   const { user, fakeCourses, managedCourses } = useCourses();
+  const { mutate: handleLogout } = useLogout();
+  const isOffline = useOfflineDisabled();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -189,6 +194,19 @@ export const ProfileScreen = () => {
           onPress={() => {
             navigation.navigate('Impostazioni');
           }}
+        />
+        <ListItem
+          title={t('common.logout')}
+          leadingItem={
+            <Icon
+              icon={faPersonThroughWindow}
+              size={fontSizes.xl}
+              color={palettes.danger[700]}
+            />
+          }
+          titleStyle={{ color: palettes.danger[700] }}
+          onPress={() => handleLogout()}
+          disabled={isOffline}
         />
       </SectionList>
       <View style={{ paddingBottom: spacing[5] }} />

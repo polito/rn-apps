@@ -1,13 +1,18 @@
 import { useMemo } from 'react';
 
+import {
+  AuthApi,
+  GetAccessTokenAcceptEnum,
+  TokenType,
+} from '@polito/auth-api-client';
 import { pluckData, toOASTruncable } from '@polito/lib/core';
 import {
   ExamGrade,
   Message,
   MessageType,
   ProvisionalGradeState,
-  Student,
   StudentApi,
+  StudentCareer,
   UpdateDevicePreferencesRequest,
 } from '@polito/student-api-client';
 import * as Sentry from '@sentry/react-native';
@@ -21,11 +26,16 @@ import {
 import { DateTime } from 'luxon';
 
 import { filterUnread } from '../../utils/messages';
+import { getProfilePictureFile } from '../../utils/profilePicture';
+import { useMfaChallengeHandler } from '../hooks/useMfaChallengeHandler';
 import { UpdateNotificationPreferencesRequestKey } from '../types/notificationTypes';
-import { useMfaChallengeHandler } from './authHooks.ts';
 import { COURSE_QUERY_PREFIX } from './courseHooks';
 
 export const STUDENT_QUERY_KEY = ['student'];
+export const PROFILE_QUERY_KEY = ['profile'];
+export const SMART_CARD_QUERY_KEY = ['smartCard'];
+const PROFILE_PICTURE_QUERY_KEY = ['profilePicture'];
+const SMART_CARD_QR_CODE_QUERY_KEY = ['smartCardQrCode'];
 const GRADES_QUERY_KEY = ['grades'];
 const PROVISIONAL_GRADES_QUERY_KEY = ['provisionalGrades'];
 const PROVISIONAL_GRADE_STATES_QUERY_KEY = ['provisionalGradeStates'];
@@ -42,7 +52,68 @@ const useStudentClient = (): StudentApi => {
   return new StudentApi();
 };
 
-const handleAcquiredCredits = (student: Student) => {
+export const useGetProfile = () =>
+  useQuery({
+    queryKey: PROFILE_QUERY_KEY,
+    queryFn: () => new AuthApi().getProfile().then(pluckData),
+    gcTime: Infinity,
+  });
+
+export const useGetSmartCard = () =>
+  useQuery({
+    queryKey: SMART_CARD_QUERY_KEY,
+    queryFn: () => new AuthApi().getSmartCardLink().then(pluckData),
+    gcTime: Infinity,
+  });
+
+const blobToBase64 = (blob: Blob) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(reader.error);
+    reader.onload = () => {
+      const result = reader.result as string;
+      resolve(result.slice(result.indexOf(',') + 1));
+    };
+    reader.readAsDataURL(blob);
+  });
+
+export const useGetProfilePicture = (username?: string) =>
+  useQuery({
+    queryKey: [...PROFILE_PICTURE_QUERY_KEY, username],
+    enabled: !!username,
+    queryFn: async () => {
+      const blob = await new AuthApi().getProfilePicture();
+      const base64 = await blobToBase64(blob);
+      const file = getProfilePictureFile(username!);
+      if (file.exists) {
+        file.delete();
+      }
+      file.create();
+      file.write(base64, { encoding: 'base64' });
+      return file.uri;
+    },
+    staleTime: Infinity,
+    gcTime: Infinity,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+
+export const useGetSmartCardQrCode = (enabled: boolean) =>
+  useQuery({
+    queryKey: SMART_CARD_QR_CODE_QUERY_KEY,
+    queryFn: async () => {
+      const svg = await new AuthApi().getAccessToken({
+        type: TokenType.Card,
+        accept: GetAccessTokenAcceptEnum.ImageSvgxml,
+      });
+
+      return svg.includes('<svg') ? svg : '';
+    },
+    enabled,
+  });
+
+const handleAcquiredCredits = (student: StudentCareer) => {
   if (student.totalCredits < student.totalAttendedCredits) {
     student.totalCredits = student.totalAttendedCredits;
   }
@@ -57,7 +128,7 @@ export const useGetStudent = () => {
     queryKey: STUDENT_QUERY_KEY,
     queryFn: () =>
       studentClient
-        .getStudent()
+        .getStudentCareer()
         .then(pluckData)
         .then(handleAcquiredCredits)
         .then(s => {
@@ -71,7 +142,7 @@ export const useGetStudent = () => {
   if (query.data && query.isSuccess) {
     Sentry.setTag('student_degree_id', query.data.degreeName);
     Sentry.setTag('student_degree_name', query.data.degreeId);
-    Sentry.setTag('student_status', query.data.status);
+    Sentry.setTag('student_status', query.data.state?.label);
     Sentry.setTag(
       'student_is_currently_enrolled',
       query.data.isCurrentlyEnrolled,
@@ -226,7 +297,7 @@ export const useUpdateDevicePreferences = () => {
   });
 };
 
-export const useGetMessages = () => {
+export const useGetMessages = (enabled = true) => {
   const queryClient = useQueryClient();
   const studentClient = useStudentClient();
 
@@ -234,6 +305,7 @@ export const useGetMessages = () => {
 
   return useQuery({
     queryKey: MESSAGES_QUERY_KEY,
+    enabled,
     queryFn: () =>
       studentClient
         .getMessages()

@@ -79,7 +79,7 @@ export const EscCard = (
     <View>
       <Svg viewBox="0 0 328 207" fill="none" {...props}>
         <G clipPath="url(#Component_1_svg__a)">
-          <Path fill="#002B49" d="M0 0h328v30H0z" />
+          <Path fill="#004C81" d="M0 0h328v30H0z" />
           <Text
             fill="#fff"
             fontFamily="Montserrat"

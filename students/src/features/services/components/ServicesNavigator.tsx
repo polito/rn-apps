@@ -2,11 +2,20 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import {
+  ContactsScreen as LibContactsScreen,
+  studentsUsefulContactsList,
+} from '@polito/lib/features/people';
+import {
   PlacesNavigator,
   type PlacesStackParamList,
 } from '@polito/lib/features/places';
-import { HeaderLogo, useTheme, useTitlesStyles } from '@polito/lib/ui';
-import { TicketFAQ, TicketStatus } from '@polito/student-api-client';
+import {
+  HeaderLogo,
+  createHeaderCloseButton,
+  useTheme,
+  useTitlesStyles,
+} from '@polito/lib/ui';
+import { TicketFAQ } from '@polito/student-api-client';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -20,18 +29,20 @@ import { BookingScreen } from '../../agenda/screens/BookingScreen';
 import { BookingSeatScreen } from '../../bookings/screens/BookingSeatScreen';
 import { BookingSeatSelectionScreen } from '../../bookings/screens/BookingSeatSelectionScreen';
 import { BookingSlotScreen } from '../../bookings/screens/BookingSlotScreen';
+import { BookingSlotsLegendScreen } from '../../bookings/screens/BookingSlotsLegendScreen';
 import { BookingTopicScreen } from '../../bookings/screens/BookingTopicScreen';
 import { GuideScreen } from '../../guides/screens/GuideScreen';
 import { GuidesScreen } from '../../guides/screens/GuidesScreen';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
 import { OfferingTopTabsNavigator } from '../../offering/navigation/OfferingTopTabsNavigator';
-import { ContactsScreen } from '../../people/screens/ContactsScreen';
 import { SurveyListScreen } from '../../surveys/screens/SurveyListScreen';
 import { SurveysScreen } from '../../surveys/screens/SurveysScreen';
 import { CreateTicketScreen } from '../../tickets/screens/CreateTicketScreen';
+import { TicketAutoResolvedScreen } from '../../tickets/screens/TicketAutoResolvedScreen';
 import { TicketFaqScreen } from '../../tickets/screens/TicketFaqScreen';
 import { TicketFaqsScreen } from '../../tickets/screens/TicketFaqsScreen';
-import { TicketListScreen } from '../../tickets/screens/TicketListScreen';
+import { TicketInfoScreen } from '../../tickets/screens/TicketInfoScreen';
+import { TicketResolvedScreen } from '../../tickets/screens/TicketResolvedScreen';
 import { TicketScreen } from '../../tickets/screens/TicketScreen';
 import { TicketsScreen } from '../../tickets/screens/TicketsScreen';
 import { BookingsScreen } from '../screens/BookingsScreen';
@@ -50,15 +61,15 @@ export type ServiceStackParamList = OfferingStackParamList & {
   Services: undefined;
   Tickets: undefined;
   Ticket: { id: number };
+  TicketInfo: { id: number };
+  TicketResolved: { ticketId: number; markAsResolved?: boolean };
+  TicketAutoResolved: { ticketId: number };
   CreateTicket: {
     topicId?: number;
     subtopicId?: number;
   };
   TicketFaqs: undefined;
   TicketFaq: { faq: TicketFAQ };
-  TicketList: {
-    statuses: Array<(typeof TicketStatus)[keyof typeof TicketStatus]>;
-  };
   JobOffers: undefined;
   JobOffer: {
     id: number;
@@ -70,6 +81,7 @@ export type ServiceStackParamList = OfferingStackParamList & {
   Booking: { id: number };
   BookingTopic: undefined;
   BookingSlot: { topicId: string; topicName: string };
+  BookingSlotsLegend: undefined;
   BookingSeatSelection: {
     slotId: string;
     topicId: string;
@@ -97,6 +109,12 @@ export const ServicesNavigator = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { colors } = theme;
+  const ContactsScreen = () => (
+    <LibContactsScreen
+      usefulContacts={studentsUsefulContactsList}
+      showPreferredContacts={false}
+    />
+  );
 
   return (
     <Stack.Navigator
@@ -126,20 +144,44 @@ export const ServicesNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="TicketList"
-        component={TicketListScreen}
-        options={{
-          headerTitle: t('ticketsScreen.title'),
-        }}
-      />
-      <Stack.Screen
         name="Ticket"
         component={TicketScreen}
         getId={({ params: { id } }) => id.toString()}
         options={{
           headerLargeTitle: false,
-          headerTitle: t('ticketScreen.title'),
+          headerTransparent: false,
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: colors.surface },
+          headerTitle: '',
           headerBackTitle: t('ticketScreen.headerBackTitle'), // TODO wrong with direct navigation
+        }}
+      />
+      <Stack.Screen
+        name="TicketInfo"
+        component={TicketInfoScreen}
+        getId={({ params: { id } }) => id.toString()}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: '',
+          headerBackTitle: t('ticketScreen.title'),
+        }}
+      />
+      <Stack.Screen
+        name="TicketResolved"
+        component={TicketResolvedScreen}
+        options={({ route }) => ({
+          headerLargeTitle: false,
+          headerTitle: `${t('ticketScreen.title')} ${route.params.ticketId}`,
+          headerBackButtonDisplayMode: 'minimal',
+        })}
+      />
+      <Stack.Screen
+        name="TicketAutoResolved"
+        component={TicketAutoResolvedScreen}
+        options={{
+          headerLargeTitle: false,
+          headerTitle: '',
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
       <Stack.Screen
@@ -280,6 +322,24 @@ export const ServicesNavigator = () => {
           headerLargeStyle: {
             backgroundColor: colors.headersBackground,
           },
+        })}
+      />
+      <Stack.Screen
+        name="BookingSlotsLegend"
+        component={BookingSlotsLegendScreen}
+        options={({ navigation }) => ({
+          presentation: Platform.OS === 'ios' ? 'formSheet' : 'modal',
+          ...(Platform.OS === 'ios'
+            ? {
+                sheetAllowedDetents: 'fitToContents',
+                sheetGrabberVisible: true,
+              }
+            : {}),
+          headerTitle: t('common.legend'),
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerShadowVisible: false,
+          headerRight: createHeaderCloseButton(navigation),
         })}
       />
       <Stack.Screen

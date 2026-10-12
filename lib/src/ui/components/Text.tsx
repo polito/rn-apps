@@ -58,7 +58,7 @@ export const Text = ({
   children,
   ...rest
 }: TextProps) => {
-  const { colors, fontFamilies, fontWeights, fontSizes, spacing } = useTheme();
+  const { colors, fontFamilies, fontWeights, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const fontFamilyName =
     variant === 'heading' ? fontFamilies.heading : fontFamilies.body;
@@ -182,12 +182,6 @@ export const Text = ({
               },
             ]
           : []),
-        {
-          paddingTop:
-            accessibility?.fontSize && accessibility.fontSize <= 125
-              ? 0
-              : spacing[3.5],
-        },
       ]}
       {...rest}
     >

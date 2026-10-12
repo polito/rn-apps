@@ -1,4 +1,5 @@
-import { Building, PlaceOverview } from '@polito/student-api-client';
+// TODO(map-api): Import this model from @polito/map-client when available.
+import { Building, PlaceOverview } from '@polito/api-client';
 
 export type SearchPlace = PlaceOverview | Building;
 

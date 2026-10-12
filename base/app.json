@@ -1,4 +1,5 @@
 {
   "name": "base",
-  "displayName": "base"
+  "displayName": "base",
+  "plugins": ["react-native-edge-to-edge"]
 }

@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faBookBookmark,
   faBriefcase,
@@ -10,7 +9,6 @@ import {
   faComments,
   faEnvelope,
   faIdCard,
-  faMobileScreenButton,
   faNewspaper,
   faPersonCirclePlus,
   faSignsPost,
@@ -20,11 +18,11 @@ import {
   useOfflineDisabled,
   usePreferencesContext,
 } from '@polito/lib/core';
+import { useOpenInAppLink } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   Grid,
   Theme,
-  UnreadBadge,
   auto,
   useStylesheet,
 } from '@polito/lib/ui';
@@ -33,12 +31,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { AppPreferences } from '~/core/types/preferences.ts';
 
 import { useNotifications } from '../../../core/hooks/useNotifications';
-import { useOpenInAppLink } from '../../../core/hooks/useOpenInAppLink.ts';
-import {
-  GetWebmailLink,
-  WEBMAIL_LINK_QUERY_KEY,
-} from '../../../core/queries/authHooks.ts';
 import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
+import {
+  WEBMAIL_LINK_QUERY_KEY,
+  useGetWebmailLink,
+} from '../../../core/queries/studentAuthHooks';
 import { useGetUnreadEmails } from '../../../core/queries/studentHooks.ts';
 import { TICKETS_QUERY_KEY } from '../../../core/queries/ticketHooks';
 import { ServiceCard } from '../components/ServiceCard';
@@ -63,18 +60,19 @@ export const ServicesScreen = () => {
     setFontSize(Number(accessibility?.fontSize) ?? 0);
   }, [accessibility?.fontSize]);
   const openInAppLink = useOpenInAppLink();
+  const getWebmailLink = useGetWebmailLink();
 
   const openWebmailLink = useCallback(async () => {
     queryClient
       .fetchQuery({
         queryKey: WEBMAIL_LINK_QUERY_KEY,
-        queryFn: GetWebmailLink,
+        queryFn: getWebmailLink,
         staleTime: 55 * 1000, // 55 seconds
         gcTime: 55 * 1000, // 55 seconds
         persister: undefined, // disable persister
       })
       .then(res => openInAppLink(res.url));
-  }, [openInAppLink, queryClient]);
+  }, [openInAppLink, queryClient, getWebmailLink]);
 
   const services = useMemo(() => {
     return [
@@ -90,29 +88,6 @@ export const ServicesScreen = () => {
         accessibilityLabel: `${t('ticketsScreen.title')} ${
           unreadTickets ? t('servicesScreen.newElement') : ''
         }`,
-      },
-      {
-        id: 'appFeedback',
-        name: t('common.appFeedback'),
-        icon: faMobileScreenButton,
-        disabled: isOffline,
-        linkTo: {
-          screen: 'CreateTicket',
-          params: {
-            topicId: 1101,
-            subtopicId: 2001,
-          },
-        },
-        additionalContent: <UnreadBadge text="BETA" style={styles.badge} />,
-        accessibilityLabel: t('common.appFeedback'),
-      },
-      {
-        id: 'github',
-        name: t('common.openSource'),
-        icon: faGithub,
-        onPress: () =>
-          Linking.openURL('https://github.com/polito/students-app'),
-        accessibilityLabel: t('common.openSourceAccessibilityLabel'),
       },
       {
         id: 'news',
@@ -183,7 +158,7 @@ export const ServicesScreen = () => {
       },
       {
         id: 'mail',
-        name: 'WebMail',
+        name: 'Web\nMail',
         icon: faEnvelope,
         disabled: isOffline,
         unReadCount: unreadEmailsQuery.data
@@ -200,7 +175,6 @@ export const ServicesScreen = () => {
     isOffline,
     queryClient,
     unreadTickets,
-    styles.badge,
     getUnreadsCount,
     peopleSearched?.length,
     emailGuideRead,
@@ -231,6 +205,8 @@ export const ServicesScreen = () => {
         {favoriteServices.length > 0 && (
           <Grid
             numColumns={fontSize && fontSize >= 125 ? 1 : auto}
+            minColumnWidth={ServiceCard.minWidth}
+            maxColumnWidth={ServiceCard.maxWidth}
             gap={4}
             style={styles.grid}
           >
@@ -254,6 +230,8 @@ export const ServicesScreen = () => {
         {otherServices.length > 0 && (
           <Grid
             numColumns={fontSize && fontSize >= 125 ? 1 : auto}
+            minColumnWidth={ServiceCard.minWidth}
+            maxColumnWidth={ServiceCard.maxWidth}
             gap={4}
             style={styles.grid}
           >
@@ -282,10 +260,5 @@ const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     grid: {
       margin: spacing[5],
-    },
-    badge: {
-      position: 'absolute',
-      top: -spacing[2.5],
-      right: -spacing[2],
     },
   });

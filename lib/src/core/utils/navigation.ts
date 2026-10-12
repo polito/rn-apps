@@ -1,9 +1,32 @@
 import {
   CommonActions,
+  LinkingOptions,
   NavigationProp,
   NavigationState,
+  ParamListBase,
   Route,
 } from '@react-navigation/native';
+
+import { PolitoAppConfig, getPolitoDeepLinkPrefix } from '../config';
+
+export const createPolitoLinking = <T extends ParamListBase = ParamListBase>(
+  appConfig: PolitoAppConfig,
+): LinkingOptions<T> => {
+  return {
+    prefixes: [getPolitoDeepLinkPrefix(appConfig.id)],
+    config: {
+      screens: {
+        SSO: {
+          path: '/login',
+          parse: {
+            uid: (uid: string) => uid,
+            key: (key: string) => key,
+          },
+        },
+      },
+    },
+  } as unknown as LinkingOptions<T>;
+};
 
 export const findTabNavigator = (navigation: NavigationProp<any>) => {
   let navigator = navigation;
