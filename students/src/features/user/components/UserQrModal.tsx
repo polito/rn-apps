@@ -1,13 +1,18 @@
-import { useCallback, useEffect } from 'react';
-import { StyleSheet, View, useWindowDimensions } from 'react-native';
-import Modal from 'react-native-modal';
+import { useMemo } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { isTablet as isTabletHelper } from 'react-native-device-info';
 
-import { useDeviceOrientation } from '@polito/lib/core';
-import { Col, Row, Text, type Theme, useStylesheet } from '@polito/lib/ui';
+import { Text, type Theme, useStylesheet } from '@polito/lib/ui';
 
+import { QrCodeModal } from '../../../core/components/QrCodeModal';
 import { QrEsc } from '../../../core/components/QrEsc.tsx';
 
-type AgendaEventVisibilityModalProps = {
+const QR_SIZE_PHONE = 206;
+const QR_SIZE_TABLET = 340;
+/** Card padding allowance: two 18px padding layers per side. */
+const CARD_PADDING = 72;
+
+type Props = {
   visible: boolean;
   onClose?: () => void;
   dismissable?: boolean;
@@ -24,94 +29,64 @@ export const UserQrModal = ({
   onClose,
   dismissable,
   student,
-}: AgendaEventVisibilityModalProps) => {
-  const deviceOrientation = useDeviceOrientation();
-
-  const handleBackCloseModal = useCallback(() => {
-    dismissable && onClose?.();
-  }, [dismissable, onClose]);
-
-  useEffect(() => {
-    if (deviceOrientation === 'landscape') {
-      handleBackCloseModal();
-    }
-  }, [deviceOrientation, handleBackCloseModal]);
-
-  const { width, height } = useWindowDimensions();
+}: Props) => {
   const styles = useStylesheet(createStyles);
+  const qrSize = useMemo(
+    () => (isTabletHelper() ? QR_SIZE_TABLET : QR_SIZE_PHONE),
+    [],
+  );
+  const cardWidth = qrSize + CARD_PADDING;
+
+  const handleClose = () => {
+    if (dismissable) {
+      onClose?.();
+    }
+  };
 
   return (
-    <Modal
-      {...Modal.defaultProps}
-      onBackButtonPress={handleBackCloseModal}
-      style={{ margin: 0, justifyContent: 'center' }}
-      hasBackdrop={true}
-      animationOutTiming={50}
-      animationInTiming={50}
-      isVisible={visible}
-      backdropOpacity={0.4}
-      avoidKeyboard={true}
-      animationIn="fadeIn"
-      animationOut="fadeOut"
-      backdropColor="black"
-      deviceHeight={height}
-      deviceWidth={width}
-      swipeDirection="down"
-      useNativeDriver
-      supportedOrientations={['landscape', 'portrait']}
-      onBackdropPress={handleBackCloseModal}
+    <QrCodeModal
+      visible={visible}
+      onClose={handleClose}
+      maxWidth={cardWidth}
+      showCloseButton={false}
     >
-      <View style={styles.modalOverlay} pointerEvents="box-none">
-        <View
-          style={[
-            deviceOrientation === 'portrait'
-              ? { width: '70%' }
-              : { height: '95%' },
-            styles.modalContainer,
-          ]}
-          pointerEvents="auto"
-        >
-          <Row style={styles.modalTitleContainer}>
-            <Col>
-              <Text style={styles.modalTitle}>
-                {student?.cognome.toUpperCase() +
-                  '\n' +
-                  student?.nome.toUpperCase()}
-              </Text>
-              <Text>polito.it - {student?.matricola}</Text>
-            </Col>
-          </Row>
-          <QrEsc
-            qr={student.qr}
-            height={deviceOrientation === 'landscape' ? height / 2 : '100%'}
-          />
+      <View>
+        <Text variant="prose" style={styles.name}>
+          {student.cognome.toUpperCase()}
+        </Text>
+        <Text variant="prose" style={styles.name}>
+          {student.nome}
+        </Text>
+        <Text style={styles.subtitle}>polito.it - {student.matricola}</Text>
+      </View>
+      <View style={[styles.qrColumn, { width: qrSize }]}>
+        <View style={styles.qrContainer}>
+          <QrEsc qr={student.qr} width={qrSize} height={qrSize / 0.8} />
         </View>
       </View>
-    </Modal>
+    </QrCodeModal>
   );
 };
 
-const createStyles = ({ colors, fontWeights }: Theme) =>
+const createStyles = ({ dark, spacing, fontSizes, palettes }: Theme) =>
   StyleSheet.create({
-    modalOverlay: {
+    name: {
+      paddingRight: spacing[8],
+      fontFamily: 'Montserrat-Bold',
+      fontSize: fontSizes['2xl'],
+      lineHeight: fontSizes['2xl'] * 1.25,
+    },
+    subtitle: {
+      marginTop: spacing[1],
+      fontFamily: 'Montserrat-SemiBold',
+      fontSize: fontSizes.xs,
+      color: palettes.gray[dark ? 400 : 600],
+    },
+    qrColumn: {
+      alignSelf: 'center',
+    },
+    qrContainer: {
       alignItems: 'center',
-    },
-    modalContainer: {
-      backgroundColor: colors.white,
-      padding: 20,
-      borderRadius: 8,
-      shadowColor: colors.black,
-      shadowOpacity: 0.3,
-      shadowRadius: 10,
-      elevation: 10,
-    },
-    modalTitleContainer: {
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: 10,
-    },
-    modalTitle: {
-      fontSize: 20,
-      fontWeight: fontWeights.bold,
+      justifyContent: 'center',
     },
   });

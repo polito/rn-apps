@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { useTheme } from '@polito/lib/ui';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -10,10 +12,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // import { CourseGuideScreen } from './CourseGuideScreen';
 // import { Assignment } from '../types/Assignment';
 import { CourseNavigator } from './CourseNavigator';
-
 // import { CourseHideEventScreen } from '../screens/CourseHideEventScreen';
 // import { CourseIconPickerScreen } from '../screens/CourseIconPickerScreen';
-// import { CoursePreferencesScreen } from '../screens/CoursePreferencesScreen';
+import { CoursePreferencesScreen } from './CoursePreferencesScreen';
+
 // import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
 // import { CourseVirtualClassroomScreen } from './CourseVirtualClassroomScreen';
 // import { NoticeScreen } from './NoticeScreen';
@@ -54,7 +56,8 @@ export interface CourseSharedScreensParamList extends ParamListBase {
 const Stack = createNativeStackNavigator<CourseSharedScreensParamList>();
 
 export const CourseSharedScreens = () => {
-  const { colors } = useTheme();
+  const { colors, palettes, fontSizes, fontFamilies } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -73,6 +76,25 @@ export const CourseSharedScreens = () => {
           animation: (params?.animated ?? true) ? 'default' : 'none',
         })}
       />
+      <Stack.Screen
+        name="CoursePreferences"
+        component={CoursePreferencesScreen}
+        getId={({ params }: { params: any }) => `${params.courseId}`}
+        options={{
+          title: t('common.preferences'),
+          headerLargeTitle: false,
+          headerBackTitle: t('common.course'),
+          headerShadowVisible: false,
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            fontFamily: fontFamilies.heading + '-SemiBold',
+            fontSize: fontSizes.md,
+            // fontWeight: fontWeights.semibold,
+            color: palettes.primary[700],
+          },
+        }}
+      />
+
       {/* <Stack.Screen
         name="Notice"
         component={NoticeScreen}
@@ -84,16 +106,7 @@ export const CourseSharedScreens = () => {
           headerTitle: t('common.notice'),
         }}
       />
-      <Stack.Screen
-        name="CoursePreferences"
-        component={CoursePreferencesScreen}
-        getId={({ params }: { params: any }) => `${params.courseId}`}
-        options={{
-          title: t('common.preferences'),
-          headerLargeTitle: false,
-          headerBackTitle: t('common.course'),
-        }}
-      />
+      
       <Stack.Screen
         name="CourseIconPicker"
         component={CourseIconPickerScreen}

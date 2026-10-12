@@ -9,7 +9,7 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import { generatePDF } from 'react-native-html-to-pdf';
 import { cleanSingle, openCamera } from 'react-native-image-crop-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -135,7 +135,7 @@ export const CourseAssignmentPdfCreationScreen = ({
     </html>
     `;
 
-    RNHTMLtoPDF.convert({
+    generatePDF({
       width: 750,
       height: 1058,
       padding: 0,

@@ -65,7 +65,7 @@ const createStyles = ({ colors, palettes, shapes, spacing }: Theme) =>
     },
     leftBubble: {
       alignSelf: 'flex-start',
-      backgroundColor: palettes.primary[400],
+      backgroundColor: palettes.primary[500],
     },
     arrow: {
       position: 'absolute',
@@ -74,7 +74,7 @@ const createStyles = ({ colors, palettes, shapes, spacing }: Theme) =>
       bottom: 0,
     },
     leftArrow: {
-      backgroundColor: palettes.primary[400],
+      backgroundColor: palettes.primary[500],
       borderBottomRightRadius: +spacing[6],
       left: -spacing[2.5],
     },

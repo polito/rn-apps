@@ -116,6 +116,12 @@ export const CalendarBody = <T extends ICalendarEventBase>({
     };
   }, [scrollView, scrollOffsetMinutes, cellHeight]);
 
+  const nowRelativeTop = useMemo(() => {
+    if (hideNowIndicator) return null;
+    const top = getRelativeTopInDay(now, showAllDayEventCell, hours, startHour);
+    return top < 0 || top > 100 ? null : top;
+  }, [hideNowIndicator, now, showAllDayEventCell, hours, startHour]);
+
   const panResponder = usePanResponder({
     onSwipeHorizontal,
   });
@@ -255,22 +261,18 @@ export const CalendarBody = <T extends ICalendarEventBase>({
                   )
                   .map(_renderMappedEvent)}
 
-                {isToday(date) && !hideNowIndicator && (
-                  <View
-                    style={[
-                      styles.nowIndicator,
-                      {
-                        top: `${getRelativeTopInDay(
-                          now,
-                          showAllDayEventCell,
-                          hours,
-                        )}%`,
-                      },
-                    ]}
-                  >
-                    <View style={styles.nowIndicatorDot} />
-                  </View>
-                )}
+                {isToday(date) &&
+                  !hideNowIndicator &&
+                  nowRelativeTop !== null && (
+                    <View
+                      style={[
+                        styles.nowIndicator,
+                        { top: `${nowRelativeTop}%` },
+                      ]}
+                    >
+                      <View style={styles.nowIndicatorDot} />
+                    </View>
+                  )}
               </View>
             );
           })}

@@ -2,10 +2,10 @@ import { StyleSheet } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { formatDate, getHtmlTextContent } from '@polito/lib/core';
+import { useAccessibility } from '@polito/lib/core';
 import { Icon, ListItem, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 import { NewsItemOverview } from '@polito/student-api-client';
 
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 
 interface Props {

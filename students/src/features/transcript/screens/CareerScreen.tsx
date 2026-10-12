@@ -50,7 +50,7 @@ export const CareerScreen = () => {
     totalCredits,
     mastersAdmissionAverageGrade,
     excludedCreditsNumber,
-    usePurgedAverageFinalGrade,
+    isFinalGradePurged,
     totalOnTimeExamPoints,
     maxOnTimeExamPoints,
   } = studentQuery.data ?? {};
@@ -80,7 +80,7 @@ export const CareerScreen = () => {
             },
             dot: true,
           },
-          usePurgedAverageFinalGrade
+          isFinalGradePurged
             ? {
                 title: t('transcriptMetricsScreen.averageLabel'),
                 content: {
@@ -301,9 +301,7 @@ export const CareerScreen = () => {
                 <Row>
                   <Metric
                     value={formatFinalGrade(
-                      usePurgedAverageFinalGrade
-                        ? studentQuery.data?.estimatedFinalGradePurged
-                        : studentQuery.data?.estimatedFinalGrade,
+                      studentQuery.data?.estimatedFinalGrade,
                     )}
                     color={palettes.primary[400]}
                     style={GlobalStyles.grow}

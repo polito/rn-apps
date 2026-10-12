@@ -20,7 +20,7 @@ export const ScreenTitle = ({
   ellipsizeTitle = false,
   padded = false,
 }: Props) => {
-  const { spacing } = useTheme();
+  const { spacing, fontFamilies } = useTheme();
   const ellipsis: Partial<TextProps> = ellipsizeTitle
     ? {
         numberOfLines: 1,
@@ -31,7 +31,12 @@ export const ScreenTitle = ({
   return (
     <View style={[padded ? { paddingHorizontal: spacing[5] } : {}, style]}>
       <Separator />
-      <Text variant="title" role="heading" {...ellipsis}>
+      <Text
+        variant="title"
+        role="heading"
+        style={{ fontFamily: fontFamilies.heading }}
+        {...ellipsis}
+      >
         {title ?? ''}
       </Text>
     </View>

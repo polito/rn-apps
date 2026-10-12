@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { usePreferencesContext, useSplashContext } from '@polito/lib/core';
-import { AnnouncementScope } from '@polito/student-api-client';
+// import { AnnouncementScope } from '@polito/student-api-client';
+
+import { useCheckMfa } from '@polito/lib/features/auth';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useGetAnnouncements } from '../queries/announcementHooks';
-import { useCheckMfa } from '../queries/authHooks';
 import { useGetModalMessages } from '../queries/studentHooks';
 import { RootParamList } from '../types/navigation';
 import { AppPreferences } from '../types/preferences';
@@ -20,10 +21,13 @@ export const useModalManager = (versionModalIsOpen?: boolean) => {
   const { data: mfaStatus, isPending: mfaStatusPending } = useCheckMfa();
 
   const { data: messages } = useGetModalMessages();
-  const { data: onboardingAnnouncements } = useGetAnnouncements(
-    false,
-    AnnouncementScope.Onboarding,
-  );
+  // why: scope filter momentarily disabled to show both `onboarding` and
+  // `appInfo` announcements;
+  // const { data: onboardingAnnouncements } = useGetAnnouncements(
+  //   false,
+  //   AnnouncementScope.Onboarding,
+  // );
+  const { data: onboardingAnnouncements } = useGetAnnouncements(false);
 
   const hasUnseenOnboarding = useMemo(
     () => onboardingAnnouncements?.some(a => !a.seen) ?? false,

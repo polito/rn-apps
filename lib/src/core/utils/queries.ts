@@ -1,6 +1,19 @@
-import { ResponseError } from '@polito/student-api-client';
+import type { ResponseError } from '@polito/auth-api-client';
 
 import { SuccessResponse } from '../types/api';
+
+export const isResponseError = (error: unknown): error is ResponseError => {
+  if (!error || typeof error !== 'object') return false;
+
+  const response = (error as { response?: unknown }).response;
+  return (
+    (error as { name?: unknown }).name === 'ResponseError' &&
+    typeof response === 'object' &&
+    response !== null &&
+    typeof (response as { status?: unknown }).status === 'number' &&
+    typeof (response as { json?: unknown }).json === 'function'
+  );
+};
 
 export class ApiError extends Error {
   constructor(
@@ -24,7 +37,7 @@ export const pluckData = <T>(response: SuccessResponse<T>) => {
 };
 
 const parseApiError = async (error: Error): Promise<ApiError | null> => {
-  if (!(error instanceof ResponseError)) {
+  if (!isResponseError(error)) {
     return null;
   }
   const data = await error.response.json();
@@ -49,6 +62,6 @@ export const rethrowApiError = async (error: Error): Promise<never> => {
  * Ignore 404 ResponseErrors
  */
 export const ignoreNotFound = (e: Error): null => {
-  if (e instanceof ResponseError && e.response.status === 404) return null;
+  if (isResponseError(e) && e.response.status === 404) return null;
   throw e;
 };

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 
 import { formatDateTime, linkUrls } from '@polito/lib/core';
+import { useGetPerson } from '@polito/lib/features/people';
 import {
   HtmlView,
   OverviewList,
@@ -13,8 +14,6 @@ import {
   useStylesheet,
 } from '@polito/lib/ui';
 import { Message } from '@polito/student-api-client';
-
-import { useGetPerson } from '../../../core/queries/peopleHooks';
 
 type Props = {
   message: Message;

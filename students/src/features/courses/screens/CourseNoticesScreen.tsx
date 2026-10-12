@@ -8,6 +8,7 @@ import {
   getHtmlTextContent,
   useOfflineDisabled,
 } from '@polito/lib/core';
+import { useAccessibility } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   GlobalStyles,
@@ -21,7 +22,6 @@ import {
 
 import { DateTime } from 'luxon';
 
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useOnLeaveScreen } from '../../../core/hooks/useOnLeaveScreen';
 import { useGetCourseNotices } from '../../../core/queries/courseHooks';

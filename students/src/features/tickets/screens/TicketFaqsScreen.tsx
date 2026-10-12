@@ -13,6 +13,7 @@ import { Document } from 'react-native-render-html';
 
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import { faPencil, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { useAccessibility } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   CtaButton,
@@ -35,7 +36,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { innerText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 
-import { useAccessibility } from '../../../core/hooks/useAccessibilty';
 import { useSearchTicketFaqs } from '../../../core/queries/ticketHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 

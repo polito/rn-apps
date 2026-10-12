@@ -3,21 +3,18 @@ import {
   useEffect,
   useLayoutEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, SectionList, StyleSheet, View } from 'react-native';
+import {
+  Platform,
+  Pressable,
+  SectionList,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
-import {
-  APP_TIMEZONE,
-  formatDate,
-  isCurrentMonth,
-  isCurrentYear,
-  useOfflineDisabled,
-  usePreferencesContext,
-} from '@polito/lib/core';
 import {
   ActivityIndicator,
   AgendaCard,
@@ -41,14 +38,25 @@ import {
 } from '@polito/lib/ui';
 import { BookingSlot } from '@polito/student-api-client';
 import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { AppPreferences } from '~/core/types/preferences';
 import { EmptyWeek } from '~/features/agenda/components/EmptyWeek';
 
 import { DateTime } from 'luxon';
 
+import { usePreferencesContext } from '../../../../../lib/src/core/contexts';
+import { useOfflineDisabled } from '../../../../../lib/src/core/hooks';
 import {
+  APP_TIMEZONE,
+  formatDate,
+  isCurrentMonth,
+  isCurrentYear,
+} from '../../../../../lib/src/core/utils';
+import {
+  BOOKINGS_SLOTS_QUERY_KEY,
   useGetBookingSlots,
   useGetBookingTopics,
   useGetBookings,
@@ -65,7 +73,11 @@ import { WeekFilter } from '../../agenda/components/WeekFilter';
 import { AgendaOption } from '../../agenda/types/AgendaOption';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingSlotModal } from '../components/BookingSlotModal';
+import { BookingSlotsLegendModal } from '../components/BookingSlotsLegendModal';
 import { BookingSlotsStatusLegend } from '../components/BookingSlotsStatusLegend';
+
+const MIN_SLOT_HEIGHT = 40;
+const SMALL_SLOT_MAX_DURATION = 15;
 
 const START_DATE = DateTime.now().setZone(APP_TIMEZONE).startOf('day');
 
@@ -84,8 +96,9 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
   const isOffline = useOfflineDisabled();
   const { language } = usePreferencesContext<AppPreferences>();
+  const queryClient = useQueryClient();
 
-  const [showAgenda, setShowAgenda] = useState(false);
+  const [showAgenda, setShowAgenda] = useState<boolean | null>(null);
   const [currentWeekStart, setCurrentWeekStart] = useState(
     START_DATE.startOf('week'),
   );
@@ -114,6 +127,24 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     [topics, topicId],
   );
 
+  const hasSmallSlots =
+    !!currentTopic.slotLength &&
+    currentTopic.slotLength <= SMALL_SLOT_MAX_DURATION;
+  const defaultAgendaLayout = !!currentTopic.agendaView || hasSmallSlots;
+
+  const showAgendaLayout =
+    showAgenda !== null ? showAgenda : defaultAgendaLayout;
+
+  useFocusEffect(
+    useCallback(() => {
+      queryClient.refetchQueries({ queryKey: BOOKINGS_SLOTS_QUERY_KEY });
+    }, [queryClient]),
+  );
+
+  useEffect(() => {
+    setShowAgenda(null);
+  }, [topicId]);
+
   const calendarEvents = useMemo<BookingCalendarEvent[]>(() => {
     if (!bookingSlots) return [];
     return bookingSlots.map(slot => {
@@ -132,6 +163,17 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
       };
     });
   }, [bookingSlots]);
+
+  const calendarCellHeight = useMemo(() => {
+    const shortestDuration = Math.min(
+      ...calendarEvents.map(e => e.duration).filter(d => d > 0),
+      currentTopic.slotLength || 60,
+    );
+    return Math.max(
+      CALENDAR_CELL_HEIGHT,
+      Math.ceil((MIN_SLOT_HEIGHT * 60) / shortestDuration),
+    );
+  }, [calendarEvents, currentTopic.slotLength]);
 
   const handlePress = useCallback(
     (evtOrItem: BookingCalendarEvent) => {
@@ -199,25 +241,10 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     }));
 
     setLoadedWeeks(ws => (ws.includes(weekISO) ? ws : [...ws, weekISO]));
-    // if (currentTopic.agendaView) setShowAgenda(true);
-  }, [bookingSlots, currentWeekStart, currentTopic.agendaView]);
-
-  const hasAutoOpenedRef = useRef(false);
-
-  useEffect(() => {
-    if (
-      currentTopic.agendaView &&
-      bookingSlots &&
-      bookingSlots.length > 0 &&
-      !hasAutoOpenedRef.current
-    ) {
-      setShowAgenda(true);
-      hasAutoOpenedRef.current = true;
-    }
-  }, [currentTopic.agendaView, bookingSlots]);
+  }, [bookingSlots, currentWeekStart]);
   useEffect(() => {
     setCurrentWeekStart(START_DATE.startOf('week'));
-  }, [showAgenda]);
+  }, [showAgendaLayout]);
 
   const screenOptions = useMemo<AgendaOption[]>(
     () => [
@@ -227,12 +254,12 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
       },
       {
         id: 'toggleView',
-        title: showAgenda
+        title: showAgendaLayout
           ? t('agendaScreen.weeklyLayout')
           : t('agendaScreen.dailyLayout'),
       },
     ],
-    [t, showAgenda],
+    [t, showAgendaLayout],
   );
 
   const onPressOption = useCallback(
@@ -242,14 +269,25 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
           refetch();
           break;
         case 'toggleView':
-          setShowAgenda(v => !v);
+          setShowAgenda(prev => {
+            const showingLayout = prev !== null ? prev : defaultAgendaLayout;
+            return !showingLayout;
+          });
           break;
         default:
           break;
       }
     },
-    [refetch],
+    [refetch, defaultAgendaLayout],
   );
+
+  const onPressLegend = useCallback(() => {
+    if (Platform.OS === 'android') {
+      showBottomModal(<BookingSlotsLegendModal close={closeBottomModal} />);
+      return;
+    }
+    navigation.navigate('BookingSlotsLegend');
+  }, [closeBottomModal, navigation, showBottomModal]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -279,9 +317,14 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     title: string;
     data: BookingCalendarEvent[];
   };
+
+  const currentWeekIso = currentWeekStart.toISODate()!;
+
   const weekSections = useMemo<WeekSection[]>(() => {
     return loadedWeeks.map(isoStart => {
-      const evts = eventsByWeek[isoStart] || [];
+      const fromState = eventsByWeek[isoStart];
+      const evts =
+        isoStart === currentWeekIso ? calendarEvents : (fromState ?? []);
       const start = DateTime.fromISO(isoStart);
       const end = start.plus({ days: 6 });
       const sorted = evts
@@ -292,15 +335,15 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
         data: sorted,
       };
     });
-  }, [loadedWeeks, eventsByWeek]);
+  }, [loadedWeeks, eventsByWeek, currentWeekIso, calendarEvents]);
   return (
     <>
       <BottomModal dismissable {...bottomModal} />
       <HeaderAccessory justify="space-between">
         <Tabs>
-          <BookingSlotsStatusLegend />
+          <BookingSlotsStatusLegend onPress={onPressLegend} />
         </Tabs>
-        {!showAgenda && (
+        {!showAgendaLayout && (
           <WeekFilter
             current={currentWeekStart}
             getNext={() =>
@@ -325,7 +368,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
       </HeaderAccessory>
 
       <View style={styles.container} onLayout={() => {}}>
-        {showAgenda ? (
+        {showAgendaLayout ? (
           <SectionList<BookingCalendarEvent>
             sections={weekSections}
             keyExtractor={item => item.id.toString()}
@@ -342,7 +385,10 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               </Text>
             )}
             renderSectionFooter={({ section }) =>
-              section.data.length === 0 ? (
+              section.data.length === 0 &&
+              !isLoading &&
+              !isFetching &&
+              !isRefetching ? (
                 <Row style={{ marginVertical: 8, marginHorizontal: 16 }}>
                   <View style={styles.dayColumn} />
                   <Col flex={1}>
@@ -449,10 +495,17 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               );
             }}
             onEndReached={() => {
-              if (!isOffline) {
-                const nextWeek = currentWeekStart.plus({ week: 1 });
-                setCurrentWeekStart(nextWeek);
+              if (
+                isOffline ||
+                isLoading ||
+                isFetching ||
+                isRefetching ||
+                bookingSlots === undefined
+              ) {
+                return;
               }
+              const nextWeek = currentWeekStart.plus({ week: 1 });
+              setCurrentWeekStart(nextWeek);
             }}
             onEndReachedThreshold={0.5}
             ListFooterComponent={
@@ -461,7 +514,11 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               ) : null
             }
             ListEmptyComponent={
-              <View style={styles.empty}>{!isLoading && <EmptyWeek />}</View>
+              isLoading || isFetching || isRefetching ? null : (
+                <View style={styles.empty}>
+                  <EmptyWeek />
+                </View>
+              )
             }
           />
         ) : (
@@ -484,7 +541,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
               locale={language}
               hours={hours}
               bodyContainerStyle={{ backgroundColor: colors.yellow }}
-              cellMaxHeight={currentTopic.slotLength || CALENDAR_CELL_HEIGHT}
+              cellMaxHeight={calendarCellHeight}
               showAllDayEventCell={false}
               swipeEnabled={false}
               renderHeader={props => (
