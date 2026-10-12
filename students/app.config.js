@@ -12,8 +12,6 @@ module.exports = () => {
   const appName = isDev ? 'PoliTO Students [DEV]' : 'PoliTO Students';
 
   return {
-    name: appName,
-    displayName: appName,
     expo: {
       name: appName,
       slug: 'students',
@@ -90,11 +88,12 @@ module.exports = () => {
             backgroundColor: '#002B49',
             android: {
               image: './assets/bootsplash/splashscreen_logo.png',
-              width: 350,
+              imageWidth: 350,
               resizeMode: 'contain',
             },
             ios: {
               image: './assets/bootsplash/splashscreen_logo.png',
+              imageWidth: 350,
               resizeMode: 'contain',
             },
           },
