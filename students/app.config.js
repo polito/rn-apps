@@ -15,7 +15,7 @@ module.exports = () => {
     expo: {
       name: appName,
       slug: 'students',
-      scheme: 'students',
+      scheme: 'polito',
       icon: iconPath,
       primaryColor: '#002B49',
       backgroundColor: '#002B49',
@@ -85,17 +85,13 @@ module.exports = () => {
         [
           'expo-splash-screen',
           {
-            backgroundColor: '#002B49',
-            android: {
-              image: './assets/bootsplash/splashscreen_logo.png',
-              imageWidth: 350,
-              resizeMode: 'contain',
+            image: './assets/splash/logo_blue.png',
+            backgroundColor: '#F0F3F5',
+            dark: {
+              image: './assets/splash/logo_white.png',
+              backgroundColor: '#002B49',
             },
-            ios: {
-              image: './assets/bootsplash/splashscreen_logo.png',
-              imageWidth: 350,
-              resizeMode: 'contain',
-            },
+            imageWidth: 200,
           },
         ],
         [
