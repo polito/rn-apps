@@ -11,6 +11,28 @@
     "title": "Agenda",
     "weeklyLayout": "Weekly layout"
   },
+  "assignmentListItem": {
+    "openHint": "Opens the assignment details",
+    "removalRequested": "Removal requested by the student",
+    "unread": "New"
+  },
+  "assignmentScreen": {
+    "answer": "Answer",
+    "answerButtonHint": "Opens a form to reply to the student",
+    "answerHint": "Write the reply to send to the student",
+    "answerLabel": "Answer",
+    "answerPlaceholder": "Write your message here",
+    "answerSent": "Answer sent",
+    "deleteHint": "Asks for confirmation before deleting the assignment",
+    "deleted": "Assignment deleted",
+    "downloadFile": "Download file",
+    "downloadUnavailableHint": "Download is not available yet",
+    "metaLabel": "Submitted on {{date}} by {{student}}",
+    "noDescription": "No description provided",
+    "notFound": "Assignment not found",
+    "sendAnswer": "Send answer",
+    "sendAnswerDisabledHint": "Write an answer to enable sending"
+  },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
     "bookingStatus": {
@@ -188,6 +210,7 @@
     "newItems_plural": "New items",
     "next": "Next",
     "news": "News",
+    "no": "No",
     "noInternet": "You are offline, some features may not be available",
     "noValue": "No value",
     "notFound": "Not found",
@@ -259,6 +282,7 @@
     "virtualClassroom_plural": "Virtual classrooms",
     "visualization": "Visualization",
     "year": "year",
+    "yes": "Yes",
     "yesterday": "Yesterday"
   },
   "contactsScreen": {
