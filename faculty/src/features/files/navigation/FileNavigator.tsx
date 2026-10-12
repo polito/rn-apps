@@ -2,13 +2,31 @@ import { Platform } from 'react-native';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { FileStackParamList } from '../../../core/types/navigation';
 import { FileErrorBoundary } from '../FileErrorBoundary';
 import {
   CourseDirectoryScreen,
   CourseFilesScreen,
   ModifyFileScreen,
 } from '../screens';
+
+export type FileStackParamList = {
+  CourseFilesScreen: { courseId: number; path?: string; directoryId?: number };
+  CourseFolderFilesScreen: {
+    courseId: number;
+    path?: string;
+    directoryId: number;
+  };
+  CourseDirectoryScreen: { courseId: number; path?: string };
+  CourseFilesUploadScreen: { courseId: number; path?: string };
+  CourseFileMultiSelectScreen: {
+    courseId: number;
+    path?: string;
+    action?: 'move' | 'delete';
+    initialSelectedIds?: string[];
+  };
+  ModifyFileScreen: { courseId: number; fileId: string };
+  MoveFilesScreen: { courseId?: number; fileIds?: string[] };
+};
 
 const Stack = createNativeStackNavigator<FileStackParamList>();
 

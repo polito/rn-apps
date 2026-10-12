@@ -1,20 +1,38 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { FlatList, Platform, StyleSheet, View } from 'react-native';
 
-import { SearchBar, Theme, useStylesheet } from '@polito/lib/ui';
+import {
+  faChevronDown,
+  faChevronUp,
+  faEllipsisVertical,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+  Icon,
+  IconButton,
+  IndentedDivider,
+  ManagedFileListItem,
+  OverviewList,
+  SearchBar,
+  TextButton,
+  Theme,
+  useSafeAreaSpacing,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
+import {
+  MenuAction,
+  MenuView,
+  NativeActionEvent,
+} from '@react-native-menu/menu';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { FileStackParamList } from '../../../core/types/navigation';
-import { CourseFilesList, FileListItem } from '../components/CourseFilesList';
-import {
-  CourseFilesMenu,
-  CourseFilesMenuItem,
-} from '../components/CourseFilesMenu';
 import { useCourseFilesData } from '../hooks/useCourseFilesData';
-import { useFileManagement } from '../hooks/useFileManagement';
+import { FileSortMode, useFileManagement } from '../hooks/useFileManagement';
+import { FileStackParamList } from '../navigation/FileNavigator';
+import { FileListEntry } from '../types/FileListEntry';
 import { formatFolderDetails } from '../utils/formatFolderDetails';
 
 /** Directory-first files screen. */
@@ -24,6 +42,9 @@ export const CourseDirectoryScreen = () => {
   const styles = useStylesheet(createStyles);
   const { selectedCourse } = useCourses();
   const { t } = useTranslation();
+  const { paddingHorizontal } = useSafeAreaSpacing();
+  const { palettes, fontSizes } = useTheme();
+  const [isSortOpen, setSortOpen] = useState(false);
   const { files, directories } = useCourseFilesData(selectedCourse);
 
   const { search, setSearch, sortMode, setSortMode, sortedDirectories } =
@@ -34,47 +55,42 @@ export const CourseDirectoryScreen = () => {
       storageKey: String(selectedCourse?.id ?? 'global'),
     });
 
-  const menuItems: CourseFilesMenuItem[] = [
+  const menuActions: MenuAction[] = [
     {
-      id: 'item0',
+      id: 'select',
       title: t('courseFilesTab.select', { defaultValue: 'Select' }),
-      onPress: () => {
-        if (selectedCourse?.id != null) {
-          navigation.navigate('CourseFileMultiSelectScreen', {
-            courseId: selectedCourse.id,
-          });
-        }
-      },
     },
     {
-      id: 'item1',
+      id: 'viewFiles',
       title: t('courseFilesTab.viewFiles', { defaultValue: 'View Files' }),
-      onPress: () => {
-        if (selectedCourse?.id != null) {
-          navigation.navigate('CourseFilesScreen', {
-            courseId: selectedCourse.id,
-          });
-        }
-      },
     },
   ];
 
-  const sortMenuItems: CourseFilesMenuItem[] = [
+  const sortActions: MenuAction[] = [
     {
-      id: 'item2',
+      id: 'nameAsc',
       title: t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' }),
-      onPress: () => setSortMode('nameAsc'),
-      checked: sortMode === 'nameAsc',
+      state: sortMode === 'nameAsc' ? 'on' : 'off',
     },
     {
-      id: 'item3',
+      id: 'nameDesc',
       title: t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' }),
-      onPress: () => setSortMode('nameDesc'),
-      checked: sortMode === 'nameDesc',
+      state: sortMode === 'nameDesc' ? 'on' : 'off',
     },
   ];
 
-  const folderEntries: FileListItem[] = useMemo(
+  const onPressMenuAction = ({ nativeEvent: { event } }: NativeActionEvent) => {
+    if (selectedCourse?.id == null) return;
+    if (event === 'select') {
+      navigation.navigate('CourseFileMultiSelectScreen', {
+        courseId: selectedCourse.id,
+      });
+    } else if (event === 'viewFiles') {
+      navigation.navigate('CourseFilesScreen', { courseId: selectedCourse.id });
+    }
+  };
+
+  const folderEntries: FileListEntry[] = useMemo(
     () =>
       sortedDirectories.map(folder => {
         const totalBytes = folder.files.reduce(
@@ -109,16 +125,66 @@ export const CourseDirectoryScreen = () => {
           onChangeText={setSearch}
           label={t('courseDirectoryScreen.search', { defaultValue: 'Search' })}
         />
-        <CourseFilesMenu
-          sortLabel={
-            sortMode === 'nameAsc'
-              ? t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' })
-              : t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' })
+        <View style={styles.menuRow}>
+          <MenuView
+            actions={sortActions}
+            onPressAction={({ nativeEvent: { event } }) =>
+              setSortMode(event as FileSortMode)
+            }
+            onOpenMenu={() => setSortOpen(true)}
+            onCloseMenu={() => setSortOpen(false)}
+          >
+            <View style={styles.sortTrigger}>
+              <TextButton>
+                {sortActions.find(a => a.state === 'on')?.title}
+              </TextButton>
+              <Icon
+                icon={isSortOpen ? faChevronUp : faChevronDown}
+                size={fontSizes.md}
+                color={palettes.primary[400]}
+                style={styles.sortChevron}
+              />
+            </View>
+          </MenuView>
+          <MenuView actions={menuActions} onPressAction={onPressMenuAction}>
+            <IconButton
+              icon={faEllipsisVertical}
+              color={palettes.primary[400]}
+              size={fontSizes.lg}
+              adjustSpacing="right"
+              accessibilityLabel={t('common.options', {
+                defaultValue: 'Options',
+              })}
+            />
+          </MenuView>
+        </View>
+        <FlatList
+          data={folderEntries}
+          contentContainerStyle={paddingHorizontal}
+          keyExtractor={item => item.id}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <ManagedFileListItem
+              name={item.name}
+              subtitle={item.subtitle}
+              status={item.status}
+              onPress={item.onPress}
+              isFolder={item.isFolder}
+              onLongPress={item.onLongPress}
+              onActionPress={item.trailing ? undefined : item.onActionPress}
+              trailing={item.trailing}
+            />
+          )}
+          ItemSeparatorComponent={Platform.select({ ios: IndentedDivider })}
+          ListEmptyComponent={
+            <OverviewList
+              emptyStateText={t('courseFilesTab.empty', {
+                defaultValue: 'No files yet',
+              })}
+            />
           }
-          sortItems={sortMenuItems}
-          moreItems={menuItems}
         />
-        <CourseFilesList files={folderEntries} fillHeight />
       </View>
     </View>
   );
@@ -129,6 +195,19 @@ const createStyles = ({ colors, spacing }: Theme) =>
     screen: {
       flex: 1,
       backgroundColor: colors.background,
+    },
+    menuRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      alignSelf: 'stretch',
+    },
+    sortTrigger: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    sortChevron: {
+      marginLeft: spacing[1],
     },
     content: {
       flex: 1,

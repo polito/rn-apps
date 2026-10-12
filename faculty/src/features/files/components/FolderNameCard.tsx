@@ -6,12 +6,19 @@ import {
   TextInputProps,
   TextStyle,
   TouchableOpacity,
-  View,
   ViewStyle,
 } from 'react-native';
 
 import { faFolder } from '@fortawesome/free-regular-svg-icons';
-import { Icon, Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
+import {
+  Col,
+  Icon,
+  Row,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 
 type Props = {
   label: string;
@@ -60,20 +67,27 @@ export const FolderNameCard = ({
   const { palettes } = useTheme();
 
   return (
-    <TouchableOpacity
+    <Row
+      component={TouchableOpacity}
+      align="center"
       onPress={onPress}
       onPressIn={onPressIn}
       activeOpacity={activeOpacity}
       style={[styles.container, containerStyle]}
     >
-      <View style={[styles.leading, leadingContainerStyle]}>
+      <Row
+        align="center"
+        justify="center"
+        pl={4}
+        style={[styles.leading, leadingContainerStyle]}
+      >
         <Icon
           icon={faFolder}
           size={20}
           color={leadingIconColor ?? palettes.secondary[500]}
         />
-      </View>
-      <View style={styles.content}>
+      </Row>
+      <Col flex={1} justify="center" pl={4} style={styles.content}>
         <Text style={[styles.label, labelStyle]}>{label}</Text>
         <TextInput
           ref={inputRef}
@@ -88,13 +102,12 @@ export const FolderNameCard = ({
           style={[styles.input, inputStyle]}
           {...inputProps}
         />
-      </View>
-    </TouchableOpacity>
+      </Col>
+    </Row>
   );
 };
 
 const createStyles = ({
-  spacing,
   shapes,
   fontFamilies,
   fontSizes,
@@ -102,8 +115,6 @@ const createStyles = ({
 }: Theme) =>
   StyleSheet.create({
     container: {
-      flexDirection: 'row',
-      alignItems: 'center',
       height: 60,
       borderRadius: shapes.lg,
       overflow: 'hidden',
@@ -111,14 +122,8 @@ const createStyles = ({
     leading: {
       width: 46,
       height: '100%',
-      paddingLeft: spacing[4],
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     content: {
-      flex: 1,
-      paddingLeft: spacing[4],
-      justifyContent: 'center',
       overflow: 'hidden',
     },
     label: {

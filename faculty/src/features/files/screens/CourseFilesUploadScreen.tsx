@@ -26,6 +26,7 @@ import {
   CtaButton,
   IndentedDivider,
   Text,
+  TextButton,
   Theme,
   useHideTabs,
   useStylesheet,
@@ -35,11 +36,10 @@ import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { FileStackParamList } from '../../../core/types/navigation';
 import { DashedOutline } from '../components/DashedOutline';
 import { FolderNameCard } from '../components/FolderNameCard';
-import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
 import { SelectableRadioRow } from '../components/SelectableRadioRow';
+import { FileStackParamList } from '../navigation/FileNavigator';
 
 export type UploadType = 'file' | 'folder';
 const DEFAULT_FOLDER_NAME = 'New Folder';
@@ -63,7 +63,6 @@ type Props = NativeStackScreenProps<
 export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
   const { courseId, path } = route.params;
   const { colors, dark, fontSizes, palettes } = useTheme();
-  const iosGrabberColor = dark ? palettes.gray[500] : palettes.gray[300];
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
 
@@ -234,30 +233,21 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       {Platform.OS === 'ios' ? (
-        <IosTopBar
-          backgroundColor={dark ? colors.surface : colors.white}
-          grabberColor={iosGrabberColor}
-          dividerColor={dark ? palettes.gray[600] : colors.divider}
-          left={
-            <IosTopBarTextAction
-              label={
-                showBackButton
-                  ? t('common.back', { defaultValue: 'Back' })
-                  : t('common.close', { defaultValue: 'Close' })
+        <View style={styles.header}>
+          <TextButton
+            onPress={() => {
+              if (showBackButton) {
+                resetUploadStep();
+                return;
               }
-              onPress={() => {
-                if (showBackButton) {
-                  resetUploadStep();
-                  return;
-                }
-                navigation.goBack();
-              }}
-              color={palettes.gray[500]}
-              containerStyle={styles.closeButton}
-            />
-          }
-          right={<View style={styles.headerRight} />}
-        />
+              navigation.goBack();
+            }}
+          >
+            {showBackButton
+              ? t('common.back', { defaultValue: 'Back' })
+              : t('common.close', { defaultValue: 'Close' })}
+          </TextButton>
+        </View>
       ) : null}
 
       <ScrollView
@@ -596,11 +586,11 @@ const createStyles = ({
       flex: 1,
       backgroundColor: colors.background,
     },
-    headerRight: {
-      minWidth: 56,
-    },
-    closeButton: {
-      minWidth: 56,
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[2],
     },
     scroll: {
       flex: 1,

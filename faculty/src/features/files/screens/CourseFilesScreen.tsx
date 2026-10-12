@@ -1,30 +1,39 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, FlatList, Platform, StyleSheet, View } from 'react-native';
 
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChevronDown,
+  faChevronUp,
+  faEllipsisVertical,
+  faPlus,
+} from '@fortawesome/free-solid-svg-icons';
 import {
   CtaButton,
+  Icon,
+  IconButton,
   IndentedDivider,
   ManagedFileListItem,
   OverviewList,
   SearchBar,
+  Text,
+  TextButton,
   Theme,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import {
+  MenuAction,
+  MenuView,
+  NativeActionEvent,
+} from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { FileStackParamList } from '../../../core/types/navigation';
-import { CourseDirectoryTopBar } from '../components/CourseDirectoryTopBar';
-import { FileListItem } from '../components/CourseFilesList';
-import {
-  CourseFilesMenu,
-  CourseFilesMenuItem,
-} from '../components/CourseFilesMenu';
 import { useCourseFilesData } from '../hooks/useCourseFilesData';
 import { FileSortMode, useFileManagement } from '../hooks/useFileManagement';
+import { FileStackParamList } from '../navigation/FileNavigator';
+import { FileListEntry } from '../types/FileListEntry';
 import { formatFolderDetails } from '../utils/formatFolderDetails';
 
 type Props = NativeStackScreenProps<
@@ -34,7 +43,8 @@ type Props = NativeStackScreenProps<
 
 export const CourseFilesScreen = ({ route, navigation }: Props) => {
   const styles = useStylesheet(createStyles);
-  const { spacing } = useTheme();
+  const { spacing, palettes, fontSizes } = useTheme();
+  const [isSortOpen, setSortOpen] = useState(false);
   const { selectedCourse } = useCourses();
   const { t } = useTranslation();
   const { files, directories } = useCourseFilesData(selectedCourse);
@@ -55,68 +65,60 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     directories,
     storageKey: String(selectedCourse?.id ?? 'global'),
   });
-  const menuItems: CourseFilesMenuItem[] = [
+  const menuActions: MenuAction[] = [
     {
-      id: 'item0',
+      id: 'select',
       title: t('courseFilesTab.select', { defaultValue: 'Select' }),
-      onPress: () => {
-        if (selectedCourse?.id != null) {
-          navigation.navigate('CourseFileMultiSelectScreen', {
-            courseId: selectedCourse.id,
-          });
-        }
-      },
     },
     {
-      id: 'item1',
+      id: 'folders',
       title: t('courseFilesTab.viewFolders', { defaultValue: 'View Folders' }),
-      onPress: () => {
-        if (activeDirectoryId != null) {
-          navigation.setParams({ directoryId: undefined });
-        }
-        setViewMode('folders');
-      },
-      checked: viewMode === 'folders',
+      state: viewMode === 'folders' ? 'on' : 'off',
     },
     {
-      id: 'item2',
+      id: 'files',
       title: t('courseFilesTab.viewFiles', { defaultValue: 'View Files' }),
-      onPress: () => {
-        if (activeDirectoryId != null) {
-          navigation.setParams({ directoryId: undefined });
-        }
-        setViewMode('files');
-      },
-      checked: viewMode === 'files',
+      state: viewMode === 'files' ? 'on' : 'off',
     },
   ];
 
-  const sortMenuItems: CourseFilesMenuItem[] = [
+  const sortActions: MenuAction[] = [
     {
-      id: 'item3',
+      id: 'nameAsc',
       title: t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' }),
-      onPress: () => setSortMode('nameAsc'),
-      checked: sortMode === 'nameAsc',
+      state: sortMode === 'nameAsc' ? 'on' : 'off',
     },
     {
-      id: 'item4',
+      id: 'nameDesc',
       title: t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' }),
-      onPress: () => setSortMode('nameDesc'),
-      checked: sortMode === 'nameDesc',
+      state: sortMode === 'nameDesc' ? 'on' : 'off',
     },
     {
-      id: 'item5',
+      id: 'mostRecent',
       title: t('courseFilesTab.mostRecent', { defaultValue: 'Most Recent' }),
-      onPress: () => setSortMode('mostRecent'),
-      checked: sortMode === 'mostRecent',
+      state: sortMode === 'mostRecent' ? 'on' : 'off',
     },
     {
-      id: 'item6',
+      id: 'oldestFirst',
       title: t('common.oldestFirst', { defaultValue: 'Oldest first' }),
-      onPress: () => setSortMode('oldestFirst'),
-      checked: sortMode === 'oldestFirst',
+      state: sortMode === 'oldestFirst' ? 'on' : 'off',
     },
   ];
+
+  const onPressMenuAction = ({ nativeEvent: { event } }: NativeActionEvent) => {
+    if (event === 'select') {
+      if (selectedCourse?.id != null) {
+        navigation.navigate('CourseFileMultiSelectScreen', {
+          courseId: selectedCourse.id,
+        });
+      }
+      return;
+    }
+    if (activeDirectoryId != null) {
+      navigation.setParams({ directoryId: undefined });
+    }
+    setViewMode(event === 'folders' ? 'folders' : 'files');
+  };
 
   const downloadTitle = t('courseFilesTab.download', {
     defaultValue: 'Download',
@@ -218,7 +220,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     return sortedFiles.filter(file => activeFileIds.has(file.id));
   }, [activeDirectory, sortedFiles]);
 
-  const fileEntries: FileListItem[] = useMemo(() => {
+  const fileEntries: FileListEntry[] = useMemo(() => {
     return visibleFiles.map(file => {
       const fileId = file.id;
       const status = getFileStatus(fileId);
@@ -255,7 +257,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     startDownload,
     promptOverwriteDownload,
   ]);
-  const folderEntries: FileListItem[] = useMemo(
+  const folderEntries: FileListEntry[] = useMemo(
     () =>
       sortedDirectories.map(folder => {
         const totalBytes = folder.files.reduce(
@@ -289,11 +291,15 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
   return (
     <View style={styles.screen}>
       {activeDirectory && Platform.OS === 'ios' ? (
-        <CourseDirectoryTopBar
-          title={activeDirectory.name}
-          backLabel={t('common.back', { defaultValue: 'Back' })}
-          onBackPress={() => navigation.goBack()}
-        />
+        <View style={styles.header}>
+          <TextButton onPress={() => navigation.goBack()}>
+            {t('common.back', { defaultValue: 'Back' })}
+          </TextButton>
+          <Text numberOfLines={1} weight="semibold" style={styles.headerTitle}>
+            {activeDirectory.name}
+          </Text>
+          <View style={styles.headerSpacer} />
+        </View>
       ) : null}
       <View style={styles.controlsContainer}>
         <SearchBar
@@ -302,11 +308,37 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
           label={t('courseDirectoryScreen.search', { defaultValue: 'Search' })}
         />
 
-        <CourseFilesMenu
-          sortLabel={sortLabels[sortMode]}
-          sortItems={sortMenuItems}
-          moreItems={menuItems}
-        />
+        <View style={styles.menuRow}>
+          <MenuView
+            actions={sortActions}
+            onPressAction={({ nativeEvent: { event } }) =>
+              setSortMode(event as FileSortMode)
+            }
+            onOpenMenu={() => setSortOpen(true)}
+            onCloseMenu={() => setSortOpen(false)}
+          >
+            <View style={styles.sortTrigger}>
+              <TextButton>{sortLabels[sortMode]}</TextButton>
+              <Icon
+                icon={isSortOpen ? faChevronUp : faChevronDown}
+                size={fontSizes.md}
+                color={palettes.primary[400]}
+                style={styles.sortChevron}
+              />
+            </View>
+          </MenuView>
+          <MenuView actions={menuActions} onPressAction={onPressMenuAction}>
+            <IconButton
+              icon={faEllipsisVertical}
+              color={palettes.primary[400]}
+              size={fontSizes.lg}
+              adjustSpacing="right"
+              accessibilityLabel={t('common.options', {
+                defaultValue: 'Options',
+              })}
+            />
+          </MenuView>
+        </View>
       </View>
 
       <FlatList
@@ -392,6 +424,21 @@ const createStyles = ({ colors, spacing }: Theme) =>
       flex: 1,
       backgroundColor: colors.background,
     },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: spacing[2],
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[2],
+    },
+    headerTitle: {
+      flex: 1,
+      textAlign: 'center',
+    },
+    headerSpacer: {
+      minWidth: 48,
+    },
     flatList: {
       flex: 1,
     },
@@ -433,6 +480,19 @@ const createStyles = ({ colors, spacing }: Theme) =>
     },
     fileDivider: {
       alignSelf: 'stretch',
+    },
+    menuRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      alignSelf: 'stretch',
+    },
+    sortTrigger: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    sortChevron: {
+      marginLeft: spacing[1],
     },
     controlsContainer: {
       paddingHorizontal: spacing[5],

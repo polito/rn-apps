@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
+  FlatList,
   InteractionManager,
   KeyboardAvoidingView,
   Platform,
@@ -21,11 +22,14 @@ import {
   Checkbox,
   CtaButton,
   Icon,
+  IndentedDivider,
+  ManagedFileListItem,
+  OverviewList,
   SearchBar,
-  Text,
   TextButton,
   Theme,
   useHideTabs,
+  useSafeAreaSpacing,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
@@ -33,10 +37,9 @@ import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
-import { FileStackParamList } from '../../../core/types/navigation';
-import { CourseFilesList, FileListItem } from '../components/CourseFilesList';
-import { IosTopBar, IosTopBarTextAction } from '../components/IosTopBar';
+import { FileStackParamList } from '../navigation/FileNavigator';
 import { CourseFileEntry as CourseFileDataEntry } from '../types/CourseFileEntry';
+import { FileListEntry } from '../types/FileListEntry';
 import { mapFileEntry } from '../utils/mapFileEntry';
 import { MoveFilesModal } from './MoveFilesScreen';
 
@@ -48,6 +51,7 @@ type Props = NativeStackScreenProps<
 export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
   const { courseId, initialSelectedIds } = route.params;
   const { t } = useTranslation();
+  const { paddingHorizontal } = useSafeAreaSpacing();
   const {
     fakeCourses,
     removeFileFromCourse,
@@ -55,8 +59,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
     updateCourseFile,
   } = useCourses();
   const theme = useTheme();
-  const { fontSizes, palettes, colors, dark } = theme;
-  const iosGrabberColor = dark ? palettes.gray[500] : palettes.gray[300];
+  const { fontSizes, palettes } = theme;
   const styles = useStylesheet(createStyles);
 
   useHideTabs();
@@ -287,7 +290,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
 
   const checkboxIconColor = palettes.gray[500];
 
-  const fileEntries: FileListItem[] = useMemo(
+  const fileEntries: FileListEntry[] = useMemo(
     () =>
       listData.map(entry => ({
         id: entry.file.id,
@@ -329,41 +332,16 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       {Platform.OS === 'ios' ? (
-        <IosTopBar
-          backgroundColor={dark ? colors.surface : colors.white}
-          grabberColor={iosGrabberColor}
-          dividerColor={dark ? palettes.gray[600] : colors.divider}
-          left={
-            <IosTopBarTextAction
-              label={t('common.done', { defaultValue: 'Done' })}
-              onPress={() => navigation.goBack()}
-              color={palettes.gray[500]}
-              containerStyle={styles.doneButton}
-            />
-          }
-          right={
-            <TextButton
-              onPress={handleToggleSelectAll}
-              accessibilityRole="button"
-              accessibilityLabel={
-                allFilesSelected
-                  ? t('common.deselectAll', { defaultValue: 'Deselect all' })
-                  : t('common.selectAll', { defaultValue: 'Select all' })
-              }
-            >
-              <Text
-                style={[
-                  styles.doneButtonText,
-                  { color: palettes.primary[400] },
-                ]}
-              >
-                {allFilesSelected
-                  ? t('common.deselectAll', { defaultValue: 'Deselect all' })
-                  : t('common.selectAll', { defaultValue: 'Select all' })}
-              </Text>
-            </TextButton>
-          }
-        />
+        <View style={styles.header}>
+          <TextButton onPress={() => navigation.goBack()}>
+            {t('common.done', { defaultValue: 'Done' })}
+          </TextButton>
+          <TextButton onPress={handleToggleSelectAll}>
+            {allFilesSelected
+              ? t('common.deselectAll', { defaultValue: 'Deselect all' })
+              : t('common.selectAll', { defaultValue: 'Select all' })}
+          </TextButton>
+        </View>
       ) : null}
 
       <View style={styles.searchBarWrap}>
@@ -380,7 +358,33 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
         keyboardVerticalOffset={0}
       >
         <View style={styles.listOuter}>
-          <CourseFilesList files={fileEntries} />
+          <FlatList
+            data={fileEntries}
+            contentContainerStyle={paddingHorizontal}
+            keyExtractor={item => item.id}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <ManagedFileListItem
+                name={item.name}
+                subtitle={item.subtitle}
+                status={item.status}
+                onPress={item.onPress}
+                isFolder={item.isFolder}
+                onLongPress={item.onLongPress}
+                onActionPress={item.trailing ? undefined : item.onActionPress}
+                trailing={item.trailing}
+              />
+            )}
+            ItemSeparatorComponent={Platform.select({ ios: IndentedDivider })}
+            ListEmptyComponent={
+              <OverviewList
+                emptyStateText={t('courseFilesTab.empty', {
+                  defaultValue: 'No files yet',
+                })}
+              />
+            }
+          />
         </View>
 
         <View style={styles.ctaRowWrapper}>
@@ -424,21 +428,18 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
   );
 };
 
-const createStyles = ({ colors, spacing, fontFamilies, fontWeights }: Theme) =>
+const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background,
     },
-    doneButton: {
-      minWidth: 56,
-    },
-    doneButtonText: {
-      fontFamily: fontFamilies.body,
-      fontSize: 17,
-      fontWeight: fontWeights.normal,
-      lineHeight: 22,
-      letterSpacing: -0.43,
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: spacing[5],
+      paddingVertical: spacing[2],
     },
     ellipsisTrigger: {
       padding: spacing[3],
@@ -458,7 +459,6 @@ const createStyles = ({ colors, spacing, fontFamilies, fontWeights }: Theme) =>
     listOuter: {
       flex: 1,
       minHeight: 0,
-      marginHorizontal: spacing[4] + spacing[0.5],
     },
     ctaRowWrapper: {
       overflow: 'hidden',
