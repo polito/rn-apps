@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 
+import { useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { FileErrorBoundary } from '../FileErrorBoundary';
@@ -30,28 +31,57 @@ export type FileStackParamList = {
 
 const Stack = createNativeStackNavigator<FileStackParamList>();
 
+const modalScreenOptions = {
+  headerLargeTitle: false,
+  presentation:
+    Platform.OS === 'android' ? ('card' as const) : ('modal' as const),
+  ...(Platform.OS === 'ios' ? { sheetGrabberVisible: true } : {}),
+};
+
 /** File feature navigator hosting all file-related screens. */
 export const FileNavigator = () => {
+  const theme = useTheme();
+  const { colors } = theme;
+
   return (
     <FileErrorBoundary>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="CourseFilesScreen" component={CourseFilesScreen} />
+      <Stack.Navigator
+        screenOptions={{
+          headerLargeTitle: false,
+          headerTransparent: Platform.select({ ios: true }),
+          headerLargeStyle: {
+            backgroundColor: colors.background,
+          },
+          headerBlurEffect: 'systemUltraThinMaterial',
+          ...useTitlesStyles(theme),
+        }}
+      >
+        <Stack.Screen
+          name="CourseFilesScreen"
+          component={CourseFilesScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="CourseFolderFilesScreen"
           component={CourseFilesScreen}
           options={{
-            presentation: Platform.OS === 'android' ? 'card' : 'modal',
+            ...modalScreenOptions,
             animation:
               Platform.OS === 'android' ? 'slide_from_right' : 'default',
-            headerShown: Platform.OS === 'android',
+            headerShown: true,
             headerTitleAlign: 'center',
           }}
         />
         <Stack.Screen
           name="CourseDirectoryScreen"
           component={CourseDirectoryScreen}
+          options={{ headerShown: false }}
         />
-        <Stack.Screen name="ModifyFileScreen" component={ModifyFileScreen} />
+        <Stack.Screen
+          name="ModifyFileScreen"
+          component={ModifyFileScreen}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </FileErrorBoundary>
   );

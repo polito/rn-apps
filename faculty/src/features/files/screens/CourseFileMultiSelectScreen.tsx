@@ -2,10 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
-  FlatList,
   InteractionManager,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
@@ -14,20 +14,21 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   faArrowUpRightFromSquare,
   faEllipsisVertical,
-  faSquareCheck,
+  faSearch,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import { MENU_ACTIONS } from '@polito/lib/features/courses';
 import {
   Checkbox,
   CtaButton,
-  Icon,
-  IndentedDivider,
-  ManagedFileListItem,
+  FileListItem,
+  GlobalStyles,
+  IconButton,
   OverviewList,
-  SearchBar,
+  Row,
   TextButton,
   Theme,
+  TranslucentTextField,
   useHideTabs,
   useSafeAreaSpacing,
   useStylesheet,
@@ -39,7 +40,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { FileStackParamList } from '../navigation/FileNavigator';
 import { CourseFileEntry as CourseFileDataEntry } from '../types/CourseFileEntry';
-import { FileListEntry } from '../types/FileListEntry';
 import { mapFileEntry } from '../utils/mapFileEntry';
 import { MoveFilesModal } from './MoveFilesScreen';
 
@@ -51,9 +51,9 @@ type Props = NativeStackScreenProps<
 export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
   const { courseId, initialSelectedIds } = route.params;
   const { t } = useTranslation();
-  const { paddingHorizontal } = useSafeAreaSpacing();
   const {
     fakeCourses,
+    selectedCourse,
     removeFileFromCourse,
     addDirectoryToCourse,
     updateCourseFile,
@@ -61,12 +61,16 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
   const theme = useTheme();
   const { fontSizes, palettes } = theme;
   const styles = useStylesheet(createStyles);
+  const { paddingHorizontal } = useSafeAreaSpacing();
 
   useHideTabs();
 
   const course = useMemo(
-    () => fakeCourses.find(c => c.id === courseId),
-    [fakeCourses, courseId],
+    () =>
+      selectedCourse?.id === courseId
+        ? selectedCourse
+        : fakeCourses.find(c => c.id === courseId),
+    [selectedCourse, fakeCourses, courseId],
   );
 
   const flatFiles: CourseFileDataEntry[] = useMemo(() => {
@@ -269,13 +273,14 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
           actions={headerMenuActions}
           onPressAction={onHeaderMenuAction}
         >
-          <View style={styles.ellipsisTrigger}>
-            <Icon
-              icon={faEllipsisVertical}
-              color={palettes.primary[400]}
-              size={fontSizes.lg}
-            />
-          </View>
+          <IconButton
+            icon={faEllipsisVertical}
+            color={palettes.primary[400]}
+            size={fontSizes.lg}
+            accessibilityLabel={t('common.moreOptions', {
+              defaultValue: 'More options',
+            })}
+          />
         </MenuView>
       ),
     });
@@ -285,54 +290,13 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
     onHeaderMenuAction,
     palettes.primary,
     fontSizes.lg,
-    styles.ellipsisTrigger,
+    t,
   ]);
-
-  const checkboxIconColor = palettes.gray[500];
-
-  const fileEntries: FileListEntry[] = useMemo(
-    () =>
-      listData.map(entry => ({
-        id: entry.file.id,
-        name:
-          entry.file.name ||
-          t('common.unnamedFile', { defaultValue: 'Unnamed file' }),
-        status: 'downloaded',
-        accessibilityRole: 'checkbox' as const,
-        accessibilityState: { checked: selectedFileIds.has(entry.file.id) },
-        accessibilityLabel:
-          entry.file.name ||
-          t('common.unnamedFile', { defaultValue: 'Unnamed file' }),
-        onPress: () => handleToggleFile(entry),
-        trailing: (
-          <Checkbox
-            isChecked={selectedFileIds.has(entry.file.id)}
-            onPress={() => handleToggleFile(entry)}
-            textStyle={styles.checkboxTrailingText}
-            containerStyle={styles.checkboxTrailingContainer}
-            checkboxStyle={styles.checkboxTrailingIcon}
-            icon={faSquareCheck}
-            iconColor={checkboxIconColor}
-            dimension="small"
-          />
-        ),
-      })),
-    [
-      listData,
-      selectedFileIds,
-      handleToggleFile,
-      t,
-      styles.checkboxTrailingText,
-      styles.checkboxTrailingContainer,
-      styles.checkboxTrailingIcon,
-      checkboxIconColor,
-    ],
-  );
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       {Platform.OS === 'ios' ? (
-        <View style={styles.header}>
+        <Row justify="space-between" align="center" ph={5} pv={2}>
           <TextButton onPress={() => navigation.goBack()}>
             {t('common.done', { defaultValue: 'Done' })}
           </TextButton>
@@ -341,15 +305,26 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
               ? t('common.deselectAll', { defaultValue: 'Deselect all' })
               : t('common.selectAll', { defaultValue: 'Select all' })}
           </TextButton>
-        </View>
+        </Row>
       ) : null}
 
-      <View style={styles.searchBarWrap}>
-        <SearchBar
-          value={searchFilter}
-          onChangeText={setSearchFilter}
-          label={t('courseDirectoryScreen.search', { defaultValue: 'Search' })}
-        />
+      <View style={[styles.searchBarWrap, paddingHorizontal]}>
+        <Row align="center" style={styles.searchBar}>
+          <TranslucentTextField
+            autoCorrect={false}
+            leadingIcon={faSearch}
+            value={searchFilter}
+            onChangeText={setSearchFilter}
+            style={[GlobalStyles.grow, styles.textField]}
+            containerStyle={styles.searchField}
+            label={t('courseDirectoryScreen.search', {
+              defaultValue: 'Search',
+            })}
+            editable
+            isClearable={!!searchFilter}
+            onClear={() => setSearchFilter('')}
+          />
+        </Row>
       </View>
 
       <KeyboardAvoidingView
@@ -357,64 +332,67 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={0}
       >
-        <View style={styles.listOuter}>
-          <FlatList
-            data={fileEntries}
-            contentContainerStyle={paddingHorizontal}
-            keyExtractor={item => item.id}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <ManagedFileListItem
-                name={item.name}
-                subtitle={item.subtitle}
-                status={item.status}
-                onPress={item.onPress}
-                isFolder={item.isFolder}
-                onLongPress={item.onLongPress}
-                onActionPress={item.trailing ? undefined : item.onActionPress}
-                trailing={item.trailing}
+        <ScrollView
+          style={styles.list}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <OverviewList
+            dividers
+            indented
+            emptyStateText={t('courseFilesTab.empty', {
+              defaultValue: 'No files yet',
+            })}
+          >
+            {listData.map(entry => (
+              <FileListItem
+                key={entry.file.id}
+                title={
+                  entry.file.name ||
+                  t('common.unnamedFile', { defaultValue: 'Unnamed file' })
+                }
+                mimeType={entry.file.mimeType}
+                onPress={() => handleToggleFile(entry)}
+                trailingItem={
+                  <Checkbox
+                    isChecked={selectedFileIds.has(entry.file.id)}
+                    onPress={() => handleToggleFile(entry)}
+                    textStyle={{ marginHorizontal: 0 }}
+                    containerStyle={{ marginHorizontal: 0, marginVertical: 0 }}
+                  />
+                }
               />
-            )}
-            ItemSeparatorComponent={Platform.select({ ios: IndentedDivider })}
-            ListEmptyComponent={
-              <OverviewList
-                emptyStateText={t('courseFilesTab.empty', {
-                  defaultValue: 'No files yet',
-                })}
-              />
-            }
-          />
-        </View>
+            ))}
+          </OverviewList>
+        </ScrollView>
 
-        <View style={styles.ctaRowWrapper}>
-          <View style={styles.ctaRow}>
-            <View style={styles.ctaPairButtonContainer}>
-              <CtaButton
-                title={t('courseFilesTab.move', { defaultValue: 'Move' })}
-                action={handleMovePress}
-                icon={faArrowUpRightFromSquare}
-                variant="outlined"
-                disabled={isMoveDisabled}
-                absolute={false}
-                containerStyle={styles.ctaButtonContainer}
-                style={styles.ctaPairButton}
-              />
-            </View>
-            <View style={styles.ctaPairButtonContainer}>
-              <CtaButton
-                title={t('courseFilesTab.delete', { defaultValue: 'Delete' })}
-                action={handleDeletePress}
-                icon={faTrash}
-                destructive
-                disabled={isDeleteDisabled}
-                absolute={false}
-                containerStyle={styles.ctaButtonContainer}
-                style={styles.ctaPairButton}
-              />
-            </View>
-          </View>
-        </View>
+        <Row
+          justify="center"
+          align="stretch"
+          gap={2}
+          ph={5}
+          pv={2}
+          style={styles.ctaRow}
+        >
+          <CtaButton
+            title={t('courseFilesTab.move', { defaultValue: 'Move' })}
+            action={handleMovePress}
+            icon={faArrowUpRightFromSquare}
+            variant="outlined"
+            disabled={isMoveDisabled}
+            absolute={false}
+            containerStyle={styles.ctaButtonContainer}
+          />
+          <CtaButton
+            title={t('courseFilesTab.delete', { defaultValue: 'Delete' })}
+            action={handleDeletePress}
+            icon={faTrash}
+            destructive
+            disabled={isDeleteDisabled}
+            absolute={false}
+            containerStyle={styles.ctaButtonContainer}
+          />
+        </Row>
       </KeyboardAvoidingView>
 
       <MoveFilesModal
@@ -428,79 +406,39 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
   );
 };
 
-const createStyles = ({ colors, spacing }: Theme) =>
+const createStyles = ({ colors, spacing, shapes }: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background,
     },
-    header: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingHorizontal: spacing[5],
-      paddingVertical: spacing[2],
-    },
-    ellipsisTrigger: {
-      padding: spacing[3],
-      marginHorizontal: -spacing[3],
-    },
     searchBarWrap: {
       overflow: 'hidden',
-      paddingHorizontal: spacing[4] + spacing[0.5],
-      paddingTop: spacing[6],
+      paddingTop: spacing[3],
+    },
+    searchBar: {
+      marginHorizontal: spacing[4],
+    },
+    searchField: {
+      marginHorizontal: 0,
+    },
+    textField: {
+      borderRadius: shapes.lg,
     },
     keyboardAvoiding: {
       flex: 1,
       minHeight: 0,
       gap: spacing[2],
-      paddingTop: spacing[2],
     },
-    listOuter: {
+    list: {
       flex: 1,
       minHeight: 0,
     },
-    ctaRowWrapper: {
-      overflow: 'hidden',
+    ctaRow: {
       backgroundColor: colors.background,
     },
-    ctaRow: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'stretch',
-      paddingHorizontal: spacing[4] + spacing[0.5],
-      paddingVertical: spacing[4] + spacing[0.5],
-      gap: spacing[2],
-    },
-    ctaPairButtonContainer: {
-      flexGrow: 1,
-      flexShrink: 0,
-      flexBasis: 0,
-      minWidth: 0,
-      padding: 0,
-      alignSelf: 'stretch',
-    },
     ctaButtonContainer: {
+      flex: 1,
       padding: 0,
-      width: '100%',
-    },
-    ctaPairButton: {
-      width: '100%',
-    },
-    checkboxTrailingText: {
-      marginHorizontal: 0,
-    },
-    checkboxTrailingContainer: {
-      marginHorizontal: 0,
-      marginVertical: 0,
-      width: 24,
-      alignItems: 'flex-end',
-      justifyContent: 'center',
-      marginRight: -6,
-    },
-    checkboxTrailingIcon: {
-      width: 16,
-      height: 16,
-      flexShrink: 0,
     },
   });

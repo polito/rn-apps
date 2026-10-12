@@ -9,6 +9,7 @@ export type FileListEntry = {
   status: FileDownloadStatus;
   onPress: () => void;
   isFolder?: boolean;
+  mimeType?: string;
   onLongPress?: () => void;
   onActionPress?: () => void;
   trailing?: ReactNode;

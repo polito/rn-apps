@@ -1,18 +1,19 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
-import Modal from 'react-native-modal';
+import { Keyboard, StyleSheet, TextInput } from 'react-native';
 
 import {
   faCheck,
   faChevronLeft,
   faFolder,
-  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import {
+  BottomModal,
+  Col,
   CtaButton,
-  Icon,
   IconButton,
+  ModalContent,
+  Row,
   Text,
   Theme,
   useStylesheet,
@@ -46,7 +47,7 @@ export const MoveFilesModal = ({
   onAddFolder = () => undefined,
 }: Props) => {
   const { t } = useTranslation();
-  const { palettes, colors, dark, spacing } = useTheme();
+  const { palettes, colors, dark } = useTheme();
   const styles = useStylesheet(createStyles);
 
   const [view, setView] = useState<MoveView>('choose-folder');
@@ -103,73 +104,37 @@ export const MoveFilesModal = ({
       : palettes.text[500];
 
   return (
-    <Modal
-      isVisible={visible}
-      style={styles.modal}
-      animationIn="slideInUp"
-      animationOut="slideOutDown"
-      animationInTiming={300}
-      animationOutTiming={300}
-      backdropOpacity={0.4}
-      backdropColor="black"
-      onBackdropPress={handleClose}
-      onBackButtonPress={handleClose}
+    <BottomModal
+      visible={visible}
+      onClose={handleClose}
       onModalHide={resetState}
-      avoidKeyboard={true}
-      useNativeDriver={false}
-      useNativeDriverForBackdrop
     >
-      <View style={[styles.container, { backgroundColor: colors.surface }]}>
-        {/* Header */}
-        <View style={[styles.header, { backgroundColor: colors.background }]}>
-          {view === 'create-folder' ? (
+      <ModalContent
+        title={t('courseFilesTab.manageFiles', {
+          defaultValue: 'Manage Files',
+        })}
+        close={handleClose}
+        closeColor={palettes.primary[500]}
+        leadingItem={
+          view === 'create-folder' ? (
             <IconButton
-              style={styles.headerIconButton}
               icon={faChevronLeft}
               size={16}
               color={palettes.primary[500]}
               onPress={handleBack}
+              accessibilityLabel={t('common.back', { defaultValue: 'Back' })}
               accessibilityRole="button"
-              noPadding
-              iconPadding={spacing[2]}
+              adjustSpacing="right"
             />
-          ) : (
-            <View style={styles.headerIconButton} />
-          )}
-
-          <Text
-            style={[
-              styles.headerTitle,
-              { color: dark ? palettes.gray[50] : palettes.primary[700] },
-            ]}
-          >
-            {t('courseFilesTab.manageFiles', { defaultValue: 'Manage Files' })}
-          </Text>
-
-          <IconButton
-            style={styles.headerIconButton}
-            icon={faTimes}
-            size={16}
-            color={palettes.primary[500]}
-            onPress={handleClose}
-            accessibilityRole="button"
-            noPadding
-            iconPadding={spacing[2]}
-          />
-        </View>
-
-        {/* Content */}
-        <View style={styles.content}>
+          ) : undefined
+        }
+      >
+        <Col ph={3} pb={3}>
           {view === 'choose-folder' ? (
             <>
               {/* Items */}
-              <View style={styles.items}>
-                <Text
-                  style={[
-                    styles.sectionLabel,
-                    { color: dark ? palettes.gray[50] : palettes.gray[800] },
-                  ]}
-                >
+              <Col gap={3} pv={3}>
+                <Text style={styles.sectionLabel}>
                   {t('courseFilesTab.chooseFolder', {
                     defaultValue: 'Choose Folder',
                   })}
@@ -202,56 +167,35 @@ export const MoveFilesModal = ({
                     />
                   );
                 })}
-              </View>
+              </Col>
 
               {/* Buttons */}
-              <View style={styles.buttons}>
-                <View style={styles.buttonSlot}>
-                  <CtaButton
-                    title={t('courseFilesTab.addNewFolder', {
-                      defaultValue: 'Add New Folder',
-                    })}
-                    action={() => setView('create-folder')}
-                    variant="outlined"
-                    absolute={false}
-                    leftExtra={
-                      <View style={styles.addFolderIconWrap}>
-                        <Icon
-                          icon={faFolder}
-                          size={16}
-                          color={
-                            dark ? palettes.primary[200] : palettes.primary[500]
-                          }
-                        />
-                      </View>
-                    }
-                    containerStyle={styles.ctaButtonContainer}
-                    style={styles.ctaButton}
-                  />
-                </View>
-                <View style={styles.buttonSlot}>
-                  <CtaButton
-                    title={t('common.confirm', { defaultValue: 'Confirm' })}
-                    action={handleConfirm}
-                    icon={faCheck}
-                    disabled={!isConfirmEnabled}
-                    absolute={false}
-                    containerStyle={styles.ctaButtonContainer}
-                    style={styles.ctaButton}
-                  />
-                </View>
-              </View>
+              <Row gap={3} style={styles.buttons}>
+                <CtaButton
+                  title={t('courseFilesTab.addNewFolder', {
+                    defaultValue: 'Add New Folder',
+                  })}
+                  action={() => setView('create-folder')}
+                  variant="outlined"
+                  absolute={false}
+                  icon={faFolder}
+                  containerStyle={styles.ctaButtonContainer}
+                />
+                <CtaButton
+                  title={t('common.confirm', { defaultValue: 'Confirm' })}
+                  action={handleConfirm}
+                  icon={faCheck}
+                  disabled={!isConfirmEnabled}
+                  absolute={false}
+                  containerStyle={styles.ctaButtonContainer}
+                />
+              </Row>
             </>
           ) : (
             <>
               {/* Items */}
-              <View style={styles.items}>
-                <Text
-                  style={[
-                    styles.sectionLabel,
-                    { color: dark ? palettes.gray[50] : palettes.gray[800] },
-                  ]}
-                >
+              <Col gap={3} pv={3}>
+                <Text style={styles.sectionLabel}>
                   {t('courseFilesTab.createYourFolder', {
                     defaultValue: 'Create your folder',
                   })}
@@ -295,26 +239,23 @@ export const MoveFilesModal = ({
                     onSubmitEditing: () => inputRef.current?.blur(),
                   }}
                 />
-              </View>
+              </Col>
 
               {/* Buttons */}
-              <View style={styles.buttons}>
-                <View style={styles.buttonSlot}>
-                  <CtaButton
-                    title={t('common.confirm', { defaultValue: 'Confirm' })}
-                    action={handleConfirm}
-                    icon={faCheck}
-                    absolute={false}
-                    containerStyle={styles.ctaButtonContainer}
-                    style={styles.ctaButton}
-                  />
-                </View>
-              </View>
+              <Row gap={3} style={styles.buttons}>
+                <CtaButton
+                  title={t('common.confirm', { defaultValue: 'Confirm' })}
+                  action={handleConfirm}
+                  icon={faCheck}
+                  absolute={false}
+                  containerStyle={styles.ctaButtonContainer}
+                />
+              </Row>
             </>
           )}
-        </View>
-      </View>
-    </Modal>
+        </Col>
+      </ModalContent>
+    </BottomModal>
   );
 };
 
@@ -326,50 +267,7 @@ const createStyles = ({
   fontWeights,
 }: Theme) =>
   StyleSheet.create({
-    modal: {
-      margin: 0,
-      justifyContent: 'flex-end',
-    },
-    container: {
-      borderTopLeftRadius: 0,
-      borderTopRightRadius: 0,
-      overflow: 'hidden',
-    },
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      height: spacing[12] + spacing[2],
-      paddingHorizontal: spacing[5],
-      gap: spacing[2.5],
-      overflow: 'hidden',
-    },
-    headerIconButton: {
-      width: 20,
-      height: 16,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    headerTitle: {
-      flex: 1,
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.medium,
-      lineHeight: 24,
-      textAlign: 'center',
-    },
-    content: {
-      paddingHorizontal: spacing[3],
-      paddingBottom: spacing[3],
-    },
-    items: {
-      gap: spacing[3],
-      paddingVertical: spacing[3],
-    },
     sectionLabel: {
-      fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.normal,
-      lineHeight: 24,
       paddingLeft: spacing[3],
     },
     folderItem: {
@@ -377,7 +275,7 @@ const createStyles = ({
       alignItems: 'center',
       borderRadius: shapes.lg,
       paddingVertical: spacing[3],
-      paddingRight: spacing[2],
+      paddingRight: spacing[5],
     },
     folderItemName: {
       fontFamily: fontFamilies.body,
@@ -386,22 +284,11 @@ const createStyles = ({
       lineHeight: 24,
     },
     buttons: {
-      flexDirection: 'row',
-      gap: spacing[3],
       paddingVertical: spacing[3],
     },
-    buttonSlot: {
-      flex: 1,
-    },
     ctaButtonContainer: {
-      width: '100%',
+      flex: 1,
       padding: 0,
-    },
-    ctaButton: {
-      width: '100%',
-    },
-    addFolderIconWrap: {
-      marginRight: spacing[2],
     },
     folderNameCard: {
       flexDirection: 'row',

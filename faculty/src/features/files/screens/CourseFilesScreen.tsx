@@ -1,24 +1,37 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, FlatList, Platform, StyleSheet, View } from 'react-native';
+import { Alert, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Defs, LinearGradient, Rect, Stop, Svg } from 'react-native-svg';
 
+import { faFolder } from '@fortawesome/free-regular-svg-icons';
 import {
+  faArrowsRotate,
   faChevronDown,
   faChevronUp,
-  faEllipsisVertical,
+  faDownload,
+  faEllipsis,
   faPlus,
+  faSearch,
 } from '@fortawesome/free-solid-svg-icons';
+import { MENU_ACTIONS } from '@polito/lib/features/courses';
 import {
+  BottomBarSpacer,
   CtaButton,
+  CtaButtonSpacer,
+  FileListItem,
+  GlobalStyles,
   Icon,
   IconButton,
-  IndentedDivider,
-  ManagedFileListItem,
+  ListItem,
   OverviewList,
-  SearchBar,
+  Row,
+  StatefulMenuView,
   Text,
-  TextButton,
   Theme,
+  TranslucentTextField,
+  createHeaderCloseButton,
+  useSafeAreaSpacing,
+  useSafeBottomBarHeight,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
@@ -27,6 +40,7 @@ import {
   MenuView,
   NativeActionEvent,
 } from '@react-native-menu/menu';
+import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
@@ -36,6 +50,34 @@ import { FileStackParamList } from '../navigation/FileNavigator';
 import { FileListEntry } from '../types/FileListEntry';
 import { formatFolderDetails } from '../utils/formatFolderDetails';
 
+const CtaFade = () => {
+  const { colors, spacing } = useTheme();
+  const bottomBarHeight = useSafeBottomBarHeight();
+  const styles = useStylesheet(createStyles);
+
+  return (
+    <View
+      pointerEvents="none"
+      style={[styles.fade, { bottom: bottomBarHeight, height: spacing[24] }]}
+    >
+      <Svg
+        width="100%"
+        height={spacing[24]}
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+      >
+        <Defs>
+          <LinearGradient id="filesCtaFade" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor={colors.background} stopOpacity="0" />
+            <Stop offset="1" stopColor={colors.background} stopOpacity="1" />
+          </LinearGradient>
+        </Defs>
+        <Rect x="0" y="0" width="100" height="100" fill="url(#filesCtaFade)" />
+      </Svg>
+    </View>
+  );
+};
+
 type Props = NativeStackScreenProps<
   FileStackParamList,
   'CourseFilesScreen' | 'CourseFolderFilesScreen'
@@ -43,7 +85,9 @@ type Props = NativeStackScreenProps<
 
 export const CourseFilesScreen = ({ route, navigation }: Props) => {
   const styles = useStylesheet(createStyles);
-  const { spacing, palettes, fontSizes } = useTheme();
+  const { spacing, palettes, fontSizes, dark } = useTheme();
+  const { paddingHorizontal } = useSafeAreaSpacing();
+  const headerHeight = useHeaderHeight();
   const [isSortOpen, setSortOpen] = useState(false);
   const { selectedCourse } = useCourses();
   const { t } = useTranslation();
@@ -65,60 +109,77 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     directories,
     storageKey: String(selectedCourse?.id ?? 'global'),
   });
-  const menuActions: MenuAction[] = [
-    {
-      id: 'select',
-      title: t('courseFilesTab.select', { defaultValue: 'Select' }),
-    },
-    {
-      id: 'folders',
-      title: t('courseFilesTab.viewFolders', { defaultValue: 'View Folders' }),
-      state: viewMode === 'folders' ? 'on' : 'off',
-    },
-    {
-      id: 'files',
-      title: t('courseFilesTab.viewFiles', { defaultValue: 'View Files' }),
-      state: viewMode === 'files' ? 'on' : 'off',
-    },
-  ];
+  const menuActions: MenuAction[] = useMemo(
+    () => [
+      {
+        id: MENU_ACTIONS.SELECT,
+        title: t('courseFilesTab.select', { defaultValue: 'Select' }),
+      },
+      {
+        id: 'folders',
+        title: t('courseFilesTab.viewFolders', {
+          defaultValue: 'View Folders',
+        }),
+        state: viewMode === 'folders' ? 'on' : 'off',
+      },
+      {
+        id: 'files',
+        title: t('courseFilesTab.viewFiles', { defaultValue: 'View Files' }),
+        state: viewMode === 'files' ? 'on' : 'off',
+      },
+    ],
+    [t, viewMode],
+  );
 
-  const sortActions: MenuAction[] = [
-    {
-      id: 'nameAsc',
-      title: t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' }),
-      state: sortMode === 'nameAsc' ? 'on' : 'off',
-    },
-    {
-      id: 'nameDesc',
-      title: t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' }),
-      state: sortMode === 'nameDesc' ? 'on' : 'off',
-    },
-    {
-      id: 'mostRecent',
-      title: t('courseFilesTab.mostRecent', { defaultValue: 'Most Recent' }),
-      state: sortMode === 'mostRecent' ? 'on' : 'off',
-    },
-    {
-      id: 'oldestFirst',
-      title: t('common.oldestFirst', { defaultValue: 'Oldest first' }),
-      state: sortMode === 'oldestFirst' ? 'on' : 'off',
-    },
-  ];
+  const sortActions: MenuAction[] = useMemo(
+    () => [
+      {
+        id: 'nameAsc',
+        title: t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' }),
+        state: sortMode === 'nameAsc' ? 'on' : 'off',
+      },
+      {
+        id: 'nameDesc',
+        title: t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' }),
+        state: sortMode === 'nameDesc' ? 'on' : 'off',
+      },
+      {
+        id: 'mostRecent',
+        title: t('courseFilesTab.mostRecent', { defaultValue: 'Most Recent' }),
+        state: sortMode === 'mostRecent' ? 'on' : 'off',
+      },
+      {
+        id: 'oldestFirst',
+        title: t('common.oldestFirst', { defaultValue: 'Oldest first' }),
+        state: sortMode === 'oldestFirst' ? 'on' : 'off',
+      },
+    ],
+    [t, sortMode],
+  );
 
-  const onPressMenuAction = ({ nativeEvent: { event } }: NativeActionEvent) => {
-    if (event === 'select') {
-      if (selectedCourse?.id != null) {
-        navigation.navigate('CourseFileMultiSelectScreen', {
-          courseId: selectedCourse.id,
-        });
+  const onPressSortAction = useCallback(
+    ({ nativeEvent: { event } }: NativeActionEvent) =>
+      setSortMode(event as FileSortMode),
+    [setSortMode],
+  );
+
+  const onPressMenuAction = useCallback(
+    ({ nativeEvent: { event } }: NativeActionEvent) => {
+      if (event === MENU_ACTIONS.SELECT) {
+        if (selectedCourse?.id != null) {
+          navigation.navigate('CourseFileMultiSelectScreen', {
+            courseId: selectedCourse.id,
+          });
+        }
+        return;
       }
-      return;
-    }
-    if (activeDirectoryId != null) {
-      navigation.setParams({ directoryId: undefined });
-    }
-    setViewMode(event === 'folders' ? 'folders' : 'files');
-  };
+      if (activeDirectoryId != null) {
+        navigation.setParams({ directoryId: undefined });
+      }
+      setViewMode(event === 'folders' ? 'folders' : 'files');
+    },
+    [activeDirectoryId, navigation, selectedCourse?.id, setViewMode],
+  );
 
   const downloadTitle = t('courseFilesTab.download', {
     defaultValue: 'Download',
@@ -129,17 +190,6 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
   });
   const cancelLabel = t('common.cancel', { defaultValue: 'Cancel' });
   const confirmLabel = t('common.confirm', { defaultValue: 'Confirm' });
-  const sortLabels = useMemo<Record<FileSortMode, string>>(
-    () => ({
-      nameAsc: t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' }),
-      nameDesc: t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' }),
-      mostRecent: t('courseFilesTab.mostRecent', {
-        defaultValue: 'Most Recent',
-      }),
-      oldestFirst: t('common.oldestFirst', { defaultValue: 'Oldest first' }),
-    }),
-    [t],
-  );
 
   const promptOverwriteDownload = useCallback(
     (fileId: string) => {
@@ -147,6 +197,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
         { text: cancelLabel, style: 'cancel' },
         {
           text: confirmLabel,
+          isPreferred: true,
           onPress: () => startDownload(fileId),
         },
       ]);
@@ -171,10 +222,6 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
   );
 
   useEffect(() => {
-    if (Platform.OS !== 'android') {
-      return;
-    }
-
     if (activeDirectory) {
       const directoryTitle =
         activeDirectory.name?.trim() ||
@@ -182,6 +229,10 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
       navigation.setOptions({
         headerShown: true,
         headerTitle: directoryTitle,
+        headerRight:
+          Platform.OS === 'ios' && route.name === 'CourseFolderFilesScreen'
+            ? createHeaderCloseButton(navigation)
+            : undefined,
       });
       return;
     }
@@ -190,7 +241,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
       headerShown: false,
       headerTitle: '',
     });
-  }, [activeDirectory, navigation, t]);
+  }, [activeDirectory, navigation, route.name, t]);
 
   useEffect(() => {
     if (Platform.OS !== 'android') {
@@ -228,6 +279,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
       return {
         id: fileId,
         name: file.name,
+        mimeType: file.mimeType,
         status,
         onPress: () => {},
         onLongPress:
@@ -280,126 +332,151 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
               directoryId: Number(folder.id),
             });
           },
-          trailing: <View style={styles.staticTrailing} />,
         };
       }),
-    [navigation, selectedCourse?.id, sortedDirectories, styles.staticTrailing],
+    [navigation, selectedCourse?.id, sortedDirectories],
   );
   const listEntries =
     viewMode === 'files' || activeDirectory ? fileEntries : folderEntries;
 
   return (
-    <View style={styles.screen}>
-      {activeDirectory && Platform.OS === 'ios' ? (
-        <View style={styles.header}>
-          <TextButton onPress={() => navigation.goBack()}>
-            {t('common.back', { defaultValue: 'Back' })}
-          </TextButton>
-          <Text numberOfLines={1} weight="semibold" style={styles.headerTitle}>
-            {activeDirectory.name}
-          </Text>
-          <View style={styles.headerSpacer} />
+    <View
+      style={[
+        styles.screen,
+        Platform.OS === 'ios' &&
+          activeDirectory && { paddingTop: headerHeight + spacing[2] },
+      ]}
+    >
+      <ScrollView
+        style={styles.scroll}
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={[paddingHorizontal, styles.scrollContent]}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.searchBar}>
+          <TranslucentTextField
+            autoCorrect={false}
+            leadingIcon={faSearch}
+            value={search}
+            onChangeText={setSearch}
+            style={GlobalStyles.grow}
+            containerStyle={styles.searchField}
+            label={t('courseDirectoryScreen.search', {
+              defaultValue: 'Search',
+            })}
+            editable
+            isClearable={search.length > 0}
+            onClear={() => setSearch('')}
+          />
         </View>
-      ) : null}
-      <View style={styles.controlsContainer}>
-        <SearchBar
-          value={search}
-          onChangeText={setSearch}
-          label={t('courseDirectoryScreen.search', { defaultValue: 'Search' })}
-        />
 
-        <View style={styles.menuRow}>
-          <MenuView
+        <Row
+          mh={4}
+          justify="space-between"
+          align="center"
+          style={styles.filterRow}
+        >
+          <StatefulMenuView
             actions={sortActions}
-            onPressAction={({ nativeEvent: { event } }) =>
-              setSortMode(event as FileSortMode)
-            }
+            onPressAction={onPressSortAction}
             onOpenMenu={() => setSortOpen(true)}
             onCloseMenu={() => setSortOpen(false)}
           >
-            <View style={styles.sortTrigger}>
-              <TextButton>{sortLabels[sortMode]}</TextButton>
+            <Row align="center" gap={1}>
+              <Text weight="semibold" style={styles.filterLabel}>
+                {sortActions.find(action => action.state === 'on')?.title}
+              </Text>
               <Icon
                 icon={isSortOpen ? faChevronUp : faChevronDown}
-                size={fontSizes.md}
+                size={fontSizes.sm}
                 color={palettes.primary[400]}
-                style={styles.sortChevron}
               />
-            </View>
-          </MenuView>
+            </Row>
+          </StatefulMenuView>
           <MenuView actions={menuActions} onPressAction={onPressMenuAction}>
             <IconButton
-              icon={faEllipsisVertical}
+              icon={faEllipsis}
               color={palettes.primary[400]}
               size={fontSizes.lg}
-              adjustSpacing="right"
-              accessibilityLabel={t('common.options', {
-                defaultValue: 'Options',
+              iconPadding={spacing[1.5]}
+              style={styles.moreButton}
+              accessibilityLabel={t('common.moreOptions', {
+                defaultValue: 'More options',
               })}
             />
           </MenuView>
-        </View>
-      </View>
+        </Row>
 
-      <FlatList
-        style={styles.flatList}
-        contentContainerStyle={styles.flatListContent}
-        data={listEntries}
-        keyExtractor={item => item.id}
-        initialNumToRender={15}
-        maxToRenderPerBatch={15}
-        windowSize={4}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-        renderItem={({ item, index }) => (
-          <View
-            style={[
-              styles.itemContainer,
-              index === 0 ? styles.firstItem : null,
-              index === listEntries.length - 1 ? styles.lastItem : null,
-            ]}
-          >
-            <ManagedFileListItem
-              name={item.name}
-              subtitle={item.subtitle}
-              status={item.status}
-              onPress={item.onPress}
-              isFolder={item.isFolder}
-              onLongPress={item.onLongPress}
-              onActionPress={item.trailing ? undefined : item.onActionPress}
-              trailing={item.trailing}
-            />
-            {index < listEntries.length - 1 ? (
-              <IndentedDivider
-                style={[styles.fileDivider, { marginRight: -spacing[5] }]}
+        <OverviewList
+          dividers
+          indented
+          style={styles.list}
+          emptyStateText={t('courseFilesTab.empty', {
+            defaultValue: 'No files yet',
+          })}
+        >
+          {listEntries.map(item =>
+            item.isFolder ? (
+              <ListItem
+                key={item.id}
+                title={item.name}
+                subtitle={item.subtitle}
+                leadingItem={
+                  <Icon
+                    icon={faFolder}
+                    size={fontSizes.xl}
+                    color={palettes.secondary[500]}
+                  />
+                }
+                onPress={item.onPress}
               />
-            ) : null}
-          </View>
-        )}
-        ListHeaderComponent={<View style={styles.listTopSpacing} />}
-        ListFooterComponent={
-          <View
-            style={
-              activeDirectory
-                ? styles.listBottomSpacing
-                : styles.listBottomSpacingWithCta
-            }
-          />
-        }
-        ListEmptyComponent={
-          <View style={styles.emptyStateContainer}>
-            <OverviewList
-              style={styles.emptyStateCard}
-              emptyStateText={t('courseFilesTab.empty', {
-                defaultValue: 'No files yet',
-              })}
-            />
-          </View>
-        }
-      />
+            ) : (
+              <FileListItem
+                key={item.id}
+                title={item.name}
+                subtitle={item.subtitle}
+                mimeType={item.mimeType}
+                isDownloaded={item.status === 'downloaded'}
+                onPress={item.onPress}
+                onLongPress={item.onLongPress}
+                trailingItem={
+                  <IconButton
+                    icon={
+                      item.status === 'syncing' ? faArrowsRotate : faDownload
+                    }
+                    size={fontSizes.md}
+                    color={
+                      item.status === 'downloaded'
+                        ? dark
+                          ? palettes.gray[200]
+                          : palettes.gray[400]
+                        : dark
+                          ? palettes.gray[100]
+                          : palettes.gray[500]
+                    }
+                    adjustSpacing="right"
+                    onPress={item.onActionPress}
+                    disabled={!item.onActionPress}
+                    accessibilityLabel={t('courseFilesTab.download', {
+                      defaultValue: 'Download',
+                    })}
+                  />
+                }
+              />
+            ),
+          )}
+        </OverviewList>
+        {!activeDirectory ? <CtaButtonSpacer /> : null}
+        <BottomBarSpacer />
+      </ScrollView>
+
+      {!activeDirectory ? <CtaFade /> : null}
 
       {!activeDirectory ? (
         <CtaButton
+          absolute={true}
+          containerStyle={styles.ctaButton}
           icon={faPlus}
           title={t('courseFilesTab.addFileOrFolder', {
             defaultValue: 'Add file or folder',
@@ -418,89 +495,50 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
   );
 };
 
-const createStyles = ({ colors, spacing }: Theme) =>
+const createStyles = ({ colors, spacing, palettes, fontSizes }: Theme) =>
   StyleSheet.create({
     screen: {
       flex: 1,
       backgroundColor: colors.background,
     },
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      gap: spacing[2],
-      paddingHorizontal: spacing[5],
-      paddingVertical: spacing[2],
-    },
-    headerTitle: {
-      flex: 1,
-      textAlign: 'center',
-    },
-    headerSpacer: {
-      minWidth: 48,
-    },
-    flatList: {
+    scroll: {
       flex: 1,
     },
-    flatListContent: {
-      paddingHorizontal: spacing[5],
-      flexGrow: 1,
+    scrollContent: {
+      paddingTop: spacing[4],
     },
-    listTopSpacing: {
-      height: spacing[2],
+    searchBar: {
+      marginHorizontal: spacing[4],
     },
-    listBottomSpacing: {
-      height: spacing[5],
-    },
-    listBottomSpacingWithCta: {
-      height: spacing[20],
-    },
-    emptyStateContainer: {
-      alignSelf: 'stretch',
-    },
-    emptyStateCard: {
-      borderRadius: spacing[3],
-      alignSelf: 'stretch',
+    searchField: {
       marginHorizontal: 0,
-      marginVertical: 0,
+      marginTop: spacing[2],
     },
-    itemContainer: {
-      alignSelf: 'stretch',
-      backgroundColor: colors.surface,
-      paddingLeft: spacing[4],
-      paddingRight: spacing[5],
+    filterRow: {
+      marginTop: spacing[2],
+      marginBottom: spacing[2],
     },
-    firstItem: {
-      borderTopLeftRadius: spacing[3],
-      borderTopRightRadius: spacing[3],
+    filterLabel: {
+      color: palettes.primary[400],
+      fontSize: fontSizes.sm,
+      marginLeft: spacing[3],
     },
-    lastItem: {
-      borderBottomLeftRadius: spacing[3],
-      borderBottomRightRadius: spacing[3],
+    moreButton: {
+      marginRight: spacing[1],
     },
-    fileDivider: {
-      alignSelf: 'stretch',
+    list: {
+      marginHorizontal: spacing[4],
+      marginTop: 0,
     },
-    menuRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      alignSelf: 'stretch',
+    fade: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      zIndex: 1,
+      elevation: 3,
     },
-    sortTrigger: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    sortChevron: {
-      marginLeft: spacing[1],
-    },
-    controlsContainer: {
-      paddingHorizontal: spacing[5],
-      paddingTop: spacing[5],
-      gap: spacing[2.5],
-    },
-    staticTrailing: {
-      width: 24,
-      height: 24,
+    ctaButton: {
+      zIndex: 2,
+      elevation: 4,
     },
   });

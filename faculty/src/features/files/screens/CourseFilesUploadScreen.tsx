@@ -615,7 +615,7 @@ const createStyles = ({
       alignItems: 'center',
       height: 60,
       borderRadius: shapes.lg,
-      paddingRight: spacing[2],
+      paddingRight: spacing[5],
       overflow: 'hidden',
     },
     disabledLeading: {
