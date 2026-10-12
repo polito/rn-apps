@@ -2,14 +2,28 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, TouchableOpacity, View } from 'react-native';
 
-import { faSliders } from '@fortawesome/free-solid-svg-icons';
-import { IconButton, Text, TopTabBar } from '@polito/lib/ui';
-import { useTheme, useTitlesStyles } from '@polito/lib/ui';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { ParamListBase } from '@react-navigation/native';
+import { faChevronLeft, faSliders } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
+  HeaderAccessory,
+  IconButton,
+  Tab,
+  Tabs,
+  Text,
+  useTheme,
+} from '@polito/lib/ui';
+import {
+  MaterialTopTabBarProps,
+  createMaterialTopTabNavigator,
+} from '@react-navigation/material-top-tabs';
+import {
+  ParamListBase,
+  getFocusedRouteNameFromRoute,
+} from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { FileNavigator } from '../../features/files/navigation/FileNavigator';
 import { CourseAssignmentsTab } from './CourseAssignmentsTab';
 import { CourseInfoScreen } from './CourseInfoScreen';
 import { CourseLecturesTab } from './CourseLecturesTab';
@@ -32,13 +46,111 @@ export interface CourseTabsParamList
 
 const TopTabs = createMaterialTopTabNavigator<CourseTabsParamList>();
 
+const CourseTopTabBar = ({
+  state,
+  descriptors,
+  navigation,
+}: MaterialTopTabBarProps) => {
+  const { dark, palettes, fontFamilies, fontSizes, fontWeights, spacing } =
+    useTheme();
+  const focusedTopRoute = state.routes[state.index];
+  const focusedNestedRoute = getFocusedRouteNameFromRoute(
+    focusedTopRoute as never,
+  );
+  const hideTabsOnAndroid =
+    Platform.OS === 'android' &&
+    focusedTopRoute?.name === 'CourseFilesScreen' &&
+    focusedNestedRoute != null &&
+    focusedNestedRoute !== 'CourseFilesScreen';
+
+  if (hideTabsOnAndroid) {
+    return null;
+  }
+
+  return (
+    <HeaderAccessory>
+      <Tabs>
+        {state.routes.map((route, index) => {
+          const { options } = descriptors[route.key];
+          const label =
+            options.tabBarLabel !== undefined
+              ? options.tabBarLabel
+              : options.title !== undefined
+                ? options.title
+                : route.name;
+          const isFocused = state.index === index;
+
+          const onPress = () => {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
+
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate({
+                name: route.name,
+                merge: true,
+                params: {},
+              });
+            }
+          };
+
+          const onLongPress = () => {
+            navigation.emit({
+              type: 'tabLongPress',
+              target: route.key,
+            });
+          };
+
+          return (
+            <Tab
+              key={route.key}
+              selected={isFocused}
+              accessibilityLabel={options.tabBarAccessibilityLabel}
+              testID={route.key}
+              onPress={onPress}
+              onLongPress={onLongPress}
+              textStyle={{
+                fontFamily: fontFamilies.body,
+                fontSize: fontSizes.xs + 1,
+                fontStyle: 'normal',
+                fontWeight: fontWeights.medium,
+                lineHeight: 19.5,
+              }}
+              style={[
+                {
+                  display: 'flex',
+                  paddingVertical: spacing[1] - 1,
+                  paddingHorizontal: spacing[2.5],
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: spacing[1],
+                },
+                !isFocused
+                  ? {
+                      borderWidth: 1,
+                      borderColor: palettes.primary[dark ? 600 : 50],
+                    }
+                  : undefined,
+              ]}
+            >
+              {label as string}
+            </Tab>
+          );
+        })}
+      </Tabs>
+    </HeaderAccessory>
+  );
+};
+
 type Props = NativeStackScreenProps<CourseSharedScreensParamList, 'Course'>;
 
 export const CourseNavigator = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { palettes, fontSizes, spacing } = theme;
-  const { width } = useWindowDimensions();
+  const headerSideWidth = 44;
 
   const { selectedCourse } = useCourses();
 
@@ -135,19 +247,15 @@ export const CourseNavigator = ({ navigation, route }: Props) => {
   }, [
     tab,
     selectedCourse,
+    headerSideWidth,
+    headerTitle,
     showPlusButton, // 🔥 Trigga il re-render dell'header
     fontSizes.lg,
     fontSizes.md,
     navigation,
     spacing,
-    fontFamilies.body,
-    fontWeights.medium,
     t,
-    dark,
     palettes.primary,
-    titleStyles.headerTitleStyle,
-    width,
-    fontSizes,
   ]);
 
   return (

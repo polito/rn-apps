@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TouchableHighlightProps } from 'react-native';
 
-import { DirectoryListItem } from '@polito/lib/ui';
+import { Checkbox, DirectoryListItem } from '@polito/lib/ui';
 import {
   CourseDirectory,
   CourseDirectoryEntry,
@@ -10,8 +10,6 @@ import {
 } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-import { Checkbox } from '~/core/components/Checkbox';
 
 import {
   DownloadContext,

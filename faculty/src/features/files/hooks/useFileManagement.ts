@@ -40,9 +40,6 @@ export const useFileManagement = ({
   const [search, setSearch] = useState('');
   const [viewMode, setViewMode] = useState<FileViewMode>(initialViewMode);
   const [sortMode, setSortMode] = useState<FileSortMode>(initialSortMode);
-  const [confirmDownloadFileId, setConfirmDownloadFileId] = useState<
-    string | undefined
-  >(undefined);
   const [statusOverrides, setStatusOverrides] = useState<
     Record<string, FileDownloadStatus>
   >({});
@@ -192,8 +189,6 @@ export const useFileManagement = ({
     setViewMode,
     sortMode,
     setSortMode,
-    confirmDownloadFileId,
-    setConfirmDownloadFileId,
     sortedFiles,
     sortedDirectories,
     startDownload,

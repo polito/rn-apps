@@ -10,7 +10,8 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { CreateFolderIcon, Text, Theme, useStylesheet } from '@polito/lib/ui';
+import { faFolder } from '@fortawesome/free-regular-svg-icons';
+import { Icon, Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 
 type Props = {
   label: string;
@@ -56,6 +57,7 @@ export const FolderNameCard = ({
   inputProps,
 }: Props) => {
   const styles = useStylesheet(createStyles);
+  const { palettes } = useTheme();
 
   return (
     <TouchableOpacity
@@ -65,7 +67,11 @@ export const FolderNameCard = ({
       style={[styles.container, containerStyle]}
     >
       <View style={[styles.leading, leadingContainerStyle]}>
-        <CreateFolderIcon width={20} height={20} color={leadingIconColor} />
+        <Icon
+          icon={faFolder}
+          size={20}
+          color={leadingIconColor ?? palettes.secondary[500]}
+        />
       </View>
       <View style={styles.content}>
         <Text style={[styles.label, labelStyle]}>{label}</Text>

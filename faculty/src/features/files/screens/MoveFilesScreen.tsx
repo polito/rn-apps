@@ -6,11 +6,12 @@ import Modal from 'react-native-modal';
 import {
   faCheck,
   faChevronLeft,
+  faFolder,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import {
-  CreateFolderIcon,
   CtaButton,
+  Icon,
   IconButton,
   Text,
   Theme,
@@ -215,13 +216,12 @@ export const MoveFilesModal = ({
                     absolute={false}
                     leftExtra={
                       <View style={styles.addFolderIconWrap}>
-                        <CreateFolderIcon
-                          width={16}
-                          height={16}
+                        <Icon
+                          icon={faFolder}
+                          size={16}
                           color={
                             dark ? palettes.primary[200] : palettes.primary[500]
                           }
-                          filled
                         />
                       </View>
                     }

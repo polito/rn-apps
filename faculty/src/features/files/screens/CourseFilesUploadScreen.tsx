@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { faFolder } from '@fortawesome/free-regular-svg-icons';
 import {
   faFaceSmile,
   faFile,
@@ -22,11 +23,11 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { formatDate } from '@polito/lib/core';
 import {
-  CreateFolderIcon,
   CtaButton,
   IndentedDivider,
   Text,
   Theme,
+  useHideTabs,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
@@ -65,6 +66,8 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
   const iosGrabberColor = dark ? palettes.gray[500] : palettes.gray[300];
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+
+  useHideTabs();
   const { addMaterialToCourse, addDirectoryToCourse, fakeCourses } =
     useCourses();
 
@@ -344,7 +347,13 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
             selected={uploadType === 'folder'}
             onPress={() => setUploadType('folder')}
             disabled={shouldMuteUploadMethodStyles}
-            leading={<CreateFolderIcon width={20} height={20} />}
+            leading={
+              <FontAwesomeIcon
+                icon={faFolder}
+                size={20}
+                color={palettes.secondary[500]}
+              />
+            }
             leadingContainerStyle={
               shouldMuteUploadMethodStyles ? styles.disabledLeading : undefined
             }

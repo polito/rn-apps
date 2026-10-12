@@ -3,13 +3,14 @@ import { useCallback, useEffect, useRef } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
 
+import { faFolder } from '@fortawesome/free-regular-svg-icons';
 import { faArrowsRotate, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
 import { Theme } from '../types/Theme';
-import { CreateFolderIcon } from './CreateFolderIcon';
+import { Icon } from './Icon';
 import { Text } from './Text';
 
 export type FileDownloadStatus = 'idle' | 'syncing' | 'downloaded';
@@ -81,7 +82,7 @@ export const ManagedFileListItem = ({
       <View style={styles.leadingContainer}>
         <View style={styles.leadingIcon}>
           {isFolder ? (
-            <CreateFolderIcon />
+            <Icon icon={faFolder} size={20} color={palettes.secondary[500]} />
           ) : status === 'downloaded' ? (
             <Svg width={30} height={30} viewBox="0 0 30 30" fill="none">
               <Path

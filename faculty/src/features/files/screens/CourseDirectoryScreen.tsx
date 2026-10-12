@@ -2,20 +2,17 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { Theme, useStylesheet } from '@polito/lib/ui';
+import { SearchBar, Theme, useStylesheet } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import {
-  ContextMenuItem,
-  CourseFilesContextMenu,
-} from '../../../core/components/CourseFilesContextMenu';
-import { CourseFilesMenu } from '../../../core/components/CourseFilesMenu';
-import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { FileStackParamList } from '../../../core/types/navigation';
 import { CourseFilesList, FileListItem } from '../components/CourseFilesList';
-import { useAnchoredMenu } from '../hooks/useAnchoredMenu';
+import {
+  CourseFilesMenu,
+  CourseFilesMenuItem,
+} from '../components/CourseFilesMenu';
 import { useCourseFilesData } from '../hooks/useCourseFilesData';
 import { useFileManagement } from '../hooks/useFileManagement';
 import { formatFolderDetails } from '../utils/formatFolderDetails';
@@ -27,8 +24,6 @@ export const CourseDirectoryScreen = () => {
   const styles = useStylesheet(createStyles);
   const { selectedCourse } = useCourses();
   const { t } = useTranslation();
-  const sortMenu = useAnchoredMenu();
-  const moreMenu = useAnchoredMenu();
   const { files, directories } = useCourseFilesData(selectedCourse);
 
   const { search, setSearch, sortMode, setSortMode, sortedDirectories } =
@@ -39,9 +34,10 @@ export const CourseDirectoryScreen = () => {
       storageKey: String(selectedCourse?.id ?? 'global'),
     });
 
-  const menuItems: ContextMenuItem[] = [
+  const menuItems: CourseFilesMenuItem[] = [
     {
-      label: t('courseFilesTab.select', { defaultValue: 'Select' }),
+      id: 'item0',
+      title: t('courseFilesTab.select', { defaultValue: 'Select' }),
       onPress: () => {
         if (selectedCourse?.id != null) {
           navigation.navigate('CourseFileMultiSelectScreen', {
@@ -51,7 +47,8 @@ export const CourseDirectoryScreen = () => {
       },
     },
     {
-      label: t('courseFilesTab.viewFiles', { defaultValue: 'View Files' }),
+      id: 'item1',
+      title: t('courseFilesTab.viewFiles', { defaultValue: 'View Files' }),
       onPress: () => {
         if (selectedCourse?.id != null) {
           navigation.navigate('CourseFilesScreen', {
@@ -62,14 +59,16 @@ export const CourseDirectoryScreen = () => {
     },
   ];
 
-  const sortMenuItems: ContextMenuItem[] = [
+  const sortMenuItems: CourseFilesMenuItem[] = [
     {
-      label: t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' }),
+      id: 'item2',
+      title: t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' }),
       onPress: () => setSortMode('nameAsc'),
       checked: sortMode === 'nameAsc',
     },
     {
-      label: t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' }),
+      id: 'item3',
+      title: t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' }),
       onPress: () => setSortMode('nameDesc'),
       checked: sortMode === 'nameDesc',
     },
@@ -105,45 +104,22 @@ export const CourseDirectoryScreen = () => {
   return (
     <View style={styles.screen}>
       <View style={styles.content}>
-        <SearchBar value={search} onChangeText={setSearch} />
+        <SearchBar
+          value={search}
+          onChangeText={setSearch}
+          label={t('courseDirectoryScreen.search', { defaultValue: 'Search' })}
+        />
         <CourseFilesMenu
           sortLabel={
             sortMode === 'nameAsc'
               ? t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' })
               : t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' })
           }
-          onSortPress={() => {
-            moreMenu.close();
-            sortMenu.openFromRef({
-              verticalOffset: 6,
-              strategy: { align: 'left', left: 18 },
-            });
-          }}
-          sortButtonRef={sortMenu.buttonRef}
-          moreButtonRef={moreMenu.buttonRef}
-          onMorePress={() => {
-            sortMenu.close();
-            moreMenu.openFromRef({
-              verticalOffset: 6,
-              strategy: { align: 'right', minLeft: 18, menuWidth: 250 },
-            });
-          }}
+          sortItems={sortMenuItems}
+          moreItems={menuItems}
         />
         <CourseFilesList files={folderEntries} fillHeight />
       </View>
-
-      <CourseFilesContextMenu
-        visible={moreMenu.visible}
-        onClose={moreMenu.close}
-        items={menuItems}
-        anchorPosition={moreMenu.anchorPosition}
-      />
-      <CourseFilesContextMenu
-        visible={sortMenu.visible}
-        onClose={sortMenu.close}
-        items={sortMenuItems}
-        anchorPosition={sortMenu.anchorPosition}
-      />
     </View>
   );
 };

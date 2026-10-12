@@ -2,30 +2,27 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, FlatList, Platform, StyleSheet, View } from 'react-native';
 
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import {
+  CtaButton,
   IndentedDivider,
   ManagedFileListItem,
   OverviewList,
+  SearchBar,
   Theme,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import {
-  ContextMenuItem,
-  CourseFilesContextMenu,
-} from '../../../core/components/CourseFilesContextMenu';
-import { CourseFilesMenu } from '../../../core/components/CourseFilesMenu';
-import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { FileStackParamList } from '../../../core/types/navigation';
-import { AddFileButton } from '../components/AddFileButton';
 import { CourseDirectoryTopBar } from '../components/CourseDirectoryTopBar';
 import { FileListItem } from '../components/CourseFilesList';
-import { DownloadOverwriteModal } from '../components/DownloadOverwriteModal';
-import { useAnchoredMenu } from '../hooks/useAnchoredMenu';
+import {
+  CourseFilesMenu,
+  CourseFilesMenuItem,
+} from '../components/CourseFilesMenu';
 import { useCourseFilesData } from '../hooks/useCourseFilesData';
 import { FileSortMode, useFileManagement } from '../hooks/useFileManagement';
 import { formatFolderDetails } from '../utils/formatFolderDetails';
@@ -38,11 +35,8 @@ type Props = NativeStackScreenProps<
 export const CourseFilesScreen = ({ route, navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { spacing } = useTheme();
-  const bottomTabBarHeight = useBottomTabBarHeight();
   const { selectedCourse } = useCourses();
   const { t } = useTranslation();
-  const sortMenu = useAnchoredMenu();
-  const moreMenu = useAnchoredMenu();
   const { files, directories } = useCourseFilesData(selectedCourse);
   const activeDirectoryId = route.params?.directoryId ?? null;
   const {
@@ -52,8 +46,6 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     setViewMode,
     sortMode,
     setSortMode,
-    confirmDownloadFileId,
-    setConfirmDownloadFileId,
     sortedFiles,
     sortedDirectories,
     startDownload,
@@ -63,9 +55,10 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     directories,
     storageKey: String(selectedCourse?.id ?? 'global'),
   });
-  const menuItems: ContextMenuItem[] = [
+  const menuItems: CourseFilesMenuItem[] = [
     {
-      label: t('courseFilesTab.select', { defaultValue: 'Select' }),
+      id: 'item0',
+      title: t('courseFilesTab.select', { defaultValue: 'Select' }),
       onPress: () => {
         if (selectedCourse?.id != null) {
           navigation.navigate('CourseFileMultiSelectScreen', {
@@ -75,7 +68,8 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
       },
     },
     {
-      label: t('courseFilesTab.viewFolders', { defaultValue: 'View Folders' }),
+      id: 'item1',
+      title: t('courseFilesTab.viewFolders', { defaultValue: 'View Folders' }),
       onPress: () => {
         if (activeDirectoryId != null) {
           navigation.setParams({ directoryId: undefined });
@@ -85,7 +79,8 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
       checked: viewMode === 'folders',
     },
     {
-      label: t('courseFilesTab.viewFiles', { defaultValue: 'View Files' }),
+      id: 'item2',
+      title: t('courseFilesTab.viewFiles', { defaultValue: 'View Files' }),
       onPress: () => {
         if (activeDirectoryId != null) {
           navigation.setParams({ directoryId: undefined });
@@ -96,24 +91,28 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     },
   ];
 
-  const sortMenuItems: ContextMenuItem[] = [
+  const sortMenuItems: CourseFilesMenuItem[] = [
     {
-      label: t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' }),
+      id: 'item3',
+      title: t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' }),
       onPress: () => setSortMode('nameAsc'),
       checked: sortMode === 'nameAsc',
     },
     {
-      label: t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' }),
+      id: 'item4',
+      title: t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' }),
       onPress: () => setSortMode('nameDesc'),
       checked: sortMode === 'nameDesc',
     },
     {
-      label: t('courseFilesTab.mostRecent', { defaultValue: 'Most Recent' }),
+      id: 'item5',
+      title: t('courseFilesTab.mostRecent', { defaultValue: 'Most Recent' }),
       onPress: () => setSortMode('mostRecent'),
       checked: sortMode === 'mostRecent',
     },
     {
-      label: t('common.oldestFirst', { defaultValue: 'Oldest first' }),
+      id: 'item6',
+      title: t('common.oldestFirst', { defaultValue: 'Oldest first' }),
       onPress: () => setSortMode('oldestFirst'),
       checked: sortMode === 'oldestFirst',
     },
@@ -128,7 +127,6 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
   });
   const cancelLabel = t('common.cancel', { defaultValue: 'Cancel' });
   const confirmLabel = t('common.confirm', { defaultValue: 'Confirm' });
-  const menuVerticalOffset = Platform.OS === 'ios' ? 2 : 6;
   const sortLabels = useMemo<Record<FileSortMode, string>>(
     () => ({
       nameAsc: t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' }),
@@ -143,25 +141,19 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
 
   const promptOverwriteDownload = useCallback(
     (fileId: string) => {
-      if (Platform.OS === 'android') {
-        Alert.alert(downloadTitle, downloadOverwriteMessage, [
-          { text: cancelLabel, style: 'cancel' },
-          {
-            text: confirmLabel,
-            onPress: () => startDownload(fileId),
-          },
-        ]);
-        return;
-      }
-
-      setConfirmDownloadFileId(fileId);
+      Alert.alert(downloadTitle, downloadOverwriteMessage, [
+        { text: cancelLabel, style: 'cancel' },
+        {
+          text: confirmLabel,
+          onPress: () => startDownload(fileId),
+        },
+      ]);
     },
     [
       cancelLabel,
       confirmLabel,
       downloadOverwriteMessage,
       downloadTitle,
-      setConfirmDownloadFileId,
       startDownload,
     ],
   );
@@ -304,30 +296,16 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
         />
       ) : null}
       <View style={styles.controlsContainer}>
-        <SearchBar value={search} onChangeText={setSearch} />
+        <SearchBar
+          value={search}
+          onChangeText={setSearch}
+          label={t('courseDirectoryScreen.search', { defaultValue: 'Search' })}
+        />
 
         <CourseFilesMenu
           sortLabel={sortLabels[sortMode]}
-          onSortPress={() => {
-            moreMenu.close();
-            sortMenu.openFromRef({
-              verticalOffset: menuVerticalOffset,
-              strategy: { align: 'left', left: spacing[4] + spacing[0.5] },
-            });
-          }}
-          sortButtonRef={sortMenu.buttonRef}
-          moreButtonRef={moreMenu.buttonRef}
-          onMorePress={() => {
-            sortMenu.close();
-            moreMenu.openFromRef({
-              verticalOffset: menuVerticalOffset,
-              strategy: {
-                align: 'right',
-                minLeft: spacing[4] + spacing[0.5],
-                menuWidth: 250,
-              },
-            });
-          }}
+          sortItems={sortMenuItems}
+          moreItems={menuItems}
         />
       </View>
 
@@ -367,7 +345,15 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
           </View>
         )}
         ListHeaderComponent={<View style={styles.listTopSpacing} />}
-        ListFooterComponent={<View style={styles.listBottomSpacing} />}
+        ListFooterComponent={
+          <View
+            style={
+              activeDirectory
+                ? styles.listBottomSpacing
+                : styles.listBottomSpacingWithCta
+            }
+          />
+        }
         ListEmptyComponent={
           <View style={styles.emptyStateContainer}>
             <OverviewList
@@ -380,36 +366,13 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
         }
       />
 
-      <CourseFilesContextMenu
-        visible={moreMenu.visible}
-        onClose={moreMenu.close}
-        items={menuItems}
-        anchorPosition={moreMenu.anchorPosition}
-      />
-      <CourseFilesContextMenu
-        visible={sortMenu.visible}
-        onClose={sortMenu.close}
-        items={sortMenuItems}
-        anchorPosition={sortMenu.anchorPosition}
-      />
-      <DownloadOverwriteModal
-        visible={Boolean(confirmDownloadFileId)}
-        title={downloadTitle}
-        message={downloadOverwriteMessage}
-        cancelLabel={cancelLabel}
-        confirmLabel={confirmLabel}
-        onCancel={() => setConfirmDownloadFileId(undefined)}
-        onConfirm={() => {
-          if (confirmDownloadFileId) {
-            startDownload(confirmDownloadFileId);
-          }
-          setConfirmDownloadFileId(undefined);
-        }}
-      />
-
       {!activeDirectory ? (
-        <AddFileButton
-          onPress={() => {
+        <CtaButton
+          icon={faPlus}
+          title={t('courseFilesTab.addFileOrFolder', {
+            defaultValue: 'Add file or folder',
+          })}
+          action={() => {
             if (selectedCourse?.id != null) {
               navigation.navigate('CourseFilesUploadScreen', {
                 courseId: selectedCourse.id,
@@ -417,7 +380,6 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
               });
             }
           }}
-          bottomOffset={bottomTabBarHeight}
         />
       ) : null}
     </View>
@@ -442,6 +404,9 @@ const createStyles = ({ colors, spacing }: Theme) =>
     },
     listBottomSpacing: {
       height: spacing[5],
+    },
+    listBottomSpacingWithCta: {
+      height: spacing[20],
     },
     emptyStateContainer: {
       alignSelf: 'stretch',

@@ -1,5 +1,8 @@
 import { useTranslation } from 'react-i18next';
+import { Platform, TouchableOpacity } from 'react-native';
 
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useTheme } from '@polito/lib/ui';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -123,6 +126,32 @@ export const CourseSharedScreens = () => {
         }}
       />
 
+      <Stack.Screen
+        name="CourseFileMultiSelectScreen"
+        component={CourseFileMultiSelectScreen}
+        options={{
+          presentation: Platform.OS === 'android' ? 'card' : 'modal',
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
+          headerShown: Platform.OS === 'android',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerTitle: Platform.OS === 'android' ? 'Select Files' : '',
+          headerTitleAlign: 'center',
+        }}
+      />
+      <Stack.Screen
+        name="CourseFilesUploadScreen"
+        component={CourseFilesUploadScreen}
+        options={{
+          presentation: Platform.OS === 'android' ? 'card' : 'modal',
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
+          headerShown: Platform.OS === 'android',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerTitle: Platform.OS === 'android' ? 'Upload Files' : '',
+          headerTitleAlign: 'center',
+        }}
+      />
       {/* <Stack.Screen
         name="Notice"
         component={NoticeScreen}

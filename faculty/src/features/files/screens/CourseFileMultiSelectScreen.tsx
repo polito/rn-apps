@@ -18,19 +18,20 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { MENU_ACTIONS } from '@polito/lib/features/courses';
 import {
+  Checkbox,
   CtaButton,
   Icon,
+  SearchBar,
   Text,
   TextButton,
   Theme,
+  useHideTabs,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
 import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { Checkbox } from '../../../core/components/Checkbox';
-import { SearchBar } from '../../../core/components/SearchBar';
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { FileStackParamList } from '../../../core/types/navigation';
 import { CourseFilesList, FileListItem } from '../components/CourseFilesList';
@@ -57,6 +58,8 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
   const { fontSizes, palettes, colors, dark } = theme;
   const iosGrabberColor = dark ? palettes.gray[500] : palettes.gray[300];
   const styles = useStylesheet(createStyles);
+
+  useHideTabs();
 
   const course = useMemo(
     () => fakeCourses.find(c => c.id === courseId),
@@ -307,7 +310,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
             checkboxStyle={styles.checkboxTrailingIcon}
             icon={faSquareCheck}
             iconColor={checkboxIconColor}
-            iconSize={16}
+            dimension="small"
           />
         ),
       })),
@@ -367,10 +370,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
         <SearchBar
           value={searchFilter}
           onChangeText={setSearchFilter}
-          onClear={() => setSearchFilter('')}
-          placeholder={t('courseDirectoryScreen.search', {
-            defaultValue: 'Search',
-          })}
+          label={t('courseDirectoryScreen.search', { defaultValue: 'Search' })}
         />
       </View>
 

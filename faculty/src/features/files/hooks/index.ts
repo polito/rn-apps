@@ -1,4 +1,3 @@
-export { useAnchoredMenu } from './useAnchoredMenu';
 export { useCourseFilesData } from './useCourseFilesData';
 export {
   useFileManagement,

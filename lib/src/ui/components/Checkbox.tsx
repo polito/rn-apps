@@ -9,7 +9,11 @@ import {
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faSquare, faSquareCheck } from '@fortawesome/free-regular-svg-icons';
-import { Icon, Text, Theme, useStylesheet } from '@polito/lib/ui';
+
+import { useStylesheet } from '../hooks/useStylesheet';
+import { Theme } from '../types/Theme';
+import { Icon } from './Icon';
+import { Text } from './Text';
 
 export const Checkbox = ({
   text,
@@ -22,7 +26,6 @@ export const Checkbox = ({
   dimension = 'default',
   icon,
   iconColor,
-  iconSize,
 }: {
   text?: string;
   onPress: () => void;
@@ -34,10 +37,8 @@ export const Checkbox = ({
   dimension?: 'default' | 'small';
   icon?: IconDefinition;
   iconColor?: string;
-  iconSize?: number;
 }) => {
   const styles = useStylesheet(createStyles);
-  const resolvedIconSize = iconSize ?? (dimension === 'small' ? 15 : 20);
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -63,14 +64,14 @@ export const Checkbox = ({
             <Icon
               icon={icon ? icon : faSquareCheck}
               style={styles.checkboxIcon}
-              size={resolvedIconSize}
+              size={dimension === 'small' ? 15 : 20}
               color={iconColor ?? styles.checkboxIcon.color}
             />
           ) : (
             <Icon
               icon={faSquare}
               style={styles.checkboxIcon}
-              size={resolvedIconSize}
+              size={dimension === 'small' ? 15 : 20}
               color={iconColor ?? styles.checkboxIcon.color}
             />
           )}
