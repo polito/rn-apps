@@ -1,297 +1,361 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  SafeAreaView,
+  AccessibilityInfo,
+  Alert,
+  Pressable,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useRoute } from '@react-navigation/native';
+import {
+  faCalendar,
+  faCircleUser,
+  faFile,
+} from '@fortawesome/free-regular-svg-icons';
+import {
+  faComment,
+  faDownload,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
+import { formatDateFromString } from '@polito/lib/core';
+import {
+  BottomModal,
+  CtaButton,
+  CtaButtonContainer,
+  CtaButtonSpacer,
+  EmptyState,
+  Icon,
+  ListItem,
+  OverviewList,
+  Row,
+  Section,
+  SectionHeader,
+  Text,
+  Theme,
+  useBottomModal,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-const COLORS = {
-  background: '#F8FAFC',
-  primary: '#1A3C5A',
-  secondary: '#64748B',
-  accent: '#F97316',
-  white: '#FFF',
-  lightRed: '#FFF5F5',
-  red: '#EF4444',
-  lightBlue: '#F1F5F9',
-  blue: '#1A3C5A',
-  grayLight: '#CBD5E1',
-  grayDark: '#334155',
+import { useCourses } from '../../core/contexts/CoursesContext';
+import { TeachingStackParamList } from './TeachingNavigator';
+
+type Props = NativeStackScreenProps<TeachingStackParamList, 'Assignment'>;
+
+type AnswerModalContentProps = {
+  fileName: string;
+  close: () => void;
+  onSend: (answer: string) => void;
 };
 
-export const AssignmentScreen = () => {
-  const route = useRoute();
-  const insets = useSafeAreaInsets();
-
-  const [modalVisible, setModalVisible] = useState(false);
+const AnswerModalContent = ({
+  fileName,
+  close,
+  onSend,
+}: AnswerModalContentProps) => {
+  const { t } = useTranslation();
+  const styles = useStylesheet(createStyles);
+  const { colors } = useTheme();
   const [answer, setAnswer] = useState('');
-
-  const { title, date, student, assignmentId } = route.params as any;
+  const [focused, setFocused] = useState(false);
+  const canSend = answer.trim().length > 0;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>{title}</Text>
-
-        <View style={styles.metaRow}>
-          <Text style={styles.metaText}>📅 {date}</Text>
-          <Text style={styles.metaText}>👤 {student}</Text>
-        </View>
-
-        <View style={styles.orangeLine} />
-
-        <Text style={styles.sectionTitle}>Description</Text>
-        <Text style={styles.descriptionText}>
-          A presentation on advanced robotics and automation for Assignment ID:{' '}
-          {assignmentId}.
-        </Text>
-
-        <TouchableOpacity style={styles.downloadCard}>
-          <Text style={styles.downloadText}>Download File</Text>
-          <Text style={styles.downloadIcon}>📥</Text>
-        </TouchableOpacity>
-      </ScrollView>
-
-      {/* Footer */}
-      <View
-        style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 80) }]}
-      >
-        <TouchableOpacity style={[styles.button, styles.deleteButton]}>
-          <Text style={styles.deleteButtonText}>🗑 Delete</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, styles.answerButton]}
-          onPress={() => setModalVisible(true)}
+    <View style={styles.modal}>
+      <View style={styles.modalHeader}>
+        <Pressable
+          onPress={close}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.close')}
         >
-          <Text style={styles.answerButtonText}>💬 Answer</Text>
-        </TouchableOpacity>
+          <Text style={styles.modalClose}>{t('common.close')}</Text>
+        </Pressable>
       </View>
-
-      {/* Answer Modal (image_9301b4.png) */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={styles.modalContainer}
-          >
-            {/* Drag Handle & Close */}
-            <View style={styles.dragHandle} />
-            <TouchableOpacity
-              onPress={() => setModalVisible(false)}
-              style={styles.closeHeader}
-            >
-              <Text style={styles.closeText}>Close</Text>
-            </TouchableOpacity>
-
-            <Text style={styles.modalFileTitle}>{title}.zip</Text>
-
-            {/* Answer Input Card */}
-            <View style={styles.inputCard}>
-              <Text style={styles.inputLabel}>Answer</Text>
-              <TextInput
-                style={styles.textInput}
-                placeholder="Write your message here"
-                placeholderTextColor="#94A3B8"
-                multiline
-                value={answer}
-                onChangeText={setAnswer}
-              />
-            </View>
-
-            <View style={{ flex: 1 }} />
-
-            {/* Send Button */}
-            <TouchableOpacity
-              style={styles.sendButton}
-              onPress={() => {
-                setModalVisible(false);
-              }}
-            >
-              <Text style={styles.sendButtonText}>💬 Send Answer</Text>
-            </TouchableOpacity>
-          </KeyboardAvoidingView>
+      <View style={styles.modalBody}>
+        <Text style={styles.modalTitle} accessibilityRole="header">
+          {fileName}
+        </Text>
+        <View
+          style={[styles.answerCard, focused && { borderColor: colors.link }]}
+        >
+          <Text style={styles.answerLabel} importantForAccessibility="no">
+            {t('assignmentScreen.answerLabel')}
+          </Text>
+          <TextInput
+            value={answer}
+            onChangeText={setAnswer}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            multiline
+            autoCapitalize="sentences"
+            placeholder={t('assignmentScreen.answerPlaceholder')}
+            placeholderTextColor={colors.secondaryText}
+            selectionColor={colors.link}
+            style={styles.answerInput}
+            accessibilityLabel={t('assignmentScreen.answerLabel')}
+            accessibilityHint={t('assignmentScreen.answerHint')}
+          />
         </View>
-      </Modal>
-    </SafeAreaView>
+      </View>
+      <CtaButton
+        absolute={false}
+        title={t('assignmentScreen.sendAnswer')}
+        icon={faComment}
+        disabled={!canSend}
+        accessibilityState={{ disabled: !canSend }}
+        accessibilityHint={
+          canSend ? undefined : t('assignmentScreen.sendAnswerDisabledHint')
+        }
+        action={() => onSend(answer.trim())}
+      />
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  content: {
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginBottom: 10,
-  },
-  metaRow: {
-    flexDirection: 'row',
-    gap: 15,
-    marginBottom: 15,
-  },
-  metaText: {
-    fontSize: 14,
-    color: COLORS.secondary,
-  },
-  orangeLine: {
-    width: 40,
-    height: 4,
-    backgroundColor: COLORS.accent,
-    borderRadius: 2,
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginBottom: 8,
-  },
-  descriptionText: {
-    fontSize: 16,
-    color: COLORS.secondary,
-    lineHeight: 22,
-    marginBottom: 25,
-  },
-  downloadCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: COLORS.white,
-    padding: 20,
-    borderRadius: 12,
-    shadowColor: COLORS.grayDark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 3,
-  },
-  downloadText: {
-    fontSize: 16,
-    color: COLORS.primary,
-  },
-  downloadIcon: {
-    fontSize: 20,
-  },
-  footer: {
-    flexDirection: 'row',
-    padding: 20,
-    gap: 12,
-  },
-  button: {
-    flex: 1,
-    height: 50,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  deleteButton: {
-    borderWidth: 1.5,
-    borderColor: COLORS.red,
-    backgroundColor: COLORS.lightRed,
-  },
-  deleteButtonText: {
-    color: COLORS.red,
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  answerButton: {
-    backgroundColor: COLORS.primary,
-  },
-  answerButtonText: {
-    color: COLORS.white,
-    fontWeight: '600',
-    fontSize: 16,
-  },
+export const AssignmentScreen = ({ navigation, route }: Props) => {
+  const { assignmentId } = route.params;
+  const { t } = useTranslation();
+  const styles = useStylesheet(createStyles);
+  const { colors, fontSizes } = useTheme();
+  const { selectedCourse, removeAssignmentFromCourse } = useCourses();
+  const {
+    modal: bottomModal,
+    open: showBottomModal,
+    close: closeBottomModal,
+  } = useBottomModal();
 
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: COLORS.grayDark,
-    justifyContent: 'flex-end',
-  },
-  modalContainer: {
-    backgroundColor: COLORS.lightBlue,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 20,
-    height: '100%',
-  },
-  dragHandle: {
-    width: 38,
-    height: 4,
-    backgroundColor: COLORS.grayLight,
-    borderRadius: 2,
-    alignSelf: 'center',
-    marginBottom: 10,
-  },
-  closeHeader: {
-    marginBottom: 20,
-  },
-  closeText: {
-    fontSize: 16,
-    color: COLORS.secondary,
-  },
-  modalFileTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginBottom: 25,
-  },
-  inputCard: {
-    backgroundColor: COLORS.white,
-    borderRadius: 16,
-    padding: 16,
-    minHeight: 180,
-    shadowColor: COLORS.grayDark,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
-  },
-  inputLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginBottom: 10,
-  },
-  textInput: {
-    fontSize: 16,
-    color: COLORS.primary,
-    textAlignVertical: 'top',
-  },
-  sendButton: {
-    backgroundColor: COLORS.secondary,
-    height: 56,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  sendButtonText: {
-    color: COLORS.white,
-    fontWeight: '600',
-    fontSize: 16,
-  },
-});
+  const assignment = selectedCourse?.assignments.find(
+    item => item.id === assignmentId,
+  );
+
+  if (!selectedCourse || !assignment) {
+    return (
+      <EmptyState icon={faFile} message={t('assignmentScreen.notFound')} />
+    );
+  }
+
+  const formattedDate = formatDateFromString(assignment.date);
+  const fileName = `${assignment.name}.${assignment.mimeType}`;
+  const studentLabel = assignment.studentName ?? assignment.student;
+
+  const deleteAssignment = () => {
+    Alert.alert(t('other.confirm'), t('other.alertAssignment'), [
+      { text: t('common.no'), style: 'cancel' },
+      {
+        text: t('common.yes'),
+        style: 'destructive',
+        onPress: () => {
+          removeAssignmentFromCourse(selectedCourse.id, assignment.id);
+          AccessibilityInfo.announceForAccessibility(
+            t('assignmentScreen.deleted'),
+          );
+          navigation.goBack();
+        },
+      },
+    ]);
+  };
+
+  const openAnswer = () => {
+    showBottomModal(
+      <AnswerModalContent
+        fileName={fileName}
+        close={closeBottomModal}
+        onSend={() => {
+          closeBottomModal();
+          AccessibilityInfo.announceForAccessibility(
+            t('assignmentScreen.answerSent'),
+          );
+        }}
+      />,
+    );
+  };
+
+  return (
+    <>
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
+        <View style={styles.header}>
+          <Text style={styles.title} accessibilityRole="header">
+            {fileName}
+          </Text>
+          <View
+            accessible
+            accessibilityLabel={t('assignmentScreen.metaLabel', {
+              date: formattedDate,
+              student: studentLabel,
+            })}
+          >
+            <Row align="center" gap={3}>
+              <Row align="center" gap={1}>
+                <Icon
+                  icon={faCalendar}
+                  size={fontSizes.md}
+                  color={colors.secondaryText}
+                />
+                <Text style={styles.metaDate}>{formattedDate}</Text>
+              </Row>
+              <Row align="center" gap={1} flexShrink={1}>
+                <Icon
+                  icon={faCircleUser}
+                  size={fontSizes.md}
+                  color={colors.secondaryText}
+                />
+                <Text style={styles.metaStudent} numberOfLines={1}>
+                  {studentLabel}
+                </Text>
+              </Row>
+            </Row>
+          </View>
+        </View>
+
+        <Section>
+          <SectionHeader title={t('other.description')} />
+          <Text style={styles.description}>
+            {assignment.description || t('assignmentScreen.noDescription')}
+          </Text>
+        </Section>
+
+        <OverviewList rounded>
+          <ListItem
+            title={t('assignmentScreen.downloadFile')}
+            trailingItem={
+              <Icon
+                icon={faDownload}
+                size={fontSizes.xl}
+                color={colors.secondaryText}
+              />
+            }
+            disabled
+            accessibilityRole="button"
+            accessibilityState={{ disabled: true }}
+            accessibilityLabel={`${t('assignmentScreen.downloadFile')}, ${fileName}`}
+            accessibilityHint={t('assignmentScreen.downloadUnavailableHint')}
+          />
+        </OverviewList>
+
+        <CtaButtonSpacer />
+      </ScrollView>
+
+      <CtaButtonContainer absolute>
+        <Row gap={2.5}>
+          <CtaButton
+            absolute={false}
+            variant="outlined"
+            destructive
+            title={t('other.delete')}
+            icon={faTrash}
+            containerStyle={styles.ctaHalf}
+            accessibilityHint={t('assignmentScreen.deleteHint')}
+            action={deleteAssignment}
+          />
+          <CtaButton
+            absolute={false}
+            title={t('assignmentScreen.answer')}
+            icon={faComment}
+            containerStyle={styles.ctaHalf}
+            accessibilityHint={t('assignmentScreen.answerButtonHint')}
+            action={openAnswer}
+          />
+        </Row>
+      </CtaButtonContainer>
+
+      <BottomModal dismissable {...bottomModal} />
+    </>
+  );
+};
+
+const createStyles = ({
+  colors,
+  fontFamilies,
+  fontSizes,
+  shapes,
+  spacing,
+}: Theme) =>
+  StyleSheet.create({
+    header: {
+      paddingHorizontal: spacing[5],
+      paddingTop: spacing[4],
+      gap: spacing[1],
+    },
+    title: {
+      fontFamily: fontFamilies.heading,
+      fontSize: fontSizes.xl,
+      lineHeight: fontSizes.xl * 1.25,
+      color: colors.heading,
+    },
+    metaDate: {
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.md,
+      color: colors.secondaryText,
+    },
+    metaStudent: {
+      flexShrink: 1,
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.sm,
+      color: colors.secondaryText,
+    },
+    description: {
+      paddingHorizontal: spacing[5],
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.md,
+      lineHeight: fontSizes.md * 1.5,
+      color: colors.prose,
+    },
+    ctaHalf: {
+      flex: 1,
+      padding: 0,
+    },
+    modal: {
+      backgroundColor: colors.background,
+      borderTopLeftRadius: shapes.md,
+      borderTopRightRadius: shapes.md,
+    },
+    modalHeader: {
+      paddingHorizontal: spacing[4],
+      paddingVertical: spacing[3],
+      backgroundColor: colors.surface,
+      borderTopLeftRadius: shapes.md,
+      borderTopRightRadius: shapes.md,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: colors.divider,
+    },
+    modalClose: {
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.md,
+      color: colors.secondaryText,
+    },
+    modalBody: {
+      padding: spacing[5],
+      gap: spacing[5],
+    },
+    modalTitle: {
+      fontFamily: fontFamilies.heading,
+      fontSize: fontSizes.md,
+      color: colors.heading,
+    },
+    answerCard: {
+      minHeight: 175,
+      padding: spacing[3],
+      borderRadius: shapes.lg,
+      borderWidth: 1,
+      borderColor: colors.surface,
+      backgroundColor: colors.surface,
+    },
+    answerLabel: {
+      fontFamily: fontFamilies.heading,
+      fontSize: fontSizes.md,
+      color: colors.heading,
+    },
+    answerInput: {
+      flex: 1,
+      padding: 0,
+      textAlignVertical: 'top',
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.md,
+      color: colors.prose,
+    },
+  });

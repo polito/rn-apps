@@ -80,12 +80,7 @@ export type TeachingStackParamList = {
   LectureForm: undefined;
   StudentsForm: undefined;
   Contatto: undefined;
-  Assignment: {
-    assignmentId: number;
-    title: string | React.JSX.Element;
-    date: string;
-    student: string;
-  };
+  Assignment: { assignmentId: number };
 };
 
 export const CustomBackButton = () => {
@@ -241,7 +236,11 @@ export const TeachingNavigator = () => {
 
       <Stack.Screen name="StudentContact" component={StudentContact} />
 
-      <Stack.Screen name="Assignment" component={AssignmentScreen} />
+      <Stack.Screen
+        name="Assignment"
+        component={AssignmentScreen}
+        options={{ headerTitle: t('courseAssignmentsTab.title') }}
+      />
 
       <Stack.Screen
         name="Staff"

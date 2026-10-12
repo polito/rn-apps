@@ -53,13 +53,17 @@ interface File {
   dirId: number;
 }
 
-interface Assignment {
+export interface Assignment {
   id: number;
   name: string;
   date: string;
   size: number;
   student: string;
   mimeType: string;
+  description?: string;
+  studentName?: string;
+  unread?: boolean;
+  removalRequested?: boolean;
 }
 
 interface Directory {
@@ -379,19 +383,34 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
       assignments: [
         {
           id: 1,
-          name: 'Laboratorio 1',
-          date: '2024-10-04',
-          size: 100,
-          student: 'S317657',
-          mimeType: 'pdf',
+          name: 'PresentationGroup03',
+          date: '2025-11-17',
+          size: 2048,
+          student: 's348759',
+          studentName: 'Annone Giuliana',
+          mimeType: 'zip',
+          unread: true,
+          description:
+            'Presentazione su robotica avanzata e automazione. Gruppo 03.',
         },
         {
           id: 2,
-          name: 'Laboratorio 1',
-          date: '2024-25-04',
-          size: 100,
-          student: 'S317658',
-          mimeType: 'pdf',
+          name: 'PresentationGroup02',
+          date: '2025-11-15',
+          size: 1536,
+          student: 's345658',
+          studentName: 'Giovenco Lorenzo',
+          mimeType: 'zip',
+        },
+        {
+          id: 3,
+          name: 'PresentationGroup01',
+          date: '2025-11-12',
+          size: 1024,
+          student: 's317657',
+          studentName: 'Rossi Mario',
+          mimeType: 'zip',
+          removalRequested: true,
         },
       ],
       staff: [
