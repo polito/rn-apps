@@ -91,7 +91,12 @@ module.exports = () => {
               image: './assets/splash/logo_white.png',
               backgroundColor: '#002B49',
             },
-            imageWidth: 200,
+            android: {
+              imageWidth: 150,
+            },
+            ios: {
+              imageWidth: 200,
+            }
           },
         ],
         [
