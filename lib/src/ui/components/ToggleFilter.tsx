@@ -119,7 +119,8 @@ export const ToggleFilter = <T,>({
           optionStyle,
         ]}
         disabled={disabled}
-        accessibilityRole="button"
+        accessibilityRole="tab"
+        accessibilityLabel={option.label}
         accessibilityState={{ selected: isSelected, disabled }}
       >
         <Text
@@ -138,7 +139,11 @@ export const ToggleFilter = <T,>({
   };
 
   return (
-    <View style={[styles.container, style]} onLayout={handleContainerLayout}>
+    <View
+      style={[styles.container, style]}
+      onLayout={handleContainerLayout}
+      accessibilityRole="tablist"
+    >
       {layoutMode === 'fill' ? (
         <View style={styles.fillRow}>
           {options.map((option, index) => renderOption(option, index, true))}
@@ -154,8 +159,12 @@ export const ToggleFilter = <T,>({
         </ScrollView>
       )}
 
-      {/* Hidden row used to measure natural content width and decide fill vs scroll. */}
-      <View style={styles.measureWrapper} pointerEvents="none">
+      <View
+        style={styles.measureWrapper}
+        pointerEvents="none"
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+      >
         <View style={styles.contentContainer} onLayout={handleIntrinsicLayout}>
           {options.map((option, index) => (
             <PillButton
@@ -181,13 +190,19 @@ export const ToggleFilter = <T,>({
   );
 };
 
-const createStyles = ({ spacing, palettes, colors }: Theme) =>
+const createStyles = ({
+  spacing,
+  palettes,
+  colors,
+  dark,
+  fontFamilies,
+}: Theme) =>
   StyleSheet.create({
     container: {
       alignItems: 'center',
-      backgroundColor: palettes.gray[200],
+      backgroundColor: dark ? palettes.gray[700] : palettes.gray[200],
       borderWidth: 1,
-      borderColor: palettes.gray[200],
+      borderColor: dark ? palettes.gray[700] : palettes.gray[200],
       borderRadius: spacing[2.5] / 2,
       padding: spacing[1],
       alignSelf: 'stretch',
@@ -227,7 +242,7 @@ const createStyles = ({ spacing, palettes, colors }: Theme) =>
       top: -10000,
     },
     optionUnselected: {
-      backgroundColor: palettes.gray[200],
+      backgroundColor: dark ? palettes.gray[700] : palettes.gray[200],
     },
     optionSelected: {
       backgroundColor: colors.surface,
@@ -236,11 +251,11 @@ const createStyles = ({ spacing, palettes, colors }: Theme) =>
       textAlign: 'center',
     },
     optionTextUnselected: {
-      color: palettes.gray[600],
-      fontFamily: 'Montserrat-Regular',
+      color: colors.secondaryText,
+      fontFamily: fontFamilies.body,
     },
     optionTextSelected: {
-      color: palettes.text[800],
-      fontFamily: 'Montserrat-Medium',
+      color: colors.prose,
+      fontFamily: fontFamilies.title,
     },
   });

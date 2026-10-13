@@ -1,58 +1,63 @@
-import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { faEye, faEyeSlash, faFile } from '@fortawesome/free-regular-svg-icons';
-import { useTheme } from '@polito/lib/ui';
-import { StatusBadge } from '@polito/lib/ui';
+import { StatusBadge, useTheme } from '@polito/lib/ui';
 
 import { Notice } from '../../core/contexts/CoursesContext';
+
+export type NoticeStatus = 'expired' | 'visible' | 'draft';
+
+export const getNoticeStatus = (notice: Notice): NoticeStatus => {
+  if (notice.endDate && notice.endDate < new Date().toISOString()) {
+    return 'expired';
+  }
+  return notice.visible ? 'visible' : 'draft';
+};
+
+export const useNoticeStatusLabel = () => {
+  const { t } = useTranslation();
+  return (status: NoticeStatus) =>
+    ({
+      expired: t('other.expired'),
+      visible: t('other.visible'),
+      draft: t('other.draft'),
+    })[status];
+};
 
 type Props = {
   notice: Notice;
 };
 
 export const NoticeStatusBadge = ({ notice }: Props) => {
-  const { t } = useTranslation();
-  const [status, setStatus] = useState('');
-  const { palettes } = useTheme();
-  const backgroundColor = useMemo(() => {
-    if (notice.endDate && notice.endDate < new Date().toISOString()) {
-      setStatus(t('other.expired'));
-      return '#E0E6EB';
-    } else if (notice.visible) {
-      setStatus(t('other.visible'));
-      return '#F0FDF4';
-    } else {
-      setStatus(t('other.draft'));
-      return '#FFF7ED';
-    }
-  }, [notice, t]);
+  const { dark, palettes } = useTheme();
+  const getLabel = useNoticeStatusLabel();
+  const status = getNoticeStatus(notice);
 
-  const foregroundColor = useMemo(() => {
-    if (notice.endDate && notice.endDate < new Date().toISOString()) {
-      return palettes.gray[400];
-    } else if (notice.visible) {
-      return palettes.success[800];
-    } else {
-      return palettes.warning[800];
-    }
-  }, [notice, palettes]);
-
-  const icon = useMemo(() => {
-    if (notice.endDate && notice.endDate < new Date().toISOString()) {
-      return faEyeSlash;
-    } else if (notice.visible) {
-      return faEye;
-    } else return faFile;
-  }, [notice]);
+  const appearance = {
+    expired: {
+      icon: faEyeSlash,
+      background: dark ? palettes.gray[700] : palettes.gray[200],
+      foreground: dark ? palettes.gray[300] : palettes.gray[400],
+    },
+    visible: {
+      icon: faEye,
+      background: dark ? palettes.success[900] : palettes.success[50],
+      foreground: dark ? palettes.success[200] : palettes.success[800],
+    },
+    draft: {
+      icon: faFile,
+      background: dark ? palettes.warning[900] : palettes.warning[50],
+      foreground: dark ? palettes.warning[200] : palettes.warning[800],
+    },
+  }[status];
 
   return (
     <StatusBadge
-      text={status}
-      backgroundColor={backgroundColor}
-      foregroundColor={foregroundColor}
-      icon={icon}
-      iconColor={foregroundColor}
+      text={getLabel(status)}
+      icon={appearance.icon}
+      backgroundColor={appearance.background}
+      foregroundColor={appearance.foreground}
+      iconColor={appearance.foreground}
     />
   );
 };

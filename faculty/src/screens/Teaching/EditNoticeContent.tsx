@@ -8,26 +8,15 @@ import {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Alert,
-  Platform,
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert, Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 
-import { faCalendar, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { APP_TIMEZONE, usePreferencesContext } from '@polito/lib/core';
 import {
   BottomBarSpacer,
-  Card,
   Col,
   CtaButton,
   CtaButtonContainer,
-  Icon,
-  Row,
   Section,
   SegmentedControl,
   Separator,
@@ -36,22 +25,30 @@ import {
   TextArea,
   TextButton,
 } from '@polito/lib/ui';
-import { Theme, useStylesheet, useTheme } from '@polito/lib/ui';
-import { useNavigation } from '@react-navigation/native';
+import { Theme, useStylesheet } from '@polito/lib/ui';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { AppPreferences } from '~/core/types/preferences';
 
 import { DateTime } from 'luxon';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { CourseSharedScreensParamList } from './CourseSharedScreens';
+import { NoticeDateCard } from './NoticeDateCard';
 
 export const EditNoticeContent = () => {
   const navigation = useNavigation();
+  const { params } =
+    useRoute<RouteProp<CourseSharedScreensParamList, 'EditNoticeContent'>>();
 
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { fontSizes, palettes, spacing } = useTheme();
-  const { selectedNotice, selectedCourse, updateCourseNotice } = useCourses();
+
+  const { selectedCourse, updateCourseNotice } = useCourses();
+  const selectedNotice =
+    selectedCourse?.id === params.courseId
+      ? selectedCourse.notices.find(n => n.id === params.noticeId)
+      : undefined;
   const [selectedMode, setSelectedMode] = useState<'text' | 'preview'>('text');
   const [description, setDescription] = useState(selectedNotice?.content ?? '');
   const { language } = usePreferencesContext<AppPreferences>();
@@ -69,20 +66,13 @@ export const EditNoticeContent = () => {
   const [endDate, setEndDate] = useState<Date | null>(
     selectedNotice?.endDate ? new Date(selectedNotice.endDate) : null,
   );
-  const [isStartDateSelected, setIsStartDateSelected] = useState(
-    !!selectedNotice?.startDate,
-  );
-  const [isEndDateSelected, setIsEndDateSelected] = useState(
-    !!selectedNotice?.endDate,
-  );
   const [activeDateField, setActiveDateField] = useState<
     'start' | 'end' | null
   >(null);
   const visibilityOptions = [
-    { label: 'Text', value: 'text' },
-    { label: 'Preview', value: 'preview' },
-  ] as const;
-  const cardTitleSelectedStyle = { color: palettes.primary[700] };
+    { label: t('courseNoticesTab.textTab'), value: 'text' as const },
+    { label: t('courseNoticesTab.previewTab'), value: 'preview' as const },
+  ];
 
   useEffect(() => {
     if (selectedMode === 'preview') {
@@ -101,31 +91,15 @@ export const EditNoticeContent = () => {
     setEndDate(
       selectedNotice.endDate ? new Date(selectedNotice.endDate) : null,
     );
-    setIsStartDateSelected(!!selectedNotice.startDate);
-    setIsEndDateSelected(!!selectedNotice.endDate);
   }, [selectedNotice]);
-
-  const formatDate = (date: Date) => {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear().toString().slice(-2);
-
-    return `${day}/${month}/${year}`;
-  };
-
-  const renderDateLabel = (date: Date | null) => {
-    return date ? formatDate(date) : t('common.datePlaceholder');
-  };
 
   const handleDateChange = useCallback(
     (selectedDate: Date) => {
       if (selectedDate && activeDateField) {
         if (activeDateField === 'start') {
           setStartDate(selectedDate);
-          setIsStartDateSelected(true);
         } else {
           setEndDate(selectedDate);
-          setIsEndDateSelected(true);
         }
         setActiveDateField(null);
       }
@@ -197,7 +171,7 @@ export const EditNoticeContent = () => {
       headerRight: () => {
         return (
           !selectedNotice?.visible && (
-            <TextButton onPress={handleSaveDraft}>
+            <TextButton accessibilityRole="button" onPress={handleSaveDraft}>
               {t('common.saveDraft')}
             </TextButton>
           )
@@ -223,6 +197,10 @@ export const EditNoticeContent = () => {
             <SwitchListItem
               style={styles.listItem}
               title={t('courseNoticesTab.setAlwaysVisible')}
+              accessibilityRole="switch"
+              accessibilityLabel={t('courseNoticesTab.setAlwaysVisible')}
+              accessibilityState={{ checked: alwaysVisible }}
+              accessibilityHint={t('courseNoticesTab.alwaysVisibleHint')}
               value={alwaysVisible}
               onChange={value => {
                 setAlwaysVisible(value);
@@ -234,76 +212,16 @@ export const EditNoticeContent = () => {
 
             {!alwaysVisible && (
               <View style={styles.cardsContainer}>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={styles.cardTouchArea}
+                <NoticeDateCard
+                  label={t('other.startDate')}
+                  date={startDate}
                   onPress={() => setActiveDateField('start')}
-                >
-                  <Card rounded style={styles.card}>
-                    <Row style={styles.cardContent}>
-                      <Icon
-                        icon={faCalendar}
-                        size={fontSizes['2xl']}
-                        color={
-                          isStartDateSelected
-                            ? palettes.primary[700]
-                            : palettes.gray[400]
-                        }
-                      />
-                      <Col>
-                        <Text
-                          style={[
-                            styles.cardTitle,
-                            isStartDateSelected && cardTitleSelectedStyle,
-                          ]}
-                        >
-                          {t('other.startDate')}
-                        </Text>
-                        <Row style={{ gap: spacing[1.5] }} align="center">
-                          <Text style={styles.cardSubtitle}>
-                            {renderDateLabel(startDate)}
-                          </Text>
-                          <Icon icon={faChevronDown} size={fontSizes.sm} />
-                        </Row>
-                      </Col>
-                    </Row>
-                  </Card>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={styles.cardTouchArea}
+                />
+                <NoticeDateCard
+                  label={t('other.endDate')}
+                  date={endDate}
                   onPress={() => setActiveDateField('end')}
-                >
-                  <Card rounded style={styles.card}>
-                    <Row style={styles.cardContent}>
-                      <Icon
-                        icon={faCalendar}
-                        size={fontSizes['2xl']}
-                        color={
-                          isEndDateSelected
-                            ? palettes.primary[700]
-                            : palettes.gray[400]
-                        }
-                      />
-                      <Col>
-                        <Text
-                          style={[
-                            styles.cardTitle,
-                            isEndDateSelected && cardTitleSelectedStyle,
-                          ]}
-                        >
-                          {t('other.endDate')}
-                        </Text>
-                        <Row style={{ gap: spacing[1.5] }} align="center">
-                          <Text style={styles.cardSubtitle}>
-                            {renderDateLabel(endDate)}
-                          </Text>
-                          <Icon icon={faChevronDown} size={fontSizes.sm} />
-                        </Row>
-                      </Col>
-                    </Row>
-                  </Card>
-                </TouchableOpacity>
+                />
               </View>
             )}
 
@@ -313,7 +231,8 @@ export const EditNoticeContent = () => {
                 value={description}
                 onChangeText={setDescription}
                 style={styles.textAreaInput}
-                placeholder={t('common.textAreaPlaceholder')}
+                placeholder={t('courseNoticesTab.descriptionPlaceholder')}
+                accessibilityHint={t('courseNoticesTab.descriptionHint')}
                 unlimited
               />
             </View>
@@ -321,7 +240,7 @@ export const EditNoticeContent = () => {
         ) : (
           <Section style={styles.section}>
             <Separator />
-            <Text variant="heading" style={styles.sectionTitle}>
+            <Text style={styles.sectionTitle} accessibilityRole="header">
               {t('other.noticeTextTitle')}
             </Text>
             <Text style={styles.sectionContent}>{description}</Text>
@@ -335,6 +254,10 @@ export const EditNoticeContent = () => {
           absolute={false}
           title={t('other.saveAndExit')}
           disabled={!canPublish}
+          accessibilityState={{ disabled: !canPublish }}
+          accessibilityHint={
+            canPublish ? undefined : t('courseNoticesTab.publishDisabledHint')
+          }
           action={handlePublishPress}
           containerStyle={styles.CTAbutton}
         />
@@ -364,7 +287,6 @@ export const EditNoticeContent = () => {
 
 const createStyles = ({
   colors,
-  palettes,
   spacing,
   shapes,
   fontSizes,
@@ -388,7 +310,7 @@ const createStyles = ({
       elevation: 0,
       fontSize: fontSizes.md,
       fontWeight: fontWeights.medium,
-      color: palettes.text[800],
+      color: colors.prose,
       marginBottom: spacing[5],
     },
     cardsContainer: {
@@ -399,35 +321,7 @@ const createStyles = ({
       alignSelf: 'stretch',
       marginBottom: spacing[5],
     },
-    cardTouchArea: {
-      flex: 1,
-      minWidth: 0,
-    },
-    card: {
-      paddingHorizontal: spacing[3],
-      paddingVertical: spacing[2],
-      marginVertical: 0,
-      elevation: 0,
-    },
-    cardContent: {
-      alignItems: 'center',
-      gap: spacing[3],
-    },
-    cardTitle: {
-      color: palettes.gray[500],
-      fontSize: fontSizes.sm,
-      fontFamily: fontFamilies.body,
-    },
-    cardSubtitle: {
-      color: palettes.gray[500],
-      fontSize: fontSizes.md,
-      fontFamily: fontFamilies.heading,
-    },
     textAreaInput: {
-      color: palettes.gray[500],
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.normal,
-      fontFamily: 'Montserrat-Regular',
       paddingHorizontal: 0,
       paddingVertical: 0,
       minHeight: spacing[24],
@@ -439,15 +333,15 @@ const createStyles = ({
 
     sectionTitle: {
       fontSize: fontSizes.md,
-      fontWeight: fontWeights.semibold,
-      fontFamily: 'Montserrat-SemiBold',
-      color: palettes.primary[700],
+      lineHeight: fontSizes.md * 1.25,
+      fontFamily: fontFamilies.heading,
+      color: colors.heading,
     },
     sectionContent: {
       fontSize: fontSizes.md,
-      fontWeight: fontWeights.normal,
-      fontFamily: 'Montserrat-Regular',
-      color: palettes.gray[800],
+      lineHeight: fontSizes.md * 1.5,
+      fontFamily: fontFamilies.body,
+      color: colors.prose,
     },
     safeArea: {
       flex: 1,

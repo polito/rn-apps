@@ -118,8 +118,7 @@ export const RootNavigator = () => {
               <TouchableWithoutFeedback
                 onPress={() => {
                   setIsDID(true);
-                  teachingNavigation.navigate('Roles');
-                  // You can navigate to a specific screen or perform any action here
+                  teachingNavigation.navigate('Home');
                 }}
               >
                 <View style={props.style} testID={props.testID}>
@@ -148,7 +147,7 @@ export const RootNavigator = () => {
                   // Poi procedi con la navigazione
                   bottomNavigation.navigate({
                     name: 'Didattica',
-                    params: { screen: 'Roles' },
+                    params: { screen: 'Home' },
                     merge: true,
                   }); // Se desideri navigare in modo esplicito
                 }}
@@ -205,7 +204,7 @@ export const RootNavigator = () => {
                 // Poi procedi con la navigazione
                 placesNavigation.navigate({
                   name: 'Places',
-                  params: { screen: 'Places1' },
+                  params: { screen: 'Places' },
                   merge: true,
                 }); // Se desideri navigare in modo esplicito
               }}

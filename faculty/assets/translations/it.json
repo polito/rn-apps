@@ -386,7 +386,18 @@
     "title": "Avvisi",
     "newNotice": "Nuovo avviso",
     "setAlwaysVisible": "Sempre visibile",
-    "alwaysVisible": "Sempre visibile"
+    "alwaysVisible": "Sempre visibile",
+    "openHint": "Apre il dettaglio dell’avviso",
+    "newNoticeHint": "Apre il modulo per scrivere un nuovo avviso",
+    "textTab": "Testo",
+    "previewTab": "Anteprima",
+    "datePlaceholder": "gg/mm/aaaa",
+    "dateNotSet": "non impostata",
+    "dateHint": "Apre il selettore della data",
+    "descriptionPlaceholder": "Scrivi qui il tuo messaggio",
+    "descriptionHint": "Testo dell’avviso mostrato agli studenti",
+    "alwaysVisibleHint": "Se attivo, l’avviso non ha data di inizio e di fine",
+    "publishDisabledHint": "Scrivi il testo dell’avviso per abilitare il pulsante"
   },
   "courseStaffTab": {
     "title": "Docenti"
@@ -608,6 +619,11 @@
     "usernameLabel": "Username PoliTO",
     "usernameLabelAccessibility": "Inserisci qui il tuo username",
     "fcmUnsupported": "Si è verificato un errore durante l'attivazione delle notifiche push. Questo problema può essere causato dall'assenza dei servizi Google su questo dispositivo. È possibile continuare ad utilizzare l'app ma non si riceveranno notifiche push."
+  },
+  "noticeScreen": {
+    "deleteHint": "Chiede conferma prima di eliminare l’avviso",
+    "editHint": "Apre la modifica dell’avviso",
+    "editDisabledHint": "Gli avvisi scaduti non si possono modificare"
   },
   "ssoScreen": {
     "ssoButton": "Entra con Single-Sign-On",

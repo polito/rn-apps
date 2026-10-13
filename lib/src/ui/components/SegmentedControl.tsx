@@ -1,10 +1,9 @@
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { ToggleFilter } from '@polito/lib/ui';
-
 import { useStylesheet } from '../hooks/useStylesheet';
 import { Option } from '../types/Input';
 import { Theme } from '../types/Theme';
+import { ToggleFilter } from './ToggleFilter';
 
 interface SegmentedControlProps<T> {
   options: readonly Option<T>[];

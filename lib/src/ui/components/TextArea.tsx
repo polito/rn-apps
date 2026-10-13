@@ -10,8 +10,12 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { Col, Row, Text } from '@polito/lib/ui';
-import { Theme, useStylesheet, useTheme } from '@polito/lib/ui';
+import { useStylesheet } from '../hooks/useStylesheet';
+import { useTheme } from '../hooks/useTheme';
+import { Theme } from '../types/Theme';
+import { Col } from './Col';
+import { Row } from './Row';
+import { Text } from './Text';
 
 type TextAreaProps = Omit<TextInputProps, 'multiline' | 'textAlignVertical'> & {
   label: string;
@@ -65,16 +69,26 @@ export const TextArea = ({
           <Row
             style={{ justifyContent: 'space-between', alignItems: 'center' }}
           >
-            <Text style={styles.cardTitle}>{label}</Text>
+            <Text
+              style={[
+                styles.cardTitle,
+                (isFocused || textValue.length > 0) && styles.cardTitleActive,
+              ]}
+              importantForAccessibility="no"
+              accessibilityElementsHidden
+            >
+              {label}
+            </Text>
             {charCount != null && (
               <Text style={styles.charCount}>{charCount}</Text>
             )}
           </Row>
           <TextInput
             placeholder={placeholder ?? t('common.textAreaPlaceholder')}
+            accessibilityLabel={label}
             {...restInputProps}
             maxLength={maxCharacters}
-            placeholderTextColor={palettes.gray[500]}
+            placeholderTextColor={colors.secondaryText}
             multiline
             textAlignVertical="top"
             onContentSizeChange={event => {
@@ -118,9 +132,8 @@ const createStyles = ({
   spacing,
   shapes,
   fontSizes,
-  fontWeights,
+  fontFamilies,
   colors,
-  palettes,
 }: Theme) =>
   StyleSheet.create({
     card: {
@@ -133,32 +146,32 @@ const createStyles = ({
       borderRadius: shapes.lg,
     },
     cardTitle: {
-      color: palettes.text[800],
-      fontSize: fontSizes.lg,
-      fontWeight: fontWeights.medium,
-      fontFamily: 'Montserrat-Medium',
+      color: colors.secondaryText,
+      fontSize: fontSizes.md,
+      lineHeight: fontSizes.md * 1.25,
+      fontFamily: fontFamilies.heading,
+    },
+    cardTitleActive: {
+      color: colors.heading,
     },
     textAreaInput: {
-      color: palettes.text[600],
+      color: colors.prose,
       fontSize: fontSizes.md,
-      fontWeight: fontWeights.normal,
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: fontFamilies.body,
       paddingHorizontal: 0,
       paddingVertical: 0,
       minHeight: spacing[24],
       flexGrow: 1,
     },
     charCount: {
-      color: palettes.text[700],
+      color: colors.secondaryText,
       fontSize: fontSizes.md,
-      fontWeight: fontWeights.medium,
-      fontFamily: 'Montserrat-Medium',
+      fontFamily: fontFamilies.title,
     },
     description: {
-      color: palettes.text[700],
+      color: colors.secondaryText,
       fontSize: fontSizes.sm,
-      fontWeight: fontWeights.normal,
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: fontFamilies.body,
       paddingHorizontal: spacing[3],
       marginTop: spacing[1],
     },

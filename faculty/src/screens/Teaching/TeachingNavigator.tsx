@@ -35,6 +35,7 @@ import { FilesFormScreen } from './FilesFormScreen';
 import { FormScreen } from './FormScreen';
 import { LectureFormScreen } from './LectureFormScreen';
 import { LessonScreen } from './LessonScreen';
+import { ManagedCoursesScreen } from './ManagedCoursesScreen';
 import { ModifyFileScreen } from './ModifyFileScreen';
 import { ModifyLectureScreen } from './ModifyLectureScreen';
 import { ModifyNoticeScreen } from './ModifyNoticeScreen';
@@ -45,11 +46,11 @@ import { TeachingScreen } from './TeachingScreen';
 export type TeachingStackParamList = {
   Home: undefined;
   MyCourses: undefined;
+  ManagedCourses: undefined;
   ExamsCalls: undefined;
   Exam: { id: number };
 
   Form: undefined;
-  Roles: undefined;
   Notice: undefined;
   Lecture: undefined;
   Notices: undefined;
@@ -138,6 +139,18 @@ export const TeachingNavigator = () => {
             );
           },
           headerTitle: t('other.myCourses'),
+        }}
+      />
+      <Stack.Screen
+        name="ManagedCourses"
+        component={ManagedCoursesScreen}
+        options={{
+          headerLeft: () => (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <CustomBackButton />
+            </View>
+          ),
+          headerTitle: t('other.managedCourses'),
         }}
       />
 

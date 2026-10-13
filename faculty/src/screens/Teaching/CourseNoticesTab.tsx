@@ -21,16 +21,19 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { CourseSharedScreensParamList } from './CourseSharedScreens';
-import { NoticeStatusBadge } from './NoticeStatusBadge';
+import {
+  NoticeStatusBadge,
+  getNoticeStatus,
+  useNoticeStatusLabel,
+} from './NoticeStatusBadge';
 
 export const CourseNoticesTab = () => {
-  const { selectedCourse, setSelectedNotice } = useCourses();
+  const { selectedCourse } = useCourses();
   const navigation =
     useNavigation<NativeStackNavigationProp<CourseSharedScreensParamList>>();
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
-
-  // Troviamo il corso corrispondente
+  const getStatusLabel = useNoticeStatusLabel();
   const course = selectedCourse;
   const [orderBy, setOrderBy] = React.useState<
     'newest' | 'oldest' | undefined
@@ -62,6 +65,15 @@ export const CourseNoticesTab = () => {
     return 0;
   });
 
+  const getSubtitle = (notice: (typeof sortedNotices)[number]) => {
+    if (notice.alwaysVisible) return t('courseNoticesTab.alwaysVisible');
+    if (!notice.startDate) return '';
+    const start = formatDateFromString(notice.startDate);
+    return notice.endDate
+      ? `${start} - ${formatDateFromString(notice.endDate)}`
+      : start;
+  };
+
   return (
     <React.Fragment>
       <ScrollView
@@ -90,26 +102,30 @@ export const CourseNoticesTab = () => {
                 return (
                   <React.Fragment key={notice.id}>
                     <ListItem
-                      key={`${notice.id}`}
                       isAction
-                      title={notice.content || t('courseNoticesTab.newNotice')}
-                      subtitle={
-                        notice.alwaysVisible
-                          ? t('courseNoticesTab.alwaysVisible')
-                          : notice.startDate
-                            ? notice.endDate
-                              ? formatDateFromString(notice.startDate) +
-                                ' - ' +
-                                formatDateFromString(notice.endDate)
-                              : formatDateFromString(notice.startDate) +
-                                ' - ' +
-                                t('courseNoticesTab.alwaysVisible')
-                            : ''
+                      title={
+                        notice.title ||
+                        notice.content ||
+                        t('courseNoticesTab.newNotice')
                       }
-                      onPress={() => {
-                        setSelectedNotice(notice);
-                        navigation.navigate('NoticeScreen');
-                      }}
+                      subtitle={getSubtitle(notice)}
+                      accessibilityRole="button"
+                      accessibilityLabel={[
+                        notice.title ||
+                          notice.content ||
+                          t('courseNoticesTab.newNotice'),
+                        getSubtitle(notice),
+                        getStatusLabel(getNoticeStatus(notice)),
+                      ]
+                        .filter(Boolean)
+                        .join(', ')}
+                      accessibilityHint={t('courseNoticesTab.openHint')}
+                      onPress={() =>
+                        navigation.navigate('Notice', {
+                          noticeId: notice.id,
+                          courseId: course.id,
+                        })
+                      }
                       trailingItem={
                         <React.Fragment>
                           <NoticeStatusBadge notice={notice} />
@@ -129,8 +145,9 @@ export const CourseNoticesTab = () => {
       <CtaButtonContainer absolute={true} style={styles.ctaContainer}>
         <CtaButton
           title={t('courseNoticesTab.newNotice')}
+          accessibilityHint={t('courseNoticesTab.newNoticeHint')}
           action={() => {
-            navigation.navigate('AddNoticeContent');
+            navigation.navigate('AddNoticeContent', { courseId: course.id });
           }}
           icon={faPlus}
           absolute={false}

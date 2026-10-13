@@ -374,7 +374,18 @@
     "title": "Notices",
     "newNotice": "New notice",
     "setAlwaysVisible": "Set always visible",
-    "alwaysVisible": "Always visible"
+    "alwaysVisible": "Always visible",
+    "openHint": "Opens the notice details",
+    "newNoticeHint": "Opens the form to write a new notice",
+    "textTab": "Text",
+    "previewTab": "Preview",
+    "datePlaceholder": "dd/mm/yyyy",
+    "dateNotSet": "not set",
+    "dateHint": "Opens the date picker",
+    "descriptionPlaceholder": "Write your message here",
+    "descriptionHint": "Text of the notice shown to students",
+    "alwaysVisibleHint": "When on, the notice has no start and end date",
+    "publishDisabledHint": "Write the notice text to enable this button"
   },
   "courseStaffTab": {
     "title": "Staff"
@@ -592,6 +603,11 @@
     "usernameLabel": "PoliTO username",
     "usernameLabelAccessibility": "Enter your username here",
     "fcmUnsupported": "An error occurred during push notifications setup. This problem can be caused by the lack of Google Play Services on this device. It is possible to keep using this app, however push notifications won't be received."
+  },
+  "noticeScreen": {
+    "deleteHint": "Asks for confirmation before deleting the notice",
+    "editHint": "Opens the notice editor",
+    "editDisabledHint": "Expired notices cannot be edited"
   },
   "ssoScreen": {
     "ssoButton": "Sign in with Single-Sign-On",

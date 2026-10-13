@@ -32,6 +32,9 @@ export interface CourseSharedScreensParamList extends ParamListBase {
   };
   CoursePreferences: { courseId: number; uniqueShortcode: string };
   CourseGuide: { courseId: number };
+  Notice: { noticeId: number; courseId: number };
+  AddNoticeContent: { courseId: number };
+  EditNoticeContent: { noticeId: number; courseId: number };
   CourseDirectory: {
     courseId: number;
     directoryId?: string;
@@ -63,14 +66,20 @@ type HeaderTextButtonProps = {
 };
 
 const HeaderTextButton = ({ text, onPress }: HeaderTextButtonProps) => {
-  const { palettes, fontSizes, spacing } = useTheme();
+  const { colors, fontSizes, spacing } = useTheme();
 
   return (
-    <TouchableOpacity onPress={onPress} style={{ padding: spacing[2] }}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={{ padding: spacing[2] }}
+      hitSlop={spacing[2]}
+      accessibilityRole="button"
+      accessibilityLabel={text}
+    >
       <Text
         style={{
           fontSize: fontSizes.md,
-          color: palettes.gray[600],
+          color: colors.secondaryText,
         }}
       >
         {text}
@@ -80,7 +89,7 @@ const HeaderTextButton = ({ text, onPress }: HeaderTextButtonProps) => {
 };
 
 export const CourseSharedScreens = () => {
-  const { colors, fontSizes, fontWeights, fontFamilies, palettes } = useTheme();
+  const { colors, fontSizes, fontFamilies, palettes } = useTheme();
   const { t } = useTranslation();
   return (
     <>
@@ -119,26 +128,14 @@ export const CourseSharedScreens = () => {
         }}
       />
       <Stack.Screen
-        name="NoticeScreen"
+        name="Notice"
         component={NoticeScreen}
+        getId={({ params }: { params: any }) =>
+          `${params.courseId}${params.noticeId}`
+        }
         options={{
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{
-                fontSize: fontSizes.md,
-                textAlign: 'center',
-                fontWeight: fontWeights.medium,
-                width: 110,
-              }}
-              numberOfLines={1}
-            >
-              {t('common.notice_plural')}
-            </Text>
-          ),
           headerBackTitle: t('common.course'),
-          headerShadowVisible: false,
-          headerTransparent: false,
+          headerTitle: t('common.notice'),
           headerLargeTitle: false,
         }}
       />
