@@ -1,12 +1,10 @@
 import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
-import { Platform } from 'react-native';
 
 import { useOfflineDisabled, usePreferencesContext } from '@polito/lib/core';
 import {
   Grid,
-  Text,
   Theme,
   useBottomBarAwareStyles,
   useStylesheet,
@@ -40,18 +38,7 @@ export const ServiceScreen = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => <Logo />,
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-            marginLeft: Platform.OS === 'android' ? -35 : -80,
-          }}
-        >
-          {t('other.services')}
-        </Text>
-      ),
+      headerTitle: t('other.services'),
     });
   }, [navigation, colors, t]);
 

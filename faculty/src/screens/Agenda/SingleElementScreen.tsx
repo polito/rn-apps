@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { Alert, ScrollView, StyleSheet } from 'react-native';
-import { Platform } from 'react-native';
 
 import {
   faBookOpen,
@@ -46,31 +45,11 @@ export const SingleElementScreen = () => {
     selectedAgendaItem.type === 'LEZIONE'
   ) {
     agendaNavigator.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            marginLeft: Platform.OS === 'android' ? 110 : 40,
-            width: 100,
-          }}
-        >
-          Lezione
-        </Text>
-      ),
+      headerTitle: t('common.lecture'),
     });
   } else {
     agendaNavigator.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            marginLeft: Platform.OS === 'android' ? 75 : 10,
-            width: Platform.OS === 'android' ? 200 : 120,
-          }}
-        >
-          Appuntamento
-        </Text>
-      ),
+      headerTitle: t('other.appointment'),
     });
   }
 

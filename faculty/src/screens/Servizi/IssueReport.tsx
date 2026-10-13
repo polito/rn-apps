@@ -9,7 +9,6 @@ import {
   CtaButton,
   IndentedDivider,
   ListItem,
-  Text,
   useBottomBarAwareStyles,
   useSafeAreaSpacing,
   useTheme,
@@ -30,17 +29,7 @@ export const IssueReport = () => {
   const { paddingHorizontal } = useSafeAreaSpacing();
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          {t('other.reportsFault')}
-        </Text>
-      ),
+      headerTitle: t('other.reportsFault'),
     });
   }, [navigation, colors, t]);
 

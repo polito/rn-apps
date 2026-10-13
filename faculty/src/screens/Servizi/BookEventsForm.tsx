@@ -130,17 +130,7 @@ export const BookEventsForm = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          {t('other.requestEventsPlaces')}
-        </Text>
-      ),
+      headerTitle: t('other.requestEventsPlaces'),
     });
   }, [navigation, t]);
 

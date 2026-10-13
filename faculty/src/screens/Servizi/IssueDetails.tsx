@@ -33,17 +33,7 @@ export const IssueDetails = () => {
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          {t('other.report')}
-        </Text>
-      ),
+      headerTitle: t('other.report'),
     });
   }, [navigation, colors, t]);
 

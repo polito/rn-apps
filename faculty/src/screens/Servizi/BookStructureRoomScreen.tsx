@@ -9,7 +9,6 @@ import {
   CtaButton,
   IndentedDivider,
   ListItem,
-  Text,
   useBottomBarAwareStyles,
   useSafeAreaSpacing,
 } from '@polito/lib/ui';
@@ -29,17 +28,7 @@ export const BookStructureRoomScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          {t('other.bookStructurePlaces')}
-        </Text>
-      ),
+      headerTitle: t('other.bookStructurePlaces'),
     });
   }, [navigation, t]);
 

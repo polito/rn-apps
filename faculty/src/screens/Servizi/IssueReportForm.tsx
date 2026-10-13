@@ -107,17 +107,7 @@ export const IssueReportForm = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          {t('other.newReportFault')}
-        </Text>
-      ),
+      headerTitle: t('other.newReportFault'),
     });
   }, [navigation, t]);
 

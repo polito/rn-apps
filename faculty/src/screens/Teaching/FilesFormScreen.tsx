@@ -3,9 +3,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, TextInput, View } from 'react-native';
-import { Platform } from 'react-native';
 
-import { faArrowLeft, faFileUpload } from '@fortawesome/free-solid-svg-icons';
+import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
 import {
   Card,
   CtaButton,
@@ -72,21 +71,7 @@ export const FilesFormScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{ marginLeft: Platform.OS === 'android' ? 75 : 0 }}
-        >
-          {t('other.uploadMaterial')}
-        </Text>
-      ),
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-      ),
+      headerTitle: t('other.uploadMaterial'),
     });
   }, [navigation, t]);
 

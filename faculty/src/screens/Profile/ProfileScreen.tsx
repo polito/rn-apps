@@ -1,7 +1,6 @@
 import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
-import { Platform } from 'react-native';
 
 import {
   faBank,
@@ -51,18 +50,7 @@ export const ProfileScreen = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => <Logo />,
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-            marginLeft: Platform.OS === 'android' ? 25 : 55,
-          }}
-        >
-          {t('other.profile')}
-        </Text>
-      ),
+      headerTitle: t('other.profile'),
       headerRight: () => (
         <Row>
           <View style={{ width: fontSizes.lg + spacing[6] }} />

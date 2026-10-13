@@ -38,17 +38,7 @@ export const SingleBooking0 = () => {
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          {t('other.request')}
-        </Text>
-      ),
+      headerTitle: t('other.request'),
     });
   }, [navigation, t]);
 

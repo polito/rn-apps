@@ -7,11 +7,9 @@ import React, { useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, TextInput, View } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import {
   Card,
   CtaButton,
-  IconButton,
   Text,
   Theme,
   useStylesheet,
@@ -113,23 +111,9 @@ export const ModifyNoticeScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{ marginLeft: Platform.OS === 'android' ? 70 : 0 }}
-        >
-          Modifica avviso
-        </Text>
-      ),
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-      ),
+      headerTitle: t('other.modifyNotice'),
     });
-  }, [navigation, colors]);
+  }, [navigation, colors, t]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

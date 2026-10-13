@@ -42,17 +42,8 @@ export const ContactScreen2 = () => {
   const [isFavorite, setIsFavorite] = useState(selectedProfile?.preferred);
 
   useLayoutEffect(() => {
-    const marginLeft = i18n.language === 'en' ? -80 : -25;
-
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{ textAlign: 'center', width: '100%', marginLeft }}
-        >
-          {t('common.contact')}
-        </Text>
-      ),
+      headerTitle: t('common.contact'),
     });
   }, [navigation, colors, i18n.language, t]);
 

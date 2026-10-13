@@ -4,11 +4,9 @@ import { useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TextInput, View } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import {
   Card,
   CtaButton,
-  IconButton,
   Text,
   Theme,
   useStylesheet,
@@ -45,21 +43,8 @@ export const ProfileForm = () => {
     navigation.goBack();
   };
   useLayoutEffect(() => {
-    const marginLeft = i18n.language === 'en' ? 80 : 65;
-
     navigation.setOptions({
-      headerTitle: () => (
-        <Text variant="heading" style={{ marginLeft }}>
-          {t('other.modifyProfile')}
-        </Text>
-      ),
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-      ),
+      headerTitle: t('other.modifyProfile'),
     });
   }, [navigation, i18n.language, t]);
 

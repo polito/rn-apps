@@ -127,14 +127,7 @@ export const TeachingNavigator = () => {
         name="Notice"
         component={NoticeScreen}
         options={{
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{ textAlign: 'center', width: '100%', marginLeft: -10 }}
-            >
-              {t('common.notice')}
-            </Text>
-          ),
+          headerTitle: t('common.notice'),
           headerRight: () => <NoticeMenu />,
           headerShown: true,
         }}
@@ -145,14 +138,7 @@ export const TeachingNavigator = () => {
         component={LessonScreen}
         options={{
           headerRight: () => <LectureMenu />,
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{ textAlign: 'center', width: '100%', marginLeft: -10 }}
-            >
-              {t('common.lecture')}
-            </Text>
-          ),
+          headerTitle: t('common.lecture'),
           headerShown: true,
         }}
       />
@@ -217,14 +203,7 @@ export const TeachingNavigator = () => {
         name="Staff"
         component={StaffScreen}
         options={{
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{ textAlign: 'center', width: '100%', marginLeft: -20 }}
-            >
-              {t('other.managingAccesses')}
-            </Text>
-          ),
+          headerTitle: t('other.managingAccesses'),
           headerShown: true,
         }}
       />

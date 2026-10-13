@@ -1126,6 +1126,10 @@
     "lookForPeople": "Cerca personale...",
     "renderingToMail": "Reindirizzamento alla mail...",
     "examInfo": "Info esame",
-    "modifyLecture": "Modifica Lezione"
+    "modifyLecture": "Modifica Lezione",
+    "people": "Persone",
+    "modifyNotice": "Modifica avviso",
+    "modifyFile": "Modifica file",
+    "createNewItem": "Crea nuovo elemento"
   }
 }

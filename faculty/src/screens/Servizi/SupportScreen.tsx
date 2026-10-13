@@ -35,17 +35,7 @@ export const SupportScreen = () => {
   ];
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          {t('other.audiovideoSupport')}
-        </Text>
-      ),
+      headerTitle: t('other.audiovideoSupport'),
     });
   }, [navigation, colors, t]);
 

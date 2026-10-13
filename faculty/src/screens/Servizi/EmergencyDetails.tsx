@@ -57,17 +57,7 @@ export const EmergencyDetails = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          {getTranslatedEmergencyName(selectedEmergency?.name || '')}
-        </Text>
-      ),
+      headerTitle: getTranslatedEmergencyName(selectedEmergency?.name || ''),
     });
   }, [navigation, getTranslatedEmergencyName, selectedEmergency]);
 

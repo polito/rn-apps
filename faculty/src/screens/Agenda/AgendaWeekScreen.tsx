@@ -78,17 +78,7 @@ export const AgendaWeekScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            marginLeft: Platform.OS === 'android' ? 85 : 120,
-            width: 100,
-          }}
-        >
-          Agenda
-        </Text>
-      ),
+      headerTitle: t('agendaScreen.title'),
       headerLeft: () => <Logo />,
       headerRight: () => (
         <Row>
@@ -136,6 +126,7 @@ export const AgendaWeekScreen = () => {
     navigation,
     spacing,
     openAndroidDatePicker,
+    t,
   ]);
 
   const calendarEvents = useMemo(() => {

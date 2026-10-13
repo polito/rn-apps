@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { View, useWindowDimensions } from 'react-native';
 
 import { faSliders } from '@fortawesome/free-solid-svg-icons';
-import { IconButton, Text, TopTabBar } from '@polito/lib/ui';
+import { IconButton, TopTabBar } from '@polito/lib/ui';
 import { useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ParamListBase } from '@react-navigation/native';
@@ -50,20 +50,7 @@ export const CourseNavigator = ({ navigation, route }: Props) => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            fontSize: fontSizes.md,
-            textAlign: 'center',
-            fontStyle: 'normal',
-          }}
-          weight="semibold"
-          numberOfLines={1}
-        >
-          {t('common.course')}
-        </Text>
-      ),
+      headerTitle: t('common.course'),
       headerRight: () =>
         tab === 'Info' ? (
           <IconButton
