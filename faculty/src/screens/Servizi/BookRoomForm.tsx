@@ -9,11 +9,9 @@ import {
   View,
 } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import {
   Card,
   CtaButton,
-  IconButton,
   Row,
   Select,
   Switch,
@@ -134,20 +132,12 @@ export const BookRoomForm = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.navigate('PrenotaAula')}
-        />
-      ),
       headerTitle: () => (
         <Text
           variant="heading"
           style={{
             textAlign: 'center',
             width: '100%',
-            marginLeft: Platform.OS === 'android' ? -25 : -55,
           }}
         >
           {t('other.requestRoom')}

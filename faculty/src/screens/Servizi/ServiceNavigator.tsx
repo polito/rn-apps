@@ -1,8 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { Platform, TouchableOpacity } from 'react-native';
+import { Platform } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   ContactsScreen as LibContactsScreen,
   PersonScreen,
@@ -10,7 +8,6 @@ import {
   defaultUsefulContactsList,
 } from '@polito/lib/features/people';
 import { useTheme, useTitlesStyles } from '@polito/lib/ui';
-import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { BookEventsForm } from './BookEventsForm';
@@ -60,21 +57,6 @@ export type ProfileStackParamList = {
   IssueReportForm: undefined;
 };
 
-const CustomBackButton2 = () => {
-  const navigation = useNavigation();
-
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.goBack(); // Altrimenti torna alla schermata "Courses"
-      }}
-      style={{ paddingHorizontal: 10 }}
-    >
-      <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
-    </TouchableOpacity>
-  );
-};
-
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
 
 export const ServiceNavigator = () => {
@@ -105,7 +87,6 @@ export const ServiceNavigator = () => {
         component={ContactsScreen}
         options={{
           headerTitle: t('contactsScreen.title'),
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -115,7 +96,6 @@ export const ServiceNavigator = () => {
         component={PersonScreen}
         getId={({ params: { id } }) => id.toString()}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -127,7 +107,6 @@ export const ServiceNavigator = () => {
         options={{
           headerTitle: '',
           headerBackTitle: t('contactsScreen.title'),
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -136,7 +115,6 @@ export const ServiceNavigator = () => {
         name="Contatto"
         component={ContactScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -145,7 +123,6 @@ export const ServiceNavigator = () => {
         name="Supporto"
         component={SupportScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -154,7 +131,6 @@ export const ServiceNavigator = () => {
         name="Prenotazione"
         component={BookingScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -163,7 +139,7 @@ export const ServiceNavigator = () => {
         name="PrenotaAula"
         component={BookRoomScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
+          headerBackButtonDisplayMode: 'minimal',
           headerShown: true,
         }}
       />
@@ -172,7 +148,7 @@ export const ServiceNavigator = () => {
         name="PrenotaSpaziEventi"
         component={BookEventsRoomScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
+          headerBackButtonDisplayMode: 'minimal',
           headerShown: true,
         }}
       />
@@ -181,7 +157,7 @@ export const ServiceNavigator = () => {
         name="PrenotaSpaziStrutture"
         component={BookStructureRoomScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
+          headerBackButtonDisplayMode: 'minimal',
           headerShown: true,
         }}
       />
@@ -190,7 +166,7 @@ export const ServiceNavigator = () => {
         name="PrenotaAulaForm"
         component={BookRoomForm}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
+          headerBackButtonDisplayMode: 'minimal',
           headerShown: true,
         }}
       />
@@ -199,7 +175,7 @@ export const ServiceNavigator = () => {
         name="PrenotaEventiForm"
         component={BookEventsForm}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
+          headerBackButtonDisplayMode: 'minimal',
           headerShown: true,
         }}
       />
@@ -208,7 +184,7 @@ export const ServiceNavigator = () => {
         name="PrenotaStruttureForm"
         component={BookStructureForm}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
+          headerBackButtonDisplayMode: 'minimal',
           headerShown: true,
         }}
       />
@@ -217,7 +193,6 @@ export const ServiceNavigator = () => {
         name="DigitalSignature"
         component={DigitalSignatureScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -226,7 +201,7 @@ export const ServiceNavigator = () => {
         name="Booking0"
         component={SingleBooking0}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
+          headerBackButtonDisplayMode: 'minimal',
           headerShown: true,
         }}
       />
@@ -235,7 +210,7 @@ export const ServiceNavigator = () => {
         name="Booking1"
         component={SingleBooking1}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
+          headerBackButtonDisplayMode: 'minimal',
           headerShown: true,
         }}
       />
@@ -244,7 +219,7 @@ export const ServiceNavigator = () => {
         name="Booking2"
         component={SingleBooking2}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
+          headerBackButtonDisplayMode: 'minimal',
           headerShown: true,
         }}
       />
@@ -253,7 +228,7 @@ export const ServiceNavigator = () => {
         name="SignatureScreen"
         component={SignatureScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
+          headerBackButtonDisplayMode: 'minimal',
           headerShown: true,
         }}
       />
@@ -262,7 +237,6 @@ export const ServiceNavigator = () => {
         name="Emergency"
         component={EmergencyScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -271,7 +245,7 @@ export const ServiceNavigator = () => {
         name="EmergencyDetails"
         component={EmergencyDetails}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
+          headerBackButtonDisplayMode: 'minimal',
           headerShown: true,
         }}
       />
@@ -280,7 +254,6 @@ export const ServiceNavigator = () => {
         name="IssueReport"
         component={IssueReport}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />
@@ -289,7 +262,7 @@ export const ServiceNavigator = () => {
         name="IssueDetails"
         component={IssueDetails}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
+          headerBackButtonDisplayMode: 'minimal',
           headerShown: true,
         }}
       />
@@ -297,7 +270,6 @@ export const ServiceNavigator = () => {
         name="IssueReportForm"
         component={IssueReportForm}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
       />

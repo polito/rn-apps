@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import Popover from 'react-native-popover-view';
 
-import { faArrowLeft, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   HeaderLogoNoProps,
@@ -25,8 +25,6 @@ import {
 
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { ExamScreen } from '../ExamScreen';
-import { ExamScreen2 } from '../ExamScreen2';
-import { ExamScreen3 } from '../ExamScreen3';
 import { ExamsScreen } from '../ExamsScreen';
 import { GradesScreen } from '../GradesScreen';
 import { ContactScreen2 } from './ContactScreen2';
@@ -38,6 +36,7 @@ import { FilesFormScreen } from './FilesFormScreen';
 import { FormScreen } from './FormScreen';
 import { LectureFormScreen } from './LectureFormScreen';
 import { LessonScreen } from './LessonScreen';
+import { ManagedCoursesScreen } from './ManagedCoursesScreen';
 import { ModifyFileScreen } from './ModifyFileScreen';
 import { ModifyLectureScreen } from './ModifyLectureScreen';
 import { ModifyNoticeScreen } from './ModifyNoticeScreen';
@@ -49,11 +48,11 @@ import { TeachingScreen } from './TeachingScreen';
 export type TeachingStackParamList = {
   Home: undefined;
   MyCourses: undefined;
+  ManagedCourses: undefined;
   ExamsCalls: undefined;
   Exam: { id: number };
 
   Form: undefined;
-  Roles: undefined;
   Notice: undefined;
   Lecture: undefined;
   Notices: undefined;
@@ -71,30 +70,12 @@ export type TeachingStackParamList = {
   ModifyFile: undefined;
   ModifyLecture: undefined;
   Staff: undefined;
-  Exam3: undefined;
-  Exam2: undefined;
   StudentContact: undefined;
   NoticeForm: undefined;
   FilesForm: undefined;
   LectureForm: undefined;
   StudentsForm: undefined;
   Contatto: undefined;
-};
-
-export const CustomBackButton = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('Home');
-      }}
-      style={{ paddingHorizontal: 10 }}
-    >
-      <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
-    </TouchableOpacity>
-  );
 };
 
 export const TeachingNavigatorID = 'TeachingTabNavigator';
@@ -133,15 +114,13 @@ export const TeachingNavigator = () => {
         name="MyCourses"
         component={CoursesScreen}
         options={{
-          headerLeft: () => {
-            return (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <CustomBackButton />
-              </View>
-            );
-          },
           headerTitle: t('other.myCourses'),
         }}
+      />
+      <Stack.Screen
+        name="ManagedCourses"
+        component={ManagedCoursesScreen}
+        options={{ headerTitle: t('other.managedCourses') }}
       />
 
       <Stack.Screen
@@ -268,10 +247,6 @@ export const TeachingNavigator = () => {
           headerTitle: t('common.examCall'),
         }}
       />
-
-      <Stack.Screen name="Exam2" component={ExamScreen2} />
-
-      <Stack.Screen name="Exam3" component={ExamScreen3} />
 
       <Stack.Screen
         name="Grades"

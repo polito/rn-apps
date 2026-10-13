@@ -524,7 +524,18 @@
     "notAvailable": "Prenotazione non disponibile",
     "notes": "Note",
     "title": "Appello",
-    "noBookedCount": "Dato non disponibile"
+    "noBookedCount": "Dato non disponibile",
+    "notFound": "Appello non trovato",
+    "openHint": "Apre il dettaglio dell’appello",
+    "searchHint": "Filtra gli studenti prenotati per nome o matricola",
+    "clearSearch": "Cancella ricerca",
+    "noStudentsFound": "Nessuno studente trovato",
+    "studentHint": "Apre il contatto dello studente",
+    "presenceLabel": "Presente: {{name}}",
+    "present": "presente",
+    "notPresent": "non presente",
+    "addStudentsHint": "Apre l’elenco degli studenti da aggiungere",
+    "contactDisabledHint": "Seleziona almeno uno studente per abilitare il pulsante"
   },
   "examsScreen": {
     "emptyState": "Non ci sono appelli disponibili",

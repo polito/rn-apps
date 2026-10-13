@@ -510,7 +510,18 @@
     "notAvailable": "Booking not available",
     "notes": "Notes",
     "title": "Exam call",
-    "noBookedCount": "Data not available"
+    "noBookedCount": "Data not available",
+    "notFound": "Exam call not found",
+    "openHint": "Opens the exam call details",
+    "searchHint": "Filters the booked students by name or ID",
+    "clearSearch": "Clear search",
+    "noStudentsFound": "No students found",
+    "studentHint": "Opens the student contact",
+    "presenceLabel": "Present: {{name}}",
+    "present": "present",
+    "notPresent": "not present",
+    "addStudentsHint": "Opens the list of students to add",
+    "contactDisabledHint": "Select at least one student to enable this button"
   },
   "examsScreen": {
     "emptyState": "There are no open exam calls",

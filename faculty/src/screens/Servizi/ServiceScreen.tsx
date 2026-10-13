@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 import { Platform } from 'react-native';
@@ -37,18 +37,6 @@ export const ServiceScreen = () => {
     }
     return false;
   };
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', e => {
-      e.preventDefault();
-      navigation.navigate({
-        name: 'Didattica',
-        params: { screen: 'Roles' },
-        merge: true,
-      });
-    });
-
-    return unsubscribe;
-  }, [navigation]);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => <Logo />,
