@@ -1,16 +1,10 @@
 import { useCallback, useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Platform } from 'react-native';
 
-import {
-  faArrowLeft,
-  faCrosshairs,
-  faPhone,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCrosshairs, faPhone } from '@fortawesome/free-solid-svg-icons';
 import {
   CtaButton,
-  IconButton,
   Text,
   Theme,
   useBottomBarAwareStyles,
@@ -63,20 +57,12 @@ export const EmergencyDetails = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.navigate('Emergency')}
-        />
-      ),
       headerTitle: () => (
         <Text
           variant="heading"
           style={{
             textAlign: 'center',
             width: '100%',
-            marginLeft: Platform.OS === 'android' ? -25 : -55,
           }}
         >
           {getTranslatedEmergencyName(selectedEmergency?.name || '')}

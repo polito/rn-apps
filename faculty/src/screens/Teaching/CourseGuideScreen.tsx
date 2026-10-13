@@ -1,8 +1,7 @@
 import { useLayoutEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { IconButton, Text, Theme, useStylesheet } from '@polito/lib/ui';
+import { Text, Theme, useStylesheet } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -16,13 +15,6 @@ export const CourseGuideScreen = () => {
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.navigate('Course', { from: undefined })}
-        />
-      ),
       headerTitle: () => (
         <Text
           variant="heading"

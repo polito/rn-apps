@@ -1,14 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, ScrollView, StyleSheet } from 'react-native';
 import { Platform } from 'react-native';
 
 import {
-  faArrowLeft,
   faBookOpen,
   faLocationDot,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   Card,
   CtaButton,
@@ -29,21 +27,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootParamList } from '../../core/components/RootNavigator';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { AgendaStackParamList } from './AgendaNavigator';
-
-const CustomBackButton2 = () => {
-  const navigation = useNavigation();
-
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.goBack(); // Altrimenti torna alla schermata "Courses"
-      }}
-      style={{ paddingHorizontal: 10 }}
-    >
-      <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
-    </TouchableOpacity>
-  );
-};
 
 export const SingleElementScreen = () => {
   const styles = useStylesheet(createStyles);
@@ -74,7 +57,6 @@ export const SingleElementScreen = () => {
           Lezione
         </Text>
       ),
-      headerLeft: () => <CustomBackButton2 />,
     });
   } else {
     agendaNavigator.setOptions({
@@ -89,7 +71,6 @@ export const SingleElementScreen = () => {
           Appuntamento
         </Text>
       ),
-      headerLeft: () => <CustomBackButton2 />,
     });
   }
 

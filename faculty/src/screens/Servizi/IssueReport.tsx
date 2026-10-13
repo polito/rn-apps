@@ -1,14 +1,12 @@
-import { useEffect, useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, ScrollView } from 'react-native';
-import { Platform } from 'react-native';
 
-import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import {
   Badge,
   BottomBarSpacer,
   CtaButton,
-  IconButton,
   IndentedDivider,
   ListItem,
   Text,
@@ -30,30 +28,14 @@ export const IssueReport = () => {
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const { issues, setSelectedIssue } = useCourses();
   const { paddingHorizontal } = useSafeAreaSpacing();
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', e => {
-      e.preventDefault();
-      navigation.navigate('Servizi');
-    });
-
-    return unsubscribe;
-  }, [navigation]);
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.navigate('Servizi')}
-        />
-      ),
       headerTitle: () => (
         <Text
           variant="heading"
           style={{
             textAlign: 'center',
             width: '100%',
-            marginLeft: Platform.OS === 'android' ? -25 : -55,
           }}
         >
           {t('other.reportsFault')}
