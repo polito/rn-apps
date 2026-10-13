@@ -14,11 +14,9 @@ import {
   View,
 } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import {
   Card,
   CtaButton,
-  IconButton,
   Row,
   Select,
   Text,
@@ -87,25 +85,7 @@ export const NoteForm = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-      ),
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-            marginLeft: Platform.OS === 'android' ? -25 : -55,
-          }}
-        >
-          {t('other.createEvent')}
-        </Text>
-      ),
+      headerTitle: t('other.createEvent'),
     });
   }, [navigation, t]);
 

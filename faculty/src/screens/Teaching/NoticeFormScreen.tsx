@@ -10,11 +10,9 @@ import {
   TextInput,
 } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import {
   Card,
   CtaButton,
-  IconButton,
   Text,
   Theme,
   useStylesheet,
@@ -103,21 +101,7 @@ export const NoticeFormScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{ marginLeft: Platform.OS === 'android' ? 60 : 0 }}
-        >
-          {t('other.createNewNotice')}
-        </Text>
-      ),
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-      ),
+      headerTitle: t('other.createNewNotice'),
     });
   }, [navigation, colors, t]);
 

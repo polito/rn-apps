@@ -1,10 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { Platform, TouchableOpacity } from 'react-native';
+import { Platform } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Text, useTheme, useTitlesStyles } from '@polito/lib/ui';
-import { useNavigation } from '@react-navigation/native';
+import { useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { Logo } from '../../core/components/Logo';
@@ -20,21 +17,6 @@ export type AgendaStackParamList = {
   AgendaWeek: undefined;
   Form: undefined;
   SingleElement: undefined;
-};
-
-const CustomBackButton2 = () => {
-  const navigation = useNavigation();
-
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.goBack(); // Altrimenti torna alla schermata "Courses"
-      }}
-      style={{ paddingHorizontal: 10 }}
-    >
-      <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
-    </TouchableOpacity>
-  );
 };
 
 const Stack = createNativeStackNavigator<AgendaStackParamList>();
@@ -88,7 +70,7 @@ export const AgendaNavigator = () => {
         name="Lezione"
         component={LectureScreen}
         options={{
-          headerTitle: 'Lezione',
+          headerTitle: t('common.lecture'),
         }}
       />
 
@@ -98,15 +80,7 @@ export const AgendaNavigator = () => {
         name="SingleElement"
         component={SingleElementScreen}
         options={{
-          headerLeft: () => <CustomBackButton2 />,
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{ textAlign: 'center', width: '100%', marginLeft: -20 }}
-            >
-              Lezione
-            </Text>
-          ),
+          headerTitle: t('common.lecture'),
           headerShown: true,
         }}
       />

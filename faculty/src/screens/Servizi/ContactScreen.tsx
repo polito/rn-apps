@@ -44,14 +44,7 @@ export const ContactScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{ textAlign: 'center', width: '100%', marginLeft: -25 }}
-        >
-          {t('common.contact')}
-        </Text>
-      ),
+      headerTitle: t('common.contact'),
     });
   }, [navigation, t]);
 

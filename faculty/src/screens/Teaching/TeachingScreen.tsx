@@ -21,8 +21,7 @@ export const TeachingScreen = () => {
   const { t } = useTranslation();
   const coursesQuery = useGetCourses();
   const isOffline = useOfflineDisabled();
-  const { fakeExams, setSelectedCourse, managedCourses, setSelectedExam } =
-    useCourses(); // Usa il hook per ottenere i dati
+  const { fakeExams, setSelectedCourse, managedCourses } = useCourses(); // Usa il hook per ottenere i dati
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
 
@@ -58,7 +57,7 @@ export const TeachingScreen = () => {
       <Section>
         <SectionHeader
           title={t('other.managedCourses')}
-          linkTo="CorsiInGestione"
+          linkTo="ManagedCourses"
         />
         <SectionList>
           {managedCourses.map(course => (
@@ -84,7 +83,7 @@ export const TeachingScreen = () => {
       </Section>
 
       <Section>
-        <SectionHeader title={t('other.appeals')} linkTo="Appelli" />
+        <SectionHeader title={t('other.appeals')} linkTo="ExamsCalls" />
         <SectionList>
           {fakeExams.slice(0, 3).map(exam => {
             return (
@@ -92,12 +91,12 @@ export const TeachingScreen = () => {
                 key={exam.id}
                 title={exam.subject}
                 subtitle={exam.date === 'Oggi' ? t('other.today') : exam.date}
-                onPress={() => {
-                  navigation.navigate('Exam', {
-                    id: exam.id,
-                  });
-                  setSelectedExam(exam);
-                }}
+                accessibilityRole="button"
+                accessibilityLabel={`${exam.subject}, ${
+                  exam.date === 'Oggi' ? t('other.today') : exam.date
+                }`}
+                accessibilityHint={t('examScreen.openHint')}
+                onPress={() => navigation.navigate('Exam', { id: exam.id })}
               />
             );
           })}

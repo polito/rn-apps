@@ -1,18 +1,12 @@
 import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
-import { Platform } from 'react-native';
 
-import {
-  faArrowLeft,
-  faLocationDot,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
+import { faLocationDot, faTrash } from '@fortawesome/free-solid-svg-icons';
 import {
   Card,
   CtaButton,
   Icon,
-  IconButton,
   ListItem,
   OverviewList,
   Row,
@@ -39,25 +33,7 @@ export const SingleBooking2 = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.navigate('PrenotaSpaziStrutture')}
-        />
-      ),
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-            marginLeft: Platform.OS === 'android' ? -25 : -55,
-          }}
-        >
-          {t('other.booking')}
-        </Text>
-      ),
+      headerTitle: t('other.booking'),
     });
   }, [navigation, colors, t]);
 

@@ -1,16 +1,14 @@
-import { useEffect, useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Platform, ScrollView } from 'react-native';
+import { FlatList, ScrollView } from 'react-native';
 
-import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import {
   Badge,
   BottomBarSpacer,
   CtaButton,
-  IconButton,
   IndentedDivider,
   ListItem,
-  Text,
   useBottomBarAwareStyles,
   useSafeAreaSpacing,
 } from '@polito/lib/ui';
@@ -27,35 +25,9 @@ export const BookEventsRoomScreen = () => {
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const { bookings, setSelectedBooking } = useCourses();
   const { paddingHorizontal } = useSafeAreaSpacing();
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', e => {
-      e.preventDefault();
-      navigation.navigate('Prenotazione');
-    });
-
-    return unsubscribe;
-  }, [navigation]);
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.navigate('Prenotazione')}
-        />
-      ),
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-            marginLeft: Platform.OS === 'android' ? -25 : -55,
-          }}
-        >
-          {t('other.requestEventsPlaces')}
-        </Text>
-      ),
+      headerTitle: t('other.requestEventsPlaces'),
     });
   }, [navigation, t]);
 

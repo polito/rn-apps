@@ -4,16 +4,8 @@ import { useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { useOfflineDisabled, usePreferencesContext } from '@polito/lib/core';
-import {
-  IconButton,
-  ListItem,
-  SectionHeader,
-  Select,
-  Text,
-  useTheme,
-} from '@polito/lib/ui';
+import { ListItem, SectionHeader, Select, useTheme } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 
 import { AppPreferences } from '~/core/types/preferences';
@@ -79,21 +71,7 @@ export const SettingsScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{ marginLeft: i18next.language === 'it' ? 80 : 100 }}
-        >
-          {t('settingsScreen.title')}
-        </Text>
-      ),
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-      ),
+      headerTitle: t('settingsScreen.title'),
     });
   }, [navigation, t]);
 
