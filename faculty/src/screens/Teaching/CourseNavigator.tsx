@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, useWindowDimensions } from 'react-native';
+import { Platform, View } from 'react-native';
 
 import { faSliders } from '@fortawesome/free-solid-svg-icons';
-import { IconButton, Text, TopTabBar } from '@polito/lib/ui';
-import { useTheme, useTitlesStyles } from '@polito/lib/ui';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { ParamListBase } from '@react-navigation/native';
+import { IconButton, Text, TopTabBar, useTheme } from '@polito/lib/ui';
+import {
+  MaterialTopTabBarProps,
+  createMaterialTopTabNavigator,
+} from '@react-navigation/material-top-tabs';
+import {
+  ParamListBase,
+  getFocusedRouteNameFromRoute,
+} from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { FileNavigator } from '../../features/files/navigation/FileNavigator';
 import { CourseAssignmentsTab } from './CourseAssignmentsTab';
-import { CourseFilesTab } from './CourseFilesTab';
 import { CourseInfoScreen } from './CourseInfoScreen';
 import { CourseLecturesTab } from './CourseLecturesTab';
 import { CourseNoticesTab } from './CourseNoticesTab';
@@ -33,23 +38,62 @@ export interface CourseTabsParamList
 
 const TopTabs = createMaterialTopTabNavigator<CourseTabsParamList>();
 
+const CourseTopTabBar = (props: MaterialTopTabBarProps) => {
+  const { state } = props;
+  const focusedTopRoute = state.routes[state.index];
+  const focusedNestedRoute = getFocusedRouteNameFromRoute(
+    focusedTopRoute as never,
+  );
+  const hideTabsOnAndroid =
+    Platform.OS === 'android' &&
+    focusedTopRoute?.name === 'CourseFilesScreen' &&
+    focusedNestedRoute != null &&
+    focusedNestedRoute !== 'CourseFilesScreen';
+
+  if (hideTabsOnAndroid) {
+    return null;
+  }
+
+  return <TopTabBar {...props} />;
+};
+
 type Props = NativeStackScreenProps<CourseSharedScreensParamList, 'Course'>;
 
 export const CourseNavigator = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { palettes, fontSizes, spacing } = theme;
-  const { width } = useWindowDimensions();
+  const headerSideWidth = 44;
 
   const { selectedCourse } = useCourses();
 
   const [showPlusButton, setShowPlusButton] = useState<boolean>(false); // <--- Stato
   const [_formPage, setFormPage] = useState('');
   const [tab, setTab] = useState('Info');
-  const titleStyles = useTitlesStyles(theme);
+  const headerTitle = (() => {
+    switch (tab) {
+      case 'Info':
+        return 'Info';
+      case 'Staff':
+        return t('courseStaffTab.title');
+      case 'Notices':
+        return t('common.notice_plural');
+      case 'Files':
+        return t('courseFilesTab.title');
+      case 'Lectures':
+        return t('common.lecture_plural');
+      case 'Students':
+        return t('other.students');
+      case 'Assignments':
+        return t('courseAssignmentsTab.title');
+      default:
+        return t('common.course');
+    }
+  })();
 
   useEffect(() => {
     navigation.setOptions({
+      headerTitleAlign: 'center',
       headerTitle: () => (
         <Text
           variant="heading"
@@ -61,7 +105,7 @@ export const CourseNavigator = ({ navigation, route }: Props) => {
           weight="semibold"
           numberOfLines={1}
         >
-          {t('common.course')}
+          {headerTitle}
         </Text>
       ),
       headerRight: () =>
@@ -82,25 +126,25 @@ export const CourseNavigator = ({ navigation, route }: Props) => {
             }}
           />
         ) : (
-          <View style={{ width: width * 0.1 }} />
+          <View style={{ width: headerSideWidth }} />
         ),
     });
   }, [
     tab,
     selectedCourse,
+    headerSideWidth,
+    headerTitle,
     showPlusButton, // 🔥 Trigga il re-render dell'header
     fontSizes.lg,
+    fontSizes.md,
     navigation,
     spacing,
     t,
     palettes.primary,
-    titleStyles.headerTitleStyle,
-    width,
-    fontSizes,
   ]);
 
   return (
-    <TopTabs.Navigator tabBar={props => <TopTabBar {...props} />}>
+    <TopTabs.Navigator tabBar={props => <CourseTopTabBar {...props} />}>
       <TopTabs.Screen
         name="CourseInfoScreen"
         component={CourseInfoScreen}
@@ -115,6 +159,7 @@ export const CourseNavigator = ({ navigation, route }: Props) => {
           focus: () => {
             setShowPlusButton(false);
             setFormPage('');
+            setTab('Info');
           },
         }}
       />
@@ -131,6 +176,7 @@ export const CourseNavigator = ({ navigation, route }: Props) => {
           focus: () => {
             setShowPlusButton(false);
             setFormPage('');
+            setTab('Staff');
           },
         }}
       />
@@ -147,12 +193,13 @@ export const CourseNavigator = ({ navigation, route }: Props) => {
           focus: () => {
             setShowPlusButton(false);
             setFormPage('');
+            setTab('Notices');
           },
         }}
       />
       <TopTabs.Screen
         name="CourseFilesScreen"
-        component={CourseFilesTab}
+        component={FileNavigator}
         options={{ title: t('courseFilesTab.title') }}
         listeners={{
           tabPress: () => {
@@ -163,6 +210,7 @@ export const CourseNavigator = ({ navigation, route }: Props) => {
           focus: () => {
             setShowPlusButton(true);
             setFormPage('Files');
+            setTab('Files');
           },
         }}
       />
@@ -179,6 +227,7 @@ export const CourseNavigator = ({ navigation, route }: Props) => {
           focus: () => {
             setShowPlusButton(true);
             setFormPage('Lecture');
+            setTab('Lectures');
           },
         }}
       />
@@ -195,6 +244,7 @@ export const CourseNavigator = ({ navigation, route }: Props) => {
           focus: () => {
             setShowPlusButton(false);
             setFormPage('Students');
+            setTab('Students');
           },
         }}
       />
@@ -211,6 +261,7 @@ export const CourseNavigator = ({ navigation, route }: Props) => {
           focus: () => {
             setShowPlusButton(false);
             setFormPage('');
+            setTab('Assignments');
           },
         }}
       />

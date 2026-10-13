@@ -9,6 +9,7 @@ import { useGetPlace } from '@polito/lib/features/places';
 import {
   Badge,
   BottomBarSpacer,
+  Checkbox,
   Col,
   CtaButton,
   CtaButtonSpacer,
@@ -21,7 +22,6 @@ import {
 } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { Checkbox } from '~/core/components/Checkbox';
 import { AppPreferences } from '~/core/types/preferences.ts';
 import { EventInfo } from '~/features/agenda/components/EventInfo';
 

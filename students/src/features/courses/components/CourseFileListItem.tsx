@@ -16,6 +16,7 @@ import {
   usePreferencesContext,
 } from '@polito/lib/core';
 import {
+  Checkbox,
   FileListItem,
   IconButton,
   ListItemProps,
@@ -24,7 +25,6 @@ import {
 import { CourseFileOverview } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 
-import { Checkbox } from '~/core/components/Checkbox';
 import { useGetCourse } from '~/core/queries/courseHooks';
 import { AppPreferences } from '~/core/types/preferences';
 import {

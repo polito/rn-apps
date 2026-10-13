@@ -71,7 +71,7 @@ export const NoticeFormScreen = () => {
     Alert.alert(t('other.confirm'), t('other.alertNotice'), [
       { text: t('common.cancel'), style: 'cancel' },
       {
-        text: t('other.publish'),
+        text: t('courseFilesTab.publish', { defaultValue: 'Publish' }),
         style: 'default',
         onPress: () => {
           if (selectedCourse?.id != null) {
