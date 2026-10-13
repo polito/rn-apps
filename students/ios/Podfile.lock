@@ -2066,7 +2066,7 @@ PODS:
     - Yoga
   - react-native-context-menu-view (1.21.0):
     - React
-  - react-native-date-picker (5.0.12):
+  - react-native-date-picker (5.0.13):
     - boost
     - DoubleConversion
     - fast_float
@@ -4009,7 +4009,7 @@ SPEC CHECKSUMS:
   react-native-blob-util: 10c78778354e6c92b7a5afa4a1027cf0f18a9bb9
   react-native-blur: 6af83e7e3c4c1446a188d9b2c493600fc4beb173
   react-native-context-menu-view: da39a4612c1294d651907162529cfba8421e9b89
-  react-native-date-picker: 9e761de1a6b100b2f61669de1f2c3e5717e2b525
+  react-native-date-picker: 4f4f40f6e65798038bb4b1bff47890c2be69c2e6
   react-native-document-picker: 1734eb0aa3dbd1cd7bf1b105936f9b55031ae616
   react-native-geolocation: 95e48fe2687e5a8280103085372fa62c2297c5d6
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba

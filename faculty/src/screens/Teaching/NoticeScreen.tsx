@@ -1,172 +1,225 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import {
-  faEye,
-  faEyeSlash,
   faHourglassEnd,
   faHourglassStart,
+  faPencil,
+  faTrash,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { formatDateFromString } from '@polito/lib/core';
 import {
   Card,
-  ListItem,
-  OverviewList,
+  CtaButton,
+  CtaButtonContainer,
+  CtaButtonSpacer,
+  Icon,
+  Row,
   Section,
-  Switch,
+  Separator,
   Text,
   Theme,
   useStylesheet,
+  useTheme,
 } from '@polito/lib/ui';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { CourseSharedScreensParamList } from './CourseSharedScreens';
 
-export const NoticeScreen = () => {
-  const styles = useStylesheet(createStyles);
-  const {
-    selectedNotice: originalNotice,
-    setVisibilityOfNotice,
-    selectedCourse,
-  } = useCourses();
+type Props = NativeStackScreenProps<CourseSharedScreensParamList, 'Notice'>;
 
-  const selectedNotice = selectedCourse?.notices.find(
-    notice => notice.id === originalNotice?.id,
-  );
-  const [noticeVisibility, setNoticeVisibility] = useState(
-    selectedNotice?.visible || false,
-  );
+export const NoticeScreen = ({ navigation, route }: Props) => {
+  const { noticeId, courseId } = route.params;
   const { t } = useTranslation();
-  useEffect(() => {
-    if (selectedNotice) {
-      setNoticeVisibility(selectedNotice.visible);
-    }
-  }, [selectedNotice]);
+  const styles = useStylesheet(createStyles);
+  const { colors, fontSizes } = useTheme();
+  const { selectedCourse, deleteNoticeFromCourse } = useCourses();
 
-  const [expanded, setExpanded] = useState(false);
-  const toggleExpanded = () => setExpanded(prev => !prev);
+  const selectedNotice =
+    selectedCourse?.id === courseId
+      ? selectedCourse.notices.find(n => n.id === noticeId)
+      : undefined;
 
-  if (!selectedCourse || !selectedNotice) return null;
+  if (!selectedCourse || !selectedNotice) {
+    return null;
+  }
 
-  const handleToggle = (value: boolean) => {
-    setVisibilityOfNotice(selectedCourse.id, selectedNotice.id, value);
-    setNoticeVisibility(value);
+  const isExpired = Boolean(
+    selectedNotice.endDate && selectedNotice.endDate < new Date().toISOString(),
+  );
+
+  const handleDeleteNotice = () => {
+    Alert.alert(t('common.confirm'), t('other.alertDeleteNotice'), [
+      { text: t('common.no'), style: 'cancel' },
+      {
+        text: t('common.yes'),
+        style: 'destructive',
+        onPress: () => {
+          deleteNoticeFromCourse(selectedCourse.id, selectedNotice.id);
+          navigation.goBack();
+        },
+      },
+    ]);
   };
 
-  const settings = [
+  const details: {
+    id: string;
+    icon: IconDefinition;
+    label: string;
+    value: string;
+  }[] = [
     {
-      id: 1,
-      content: t('newsScreen.createdAt'),
-      subtitle: `${selectedNotice.startDate}`,
-      icon: <FontAwesomeIcon icon={faHourglassStart} size={24} />,
-      trailingItem: null,
+      id: 'publication',
+      icon: faHourglassStart,
+      label: t('other.publicationDate'),
+      value: selectedNotice.startDate
+        ? formatDateFromString(selectedNotice.startDate)
+        : t('other.notAvailable'),
     },
     {
-      id: 2,
-      content: t('other.expiresOn'),
-      subtitle: selectedNotice.endDate
-        ? `${selectedNotice.endDate}`
-        : t('other.never'),
-      icon: <FontAwesomeIcon icon={faHourglassEnd} size={24} />,
-      trailingItem: null,
+      id: 'expiration',
+      icon: faHourglassEnd,
+      label: t('other.expirationDate'),
+      value:
+        selectedNotice.alwaysVisible || !selectedNotice.endDate
+          ? t('other.never')
+          : formatDateFromString(selectedNotice.endDate),
     },
     {
-      id: 3,
-      content: t('other.visibility'),
-      subtitle: noticeVisibility
-        ? t('other.visibleToAll')
-        : t('other.hiddenFromStudents'),
-      icon: (
-        <FontAwesomeIcon
-          icon={noticeVisibility ? faEye : faEyeSlash}
-          size={24}
-        />
-      ),
-      trailingItem: (
-        <Switch value={noticeVisibility} onValueChange={handleToggle} />
-      ),
+      id: 'visibility',
+      icon: selectedNotice.visible ? faEye : faEyeSlash,
+      label: t('other.visibility'),
+      value: selectedNotice.visible ? t('other.everyone') : t('other.onlyYou'),
     },
   ];
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <View style={{ marginTop: 10 }} />
-
-      <Section>
-        <Text variant="heading" style={styles.TitleText}>
-          {selectedNotice.title}
-        </Text>
-        <Card>
-          {!expanded ? (
-            <Text style={styles.ContentText}>
-              {selectedNotice.content.slice(0, 150)}...
-              <Text onPress={toggleExpanded} style={styles.inlineShowMore}>
-                {' '}
-                Altro
-              </Text>
-            </Text>
-          ) : (
-            <>
-              <Text style={styles.ContentText}>{selectedNotice.content}</Text>
-              <TouchableOpacity onPress={toggleExpanded}>
-                <Text style={styles.ShowMore}>Mostra meno</Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </Card>
-
-        <Section>
-          <OverviewList indented>
-            {settings.map(setting => (
-              <ListItem
-                key={`${setting.id}`}
-                title={setting.content}
-                subtitle={setting.subtitle}
-                leadingItem={setting.icon}
-                trailingItem={setting.trailingItem || <View />}
-              />
+    <React.Fragment>
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
+        <View style={styles.content}>
+          <Card rounded style={styles.card}>
+            {details.map(detail => (
+              <Row
+                key={detail.id}
+                align="center"
+                gap={1}
+                accessible
+                accessibilityLabel={`${detail.label}: ${detail.value}`}
+              >
+                <View style={styles.iconBox}>
+                  <Icon
+                    icon={detail.icon}
+                    size={fontSizes.md}
+                    color={colors.secondaryText}
+                  />
+                </View>
+                <Text style={styles.detailLabel}>
+                  {`${detail.label}: `}
+                  <Text style={styles.detailValue}>{detail.value}</Text>
+                </Text>
+              </Row>
             ))}
-          </OverviewList>
-        </Section>
-      </Section>
-    </ScrollView>
+          </Card>
+
+          <Section>
+            <Separator />
+            <Text style={styles.sectionTitle} accessibilityRole="header">
+              {t('other.noticeTextTitle')}
+            </Text>
+            <Text style={styles.sectionContent}>{selectedNotice.content}</Text>
+          </Section>
+        </View>
+        <CtaButtonSpacer />
+      </ScrollView>
+
+      <CtaButtonContainer absolute>
+        <Row gap={2.5}>
+          <CtaButton
+            absolute={false}
+            variant="outlined"
+            destructive
+            title={t('common.delete')}
+            icon={faTrash}
+            containerStyle={styles.ctaHalf}
+            accessibilityHint={t('noticeScreen.deleteHint')}
+            action={handleDeleteNotice}
+          />
+          <CtaButton
+            absolute={false}
+            title={t('common.edit')}
+            icon={faPencil}
+            disabled={isExpired}
+            containerStyle={styles.ctaHalf}
+            accessibilityState={{ disabled: isExpired }}
+            accessibilityHint={
+              isExpired
+                ? t('noticeScreen.editDisabledHint')
+                : t('noticeScreen.editHint')
+            }
+            action={() =>
+              navigation.navigate('EditNoticeContent', { noticeId, courseId })
+            }
+          />
+        </Row>
+      </CtaButtonContainer>
+    </React.Fragment>
   );
 };
-const createStyles = ({ palettes, spacing }: Theme) =>
+
+const createStyles = ({
+  colors,
+  fontFamilies,
+  fontSizes,
+  shapes,
+  spacing,
+}: Theme) =>
   StyleSheet.create({
-    container: {
-      marginVertical: spacing[5],
+    content: {
+      padding: spacing[5],
+      gap: spacing[5],
     },
-    buttonContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      marginTop: spacing[4],
+    card: {
+      padding: spacing[5],
+      gap: spacing[3],
+      margin: 0,
+      marginVertical: 0,
+      borderRadius: shapes.lg,
+      elevation: 0,
     },
-    dateText: {
-      fontSize: 16,
-      color: palettes.gray[500],
-      marginTop: spacing[1],
-      marginLeft: spacing[4],
+    iconBox: {
+      width: 24,
+      height: 24,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
-    ContentText: {
-      fontSize: 16,
-      marginTop: spacing[4],
-      marginLeft: spacing[4],
-      marginBottom: spacing[4],
+    detailLabel: {
+      flexShrink: 1,
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.sm,
+      color: colors.secondaryText,
     },
-    TitleText: {
-      fontSize: 16,
-      marginLeft: spacing[4],
+    detailValue: {
+      fontFamily: fontFamilies.heading,
+      color: colors.prose,
     },
-    ShowMore: {
-      marginLeft: spacing[4],
-      marginBottom: spacing[4],
-      marginTop: 8,
-      color: palettes.lightBlue[500], // blu tipo link
-      fontWeight: '500',
+    sectionTitle: {
+      fontFamily: fontFamilies.heading,
+      fontSize: fontSizes.md,
+      lineHeight: fontSizes.md * 1.25,
+      color: colors.heading,
     },
-    inlineShowMore: {
-      color: palettes.lightBlue[500],
-      fontWeight: '500',
+    sectionContent: {
+      fontFamily: fontFamilies.body,
+      fontSize: fontSizes.md,
+      lineHeight: fontSizes.md * 1.5,
+      color: colors.prose,
+    },
+    ctaHalf: {
+      flex: 1,
+      padding: 0,
     },
   });

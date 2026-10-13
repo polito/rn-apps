@@ -1,11 +1,8 @@
 import { useTranslation } from 'react-i18next';
 
 import { faGraduationCap } from '@fortawesome/free-solid-svg-icons';
+import { StatusBadge } from '@polito/lib/ui';
 import { useTheme } from '@polito/lib/ui';
-
-import { StatusBadge } from '~/core/components/StatusBadge';
-
-useTheme;
 
 export const MoodleStatusBadge = () => {
   const { t } = useTranslation();
@@ -13,6 +10,7 @@ export const MoodleStatusBadge = () => {
 
   return (
     <StatusBadge
+      isAction
       text={t('common.moodle')}
       icon={faGraduationCap}
       backgroundColor={palettes.secondary[50]}
