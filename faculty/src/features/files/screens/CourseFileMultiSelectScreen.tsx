@@ -26,6 +26,7 @@ import {
   IconButton,
   OverviewList,
   Row,
+  StatefulMenuView,
   TextButton,
   Theme,
   TranslucentTextField,
@@ -34,7 +35,7 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
+import { NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
@@ -269,7 +270,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
     if (Platform.OS !== 'android') return;
     navigation.setOptions({
       headerRight: () => (
-        <MenuView
+        <StatefulMenuView
           actions={headerMenuActions}
           onPressAction={onHeaderMenuAction}
         >
@@ -281,7 +282,7 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
               defaultValue: 'More options',
             })}
           />
-        </MenuView>
+        </StatefulMenuView>
       ),
     });
   }, [
@@ -334,12 +335,14 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
       >
         <ScrollView
           style={styles.list}
+          contentContainerStyle={[paddingHorizontal, styles.listContent]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
           <OverviewList
             dividers
             indented
+            style={styles.overviewList}
             emptyStateText={t('courseFilesTab.empty', {
               defaultValue: 'No files yet',
             })}
@@ -357,8 +360,8 @@ export const CourseFileMultiSelectScreen = ({ route, navigation }: Props) => {
                   <Checkbox
                     isChecked={selectedFileIds.has(entry.file.id)}
                     onPress={() => handleToggleFile(entry)}
-                    textStyle={{ marginHorizontal: 0 }}
-                    containerStyle={{ marginHorizontal: 0, marginVertical: 0 }}
+                    textStyle={styles.checkboxText}
+                    containerStyle={styles.checkboxContainer}
                   />
                 }
               />
@@ -414,13 +417,14 @@ const createStyles = ({ colors, spacing, shapes }: Theme) =>
     },
     searchBarWrap: {
       overflow: 'hidden',
-      paddingTop: spacing[3],
+      paddingTop: spacing[4],
     },
     searchBar: {
       marginHorizontal: spacing[4],
     },
     searchField: {
       marginHorizontal: 0,
+      marginTop: spacing[2],
     },
     textField: {
       borderRadius: shapes.lg,
@@ -433,6 +437,20 @@ const createStyles = ({ colors, spacing, shapes }: Theme) =>
     list: {
       flex: 1,
       minHeight: 0,
+    },
+    listContent: {
+      paddingTop: spacing[2],
+    },
+    overviewList: {
+      marginHorizontal: spacing[4],
+      marginTop: 0,
+    },
+    checkboxText: {
+      marginHorizontal: 0,
+    },
+    checkboxContainer: {
+      marginHorizontal: 0,
+      marginVertical: spacing[2],
     },
     ctaRow: {
       backgroundColor: colors.background,

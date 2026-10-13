@@ -32,27 +32,27 @@ export const DashedOutline = ({
     >
       {children}
       {size.width > 0 && size.height > 0 ? (
-        <Svg
+        <View
           pointerEvents="none"
           style={[StyleSheet.absoluteFillObject, styles.overlay]}
-          width={size.width}
-          height={size.height}
         >
-          <Rect
-            x={0.5}
-            y={0.5}
-            width={size.width - 1}
-            height={size.height - 1}
-            rx={radius}
-            ry={radius}
-            fill="none"
-            stroke={color}
-            strokeWidth={1}
-            strokeDasharray={[18, 18]}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </Svg>
+          <Svg width={size.width} height={size.height}>
+            <Rect
+              x={0.5}
+              y={0.5}
+              width={size.width - 1}
+              height={size.height - 1}
+              rx={radius}
+              ry={radius}
+              fill="none"
+              stroke={color}
+              strokeWidth={1}
+              strokeDasharray={[18, 18]}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </Svg>
+        </View>
       ) : null}
     </View>
   );

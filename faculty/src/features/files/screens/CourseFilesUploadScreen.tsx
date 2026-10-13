@@ -20,10 +20,9 @@ import {
   faFilePdf,
   faPaperPlane,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { formatDate } from '@polito/lib/core';
 import {
   CtaButton,
+  Icon,
   IndentedDivider,
   Text,
   TextButton,
@@ -67,8 +66,12 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
   const styles = useStylesheet(createStyles);
 
   useHideTabs();
-  const { addMaterialToCourse, addDirectoryToCourse, fakeCourses } =
-    useCourses();
+  const {
+    addMaterialToCourse,
+    addDirectoryToCourse,
+    fakeCourses,
+    selectedCourse,
+  } = useCourses();
 
   const [uploadType, setUploadType] = useState<UploadType>('file');
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -141,7 +144,10 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
   const handlePublish = () => {
     if (!isPublishEnabled) return;
 
-    const course = fakeCourses.find(c => c.id === courseId);
+    const course =
+      selectedCourse?.id === courseId
+        ? selectedCourse
+        : fakeCourses.find(c => c.id === courseId);
     if (!course) return;
 
     const title =
@@ -180,7 +186,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
           directory.name === decodedSegment
         );
       })?.id ?? course.directories[0]?.id;
-    if (!selectedDirectoryId) return;
+    if (selectedDirectoryId == null) return;
 
     const allFiles = course.directories.flatMap(directory => directory.files);
     const lastFileId = allFiles.length
@@ -191,7 +197,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
       addMaterialToCourse(courseId, selectedDirectoryId, {
         id: lastFileId + index + 1,
         name: file.name || title,
-        date: formatDate(new Date()),
+        date: new Date().toISOString().slice(0, 10),
         size: 100,
         mimeType: 'pdf',
         dirId: selectedDirectoryId,
@@ -282,7 +288,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
             onPress={() => setUploadType('file')}
             disabled={shouldMuteUploadMethodStyles}
             leading={
-              <FontAwesomeIcon
+              <Icon
                 icon={faFile}
                 size={20}
                 color={
@@ -338,11 +344,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
             onPress={() => setUploadType('folder')}
             disabled={shouldMuteUploadMethodStyles}
             leading={
-              <FontAwesomeIcon
-                icon={faFolder}
-                size={20}
-                color={palettes.secondary[500]}
-              />
+              <Icon icon={faFolder} size={20} color={palettes.secondary[500]} />
             }
             leadingContainerStyle={
               shouldMuteUploadMethodStyles ? styles.disabledLeading : undefined
@@ -428,7 +430,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
               {uploadedFiles.map((file, index) => (
                 <View key={file.id} style={styles.uploadedFileRow}>
                   <View style={styles.uploadedFileIcon}>
-                    <FontAwesomeIcon
+                    <Icon
                       icon={faFilePdf}
                       size={20}
                       color={dark ? palettes.gray[50] : palettes.primary[800]}
@@ -471,7 +473,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                     defaultValue: 'Add more files',
                   })}
                 </Text>
-                <FontAwesomeIcon
+                <Icon
                   icon={faFaceSmile}
                   size={fontSizes.md}
                   color={dark ? palettes.gray[50] : palettes.primary[800]}
@@ -529,7 +531,7 @@ export const CourseFilesUploadScreen = ({ navigation, route }: Props) => {
                 },
               ]}
             >
-              <FontAwesomeIcon
+              <Icon
                 icon={faFileArrowUp}
                 size={24}
                 color={dark ? palettes.gray[50] : palettes.primary[700]}

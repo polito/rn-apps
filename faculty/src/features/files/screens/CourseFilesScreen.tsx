@@ -27,25 +27,21 @@ import {
   Row,
   StatefulMenuView,
   Text,
+  TextButton,
   Theme,
   TranslucentTextField,
-  createHeaderCloseButton,
   useSafeAreaSpacing,
   useSafeBottomBarHeight,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import {
-  MenuAction,
-  MenuView,
-  NativeActionEvent,
-} from '@react-native-menu/menu';
+import { MenuAction, NativeActionEvent } from '@react-native-menu/menu';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { useCourseFilesData } from '../hooks/useCourseFilesData';
-import { FileSortMode, useFileManagement } from '../hooks/useFileManagement';
+import { useFileManagement } from '../hooks/useFileManagement';
 import { FileStackParamList } from '../navigation/FileNavigator';
 import { FileListEntry } from '../types/FileListEntry';
 import { formatFolderDetails } from '../utils/formatFolderDetails';
@@ -98,8 +94,8 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     setSearch,
     viewMode,
     setViewMode,
-    sortMode,
-    setSortMode,
+    sortOptions,
+    onPressSortOption,
     sortedFiles,
     sortedDirectories,
     startDownload,
@@ -109,6 +105,11 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
     directories,
     storageKey: String(selectedCourse?.id ?? 'global'),
   });
+  const onPressSortAction = useCallback(
+    ({ nativeEvent: { event } }: NativeActionEvent) => onPressSortOption(event),
+    [onPressSortOption],
+  );
+
   const menuActions: MenuAction[] = useMemo(
     () => [
       {
@@ -129,38 +130,6 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
       },
     ],
     [t, viewMode],
-  );
-
-  const sortActions: MenuAction[] = useMemo(
-    () => [
-      {
-        id: 'nameAsc',
-        title: t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' }),
-        state: sortMode === 'nameAsc' ? 'on' : 'off',
-      },
-      {
-        id: 'nameDesc',
-        title: t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' }),
-        state: sortMode === 'nameDesc' ? 'on' : 'off',
-      },
-      {
-        id: 'mostRecent',
-        title: t('courseFilesTab.mostRecent', { defaultValue: 'Most Recent' }),
-        state: sortMode === 'mostRecent' ? 'on' : 'off',
-      },
-      {
-        id: 'oldestFirst',
-        title: t('common.oldestFirst', { defaultValue: 'Oldest first' }),
-        state: sortMode === 'oldestFirst' ? 'on' : 'off',
-      },
-    ],
-    [t, sortMode],
-  );
-
-  const onPressSortAction = useCallback(
-    ({ nativeEvent: { event } }: NativeActionEvent) =>
-      setSortMode(event as FileSortMode),
-    [setSortMode],
   );
 
   const onPressMenuAction = useCallback(
@@ -229,9 +198,13 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
       navigation.setOptions({
         headerShown: true,
         headerTitle: directoryTitle,
-        headerRight:
+        headerLeft:
           Platform.OS === 'ios' && route.name === 'CourseFolderFilesScreen'
-            ? createHeaderCloseButton(navigation)
+            ? () => (
+                <TextButton onPress={() => navigation.goBack()}>
+                  {t('common.back', { defaultValue: 'Back' })}
+                </TextButton>
+              )
             : undefined,
       });
       return;
@@ -378,14 +351,14 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
           style={styles.filterRow}
         >
           <StatefulMenuView
-            actions={sortActions}
+            actions={sortOptions}
             onPressAction={onPressSortAction}
             onOpenMenu={() => setSortOpen(true)}
             onCloseMenu={() => setSortOpen(false)}
           >
             <Row align="center" gap={1}>
               <Text weight="semibold" style={styles.filterLabel}>
-                {sortActions.find(action => action.state === 'on')?.title}
+                {sortOptions.find(action => action.state === 'on')?.title}
               </Text>
               <Icon
                 icon={isSortOpen ? faChevronUp : faChevronDown}
@@ -394,7 +367,10 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
               />
             </Row>
           </StatefulMenuView>
-          <MenuView actions={menuActions} onPressAction={onPressMenuAction}>
+          <StatefulMenuView
+            actions={menuActions}
+            onPressAction={onPressMenuAction}
+          >
             <IconButton
               icon={faEllipsis}
               color={palettes.primary[400]}
@@ -405,7 +381,7 @@ export const CourseFilesScreen = ({ route, navigation }: Props) => {
                 defaultValue: 'More options',
               })}
             />
-          </MenuView>
+          </StatefulMenuView>
         </Row>
 
         <OverviewList

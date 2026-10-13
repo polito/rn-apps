@@ -26,17 +26,13 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
-import {
-  MenuAction,
-  MenuView,
-  NativeActionEvent,
-} from '@react-native-menu/menu';
+import { MenuAction, NativeActionEvent } from '@react-native-menu/menu';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../../core/contexts/CoursesContext';
 import { useCourseFilesData } from '../hooks/useCourseFilesData';
-import { FileSortMode, useFileManagement } from '../hooks/useFileManagement';
+import { useFileManagement } from '../hooks/useFileManagement';
 import { FileStackParamList } from '../navigation/FileNavigator';
 import { FileListEntry } from '../types/FileListEntry';
 import { formatFolderDetails } from '../utils/formatFolderDetails';
@@ -53,13 +49,18 @@ export const CourseDirectoryScreen = () => {
   const [isSortOpen, setSortOpen] = useState(false);
   const { files, directories } = useCourseFilesData(selectedCourse);
 
-  const { search, setSearch, sortMode, setSortMode, sortedDirectories } =
-    useFileManagement({
-      files,
-      directories,
-      initialViewMode: 'folders',
-      storageKey: String(selectedCourse?.id ?? 'global'),
-    });
+  const {
+    search,
+    setSearch,
+    sortOptions: allSortOptions,
+    onPressSortOption,
+    sortedDirectories,
+  } = useFileManagement({
+    files,
+    directories,
+    initialViewMode: 'folders',
+    storageKey: String(selectedCourse?.id ?? 'global'),
+  });
 
   const menuActions: MenuAction[] = useMemo(
     () => [
@@ -75,26 +76,18 @@ export const CourseDirectoryScreen = () => {
     [t],
   );
 
-  const sortActions: MenuAction[] = useMemo(
-    () => [
-      {
-        id: 'nameAsc',
-        title: t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' }),
-        state: sortMode === 'nameAsc' ? 'on' : 'off',
-      },
-      {
-        id: 'nameDesc',
-        title: t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' }),
-        state: sortMode === 'nameDesc' ? 'on' : 'off',
-      },
-    ],
-    [t, sortMode],
+  // Folders can only be sorted by name
+  const sortActions = useMemo(
+    () =>
+      allSortOptions.filter(
+        action => action.id === 'nameAsc' || action.id === 'nameDesc',
+      ),
+    [allSortOptions],
   );
 
   const onPressSortAction = useCallback(
-    ({ nativeEvent: { event } }: NativeActionEvent) =>
-      setSortMode(event as FileSortMode),
-    [setSortMode],
+    ({ nativeEvent: { event } }: NativeActionEvent) => onPressSortOption(event),
+    [onPressSortOption],
   );
 
   const onPressMenuAction = useCallback(
@@ -189,7 +182,10 @@ export const CourseDirectoryScreen = () => {
               />
             </Row>
           </StatefulMenuView>
-          <MenuView actions={menuActions} onPressAction={onPressMenuAction}>
+          <StatefulMenuView
+            actions={menuActions}
+            onPressAction={onPressMenuAction}
+          >
             <IconButton
               icon={faEllipsis}
               color={palettes.primary[400]}
@@ -200,7 +196,7 @@ export const CourseDirectoryScreen = () => {
                 defaultValue: 'More options',
               })}
             />
-          </MenuView>
+          </StatefulMenuView>
         </Row>
 
         <OverviewList

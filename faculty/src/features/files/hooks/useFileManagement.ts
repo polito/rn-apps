@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { FileDownloadStatus } from '@polito/lib/ui';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MenuAction } from '@react-native-menu/menu';
 
 import { Directory } from '../types/Directory';
 import { FileEntry } from '../types/FileEntry';
@@ -9,11 +11,18 @@ import { sortByNameAsc, sortByNameDesc } from '../utils/sorting';
 
 const sortStorageCache = new Map<string, string>();
 
-export type FileSortMode =
-  | 'nameAsc'
-  | 'nameDesc'
-  | 'mostRecent'
-  | 'oldestFirst';
+const FILE_SORT_MODES = [
+  'nameAsc',
+  'nameDesc',
+  'mostRecent',
+  'oldestFirst',
+] as const;
+
+export type FileSortMode = (typeof FILE_SORT_MODES)[number];
+
+const isFileSortMode = (value: unknown): value is FileSortMode =>
+  FILE_SORT_MODES.includes(value as FileSortMode);
+
 export type FileViewMode = 'files' | 'folders';
 
 interface UseFileManagementOptions {
@@ -31,6 +40,7 @@ export const useFileManagement = ({
   initialSortMode = 'oldestFirst',
   storageKey,
 }: UseFileManagementOptions) => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const sortStorageKey = storageKey
     ? `@files_sort_mode_${storageKey}`
@@ -71,12 +81,7 @@ export const useFileManagement = ({
     const loadSortMode = async () => {
       try {
         const value = await AsyncStorage.getItem(sortStorageKey);
-        if (
-          value === 'nameAsc' ||
-          value === 'nameDesc' ||
-          value === 'mostRecent' ||
-          value === 'oldestFirst'
-        ) {
+        if (isFileSortMode(value)) {
           sortStorageCache.set(sortStorageKey, value);
           setSortMode(value);
         }
@@ -122,6 +127,26 @@ export const useFileManagement = ({
     };
     saveViewMode().catch(() => undefined);
   }, [viewMode, viewStorageKey]);
+
+  const sortOptions: MenuAction[] = useMemo(() => {
+    const titles: Record<FileSortMode, string> = {
+      nameAsc: t('courseFilesTab.nameAZ', { defaultValue: 'Name A-Z' }),
+      nameDesc: t('courseFilesTab.nameZA', { defaultValue: 'Name Z-A' }),
+      mostRecent: t('courseFilesTab.mostRecent', {
+        defaultValue: 'Most Recent',
+      }),
+      oldestFirst: t('common.oldestFirst', { defaultValue: 'Oldest first' }),
+    };
+    return FILE_SORT_MODES.map(id => ({
+      id,
+      title: titles[id],
+      state: sortMode === id ? 'on' : 'off',
+    }));
+  }, [t, sortMode]);
+
+  const onPressSortOption = useCallback((id: string) => {
+    if (isFileSortMode(id)) setSortMode(id);
+  }, []);
 
   const normalizedSearch = useMemo(() => search.trim().toLowerCase(), [search]);
 
@@ -196,6 +221,8 @@ export const useFileManagement = ({
     setViewMode,
     sortMode,
     setSortMode,
+    sortOptions,
+    onPressSortOption,
     sortedFiles,
     sortedDirectories,
     startDownload,

@@ -1,17 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, TouchableOpacity, View } from 'react-native';
+import { Platform, View } from 'react-native';
 
-import { faChevronLeft, faSliders } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import {
-  HeaderAccessory,
-  IconButton,
-  Tab,
-  Tabs,
-  Text,
-  useTheme,
-} from '@polito/lib/ui';
+import { faSliders } from '@fortawesome/free-solid-svg-icons';
+import { IconButton, Text, TopTabBar, useTheme } from '@polito/lib/ui';
 import {
   MaterialTopTabBarProps,
   createMaterialTopTabNavigator,
@@ -46,13 +38,8 @@ export interface CourseTabsParamList
 
 const TopTabs = createMaterialTopTabNavigator<CourseTabsParamList>();
 
-const CourseTopTabBar = ({
-  state,
-  descriptors,
-  navigation,
-}: MaterialTopTabBarProps) => {
-  const { dark, palettes, fontFamilies, fontSizes, fontWeights, spacing } =
-    useTheme();
+const CourseTopTabBar = (props: MaterialTopTabBarProps) => {
+  const { state } = props;
   const focusedTopRoute = state.routes[state.index];
   const focusedNestedRoute = getFocusedRouteNameFromRoute(
     focusedTopRoute as never,
@@ -67,81 +54,7 @@ const CourseTopTabBar = ({
     return null;
   }
 
-  return (
-    <HeaderAccessory>
-      <Tabs>
-        {state.routes.map((route, index) => {
-          const { options } = descriptors[route.key];
-          const label =
-            options.tabBarLabel !== undefined
-              ? options.tabBarLabel
-              : options.title !== undefined
-                ? options.title
-                : route.name;
-          const isFocused = state.index === index;
-
-          const onPress = () => {
-            const event = navigation.emit({
-              type: 'tabPress',
-              target: route.key,
-              canPreventDefault: true,
-            });
-
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate({
-                name: route.name,
-                merge: true,
-                params: {},
-              });
-            }
-          };
-
-          const onLongPress = () => {
-            navigation.emit({
-              type: 'tabLongPress',
-              target: route.key,
-            });
-          };
-
-          return (
-            <Tab
-              key={route.key}
-              selected={isFocused}
-              accessibilityLabel={options.tabBarAccessibilityLabel}
-              testID={route.key}
-              onPress={onPress}
-              onLongPress={onLongPress}
-              textStyle={{
-                fontFamily: fontFamilies.body,
-                fontSize: fontSizes.xs + 1,
-                fontStyle: 'normal',
-                fontWeight: fontWeights.medium,
-                lineHeight: 19.5,
-              }}
-              style={[
-                {
-                  display: 'flex',
-                  paddingVertical: spacing[1] - 1,
-                  paddingHorizontal: spacing[2.5],
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  gap: spacing[1],
-                },
-                !isFocused
-                  ? {
-                      borderWidth: 1,
-                      borderColor: palettes.primary[dark ? 600 : 50],
-                    }
-                  : undefined,
-              ]}
-            >
-              {label as string}
-            </Tab>
-          );
-        })}
-      </Tabs>
-    </HeaderAccessory>
-  );
+  return <TopTabBar {...props} />;
 };
 
 type Props = NativeStackScreenProps<CourseSharedScreensParamList, 'Course'>;
@@ -179,36 +92,8 @@ export const CourseNavigator = ({ navigation, route }: Props) => {
   })();
 
   useEffect(() => {
-    const isAndroid = Platform.OS === 'android';
-
     navigation.setOptions({
       headerTitleAlign: 'center',
-      headerBackVisible: isAndroid,
-      headerTintColor: palettes.primary[500],
-      headerLeft: isAndroid
-        ? undefined
-        : () => (
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              accessibilityLabel={t('common.back')}
-              style={{
-                display: 'flex',
-                width: headerSideWidth,
-                marginLeft: -spacing[3],
-                paddingLeft: 0,
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 10,
-                paddingVertical: spacing[2],
-              }}
-            >
-              <FontAwesomeIcon
-                icon={faChevronLeft}
-                color={palettes.primary[500]}
-                size={22}
-              />
-            </TouchableOpacity>
-          ),
       headerTitle: () => (
         <Text
           variant="heading"
