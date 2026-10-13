@@ -33,17 +33,7 @@ export const SingleBooking2 = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          {t('other.booking')}
-        </Text>
-      ),
+      headerTitle: t('other.booking'),
     });
   }, [navigation, colors, t]);
 

@@ -1,9 +1,9 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, TextInput, View } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
 import {
   Card,
@@ -41,6 +41,7 @@ import { useCourses } from '../../core/contexts/CoursesContext';
 // };
 
 export const ModifyFileScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const { selectedCourse, updateCourseFile, selectedFile } = useCourses();
   const { spacing, palettes } = useTheme();
@@ -77,20 +78,9 @@ export const ModifyFileScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text variant="heading" style={{ marginLeft: 85 }}>
-          Modifica file
-        </Text>
-      ),
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-      ),
+      headerTitle: t('other.modifyFile'),
     });
-  }, [navigation]);
+  }, [navigation, t]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

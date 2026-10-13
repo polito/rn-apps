@@ -1099,6 +1099,10 @@
     "lookForPeople": "Look for people...",
     "renderingToMail": "Rendering to mail...",
     "examInfo": "Exam info",
-    "modifyLecture": "Modify Lecture"
+    "modifyLecture": "Modify Lecture",
+    "people": "People",
+    "modifyNotice": "Edit notice",
+    "modifyFile": "Edit file",
+    "createNewItem": "Create new item"
   }
 }

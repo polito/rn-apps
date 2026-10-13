@@ -41,17 +41,7 @@ export const SignatureScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          {t('other.digitalSignature')}
-        </Text>
-      ),
+      headerTitle: t('other.digitalSignature'),
     });
   }, [navigation, t]);
 

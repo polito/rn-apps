@@ -132,17 +132,7 @@ export const BookRoomForm = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          {t('other.requestRoom')}
-        </Text>
-      ),
+      headerTitle: t('other.requestRoom'),
     });
   }, [navigation, t]);
 

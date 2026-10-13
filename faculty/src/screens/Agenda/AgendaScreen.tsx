@@ -62,17 +62,7 @@ export const AgendaScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            marginLeft: Platform.OS === 'android' ? 85 : 130,
-            width: 100,
-          }}
-        >
-          Agenda
-        </Text>
-      ),
+      headerTitle: t('agendaScreen.title'),
       headerLeft: () => <Logo />,
       headerRight: () => (
         <Row>

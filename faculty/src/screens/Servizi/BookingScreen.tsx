@@ -8,7 +8,6 @@ import {
   BottomBarSpacer,
   IndentedDivider,
   ListItem,
-  Text,
   useBottomBarAwareStyles,
   useSafeAreaSpacing,
   useTheme,
@@ -51,17 +50,7 @@ export const BookingScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          {t('other.bookPlaces')}
-        </Text>
-      ),
+      headerTitle: t('other.bookPlaces'),
     });
   }, [navigation, colors, t]);
 

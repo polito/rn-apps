@@ -1,4 +1,5 @@
 import { useLayoutEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
@@ -25,6 +26,7 @@ import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
 
 export const StudentContact = () => {
+  const { t } = useTranslation();
   const { spacing, colors } = useTheme();
   const navigation = useNavigation();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
@@ -34,16 +36,9 @@ export const StudentContact = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{ textAlign: 'center', width: '100%', marginLeft: -25 }}
-        >
-          Contatto
-        </Text>
-      ),
+      headerTitle: t('common.contact'),
     });
-  }, [navigation, colors]);
+  }, [navigation, colors, t]);
 
   if (!selectedStudent) return null;
   return (

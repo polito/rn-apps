@@ -8,7 +8,6 @@ import {
   ListItem,
   OverviewList,
   SectionHeader,
-  Text,
   useBottomBarAwareStyles,
   useSafeAreaSpacing,
   useTheme,
@@ -30,17 +29,7 @@ export const DigitalSignatureScreen = () => {
   const { paddingHorizontal } = useSafeAreaSpacing();
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          {t('other.digitalSignature')}
-        </Text>
-      ),
+      headerTitle: t('other.digitalSignature'),
     });
   }, [navigation, colors, t]);
 

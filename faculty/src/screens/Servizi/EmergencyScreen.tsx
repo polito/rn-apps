@@ -6,7 +6,6 @@ import { faPhone } from '@fortawesome/free-solid-svg-icons';
 import {
   CtaButton,
   Grid,
-  Text,
   Theme,
   useBottomBarAwareStyles,
   useStylesheet,
@@ -50,17 +49,7 @@ export const EmergencyScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          {t('other.emergencies')}
-        </Text>
-      ),
+      headerTitle: t('other.emergencies'),
     });
   }, [navigation, colors, t]);
 

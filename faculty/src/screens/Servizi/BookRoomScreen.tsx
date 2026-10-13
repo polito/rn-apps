@@ -9,7 +9,6 @@ import {
   CtaButton,
   IndentedDivider,
   ListItem,
-  Text,
   useBottomBarAwareStyles,
   useSafeAreaSpacing,
 } from '@polito/lib/ui';
@@ -28,17 +27,7 @@ export const BookRoomScreen = () => {
   const { paddingHorizontal } = useSafeAreaSpacing();
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          {t('other.requestRoom')}
-        </Text>
-      ),
+      headerTitle: t('other.requestRoom'),
     });
   }, [navigation, t]);
 

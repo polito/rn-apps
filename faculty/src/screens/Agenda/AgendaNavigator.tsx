@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
-import { Text, useTheme, useTitlesStyles } from '@polito/lib/ui';
+import { useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { Logo } from '../../core/components/Logo';
@@ -70,7 +70,7 @@ export const AgendaNavigator = () => {
         name="Lezione"
         component={LectureScreen}
         options={{
-          headerTitle: 'Lezione',
+          headerTitle: t('common.lecture'),
         }}
       />
 
@@ -80,14 +80,7 @@ export const AgendaNavigator = () => {
         name="SingleElement"
         component={SingleElementScreen}
         options={{
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{ textAlign: 'center', width: '100%', marginLeft: -20 }}
-            >
-              Lezione
-            </Text>
-          ),
+          headerTitle: t('common.lecture'),
           headerShown: true,
         }}
       />

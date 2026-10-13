@@ -17,7 +17,6 @@ import {
   IndentedDivider,
   ListItem,
   SectionHeader,
-  Text,
   Theme,
   useBottomBarAwareStyles,
   useSafeAreaSpacing,
@@ -44,19 +43,9 @@ export const PersoneScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-          }}
-        >
-          Persone
-        </Text>
-      ),
+      headerTitle: t('other.people'),
     });
-  }, [navigation, colors]);
+  }, [navigation, colors, t]);
 
   return (
     <ScrollView

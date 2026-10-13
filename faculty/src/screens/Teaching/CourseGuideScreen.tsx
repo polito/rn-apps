@@ -1,4 +1,5 @@
 import { useLayoutEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { Text, Theme, useStylesheet } from '@polito/lib/ui';
@@ -9,22 +10,16 @@ import { useCourses } from '../../core/contexts/CoursesContext';
 import { TeachingStackParamList } from './TeachingNavigator';
 
 export const CourseGuideScreen = () => {
+  const { t } = useTranslation();
   const { selectedCourse } = useCourses();
   const styles = useStylesheet(createStyles);
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{ textAlign: 'center', width: '100%', marginLeft: -25 }}
-        >
-          Guida del corso
-        </Text>
-      ),
+      headerTitle: t('courseGuideScreen.title'),
     });
-  }, [navigation]);
+  }, [navigation, t]);
   return (
     <View style={styles.sectionsContainer}>
       <Text style={{ marginLeft: 100 }}>{selectedCourse?.guide}</Text>
