@@ -1,4 +1,4 @@
-import { API_BASE_PATH } from '@env';
+import { API_BASE_PATH, TESTING_API } from '@env';
 import {
   Configuration as AuthConfiguration,
   DefaultConfig as AuthDefaultConfig,
@@ -10,6 +10,10 @@ import {
   ConfigurationParameters,
   DefaultConfig,
 } from '@polito/student-api-client';
+
+export const testingApiHeaders: Record<string, string> = TESTING_API?.trim()
+  ? { 'X-Test-Mode': TESTING_API.trim() }
+  : {};
 
 export const updateGlobalApiConfiguration = ({
   token,
@@ -25,6 +29,7 @@ export const updateGlobalApiConfiguration = ({
     basePath,
     headers: {
       'Accept-Language': language,
+      ...testingApiHeaders,
     },
   };
 
