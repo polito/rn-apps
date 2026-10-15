@@ -4,6 +4,7 @@ import { Alert } from 'react-native';
 
 import { useApiContext } from '@polito/lib/core';
 
+import { testingApiHeaders } from '../../config/api';
 import { dirname, mkdirRecursive } from '../../utils/files';
 import {
   Download,
@@ -155,7 +156,12 @@ export const useDownloadFile = (
           const resumable = createResumableDownload(
             fromUrl,
             toFile,
-            { headers: { Authorization: `Bearer ${token}` } },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                ...testingApiHeaders,
+              },
+            },
             ({
               totalBytesWritten,
               totalBytesExpectedToWrite,
