@@ -1,39 +1,48 @@
 import { useEffect, useRef, useState } from 'react';
+
 import { useIBeaconScanner } from '@polito/react-native-ibeacon';
+
+const UUID_TO_TRACK = 'CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478'; // UUID of the iBeacons to track
 
 // BEACON DATABASE
 export const DB_BEACONS = [
   {
-    uuid: 'CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478',
+    name: 'BEACON_GIACOMO',
+    uuid: UUID_TO_TRACK,
     major: 15,
     minor: 30,
     lat: 45.061993,
     lng: 7.661547,
-  }, 
+  } /*Giacomo*/,
   {
-    uuid: 'CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478',
+    name: 'BEACON_TOME',
+    uuid: UUID_TO_TRACK,
     major: 12,
     minor: 40,
-    lat: 45.061969,
-    lng: 7.66154,
-  },
-    /*{
-    uuid: 'CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478',
-    major: 1,
-    minor: 1,
-    lat: 45.061969,
-    lng: 7.66154,
-  }, //BEACON FEDERICO*/
+    lat: 45.062001,
+    lng: 7.661591,
+  } /*Tomé */,
   {
-    uuid: 'BEA_STAMPANTE',
+    name: 'BEACON_FEDERICO',
+    uuid: UUID_TO_TRACK,
+    major: 42,
+    minor: 118,
+    lat: 45.061969,
+    lng: 7.66154,
+  } /*Federico */,
+  {
+    name: 'BEACON_STAMPANTE',
+    uuid: UUID_TO_TRACK,
     major: 10,
     minor: 28,
     lat: 45.061942,
     lng: 7.661606,
-  },
+  } /*Stampante*/,
 ];
 
 const BUFFER_SIZE = 5; //   Reduced to 5 for a better positioning
+
+//Stampati i beacon che trova con un riferimento temporale in modo da caprie quali stiamo effettivamente scansionando
 
 export function useRealTimePositioning() {
   const [userLocation, setUserLocation] = useState<{
@@ -51,11 +60,15 @@ export function useRealTimePositioning() {
     stopScanner,
     isScanning: scannerIsScanning,
     beacons,
-  } = useIBeaconScanner();
+  } = useIBeaconScanner({ uuid: UUID_TO_TRACK }); //da parametrizzare (default: MAX_AGE = 2000, CLEAN_UP = 500), passali come oggetto
 
   const getBeaconKey = (uuid: string, major: number, minor: number) => {
     return `${uuid.toUpperCase()}-${major}-${minor}`;
   };
+
+  useEffect(() => {
+    console.log('Beacons detected:', beacons);
+  }, [beacons]);
 
   //Starting buffering
   useEffect(() => {
@@ -64,7 +77,7 @@ export function useRealTimePositioning() {
       const key = getBeaconKey(beacon.uuid, beacon.major, beacon.minor);
       distanceBuffer.current[key] = [];
     });
-  }, []);
+  }, [userLocation]); //to check: cambia veramente se triggerato dall'update della user Location
 
   // Synchronizing scan state
   useEffect(() => {
@@ -73,6 +86,8 @@ export function useRealTimePositioning() {
 
   useEffect(() => {
     if (!beacons || beacons.length === 0) return;
+
+    console.log('Beacons detected:', beacons);
 
     beacons.forEach(beacon => {
       // We skip non valid proximity distances
@@ -106,7 +121,9 @@ export function useRealTimePositioning() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const activeBeacons: Array<(typeof DB_BEACONS)[number] & { distance: number }> = [];
+      const activeBeacons: Array<
+        (typeof DB_BEACONS)[number] & { distance: number }
+      > = [];
 
       DB_BEACONS.forEach(beacon => {
         const key = getBeaconKey(beacon.uuid, beacon.major, beacon.minor);
@@ -118,7 +135,7 @@ export function useRealTimePositioning() {
 
         activeBeacons.push({
           ...beacon,
-          distance: avgDistance,
+          distance: readings[readings.length - 1], // Use the most recent reading
         });
       });
 
@@ -147,14 +164,14 @@ export function useRealTimePositioning() {
     return () => clearInterval(interval);
   }, []);
 
-  const startTracking = (uuidToTrack: string = 'CBA5D181-DD12-46A7-A3D2-9C1C5EB1E478') => {
+  const startTracking = (uuidToTrack: string = UUID_TO_TRACK) => {
     if (scannerIsScanning) return;
-    
+
     Object.keys(distanceBuffer.current).forEach(key => {
       distanceBuffer.current[key] = [];
     });
-    
-    startScanner(uuidToTrack);
+
+    startScanner(); //da definire un interval in modo da fare un re-render in base al tempo che decido
   };
 
   const stopTracking = () => {

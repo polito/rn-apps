@@ -1,16 +1,17 @@
-import { Button, StyleSheet, Text, View } from 'react-native';
 import { useEffect } from 'react';
+import { Button, StyleSheet, Text, View } from 'react-native';
 
 import { useStylesheet } from '@polito/lib/ui';
 import { Theme } from '@polito/lib/ui';
-import { useIBeaconScanner } from '@polito/react-native-ibeacon'; 
+import { useIBeaconScanner } from '@polito/react-native-ibeacon';
 
-import { useBeaconCalibration } from '../hooks/useBeaconCalibrationOptions'
+import { useBeaconCalibration } from '../hooks/useBeaconCalibrationOptions';
 
 export const BleScreenTest = () => {
   const styles = useStylesheet(createStyles);
 
-  const { startScanner, stopScanner, isScanning, beacons } = useIBeaconScanner();
+  const { startScanner, stopScanner, isScanning, beacons } =
+    useIBeaconScanner();
 
   const {
     isCalibrating,
@@ -49,10 +50,8 @@ export const BleScreenTest = () => {
         />
       </View>
 
-            <View style={styles.card}>
-        <Text style={styles.subtitle}>
-          Beacon calibration
-        </Text>
+      <View style={styles.card}>
+        <Text style={styles.subtitle}>Beacon calibration</Text>
 
         <Text style={styles.texts}>
           Place the phone exactly 1 meter from the beacon.
@@ -69,10 +68,7 @@ export const BleScreenTest = () => {
             disabled={!isScanning}
           />
         ) : (
-          <Button
-            title="Stop calibration"
-            onPress={stopCalibration}
-          />
+          <Button title="Stop calibration" onPress={stopCalibration} />
         )}
 
         {result && (
@@ -122,7 +118,12 @@ const createStyles = ({ colors }: Theme) =>
       shadowRadius: 5,
       elevation: 3,
     },
-    subtitle: { fontSize: 16, fontWeight: '600', marginBottom: 10, color: colors.secondaryText },
-    texts: {color: colors.white},
-    results: {color: colors.errorCardText}
+    subtitle: {
+      fontSize: 16,
+      fontWeight: '600',
+      marginBottom: 10,
+      color: colors.secondaryText,
+    },
+    texts: { color: colors.white },
+    results: { color: colors.errorCardText },
   });

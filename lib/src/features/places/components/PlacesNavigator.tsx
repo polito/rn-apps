@@ -21,7 +21,8 @@ import { useTitlesStyles } from '../../../ui/hooks/useTitlesStyles';
 import { INTERIORS_MIN_ZOOM, MAX_ZOOM, RASTER_TILE_SIZE } from '../constants';
 import { PlacesContext } from '../contexts/PlacesContext';
 import { usePlaceCategoriesMap } from '../hooks/usePlaceCategoriesMap';
-import { BeaconTestScreen } from '../screens/BeaconTestScreen';
+import { BeaconDebugScreen } from '../screens/BeaconDebugScreen';
+//import { BeaconTestScreen } from '../screens/BeaconTestScreen';
 import { BuildingScreen } from '../screens/BuildingScreen';
 import { EventPlacesScreen } from '../screens/EventPlacesScreen';
 import { FreeRoomsScreen } from '../screens/FreeRoomsScreen';
@@ -317,7 +318,7 @@ export const PlacesNavigator = ({
         />
         <Map.Screen
           name="BLETest"
-          component={BeaconTestScreen}
+          component={BeaconDebugScreen}
           options={{
             title: t('prova BLE Beacons'),
           }}

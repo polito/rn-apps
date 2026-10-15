@@ -9,10 +9,7 @@ import { CircleLayer, ShapeSource } from '@rnmapbox/maps';
 
 import { MapScreenProps } from '../components/MapNavigator';
 import { PlacesStackParamList } from '../components/PlacesNavigator';
-import {
-  DB_BEACONS,
-  useRealTimePositioning,
-} from '../hooks/useTrilateration';
+import { DB_BEACONS, useRealTimePositioning } from '../hooks/useTrilateration';
 
 type Props = MapScreenProps<PlacesStackParamList, 'BLETest'>;
 
@@ -21,7 +18,7 @@ export const BeaconTestScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors } = useTheme();
 
-  const { userLocation, isScanning ,startTracking } = useRealTimePositioning();
+  const { userLocation, isScanning, startTracking } = useRealTimePositioning();
 
   useLayoutEffect(() => {
     const parent = navigation.getParent();
@@ -43,53 +40,52 @@ export const BeaconTestScreen = ({ navigation }: Props) => {
     startTracking();
   }, [startTracking]);
 
- useLayoutEffect(() => {
-  navigation.setOptions({
-    mapContent: () => (
-      <>
-        {DB_BEACONS.map((b, index) => (
-          <ShapeSource
-            key={`BEA_${index}`}
-            id={`BEA_${index}`}
-            shape={{
-              type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: [b.lng, b.lat],
-              },
-              properties: {},
-            }}
-          >
-            <CircleLayer
-              id={`BEA_${index}_CIRCLE`}
-              style={{circleColor: colors.black}}
-            />
-          </ShapeSource>
-        ))}
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      mapContent: () => (
+        <>
+          {DB_BEACONS.map((b, index) => (
+            <ShapeSource
+              key={`BEA_${index}`}
+              id={`BEA_${index}`}
+              shape={{
+                type: 'Feature',
+                geometry: {
+                  type: 'Point',
+                  coordinates: [b.lng, b.lat],
+                },
+                properties: {},
+              }}
+            >
+              <CircleLayer
+                id={`BEA_${index}_CIRCLE`}
+                style={{ circleColor: colors.black }}
+              />
+            </ShapeSource>
+          ))}
 
-        {userLocation && (
-          <ShapeSource
-            id="USR_location"
-            shape={{
-              type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: [userLocation.lng, userLocation.lat],
-              },
-              properties: {},
-            }}
-          >
-            <CircleLayer
-              id="USR_DOT"
-              style={{circleColor: colors.yellow}}
-            />
-          </ShapeSource>
-        )}
-      </>
-    ),
-  });
-}, [navigation, userLocation, styles, colors]);
-
+          {userLocation && (
+            <ShapeSource
+              id="USR_location"
+              shape={{
+                type: 'Feature',
+                geometry: {
+                  type: 'Point',
+                  coordinates: [userLocation.lng, userLocation.lat],
+                },
+                properties: {},
+              }}
+            >
+              <CircleLayer
+                id="USR_DOT"
+                style={{ circleColor: colors.yellow }}
+              />
+            </ShapeSource>
+          )}
+        </>
+      ),
+    });
+  }, [navigation, userLocation, styles, colors]);
 
   return (
     <View style={styles.container}>
