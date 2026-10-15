@@ -755,7 +755,10 @@
   },
   "teachingScreen": {
     "allCoursesHidden": "You've hidden all your courses",
+    "courseHint": "Opens the course",
     "cpdTitle": "CPD Surveys",
+    "examHint": "Opens the exam call details",
+    "owner": "Owner",
     "title": "Teaching"
   },
   "theme": {

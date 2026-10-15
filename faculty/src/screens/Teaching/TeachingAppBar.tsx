@@ -2,11 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { faBell } from '@fortawesome/free-solid-svg-icons';
 import {
   Col,
   HeaderLogo,
-  IconButton,
   Row,
   TranslucentView,
   useStylesheet,
@@ -19,7 +17,7 @@ import { useTeachingScroll } from './TeachingNavigator';
 export const TeachingAppBar = () => {
   const { t } = useTranslation();
   const { top } = useSafeAreaInsets();
-  const { palettes, spacing, dark, colors } = useTheme();
+  const { dark } = useTheme();
   const styles = useStylesheet(createStyles);
   const { isScrolled } = useTeachingScroll();
 
@@ -32,17 +30,11 @@ export const TeachingAppBar = () => {
       <View style={{ height: top }} />
       <Row align="center" justify="space-between" ph={5} style={styles.navRow}>
         <HeaderLogo />
-        <IconButton
-          icon={faBell}
-          color={dark ? colors.title : palettes.primary[700]}
-          size={20}
-          accessibilityLabel={t('common.notifications')}
-          style={{ marginRight: -spacing[2] }}
-          onPress={() => {}}
-        />
       </Row>
       <Col ph={5} pb={2}>
-        <Text style={styles.title}>{t('teachingScreen.title')}</Text>
+        <Text style={styles.title} accessibilityRole="header">
+          {t('teachingScreen.title')}
+        </Text>
       </Col>
       <View style={[styles.separator, !isScrolled && { opacity: 0 }]} />
     </View>

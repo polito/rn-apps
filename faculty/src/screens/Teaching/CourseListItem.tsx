@@ -1,4 +1,5 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import {
@@ -8,6 +9,7 @@ import {
   Text,
   Theme,
   useStylesheet,
+  useTheme,
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -39,26 +41,28 @@ export const CourseListItem = ({
   disabled,
   onPress,
 }: Props) => {
+  const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+  const { colors } = useTheme();
   const { setSelectedCourse } = useCourses();
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
 
-  const isOwner = useCallback(() => {
-    // Placeholder logic for determining if the user is the owner
-    return 'Owner';
-  }, []);
+  const role = t('teachingScreen.owner');
 
   const subtitle = useMemo(() => {
     return (
       <Row style={styles.subtitle} pt={1}>
-        <Tag text={isOwner()} />
-        <Text style={styles.subtitleText} numberOfLines={1}>
+        <Tag text={role} />
+        <Text
+          style={[styles.subtitleText, { color: colors.secondaryText }]}
+          numberOfLines={1}
+        >
           {course.code}
         </Text>
       </Row>
     );
-  }, [styles, course.code, isOwner]);
+  }, [styles, course.code, role, colors.secondaryText]);
 
   return (
     <ListItem
@@ -76,6 +80,12 @@ export const CourseListItem = ({
         */
 
       accessible={accessible}
+      accessibilityRole="button"
+      accessibilityLabel={[course.title, role, course.code]
+        .filter(Boolean)
+        .join(', ')}
+      accessibilityHint={t('teachingScreen.courseHint')}
+      accessibilityState={{ disabled: !!disabled }}
       title={course.title}
       subtitle={subtitle}
       leadingItem={
@@ -96,7 +106,7 @@ export const CourseListItem = ({
   );
 };
 
-const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
+const createStyles = ({ spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     subtitle: {
       display: 'flex',
@@ -105,7 +115,6 @@ const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
       alignSelf: 'stretch',
     },
     subtitleText: {
-      color: palettes.gray[500],
       fontSize: fontSizes.sm,
     },
   });

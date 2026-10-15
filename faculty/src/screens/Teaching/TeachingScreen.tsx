@@ -10,6 +10,7 @@ import {
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import {
+  IS_IOS,
   formatDateFromString,
   useOfflineDisabled,
   usePreferencesContext,
@@ -79,7 +80,8 @@ export const TeachingScreen = () => {
   const { setIsScrolled } = useTeachingScroll();
 
   const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    setIsScrolled(e.nativeEvent.contentOffset.y > -headerHeight + 10);
+    const offsetY = e.nativeEvent.contentOffset.y;
+    setIsScrolled(IS_IOS ? offsetY > -headerHeight + 10 : offsetY > 10);
   };
 
   const courses = useMemo(
@@ -215,6 +217,17 @@ export const TeachingScreen = () => {
                   />
                 }
                 isAction
+                accessibilityRole="button"
+                accessibilityLabel={[
+                  exam.subject,
+                  exam.date === 'Oggi'
+                    ? t('other.today')
+                    : formatDateFromString(exam.date),
+                  exam.where,
+                ]
+                  .filter(Boolean)
+                  .join(', ')}
+                accessibilityHint={t('teachingScreen.examHint')}
                 subtitle={
                   <Row gap={2} pt={1} align="center">
                     <ScreenDateTime
