@@ -17,7 +17,7 @@ interface Props {
 }
 
 export const NewsListItem = ({ newsItem, index, totalData }: Props) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
 
@@ -51,6 +51,7 @@ export const NewsListItem = ({ newsItem, index, totalData }: Props) => {
         totalData,
       )}
       accessibilityHint={t('common.tapToNavigate')}
+      accessibilityLanguage={i18n.language}
       subtitle={subTitle}
       subtitleStyle={styles.subtitle}
       trailingItem={

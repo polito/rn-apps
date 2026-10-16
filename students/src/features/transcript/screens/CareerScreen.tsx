@@ -191,7 +191,7 @@ export const CareerScreen = () => {
                   } CFU`}
                   style={styles.spaceBottom}
                   accessibilityLabel={`${t(
-                    'transcriptMetricsScreen.acquiredCreditsLabel',
+                    'transcriptMetricsScreen.acquiredCreditsLabelTotal',
                   )}: ${totalAcquiredCredits} ${t(
                     'common.of',
                   )} ${totalCredits}`}
@@ -203,7 +203,7 @@ export const CareerScreen = () => {
                   } CFU`}
                   color={palettes.primary[400]}
                   accessibilityLabel={`${t(
-                    'transcriptMetricsScreen.attendedCreditsLabel',
+                    'transcriptMetricsScreen.attendedCreditsLabelTot',
                   )}: ${totalAttendedCredits} ${t(
                     'common.of',
                   )} ${totalCredits}`}
@@ -233,7 +233,7 @@ export const CareerScreen = () => {
                     enrollmentCredits ?? '--'
                   } CFU`}
                   accessibilityLabel={`${t(
-                    'transcriptMetricsScreen.acquiredCreditsLabel',
+                    'transcriptMetricsScreen.acquiredCreditsLabelTotal',
                   )}: ${enrollmentAcquiredCredits} ${t(
                     'common.of',
                   )} ${enrollmentCredits}`}
@@ -245,8 +245,8 @@ export const CareerScreen = () => {
                     enrollmentCredits ?? '--'
                   } CFU`}
                   accessibilityLabel={`${t(
-                    'transcriptMetricsScreen.attendedCreditsLabel',
-                  )}: ${enrollmentCredits} ${t(
+                    'transcriptMetricsScreen.attendedCreditsLabelTot',
+                  )}: ${enrollmentAttendedCredits} ${t(
                     'common.of',
                   )} ${enrollmentCredits}`}
                   color={palettes.primary[400]}
@@ -289,6 +289,12 @@ export const CareerScreen = () => {
                         studentQuery.data?.averageGrade,
                       )}
                       style={GlobalStyles.grow}
+                      accessible
+                      accessibilityLabel={[
+                        t('transcriptMetricsScreen.weightedAverageLabel'),
+                        studentQuery.data?.averageGrade ||
+                          t('common.notAvailable'),
+                      ].join(', ')}
                     />
                   </Row>
                 </>
@@ -305,6 +311,15 @@ export const CareerScreen = () => {
                     )}
                     color={palettes.primary[400]}
                     style={GlobalStyles.grow}
+                    accessible
+                    accessibilityLabel={[
+                      t('transcriptMetricsScreen.estimatedFinalGrade'),
+                      studentQuery.data?.estimatedFinalGrade
+                        ? formatFinalGrade(
+                            studentQuery.data?.estimatedFinalGrade,
+                          )
+                        : t('common.notAvailable'),
+                    ].join(', ')}
                   />
                 </Row>
 
@@ -321,6 +336,12 @@ export const CareerScreen = () => {
                           studentQuery.data?.mastersAdmissionAverageGrade,
                         )}
                         style={GlobalStyles.grow}
+                        accessible
+                        accessibilityLabel={[
+                          t('transcriptMetricsScreen.finalAverageLabel'),
+                          studentQuery.data?.mastersAdmissionAverageGrade ||
+                            t('common.notAvailable'),
+                        ].join(', ')}
                       />
                     </Row>
                   </>

@@ -444,6 +444,7 @@ export const EscCard = (
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={t('europeanCardScreen.cardInfoButton')}
+        accessibilityHint={t('europeanCardScreen.cardInfoHint')}
         onPress={onPressEvent}
         style={styles.infoButton}
       />
@@ -451,6 +452,7 @@ export const EscCard = (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('europeanCardScreen.showQrCode')}
+          accessibilityHint={t('europeanCardScreen.showQrCodeHint')}
           onPress={handlePress}
           style={styles.qrButton}
         />

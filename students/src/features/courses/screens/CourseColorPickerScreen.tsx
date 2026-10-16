@@ -5,7 +5,13 @@ import {
 
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 
 import { usePreferencesContext } from '@polito/lib/core';
@@ -62,18 +68,31 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
   const shouldWarn = isUnsafeChange && showColorWarning !== false;
 
   const saveColor = useCallback(() => {
+    const color = temporaryColor.slice(0, 7);
     updatePreference('courses', {
       ...coursesPrefs,
       [route.params.uniqueShortcode]: {
         ...coursesPrefs[route.params.uniqueShortcode],
-        color: temporaryColor.slice(0, 7),
+        color,
       },
     });
+    const colorName = courseColors.find(
+      cc => cc.color.toLowerCase() === color.toLowerCase(),
+    )?.name;
+    setTimeout(() => {
+      AccessibilityInfo.announceForAccessibility(
+        [
+          t('coursePreferencesScreen.selectedColor'),
+          colorName ? t(colorName) : color,
+        ].join(', '),
+      );
+    }, 1000);
   }, [
     coursesPrefs,
     route.params.uniqueShortcode,
     temporaryColor,
     updatePreference,
+    t,
   ]);
 
   const handleConfirm = useCallback(

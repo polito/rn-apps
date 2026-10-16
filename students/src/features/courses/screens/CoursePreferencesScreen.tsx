@@ -207,6 +207,9 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
               <SectionHeader title={t('common.visualization')} />
               <OverviewList loading={courseQuery.isLoading} indented>
                 <ListItem
+                  accessible
+                  accessibilityRole="button"
+                  accessibilityLabel={t('coursePreferencesScreen.choseColor')}
                   title={t('common.color')}
                   subtitle={t('coursePreferencesScreen.colorSubtitle')}
                   isAction

@@ -40,8 +40,8 @@ export const SurveyListScreen = ({ route }: Props) => {
         ? t('surveysScreen.compiledTitle')
         : t('surveysScreen.toBeCompiledTitle'),
       emptyState: isCompiled
-        ? t('ticketsScreen.closedEmptyState')
-        : t('ticketsScreen.openEmptyState'),
+        ? t('surveysScreen.compiledEmptyState')
+        : t('surveysScreen.toBeCompiledEmptyState'),
     };
   }, [isCompiled, t]);
 

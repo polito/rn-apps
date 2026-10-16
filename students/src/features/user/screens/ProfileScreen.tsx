@@ -262,6 +262,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
               title={t('notificationsScreen.title')}
               accessibilityRole="button"
               accessibilityLabel={t('notificationsScreen.title')}
+              accessibilityHint={t('profileScreen.navigationHint')}
               leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
               linkTo="Notifications"
             />
@@ -269,6 +270,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
               title={t('profileScreen.settings')}
               accessibilityRole="button"
               accessibilityLabel={t('profileScreen.settings')}
+              accessibilityHint={t('profileScreen.navigationHint')}
               leadingItem={<Icon icon={faCog} size={fontSizes.xl} />}
               linkTo="Settings"
             />
@@ -281,10 +283,25 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
             <ListItem
               title={t('messagesScreen.title')}
               accessibilityRole="button"
-              accessibilityLabel={t('messagesScreen.title')}
+              accessibilityLabel={[
+                t('messagesScreen.title'),
+                messages.data && hasUnreadMessages(messages.data)
+                  ? t('profileScreen.unreadMessages', {
+                      count: filterUnread(messages.data).length,
+                    })
+                  : undefined,
+              ]
+                .filter(Boolean)
+                .join(', ')}
+              accessibilityHint={
+                areMessagesDisabled
+                  ? t('common.disabledOffline')
+                  : t('profileScreen.navigationHint')
+              }
               leadingItem={<Icon icon={faMessage} size={fontSizes.xl} />}
               linkTo="Messages"
               disabled={areMessagesDisabled}
+              accessibilityState={{ disabled: areMessagesDisabled }}
               trailingItem={
                 messages.data && hasUnreadMessages(messages.data) ? (
                   <UnreadBadge text={filterUnread(messages.data).length} />
@@ -293,6 +310,13 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
             />
             <ListItem
               title={t('common.logout')}
+              accessibilityRole="button"
+              accessibilityLabel={t('common.logout')}
+              accessibilityHint={
+                isOffline
+                  ? t('common.disabledOffline')
+                  : t('profileScreen.logoutHint')
+              }
               leadingItem={
                 <Icon
                   icon={faPersonThroughWindow}
@@ -303,6 +327,7 @@ export const ProfileScreen = ({ navigation, route }: Props) => {
               titleStyle={{ color: palettes.danger[700] }}
               onPress={() => handleLogout()}
               disabled={isOffline}
+              accessibilityState={{ disabled: isOffline }}
             />
           </OverviewList>
         </Section>

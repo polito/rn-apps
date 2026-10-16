@@ -110,6 +110,12 @@ const CleanCacheListItem = () => {
       subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
         size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
       })}
+      accessibilityLabel={[
+        t('common.cleanCourseFiles'),
+        t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
+          size: cacheSize == null ? '-- MB' : formatFileSize(cacheSize),
+        }),
+      ].join(', ')}
       accessibilityRole="button"
       accessibilityState={{
         disabled:
@@ -324,10 +330,10 @@ const Notifications = () => {
       <SwitchListItem
         disabled
         accessible={true}
-        accessibilityLabel={`${t('notifications.important')}. ${t(
-          `common.activeStatus.${notifications?.important}`,
-        )} `}
-        accessibilityRole="switch"
+        accessibilityLabel={[
+          t('notifications.important'),
+          notifications?.important ? t('common.enabled') : t('common.disabled'),
+        ].join(', ')}
         title={t('notifications.important')}
         value={notifications?.important}
         onChange={onChangeNotification('important')}
@@ -338,10 +344,10 @@ const Notifications = () => {
       <SwitchListItem
         disabled
         accessible={true}
-        accessibilityLabel={`${t('notifications.events')}. ${t(
-          `common.activeStatus.${notifications?.events}`,
-        )} `}
-        accessibilityRole="switch"
+        accessibilityLabel={[
+          t('notifications.events'),
+          notifications?.events ? t('common.enabled') : t('common.disabled'),
+        ].join(', ')}
         title={t('notifications.events')}
         value={notifications?.events}
         onChange={onChangeNotification('events')}
@@ -350,10 +356,10 @@ const Notifications = () => {
       <SwitchListItem
         disabled
         accessible={true}
-        accessibilityLabel={`${t('notifications.presence')}. ${t(
-          `common.activeStatus.${notifications?.presence}`,
-        )} `}
-        accessibilityRole="switch"
+        accessibilityLabel={[
+          t('notifications.reservationPresence'),
+          notifications?.presence ? t('common.enabled') : t('common.disabled'),
+        ].join(', ')}
         title={t('notifications.reservationPresence')}
         value={notifications?.presence}
         onChange={onChangeNotification('presence')}

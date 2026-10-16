@@ -49,7 +49,7 @@ export const WeekFilter = ({
       <IconButton
         accessibilityRole="button"
         icon={faChevronLeft}
-        accessibilityLabel={t('bookingScreen.previousWeek')}
+        accessibilityLabel={t('agendaScreen.previousWeek')}
         accessibilityHint={t('agendaScreen.prevWeekHint')}
         accessibilityState={{ disabled: isPrevWeekDisabled }}
         color={colors.secondaryText}
@@ -68,7 +68,7 @@ export const WeekFilter = ({
       <IconButton
         accessibilityRole="button"
         icon={faChevronRight}
-        accessibilityLabel={t('bookingScreen.nextWeek')}
+        accessibilityLabel={t('agendaScreen.nextWeek')}
         accessibilityHint={t('agendaScreen.nextWeekHint')}
         accessibilityState={{ disabled: isNextWeekDisabled }}
         color={colors.secondaryText}

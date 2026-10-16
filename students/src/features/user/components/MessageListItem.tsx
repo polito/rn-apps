@@ -1,11 +1,17 @@
 import { useTranslation } from 'react-i18next';
 
-import { formatDateTime, getHtmlTextContent } from '@polito/lib/core';
-import { useAccessibility } from '@polito/lib/core';
+import {
+  APP_TIMEZONE,
+  formatDateTime,
+  getHtmlTextContent,
+  useAccessibility,
+} from '@polito/lib/core';
 import { ListItem } from '@polito/lib/ui';
 import { Message } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { DateTime } from 'luxon';
 
 import { useMarkMessageAsRead } from '../../../core/queries/studentHooks';
 import { UserStackParamList } from './UserNavigator';
@@ -30,9 +36,16 @@ export const MessageListItem = ({
     useNavigation<NativeStackNavigationProp<UserStackParamList>>();
   const title = getHtmlTextContent(messageItem?.title);
   const sentAt = formatDateTime(messageItem.sentAt);
+  const accessibleDate = DateTime.fromJSDate(messageItem.sentAt, {
+    zone: APP_TIMEZONE,
+  }).toFormat('dd MMMM yyyy HH:mm');
 
   const accessibilityLabel = buildCompositeListLabel(
-    [title, `${t('messagesScreen.sentAt')} ${sentAt}`],
+    [
+      title,
+      `${t('messagesScreen.sentAt')} ${accessibleDate}`,
+      !messageItem.isRead ? t('common.unread') : undefined,
+    ],
     index,
     totalData,
   );

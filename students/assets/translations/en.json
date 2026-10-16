@@ -32,6 +32,10 @@
     "weeklyLayout": "Weekly layout",
     "weekRange": "From {{start}} to {{end}}",
     "calendarCellHint": "Tap to select this time slot",
+    "noEvents": "No events this week",
+    "totalEvents": "Total events",
+    "previousWeek": "Previous week",
+    "nextWeek": "Next week",
     "hideEvent": "Agenda preferences",
     "nextWeekHint": "Go to next week",
     "noHiddenEvents": "There are no hidden events",
@@ -267,6 +271,7 @@
     "loading": "Loading",
     "location": "Location",
     "locationHint": "View location on map",
+    "noData": "No data available",
     "logout": "Logout",
     "mightTakeAWhile": "This might take a while",
     "minutes": "Minutes",
@@ -391,11 +396,13 @@
     "active": "Active",
     "areYouSureColorAccessibility": "Are you sure? The selected color has not been tested for accessibility.",
     "clickForChange": "Tap to change state",
+    "date": "Date",
     "deactivated": "Deactivated",
     "directory": "Folder",
     "disabledPreviousValue": "Disabled because previous values were not entered",
     "document": "Attachment",
     "downloadClick": "Double tap to download",
+    "inactive": "Inactive",
     "fromTime": "from",
     "hiddenEvent": "Hide event",
     "note": "Notes",
@@ -403,8 +410,21 @@
     "retracted": "Withdrawn",
     "selectColor": "Select a color",
     "tenth": "Tenth",
+    "disabled": "Disabled",
+    "click2Active": "Double tap to activate",
+    "click2Deactivate": "Double tap to deactivate",
+    "disabledOffline": "Not available offline",
     "toTime": "to",
     "week": "Week",
+    "first": "First",
+    "second": "Second",
+    "third": "Third",
+    "fourth": "Fourth",
+    "fifth": "Fifth",
+    "sixth": "Sixth",
+    "seventh": "Seventh",
+    "eighth": "Eighth",
+    "ninth": "Ninth",
     "sizeExc": "Excessive file size, maximum 32 MB"
   },
   "contactsScreen": {
@@ -422,7 +442,9 @@
     "recentSearches": "Recent searches",
     "removeFromRecent": "Remove from recent searches",
     "resultFound": "Found",
+    "resultFound_plural": "{{count}} people found",
     "resultFoundRes": "results",
+    "resultFoundRes_plural": "{{count}} results",
     "search": "Search people",
     "searchHint": "Type at least 2 characters to search contacts",
     "searchPlaceholder": "Search people by name",
@@ -519,6 +541,7 @@
     "updateDownloadedMessage": "{{count}} selected files are already downloaded. Do you want to update them?",
     "downloadDisabledHint": "Select files to enable download",
     "removeDisabledHint": "Select downloaded files to enable removal",
+    "selectFiles": "Select files",
     "updateDownloadedInfoTitle": "Download",
     "updateDownloadedInfoMessage": "1 already downloaded file will be updated and 1 new file will be downloaded.",
     "updateDownloadedInfoMessageOnlyUpdate": "1 already downloaded file will be updated.",
@@ -605,11 +628,15 @@
       "single": "Single",
       "compare": "Comparative",
       "error": "Comparative view not available due to lack of data in previous periods"
-    }
+    },
+    "enrolledExamDetailA11ySummary": "First year: {{firstYearPassed}} passed, {{firstYearFailed}} failed. Other years: {{otherYearsPassed}} passed, {{otherYearsFailed}} failed",
+    "gradesChartA11ySummary": "Average grade: first year {{firstYearAvg}}, other years {{otherYearsAvg}}"
   },
   "courseHideEventScreen": {
     "button": "Show in agenda",
     "buttonDisabledHint": "Select at least one event to show in the agenda",
+    "eventWithRoom": "{{time}} - {{room}}",
+    "eventWithoutRoom": "{{time}}",
     "selectItems": "Select all"
   },
   "courseIconPickerScreen": {
@@ -630,6 +657,10 @@
     "yearLabel": "Year",
     "nextLectureLabel": "Course in agenda",
     "preferencesHint": "View course preferences",
+    "files": "Files",
+    "notices": "Notices",
+    "selectYear": "tap to access previous years",
+    "shortcode": "Course code",
     "nextLectureEmptyState": "No course found in agenda"
   },
   "courseLecturesTab": {
@@ -639,7 +670,9 @@
   },
   "courseListItem": {
     "extra": "Extra APSP",
-    "overbooking": "Overbooking"
+    "overbooking": "Overbooking",
+    "courseHidden": "Course hidden",
+    "courseShown": "You are now following the course"
   },
   "courseNoAssignmentScreen": {
     "message": "For the {{year}} academic year, news, materials and lecture calendar are currently unavailable for this activity/course. They may be made available later, if foreseen.",
@@ -669,7 +702,9 @@
     "showInExtracts": "Show in extracts",
     "showInExtractsSubtitle": "In home screen and agenda",
     "choseIcon": "Choose an icon for the course",
-    "selectedIcon": "Selected icon"
+    "selectedIcon": "Selected icon",
+    "choseColor": "Choose a color for the course",
+    "selectedColor": "Selected color"
   },
   "courseScreen": {
     "fileDownloadFailed": "The download failed. Please try again later.",
@@ -776,7 +811,9 @@
     "expiredText": "Student not enrolled in the current school year",
     "inactive": "Your Card is suspended",
     "cardInfoButton": "Card information",
-    "showQrCode": "Show QR code"
+    "cardInfoHint": "Opens card information",
+    "showQrCode": "Show QR code",
+    "showQrCodeHint": "Opens your QR code"
   },
   "eventPlacesScreen": {
     "title": "Event locations"
@@ -948,6 +985,56 @@
     "takePhotoHint": "Take one or more photos and generate a file",
     "activeReplay": "Active, double tap to activate"
   },
+  "mfaScreen": {
+    "headerTitle": "Authenticator",
+    "biometricPrompt": "Unlock to use PoliTO Authenticator",
+    "modalTitle": "PoliTO Authenticator",
+    "enroll": {
+      "title": "MFA Activation",
+      "prompt": "Do you want to activate <b>PoliTO Authenticator</b> on this device?",
+      "note": "By activating PoliTO Authenticator, you will be able to access the <b>University's digital services</b> in a simpler and more secure way.<br/>You will no longer have to wait for SMS or use external apps to confirm your identity.<br/><br/>You can deactivate PoliTO Authenticator at any time by logging out of the app or by accessing <b>idp.polito.it > MFA Management</b>.",
+      "confirm": "Yes, proceed",
+      "unsupported": "Warning. No secure lock screen is set on your device. Please set a secure lock screen to use PoliTO Authenticator (PIN, password or biometric authentication).",
+      "saveFailure": "Warning. The authentication key could not be saved on your device. Please visit idp.polito.it > MFA Management to remove the newly created authentication factor.",
+      "cancel": "Not now",
+      "expired": "The session has expired, please log in again to continue",
+      "Success": "Polito Authenticator has been successfully activated on this device",
+      "devicePrompt": "The name below will be used to <b>identify this device</b> among your authentication factors. <b>You can change it</b> if you want to make it more recognizable.",
+      "deviceName": "Device name",
+      "confirmDisabledHint": "Enter a device name to continue"
+    },
+    "auth": {
+      "prompt": "New login request with multi-factor authentication. Do you want to proceed?",
+      "unlockDismissed": "Operation cancelled: to authorize or deny access you must first unlock PoliTO Authenticator. Go to the Profile screen and do a pull-down to try again.",
+      "note": "You didn't request this access? This could be a suspicious attempt. Change your password immediately at <b>idp.polito.it</b>.",
+      "allow": "Yes, authorize",
+      "denyAccess": "Deny access",
+      "expiration": "Time remaining to authorize: {{time}}",
+      "expired": "Authentication request expired",
+      "rejected": "Authentication request rejected",
+      "accepted": "Authentication request accepted",
+      "failed": "An error occurred while processing the authentication signature"
+    },
+    "settings": {
+      "information": "Information",
+      "details": "Details",
+      "none": "None",
+      "disabled": "Disabled",
+      "active": "Active",
+      "enableNow": "Enable now",
+      "correctError": "Correct error",
+      "status": "Status",
+      "notSet": "Not set",
+      "textError": "Text error",
+      "description": "<b>PoliTO Authenticator</b> is a two-factor authentication method that allows secure and fast access to the University's services by sending a notification to your device for confirmation.<br/><br/>It is based on asymmetric cryptography and is <b>installed per device</b>: each installation is independent and linked to a single device.<br/><br/>The following actions will remove this PoliTO Authenticator installation from your device:<br/>- Logging out <br/>- Uninstalling the app <br/>- Clearing the app data through the device settings<br/><br/>You can manage PoliTO Authenticator at any time by logging out of the app or by accessing <b>idp.polito.it > MFA Management</b>.",
+      "notAccessible": "The cryptographic key for <b>PoliTo Authenticator</b> is not accessible on this device.<br/>This may occur due to activation errors or changes in device credentials (PIN/password/biometric).",
+      "notAccessibleAlert": "The cryptographic key for PoliTo Authenticator is not accessible on this device. Please check the settings page for more information and fix the issue.",
+      "lockedDescription": "PoliTO Authenticator on this device has been blocked for security reasons. Contact technical support as soon as possible using the references available at idp.polito.it/help",
+      "locked": "Blocked",
+      "removed": "PoliTO Authenticator on this device has been removed from the MFA Management panel. You can re-add it by entering the dedicated section available on this screen.",
+      "removedTitle": "Authenticator Removed"
+    }
+  },
   "newsScreen": {
     "createdAt": "Published on ",
     "eventStartTime": "Starts on ",
@@ -1043,11 +1130,17 @@
     "appInfo": "App info",
     "settings": "Settings",
     "showQr": "Show QR",
+    "showQrAccessibility": "Show QR code",
+    "showQrHint": "Opens your QR code",
     "smartCard": "Smartcard",
     "smartCardTitle": "SMART CARD",
     "studentId": "Student ID",
     "title": "Profile",
-    "trainingOffer": "Training offer"
+    "trainingOffer": "Training offer",
+    "navigationHint": "Tap to navigate",
+    "logoutHint": "Tap to logout from the application",
+    "unreadMessages": "{{count}} unread message",
+    "unreadMessages_plural": "{{count}} unread messages"
   },
   "provisionalGradeScreen": {
     "acceptGradeConfirmMessage": "By requesting immediate registration, the evaluation will be recorded in your transcript and you will no longer be able to change your decision",
@@ -1072,7 +1165,7 @@
     "textModal": "Having taken the exam by the first useful session, you are awarded an additional score of 0.5, which will be added to your final grade.\nYou can consult your total on-time points on career.\nMore information is available in the Student Guide.",
     "titleOnTimePoint": "On-time Exam points",
     "ctaButtonModal": "Access your career",
-    "gradeValue": "Grade: {{grade}}"
+    "gradeValue": "Grade: {{- grade}}"
   },
   "sectionHeader": {
     "cta": "See all",
@@ -1155,7 +1248,8 @@
     "toBeCompiledTitle": "Surveys to be compiled",
     "tapToOpenSurvey": "Tap to open survey",
     "surveysList": "There are {{count}} surveys",
-    "remainingCount": "{{count}} remaining"
+    "remainingCount": "{{count}} remaining",
+    "remainingCount_plural": "{{count}} surveys to be compiled"
   },
   "graduationCodeScreen": {
     "dateTime": "Date and time",
@@ -1315,9 +1409,9 @@
     "rejectionCountdown": "Rejectable by:",
     "title": "Grades",
     "total": "There are {{total}} grades",
-    "gradeValue": "Grade: {{grade}}",
-    "provisionalGradeItem": "{{courseName}}, {{state}}",
-    "recordedGradeItem": "{{courseName}}, {{date}}, {{credits}}, {{grade}}"
+    "gradeValue": "Grade: {{- grade}}",
+    "provisionalGradeItem": "{{- courseName}}, {{- state}}",
+    "recordedGradeItem": "{{- courseName}}, {{- date}}, {{- credits}}, grade {{- grade}}"
   },
   "transcriptMetricsScreen": {
     "acquiredCreditsLabel": "Acquired credits",
@@ -1326,6 +1420,8 @@
     "estimatedFinalGrade": "Estimated final grade",
     "estimatedFinalGradePurged": "Estimated final grade purged",
     "finalAverageLabel": "Admission average",
+    "acquiredCreditsLabelTotal": "Total acquired credits",
+    "attendedCreditsLabelTot": "Total attended credits",
     "averageLabel": "Average grade for admission to the Final Examination",
     "finalAverageLabelDescription": {
       "description": "It is the average grade, weighted according to the credits relating to each exam with a grade*, adjusted for the {{-excludedCreditsNumber}} worst credits",
@@ -1371,7 +1467,7 @@
     "speedSectionTitle": "Speed"
   },
   "userQrModal": {
-    "studentIdentity": "{{firstName}} {{lastName}}, {{studentId}}"
+    "studentIdentity": "{{- firstName}} {{- lastName}}, student ID {{- studentId}}"
   },
   "staffScreen": {
     "staffList": "Staff list, {{count}} members"

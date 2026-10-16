@@ -115,7 +115,7 @@ export const CourseAssignmentListItem = ({
                   padding: spacing[3],
                 }}
                 icon={faEllipsisVertical}
-                accessibilityLabel={t('common.options')}
+                accessibilityLabel={t('courseAssignmentsTab.menuInfo')}
                 color={colors.secondaryText}
                 size={fontSizes.xl}
                 hitSlop={{

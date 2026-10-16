@@ -10,6 +10,7 @@ import {
 import { Defs, LinearGradient, Rect, Stop, Svg } from 'react-native-svg';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { useAnnounceLoading } from '@polito/lib/core';
 import {
   BottomBarSpacer,
   CtaButton,
@@ -100,6 +101,7 @@ export const TicketsScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const ticketsQuery = useGetTickets();
+  useAnnounceLoading(ticketsQuery.isLoading);
 
   const tickets = useMemo(
     () =>

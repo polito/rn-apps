@@ -176,6 +176,7 @@ export const CourseInfoScreen = () => {
   );
   const isGuideDisabled = useOfflineDisabled(isGuideDataMissing);
   const isStatisticsDisabled = !courseQuery.data?.shortcode;
+  const canChangeEdition = !lockEdition && (editions?.length ?? 0) > 0;
 
   return (
     <ScrollView
@@ -200,8 +201,11 @@ export const CourseInfoScreen = () => {
             <View
               style={GlobalStyles.grow}
               importantForAccessibility="yes"
-              accessibilityRole={lockEdition ? undefined : 'button'}
+              accessibilityRole={canChangeEdition ? 'button' : 'none'}
               accessibilityLabel={t('common.period')}
+              accessibilityHint={
+                canChangeEdition ? t('courseInfoTab.selectYear') : undefined
+              }
               accessibilityValue={{
                 text: `${courseQuery.data?.teachingPeriod ?? '--'} - ${
                   courseQuery.data?.year ?? '--'
@@ -244,7 +248,7 @@ export const CourseInfoScreen = () => {
                         style={styles.dotIcon}
                       />
                     )}
-                    {!lockEdition && (editions?.length ?? 0) > 0 && (
+                    {canChangeEdition && (
                       <Icon
                         icon={faAngleDown}
                         size={14}
@@ -360,9 +364,10 @@ export const CourseInfoScreen = () => {
               <ListItem
                 key={index}
                 accessibilityRole="link"
-                accessibilityLabel={
-                  link.description ?? t('courseInfoTab.linkDefaultTitle')
-                }
+                accessibilityLabel={[
+                  link.description ?? t('courseInfoTab.linkDefaultTitle'),
+                  link.url,
+                ].join(', ')}
                 accessibilityHint={t('common.externalLink')}
                 leadingItem={<Icon icon={faLink} size={fontSizes.xl} />}
                 title={link.description ?? t('courseInfoTab.linkDefaultTitle')}
@@ -377,11 +382,13 @@ export const CourseInfoScreen = () => {
           <SectionHeader title={t('courseInfoTab.moreSectionTitle')} />
           <OverviewList>
             <ListItem
+              accessibilityHint={t('common.tapToNavigate')}
               title={t('courseGuideScreen.title')}
               linkTo={{ screen: 'CourseGuide', params: { courseId } }}
               disabled={isGuideDisabled}
             />
             <ListItem
+              accessibilityHint={t('common.tapToNavigate')}
               title={t('courseStatisticsScreen.title')}
               subtitle={t('courseStatisticsScreen.subtitle')}
               linkTo={{
