@@ -9,6 +9,7 @@ import {
   faClipboardQuestion,
   faComments,
   faEnvelope,
+  faGears,
   faIdCard,
   faMobileScreenButton,
   faNewspaper,
@@ -201,6 +202,13 @@ export const ServicesScreen = () => {
         icon: faBluetooth,
         linkTo: { screen: 'BleScreenTest' },
         accessibilityLabel: 'BleScreenTest',
+      },
+      {
+        id: 'cal',
+        name: 'CalibrationScreen',
+        icon: faGears,
+        linkTo: { screen: 'Calibration' },
+        accessibilityLabel: 'CalibrationScreen',
       },
     ];
   }, [

@@ -66,10 +66,6 @@ export function useRealTimePositioning() {
     return `${uuid.toUpperCase()}-${major}-${minor}`;
   };
 
-  useEffect(() => {
-    console.log('Beacons detected:', beacons);
-  }, [beacons]);
-
   //Starting buffering
   useEffect(() => {
     distanceBuffer.current = {};
@@ -91,7 +87,7 @@ export function useRealTimePositioning() {
 
     beacons.forEach(beacon => {
       // We skip non valid proximity distances
-      if (beacon.proximity === undefined || beacon.proximity <= 0) return;
+      if (beacon.distance === undefined || beacon.distance <= 0) return;
 
       const beaconUuid = beacon.uuid.toUpperCase();
       const beaconMajor = Number(beacon.major);
@@ -112,7 +108,7 @@ export function useRealTimePositioning() {
         distanceBuffer.current[key] = [];
       }
 
-      distanceBuffer.current[key].push(beacon.proximity);
+      distanceBuffer.current[key].push(beacon.distance);
       if (distanceBuffer.current[key].length > BUFFER_SIZE) {
         distanceBuffer.current[key].shift();
       }

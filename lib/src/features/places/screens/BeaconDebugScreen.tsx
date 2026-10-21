@@ -101,7 +101,7 @@ export const BeaconDebugScreen = () => {
           //const proximity = PROXIMITY_LABELS[beacon.proximity] ?? 'Unknown';
 
           const distanceAvailable =
-            Number.isFinite(beacon.proximity) && beacon.proximity >= 0;
+            Number.isFinite(beacon.distance) && beacon.distance >= 0;
 
           return (
             <View
@@ -141,7 +141,7 @@ export const BeaconDebugScreen = () => {
                   <Text style={styles.metricLabel}>Distanza</Text>
                   <Text style={styles.metricValue}>
                     {distanceAvailable
-                      ? `${beacon.proximity.toFixed(2)} m`
+                      ? `${beacon.distance.toFixed(2)} m`
                       : 'N/D'}
                   </Text>
                 </View>
