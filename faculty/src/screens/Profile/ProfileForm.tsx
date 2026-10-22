@@ -1,245 +1,181 @@
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
-import { useLayoutEffect, useState } from 'react';
+import { Fragment, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, TextInput, View } from 'react-native';
-
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import {
-  Card,
+  KeyboardTypeOptions,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TextInputProps,
+  View,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import {
   CtaButton,
-  IconButton,
-  Text,
+  SectionHeader,
   Theme,
+  useHideTabs,
   useStylesheet,
-  useTheme,
 } from '@polito/lib/ui';
-import { useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { ProfileFieldInput } from './ProfileFieldCard';
+import { ProfileStackParamList } from './ProfileNavigator';
 
-export const ProfileForm = () => {
-  const { t, i18n } = useTranslation();
+export type ProfileSectionKey = 'personalInfo' | 'contacts';
+
+export type ProfileFieldKey =
+  | 'domicilie'
+  | 'taxDomicilie'
+  | 'IBAN'
+  | 'phone'
+  | 'email'
+  | 'privateMail';
+
+type ProfileFieldConfig = {
+  key: ProfileFieldKey;
+  titleKey: string;
+  keyboardType?: KeyboardTypeOptions;
+  autoCapitalize?: TextInputProps['autoCapitalize'];
+};
+
+export const profileSectionFields: Record<
+  ProfileSectionKey,
+  ProfileFieldConfig[]
+> = {
+  personalInfo: [
+    { key: 'domicilie', titleKey: 'other.residence' },
+    { key: 'taxDomicilie', titleKey: 'other.fiscalResidence' },
+    { key: 'IBAN', titleKey: 'IBAN', autoCapitalize: 'characters' },
+  ],
+  contacts: [
+    { key: 'phone', titleKey: 'other.telephone', keyboardType: 'phone-pad' },
+    {
+      key: 'email',
+      titleKey: 'other.academicEmail',
+      keyboardType: 'email-address',
+      autoCapitalize: 'none',
+    },
+    {
+      key: 'privateMail',
+      titleKey: 'other.privateMail',
+      keyboardType: 'email-address',
+      autoCapitalize: 'none',
+    },
+  ],
+};
+
+const sectionTitleKeys: Record<ProfileSectionKey, string> = {
+  personalInfo: 'other.personalInfo',
+  contacts: 'other.contacts',
+};
+
+type Props = NativeStackScreenProps<ProfileStackParamList, 'ProfileForm'>;
+
+export const ProfileForm = ({ navigation, route }: Props) => {
+  const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const navigation = useNavigation();
-  const { spacing, palettes } = useTheme();
   const { user, setUser } = useCourses();
-  const [domicilie, setDomicilie] = useState(user.domicilie);
-  const [tdomicilie, setTdomicilie] = useState(user.taxDomicilie);
-  const [iban] = useState(user.IBAN);
-  const [phone, setPhone] = useState(user.phone);
-  const [mail, setMail] = useState(user.email);
-  const [pmail, setPmail] = useState(user.privateMail);
+  const { bottom } = useSafeAreaInsets();
+  const { section, field } = route.params ?? {};
+  const sections: ProfileSectionKey[] = section
+    ? [section]
+    : ['personalInfo', 'contacts'];
+  const [values, setValues] = useState<Record<ProfileFieldKey, string>>({
+    domicilie: user.domicilie,
+    taxDomicilie: user.taxDomicilie,
+    IBAN: user.IBAN,
+    phone: user.phone,
+    email: user.email,
+    privateMail: user.privateMail,
+  });
+  const [focusedField, setFocusedField] = useState<ProfileFieldKey>(
+    field ?? profileSectionFields[sections[0]][0].key,
+  );
+  const inputRefs = useRef<Partial<Record<ProfileFieldKey, TextInput | null>>>(
+    {},
+  );
 
-  const handlePublish = () => {
-    setUser({
-      ...user,
-      domicilie,
-      taxDomicilie: tdomicilie,
-      IBAN: iban,
-      phone,
-      email: mail,
-      privateMail: pmail,
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: t(
+        section ? sectionTitleKeys[section] : 'other.modifyProfile',
+      ),
     });
+  }, [navigation, t, section]);
 
+  useHideTabs();
+
+  const focusField = (key: ProfileFieldKey) => {
+    setFocusedField(key);
+    inputRefs.current[key]?.focus();
+  };
+
+  const handleSave = () => {
+    setUser({ ...user, ...values });
     navigation.goBack();
   };
-  useLayoutEffect(() => {
-    const marginLeft = i18n.language === 'en' ? 80 : 65;
-
-    navigation.setOptions({
-      headerTitle: () => (
-        <Text variant="heading" style={{ marginLeft }}>
-          {t('other.modifyProfile')}
-        </Text>
-      ),
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-      ),
-    });
-  }, [navigation, i18n.language, t]);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <Text variant="title" style={{ marginLeft: spacing[4] }}>
-          {t('other.personalInfo')}
-        </Text>
-        <Card>
-          <Text
-            variant="heading"
-            style={{
-              marginLeft: 15,
-              marginTop: 5,
-              color: palettes.gray[800],
-            }}
-          >
-            {t('other.residence')}
-          </Text>
-          <TextInput
-            placeholder={t('other.enterResidence')}
-            value={domicilie}
-            onChangeText={setDomicilie}
-            style={{
-              borderBottomWidth: 0,
-              padding: spacing[2],
-              marginLeft: 10,
-              fontSize: 16,
-              color: palettes.gray[600],
-            }}
-          />
-        </Card>
-        <Card>
-          <Text
-            variant="heading"
-            style={{
-              marginLeft: 15,
-              marginTop: 5,
-              color: palettes.gray[800],
-            }}
-          >
-            {t('other.fiscalResidence')}
-          </Text>
-          <TextInput
-            placeholder={t('other.enterFiscalResidence')}
-            value={tdomicilie}
-            onChangeText={setTdomicilie}
-            style={{
-              borderBottomWidth: 0,
-              padding: spacing[2],
-              marginLeft: 10,
-              fontSize: 16,
-              color: palettes.gray[600],
-            }}
-          />
-        </Card>
-
-        <Text variant="title" style={{ marginLeft: spacing[4] }}>
-          {t('other.contacts')}
-        </Text>
-        <Card>
-          <Text
-            variant="heading"
-            style={{
-              marginLeft: 15,
-              marginTop: 5,
-              color: palettes.gray[800],
-            }}
-          >
-            {t('other.telephone')}
-          </Text>
-          <TextInput
-            placeholder={t('other.enterTelephone')}
-            value={phone}
-            onChangeText={setPhone}
-            style={{
-              borderBottomWidth: 0,
-              padding: spacing[2],
-              marginLeft: 10,
-              fontSize: 16,
-              color: palettes.gray[600],
-            }}
-          />
-        </Card>
-
-        <Card>
-          <Text
-            variant="heading"
-            style={{
-              marginLeft: 15,
-              marginTop: 5,
-              color: palettes.gray[800],
-            }}
-          >
-            Email
-          </Text>
-          <TextInput
-            placeholder={t('other.enterMail')}
-            value={mail}
-            onChangeText={setMail}
-            style={{
-              borderBottomWidth: 0,
-              padding: spacing[2],
-              marginLeft: 10,
-              fontSize: 16,
-              color: palettes.gray[600],
-            }}
-          />
-        </Card>
-
-        <Card>
-          <Text
-            variant="heading"
-            style={{
-              marginLeft: 15,
-              marginTop: 5,
-              color: palettes.gray[800],
-            }}
-          >
-            {t('other.privateMail')}
-          </Text>
-          <TextInput
-            placeholder={t('other.enterPrivateMail')}
-            value={pmail}
-            onChangeText={setPmail}
-            style={{
-              borderBottomWidth: 0,
-              padding: spacing[2],
-              marginLeft: 10,
-              fontSize: 16,
-              color: palettes.gray[600],
-            }}
-          />
-        </Card>
+    <View style={styles.screen}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={styles.container}
+      >
+        {sections.map(sectionKey => (
+          <Fragment key={sectionKey}>
+            {!section && (
+              <SectionHeader
+                title={t(sectionTitleKeys[sectionKey])}
+                separator={false}
+              />
+            )}
+            {profileSectionFields[sectionKey].map(
+              ({ key, titleKey, keyboardType, autoCapitalize }) => (
+                <ProfileFieldInput
+                  key={key}
+                  ref={ref => {
+                    inputRefs.current[key] = ref;
+                  }}
+                  title={t(titleKey)}
+                  value={values[key]}
+                  focused={focusedField === key}
+                  onPress={() => focusField(key)}
+                  onChangeText={text =>
+                    setValues(prev => ({ ...prev, [key]: text }))
+                  }
+                  autoFocus={key === field}
+                  keyboardType={keyboardType}
+                  autoCapitalize={autoCapitalize}
+                  returnKeyType="done"
+                />
+              ),
+            )}
+          </Fragment>
+        ))}
+      </ScrollView>
+      <View style={{ paddingBottom: bottom }}>
+        <CtaButton
+          title={t('other.saveAndExit')}
+          action={handleSave}
+          absolute={false}
+          disabled={!values.domicilie}
+        />
       </View>
-      <CtaButton
-        title={t('other.saveAndExit')}
-        action={() => {
-          handlePublish();
-        }}
-        absolute={false}
-        variant="filled"
-        disabled={!domicilie}
-      />
-    </GestureHandlerRootView>
+    </View>
   );
 };
 
-const createStyles = ({ colors, palettes }: Theme) =>
+const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
-    container: {
+    screen: {
       flex: 1,
-      paddingBottom: 20,
-      paddingTop: 10,
+      backgroundColor: colors.background,
     },
-    buttonContainer: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      paddingHorizontal: 20,
-      paddingVertical: 8,
-      marginBottom: 16,
-    },
-    blueButtonContainer: {
-      backgroundColor: palettes.lightBlue[500],
-      marginHorizontal: 20,
-      borderRadius: 8,
-      padding: 0,
-    },
-    button: {
-      backgroundColor: palettes.lightBlue[500],
-      paddingVertical: 12,
-      borderRadius: 8,
-      alignItems: 'center',
-    },
-    buttonText: {
-      color: colors.white,
-      fontSize: 16,
-      fontWeight: 'bold',
+    container: {
+      padding: spacing[5],
+      gap: spacing[2.5],
     },
   });

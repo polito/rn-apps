@@ -20,7 +20,7 @@ import { BookRoomScreen } from './BookRoomScreen';
 import { BookStructureForm } from './BookStructureForm';
 import { BookStructureRoomScreen } from './BookStructureRoomScreen';
 import { BookingScreen } from './BookingScreen';
-import { ContactsScreen } from './ContactScreen';
+import { ContactScreen } from './ContactScreen';
 import { DigitalSignatureScreen } from './DigitalSignatureScreen';
 import { EmergencyDetails } from './EmergencyDetails';
 import { EmergencyScreen } from './EmergencyScreen';
@@ -134,7 +134,7 @@ export const ServiceNavigator = () => {
 
       <Stack.Screen
         name="Contatto"
-        component={ContactsScreen}
+        component={ContactScreen}
         options={{
           headerLeft: () => <CustomBackButton2 />,
           headerShown: true,

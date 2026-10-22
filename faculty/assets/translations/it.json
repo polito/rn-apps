@@ -911,6 +911,9 @@
   },
   "other": {
     "personalInfo": "Info personali",
+    "general": "Generale",
+    "academicEmail": "Email istituzionale",
+    "viewAllPublicationsIn": "Vedi tutte le pubblicazioni su {{portal}}",
     "residence": "Residenza",
     "fiscalResidence": "Residenza fiscale",
     "telephone": "Telefono",
