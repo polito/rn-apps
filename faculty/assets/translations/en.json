@@ -884,6 +884,9 @@
   },
   "other": {
     "personalInfo": "Personal info",
+    "general": "General",
+    "academicEmail": "Academic email",
+    "viewAllPublicationsIn": "View all publications in {{portal}}",
     "residence": "Residence",
     "fiscalResidence": "Fiscal residence",
     "telephone": "Telephone",

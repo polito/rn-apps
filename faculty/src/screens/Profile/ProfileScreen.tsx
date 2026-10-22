@@ -5,11 +5,9 @@ import { Platform } from 'react-native';
 
 import {
   faEnvelope,
-  faFileAlt,
   faGear,
-  faHome,
+  faLock,
   faPersonThroughWindow,
-  faPhone,
 } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { useOfflineDisabled } from '@polito/lib/core';
@@ -18,7 +16,9 @@ import {
   Icon,
   IconButton,
   ListItem,
+  OverviewList,
   Row,
+  Section,
   SectionHeader,
   Text,
   Theme,
@@ -29,34 +29,29 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { Icon } from '../../../../lib/src/ui/components/Icon';
-import { IconButton } from '../../../../lib/src/ui/components/IconButton';
-import { ListItem } from '../../../../lib/src/ui/components/ListItem';
-import { Row } from '../../../../lib/src/ui/components/Row';
-import { SectionHeader } from '../../../../lib/src/ui/components/SectionHeader';
-import { Text } from '../../../../lib/src/ui/components/Text';
-import { useBottomBarAwareStyles } from '../../../../lib/src/ui/hooks/useBottomBarAwareStyles';
-import { useStylesheet } from '../../../../lib/src/ui/hooks/useStylesheet';
-import { useTheme } from '../../../../lib/src/ui/hooks/useTheme';
-import { Theme } from '../../../../lib/src/ui/types/Theme';
 import { Logo } from '../../core/components/Logo';
-import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { ProfileStackParamList } from './ProfileNavigator';
+import { PublicationListItem } from './PublicationsScreen';
 
 const MAX_PUBLICATIONS_PREVIEW = 3;
 
 export const ProfileScreen = () => {
   const { t } = useTranslation();
-  const { spacing, colors } = useTheme();
+  const { spacing, colors, fontSizes, palettes } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
-  const { fontSizes } = useTheme();
-  const { user, fakeCourses, managedCourses } = useCourses();
+  const { user } = useCourses();
   const { mutate: handleLogout } = useLogout();
   const isOffline = useOfflineDisabled();
+  const publications = user.publications ?? [];
+  const visiblePublications = publications.slice(0, MAX_PUBLICATIONS_PREVIEW);
+  const publicationsMoreCount = Math.max(
+    0,
+    publications.length - MAX_PUBLICATIONS_PREVIEW,
+  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -105,45 +100,51 @@ export const ProfileScreen = () => {
       contentInsetAdjustmentBehavior="automatic"
       bounces={false}
     >
-      <Text variant="title" style={styles.heading}>
-        {' '}
-        {user.name}{' '}
-      </Text>
-      <View style={{ paddingBottom: spacing[5] }} />
-      <SectionHeader title="Smartcard" />
       <Image
         source={require('../../core/contexts/smartcard.png')}
         style={styles.smartcardImage}
         resizeMode="contain"
       />
-      <View style={{ paddingBottom: spacing[5] }} />
-      <SectionHeader title={t('other.personalInfo')} />
-      <SectionList>
-        <ListItem
-          title={t('other.personalInfo')}
-          leadingItem={<Icon icon={faLock} size={fontSizes.xl} />}
-          onPress={() => {
-            navigation.navigate('PersonalInfo');
-          }}
-        />
-        <ListItem
-          title={t('contactsScreen.title')}
-          leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
-          onPress={() => {
-            navigation.navigate('Contacts');
-          }}
-        />
-        <ListItem
-          title={t('common.notifications')}
-          leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
-          onPress={() => {
-            navigation.navigate('Notifications');
-          }}
-        />
-      </SectionList>
+      <Section>
+        <SectionHeader title={t('other.general')} />
+        <OverviewList indented>
+          <ListItem
+            isAction
+            title={t('other.personalInfo')}
+            leadingItem={<Icon icon={faLock} size={fontSizes.xl} />}
+            onPress={() => {
+              navigation.navigate('PersonalInfo');
+            }}
+          />
+          <ListItem
+            isAction
+            title={t('contactsScreen.title')}
+            leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
+            onPress={() => {
+              navigation.navigate('Contacts');
+            }}
+          />
+          <ListItem
+            isAction
+            title={t('other.settings')}
+            leadingItem={<Icon icon={faGear} size={fontSizes.xl} />}
+            onPress={() => {
+              navigation.navigate('Settings');
+            }}
+          />
+          <ListItem
+            isAction
+            title={t('common.notifications')}
+            leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
+            onPress={() => {
+              navigation.navigate('Notifications');
+            }}
+          />
+        </OverviewList>
+      </Section>
 
       {publications.length > 0 && (
-        <>
+        <Section>
           <SectionHeader
             title={t('other.publications')}
             {...(publicationsMoreCount > 0
@@ -153,58 +154,42 @@ export const ProfileScreen = () => {
                 }
               : {})}
           />
-          <SectionList>
+          <OverviewList indented>
             {visiblePublications.map((pub, index) => (
-              <ListItem
-                key={index}
-                title={pub}
-                leadingItem={<Icon icon={faFileAlt} size={fontSizes.xl} />}
-                multilineTitle={true}
-              />
+              <PublicationListItem key={index} title={pub} />
             ))}
-          </SectionList>
-        </>
+          </OverviewList>
+        </Section>
       )}
-      <View style={{ paddingBottom: spacing[5] }} />
 
-      <SectionHeader title={t('other.other')} />
-      <SectionList>
-        <ListItem
-          title={t('other.settings')}
-          leadingItem={<Icon icon={faGear} size={fontSizes.xl} />}
-          onPress={() => {
-            navigation.navigate('Impostazioni');
-          }}
-        />
-        <ListItem
-          title={t('common.logout')}
-          leadingItem={
-            <Icon
-              icon={faPersonThroughWindow}
-              size={fontSizes.xl}
-              color={palettes.danger[700]}
-            />
-          }
-          titleStyle={{ color: palettes.danger[700] }}
-          onPress={() => handleLogout()}
-          disabled={isOffline}
-        />
-      </SectionList>
-      <View style={{ paddingBottom: spacing[5] }} />
+      <Section>
+        <OverviewList indented>
+          <ListItem
+            title={t('common.logout')}
+            leadingItem={
+              <Icon
+                icon={faPersonThroughWindow}
+                size={fontSizes.xl}
+                color={palettes.danger[700]}
+              />
+            }
+            titleStyle={{ color: palettes.danger[700] }}
+            onPress={() => handleLogout()}
+            disabled={isOffline}
+          />
+        </OverviewList>
+      </Section>
     </ScrollView>
   );
 };
 
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
-    heading: {
-      paddingTop: spacing[5],
-      paddingHorizontal: spacing[2],
-    },
     smartcardImage: {
       width: '100%',
-      height: 200,
-      marginVertical: spacing[3],
+      height: 207,
+      marginTop: spacing[5],
+      marginBottom: spacing[5],
       alignSelf: 'center',
     },
   });

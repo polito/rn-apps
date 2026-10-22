@@ -1,22 +1,28 @@
 import { useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
-import { faComments, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import {
+  faComments,
+  faPersonCirclePlus,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+  Icon,
+  OverviewList,
+  Section,
+  SectionHeader,
+  SwitchListItem,
+  Text,
+  Theme,
+  useBottomBarAwareStyles,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import i18next from 'i18next';
 
-import { Icon } from '../../../lib/src/ui/components/Icon';
-import { SectionHeader } from '../../../lib/src/ui/components/SectionHeader';
-import { SwitchListItem } from '../../../lib/src/ui/components/SwitchListItem';
-import { Text } from '../../../lib/src/ui/components/Text';
-import { useBottomBarAwareStyles } from '../../../lib/src/ui/hooks/useBottomBarAwareStyles';
-import { useStylesheet } from '../../../lib/src/ui/hooks/useStylesheet';
-import { useTheme } from '../../../lib/src/ui/hooks/useTheme';
-import { Theme } from '../../../lib/src/ui/types/Theme';
-import { SectionList } from '../core/components/SectionList';
 import { ProfileStackParamList } from '../screens/Profile/ProfileNavigator';
 
 export const NotificationsScreen = () => {
@@ -47,12 +53,12 @@ export const NotificationsScreen = () => {
       contentInsetAdjustmentBehavior="automatic"
       bounces={false}
     >
-      <View style={styles.container}>
-        <SectionHeader title={t('notificationsScreen.general')} />
-        <Text variant="secondaryText" style={styles.subtitle}>
-          {t('notificationsScreen.globalSubtitle')}
-        </Text>
-        <SectionList>
+      <Section style={styles.container}>
+        <SectionHeader
+          title={t('notificationsScreen.general')}
+          subtitle={t('notificationsScreen.globalSubtitle')}
+        />
+        <OverviewList indented>
           <SwitchListItem
             title={t('notificationsScreen.ticket')}
             value={ticketEnabled}
@@ -63,25 +69,17 @@ export const NotificationsScreen = () => {
             title={t('notificationsScreen.reservations')}
             value={reservationsEnabled}
             onChange={setReservationsEnabled}
-            leadingItem={<Icon icon={faUserGroup} size={fontSizes.xl} />}
+            leadingItem={<Icon icon={faPersonCirclePlus} size={fontSizes.xl} />}
           />
-        </SectionList>
-      </View>
+        </OverviewList>
+      </Section>
     </ScrollView>
   );
 };
 
-const createStyles = ({ spacing, fontSizes }: Theme) =>
+const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
     container: {
-      paddingHorizontal: spacing[4],
-      paddingTop: spacing[3],
-      paddingBottom: spacing[5],
-    },
-    subtitle: {
-      fontSize: fontSizes.sm,
-      marginTop: spacing[1],
-      marginBottom: spacing[3],
-      paddingHorizontal: spacing[4],
+      paddingTop: spacing[5],
     },
   });

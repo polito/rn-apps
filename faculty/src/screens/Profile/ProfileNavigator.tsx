@@ -1,19 +1,17 @@
-import { Platform, TouchableOpacity } from 'react-native';
+import { Platform } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   AccessibilitySettingsScreen,
+  HeaderLogoNoProps,
+  createHeaderCloseButton,
   useTheme,
   useTitlesStyles,
 } from '@polito/lib/ui';
-import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { NotificationsScreen } from '../NotificationsScreen';
-import { ContactsScreen } from '../Servizi/ContactScreen';
-import { PersonalInfoScreen } from './PersonalInfoScreen';
-import { ProfileForm } from './ProfileForm';
+import { ContactsScreen, PersonalInfoScreen } from './PersonalInfoScreen';
+import { ProfileFieldKey, ProfileForm, ProfileSectionKey } from './ProfileForm';
 import { ProfileScreen } from './ProfileScreen';
 import { PublicationsScreen } from './PublicationsScreen';
 import { SettingsScreen } from './SettingsScreen';
@@ -21,28 +19,18 @@ import { SettingsScreen } from './SettingsScreen';
 export type ProfileStackParamList = {
   Profilo: undefined;
   Form: undefined;
-  ProfileForm: undefined;
+  ProfileForm:
+    | {
+        section?: ProfileSectionKey;
+        field?: ProfileFieldKey;
+      }
+    | undefined;
   Settings: undefined;
   PersonalInfo: undefined;
   Contacts: undefined;
   Notifications: undefined;
   Publications: undefined;
   AccessibilitySettings: undefined;
-};
-
-const CustomBackButton2 = () => {
-  const navigation = useNavigation();
-
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.goBack(); // Altrimenti torna alla schermata "Courses"
-      }}
-      style={{ paddingHorizontal: 10 }}
-    >
-      <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
-    </TouchableOpacity>
-  );
 };
 
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
@@ -55,6 +43,7 @@ export const ProfileNavigator = () => {
     <Stack.Navigator
       screenOptions={{
         headerLargeTitle: false,
+        headerBackButtonDisplayMode: 'minimal',
         headerTransparent: Platform.select({ ios: false }),
         headerLargeStyle: {
           backgroundColor: colors.background,
@@ -66,58 +55,21 @@ export const ProfileNavigator = () => {
       <Stack.Screen
         name="ProfileForm"
         component={ProfileForm}
-        options={{
+        options={({ navigation }) => ({
+          headerLargeTitle: false,
           presentation: 'modal',
-          headerShown: true,
-        }}
+          headerLeft: HeaderLogoNoProps,
+          headerRight: createHeaderCloseButton(navigation),
+        })}
       />
-      <Stack.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          headerLeft: () => <CustomBackButton2 />,
-          headerShown: true,
-        }}
-      />
-      <Stack.Screen
-        name="PersonalInfo"
-        component={PersonalInfoScreen}
-        options={{
-          headerLeft: () => <CustomBackButton2 />,
-          headerShown: true,
-        }}
-      />
-      <Stack.Screen
-        name="Contacts"
-        component={ContactsScreen}
-        options={{
-          headerLeft: () => <CustomBackButton2 />,
-          headerShown: true,
-        }}
-      />
-      <Stack.Screen
-        name="Notifications"
-        component={NotificationsScreen}
-        options={{
-          headerLeft: () => <CustomBackButton2 />,
-          headerShown: true,
-        }}
-      />
-      <Stack.Screen
-        name="Publications"
-        component={PublicationsScreen}
-        options={{
-          headerLeft: () => <CustomBackButton2 />,
-          headerShown: true,
-        }}
-      />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen name="PersonalInfo" component={PersonalInfoScreen} />
+      <Stack.Screen name="Contacts" component={ContactsScreen} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} />
+      <Stack.Screen name="Publications" component={PublicationsScreen} />
       <Stack.Screen
         name="AccessibilitySettings"
         component={AccessibilitySettingsScreen}
-        options={{
-          headerLeft: () => <CustomBackButton2 />,
-          headerShown: true,
-        }}
       />
     </Stack.Navigator>
   );
