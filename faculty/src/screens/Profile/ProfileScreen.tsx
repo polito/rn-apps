@@ -4,14 +4,10 @@ import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { Platform } from 'react-native';
 
 import {
-  faBank,
-  faBookOpen,
   faEnvelope,
-  faFileAlt,
   faGear,
-  faHome,
+  faLock,
   faPersonThroughWindow,
-  faPhone,
 } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { useOfflineDisabled } from '@polito/lib/core';
@@ -20,7 +16,9 @@ import {
   Icon,
   IconButton,
   ListItem,
+  OverviewList,
   Row,
+  Section,
   SectionHeader,
   Text,
   Theme,
@@ -32,21 +30,28 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Logo } from '../../core/components/Logo';
-import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { ProfileStackParamList } from './ProfileNavigator';
+import { PublicationListItem } from './PublicationsScreen';
+
+const MAX_PUBLICATIONS_PREVIEW = 3;
 
 export const ProfileScreen = () => {
   const { t } = useTranslation();
-  const { spacing, palettes } = useTheme();
+  const { spacing, colors, fontSizes, palettes } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
-  const { fontSizes } = useTheme();
-  const { user, fakeCourses, managedCourses } = useCourses();
+  const { user } = useCourses();
   const { mutate: handleLogout } = useLogout();
   const isOffline = useOfflineDisabled();
+  const publications = user.publications ?? [];
+  const visiblePublications = publications.slice(0, MAX_PUBLICATIONS_PREVIEW);
+  const publicationsMoreCount = Math.max(
+    0,
+    publications.length - MAX_PUBLICATIONS_PREVIEW,
+  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -69,7 +74,7 @@ export const ProfileScreen = () => {
 
           <IconButton
             icon={faPenToSquare}
-            color={palettes.primary[400]}
+            color={colors.link}
             size={fontSizes.lg}
             accessibilityLabel={t('common.preferences')}
             hitSlop={{ left: spacing[3], right: spacing[3] }}
@@ -78,7 +83,7 @@ export const ProfileScreen = () => {
 
           <IconButton
             icon={faBell}
-            color={palettes.primary[400]}
+            color={colors.link}
             size={fontSizes.lg}
             accessibilityLabel={t('common.preferences')}
             hitSlop={{ left: spacing[3], right: spacing[3] }}
@@ -86,7 +91,7 @@ export const ProfileScreen = () => {
         </Row>
       ),
     });
-  }, [navigation, t, palettes, fontSizes, spacing]);
+  }, [navigation, t, colors, fontSizes, spacing]);
 
   return (
     <ScrollView
@@ -95,135 +100,96 @@ export const ProfileScreen = () => {
       contentInsetAdjustmentBehavior="automatic"
       bounces={false}
     >
-      <Text variant="title" style={styles.heading}>
-        {' '}
-        {user.name}{' '}
-      </Text>
-      <View style={{ paddingBottom: spacing[5] }} />
-      <SectionHeader title="Smartcard" />
       <Image
         source={require('../../core/contexts/smartcard.png')}
         style={styles.smartcardImage}
         resizeMode="contain"
       />
-      <View style={{ paddingBottom: spacing[5] }} />
-      <SectionHeader title={t('other.personalInfo')} />
-      <SectionList>
-        <ListItem
-          title={t('other.residence')}
-          subtitle={user.domicilie}
-          leadingItem={<Icon icon={faHome} size={fontSizes.xl} />}
-        />
-        <ListItem
-          title={t('other.fiscalResidence')}
-          subtitle={user.taxDomicilie}
-          leadingItem={<Icon icon={faHome} size={fontSizes.xl} />}
-        />
-        <ListItem
-          title={t('IBAN')}
-          subtitle={user.IBAN}
-          leadingItem={<Icon icon={faBank} size={fontSizes.xl} />}
-        />
-      </SectionList>
-      <View style={{ paddingBottom: spacing[5] }} />
-
-      <SectionHeader title={t('contactsScreen.title')} />
-      <SectionList>
-        <ListItem
-          title={t('other.telephone')}
-          subtitle={user.phone}
-          leadingItem={<Icon icon={faPhone} size={fontSizes.xl} />}
-        />
-        <ListItem
-          title="Email"
-          subtitle={user.email}
-          leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
-        />
-        <ListItem
-          title={t('other.privateMail')}
-          subtitle={user.privateMail}
-          leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
-        />
-      </SectionList>
-
-      <View style={{ paddingBottom: spacing[5] }} />
-
-      <SectionHeader title={t('other.currentCourses')} />
-      <SectionList>
-        {fakeCourses.map((course, index) => (
+      <Section>
+        <SectionHeader title={t('other.general')} />
+        <OverviewList indented>
           <ListItem
-            key={index}
-            title={course.title}
-            leadingItem={<Icon icon={faBookOpen} size={fontSizes.xl} />}
-            multilineTitle={true}
+            isAction
+            title={t('other.personalInfo')}
+            leadingItem={<Icon icon={faLock} size={fontSizes.xl} />}
+            onPress={() => {
+              navigation.navigate('PersonalInfo');
+            }}
           />
-        ))}
-        {managedCourses.map((course, index) => (
           <ListItem
-            key={index}
-            title={course.title}
-            leadingItem={<Icon icon={faBookOpen} size={fontSizes.xl} />}
-            multilineTitle={true}
+            isAction
+            title={t('contactsScreen.title')}
+            leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
+            onPress={() => {
+              navigation.navigate('Contacts');
+            }}
           />
-        ))}
-      </SectionList>
-      <View style={{ paddingBottom: spacing[5] }} />
+          <ListItem
+            isAction
+            title={t('other.settings')}
+            leadingItem={<Icon icon={faGear} size={fontSizes.xl} />}
+            onPress={() => {
+              navigation.navigate('Settings');
+            }}
+          />
+          <ListItem
+            isAction
+            title={t('common.notifications')}
+            leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
+            onPress={() => {
+              navigation.navigate('Notifications');
+            }}
+          />
+        </OverviewList>
+      </Section>
 
-      {user.publications && user.publications.length > 0 && (
-        <>
-          <SectionHeader title={t('other.publications')} />
-          <SectionList>
-            {user.publications.map((pub, index) => (
-              <ListItem
-                key={index}
-                title={pub}
-                leadingItem={<Icon icon={faFileAlt} size={fontSizes.xl} />}
-                multilineTitle={true}
-              />
+      {publications.length > 0 && (
+        <Section>
+          <SectionHeader
+            title={t('other.publications')}
+            {...(publicationsMoreCount > 0
+              ? {
+                  linkTo: { screen: 'Publications' } as const,
+                  linkToMoreCount: publicationsMoreCount,
+                }
+              : {})}
+          />
+          <OverviewList indented>
+            {visiblePublications.map((pub, index) => (
+              <PublicationListItem key={index} title={pub} />
             ))}
-          </SectionList>
-        </>
+          </OverviewList>
+        </Section>
       )}
-      <View style={{ paddingBottom: spacing[5] }} />
 
-      <SectionHeader title={t('other.other')} />
-      <SectionList>
-        <ListItem
-          title={t('other.settings')}
-          leadingItem={<Icon icon={faGear} size={fontSizes.xl} />}
-          onPress={() => {
-            navigation.navigate('Impostazioni');
-          }}
-        />
-        <ListItem
-          title={t('common.logout')}
-          leadingItem={
-            <Icon
-              icon={faPersonThroughWindow}
-              size={fontSizes.xl}
-              color={palettes.danger[700]}
-            />
-          }
-          titleStyle={{ color: palettes.danger[700] }}
-          onPress={() => handleLogout()}
-          disabled={isOffline}
-        />
-      </SectionList>
-      <View style={{ paddingBottom: spacing[5] }} />
+      <Section>
+        <OverviewList indented>
+          <ListItem
+            title={t('common.logout')}
+            leadingItem={
+              <Icon
+                icon={faPersonThroughWindow}
+                size={fontSizes.xl}
+                color={palettes.danger[700]}
+              />
+            }
+            titleStyle={{ color: palettes.danger[700] }}
+            onPress={() => handleLogout()}
+            disabled={isOffline}
+          />
+        </OverviewList>
+      </Section>
     </ScrollView>
   );
 };
 
 const createStyles = ({ spacing }: Theme) =>
   StyleSheet.create({
-    heading: {
-      paddingTop: spacing[5],
-      paddingHorizontal: spacing[2],
-    },
     smartcardImage: {
       width: '100%',
-      height: 200,
-      marginVertical: spacing[3],
+      height: 207,
+      marginTop: spacing[5],
+      marginBottom: spacing[5],
       alignSelf: 'center',
     },
   });

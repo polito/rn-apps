@@ -1,35 +1,36 @@
-import { Platform, TouchableOpacity } from 'react-native';
+import { Platform } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { useTheme, useTitlesStyles } from '@polito/lib/ui';
-import { useNavigation } from '@react-navigation/native';
+import {
+  AccessibilitySettingsScreen,
+  HeaderLogoNoProps,
+  createHeaderCloseButton,
+  useTheme,
+  useTitlesStyles,
+} from '@polito/lib/ui';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { ProfileForm } from './ProfileForm';
+import { NotificationsScreen } from '../NotificationsScreen';
+import { ContactsScreen, PersonalInfoScreen } from './PersonalInfoScreen';
+import { ProfileFieldKey, ProfileForm, ProfileSectionKey } from './ProfileForm';
 import { ProfileScreen } from './ProfileScreen';
+import { PublicationsScreen } from './PublicationsScreen';
 import { SettingsScreen } from './SettingsScreen';
 
 export type ProfileStackParamList = {
   Profilo: undefined;
   Form: undefined;
-  ProfileForm: undefined;
-  Impostazioni: undefined;
-};
-
-const CustomBackButton2 = () => {
-  const navigation = useNavigation();
-
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.goBack(); // Altrimenti torna alla schermata "Courses"
-      }}
-      style={{ paddingHorizontal: 10 }}
-    >
-      <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
-    </TouchableOpacity>
-  );
+  ProfileForm:
+    | {
+        section?: ProfileSectionKey;
+        field?: ProfileFieldKey;
+      }
+    | undefined;
+  Settings: undefined;
+  PersonalInfo: undefined;
+  Contacts: undefined;
+  Notifications: undefined;
+  Publications: undefined;
+  AccessibilitySettings: undefined;
 };
 
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
@@ -42,6 +43,7 @@ export const ProfileNavigator = () => {
     <Stack.Navigator
       screenOptions={{
         headerLargeTitle: false,
+        headerBackButtonDisplayMode: 'minimal',
         headerTransparent: Platform.select({ ios: false }),
         headerLargeStyle: {
           backgroundColor: colors.background,
@@ -53,18 +55,21 @@ export const ProfileNavigator = () => {
       <Stack.Screen
         name="ProfileForm"
         component={ProfileForm}
-        options={{
-          headerLeft: () => <CustomBackButton2 />,
-          headerShown: true,
-        }}
+        options={({ navigation }) => ({
+          headerLargeTitle: false,
+          presentation: 'modal',
+          headerLeft: HeaderLogoNoProps,
+          headerRight: createHeaderCloseButton(navigation),
+        })}
       />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen name="PersonalInfo" component={PersonalInfoScreen} />
+      <Stack.Screen name="Contacts" component={ContactsScreen} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} />
+      <Stack.Screen name="Publications" component={PublicationsScreen} />
       <Stack.Screen
-        name="Impostazioni"
-        component={SettingsScreen}
-        options={{
-          headerLeft: () => <CustomBackButton2 />,
-          headerShown: true,
-        }}
+        name="AccessibilitySettings"
+        component={AccessibilitySettingsScreen}
       />
     </Stack.Navigator>
   );

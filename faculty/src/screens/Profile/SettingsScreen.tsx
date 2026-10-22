@@ -1,81 +1,158 @@
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
 import { useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled, usePreferencesContext } from '@polito/lib/core';
 import {
-  IconButton,
+  faBroom,
+  faCircleHalfStroke,
+  faFont,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+  PreferencesContextBase,
+  useOfflineDisabled,
+  usePreferencesContext,
+} from '@polito/lib/core';
+import {
+  BottomBarSpacer,
+  Icon,
   ListItem,
+  OverviewList,
+  Section,
   SectionHeader,
-  Select,
+  StatefulMenuView,
   Text,
+  Theme,
+  lightTheme,
+  useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences';
 
 import i18next from 'i18next';
 import { Settings } from 'luxon';
 
-import { SectionList } from '../../core/components/SectionList';
+import { version } from '../../../package.json';
+import { ProfileStackParamList } from './ProfileNavigator';
 
-// Componente Select per la lingua (rimane uguale)
-const LanguageSelect = () => {
+const themeSwatches: Record<string, string> = {
+  dark: lightTheme.palettes.navy[900],
+  light: lightTheme.palettes.lightBlue[200],
+};
+
+const ThemeIcon = () => {
+  const { colorScheme } = usePreferencesContext<AppPreferences>();
+
+  if (colorScheme === 'system') {
+    return <Icon icon={faCircleHalfStroke} size={30} />;
+  }
+
+  return (
+    <View
+      style={{
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        backgroundColor: themeSwatches[colorScheme],
+      }}
+    />
+  );
+};
+
+const ThemeListItem = () => {
+  const { t } = useTranslation();
+  const { colorScheme, updatePreference } =
+    usePreferencesContext<AppPreferences>();
+
+  const actions = useMemo(
+    () =>
+      (['dark', 'light', 'system'] as const).map(id => ({
+        id,
+        title: t(`theme.${id}`),
+        image:
+          id === 'system'
+            ? Platform.select({
+                ios: 'circle.lefthalf.fill',
+                android: 'circle_half',
+              })
+            : Platform.select({ ios: 'circle.fill', android: 'circle' }),
+        imageColor: themeSwatches[id] ?? themeSwatches.dark,
+        state: id === colorScheme ? ('on' as const) : undefined,
+      })),
+    [t, colorScheme],
+  );
+
+  return (
+    <StatefulMenuView
+      actions={actions}
+      onPressAction={({ nativeEvent: { event } }) => {
+        updatePreference(
+          'colorScheme',
+          event as PreferencesContextBase<AppPreferences>['colorScheme'],
+        );
+      }}
+    >
+      <ListItem
+        isAction
+        title={t(`theme.${colorScheme}`)}
+        accessibilityLabel={`${t('common.theme')}: ${t(
+          `theme.${colorScheme}`,
+        )}. ${t('settingsScreen.openThemeMenu')}`}
+        leadingItem={<ThemeIcon />}
+      />
+    </StatefulMenuView>
+  );
+};
+
+const LanguageListItem = () => {
   const { t } = useTranslation();
   const { language, updatePreference } =
     usePreferencesContext<AppPreferences>();
   const isDisabled = useOfflineDisabled();
 
-  const options = useMemo(() => {
-    if (isDisabled) return [];
-    return [
-      { id: 'it', title: t('common.it') },
-      { id: 'en', title: t('common.en') },
-    ];
-  }, [t, isDisabled]);
-
-  const handleSelect = async (selectedId: string) => {
-    if (selectedId !== 'it' && selectedId !== 'en') return;
-
-    updatePreference('language', selectedId);
-
-    try {
-      await i18next.changeLanguage(selectedId);
-      Settings.defaultLocale = selectedId;
-    } catch (error) {
-      console.error('Errore nel cambio lingua:', error);
-    }
-  };
+  const actions = useMemo(
+    () =>
+      isDisabled
+        ? []
+        : (['it', 'en'] as const).map(id => ({
+            id,
+            title: t(`common.${id}`),
+            state: id === language ? ('on' as const) : undefined,
+          })),
+    [t, isDisabled, language],
+  );
 
   return (
-    <Select
-      label={t('common.language')}
-      value={language}
-      onSelectOption={handleSelect}
-      options={options}
-      disabled={isDisabled}
-      accessibilityLabel={`${t('common.language')}: ${t(`common.${language}`)}`}
-    />
+    <StatefulMenuView
+      actions={actions}
+      onPressAction={({ nativeEvent: { event } }) => {
+        if (event !== 'it' && event !== 'en') return;
+        updatePreference('language', event);
+        i18next
+          .changeLanguage(event)
+          .then(() => (Settings.defaultLocale = event));
+      }}
+    >
+      <ListItem
+        isAction
+        disabled={isDisabled}
+        title={t(`common.${language}`)}
+        accessibilityLabel={`${t('common.language')}: ${t(
+          `common.${language}`,
+        )}. ${t('settingsScreen.openLanguageMenu')}`}
+      />
+    </StatefulMenuView>
   );
 };
 
-// Schermata delle Impostazioni con tema gestito dal contesto
 export const SettingsScreen = () => {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const { t } = useTranslation();
-  const { spacing } = useTheme();
-
-  // Prendo tema e updater dal context (NON locale)
-  const { colorScheme, updatePreference } = usePreferencesContext();
-
-  const handleThemeSelect = (selectedId: string) => {
-    // Aggiorno la preferenza globale
-    updatePreference('colorScheme', selectedId as 'light' | 'dark');
-  };
+  const { fontSizes } = useTheme();
+  const styles = useStylesheet(createStyles);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -87,59 +164,74 @@ export const SettingsScreen = () => {
           {t('settingsScreen.title')}
         </Text>
       ),
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-      ),
     });
   }, [navigation, t]);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.container}>
-        <SectionHeader title={t('common.theme')} />
-        <SectionList>
-          <Select
-            label={t('common.theme')}
-            value={colorScheme} // usa tema da context
-            onSelectOption={handleThemeSelect}
-            options={[
-              { id: 'light', title: t('theme.light') },
-              { id: 'dark', title: t('theme.dark') },
-              { id: 'system', title: t('theme.system') }, // opzionale: se vuoi aggiungere tema system
-            ]}
-          />
-        </SectionList>
-        <View style={{ paddingBottom: spacing[5] }} />
+        <Section>
+          <SectionHeader title={t('common.theme')} />
+          <OverviewList indented>
+            <ThemeListItem />
+          </OverviewList>
+        </Section>
 
-        <SectionHeader title={t('common.language')} />
-        <SectionList>
-          <LanguageSelect />
-        </SectionList>
-        <View style={{ paddingBottom: spacing[5] }} />
+        <Section>
+          <SectionHeader title={t('common.language')} />
+          <OverviewList indented>
+            <LanguageListItem />
+          </OverviewList>
+        </Section>
 
-        <SectionHeader title={t('common.cache')} />
-        <SectionList>
-          <ListItem
-            title={t('common.cleanCourseFiles')}
-            onPress={() => {
-              /* logica cache */
-            }}
-          />
-        </SectionList>
-        <View style={{ paddingBottom: spacing[5] }} />
+        <Section>
+          <SectionHeader title={t('common.accessibility')} />
+          <OverviewList indented>
+            <ListItem
+              isAction
+              title={t('accessibilitySettingsScreen.fontSettingsTitle')}
+              accessibilityRole="button"
+              leadingItem={<Icon icon={faFont} size={fontSizes['2xl']} />}
+              onPress={() => {
+                navigation.navigate('AccessibilitySettings');
+              }}
+            />
+          </OverviewList>
+        </Section>
+
+        <Section>
+          <SectionHeader title={t('common.cache')} />
+          <OverviewList indented>
+            <ListItem
+              isAction
+              title={t('common.cleanCourseFiles')}
+              subtitle={t('coursePreferencesScreen.cleanCourseFilesSubtitle', {
+                size: '-- MB',
+              })}
+              accessibilityRole="button"
+              leadingItem={<Icon icon={faBroom} size={fontSizes['2xl']} />}
+              onPress={() => {
+                // why: faculty has no downloads cache yet, wired once files are stored locally
+              }}
+            />
+          </OverviewList>
+        </Section>
+
+        <Text style={styles.version}>
+          {t('settingsScreen.appVersion', { version })}
+        </Text>
       </View>
-    </GestureHandlerRootView>
+      <BottomBarSpacer />
+    </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom: 20,
-    paddingTop: 10,
-  },
-});
+const createStyles = ({ spacing }: Theme) =>
+  StyleSheet.create({
+    container: {
+      paddingVertical: spacing[5],
+    },
+    version: {
+      paddingHorizontal: spacing[5],
+    },
+  });

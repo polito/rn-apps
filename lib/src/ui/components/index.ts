@@ -1,3 +1,4 @@
+export * from './AccessibilitySettingsScreen';
 export * from './ActivityIndicator';
 export * from './AgendaCard';
 export * from './AgendaIcon';

@@ -1,4 +1,16 @@
 {
+  "accessibilitySettingsScreen": {
+    "customFontSectionTitle": "Spaziature testi lunghi",
+    "customFontSizeTitle": "Grandezza font",
+    "exampleText": "Testo di esempio",
+    "fontSettingsTitle": "Testo",
+    "lineHeightTitle": "Interlinea",
+    "lineHeightSubtitle": "Aumenta lo spazio verticale tra le righe",
+    "paragraphSpacingTitle": "Paragrafi",
+    "paragraphSpacingSubtitle": "Aggiunge spazio extra tra un paragrafo e l'altro",
+    "wordSpacingTitle": "Parole",
+    "wordSpacingSubtitle": "Amplia la distanza tra le parole"
+  },
   "agendaScreen": {
     "backToToday": "Torna a oggi",
     "dailyLayout": "Layout giornaliero",
@@ -82,6 +94,7 @@
     "showInAgenda": "Mostra in agenda"
   },
   "common": {
+    "accessibility": "Accessibilità",
     "active": "Attivo",
     "academicYearShort": "A.A.",
     "disabledPreviousValue": "Disattivato perche non sono stati inseriti i precedenti valori",
@@ -638,6 +651,9 @@
   },
   "notificationsScreen": {
     "title": "Notifiche",
+    "general": "Generali",
+    "ticket": "Ticket",
+    "reservations": "Prenotazioni",
     "perCourseTitle": "Corsi",
     "globalTitle": "Globali",
     "globalSubtitle": "Le notifiche importanti sono sempre attive"
@@ -895,6 +911,9 @@
   },
   "other": {
     "personalInfo": "Info personali",
+    "general": "Generale",
+    "academicEmail": "Email istituzionale",
+    "viewAllPublicationsIn": "Vedi tutte le pubblicazioni su {{portal}}",
     "residence": "Residenza",
     "fiscalResidence": "Residenza fiscale",
     "telephone": "Telefono",
@@ -907,6 +926,7 @@
     "modifyProfile": "Modifica Profilo",
     "contacts": "Contatti",
     "refreshProfile": "Aggiorna Profilo",
+    "saveAndExit": "Salva ed esci",
     "services": "Servizi",
     "digitalSignature": "Firma Digitale",
     "reportsFault": "Segnala Guasto",
