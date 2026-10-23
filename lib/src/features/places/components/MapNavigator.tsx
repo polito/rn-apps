@@ -183,7 +183,7 @@ const MapNavigator = ({
     header,
     headerShown,
     headerTintColor,
-    headerBackImageSource,
+    headerBackIcon,
     headerLeft,
     headerRight,
     headerTitle,
@@ -250,10 +250,10 @@ const MapNavigator = ({
                               <HeaderBackButton
                                 tintColor={tintColor}
                                 backImage={
-                                  headerBackImageSource !== undefined
+                                  headerBackIcon !== undefined
                                     ? () => (
                                         <Image
-                                          source={headerBackImageSource}
+                                          source={headerBackIcon.source}
                                           style={[
                                             styles.backImage,
                                             { tintColor },
