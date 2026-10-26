@@ -9,7 +9,9 @@ import RenderHTML, {
   useInternalRenderer,
 } from 'react-native-render-html';
 import Video from 'react-native-video';
+import { WebView } from 'react-native-webview';
 
+import { tableModel } from '@native-html/table-plugin';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -25,6 +27,7 @@ import { useStylesheet } from '../hooks/useStylesheet';
 import { useTheme } from '../hooks/useTheme';
 import { Theme } from '../types/Theme';
 import { ActivityIndicator } from './ActivityIndicator';
+import { TableRendererShrinkWidth } from './HtmlTableShrinkWidth';
 import { ImageLoader } from './ImageLoader';
 import { Text, calculateValueOfPercentage } from './Text';
 
@@ -114,6 +117,7 @@ const customHTMLElementModels = {
     contentModel: HTMLContentModel.block,
     isVoid: true,
   }),
+  table: tableModel,
 };
 
 const createCustomVideoRenderer = (variant: string) => {
@@ -326,6 +330,17 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
   const styles = useStylesheet(createStyles);
   const { accessibility } = usePreferencesContext();
 
+  const renderersProps = useMemo(
+    () => ({
+      ...props.renderersProps,
+      table: {
+        displayMode: 'embedded' as const,
+        ...props.renderersProps?.table,
+      },
+    }),
+    [props.renderersProps],
+  );
+
   const processedSource =
     variant === 'longProse' ||
     (variant === 'cta' && Number(accessibility?.fontSize) >= 150)
@@ -349,6 +364,7 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
       p: createCustomTextRenderer(variant),
       img: createCustomImageRenderer(variant),
       video: createCustomVideoRenderer(variant),
+      table: TableRendererShrinkWidth,
     }),
     [variant],
   );
@@ -362,6 +378,7 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
       }}
       systemFonts={['Montserrat']}
       {...props}
+      renderersProps={renderersProps}
       source={processedSource ?? props.source}
       baseStyle={{
         padding: spacing[4],
@@ -390,6 +407,7 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
       enableExperimentalBRCollapsing
       enableExperimentalGhostLinesPrevention
       enableCSSInlineProcessing
+      WebView={WebView}
       renderers={renderers}
       customHTMLElementModels={customHTMLElementModels}
     />
