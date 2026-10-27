@@ -10,8 +10,9 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Image, Platform, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Path } from 'react-native-svg';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
@@ -82,6 +83,28 @@ const Route = ({ renderRoute }: RouteProps) => {
     </SafeAreaView>
   );
 };
+
+const IOSBackChevron = ({ tintColor }: { tintColor: string | undefined }) => (
+  <View
+    style={{
+      marginLeft: 8,
+      marginRight: 6,
+      marginTop: 3,
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    <Svg width="12" height="19" viewBox="0 0 11 21" fill="none">
+      <Path
+        d="M10.5 1.5L1.5 10.5L10.5 19.5"
+        stroke={tintColor ?? '#007AFF'}
+        strokeWidth="2.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  </View>
+);
 
 const MapNavigator = ({
   initialRouteName,
@@ -183,7 +206,6 @@ const MapNavigator = ({
     header,
     headerShown,
     headerTintColor,
-    headerBackIcon,
     headerLeft,
     headerRight,
     headerTitle,
@@ -246,35 +268,41 @@ const MapNavigator = ({
                               label: headerBackTitle,
                             })
                         : headerLeft === undefined && canGoBack
-                          ? ({ tintColor }) => (
-                              <HeaderBackButton
-                                tintColor={tintColor}
-                                backImage={
-                                  headerBackIcon !== undefined
-                                    ? () => (
-                                        <Image
-                                          source={headerBackIcon.source}
-                                          style={[
-                                            styles.backImage,
-                                            { tintColor },
-                                          ]}
-                                        />
-                                      )
-                                    : undefined
-                                }
-                                onPress={navigation.goBack}
-                                label={
-                                  headerBackTitle ??
-                                  previousDescriptor?.options.title
-                                }
-                                displayMode={
-                                  IS_IOS && headerBackVisible
-                                    ? 'default'
-                                    : 'minimal'
-                                }
-                                labelStyle={headerBackTitleStyle}
-                              />
-                            )
+                          ? ({ tintColor }) =>
+                              IS_IOS ? (
+                                <HeaderBackButton
+                                  tintColor={tintColor}
+                                  backImage={() => (
+                                    <IOSBackChevron tintColor={tintColor} />
+                                  )}
+                                  onPress={navigation.goBack}
+                                  label={
+                                    headerBackTitle ??
+                                    previousDescriptor?.options.title
+                                  }
+                                  displayMode={
+                                    IS_IOS && headerBackVisible
+                                      ? 'default'
+                                      : 'minimal'
+                                  }
+                                  labelStyle={headerBackTitleStyle}
+                                />
+                              ) : (
+                                <HeaderBackButton
+                                  tintColor={tintColor}
+                                  onPress={navigation.goBack}
+                                  label={
+                                    headerBackTitle ??
+                                    previousDescriptor?.options.title
+                                  }
+                                  displayMode={
+                                    IS_IOS && headerBackVisible
+                                      ? 'default'
+                                      : 'minimal'
+                                  }
+                                  labelStyle={headerBackTitleStyle}
+                                />
+                              )
                           : headerLeft
                       : undefined
                   }
@@ -356,15 +384,6 @@ const MapNavigator = ({
     </NavigationContent>
   );
 };
-
-const styles = StyleSheet.create({
-  backImage: {
-    height: 24,
-    width: 24,
-    margin: 3,
-    resizeMode: 'contain',
-  },
-});
 
 type MapViewProps = ComponentProps<typeof MapView>;
 
