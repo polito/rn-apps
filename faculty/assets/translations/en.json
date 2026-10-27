@@ -513,20 +513,92 @@
     "noBookedCount": "Data not available",
     "notFound": "Exam call not found",
     "openHint": "Opens the exam call details",
-    "searchHint": "Filters the booked students by name or ID",
+    "addStudentsHint": "Opens the list of students to add",
+    "bookingStatus": "Reservation status",
+    "bookingStatuses": {
+      "bookable": "Bookable",
+      "closed": "Closed"
+    },
+    "reservationBy": "Reservation by",
+    "addStudents": "Add student",
+    "checkAttendance": "Check attendance",
+    "checkAttendanceHint": "Opens the list of registered students to mark attendance",
+    "enrolledStudents": "Enrolled students for the exam",
+    "enrolledOfTotal": "{{enrolled}}/{{total}} students",
+    "enrolledStudentsHint": "Opens the list of students enrolled for the exam",
+    "openPlaces": "Click here to open Places",
+    "openPlacesHint": "Opens the Places section"
+  },
+  "examAttendanceScreen": {
+    "title": "Attendance",
+    "present": "Present",
+    "absent": "Absent",
+    "saved": "Attendance saved",
+    "absentCount": "Marked as absent: {{count}}/{{total}}",
+    "studentId": "Student ID:",
+    "course": "Course:",
+    "attendanceOf": "Attendance of {{name}}",
+    "confirmHint": "Saves the attendance and closes the screen"
+  },
+  "examEnrolledStudentsScreen": {
+    "title": "Enrolled students",
+    "total": "Total enrolled students:",
+    "summary": {
+      "attendanceDebt": "Attendance debt",
+      "firstAttendance": "First-time attendance students",
+      "extraTime": "Students with extra time",
+      "graduating": "Graduating students"
+    },
+    "graduating": "Graduating",
+    "extraTime": "Extra time",
+    "contact": "Contact {{name}}",
+    "contactActionHint": "Use the available actions to contact the student",
+    "expandHint": "Shows the enrolled students summary",
+    "collapseHint": "Hides the enrolled students summary",
+    "select": "Select",
+    "sortByName": "Sort by name",
+    "ascending": "Ascending",
+    "descending": "Descending"
+  },
+  "examSelectStudentsScreen": {
+    "title": "Selected: {{count}}/{{total}}",
+    "toggleHint": "Selects or deselects the student",
+    "contactSelected": "Contact selected"
+  },
+  "examAddStudentsScreen": {
+    "title": "Add students",
+    "addHint": "Adds the student to the selection",
+    "removeHint": "Removes the student from the selection",
+    "added": "{{count}} student registered for the exam",
+    "added_plural": "{{count}} students registered for the exam"
+  },
+  "examStudentsList": {
+    "searchLabel": "Search name or code",
+    "searchHint": "Filters the students by name or student ID",
     "clearSearch": "Clear search",
     "noStudentsFound": "No students found",
-    "studentHint": "Opens the student contact",
-    "presenceLabel": "Present: {{name}}",
-    "present": "present",
-    "notPresent": "not present",
-    "addStudentsHint": "Opens the list of students to add",
-    "contactDisabledHint": "Select at least one student to enable this button"
+    "resultsCount": "{{count}} student found",
+    "resultsCount_plural": "{{count}} students found",
+    "selectAll": "Select all",
+    "selectAtLeastOneHint": "Select at least one student to enable this button",
+    "deselectAll": "Deselect all",
+    "filtersTitle": "Filters",
+    "filters": {
+      "all": "All",
+      "none": "None",
+      "specialNeeds": "Special Needs",
+      "graduating": "Graduating students",
+      "attendanceDebt": "Attendance debt"
+    }
   },
   "examsScreen": {
     "emptyState": "There are no open exam calls",
     "title": "Exam calls",
-    "total": "There are {{ total }} exam calls"
+    "total": "There are {{ total }} exam calls",
+    "periods": {
+      "1": "I Semester",
+      "2": "II Semester"
+    }
   },
   "freeRoomsScreen": {
     "noFreeRooms": "No free rooms found",

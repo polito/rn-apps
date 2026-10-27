@@ -527,20 +527,92 @@
     "noBookedCount": "Dato non disponibile",
     "notFound": "Appello non trovato",
     "openHint": "Apre il dettaglio dell’appello",
-    "searchHint": "Filtra gli studenti prenotati per nome o matricola",
+    "addStudentsHint": "Apre l’elenco degli studenti da aggiungere",
+    "bookingStatus": "Stato prenotazioni",
+    "bookingStatuses": {
+      "bookable": "Prenotabile",
+      "closed": "Chiuse"
+    },
+    "reservationBy": "Prenotazioni entro",
+    "addStudents": "Aggiungi studente",
+    "checkAttendance": "Rileva presenze",
+    "checkAttendanceHint": "Apre l’elenco degli studenti iscritti per segnare le presenze",
+    "enrolledStudents": "Studenti iscritti all’appello",
+    "enrolledOfTotal": "{{enrolled}}/{{total}} studenti",
+    "enrolledStudentsHint": "Apre l’elenco degli studenti iscritti all’appello",
+    "openPlaces": "Clicca qui per aprire Luoghi",
+    "openPlacesHint": "Apre la sezione Luoghi"
+  },
+  "examAttendanceScreen": {
+    "title": "Presenze",
+    "present": "Presente",
+    "absent": "Assente",
+    "saved": "Presenze salvate",
+    "absentCount": "Segnati come assenti: {{count}}/{{total}}",
+    "studentId": "Matricola:",
+    "course": "Corso:",
+    "attendanceOf": "Presenza di {{name}}",
+    "confirmHint": "Salva le presenze e chiude la schermata"
+  },
+  "examEnrolledStudentsScreen": {
+    "title": "Studenti iscritti",
+    "total": "Totale studenti iscritti:",
+    "summary": {
+      "attendanceDebt": "Debito di frequenza",
+      "firstAttendance": "Studenti alla prima frequenza",
+      "extraTime": "Studenti con tempo aggiuntivo",
+      "graduating": "Laureandi"
+    },
+    "graduating": "Laureando",
+    "extraTime": "Tempo aggiuntivo",
+    "contact": "Contatta {{name}}",
+    "contactActionHint": "Usa le azioni disponibili per contattare lo studente",
+    "expandHint": "Mostra il riepilogo degli studenti iscritti",
+    "collapseHint": "Nasconde il riepilogo degli studenti iscritti",
+    "select": "Seleziona",
+    "sortByName": "Ordina per nome",
+    "ascending": "Ascendente",
+    "descending": "Discendente"
+  },
+  "examSelectStudentsScreen": {
+    "title": "Selezionati: {{count}}/{{total}}",
+    "toggleHint": "Seleziona o deseleziona lo studente",
+    "contactSelected": "Contatta selezionati"
+  },
+  "examAddStudentsScreen": {
+    "title": "Aggiungi studenti",
+    "addHint": "Aggiunge lo studente alla selezione",
+    "removeHint": "Rimuove lo studente dalla selezione",
+    "added": "{{count}} studente iscritto all’appello",
+    "added_plural": "{{count}} studenti iscritti all’appello"
+  },
+  "examStudentsList": {
+    "searchLabel": "Cerca nome o matricola",
+    "searchHint": "Filtra gli studenti per nome o matricola",
     "clearSearch": "Cancella ricerca",
     "noStudentsFound": "Nessuno studente trovato",
-    "studentHint": "Apre il contatto dello studente",
-    "presenceLabel": "Presente: {{name}}",
-    "present": "presente",
-    "notPresent": "non presente",
-    "addStudentsHint": "Apre l’elenco degli studenti da aggiungere",
-    "contactDisabledHint": "Seleziona almeno uno studente per abilitare il pulsante"
+    "resultsCount": "{{count}} studente trovato",
+    "resultsCount_plural": "{{count}} studenti trovati",
+    "selectAll": "Seleziona tutti",
+    "selectAtLeastOneHint": "Seleziona almeno uno studente per abilitare il pulsante",
+    "deselectAll": "Deseleziona tutti",
+    "filtersTitle": "Filtri",
+    "filters": {
+      "all": "Tutti",
+      "none": "Nessuno",
+      "specialNeeds": "Special Needs",
+      "graduating": "Laureandi",
+      "attendanceDebt": "In debito di frequenza"
+    }
   },
   "examsScreen": {
     "emptyState": "Non ci sono appelli disponibili",
     "title": "Appelli",
-    "total": "Sono presenti {{ total }} appelli"
+    "total": "Sono presenti {{ total }} appelli",
+    "periods": {
+      "1": "I Semestre",
+      "2": "II Semestre"
+    }
   },
   "freeRoomsScreen": {
     "noFreeRooms": "Nessuna aula libera trovata",
