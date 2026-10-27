@@ -24,8 +24,10 @@ import {
 } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
-import { ExamScreen } from '../ExamScreen';
-import { ExamsScreen } from '../ExamsScreen';
+import {
+  ExamsScreens,
+  ExamsStackParamList,
+} from '../../features/exams/navigation/ExamsScreens';
 import { GradesScreen } from '../GradesScreen';
 import { ContactScreen2 } from './ContactScreen2';
 import { CourseGuideScreen } from './CourseGuideScreen';
@@ -45,12 +47,10 @@ import { NoticeScreen } from './NoticeScreen';
 import { StudentContact } from './StudentContact';
 import { TeachingScreen } from './TeachingScreen';
 
-export type TeachingStackParamList = {
+export type TeachingStackParamList = ExamsStackParamList & {
   Home: undefined;
   MyCourses: undefined;
   ManagedCourses: undefined;
-  ExamsCalls: undefined;
-  Exam: { id: number };
 
   Form: undefined;
   Notice: undefined;
@@ -211,23 +211,6 @@ export const TeachingNavigator = () => {
       <Stack.Screen name="CourseGuide" component={CourseGuideScreen} />
 
       <Stack.Screen
-        name="ExamsCalls"
-        component={ExamsScreen}
-        options={{
-          headerTitle: t('other.appeals'),
-        }}
-      />
-      <Stack.Screen
-        name="Exam"
-        component={ExamScreen}
-        getId={({ params }) => `${params.id}`}
-        options={{
-          headerLargeTitle: false,
-          headerTitle: t('common.examCall'),
-        }}
-      />
-
-      <Stack.Screen
         name="Grades"
         component={GradesScreen}
         options={{
@@ -243,6 +226,7 @@ export const TeachingNavigator = () => {
       />
 
       {CourseSharedScreens()}
+      {ExamsScreens()}
     </Stack.Navigator>
   );
 };

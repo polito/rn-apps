@@ -15,13 +15,17 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SectionList } from '../../core/components/SectionList';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useGetCourses } from '../../core/queries/courseHooks';
+import { ExamListItem } from '../../features/exams/components/ExamListItem';
+import { useExams } from '../../features/exams/contexts/ExamsContext';
 import { TeachingStackParamList } from './TeachingNavigator';
 
 export const TeachingScreen = () => {
   const { t } = useTranslation();
   const coursesQuery = useGetCourses();
   const isOffline = useOfflineDisabled();
-  const { fakeExams, setSelectedCourse, managedCourses } = useCourses(); // Usa il hook per ottenere i dati
+  const { setSelectedCourse, managedCourses } = useCourses();
+  const { exams } = useExams();
+  const upcomingExams = exams.slice(0, 3);
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
 
@@ -83,24 +87,20 @@ export const TeachingScreen = () => {
       </Section>
 
       <Section>
-        <SectionHeader title={t('other.appeals')} linkTo="ExamsCalls" />
-        <SectionList>
-          {fakeExams.slice(0, 3).map(exam => {
-            return (
-              <ListItem
+        <SectionHeader title={t('other.appeals')} linkTo="Exams" />
+        <View accessibilityRole="list">
+          <OverviewList indented>
+            {upcomingExams.map((exam, index) => (
+              <ExamListItem
                 key={exam.id}
-                title={exam.subject}
-                subtitle={exam.date === 'Oggi' ? t('other.today') : exam.date}
-                accessibilityRole="button"
-                accessibilityLabel={`${exam.subject}, ${
-                  exam.date === 'Oggi' ? t('other.today') : exam.date
-                }`}
-                accessibilityHint={t('examScreen.openHint')}
+                exam={exam}
+                index={index}
+                total={upcomingExams.length}
                 onPress={() => navigation.navigate('Exam', { id: exam.id })}
               />
-            );
-          })}
-        </SectionList>
+            ))}
+          </OverviewList>
+        </View>
       </Section>
 
       <BottomBarSpacer />
