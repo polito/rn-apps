@@ -1,5 +1,10 @@
 import { PropsWithChildren } from 'react';
-import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import {
+  StyleProp,
+  TextStyle,
+  TouchableOpacity,
+  TouchableOpacityProps,
+} from 'react-native';
 
 import { useTheme } from '../hooks/useTheme';
 import { Text } from './Text';
@@ -8,8 +13,11 @@ export const TextButton = ({
   children,
   style,
   color,
+  textStyle,
   ...rest
-}: PropsWithChildren<TouchableOpacityProps> & { color?: string }) => {
+}: PropsWithChildren<
+  TouchableOpacityProps & { color?: string; textStyle?: StyleProp<TextStyle> }
+>) => {
   const { palettes, spacing, fontWeights, fontSizes } = useTheme();
   return (
     <TouchableOpacity
@@ -23,11 +31,14 @@ export const TextButton = ({
       {...rest}
     >
       <Text
-        style={{
-          color: color ?? palettes.primary[400],
-          fontWeight: fontWeights.semibold,
-          fontSize: fontSizes.md,
-        }}
+        style={[
+          {
+            color: color ?? palettes.primary[400],
+            fontWeight: fontWeights.semibold,
+            fontSize: fontSizes.md,
+          },
+          textStyle,
+        ]}
       >
         {children}
       </Text>

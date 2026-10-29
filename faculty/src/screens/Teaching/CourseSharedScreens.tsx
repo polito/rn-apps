@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { TouchableOpacity } from 'react-native';
+import { Platform, TouchableOpacity } from 'react-native';
 
 import { Text, useTheme } from '@polito/lib/ui';
 import { ParamListBase } from '@react-navigation/native';
@@ -7,6 +7,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { Staff } from '~/core/contexts/CoursesContext';
 
+import { CourseFileMultiSelectScreen } from '../../features/files/screens/CourseFileMultiSelectScreen';
+import { CourseFilesUploadScreen } from '../../features/files/screens/CourseFilesUploadScreen';
 import { AddNoticeContent } from './AddNoticeContent';
 import { AddOrEditLectureModalContent } from './AddOrEditLectureModalContent';
 import { AddStaffModalContent } from './AddStaffModalContent';
@@ -38,6 +40,13 @@ export interface CourseSharedScreensParamList extends ParamListBase {
     directoryId?: string;
     directoryName?: string;
   };
+  CourseFileMultiSelectScreen: {
+    courseId: number;
+    path?: string;
+    action?: 'move' | 'delete';
+    initialSelectedIds?: string[];
+  };
+  CourseFilesUploadScreen: { courseId: number; path?: string };
   CourseVideolecture: {
     courseId: number;
     lectureId: number;
@@ -322,6 +331,34 @@ export const CourseSharedScreens = () => {
         options={{
           headerTitle: t('courseGuideScreen.title'),
           headerBackTitle: t('common.course'),
+        }}
+      />
+      <Stack.Screen
+        name="CourseFileMultiSelectScreen"
+        component={CourseFileMultiSelectScreen}
+        options={{
+          presentation: Platform.OS === 'android' ? 'card' : 'modal',
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
+          headerShown: Platform.OS === 'android',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerTitle:
+            Platform.OS === 'android' ? t('courseFilesTab.select') : '',
+          headerTitleAlign: 'center',
+        }}
+      />
+      <Stack.Screen
+        name="CourseFilesUploadScreen"
+        component={CourseFilesUploadScreen}
+        options={{
+          presentation: Platform.OS === 'android' ? 'card' : 'modal',
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
+          headerShown: Platform.OS === 'android',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerTitle:
+            Platform.OS === 'android' ? t('courseFilesTab.uploadFile') : '',
+          headerTitleAlign: 'center',
         }}
       />
     </>

@@ -7000,6 +7000,20 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
           : course,
       ),
     );
+    setManagedCourses(prevCourses =>
+      prevCourses.map(course =>
+        course.id === courseId
+          ? {
+              ...course,
+              directories: course.directories.map(directory =>
+                directory.id === directoryId
+                  ? { ...directory, files: [...directory.files, file] }
+                  : directory,
+              ),
+            }
+          : course,
+      ),
+    );
 
     if (selectedCourse && selectedCourse.id === courseId) {
       setSelectedCourse(prevSelectedCourse =>
@@ -7483,6 +7497,16 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
 
   const addDirectoryToCourse = (courseId: number, newDirectory: Directory) => {
     setFakeCourses(prevCourses =>
+      prevCourses.map(course =>
+        course.id === courseId
+          ? {
+              ...course,
+              directories: [...course.directories, newDirectory],
+            }
+          : course,
+      ),
+    );
+    setManagedCourses(prevCourses =>
       prevCourses.map(course =>
         course.id === courseId
           ? {

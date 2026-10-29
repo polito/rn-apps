@@ -10,6 +10,7 @@ import {
 } from '@polito/lib/ui';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { ModifyFileScreen } from '../../features/files/screens/ModifyFileScreen';
 import {
   AddStudentsScreen,
   EmailComposeScreen,
@@ -32,11 +33,9 @@ import {
 } from './CourseSharedScreens';
 import { StaffScreen } from './CourseStaffScreen';
 import { CoursesScreen } from './CoursesScreen';
-import { FilesFormScreen } from './FilesFormScreen';
 import { FormScreen } from './FormScreen';
 import { LectureFormScreen } from './LectureFormScreen';
 import { ManagedCoursesScreen } from './ManagedCoursesScreen';
-import { ModifyFileScreen } from './ModifyFileScreen';
 import { ModifyLectureScreen } from './ModifyLectureScreen';
 import { ModifyNoticeScreen } from './ModifyNoticeScreen';
 import { NoticeFormScreen } from './NoticeFormScreen';
@@ -85,7 +84,7 @@ export type TeachingStackParamList = Omit<
   NotifyCompose: { selectedIds: string[] };
   SpecialNeeds: undefined;
   NoticeForm: undefined;
-  FilesForm: undefined;
+  CourseDirectoryRoot: undefined;
   LectureForm: undefined;
   Contatto: undefined;
   Assignment: { assignmentId: number };
@@ -138,7 +137,6 @@ const TeachingNavigatorStack = memo(() => {
       />
       <Stack.Screen name="Form" component={FormScreen} />
       <Stack.Screen name="NoticeForm" component={NoticeFormScreen} />
-      <Stack.Screen name="FilesForm" component={FilesFormScreen} />
       <Stack.Screen name="LectureForm" component={LectureFormScreen} />
       <Stack.Screen name="ModifyNotice" component={ModifyNoticeScreen} />
       <Stack.Screen name="ModifyFile" component={ModifyFileScreen} />

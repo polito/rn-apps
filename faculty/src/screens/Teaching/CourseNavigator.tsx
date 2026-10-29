@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -14,13 +14,16 @@ import {
   MaterialTopTabBarProps,
   createMaterialTopTabNavigator,
 } from '@react-navigation/material-top-tabs';
-import { ParamListBase } from '@react-navigation/native';
+import {
+  ParamListBase,
+  getFocusedRouteNameFromRoute,
+} from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { FileNavigator } from '../../features/files/navigation/FileNavigator';
 import { StudentsNavigator } from '../../features/students';
 import { CourseAssignmentsTab } from './CourseAssignmentsTab';
-import { CourseFilesTab } from './CourseFilesTab';
 import { CourseInfoScreen } from './CourseInfoScreen';
 import { CourseLecturesTab } from './CourseLecturesTab';
 import { CourseNoticesTab } from './CourseNoticesTab';
@@ -47,7 +50,16 @@ const CourseTopTabBar = (props: MaterialTopTabBarProps) => {
     props.descriptors[focusedRoute.key].options.tabBarStyle,
   );
 
-  if (tabBarStyle?.display === 'none') {
+  const focusedNestedRoute = getFocusedRouteNameFromRoute(
+    focusedRoute as never,
+  );
+  const hideTabsOnAndroid =
+    Platform.OS === 'android' &&
+    focusedRoute?.name === 'CourseFilesScreen' &&
+    focusedNestedRoute != null &&
+    focusedNestedRoute !== 'CourseFilesScreen';
+
+  if (tabBarStyle?.display === 'none' || hideTabsOnAndroid) {
     return null;
   }
 
@@ -126,7 +138,7 @@ export const CourseNavigator = ({ navigation, route }: Props) => {
       />
       <TopTabs.Screen
         name="CourseFilesScreen"
-        component={CourseFilesTab}
+        component={FileNavigator}
         options={{ title: t('courseFilesTab.title') }}
       />
       <TopTabs.Screen

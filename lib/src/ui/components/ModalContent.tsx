@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactNode, useCallback } from 'react';
+import { PropsWithChildren, ReactElement, ReactNode, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ScrollView,
@@ -24,6 +24,7 @@ type Props = {
   closeVariant?: 'icon' | 'text';
   closeIconColor?: string;
   closeButtonStyle?: StyleProp<ViewStyle>;
+  leadingItem?: ReactElement;
   rightItemTitle?: string;
   rightItemOnPress?: () => void;
   footer?: ReactNode;
@@ -38,6 +39,7 @@ export const ModalContent = ({
   closeVariant = 'icon',
   closeIconColor,
   closeButtonStyle,
+  leadingItem,
   rightItemTitle,
   rightItemOnPress,
   footer,
@@ -96,7 +98,7 @@ export const ModalContent = ({
           </>
         ) : (
           <>
-            <View style={styles.headerLeft} />
+            {leadingItem ?? <View style={styles.headerLeft} />}
             <Text style={styles.modalTitle} accessibilityRole="header">
               {title}
             </Text>
