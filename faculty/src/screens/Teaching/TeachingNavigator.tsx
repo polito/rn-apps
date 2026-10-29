@@ -1,15 +1,8 @@
-import { createContext, memo, useContext, useRef, useState } from 'react';
+import { createContext, memo, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Alert,
-  Platform,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import Popover from 'react-native-popover-view';
+import { Platform, TouchableOpacity, View } from 'react-native';
 
-import { faArrowLeft, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { Text, useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
@@ -18,7 +11,6 @@ import {
   createNativeStackNavigator,
 } from '@react-navigation/native-stack';
 
-import { useCourses } from '../../core/contexts/CoursesContext';
 import { ExamScreen } from '../ExamScreen';
 import { ExamScreen2 } from '../ExamScreen2';
 import { ExamScreen3 } from '../ExamScreen3';
@@ -33,7 +25,6 @@ import { CoursesScreen } from './CoursesScreen';
 import { FilesFormScreen } from './FilesFormScreen';
 import { FormScreen } from './FormScreen';
 import { LectureFormScreen } from './LectureFormScreen';
-import { LessonScreen } from './LessonScreen';
 import { ManagedCoursesScreen } from './ManagedCoursesScreen';
 import { ModifyFileScreen } from './ModifyFileScreen';
 import { ModifyLectureScreen } from './ModifyLectureScreen';
@@ -67,6 +58,10 @@ export type TeachingStackParamList = {
   CourseVideolecture: { courseId: number; lectureId: number };
   CourseVirtualClassroom: { courseId: number; lectureId: number };
   CourseAssignmentUpload: { courseId: number };
+  CourseLectureMultiSelectScreen: {
+    courseId: number;
+    initialSelectedIds: number[];
+  };
 
   Grades: undefined;
   CourseDirectory: undefined;
@@ -162,22 +157,6 @@ const TeachingNavigatorStack = memo(() => {
         }}
       />
 
-      <Stack.Screen
-        name="Lecture"
-        component={LessonScreen}
-        options={{
-          headerRight: () => <LectureMenu />,
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{ textAlign: 'center', width: '100%', marginLeft: -10 }}
-            >
-              {t('common.lecture')}
-            </Text>
-          ),
-          headerShown: true,
-        }}
-      />
       <Stack.Screen
         name="Form"
         component={FormScreen}
@@ -308,74 +287,3 @@ export const TeachingNavigator = () => {
     </TeachingScrollContext.Provider>
   );
 };
-
-const LectureMenu = () => {
-  const [isMenuVisible, setMenuVisible] = useState(false);
-  const buttonRef = useRef(null); // Riferimento ai tre puntini
-  const { t } = useTranslation();
-  const { selectedLecture, deleteLessonFromCourse, selectedCourse } =
-    useCourses();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-
-  const handleDelete = () => {
-    if (selectedCourse && selectedLecture) {
-      Alert.alert(
-        'Conferma eliminazione',
-        'Sei sicuro di voler eliminare questa lezione?',
-        [
-          {
-            text: 'Annulla',
-            style: 'cancel',
-          },
-          {
-            text: 'Conferma',
-            style: 'destructive',
-            onPress: () => {
-              deleteLessonFromCourse(selectedCourse.id, selectedLecture.id);
-              navigation.goBack();
-              setMenuVisible(false);
-            },
-          },
-        ],
-      );
-    }
-  };
-
-  const handleUpdate = () => {
-    if (selectedCourse && selectedLecture) {
-      navigation.navigate('ModifyLecture');
-      setMenuVisible(false);
-    }
-  };
-
-  return (
-    <View>
-      {/* Pulsante con tre puntini */}
-      <TouchableOpacity ref={buttonRef} onPress={() => setMenuVisible(true)}>
-        <FontAwesomeIcon icon={faEllipsisV} size={24} />
-      </TouchableOpacity>
-
-      {/* Popover che si apre sotto i tre puntini */}
-      <Popover
-        isVisible={isMenuVisible}
-        // from={buttonRef}
-        onRequestClose={() => setMenuVisible(false)}
-      >
-        <TouchableOpacity onPress={handleUpdate}>
-          <Text style={styles.menuItem}>{t('other.modify')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleDelete}>
-          <Text style={styles.menuItem}>{t('other.delete')}</Text>
-        </TouchableOpacity>
-      </Popover>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  menuItem: {
-    padding: 10,
-    fontSize: 16,
-  },
-});

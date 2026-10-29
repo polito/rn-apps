@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 
 import { IS_ANDROID } from '../../core/constants';
 import { useStylesheet } from '../hooks/useStylesheet';
@@ -30,6 +30,7 @@ interface Props {
   accessibilityLabel?: string;
   hideChevron?: boolean;
   compact?: boolean;
+  ellipsis?: boolean;
 }
 
 export const Select = ({
@@ -42,12 +43,13 @@ export const Select = ({
   disabled,
   hideChevron,
   compact = false,
+  ellipsis = false,
 }: Props) => {
   const displayedValue = useMemo(() => {
     return options?.find(opt => opt?.id === value)?.title;
   }, [options, value]);
   const styles = useStylesheet(createStyles);
-  const { fontSizes, palettes } = useTheme();
+  const { fontSizes, palettes, shapes } = useTheme();
 
   return (
     <Pressable
@@ -62,24 +64,34 @@ export const Select = ({
           !disabled && onSelectOption?.(event);
         }}
       >
-        {compact ? (
+        {compact || ellipsis ? (
           <ListItem
             disabled={disabled}
             style={styles.compactContainer}
             title={
-              <View style={styles.compactRow}>
-                <Text style={styles.compactText}>
-                  {displayedValue || label}
-                </Text>
-                {!hideChevron && (
+              ellipsis ? (
+                <View style={styles.compactRow}>
                   <Icon
-                    icon={faChevronDown}
-                    style={styles.compactIcon}
+                    icon={faEllipsis}
+                    size={shapes.xl}
                     color={palettes.primary[400]}
-                    size={fontSizes.md}
                   />
-                )}
-              </View>
+                </View>
+              ) : (
+                <View style={styles.compactRow}>
+                  <Text style={styles.compactText}>
+                    {displayedValue || label}
+                  </Text>
+                  {!hideChevron && (
+                    <Icon
+                      icon={faChevronDown}
+                      style={styles.compactIcon}
+                      color={palettes.primary[400]}
+                      size={fontSizes.md}
+                    />
+                  )}
+                </View>
+              )
             }
             subtitle={description}
           />

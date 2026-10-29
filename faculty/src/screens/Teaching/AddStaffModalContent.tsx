@@ -1,6 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -9,30 +15,29 @@ import {
   faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import {
-  BottomModal,
+  BottomBarSpacer,
   CtaButton,
   CtaButtonContainer,
-  CtaButtonSpacer,
   Icon,
   IndentedDivider,
   ListItem,
-  ModalContent,
   OverviewList,
+  Section,
   Text,
   Theme,
   TranslucentTextField,
-  useBottomModal,
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import {
+  StaffAccessValue,
+  getStaffIdentityKey,
+} from '../../core/constants/staffAccess';
 import { personToStaff, useCourses } from '../../core/contexts/CoursesContext';
-import { DefineAccessModal } from './DefineAccessModal';
-import { StaffAccessValue, getStaffIdentityKey } from './staffAccess';
-
-type Props = {
-  close: () => void;
-};
+import { CourseSharedScreensParamList } from './CourseSharedScreens';
 
 type SelectableProfile = ReturnType<typeof useCourses>['fakeProfiles'][number];
 
@@ -42,25 +47,25 @@ type StaffAccessDraft = {
 };
 
 type Mode = 'search' | 'review';
+type AddStaffRouteProp = RouteProp<CourseSharedScreensParamList, 'AddStaff'>;
 
 const getProfileName = (profile: Pick<SelectableProfile, 'name' | 'surname'>) =>
   `${profile.name} ${profile.surname}`.trim();
 
 const getProfileCode = (id: number) => `D${id.toString().padStart(5, '0')}`;
 
-export const AddStaffModalContent = ({ close }: Props) => {
+export const AddStaffModalContent = () => {
+  const route = useRoute<AddStaffRouteProp>();
+  const from = route.params?.from;
+  const navigation =
+    useNavigation<NativeStackNavigationProp<CourseSharedScreensParamList>>();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { palettes, fontSizes } = useTheme();
-  const { fakeProfiles, selectedCourse } = useCourses();
+  const { fakeProfiles, selectedCourse, selectedLecture } = useCourses();
   const [mode] = useState<Mode>('search');
   const [searchText, setSearchText] = useState('');
   const [selectedStaff, setSelectedStaff] = useState<StaffAccessDraft[]>([]);
-  const {
-    open: openAccessModal,
-    modal: accessModal,
-    close: closeAccessModal,
-  } = useBottomModal();
 
   const existingStaffKeys = useMemo(
     () => new Set((selectedCourse?.staff ?? []).map(getStaffIdentityKey)),
@@ -94,14 +99,37 @@ export const AddStaffModalContent = ({ close }: Props) => {
     [profilesById, selectedStaff],
   );
 
-  const availableProfiles = useMemo(
-    () =>
-      fakeProfiles.filter(profile => !existingStaffKeys.has(`${profile.id}`)),
-    [existingStaffKeys, fakeProfiles],
-  );
+  const availableProfiles = useMemo(() => {
+    if (from === 'staffScreen') {
+      // if we are adding staff from the staff screen we want to show all the available profiles
+      return fakeProfiles.filter(
+        profile => !existingStaffKeys.has(`${profile.id}`),
+      );
+    } else if (!selectedCourse?.staff) {
+      return [];
+    } else {
+      // if we are adding staff from the lecture screen we want to show only the profiles of the staff of that course
+      return selectedCourse.staff
+        .filter(
+          staff =>
+            !selectedLecture?.staff?.some(
+              s => s.idProfile === staff?.idProfile,
+            ),
+        ) // filter out the staff that are already assigned to the lecture
+        .map(staff => profilesById.get(staff.idProfile ?? -1) ?? null)
+        .filter((p): p is SelectableProfile => Boolean(p));
+    }
+  }, [
+    existingStaffKeys,
+    fakeProfiles,
+    selectedCourse,
+    from,
+    profilesById,
+    selectedLecture,
+  ]);
 
   const availableProfilesById = useMemo(
-    () => new Map(availableProfiles.map(profile => [profile.id, profile])),
+    () => new Map(availableProfiles.map(profile => [profile?.id, profile])),
     [availableProfiles],
   );
 
@@ -120,7 +148,7 @@ export const AddStaffModalContent = ({ close }: Props) => {
   const unselectedRows = useMemo(
     () =>
       availableProfiles
-        .filter(profile => !selectedStaffIds.has(`${profile.id}`))
+        .filter(profile => !selectedStaffIds.has(`${profile?.id}`))
         .map(profile => ({
           profile,
           isSelected: false,
@@ -131,11 +159,11 @@ export const AddStaffModalContent = ({ close }: Props) => {
   const unselectedRowsToDisplay = useMemo(() => {
     if (normalizedSearch.length === 0) return unselectedRows;
 
-    return unselectedRows.filter(({ profile }) => {
+    return unselectedRows?.filter(({ profile }) => {
       const fullName = getProfileName(profile).toLowerCase();
       return (
         fullName.includes(normalizedSearch) ||
-        profile.mail.toLowerCase().includes(normalizedSearch)
+        profile?.mail.toLowerCase().includes(normalizedSearch)
       );
     });
   }, [normalizedSearch, unselectedRows]);
@@ -190,41 +218,9 @@ export const AddStaffModalContent = ({ close }: Props) => {
   };
 
   return (
-    <ModalContent
-      close={close}
-      title={t('other.addCourseStaff')}
-      footer={
-        selectedRows.length > 0 && (
-          <CtaButtonContainer modal absolute>
-            <CtaButton
-              disabled={isConfirmDisabled}
-              title={t('other.continue')}
-              style={
-                isConfirmDisabled
-                  ? styles.confirmButtonDisabled
-                  : styles.confirmButtonActive
-              }
-              textStyle={styles.confirmButtonText}
-              action={() => {
-                openAccessModal(
-                  <DefineAccessModal
-                    addeddStaff={selectedProfiles.map(({ profile, access }) =>
-                      personToStaff(profile, undefined, access ?? ''),
-                    )}
-                    close={close}
-                    onBack={closeAccessModal}
-                  />,
-                );
-              }}
-            />
-          </CtaButtonContainer>
-        )
-      }
-    >
-      <View style={styles.content}>
-        <BottomModal dismissable {...accessModal} />
-        {/* {mode === 'search' ? ( */}
-        <React.Fragment>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.content}>
+        <Section style={styles.section}>
           <TranslucentTextField
             type="text"
             label={t('common.search')}
@@ -235,99 +231,130 @@ export const AddStaffModalContent = ({ close }: Props) => {
             onChangeText={setSearchText}
             onClear={() => setSearchText('')}
           />
+        </Section>
 
-          {normalizedSearch.length === 0 && selectedRows.length === 0 && (
-            <Text style={styles.sectionTitle}>
-              {t('other.basedOnPreviousCourses')}
+        {selectedRows.length === 0 && unselectedRowsToDisplay.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text
+              variant="secondaryText"
+              style={{ fontFamily: 'Montserrat-Regular' }}
+            >
+              {t('other.noPersona')}
             </Text>
-          )}
+          </View>
+        ) : (
+          <React.Fragment>
+            {normalizedSearch.length === 0 && selectedRows.length === 0 && (
+              <Text style={styles.sectionTitle}>
+                {t('other.basedOnPreviousCourses')}
+              </Text>
+            )}
 
-          {selectedRows.length > 0 && (
-            <OverviewList indented style={styles.listContainer}>
-              {selectedRows.map((item, index) => {
-                return (
-                  <React.Fragment key={item.profile.id}>
-                    <ListItem
-                      title={highlightMatch(getProfileName(item.profile))}
-                      subtitle={searchText && getProfileCode(item.profile.id)}
-                      onPress={() => toggleSelection(item.profile.id)}
-                      titleStyle={{
-                        color: palettes.text[800],
-                      }}
-                      subtitleStyle={{
-                        color: palettes.gray[600],
-                      }}
-                      containerStyle={styles.selectedRow}
-                      leadingItem={
-                        <Icon
-                          icon={faCircleUser}
-                          size={24}
-                          color={palettes.primary[700]}
-                        />
-                      }
-                      trailingItem={
-                        <Icon
-                          icon={faMinus}
-                          size={fontSizes.md}
-                          color={palettes.primary[600]}
-                        />
-                      }
-                    />
-                    {index < selectedRows.length - 1 && <IndentedDivider />}
-                  </React.Fragment>
-                );
-              })}
-            </OverviewList>
-          )}
+            {selectedRows.length > 0 && (
+              <OverviewList indented style={styles.listContainer}>
+                {selectedRows.map((item, index) => {
+                  return (
+                    <React.Fragment key={item.profile.id}>
+                      <ListItem
+                        title={highlightMatch(getProfileName(item.profile))}
+                        subtitle={searchText && getProfileCode(item.profile.id)}
+                        onPress={() => toggleSelection(item.profile.id)}
+                        titleStyle={{
+                          color: palettes.text[800],
+                        }}
+                        subtitleStyle={{
+                          color: palettes.gray[600],
+                        }}
+                        containerStyle={styles.selectedRow}
+                        leadingItem={
+                          <Icon
+                            icon={faCircleUser}
+                            size={24}
+                            color={palettes.primary[700]}
+                          />
+                        }
+                        trailingItem={
+                          <Icon
+                            icon={faMinus}
+                            size={fontSizes.md}
+                            color={palettes.primary[600]}
+                          />
+                        }
+                      />
+                      {index < selectedRows.length - 1 && <IndentedDivider />}
+                    </React.Fragment>
+                  );
+                })}
+              </OverviewList>
+            )}
 
-          {unselectedRowsToDisplay.length > 0 && (
-            <OverviewList indented style={styles.listContainer}>
-              {unselectedRowsToDisplay.map((item, index) => {
-                return (
-                  <React.Fragment key={item.profile.id}>
-                    <ListItem
-                      title={highlightMatch(getProfileName(item.profile))}
-                      subtitle={searchText && getProfileCode(item.profile.id)}
-                      onPress={() => toggleSelection(item.profile.id)}
-                      titleStyle={{
-                        color: palettes.text[800],
-                      }}
-                      subtitleStyle={{
-                        color: palettes.gray[600],
-                      }}
-                      leadingItem={
-                        <Icon
-                          icon={faCircleUser}
-                          size={24}
-                          color={palettes.primary[700]}
-                        />
-                      }
-                      trailingItem={
-                        <Icon
-                          icon={faPlus}
-                          size={fontSizes.md}
-                          color={palettes.primary[600]}
-                        />
-                      }
-                    />
-                    {index < unselectedRowsToDisplay.length - 1 && (
-                      <IndentedDivider />
-                    )}
-                  </React.Fragment>
-                );
-              })}
-            </OverviewList>
-          )}
+            {unselectedRowsToDisplay?.length > 0 && (
+              <OverviewList indented style={styles.listContainer}>
+                {unselectedRowsToDisplay.map((item, index) => {
+                  return (
+                    <React.Fragment key={item.profile.id}>
+                      <ListItem
+                        title={highlightMatch(getProfileName(item.profile))}
+                        subtitle={searchText && getProfileCode(item.profile.id)}
+                        onPress={() => toggleSelection(item.profile.id)}
+                        titleStyle={{
+                          color: palettes.text[800],
+                        }}
+                        subtitleStyle={{
+                          color: palettes.gray[600],
+                        }}
+                        leadingItem={
+                          <Icon
+                            icon={faCircleUser}
+                            size={24}
+                            color={palettes.primary[700]}
+                          />
+                        }
+                        trailingItem={
+                          <Icon
+                            icon={faPlus}
+                            size={fontSizes.md}
+                            color={palettes.primary[600]}
+                          />
+                        }
+                      />
+                      {index < unselectedRowsToDisplay.length - 1 && (
+                        <IndentedDivider />
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </OverviewList>
+            )}
+          </React.Fragment>
+        )}
+        <BottomBarSpacer />
+      </ScrollView>
 
-          {selectedRows.length === 0 && unselectedRowsToDisplay.length === 0 ? (
-            <View style={styles.emptyContainer}>
-              <Text variant="secondaryText">{t('other.noPersona')}</Text>
-            </View>
-          ) : null}
-        </React.Fragment>
-        <CtaButtonSpacer />
-      </View>
-    </ModalContent>
+      {selectedRows.length > 0 && (
+        <CtaButtonContainer absolute={Platform.OS === 'android'}>
+          <CtaButton
+            absolute={false}
+            disabled={isConfirmDisabled}
+            title={t('other.continue')}
+            style={
+              isConfirmDisabled
+                ? styles.confirmButtonDisabled
+                : styles.confirmButtonActive
+            }
+            textStyle={styles.confirmButtonText}
+            action={() => {
+              navigation.navigate('DefineAccess', {
+                addeddStaff: selectedProfiles.map(({ profile, access }) =>
+                  personToStaff(profile, undefined, access ?? ''),
+                ),
+                from: from,
+              });
+            }}
+          />
+        </CtaButtonContainer>
+      )}
+    </SafeAreaView>
   );
 };
 
@@ -340,13 +367,15 @@ const createStyles = ({
   shapes,
 }: Theme) =>
   StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
     content: {
-      paddingHorizontal: spacing[5],
       paddingVertical: spacing[5],
-      // flex: 1,
-      height: 700,
-
       backgroundColor: colors.background,
+    },
+    section: {
+      paddingHorizontal: spacing[5],
     },
     searchContainer: {
       borderWidth: 1,
@@ -369,7 +398,8 @@ const createStyles = ({
       lineHeight: fontSizes.md * 1.25,
       fontWeight: fontWeights.semibold,
       fontFamily: 'Montserrat-SemiBold',
-      marginTop: spacing[5],
+      paddingHorizontal: spacing[5],
+      marginBottom: spacing[5],
     },
     selectedCardContainer: {
       borderRadius: 18,
@@ -392,7 +422,7 @@ const createStyles = ({
       backgroundColor: palettes.gray[300],
     },
     emptyContainer: {
-      padding: 16,
+      padding: spacing[4],
       alignItems: 'center',
     },
 
@@ -410,7 +440,7 @@ const createStyles = ({
     listContainer: {
       borderRadius: shapes.lg,
       elevation: 0,
-      marginTop: spacing[5],
-      marginBottom: 0,
+      marginBottom: spacing[5],
+      marginTop: 0,
     },
   });

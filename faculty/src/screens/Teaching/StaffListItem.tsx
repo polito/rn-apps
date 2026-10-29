@@ -5,12 +5,12 @@ import { TouchableHighlightProps } from 'react-native';
 import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import { IconButton, ListItem, PersonListItem, useTheme } from '@polito/lib/ui';
 
-import { Staff, useCourses } from '../../core/contexts/CoursesContext';
 import {
   STAFF_ACCESS_VALUES,
   isHolderStaff,
   normalizeStaffAccess,
-} from './staffAccess';
+} from '../../core/constants/staffAccess';
+import { Staff, useCourses } from '../../core/contexts/CoursesContext';
 
 type Props = TouchableHighlightProps & {
   staff: Staff;

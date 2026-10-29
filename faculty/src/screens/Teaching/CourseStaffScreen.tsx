@@ -19,10 +19,9 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Staff, useCourses } from '../../core/contexts/CoursesContext';
-import { AddStaffModalContent } from './AddStaffModalContent';
+import { CourseSharedScreensParamList } from './CourseSharedScreens';
 import { HandleAccessModalContent } from './HandleAccessModalContent';
 import { StaffListItem } from './StaffListItem';
-import { TeachingStackParamList } from './TeachingNavigator';
 
 export const StaffScreen = () => {
   const { fakeProfiles, selectedCourse, setSelectedProfile } = useCourses();
@@ -31,7 +30,7 @@ export const StaffScreen = () => {
   const { palettes, spacing } = useTheme();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const navigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
+    useNavigation<NativeStackNavigationProp<CourseSharedScreensParamList>>();
 
   const { t } = useTranslation();
   const {
@@ -113,11 +112,7 @@ export const StaffScreen = () => {
       </View>
       <CtaButton
         title={t('other.addMember')}
-        action={() =>
-          showBottomModal(<AddStaffModalContent close={closeBottomModal} />, {
-            avoidKeyboard: false,
-          })
-        }
+        action={() => navigation.navigate('AddStaff', { from: 'staffScreen' })}
         icon={faPlus}
         absolute={false}
         variant="filled"

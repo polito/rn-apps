@@ -1,12 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
-
 import {
-  faArrowLeft,
-  faCheck,
-  faPlus,
-} from '@fortawesome/free-solid-svg-icons';
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
+
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import {
   BottomModal,
   CtaButton,
@@ -14,7 +16,6 @@ import {
   DropDownIcon,
   IndentedDivider,
   InfoMessage,
-  ModalContent,
   OverviewList,
   Section,
   StatefulMenuView,
@@ -24,36 +25,47 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 import { MenuAction } from '@react-native-menu/menu';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { STAFF_ACCESS_VALUES } from '../../core/constants/staffAccess';
 import { TEACHING_TYPES } from '../../core/constants/teachingTypes';
 import { Staff, useCourses } from '../../core/contexts/CoursesContext';
-import { AddStaffModalContent } from './AddStaffModalContent';
+import { CourseSharedScreensParamList } from './CourseSharedScreens';
 import { HandleAccessModalContent } from './HandleAccessModalContent';
 import { StaffListItem } from './StaffListItem';
-import { TeachingStackParamList } from './TeachingNavigator';
-import { STAFF_ACCESS_VALUES } from './staffAccess';
 
-type Props = {
-  addeddStaff?: Staff[]; // If provided, the modal will use this staff list instead of the one from the selected lecture, and it will handle access types instead of teaching types
-  close: () => void;
-  onBack?: () => void;
-};
+type TeachingTypeCode = (typeof TEACHING_TYPES)[number]['code'];
 
-export const DefineAccessModal = ({ addeddStaff, close, onBack }: Props) => {
+const normalizeSequentialStaffIds = (staffList: Staff[]) =>
+  staffList.map((staff, index) => ({
+    ...staff,
+    id: index + 1,
+  }));
+
+type DefineAccessRouteProp = RouteProp<
+  CourseSharedScreensParamList,
+  'DefineAccess'
+>;
+
+export const DefineAccessModal = () => {
+  const route = useRoute<DefineAccessRouteProp>();
+  const { addeddStaff, from } = route.params;
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { colors } = useTheme();
+  useTheme();
   const {
     fakeProfiles,
     selectedLecture,
     selectedCourse,
     addStaffToCourse,
     setSelectedProfile,
+    updateCourseLecture,
+    setSelectedLecture,
   } = useCourses();
+
   const navigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
+    useNavigation<NativeStackNavigationProp<CourseSharedScreensParamList>>();
 
   const {
     open: showBottomModal,
@@ -62,44 +74,50 @@ export const DefineAccessModal = ({ addeddStaff, close, onBack }: Props) => {
   } = useBottomModal();
 
   const staffList = useMemo(() => {
-    if (addeddStaff) {
-      return addeddStaff;
-    }
+    const holder =
+      selectedCourse?.staff?.filter(
+        (staff: Staff) => staff.role === 'Titolare' || staff.role === 'Holder',
+      ) ?? [];
 
-    return selectedLecture?.staff ?? [];
-  }, [selectedLecture, addeddStaff]);
+    const holderWithTeachingType: Staff[] = holder.map((s: Staff) => ({
+      ...s,
+      teachingType: s.teachingType ?? 'L',
+    }));
+
+    return selectedLecture?.staff ?? holderWithTeachingType;
+  }, [selectedLecture, selectedCourse]);
 
   const initialSelectedStaffTypes = useMemo(() => {
     const initial: Record<number, string> = {};
-    staffList.forEach(staff => {
-      if (addeddStaff && staff.access) {
-        initial[staff.id] = staff.access;
+    addeddStaff.forEach(staff => {
+      if (from === 'staffScreen' && staff.access) {
+        initial[staff.idProfile] = staff.access;
       } else if (staff.teachingType) {
-        initial[staff.id] = staff.teachingType;
+        initial[staff.idProfile] = staff.teachingType;
       }
     });
     return initial;
-  }, [staffList, addeddStaff]);
+  }, [from, addeddStaff]);
 
   const [selectedStaffTypes, setSelectedStaffTypes] = useState<
     Record<number, string>
   >(initialSelectedStaffTypes);
 
   const selectedCount = Object.keys(selectedStaffTypes).length;
-  const allStaffHasTeachingType = selectedCount === staffList.length;
-  const allStaffHasAccessType = selectedCount === staffList.length;
+  const allStaffHasTeachingType = useMemo(
+    () => selectedCount === addeddStaff.length,
+    [selectedCount, addeddStaff.length],
+  );
+  const allStaffHasAccessType = useMemo(
+    () => selectedCount === addeddStaff.length,
+    [selectedCount, addeddStaff.length],
+  );
 
-  const canConfirm = addeddStaff
-    ? allStaffHasAccessType
-    : allStaffHasTeachingType;
+  const canConfirm =
+    from === 'staffScreen' ? allStaffHasAccessType : allStaffHasTeachingType;
 
   const handleConfirmSelection = () => {
-    if (addeddStaff) {
-      if (!selectedCourse) {
-        close();
-        return;
-      }
-
+    if (from === 'staffScreen') {
       const staffToAdd = addeddStaff
         .map(staff => ({
           ...staff,
@@ -109,16 +127,86 @@ export const DefineAccessModal = ({ addeddStaff, close, onBack }: Props) => {
         .filter(staff => Boolean(staff.access));
 
       if (staffToAdd.length === 0) {
-        close();
+        return;
+      }
+
+      if (!selectedCourse) {
         return;
       }
 
       addStaffToCourse(selectedCourse.id, staffToAdd);
-      close();
+      navigation.pop(2);
       return;
     }
 
-    showBottomModal(<AddStaffModalContent close={closeBottomModal} />);
+    // lectureScreen flow: include all added staff (they don't have 'access')
+    if (!selectedCourse) {
+      return;
+    }
+
+    const staffToAddForLecture = addeddStaff.map(staff => ({
+      ...staff,
+      teachingType:
+        (selectedStaffTypes[staff.idProfile] as TeachingTypeCode) ??
+        staff.teachingType,
+      role: staff.role || 'Collaboratore',
+    }));
+
+    // If there's no selectedLecture (we're creating a new one), create a
+    // temporary lecture object and set it in context so the caller modal can
+    // display the newly added staff. We do not call updateCourseLecture in
+    // this case because the lecture isn't persisted yet.
+    if (!selectedLecture) {
+      const tempLectureId = -Date.now();
+
+      // include course holder(s) as initial staff (preserve teachingType if present)
+      const holders =
+        selectedCourse?.staff?.filter(
+          (s: Staff) => s.role === 'Titolare' || s.role === 'Holder',
+        ) ?? [];
+
+      const holdersWithType = holders.map((s: Staff) => ({
+        ...s,
+        teachingType: (selectedStaffTypes[s.id] as TeachingTypeCode) ?? 'L',
+      }));
+
+      const newLecture = {
+        id: tempLectureId,
+        title: '',
+        date: '',
+        time: '',
+        content: '',
+        staff: normalizeSequentialStaffIds([
+          ...holdersWithType,
+          ...staffToAddForLecture,
+        ]),
+        status: 'draft',
+      } as any;
+
+      setSelectedLecture(newLecture);
+      navigation.pop(2);
+      return;
+    }
+
+    const updatedLecture = {
+      ...selectedLecture,
+      staff: normalizeSequentialStaffIds([
+        // preserve/update existing staff teachingType
+        ...staffList.map(staff => ({
+          ...staff,
+          teachingType:
+            (selectedStaffTypes[staff.idProfile] as TeachingTypeCode) ??
+            staff.teachingType,
+        })),
+        // include newly added staff for lecture
+        ...staffToAddForLecture,
+      ]),
+    };
+
+    updateCourseLecture(selectedCourse.id, selectedLecture.id, updatedLecture);
+    setSelectedLecture(updatedLecture);
+
+    navigation.pop(2);
   };
 
   const getTeachingTypeLabel = (code: string) => {
@@ -168,7 +256,7 @@ export const DefineAccessModal = ({ addeddStaff, close, onBack }: Props) => {
         current={staffIndex + 1}
         total={addeddStaff.length}
         onAccessSaved={access => {
-          handleSelectStaffType(selectedStaff.id, access);
+          handleSelectStaffType(selectedStaff.idProfile, access);
         }}
         onPrevious={() => {
           openAccessStaffModal(staffIndex - 1);
@@ -185,53 +273,41 @@ export const DefineAccessModal = ({ addeddStaff, close, onBack }: Props) => {
   }
 
   return (
-    <ModalContent
-      title={t('common.staff')}
-      close={close}
-      footer={
-        <CtaButtonContainer absolute modal>
-          {!canConfirm && (
-            <InfoMessage variant="warning" style={styles.infoMessage}>
-              {addeddStaff
-                ? t('courseStaffTab.accessInfoMessage')
-                : t('courseStaffTab.typeInfoMessage')}
-            </InfoMessage>
-          )}
-          <View style={styles.footerRow}>
-            <CtaButton
-              absolute={false}
-              action={() => {
-                onBack?.();
-              }}
-              icon={faArrowLeft}
-              variant="outlined"
-              containerStyle={{ padding: 0 }}
-              style={{
-                backgroundColor: colors.white as string,
-              }}
-            />
-            <View style={styles.confirmWrapper}>
-              <CtaButton
-                absolute={false}
-                title={
-                  addeddStaff ? t('common.confirm') : t('common.addNewPerson')
-                }
-                action={handleConfirmSelection}
-                disabled={!canConfirm}
-                icon={addeddStaff ? faCheck : faPlus}
-                containerStyle={{ padding: 0 }}
-              />
-            </View>
-          </View>
-        </CtaButtonContainer>
-      }
-    >
-      <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.container}>
         <BottomModal dismissable {...bottomModal} />
 
         <Section style={styles.section}>
           <OverviewList indented style={styles.listContainer}>
-            {staffList.map((staff, index) => {
+            {staffList.map(staff => {
+              const selectedTeachingTypeCode =
+                selectedStaffTypes[staff.idProfile] ?? staff.teachingType;
+              const selectedTeachingTypeTitle = selectedTeachingTypeCode
+                ? `${selectedTeachingTypeCode} - ${getTeachingTypeLabel(selectedTeachingTypeCode)}`
+                : t('other.selectTypeOfTeaching');
+
+              const selectedAccessTypeLabel = getAccessTypeLabel(staff);
+              return (
+                <React.Fragment key={staff.id}>
+                  <StaffListItem
+                    staff={staff}
+                    navigateEnabled={false}
+                    onRowPress={() =>
+                      from === 'staffScreen' && openStaffProfile(staff)
+                    }
+                    subtitle={
+                      from === 'staffScreen'
+                        ? selectedAccessTypeLabel
+                        : selectedTeachingTypeTitle
+                    }
+                    trailingItem={<View />}
+                  />
+
+                  <IndentedDivider />
+                </React.Fragment>
+              );
+            })}
+            {addeddStaff.map((staff, index) => {
               const selectedTeachingTypeCode = selectedStaffTypes[staff.id];
               const selectedTeachingTypeTitle = selectedTeachingTypeCode
                 ? `${selectedTeachingTypeCode} - ${getTeachingTypeLabel(selectedTeachingTypeCode)}`
@@ -239,42 +315,46 @@ export const DefineAccessModal = ({ addeddStaff, close, onBack }: Props) => {
 
               const selectedAccessTypeLabel = getAccessTypeLabel(staff);
 
-              const actions: MenuAction[] = !addeddStaff
-                ? TEACHING_TYPES.map(teachingType => ({
-                    id: teachingType.code,
-                    title: `${teachingType.code} - ${teachingType.label}`,
-                    state:
-                      selectedTeachingTypeCode === teachingType.code
-                        ? 'on'
-                        : undefined,
-                  }))
-                : [];
+              const actions: MenuAction[] =
+                from === 'lectureScreen'
+                  ? TEACHING_TYPES.map(teachingType => ({
+                      id: teachingType.code,
+                      title: `${teachingType.code} - ${teachingType.label}`,
+                      state:
+                        selectedTeachingTypeCode === teachingType.code
+                          ? 'on'
+                          : undefined,
+                    }))
+                  : [];
 
               return (
                 <React.Fragment key={staff.id}>
                   <StatefulMenuView
                     title={t('common.staff')}
-                    actions={addeddStaff ? [] : actions}
+                    actions={from === 'lectureScreen' ? actions : []}
                     onPressAction={({ nativeEvent: { event } }) => {
-                      !addeddStaff && handleSelectStaffType(staff.id, event);
+                      from === 'lectureScreen' &&
+                        handleSelectStaffType(staff.id, event);
                     }}
                   >
                     <StaffListItem
                       staff={staff}
                       navigateEnabled={false}
-                      onRowPress={() => openStaffProfile(staff)}
+                      onRowPress={() =>
+                        from === 'staffScreen' && openStaffProfile(staff)
+                      }
                       subtitle={
-                        addeddStaff
+                        from === 'staffScreen'
                           ? selectedAccessTypeLabel
                           : selectedTeachingTypeTitle
                       }
                       trailingItem={
-                        !addeddStaff ? (
+                        from !== 'staffScreen' ? (
                           <DropDownIcon style={styles.dropDownIcon} />
                         ) : undefined
                       }
                       onPress={() => {
-                        if (addeddStaff) {
+                        if (from === 'staffScreen') {
                           const staffIndex = addeddStaff.findIndex(
                             s => s.id === staff.id,
                           );
@@ -285,27 +365,50 @@ export const DefineAccessModal = ({ addeddStaff, close, onBack }: Props) => {
                       }}
                     />
                   </StatefulMenuView>
-                  {index < staffList.length - 1 && (
-                    <IndentedDivider style={styles.divider} />
-                  )}
+                  {index < addeddStaff.length - 1 && <IndentedDivider />}
                 </React.Fragment>
               );
             })}
           </OverviewList>
         </Section>
-      </View>
-    </ModalContent>
+      </ScrollView>
+
+      <CtaButtonContainer
+        absolute={Platform.OS === 'android'}
+        style={styles.ctaContainer}
+      >
+        <View style={styles.messageContainer}>
+          {!canConfirm && (
+            <InfoMessage variant="warning">
+              {from === 'staffScreen'
+                ? t('courseStaffTab.accessInfoMessage')
+                : t('courseStaffTab.typeInfoMessage')}
+            </InfoMessage>
+          )}
+        </View>
+        <CtaButton
+          absolute={false}
+          title={t('common.confirm')}
+          action={handleConfirmSelection}
+          disabled={!canConfirm}
+          icon={faCheck}
+        />
+      </CtaButtonContainer>
+    </SafeAreaView>
   );
 };
 
 const createStyles = ({ spacing, colors, shapes }: Theme) =>
   StyleSheet.create({
+    safeArea: {
+      flex: 1,
+    },
     container: {
-      padding: spacing[5],
+      paddingTop: spacing[5],
       gap: spacing[5],
-      height: 700,
       backgroundColor: colors.background,
     },
+    ctaContainer: {},
     section: {
       marginTop: 0,
       paddingTop: 0,
@@ -330,18 +433,8 @@ const createStyles = ({ spacing, colors, shapes }: Theme) =>
     dropDownIcon: {
       marginRight: -spacing[1],
     },
-    infoMessage: {
-      marginHorizontal: spacing[5],
-    },
-    footerRow: {
-      flexDirection: 'row',
-      gap: spacing[2.5],
-      padding: spacing[5],
-      alignItems: 'center',
-    },
-    confirmWrapper: {
-      flex: 1,
-      gap: spacing[2],
-      paddingLeft: 0,
+    messageContainer: {
+      marginBottom: spacing[5],
+      margin: -spacing[5],
     },
   });

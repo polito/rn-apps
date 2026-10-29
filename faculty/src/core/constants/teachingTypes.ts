@@ -1,4 +1,5 @@
 export const TEACHING_TYPES = [
+  { code: 'L', label: 'Lectures' },
   { code: 'TL', label: 'Tutoring Lab' },
   { code: 'EL', label: 'Lab Exercises' },
   { code: 'TT', label: 'Tutoring Talents' },

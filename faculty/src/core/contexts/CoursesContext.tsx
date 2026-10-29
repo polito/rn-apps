@@ -36,7 +36,7 @@ export interface Staff {
   name: string;
   role: string;
   access: string;
-  idProfile?: number;
+  idProfile: number;
   teachingType?: (typeof TEACHING_TYPES)[number]['code'];
 }
 
@@ -61,7 +61,7 @@ export const personToStaff = (
     name,
     role,
     access,
-    idProfile: typeof rawId === 'number' ? rawId : undefined,
+    idProfile: id,
   };
 };
 
@@ -458,13 +458,33 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
         },
       ],
       staff: [
-        { id: 1, name: 'Tu', role: 'Titolare', access: 'Può eliminare' },
+        {
+          id: 1,
+          name: 'Tu',
+          role: 'Titolare',
+          access: 'Può eliminare',
+          idProfile: 0,
+        },
         {
           id: 2,
           name: 'Mario Rossi',
           role: 'Collaboratore',
           access: 'Può leggere',
           idProfile: 9,
+        },
+        {
+          id: 3,
+          name: 'Luca Rossi',
+          role: 'Collaboratore',
+          access: 'Può modificare',
+          idProfile: 1,
+        },
+        {
+          id: 4,
+          name: 'Giulia Verdi',
+          role: 'Collaboratore',
+          access: 'Può leggere',
+          idProfile: 2,
         },
       ],
       examcalls: [
@@ -540,6 +560,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
               role: 'Titolare',
               access: 'Completo',
               teachingType: 'TL',
+              idProfile: 0,
             },
             {
               id: 2,
@@ -563,7 +584,13 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
           content:
             'Spiegazione iniziale della struttura del corso. Slide da 1 a 89 del primo plico.',
           staff: [
-            { id: 1, name: 'Tu', role: 'Titolare', access: 'Completo' },
+            {
+              id: 1,
+              name: 'Tu',
+              role: 'Titolare',
+              access: 'Completo',
+              idProfile: 0,
+            },
             {
               id: 2,
               name: 'Mario Rossi',
@@ -585,7 +612,13 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
           content:
             'Spiegazione iniziale della struttura del corso. Slide da 1 a 89 del primo plico.',
           staff: [
-            { id: 1, name: 'Tu', role: 'Titolare', access: 'Completo' },
+            {
+              id: 1,
+              name: 'Tu',
+              role: 'Titolare',
+              access: 'Completo',
+              idProfile: 0,
+            },
             {
               id: 2,
               name: 'Mario Rossi',
@@ -1138,7 +1171,13 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
       notices: [],
       assignments: [],
       staff: [
-        { id: 1, name: 'Tu', role: 'Titolare', access: 'Può eliminare' },
+        {
+          id: 1,
+          name: 'Tu',
+          role: 'Titolare',
+          access: 'Può eliminare',
+          idProfile: 0,
+        },
         {
           id: 2,
           name: 'Mario Rossi',
@@ -1482,7 +1521,13 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
       ],
       assignments: [],
       staff: [
-        { id: 1, name: 'Tu', role: 'Titolare', access: 'Può eliminare' },
+        {
+          id: 1,
+          name: 'Tu',
+          role: 'Titolare',
+          access: 'Può eliminare',
+          idProfile: 0,
+        },
         {
           id: 2,
           name: 'Mario Rossi',
@@ -1826,7 +1871,13 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
       ],
       assignments: [],
       staff: [
-        { id: 1, name: 'Tu', role: 'Titolare', access: 'Può eliminare' },
+        {
+          id: 1,
+          name: 'Tu',
+          role: 'Titolare',
+          access: 'Può eliminare',
+          idProfile: 0,
+        },
         {
           id: 2,
           name: 'Mario Rossi',
@@ -2173,7 +2224,13 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
       ],
       assignments: [],
       staff: [
-        { id: 1, name: 'Tu', role: 'Collaboratore', access: 'Può eliminare' },
+        {
+          id: 1,
+          name: 'Tu',
+          role: 'Collaboratore',
+          access: 'Può eliminare',
+          idProfile: 0,
+        },
         {
           id: 2,
           name: 'Mario Rossi',
@@ -2518,7 +2575,13 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
       ],
       assignments: [],
       staff: [
-        { id: 1, name: 'Tu', role: 'Collaboratore', access: 'Può eliminare' },
+        {
+          id: 1,
+          name: 'Tu',
+          role: 'Collaboratore',
+          access: 'Può eliminare',
+          idProfile: 0,
+        },
         {
           id: 2,
           name: 'Mario Rossi',

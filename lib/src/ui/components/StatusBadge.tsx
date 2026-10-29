@@ -19,6 +19,7 @@ type Props = {
   onPress?: () => void;
   style?: any;
   isAction?: boolean;
+  variant?: 'filled' | 'void';
 };
 
 export const StatusBadge = ({
@@ -31,6 +32,7 @@ export const StatusBadge = ({
   onPress,
   style,
   isAction,
+  variant = 'filled',
 }: Props) => {
   const { fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
@@ -51,16 +53,18 @@ export const StatusBadge = ({
       <View style={styles.content}>
         {icon && <Icon icon={icon} size={fontSizes.md} color={iconColor} />}
 
-        <Text
-          weight="semibold"
-          style={{
-            color: foregroundColor,
-            fontSize: fontSizes.xs,
-            fontFamily: 'Montserrat-SemiBold',
-          }}
-        >
-          {text}
-        </Text>
+        {variant === 'filled' && (
+          <Text
+            weight="semibold"
+            style={{
+              color: foregroundColor,
+              fontSize: fontSizes.xs,
+              fontFamily: 'Montserrat-SemiBold',
+            }}
+          >
+            {text}
+          </Text>
+        )}
       </View>
 
       {isAction && (

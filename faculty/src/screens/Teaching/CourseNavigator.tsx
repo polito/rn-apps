@@ -171,19 +171,19 @@ export const CourseNavigator = ({ navigation, route }: Props) => {
         }}
       />
       <TopTabs.Screen
-        name="CourseLecturesScreen"
+        name="CourseRegisterScreen"
         component={CourseLecturesTab}
-        options={{ title: t('common.lecture_plural') }}
+        options={{ title: t('courseLecturesScreen.title') }}
         listeners={{
           tabPress: () => {
             setShowPlusButton(true);
-            setFormPage('Lecture');
-            setTab(t('common.lecture_plural'));
+            setFormPage('Register');
+            setTab(t('courseLecturesScreen.title'));
           },
           focus: () => {
             setShowPlusButton(true);
-            setTab('Lectures');
-            setFormPage('Lecture');
+            setTab('Register');
+            setFormPage('Register');
           },
         }}
       />

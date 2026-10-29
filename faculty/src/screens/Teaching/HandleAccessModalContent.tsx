@@ -23,13 +23,13 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 
-import { Staff, useCourses } from '../../core/contexts/CoursesContext';
 import {
   STAFF_ACCESS_VALUES,
   StaffAccessValue,
   isHolderStaff,
   normalizeStaffAccess,
-} from './staffAccess';
+} from '../../core/constants/staffAccess';
+import { Staff, useCourses } from '../../core/contexts/CoursesContext';
 
 type Props = {
   close: () => void;

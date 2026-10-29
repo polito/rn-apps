@@ -17,6 +17,7 @@ export * from './DecorativeIcon';
 export * from './DirectoryListItem';
 export * from './DisclosureIndicator';
 export * from './Divider';
+export * from './DropDownIcon';
 export * from './DropdownActivator';
 export * from './EmptyState';
 export * from './ErrorCard';
