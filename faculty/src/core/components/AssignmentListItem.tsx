@@ -1,113 +1,124 @@
-import { JSX, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Alert, StyleSheet, View } from 'react-native';
+
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import {
-  Alert,
-  StyleProp,
-  StyleSheet,
-  TouchableHighlightProps,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from 'react-native';
-import Popover from 'react-native-popover-view';
+  DisclosureIndicator,
+  IconButton,
+  ListItem,
+  Row,
+  Text,
+  Theme,
+  useStylesheet,
+  useTheme,
+} from '@polito/lib/ui';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { ListItem, Text, Theme, useStylesheet } from '@polito/lib/ui';
-
-import { useCourses } from '../../core/contexts/CoursesContext';
+import { Assignment, useCourses } from '../../core/contexts/CoursesContext';
+import { TeachingStackParamList } from '../../screens/Teaching/TeachingNavigator';
 
 interface Props {
-  title: string | JSX.Element;
-  subtitle?: string | JSX.Element;
-  trailingItem?: JSX.Element;
-  sizeInKiloBytes?: number;
-  downloadProgress?: number;
-  containerStyle?: StyleProp<ViewStyle>;
-  mimeType?: string;
-  isCorrupted?: boolean;
-  assignmentId: number;
-  date: string;
-  student: string;
+  assignment: Assignment;
 }
 
-export const AssignmentListItem = ({
-  title,
-  date,
-  student,
-  assignmentId,
-}: TouchableHighlightProps & Props) => {
+export const AssignmentListItem = ({ assignment }: Props) => {
   const styles = useStylesheet(createItemStyles);
+  const { dark, fontSizes, palettes } = useTheme();
   const { selectedCourse, removeAssignmentFromCourse } = useCourses();
-  const [isMenuVisible, setMenuVisible] = useState(false);
-  const buttonRef = useRef(null);
   const { t } = useTranslation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
+
   if (selectedCourse == null) return null;
+
+  const fileName = `${assignment.name}.${assignment.mimeType}`;
+  const removalRequested = !!assignment.removalRequested;
+  const dangerColor = dark ? palettes.danger[400] : palettes.danger[600];
+  const subtitle = removalRequested
+    ? t('assignmentListItem.removalRequested')
+    : [assignment.student, assignment.studentName].filter(Boolean).join(' - ');
+
+  const confirmDelete = () => {
+    Alert.alert(t('other.confirm'), t('other.alertAssignment'), [
+      { text: t('common.no'), style: 'cancel' },
+      {
+        text: t('common.yes'),
+        style: 'destructive',
+        onPress: () =>
+          removeAssignmentFromCourse(selectedCourse.id, assignment.id),
+      },
+    ]);
+  };
+
+  const accessibilityLabel = [
+    assignment.unread ? t('assignmentListItem.unread') : undefined,
+    fileName,
+    subtitle,
+  ]
+    .filter(Boolean)
+    .join(', ');
+
   return (
-    <>
-      <ListItem
-        title={title}
-        subtitle={`${t('newsScreen.createdAt')} ${date} by ${student}`}
-        trailingItem={
-          <View ref={buttonRef}>
-            <FontAwesomeIcon icon={faEllipsisV} size={24} />
-          </View>
-        }
-        onPress={() => {
-          setMenuVisible(true);
-        }}
-      />
-      <Popover
-        isVisible={isMenuVisible}
-        from={buttonRef.current}
-        onRequestClose={() => setMenuVisible(false)}
-      >
-        <TouchableOpacity
-          onPress={() => {
-            Alert.alert(t('other.confirm'), t('other.alertAssignment'), [
-              {
-                text: t('common.cancel'),
-                style: 'cancel',
-              },
-              {
-                text: t('other.confirm'),
-                style: 'destructive',
-                onPress: () => {
-                  removeAssignmentFromCourse(selectedCourse.id, assignmentId);
-                  setMenuVisible(false);
-                },
-              },
-            ]);
-          }}
-        >
-          <Text style={styles.menuItem}>{t('other.delete')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}}>
-          <Text style={styles.menuItem}>{t('other.download')}</Text>
-        </TouchableOpacity>
-      </Popover>
-    </>
+    <ListItem
+      title={
+        <Row align="center" gap={1}>
+          {assignment.unread && (
+            <View
+              style={[styles.unreadDot, { backgroundColor: dangerColor }]}
+            />
+          )}
+          <Text style={styles.title} numberOfLines={1}>
+            {fileName}
+          </Text>
+        </Row>
+      }
+      subtitle={subtitle}
+      subtitleStyle={removalRequested ? { color: dangerColor } : undefined}
+      trailingItem={
+        removalRequested ? (
+          <IconButton
+            icon={faTrash}
+            color={dangerColor}
+            size={fontSizes.xl}
+            adjustSpacing="right"
+            accessibilityLabel={t('other.delete')}
+            onPress={confirmDelete}
+          />
+        ) : (
+          <DisclosureIndicator />
+        )
+      }
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={t('assignmentListItem.openHint')}
+      accessibilityActions={
+        removalRequested
+          ? [{ name: 'delete', label: t('other.delete') }]
+          : undefined
+      }
+      onAccessibilityAction={event => {
+        if (event.nativeEvent.actionName === 'delete') confirmDelete();
+      }}
+      onPress={() =>
+        navigation.navigate('Assignment', { assignmentId: assignment.id })
+      }
+    />
   );
 };
 
-const createItemStyles = ({ spacing, colors }: Theme) =>
+const createItemStyles = ({ colors, fontFamilies, fontSizes }: Theme) =>
   StyleSheet.create({
-    fileSize: {
-      paddingLeft: spacing[1],
+    unreadDot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
     },
-    downloadedIconContainer: {
-      padding: 2,
-      borderRadius: 16,
-      backgroundColor: colors.background,
-      position: 'absolute',
-      top: -5,
-      left: -8,
-    },
-    subtitle: {
+    title: {
       flexShrink: 1,
-    },
-    menuItem: {
-      padding: 10,
-      fontSize: 16,
+      color: colors.prose,
+      fontFamily: fontFamilies.title,
+      fontSize: fontSizes.md,
+      lineHeight: fontSizes.md * 1.5,
     },
   });

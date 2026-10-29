@@ -1,56 +1,54 @@
-import { FlatList } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { ScrollView, StyleSheet } from 'react-native';
 
 import { faInbox } from '@fortawesome/free-solid-svg-icons';
 import {
   BottomBarSpacer,
   EmptyState,
-  GlobalStyles,
-  IndentedDivider,
-  useSafeAreaSpacing,
+  OverviewList,
+  Theme,
+  useStylesheet,
 } from '@polito/lib/ui';
 
-import { CourseAssignmentsListItem } from '../../core/components/CourseAssignmentsListItem';
+import { AssignmentListItem } from '../../core/components/AssignmentListItem';
 import { useCourses } from '../../core/contexts/CoursesContext';
 
 export const CourseAssignmentsTab = () => {
-  const { paddingHorizontal } = useSafeAreaSpacing();
+  const { t } = useTranslation();
+  const styles = useStylesheet(createStyles);
   const { selectedCourse } = useCourses();
-  // Troviamo il corso corrispondente
-  const course = selectedCourse;
 
-  // Se il corso non esiste, restituiamo null
-  if (!course) {
+  if (!selectedCourse) {
     return null;
   }
 
-  const { assignments } = course;
-
-  if (selectedCourse == null) return null;
+  const { assignments } = selectedCourse;
 
   return (
-    <FlatList
+    <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      initialNumToRender={15}
-      style={GlobalStyles.grow}
-      contentContainerStyle={paddingHorizontal}
-      data={assignments}
-      keyExtractor={item => item.id.toString()}
-      renderItem={({ item: assign }) => (
-        <CourseAssignmentsListItem
-          assignmentId={assign.id}
-          title={assign.name}
-          date={assign.date}
-          student={assign.student}
+      contentContainerStyle={styles.content}
+    >
+      {assignments.length === 0 ? (
+        <EmptyState
+          icon={faInbox}
+          message={t('courseAssignmentsTab.emptyState')}
         />
+      ) : (
+        <OverviewList indented rounded>
+          {assignments.map(assignment => (
+            <AssignmentListItem key={assignment.id} assignment={assignment} />
+          ))}
+        </OverviewList>
       )}
-      ListFooterComponent={<BottomBarSpacer />}
-      ItemSeparatorComponent={() => <IndentedDivider />}
-      ListEmptyComponent={() => {
-        if (assignments.length === 0) {
-          return <EmptyState icon={faInbox} message="Notices empty" />;
-        }
-        return null;
-      }}
-    />
+      <BottomBarSpacer />
+    </ScrollView>
   );
 };
+
+const createStyles = ({ spacing }: Theme) =>
+  StyleSheet.create({
+    content: {
+      paddingTop: spacing[4],
+    },
+  });
