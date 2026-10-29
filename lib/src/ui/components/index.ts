@@ -81,3 +81,5 @@ export * from './SegmentedControl';
 export * from './ToggleFilter';
 export * from './TextArea';
 export * from './StatusBadge';
+export * from './Overlay';
+export * from './DropDownIcon';
