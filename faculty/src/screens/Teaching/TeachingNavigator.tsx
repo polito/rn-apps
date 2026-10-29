@@ -34,11 +34,11 @@ import { FilesFormScreen } from './FilesFormScreen';
 import { FormScreen } from './FormScreen';
 import { LectureFormScreen } from './LectureFormScreen';
 import { LessonScreen } from './LessonScreen';
+import { ManagedCoursesScreen } from './ManagedCoursesScreen';
 import { ModifyFileScreen } from './ModifyFileScreen';
 import { ModifyLectureScreen } from './ModifyLectureScreen';
 import { ModifyNoticeScreen } from './ModifyNoticeScreen';
 import { NoticeFormScreen } from './NoticeFormScreen';
-import { NoticeScreen } from './NoticeScreen';
 import { StudentContact } from './StudentContact';
 import { TeachingAppBar } from './TeachingAppBar';
 import { TeachingScreen } from './TeachingScreen';
@@ -53,11 +53,11 @@ export const useTeachingScroll = () => useContext(TeachingScrollContext);
 export type TeachingStackParamList = {
   Home: undefined;
   MyCourses: undefined;
+  ManagedCourses: undefined;
   ExamsCalls: undefined;
   Exam: { id: number };
 
   Form: undefined;
-  Roles: undefined;
   Notice: undefined;
   Lecture: undefined;
   Notices: undefined;
@@ -149,21 +149,16 @@ const TeachingNavigatorStack = memo(() => {
           headerTitle: t('other.myCourses'),
         }}
       />
-
       <Stack.Screen
-        name="Notice"
-        component={NoticeScreen}
+        name="ManagedCourses"
+        component={ManagedCoursesScreen}
         options={{
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{ textAlign: 'center', width: '100%', marginLeft: -10 }}
-            >
-              {t('common.notice')}
-            </Text>
+          headerLeft: () => (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <CustomBackButton />
+            </View>
           ),
-          headerRight: () => <NoticeMenu />,
-          headerShown: true,
+          headerTitle: t('other.managedCourses'),
         }}
       />
 
@@ -314,65 +309,6 @@ export const TeachingNavigator = () => {
   );
 };
 
-const NoticeMenu = () => {
-  const [isMenuVisible, setMenuVisible] = useState(false);
-  const buttonRef = useRef(null); // Riferimento ai tre puntini
-  const { selectedNotice, deleteNoticeFromCourse, selectedCourse } =
-    useCourses();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-  const { t } = useTranslation();
-  const handleDelete = () => {
-    if (selectedCourse && selectedNotice) {
-      Alert.alert(t('other.confirm'), t('other.alertNotice2'), [
-        {
-          text: t('common.cancel'),
-          style: 'cancel',
-        },
-        {
-          text: t('common.delete'),
-          style: 'destructive',
-          onPress: () => {
-            deleteNoticeFromCourse(selectedCourse.id, selectedNotice.id);
-            navigation.goBack();
-            setMenuVisible(false);
-          },
-        },
-      ]);
-    }
-  };
-
-  const handleUpdate = () => {
-    if (selectedCourse && selectedNotice) {
-      navigation.navigate('ModifyNotice');
-      setMenuVisible(false);
-    }
-  };
-
-  return (
-    <View>
-      {/* Pulsante con tre puntini */}
-      <TouchableOpacity ref={buttonRef} onPress={() => setMenuVisible(true)}>
-        <FontAwesomeIcon icon={faEllipsisV} size={24} />
-      </TouchableOpacity>
-
-      {/* Popover che si apre sotto i tre puntini */}
-      <Popover
-        isVisible={isMenuVisible}
-        from={buttonRef.current}
-        onRequestClose={() => setMenuVisible(false)}
-      >
-        <TouchableOpacity onPress={handleUpdate}>
-          <Text style={styles.menuItem}>{t('other.modify')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleDelete}>
-          <Text style={styles.menuItem}>{t('other.delete')}</Text>
-        </TouchableOpacity>
-      </Popover>
-    </View>
-  );
-};
-
 const LectureMenu = () => {
   const [isMenuVisible, setMenuVisible] = useState(false);
   const buttonRef = useRef(null); // Riferimento ai tre puntini
@@ -423,7 +359,7 @@ const LectureMenu = () => {
       {/* Popover che si apre sotto i tre puntini */}
       <Popover
         isVisible={isMenuVisible}
-        from={buttonRef.current}
+        // from={buttonRef}
         onRequestClose={() => setMenuVisible(false)}
       >
         <TouchableOpacity onPress={handleUpdate}>

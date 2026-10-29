@@ -1880,6 +1880,34 @@ PODS:
     - Yoga
   - react-native-context-menu-view (1.21.0):
     - React
+  - react-native-date-picker (5.0.13):
+    - boost
+    - DoubleConversion
+    - fast_float
+    - fmt
+    - glog
+    - hermes-engine
+    - RCT-Folly
+    - RCT-Folly/Fabric
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - SocketRocket
+    - Yoga
   - react-native-get-random-values (1.11.0):
     - React-Core
   - react-native-menu (2.0.0):
@@ -3249,6 +3277,7 @@ DEPENDENCIES:
   - React-microtasksnativemodule (from `../../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - "react-native-blur (from `../../node_modules/@react-native-community/blur`)"
   - react-native-context-menu-view (from `../../node_modules/react-native-context-menu-view`)
+  - react-native-date-picker (from `../../node_modules/react-native-date-picker`)
   - react-native-get-random-values (from `../../node_modules/react-native-get-random-values`)
   - "react-native-menu (from `../../node_modules/@react-native-menu/menu`)"
   - "react-native-netinfo (from `../../node_modules/@react-native-community/netinfo`)"
@@ -3423,6 +3452,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@react-native-community/blur"
   react-native-context-menu-view:
     :path: "../../node_modules/react-native-context-menu-view"
+  react-native-date-picker:
+    :path: "../../node_modules/react-native-date-picker"
   react-native-get-random-values:
     :path: "../../node_modules/react-native-get-random-values"
   react-native-menu:
@@ -3589,6 +3620,7 @@ SPEC CHECKSUMS:
   React-microtasksnativemodule: 1e4d3178ba5d5000b351b902c603fb0c9d60649e
   react-native-blur: 6af83e7e3c4c1446a188d9b2c493600fc4beb173
   react-native-context-menu-view: da39a4612c1294d651907162529cfba8421e9b89
+  react-native-date-picker: 4f4f40f6e65798038bb4b1bff47890c2be69c2e6
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
   react-native-menu: 8d2c831a735c9e6528c28b26ca14e57591d87e14
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
