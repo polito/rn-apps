@@ -11,24 +11,14 @@ import { AddNoticeContent } from './AddNoticeContent';
 import { AddOrEditLectureModalContent } from './AddOrEditLectureModalContent';
 import { AddStaffModalContent } from './AddStaffModalContent';
 import { ChooseRoomModal } from './ChooseRoomModal';
+import { CourseGuideScreen } from './CourseGuideScreen';
 import { CourseLectureMultiSelectScreen } from './CourseLectureMultiSelectScreen';
-// import { CourseAssignmentPdfCreationScreen } from '../CourseAssignmentPdfCreationScreen';
-// import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
-// import { CourseAssignmentUploadScreen } from './CourseAssignmentUploadScreen';
-// import { CourseColorPickerScreen } from '../screens/CourseColorPickerScreen';
-// import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
-// import { CourseGuideScreen } from './CourseGuideScreen';
-// import { Assignment } from '../types/Assignment';
 import { CourseNavigator } from './CourseNavigator';
-// import { CourseHideEventScreen } from '../screens/CourseHideEventScreen';
-// import { CourseIconPickerScreen } from '../screens/CourseIconPickerScreen';
 import { CoursePreferencesScreen } from './CoursePreferencesScreen';
 import { DefineAccessModal } from './DefineAccessModal';
 import { EditLectureStaffModalContent } from './EditLectureStaffModalContent';
 import { EditNoticeContent } from './EditNoticeContent';
 import { LessonScreen } from './LessonScreen';
-// import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
-// import { CourseVirtualClassroomScreen } from './CourseVirtualClassroomScreen';
 import { NoticeScreen } from './NoticeScreen';
 
 export interface CourseSharedScreensParamList extends ParamListBase {
@@ -62,12 +52,6 @@ export interface CourseSharedScreensParamList extends ParamListBase {
   AddStaff: { from: 'lectureScreen' | 'staffScreen' };
   DefineAccess: { addeddStaff: Staff[]; from: 'staffScreen' | 'lectureScreen' };
   MultiSelectLectures: { initialSelectedIds?: number[] };
-  // CourseAssignmentPdfCreation: { courseId: number; firstImageUri: string };
-  // CourseAssignmentUpload: { courseId: number };
-  // CourseAssignmentUploadConfirmation: { courseId: number; file: Assignment };
-  // CourseIconPicker: { courseId: number; uniqueShortcode: string };
-  // CourseColorPicker: { courseId: number; uniqueShortcode: string };
-  // CourseHideEvent: { courseId: number; uniqueShortcode: string };
 }
 
 const Stack = createNativeStackNavigator<CourseSharedScreensParamList>();
@@ -331,35 +315,6 @@ export const CourseSharedScreens = () => {
           ),
         })}
       />
-      {/* 
-      <Stack.Screen
-        name="CourseIconPicker"
-        component={CourseIconPickerScreen}
-        getId={({ params }: { params: any }) => `${params.courseId}`}
-        options={{
-          title: t('courseIconPickerScreen.title'),
-          headerLargeTitle: false,
-          headerSearchBarOptions: {},
-        }}
-      />
-      <Stack.Screen
-        name="CourseDirectory"
-        component={CourseDirectoryScreen}
-        getId={({ params }: { params: any }) => `${params?.directoryId}`}
-        options={{
-          headerBackButtonDisplayMode: 'minimal',
-          headerLargeTitle: false,
-        }}
-      />
-      <Stack.Screen
-        name="CourseHideEvent"
-        component={CourseHideEventScreen}
-        getId={({ params }: { params: any }) => `${params.courseId}`}
-        options={{
-          title: t('common.hiddenEvents'),
-          headerLargeTitle: false,
-        }}
-      />
       <Stack.Screen
         name="CourseGuide"
         component={CourseGuideScreen}
@@ -369,76 +324,6 @@ export const CourseSharedScreens = () => {
           headerBackTitle: t('common.course'),
         }}
       />
-
-      <Stack.Screen
-        name="CourseVideolecture"
-        component={CourseVideolectureScreen}
-        getId={({ params }: { params: any }) =>
-          `${params.courseId}${params.lectureId}`
-        }
-        options={{
-          headerLargeTitle: false,
-          headerBackTitle: t('common.course'),
-          title: t('common.videoLecture'),
-        }}
-      />
-      <Stack.Screen
-        name="CourseVirtualClassroom"
-        component={CourseVirtualClassroomScreen}
-        getId={({ params }: { params: any }) =>
-          `${params.courseId}${params.lectureId}`
-        }
-        options={{
-          headerLargeTitle: false,
-          headerBackTitle: t('common.course'),
-          title: t('courseVirtualClassroomScreen.title'),
-        }}
-      />
-      <Stack.Screen
-        name="CourseAssignmentPdfCreation"
-        component={CourseAssignmentPdfCreationScreen}
-        getId={({ params }: { params: any }) => `${params.courseId}`}
-        options={{
-          headerBackButtonDisplayMode: 'minimal',
-          headerTitle: t('courseAssignmentPdfCreationScreen.title'),
-          headerLargeTitle: false,
-          headerTransparent: false,
-        }}
-      />
-      <Stack.Screen
-        name="CourseAssignmentUpload"
-        component={CourseAssignmentUploadScreen}
-        getId={({ params }: { params: any }) => `${params.courseId}`}
-        options={{
-          headerBackTitle: t('common.course'),
-          headerTitle: t('courseAssignmentUploadScreen.title'),
-          headerLargeTitle: false,
-        }}
-      />
-      <Stack.Screen
-        name="CourseAssignmentUploadConfirmation"
-        component={CourseAssignmentUploadConfirmationScreen}
-        getId={({ params }: { params: any }) => `${params.courseId}`}
-        options={{
-          headerBackTitle: t('courseAssignmentUploadScreen.backTitle'),
-          headerTitle: t('courseAssignmentUploadScreen.title'),
-          headerLargeStyle: {
-            backgroundColor: colors.headersBackground,
-          },
-          headerTransparent: false,
-          headerLargeTitle: false,
-          headerShadowVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="CourseColorPicker"
-        component={CourseColorPickerScreen}
-        getId={({ params }) => `${params.courseId}`}
-        options={{
-          title: t('courseColorPickerScreen.title'),
-          headerLargeTitle: false,
-        }}
-      /> */}
     </>
   );
 };

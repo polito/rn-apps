@@ -27,6 +27,7 @@ import {
 import { formatDateTime } from '@polito/lib/core';
 import { MENU_ACTIONS } from '@polito/lib/features/courses';
 import {
+  Checkbox,
   CtaButton,
   DirectoryListItem,
   FileListItem,
@@ -45,8 +46,6 @@ import {
 import { CourseDirectory } from '@polito/student-api-client';
 import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-
-import { Checkbox } from '~/core/components/Checkbox';
 
 import {
   DownloadContext,

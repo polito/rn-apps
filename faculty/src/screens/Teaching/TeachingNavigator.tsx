@@ -1,16 +1,24 @@
 import { createContext, memo, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, TouchableOpacity, View } from 'react-native';
+import { Platform } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Text, useTheme, useTitlesStyles } from '@polito/lib/ui';
-import { useNavigation } from '@react-navigation/native';
+import { TeachingNavigatorID } from '@polito/lib/core';
 import {
-  NativeStackNavigationProp,
-  createNativeStackNavigator,
-} from '@react-navigation/native-stack';
+  createHeaderCloseButton,
+  useTheme,
+  useTitlesStyles,
+} from '@polito/lib/ui';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import {
+  AddStudentsScreen,
+  EmailComposeScreen,
+  NotifyComposeScreen,
+  SelectContactMethodScreen,
+  SelectStudentsScreen,
+} from '../../features/students';
+import { SpecialNeedsScreen } from '../../features/students/screens/SpecialNeedsScreen';
+import { StudentContact } from '../../features/students/screens/StudentContact';
 import { ExamScreen } from '../ExamScreen';
 import { ExamScreen2 } from '../ExamScreen2';
 import { ExamScreen3 } from '../ExamScreen3';
@@ -18,8 +26,10 @@ import { ExamsScreen } from '../ExamsScreen';
 import { GradesScreen } from '../GradesScreen';
 import { AssignmentScreen } from './AssignmentScreen';
 import { ContactScreen2 } from './ContactScreen2';
-import { CourseGuideScreen } from './CourseGuideScreen';
-import { CourseSharedScreens } from './CourseSharedScreens';
+import {
+  CourseSharedScreens,
+  CourseSharedScreensParamList,
+} from './CourseSharedScreens';
 import { StaffScreen } from './CourseStaffScreen';
 import { CoursesScreen } from './CoursesScreen';
 import { FilesFormScreen } from './FilesFormScreen';
@@ -30,9 +40,10 @@ import { ModifyFileScreen } from './ModifyFileScreen';
 import { ModifyLectureScreen } from './ModifyLectureScreen';
 import { ModifyNoticeScreen } from './ModifyNoticeScreen';
 import { NoticeFormScreen } from './NoticeFormScreen';
-import { StudentContact } from './StudentContact';
 import { TeachingAppBar } from './TeachingAppBar';
 import { TeachingScreen } from './TeachingScreen';
+
+export { TeachingNavigatorID };
 
 export const TeachingScrollContext = createContext({
   isScrolled: false,
@@ -41,31 +52,25 @@ export const TeachingScrollContext = createContext({
 
 export const useTeachingScroll = () => useContext(TeachingScrollContext);
 
-export type TeachingStackParamList = {
+export type TeachingStackParamList = Omit<
+  CourseSharedScreensParamList,
+  'Course'
+> & {
+  Course: {
+    id?: number;
+    from?: string;
+    animated?: boolean;
+    title?: string;
+    uniqueShortcode?: string;
+  };
   Home: undefined;
   MyCourses: undefined;
   ManagedCourses: undefined;
   ExamsCalls: undefined;
   Exam: { id: number };
-
   Form: undefined;
-  Notice: undefined;
   Lecture: undefined;
-  Notices: undefined;
-  Info: undefined;
-  Course: { from?: string; id?: number };
-  CourseGuide: { courseId: number };
-  CourseVideolecture: { courseId: number; lectureId: number };
-  CourseVirtualClassroom: { courseId: number; lectureId: number };
-  CourseAssignmentUpload: { courseId: number };
-  CourseLectureMultiSelectScreen: {
-    courseId: number;
-    initialSelectedIds: number[];
-  };
-
   Grades: undefined;
-  CourseDirectory: undefined;
-  CourseDirectoryRoot: undefined;
   ModifyNotice: undefined;
   ModifyFile: undefined;
   ModifyLecture: undefined;
@@ -73,31 +78,18 @@ export type TeachingStackParamList = {
   Exam3: undefined;
   Exam2: undefined;
   StudentContact: undefined;
+  AddStudents: undefined;
+  SelectStudents: { initialSelectAll?: boolean } | undefined;
+  SelectContactMethod: { selectedIds: string[] };
+  EmailCompose: { selectedIds: string[] };
+  NotifyCompose: { selectedIds: string[] };
+  SpecialNeeds: undefined;
   NoticeForm: undefined;
   FilesForm: undefined;
   LectureForm: undefined;
-  StudentsForm: undefined;
   Contatto: undefined;
   Assignment: { assignmentId: number };
 };
-
-export const CustomBackButton = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('Home');
-      }}
-      style={{ paddingHorizontal: 10 }}
-    >
-      <FontAwesomeIcon icon={faArrowLeft} size={22} color="black" />
-    </TouchableOpacity>
-  );
-};
-
-export const TeachingNavigatorID = 'TeachingTabNavigator';
 
 const Stack = createNativeStackNavigator<
   TeachingStackParamList,
@@ -134,13 +126,6 @@ const TeachingNavigatorStack = memo(() => {
         name="MyCourses"
         component={CoursesScreen}
         options={{
-          headerLeft: () => {
-            return (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <CustomBackButton />
-              </View>
-            );
-          },
           headerTitle: t('other.myCourses'),
         }}
       />
@@ -148,96 +133,130 @@ const TeachingNavigatorStack = memo(() => {
         name="ManagedCourses"
         component={ManagedCoursesScreen}
         options={{
-          headerLeft: () => (
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <CustomBackButton />
-            </View>
-          ),
           headerTitle: t('other.managedCourses'),
         }}
       />
-
+      <Stack.Screen name="Form" component={FormScreen} />
+      <Stack.Screen name="NoticeForm" component={NoticeFormScreen} />
+      <Stack.Screen name="FilesForm" component={FilesFormScreen} />
+      <Stack.Screen name="LectureForm" component={LectureFormScreen} />
+      <Stack.Screen name="ModifyNotice" component={ModifyNoticeScreen} />
+      <Stack.Screen name="ModifyFile" component={ModifyFileScreen} />
+      <Stack.Screen name="ModifyLecture" component={ModifyLectureScreen} />
       <Stack.Screen
-        name="Form"
-        component={FormScreen}
+        name="StudentContact"
+        component={StudentContact}
         options={{
-          headerShown: true,
+          title: t('other.student'),
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackButtonDisplayMode: 'minimal',
+          presentation: 'card',
+          animation: 'slide_from_right',
+          fullScreenGestureEnabled: true,
         }}
       />
       <Stack.Screen
-        name="NoticeForm"
-        component={NoticeFormScreen}
+        name="SpecialNeeds"
+        component={SpecialNeedsScreen}
         options={{
-          headerShown: true,
+          title: t('other.specialNeedsTitle'),
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerBackButtonDisplayMode: 'minimal',
+          presentation: Platform.OS === 'android' ? 'card' : 'modal',
+          animation: Platform.OS === 'android' ? 'slide_from_right' : 'default',
         }}
       />
-
       <Stack.Screen
-        name="FilesForm"
-        component={FilesFormScreen}
-        options={{
-          headerShown: true,
-        }}
+        name="AddStudents"
+        component={AddStudentsScreen}
+        options={({ navigation }) => ({
+          presentation: 'modal',
+          headerShown: Platform.OS === 'android',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          title: t('other.addStudent'),
+          headerLeft: () => null,
+          headerRight:
+            Platform.OS === 'android'
+              ? () => null
+              : createHeaderCloseButton(navigation),
+        })}
       />
-
       <Stack.Screen
-        name="LectureForm"
-        component={LectureFormScreen}
-        options={{
-          headerShown: true,
-        }}
+        name="SelectStudents"
+        component={SelectStudentsScreen}
+        options={({ navigation }) => ({
+          presentation: 'modal',
+          headerShown: Platform.OS === 'android',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          title: t('other.selectStudents'),
+          headerLeft: () => null,
+          headerRight:
+            Platform.OS === 'android'
+              ? () => null
+              : createHeaderCloseButton(navigation),
+        })}
       />
-
       <Stack.Screen
-        name="ModifyNotice"
-        component={ModifyNoticeScreen}
+        name="SelectContactMethod"
+        component={SelectContactMethodScreen}
         options={{
-          headerShown: true,
+          presentation: 'transparentModal',
+          animation: 'fade',
+          headerShown: false,
         }}
       />
-
       <Stack.Screen
-        name="ModifyFile"
-        component={ModifyFileScreen}
-        options={{
-          headerShown: true,
-        }}
+        name="EmailCompose"
+        component={EmailComposeScreen}
+        options={({ navigation }) => ({
+          presentation: 'modal',
+          headerShown: Platform.OS === 'android',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerTitleAlign: 'center',
+          title: t('other.newEmail'),
+          headerLeft: () => null,
+          headerRight:
+            Platform.OS === 'android'
+              ? () => null
+              : createHeaderCloseButton(navigation),
+        })}
       />
-
       <Stack.Screen
-        name="ModifyLecture"
-        component={ModifyLectureScreen}
-        options={{
-          headerShown: true,
-        }}
+        name="NotifyCompose"
+        component={NotifyComposeScreen}
+        options={({ navigation }) => ({
+          presentation: 'modal',
+          headerShown: Platform.OS === 'android',
+          headerLargeTitle: false,
+          headerTransparent: false,
+          headerTitleAlign: 'center',
+          title: t('other.newNotify'),
+          headerLeft: () => null,
+          headerRight:
+            Platform.OS === 'android'
+              ? () => null
+              : createHeaderCloseButton(navigation),
+        })}
       />
-
-      <Stack.Screen name="StudentContact" component={StudentContact} />
-
       <Stack.Screen
         name="Assignment"
         component={AssignmentScreen}
         options={{ headerTitle: t('courseAssignmentsTab.title') }}
       />
-
       <Stack.Screen
         name="Staff"
         component={StaffScreen}
         options={{
-          headerTitle: () => (
-            <Text
-              variant="heading"
-              style={{ textAlign: 'center', width: '100%', marginLeft: -20 }}
-            >
-              {t('other.managingAccesses')}
-            </Text>
-          ),
-          headerShown: true,
+          headerTitle: t('other.managingAccesses'),
+          headerLargeTitle: false,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
-
-      <Stack.Screen name="CourseGuide" component={CourseGuideScreen} />
-
       <Stack.Screen
         name="ExamsCalls"
         component={ExamsScreen}
@@ -254,26 +273,22 @@ const TeachingNavigatorStack = memo(() => {
           headerTitle: t('common.examCall'),
         }}
       />
-
       <Stack.Screen name="Exam2" component={ExamScreen2} />
-
       <Stack.Screen name="Exam3" component={ExamScreen3} />
-
       <Stack.Screen
         name="Grades"
         component={GradesScreen}
         options={{
-          headerTitle: t('Transcript'),
+          headerTitle: t('common.transcript'),
         }}
       />
       <Stack.Screen
         name="Contatto"
         component={ContactScreen2}
         options={{
-          headerTitle: t('Transcript'),
+          headerTitle: t('common.transcript'),
         }}
       />
-
       {CourseSharedScreens()}
     </Stack.Navigator>
   );

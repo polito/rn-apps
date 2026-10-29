@@ -29,7 +29,10 @@ export const CtaButtonContainer = ({
         {
           display: 'flex',
           flexDirection: 'column',
-          paddingVertical: modal ? 0 : spacing[5],
+          gap: spacing[3],
+          paddingHorizontal: spacing[5],
+          paddingTop: modal ? 0 : spacing[2],
+          paddingBottom: modal ? 0 : spacing[5],
         },
         absolute && {
           position: 'absolute',

@@ -1,10 +1,14 @@
 import { useTranslation } from 'react-i18next';
-import { Platform, TouchableOpacity } from 'react-native';
+import { Platform, TouchableOpacity, View } from 'react-native';
 
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
+  PlacesNavigator,
+  type PlacesStackParamList,
+} from '@polito/lib/features/places';
 import { Text, useTheme, useTitlesStyles } from '@polito/lib/ui';
-import { useNavigation } from '@react-navigation/native';
+import { NavigatorScreenParams, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { Logo } from '../../core/components/Logo';
@@ -20,6 +24,7 @@ export type AgendaStackParamList = {
   AgendaWeek: undefined;
   Form: undefined;
   SingleElement: undefined;
+  PlacesAgendaStack: NavigatorScreenParams<PlacesStackParamList>;
 };
 
 const CustomBackButton2 = () => {
@@ -94,6 +99,15 @@ export const AgendaNavigator = () => {
 
       <Stack.Screen name="Form" component={NoteForm} />
 
+      <Stack.Screen
+        name="PlacesAgendaStack"
+        options={{
+          title: t('other.places'),
+          headerShown: false,
+        }}
+      >
+        {() => <PlacesNavigator unreadMessagesModal={View} />}
+      </Stack.Screen>
       <Stack.Screen
         name="SingleElement"
         component={SingleElementScreen}
