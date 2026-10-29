@@ -1,5 +1,6 @@
-import { useCallback, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet } from 'react-native';
 
 import {
   DisclosureIndicator,
@@ -8,6 +9,7 @@ import {
   Text,
   Theme,
   useStylesheet,
+  useTheme,
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -24,6 +26,8 @@ interface Props {
   accessibilityLabel?: string;
   badge?: number;
   showAllModules?: boolean;
+  disabled?: boolean;
+  onPress?: () => void;
 }
 
 /**
@@ -31,37 +35,38 @@ interface Props {
  * elements. If a linkTo is provided, a forward icon is automatically
  * displayed as a trailing element on iOS.
  */
-export const CourseListItem = ({ course, accessible }: Props) => {
+export const CourseListItem = ({
+  course,
+  accessible,
+  disabled,
+  onPress,
+}: Props) => {
+  const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+  const { colors } = useTheme();
   const { setSelectedCourse } = useCourses();
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
 
-  const isOwner = useCallback(() => {
-    // Placeholder logic for determining if the user is the owner
-    return 'Owner';
-  }, []);
+  const role = t('teachingScreen.owner');
 
   const subtitle = useMemo(() => {
     return (
-      <Row style={styles.subtitle}>
-        <Tag
-          text={isOwner()}
-          backgroundColor={styles.tag.backgroundColor}
-          foregroundColor={styles.tag.color}
-        />
-        <Text style={styles.subtitleText} numberOfLines={1}>
+      <Row style={styles.subtitle} pt={1}>
+        <Tag text={role} />
+        <Text
+          style={[styles.subtitleText, { color: colors.secondaryText }]}
+          numberOfLines={1}
+        >
           {course.code}
         </Text>
       </Row>
     );
-  }, [styles, course.code, isOwner]);
+  }, [styles, course.code, role, colors.secondaryText]);
 
-  const listItem = (
-    <View>
-      <ListItem
-        key={course.code}
-        /*
+  return (
+    <ListItem
+      /*
 
         ***** THIS SHOULD BE THE WAY TO NAVIGATE INSTEAD OF USING onPress AS DONE FOR STUDENTS APP ******
         ** maintain onPress for now to keep existing behavior **
@@ -74,28 +79,35 @@ export const CourseListItem = ({ course, accessible }: Props) => {
         }}
         */
 
-        accessible={accessible}
-        title={course.title}
-        subtitle={subtitle}
-        leadingItem={<CourseIndicator />}
-        trailingItem={<DisclosureIndicator />}
-        onPress={() => {
+      accessible={accessible}
+      accessibilityRole="button"
+      accessibilityLabel={[course.title, role, course.code]
+        .filter(Boolean)
+        .join(', ')}
+      accessibilityHint={t('teachingScreen.courseHint')}
+      accessibilityState={{ disabled: !!disabled }}
+      title={course.title}
+      subtitle={subtitle}
+      leadingItem={
+        <CourseIndicator
+          uniqueShortcode={course.uniqueShortcode ?? course.code}
+        />
+      }
+      trailingItem={<DisclosureIndicator />}
+      disabled={disabled}
+      onPress={
+        onPress ??
+        (() => {
           setSelectedCourse(course);
           navigation.navigate('Course', { from: 'MyCourses' });
-        }}
-      />
-    </View>
+        })
+      }
+    />
   );
-
-  return listItem;
 };
 
-const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
+const createStyles = ({ spacing, fontSizes }: Theme) =>
   StyleSheet.create({
-    tag: {
-      backgroundColor: palettes.info[50],
-      color: palettes.info[600],
-    },
     subtitle: {
       display: 'flex',
       alignItems: 'center',
@@ -103,7 +115,6 @@ const createStyles = ({ spacing, palettes, fontSizes }: Theme) =>
       alignSelf: 'stretch',
     },
     subtitleText: {
-      color: palettes.gray[500],
       fontSize: fontSizes.sm,
     },
   });

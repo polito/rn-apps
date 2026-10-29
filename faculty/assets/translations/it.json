@@ -774,7 +774,10 @@
   },
   "teachingScreen": {
     "allCoursesHidden": "Hai nascosto tutti i tuoi corsi",
+    "courseHint": "Apre il corso",
     "cpdTitle": "Questionari CPD",
+    "examHint": "Apre il dettaglio dell’appello",
+    "owner": "Titolare",
     "title": "Didattica"
   },
   "theme": {

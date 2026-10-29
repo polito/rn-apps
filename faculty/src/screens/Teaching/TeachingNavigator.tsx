@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { createContext, memo, useContext, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Alert,
@@ -11,12 +11,7 @@ import Popover from 'react-native-popover-view';
 
 import { faArrowLeft, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import {
-  HeaderLogoNoProps,
-  Text,
-  useTheme,
-  useTitlesStyles,
-} from '@polito/lib/ui';
+import { Text, useTheme, useTitlesStyles } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import {
   NativeStackNavigationProp,
@@ -44,7 +39,15 @@ import { ModifyNoticeScreen } from './ModifyNoticeScreen';
 import { NoticeFormScreen } from './NoticeFormScreen';
 import { NoticeScreen } from './NoticeScreen';
 import { StudentContact } from './StudentContact';
+import { TeachingAppBar } from './TeachingAppBar';
 import { TeachingScreen } from './TeachingScreen';
+
+export const TeachingScrollContext = createContext({
+  isScrolled: false,
+  setIsScrolled: (_: boolean) => {},
+});
+
+export const useTeachingScroll = () => useContext(TeachingScrollContext);
 
 export type TeachingStackParamList = {
   Home: undefined;
@@ -104,10 +107,11 @@ const Stack = createNativeStackNavigator<
   typeof TeachingNavigatorID
 >();
 
-export const TeachingNavigator = () => {
+const HomeHeader = () => <TeachingAppBar />;
+
+const TeachingNavigatorStack = memo(() => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { colors } = theme;
 
   return (
     <Stack.Navigator
@@ -116,7 +120,7 @@ export const TeachingNavigator = () => {
         headerLargeTitle: true,
         headerTransparent: Platform.select({ ios: true }),
         headerLargeStyle: {
-          backgroundColor: colors.background,
+          backgroundColor: 'transparent',
         },
         ...useTitlesStyles(theme),
       }}
@@ -125,8 +129,8 @@ export const TeachingNavigator = () => {
         name="Home"
         component={TeachingScreen}
         options={{
-          headerLeft: HeaderLogoNoProps,
-          headerTitle: t('teachingScreen.title'),
+          headerLargeTitle: false,
+          header: HomeHeader,
         }}
       />
       <Stack.Screen
@@ -290,6 +294,15 @@ export const TeachingNavigator = () => {
 
       {CourseSharedScreens()}
     </Stack.Navigator>
+  );
+});
+
+export const TeachingNavigator = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  return (
+    <TeachingScrollContext.Provider value={{ isScrolled, setIsScrolled }}>
+      <TeachingNavigatorStack />
+    </TeachingScrollContext.Provider>
   );
 };
 
