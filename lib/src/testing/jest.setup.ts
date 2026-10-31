@@ -97,6 +97,7 @@ jest.mock('@sentry/react-native', () => ({
   init: jest.fn(),
   wrap: (c: any) => c,
   ReactNavigationInstrumentation: jest.fn(),
+  withTouchEventBoundary: (c: any) => c,
   TouchEventBoundary: ({ children }: { children: React.ReactNode }) => children,
 }));
 
@@ -125,24 +126,10 @@ jest.mock('expo-sqlite/kv-store', () => ({
 // keeps credentials in memory, tests log in with __seedCredentials
 jest.mock('react-native-keychain', () => require('./mocks/keychain'));
 
-// --- lib mocks
-
 // Grid layout mock
 jest.mock('../ui/components/Grid', () => ({
   ...jest.requireActual('../ui/components/Grid'),
   Grid: ({ children }: { children: React.ReactNode }) => children,
-}));
-
-// mocking out from App.tsx, this allows us to run App.tsx without sentry
-// interfering
-jest.mock('@polito/lib/core', () => ({
-  ...jest.requireActual('@polito/lib/core'),
-  initSentry: jest.fn(),
-  Sentry: {
-    ...jest.requireActual('@polito/lib/core').Sentry,
-    withTouchEventBoundary: (c: any) => c,
-  },
-  setTimeoutAccessibilityInfoHelper: jest.fn(),
 }));
 
 beforeEach(() => {
