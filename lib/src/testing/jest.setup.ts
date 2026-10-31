@@ -126,6 +126,15 @@ jest.mock('expo-sqlite/kv-store', () => ({
 // keeps credentials in memory, tests log in with __seedCredentials
 jest.mock('react-native-keychain', () => require('./mocks/keychain'));
 
+// --- lib mocks
+
+// the helper announces on a timer that can fire after the test environment
+// is torn down
+jest.mock('@polito/lib/core', () => ({
+  ...jest.requireActual('@polito/lib/core'),
+  setTimeoutAccessibilityInfoHelper: jest.fn(),
+}));
+
 // Grid layout mock
 jest.mock('../ui/components/Grid', () => ({
   ...jest.requireActual('../ui/components/Grid'),
