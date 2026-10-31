@@ -1,7 +1,12 @@
 import { __seedCredentials } from '@polito/lib/testing/mocks/keychain';
 import { mockRoute } from '@polito/lib/testing/utils/mockRoute';
 import { Exam } from '@polito/student-api-client';
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react-native';
 
 import App from '~/App';
 import { BOOKED_EXAM } from '~/testing/constants';
@@ -45,6 +50,9 @@ describe('Exam flow: cancellation', () => {
 
     await fireEvent.press(await screen.findByText('Cancel booking'));
 
-    await screen.findByText(BOOKED_EXAM.courseName);
+    await waitFor(() =>
+      expect(screen.queryByText(BOOKED_EXAM.type)).toBeNull(),
+    );
+    expect(screen.getByText(BOOKED_EXAM.courseName)).toBeOnTheScreen();
   });
 });

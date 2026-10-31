@@ -1,7 +1,12 @@
 import { __seedCredentials } from '@polito/lib/testing/mocks/keychain';
 import { mockRoute } from '@polito/lib/testing/utils/mockRoute';
 import { Exam } from '@polito/student-api-client';
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react-native';
 
 import App from '~/App';
 import { AVAILABLE_EXAM } from '~/testing/constants';
@@ -47,6 +52,9 @@ describe('Exam flow: list, detail, and booking', () => {
 
     await fireEvent.press(await screen.findByText('Book exam'));
 
-    await screen.findByText(AVAILABLE_EXAM.courseName);
+    await waitFor(() =>
+      expect(screen.queryByText(AVAILABLE_EXAM.type)).toBeNull(),
+    );
+    expect(screen.getByText(AVAILABLE_EXAM.courseName)).toBeOnTheScreen();
   });
 });
