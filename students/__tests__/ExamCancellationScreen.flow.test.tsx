@@ -36,9 +36,12 @@ describe('Exam flow: cancellation', () => {
   });
 
   it('cancelling a booked exam resets navigation to the Teaching screen', async () => {
-    server.use(
-      mockRoute('/exams/{examId}/booking', { method: 'delete', status: 204 }),
-    );
+    const cancelBooking = mockRoute('/exams/{examId}/booking', {
+      method: 'delete',
+      status: 204,
+      params: { examId: BOOKED_EXAM.id },
+    });
+    server.use(cancelBooking);
 
     await render(<App />);
 
@@ -54,5 +57,6 @@ describe('Exam flow: cancellation', () => {
       expect(screen.queryByText(BOOKED_EXAM.type)).toBeNull(),
     );
     expect(screen.getByText(BOOKED_EXAM.courseName)).toBeOnTheScreen();
+    expect(cancelBooking.isUsed).toBe(true);
   });
 });

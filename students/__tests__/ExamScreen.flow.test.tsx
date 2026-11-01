@@ -40,9 +40,12 @@ describe('Exam flow: list, detail, and booking', () => {
   });
 
   it('booking an available exam resets navigation to the Teaching screen', async () => {
-    server.use(
-      mockRoute('/exams/{examId}/booking', { method: 'post', status: 204 }),
-    );
+    const bookExam = mockRoute('/exams/{examId}/booking', {
+      method: 'post',
+      status: 204,
+      params: { examId: AVAILABLE_EXAM.id },
+    });
+    server.use(bookExam);
 
     await render(<App />);
 
@@ -56,5 +59,6 @@ describe('Exam flow: list, detail, and booking', () => {
       expect(screen.queryByText(AVAILABLE_EXAM.type)).toBeNull(),
     );
     expect(screen.getByText(AVAILABLE_EXAM.courseName)).toBeOnTheScreen();
+    expect(bookExam.isUsed).toBe(true);
   });
 });

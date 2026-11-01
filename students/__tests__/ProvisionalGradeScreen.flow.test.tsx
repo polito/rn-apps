@@ -39,12 +39,15 @@ describe('Provisional grade flow: acceptance', () => {
   });
 
   it('accepting a confirmed grade returns to the Grades screen', async () => {
-    server.use(
-      mockRoute('/provisional-grades/{provisionalGradeId}/accept', {
+    const acceptGrade = mockRoute(
+      '/provisional-grades/{provisionalGradeId}/accept',
+      {
         method: 'post',
         status: 204,
-      }),
+        params: { provisionalGradeId: PROVISIONAL_GRADE_CONFIRMABLE.id },
+      },
     );
+    server.use(acceptGrade);
 
     await render(<App />);
 
@@ -69,6 +72,7 @@ describe('Provisional grade flow: acceptance', () => {
     );
 
     expect(await screen.findByText('Provisional')).toBeOnTheScreen();
+    expect(acceptGrade.isUsed).toBe(true);
   });
 });
 
@@ -77,7 +81,7 @@ describe('Provisional grade flow: rejection', () => {
     __seedCredentials({ username: 's123456', password: 'fake-password' });
     server.use(
       mockRoute('/grades', { body: { data: [] } }),
-      // The API client parses both `data` and `states` — omitting `states`
+      // The API client parses both `data` and `states`. Omitting `states`
       // causes an uncaught .map() on undefined that silently fails the query.
       mockRoute<ProvisionalGrade[]>('/provisional-grades', {
         body: { data: [PROVISIONAL_GRADE_CONFIRMABLE], states: [] },
@@ -86,12 +90,15 @@ describe('Provisional grade flow: rejection', () => {
   });
 
   it('rejecting a confirmed grade returns to the Grades screen', async () => {
-    server.use(
-      mockRoute('/provisional-grades/{provisionalGradeId}/reject', {
+    const rejectGrade = mockRoute(
+      '/provisional-grades/{provisionalGradeId}/reject',
+      {
         method: 'post',
         status: 204,
-      }),
+        params: { provisionalGradeId: PROVISIONAL_GRADE_CONFIRMABLE.id },
+      },
     );
+    server.use(rejectGrade);
 
     await render(<App />);
 
@@ -116,5 +123,6 @@ describe('Provisional grade flow: rejection', () => {
     );
 
     expect(await screen.findByText('Provisional')).toBeOnTheScreen();
+    expect(rejectGrade.isUsed).toBe(true);
   });
 });
