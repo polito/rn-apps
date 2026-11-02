@@ -152,10 +152,10 @@ export const useGetStudent = () => {
   return query;
 };
 
-const sortGrades = (response: ExamGrade[]) => {
-  response = response.sort((a, b) => b.date.getTime() - a.date.getTime());
-  return response;
-};
+const sortGrades = (response: ExamGrade[]) =>
+  response
+    .filter(grade => grade.grade != null)
+    .sort((a, b) => b.date.getTime() - a.date.getTime());
 
 export const useGetGrades = () => {
   const studentClient = useStudentClient();
