@@ -19,7 +19,6 @@ import {
   Icon,
   Row,
   Section,
-  Separator,
   Text,
   Theme,
   useStylesheet,
@@ -86,7 +85,7 @@ export const NoticeScreen = ({ navigation, route }: Props) => {
       label: t('other.expirationDate'),
       value:
         selectedNotice.alwaysVisible || !selectedNotice.endDate
-          ? t('other.never')
+          ? t('courseNoticesTab.noEndDate')
           : formatDateFromString(selectedNotice.endDate),
     },
     {
@@ -101,7 +100,7 @@ export const NoticeScreen = ({ navigation, route }: Props) => {
     <React.Fragment>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View style={styles.content}>
-          <Card rounded style={styles.card}>
+          <Card rounded spaced={false} style={styles.card}>
             {details.map(detail => (
               <Row
                 key={detail.id}
@@ -126,7 +125,6 @@ export const NoticeScreen = ({ navigation, route }: Props) => {
           </Card>
 
           <Section>
-            <Separator />
             <Text style={styles.sectionTitle} accessibilityRole="header">
               {t('other.noticeTextTitle')}
             </Text>
@@ -179,12 +177,14 @@ const createStyles = ({
 }: Theme) =>
   StyleSheet.create({
     content: {
-      padding: spacing[5],
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[3],
       gap: spacing[5],
     },
     card: {
-      padding: spacing[5],
-      gap: spacing[3],
+      paddingHorizontal: spacing[3],
+      paddingVertical: spacing[3],
+      gap: spacing[2],
       margin: 0,
       marginVertical: 0,
       borderRadius: shapes.lg,
@@ -207,15 +207,16 @@ const createStyles = ({
       color: colors.prose,
     },
     sectionTitle: {
-      fontFamily: fontFamilies.heading,
-      fontSize: fontSizes.md,
-      lineHeight: fontSizes.md * 1.25,
+      fontFamily: 'Montserrat-Bold',
+      fontSize: fontSizes.xl,
+      lineHeight: fontSizes.xl * 1.25,
       color: colors.heading,
+      marginBottom: spacing[2],
     },
     sectionContent: {
       fontFamily: fontFamilies.body,
-      fontSize: fontSizes.md,
-      lineHeight: fontSizes.md * 1.5,
+      fontSize: fontSizes.sm,
+      lineHeight: fontSizes.sm * 1.5,
       color: colors.prose,
     },
     ctaHalf: {

@@ -282,7 +282,7 @@ export const CourseSharedScreens = () => {
         }
         options={{
           headerBackTitle: t('common.course'),
-          headerTitle: t('common.notice'),
+          headerTitle: t('common.notice_plural'),
           headerLargeTitle: false,
         }}
       />
@@ -294,9 +294,9 @@ export const CourseSharedScreens = () => {
           headerLargeTitle: false,
           headerTransparent: false,
           presentation: 'modal',
+          headerShown: Platform.OS === 'android',
           headerShadowVisible: false,
           headerBackVisible: false,
-          unstable_headerRightItems: () => [],
           headerLeft: () => (
             <HeaderTextButton
               onPress={() => navigation.goBack()}
@@ -313,9 +313,9 @@ export const CourseSharedScreens = () => {
           headerLargeTitle: false,
           headerTransparent: false,
           presentation: 'modal',
+          headerShown: Platform.OS === 'android',
           headerShadowVisible: false,
           headerBackVisible: false,
-          unstable_headerRightItems: () => [],
           headerLeft: () => (
             <HeaderTextButton
               onPress={() => navigation.goBack()}

@@ -1,12 +1,6 @@
 import { ScrollView } from 'react-native-gesture-handler';
 
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
@@ -15,16 +9,11 @@ import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { APP_TIMEZONE, usePreferencesContext } from '@polito/lib/core';
 import {
   BottomBarSpacer,
-  Col,
   CtaButton,
   CtaButtonContainer,
-  Section,
-  SegmentedControl,
-  Separator,
-  SwitchListItem,
-  Text,
   TextArea,
   TextButton,
+  useHideTabs,
 } from '@polito/lib/ui';
 import { Theme, useStylesheet } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
@@ -33,38 +22,29 @@ import { AppPreferences } from '~/core/types/preferences';
 
 import { DateTime } from 'luxon';
 
+import { ModalHeader } from '../../core/components/ModalHeader';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { NoticeDateCard } from './NoticeDateCard';
 
 export const AddNoticeContent = () => {
+  useHideTabs();
   const navigation = useNavigation();
   const { addNoticeToCourse, selectedCourse } = useCourses();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
 
-  const [selectedMode, setSelectedMode] = useState<'text' | 'preview'>('text');
   const [description, setDescription] = useState('');
   const { language } = usePreferencesContext<AppPreferences>();
   const today = useMemo(
     () => DateTime.now().setZone(APP_TIMEZONE).toJSDate(),
     [],
   );
-  const [alwaysVisible, setAlwaysVisible] = useState(false);
-  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState<Date>(today);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [activeDateField, setActiveDateField] = useState<
     'start' | 'end' | null
   >(null);
-  const visibilityOptions = [
-    { label: t('courseNoticesTab.textTab'), value: 'text' as const },
-    { label: t('courseNoticesTab.previewTab'), value: 'preview' as const },
-  ];
-
-  useEffect(() => {
-    if (selectedMode === 'preview') {
-      setActiveDateField(null);
-    }
-  }, [selectedMode]);
+  const alwaysVisible = endDate === null;
 
   const handleDateChange = useCallback(
     (selectedDate: Date) => {
@@ -101,10 +81,7 @@ export const AddNoticeContent = () => {
               title: '',
               id: lastNoticeId + 1,
               content: description,
-              startDate:
-                startDate && !alwaysVisible
-                  ? startDate.toISOString().split('T')[0]
-                  : new Date().toISOString().split('T')[0],
+              startDate: startDate.toISOString().split('T')[0],
               endDate: endDate ? endDate.toISOString().split('T')[0] : '',
               visible: true,
               alwaysVisible: alwaysVisible,
@@ -126,10 +103,7 @@ export const AddNoticeContent = () => {
         title: '',
         id: lastNoticeId + 1,
         content: description,
-        startDate:
-          startDate && !alwaysVisible
-            ? startDate.toISOString().split('T')[0]
-            : new Date().toISOString().split('T')[0],
+        startDate: startDate.toISOString().split('T')[0],
         endDate: endDate ? endDate.toISOString().split('T')[0] : '',
         visible: false,
         alwaysVisible: alwaysVisible,
@@ -159,70 +133,42 @@ export const AddNoticeContent = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <ModalHeader
+        right={
+          <TextButton accessibilityRole="button" onPress={handleSaveDraft}>
+            {t('common.saveDraft')}
+          </TextButton>
+        }
+      />
       <ScrollView
         style={styles.container}
         contentInsetAdjustmentBehavior="automatic"
       >
-        <SegmentedControl
-          options={visibilityOptions}
-          value={selectedMode}
-          onChange={setSelectedMode}
-          style={styles.segmentedControl}
-        />
-        {selectedMode === 'text' ? (
-          <Col style={styles.section}>
-            <SwitchListItem
-              style={styles.listItem}
-              title={t('courseNoticesTab.setAlwaysVisible')}
-              accessibilityRole="switch"
-              accessibilityLabel={t('courseNoticesTab.setAlwaysVisible')}
-              accessibilityState={{ checked: alwaysVisible }}
-              accessibilityHint={t('courseNoticesTab.alwaysVisibleHint')}
-              value={alwaysVisible}
-              onChange={value => {
-                setAlwaysVisible(value);
-                if (value) {
-                  setActiveDateField(null);
-                }
-              }}
+        <View style={styles.section}>
+          <View style={styles.cardsContainer}>
+            <NoticeDateCard
+              label={t('other.startDate')}
+              date={startDate}
+              onPress={() => setActiveDateField('start')}
             />
-
-            {!alwaysVisible && (
-              <View style={styles.cardsContainer}>
-                <NoticeDateCard
-                  label={t('other.startDate')}
-                  date={startDate}
-                  onPress={() => setActiveDateField('start')}
-                />
-                <NoticeDateCard
-                  label={t('other.endDate')}
-                  date={endDate}
-                  onPress={() => setActiveDateField('end')}
-                />
-              </View>
-            )}
-
-            <View>
-              <TextArea
-                label={t('other.description')}
-                value={description}
-                onChangeText={setDescription}
-                style={styles.textAreaInput}
-                placeholder={t('courseNoticesTab.descriptionPlaceholder')}
-                accessibilityHint={t('courseNoticesTab.descriptionHint')}
-                unlimited
-              />
-            </View>
-          </Col>
-        ) : (
-          <Section style={styles.section}>
-            <Separator />
-            <Text style={styles.sectionTitle} accessibilityRole="header">
-              {t('other.noticeTextTitle')}
-            </Text>
-            <Text style={styles.sectionContent}>{description}</Text>
-          </Section>
-        )}
+            <NoticeDateCard
+              label={t('other.endDate')}
+              date={endDate}
+              emptyLabel={t('courseNoticesTab.noEndDate')}
+              onClear={() => setEndDate(null)}
+              onPress={() => setActiveDateField('end')}
+            />
+          </View>
+          <TextArea
+            label={t('other.noticeTextTitle')}
+            value={description}
+            onChangeText={setDescription}
+            style={styles.textAreaInput}
+            placeholder={t('courseNoticesTab.textPlaceholder')}
+            description={t('courseNoticesTab.descriptionHelper')}
+            accessibilityHint={t('courseNoticesTab.descriptionHint')}
+          />
+        </View>
         <BottomBarSpacer />
       </ScrollView>
 
@@ -243,9 +189,7 @@ export const AddNoticeContent = () => {
       <DatePicker
         modal
         locale={language}
-        date={
-          activeDateField === 'start' ? startDate || today : endDate || today
-        }
+        date={activeDateField === 'start' ? startDate : endDate || startDate}
         mode="date"
         open={activeDateField !== null}
         onConfirm={handleDateChange}
@@ -262,41 +206,21 @@ export const AddNoticeContent = () => {
   );
 };
 
-const createStyles = ({
-  colors,
-  spacing,
-  shapes,
-  fontSizes,
-  fontWeights,
-  fontFamilies,
-}: Theme) =>
+const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
     container: {
-      gap: spacing[5],
-      backgroundColor: colors.background,
-    },
-    segmentedControl: {
       backgroundColor: colors.background,
     },
     section: {
       paddingHorizontal: spacing[5],
-    },
-    listItem: {
-      borderRadius: shapes.lg,
-      backgroundColor: colors.surface,
-      elevation: 0,
-      fontSize: fontSizes.md,
-      fontWeight: fontWeights.medium,
-      color: colors.prose,
-      marginBottom: spacing[5],
+      paddingTop: spacing[3],
     },
     cardsContainer: {
       flexDirection: 'row',
-      gap: spacing[5],
+      gap: spacing[3],
       alignItems: 'center',
-      display: 'flex',
       alignSelf: 'stretch',
-      marginBottom: spacing[5],
+      marginBottom: spacing[4],
     },
     textAreaInput: {
       paddingHorizontal: 0,
@@ -308,17 +232,5 @@ const createStyles = ({
     },
     safeArea: {
       flex: 1,
-    },
-    sectionTitle: {
-      fontSize: fontSizes.md,
-      lineHeight: fontSizes.md * 1.25,
-      fontFamily: fontFamilies.heading,
-      color: colors.heading,
-    },
-    sectionContent: {
-      fontSize: fontSizes.md,
-      lineHeight: fontSizes.md * 1.5,
-      fontFamily: fontFamilies.body,
-      color: colors.prose,
     },
   });

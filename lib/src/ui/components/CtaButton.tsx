@@ -90,14 +90,28 @@ export const CtaButton = ({
   ]);
 
   const outlinedColors = useMemo(
-    () => ({
-      border: dark ? palettes.primary[400] : palettes.primary[500],
-      background: dark
-        ? 'rgba(0, 109, 185, 0.22)'
-        : `${palettes.lightBlue[50]}80`,
-      text: dark ? palettes.primary[200] : palettes.primary[500],
-    }),
-    [dark, palettes.lightBlue, palettes.primary],
+    () =>
+      destructive
+        ? {
+            border: palettes.danger[600],
+            background: colors.background,
+            text: palettes.danger[600],
+          }
+        : {
+            border: dark ? palettes.primary[400] : palettes.primary[500],
+            background: dark
+              ? 'rgba(0, 109, 185, 0.22)'
+              : `${palettes.lightBlue[50]}80`,
+            text: dark ? palettes.primary[200] : palettes.primary[500],
+          },
+    [
+      colors.background,
+      dark,
+      destructive,
+      palettes.danger,
+      palettes.lightBlue,
+      palettes.primary,
+    ],
   );
 
   const disabledForegroundColor = useMemo(

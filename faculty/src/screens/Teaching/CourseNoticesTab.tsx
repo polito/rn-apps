@@ -13,7 +13,6 @@ import {
   ListItem,
   OverviewList,
   Section,
-  Select,
 } from '@polito/lib/ui';
 import { Theme, useStylesheet } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
@@ -35,9 +34,6 @@ export const CourseNoticesTab = () => {
   const { t } = useTranslation();
   const getStatusLabel = useNoticeStatusLabel();
   const course = selectedCourse;
-  const [orderBy, setOrderBy] = React.useState<
-    'newest' | 'oldest' | undefined
-  >();
 
   if (!course) {
     return null;
@@ -45,24 +41,12 @@ export const CourseNoticesTab = () => {
 
   const sortedNotices = [...selectedCourse.notices].sort((a, b) => {
     if (a.alwaysVisible !== b.alwaysVisible) {
-      if (orderBy === 'oldest') {
-        return a.alwaysVisible ? 1 : -1;
-      }
       return a.alwaysVisible ? -1 : 1;
     }
-    if (orderBy === 'newest') {
-      return (
-        new Date(b.startDate ?? 0).getTime() -
-        new Date(a.startDate ?? 0).getTime()
-      );
-    }
-    if (orderBy === 'oldest') {
-      return (
-        new Date(a.startDate ?? 0).getTime() -
-        new Date(b.startDate ?? 0).getTime()
-      );
-    }
-    return 0;
+    return (
+      new Date(b.startDate ?? 0).getTime() -
+      new Date(a.startDate ?? 0).getTime()
+    );
   });
 
   const getSubtitle = (notice: (typeof sortedNotices)[number]) => {
@@ -81,21 +65,6 @@ export const CourseNoticesTab = () => {
         style={styles.container}
       >
         <SafeAreaView>
-          <Select
-            compact
-            label={
-              orderBy === 'newest'
-                ? t('common.newestFirst')
-                : orderBy === 'oldest'
-                  ? t('common.oldestFirst')
-                  : t('common.orderBy')
-            }
-            options={[
-              { id: 'newest', title: t('common.newestFirst') },
-              { id: 'oldest', title: t('common.oldestFirst') },
-            ]}
-            onSelectOption={id => setOrderBy(id as 'newest' | 'oldest')}
-          />
           <Section>
             <OverviewList indented style={styles.listContainer}>
               {sortedNotices.map((notice, index) => {

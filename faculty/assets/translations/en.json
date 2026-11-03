@@ -490,6 +490,10 @@
     "dateHint": "Opens the date picker",
     "descriptionPlaceholder": "Write your message here",
     "descriptionHint": "Text of the notice shown to students",
+    "textPlaceholder": "Write something",
+    "descriptionHelper": "Write a description of your notice here.",
+    "noEndDate": "None",
+    "clearDate": "Remove date",
     "alwaysVisibleHint": "When on, the notice has no start and end date",
     "publishDisabledHint": "Write the notice text to enable this button"
   },
