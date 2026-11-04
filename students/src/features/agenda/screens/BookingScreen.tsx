@@ -2,13 +2,13 @@ import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
   useWindowDimensions,
 } from 'react-native';
 import Barcode from 'react-native-barcode-svg';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faCheckCircle, faLocation } from '@fortawesome/free-solid-svg-icons';
 import {

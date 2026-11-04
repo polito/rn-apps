@@ -1,13 +1,8 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Linking,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {

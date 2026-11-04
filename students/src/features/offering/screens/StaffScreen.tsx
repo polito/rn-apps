@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useGetPersons } from '@polito/lib/features/people';
 import { OverviewList, Section } from '@polito/lib/ui';
