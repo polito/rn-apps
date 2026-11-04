@@ -6,7 +6,6 @@ import {
   Platform,
   Pressable,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import Animated, {
@@ -29,6 +28,7 @@ import { TicketStatus } from '@polito/student-api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { usePressableFeedback } from '~/core/hooks/usePressableFeedback';
 import { AppPreferences } from '~/core/types/preferences';
 
 import { useNotifications } from '../../../core/hooks/useNotifications';
@@ -56,6 +56,7 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'Ticket'>;
 export const TicketScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const styles = useStylesheet(createStyles);
+  const pressableFeedback = usePressableFeedback('opacity');
   const ticketQuery = useGetTicket(id);
   const { mutate: markAsRead } = useMarkTicketAsRead(id);
   const { mutateAsync: markTicketAsClosed } = useMarkTicketAsClosed(id);
@@ -251,21 +252,22 @@ export const TicketScreen = ({ route, navigation }: Props) => {
       isWaitingForOperator ||
       showVirtualOperatorFeedback;
     return (
-      <TouchableOpacity
+      <Pressable
         accessibilityRole="button"
         accessibilityState={{ disabled }}
         accessibilityLabel={t('ticketScreen.markAsResolved')}
         onPress={onPressMarkResolved}
         disabled={disabled}
         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        style={styles.markResolvedButton}
+        android_ripple={pressableFeedback.androidRipple}
+        style={pressableFeedback.style(styles.markResolvedButton)}
       >
         <Text
           style={[styles.markResolved, disabled && styles.markResolvedDisabled]}
         >
           {t('ticketScreen.markAsResolved')}
         </Text>
-      </TouchableOpacity>
+      </Pressable>
     );
   }, [
     ticket,
@@ -274,6 +276,7 @@ export const TicketScreen = ({ route, navigation }: Props) => {
     isWaitingForOperator,
     showVirtualOperatorFeedback,
     onPressMarkResolved,
+    pressableFeedback,
     styles,
     t,
   ]);

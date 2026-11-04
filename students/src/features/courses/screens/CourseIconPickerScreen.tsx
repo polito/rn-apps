@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, TouchableOpacity } from 'react-native';
+import { FlatList, Pressable } from 'react-native';
 
 import {
   PreferencesContextBase,
@@ -17,6 +17,7 @@ import {
 } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { usePressableFeedback } from '~/core/hooks/usePressableFeedback';
 import { AppPreferences } from '~/core/types/preferences';
 
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
@@ -28,6 +29,7 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseIconPicker'>;
 export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { spacing, fontSizes } = useTheme();
+  const pressableFeedback = usePressableFeedback('opacity');
   const [searchFilter, setSearchFilter] = useState('');
   const { courses: coursesPrefs, updatePreference } =
     usePreferencesContext<AppPreferences>();
@@ -59,12 +61,13 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
         contentInsetAdjustmentBehavior="automatic"
         data={filteredIcons}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={{
+          <Pressable
+            android_ripple={pressableFeedback.androidRipple}
+            style={pressableFeedback.style({
               flex: 1,
               alignItems: 'center',
               padding: spacing[4],
-            }}
+            })}
             onPress={() => {
               updatePreference('courses', {
                 ...coursesPrefs,
@@ -77,7 +80,7 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
             }}
           >
             <Icon icon={item[1]} size={fontSizes['2xl']} />
-          </TouchableOpacity>
+          </Pressable>
         )}
         numColumns={5}
         contentContainerStyle={[

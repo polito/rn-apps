@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import {
   Keyboard,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
@@ -27,10 +27,12 @@ import {
 } from '@polito/lib/ui';
 
 import { PolitoLogo } from '~/core/components/Logo.tsx';
+import { usePressableFeedback } from '~/core/hooks/usePressableFeedback';
 
 export const LoginScreen = () => {
   const { t } = useTranslation();
   const { colors, fontSizes } = useTheme();
+  const pressableFeedback = usePressableFeedback('opacity');
   const styles = useStylesheet(createStyles);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -105,11 +107,15 @@ export const LoginScreen = () => {
               />
             </Row>
           </OverviewList>
-          <TouchableOpacity style={styles.link} onPress={() => viewChpass()}>
+          <Pressable
+            android_ripple={pressableFeedback.androidRipple}
+            style={pressableFeedback.style(styles.link)}
+            onPress={() => viewChpass()}
+          >
             <Text variant="link" style={styles.textLink}>
               {t('loginScreen.forgotYourPassword')}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
           <CtaButton
             absolute={false}
             title={t('loginScreen.cta')}
@@ -117,14 +123,15 @@ export const LoginScreen = () => {
             loading={isLoading}
             disabled={!canLogin}
           />
-          <TouchableOpacity
-            style={styles.linkToSSO}
+          <Pressable
+            android_ripple={pressableFeedback.androidRipple}
+            style={pressableFeedback.style(styles.linkToSSO)}
             onPress={() => handleSSO()}
           >
             <Text variant="link" style={styles.textLink}>
               {t('loginScreen.SSO')}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         </Section>
       </TouchableWithoutFeedback>
     </ScrollView>

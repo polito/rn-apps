@@ -1,8 +1,8 @@
 import {
+  Pressable,
   StyleProp,
   StyleSheet,
   TextStyle,
-  TouchableOpacity,
   View,
   ViewStyle,
 } from 'react-native';
@@ -10,6 +10,8 @@ import {
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faSquare, faSquareCheck } from '@fortawesome/free-regular-svg-icons';
 import { Icon, Text, Theme, useStylesheet } from '@polito/lib/ui';
+
+import { usePressableFeedback } from '~/core/hooks/usePressableFeedback';
 
 export const Checkbox = ({
   text,
@@ -35,15 +37,17 @@ export const Checkbox = ({
   iconColor?: string;
 }) => {
   const styles = useStylesheet(createStyles);
+  const pressableFeedback = usePressableFeedback('opacity');
 
   return (
     <View style={[styles.container, containerStyle]}>
-      <TouchableOpacity
-        style={[
+      <Pressable
+        android_ripple={pressableFeedback.androidRipple}
+        style={pressableFeedback.style([
           styles.checkbox,
           checkboxStyle,
           dimension === 'small' && { height: 20, width: 20 },
-        ]}
+        ])}
         disabled={disable ?? false}
         onPress={() => {
           onPress();
@@ -72,7 +76,7 @@ export const Checkbox = ({
             />
           )}
         </View>
-      </TouchableOpacity>
+      </Pressable>
       <Text style={[styles.text, textStyle]}>{text}</Text>
     </View>
   );

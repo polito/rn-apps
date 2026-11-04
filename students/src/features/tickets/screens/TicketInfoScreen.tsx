@@ -1,12 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faCalendar, faCircle } from '@fortawesome/free-regular-svg-icons';
@@ -24,6 +18,7 @@ import {
 import { TicketStatus } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { usePressableFeedback } from '~/core/hooks/usePressableFeedback';
 import {
   getTicketStatusGroup,
   isResolvedTicketStatus,
@@ -65,6 +60,7 @@ export const TicketInfoScreen = ({ route, navigation }: Props) => {
   const { id } = route.params;
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+  const pressableFeedback = usePressableFeedback('opacity');
   const { palettes } = useTheme();
   const ticketQuery = useGetTicket(id);
   const ticket = ticketQuery.data;
@@ -119,23 +115,31 @@ export const TicketInfoScreen = ({ route, navigation }: Props) => {
     }
     const disabled = !canMarkResolved;
     return (
-      <TouchableOpacity
+      <Pressable
         accessibilityRole="button"
         accessibilityState={{ disabled }}
         accessibilityLabel={t('ticketScreen.markAsResolved')}
         onPress={onPressMarkResolved}
         disabled={disabled}
         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        style={styles.markResolvedButton}
+        android_ripple={pressableFeedback.androidRipple}
+        style={pressableFeedback.style(styles.markResolvedButton)}
       >
         <Text
           style={[styles.markResolved, disabled && styles.markResolvedDisabled]}
         >
           {t('ticketScreen.markAsResolved')}
         </Text>
-      </TouchableOpacity>
+      </Pressable>
     );
-  }, [ticket?.status, canMarkResolved, onPressMarkResolved, styles, t]);
+  }, [
+    ticket?.status,
+    canMarkResolved,
+    onPressMarkResolved,
+    pressableFeedback,
+    styles,
+    t,
+  ]);
 
   useEffect(() => {
     navigation.setOptions({ headerRight });

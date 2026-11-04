@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { open } from 'react-native-file-viewer';
 
 import {
@@ -9,6 +9,8 @@ import {
   useStylesheet,
 } from '@polito/lib/ui';
 import { TicketAttachment } from '@polito/student-api-client';
+
+import { usePressableFeedback } from '~/core/hooks/usePressableFeedback';
 
 import {
   useGetTicketAttachment,
@@ -28,6 +30,7 @@ export const TicketAttachmentChip = ({
   replyId,
 }: TicketAttachmentChipProps) => {
   const styles = useStylesheet(createStyles);
+  const pressableFeedback = usePressableFeedback('opacity');
   const [shouldOpen, setShouldOpen] = useState<boolean>(false);
   const isReply = useMemo(() => replyId !== undefined, [replyId]);
 
@@ -68,7 +71,11 @@ export const TicketAttachmentChip = ({
 
   return (
     <ThemeContext.Provider value={darkTheme}>
-      <TouchableOpacity onPress={onPressAttachment} style={styles.container}>
+      <Pressable
+        onPress={onPressAttachment}
+        android_ripple={pressableFeedback.androidRipple}
+        style={pressableFeedback.style(styles.container)}
+      >
         <AttachmentChip
           attachment={{
             name: attachment.filename,
@@ -80,15 +87,18 @@ export const TicketAttachmentChip = ({
             isDownloadingReplyAttachment || isDownloadingTicketAttachment
           }
         />
-      </TouchableOpacity>
+      </Pressable>
     </ThemeContext.Provider>
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ shapes, spacing }: Theme) =>
   StyleSheet.create({
     container: {
       maxWidth: '100%',
       marginTop: spacing[4],
+      // Matches the chip shape, clipping the Android ripple to its corners
+      borderRadius: shapes.xl,
+      overflow: 'hidden',
     },
   });

@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { useFeedbackContext } from '@polito/lib/core';
 import { ListItem, Text, Theme, useStylesheet } from '@polito/lib/ui';
 import { GuideField } from '@polito/student-api-client';
 import Clipboard from '@react-native-clipboard/clipboard';
+
+import { usePressableFeedback } from '~/core/hooks/usePressableFeedback';
 
 type Props = {
   field: GuideField;
@@ -12,6 +14,7 @@ type Props = {
 export const GuideFieldListItem = ({ field }: Props) => {
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
+  const pressableFeedback = usePressableFeedback('opacity');
   const { setFeedback } = useFeedbackContext();
   const copyToClipboard = () => {
     if (!field.isCopyEnabled) return;
@@ -26,14 +29,17 @@ export const GuideFieldListItem = ({ field }: Props) => {
       title={
         <View style={styles.row}>
           <Text style={[styles.text, styles.label]}>{field.label}</Text>
-          <TouchableOpacity
-            activeOpacity={field.isCopyEnabled ? 0.2 : 1}
+          <Pressable
             onPress={copyToClipboard}
+            android_ripple={
+              field.isCopyEnabled ? pressableFeedback.androidRipple : undefined
+            }
+            style={field.isCopyEnabled ? pressableFeedback.style() : undefined}
           >
             <Text weight="semibold" style={styles.text}>
               {field.value}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       }
     />

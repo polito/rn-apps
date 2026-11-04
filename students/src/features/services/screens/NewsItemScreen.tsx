@@ -1,10 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  TouchableHighlight,
-} from 'react-native';
+import { Pressable, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 import {
   faCalendarAlt,
@@ -32,6 +27,8 @@ import {
 } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { usePressableFeedback } from '~/core/hooks/usePressableFeedback';
+
 import { useGetNewsItem } from '../../../core/queries/newsHooks';
 import { ServiceStackParamList } from '../components/ServicesNavigator';
 
@@ -39,7 +36,8 @@ type Props = NativeStackScreenProps<ServiceStackParamList, 'NewsItem'>;
 
 export const NewsItemScreen = ({ route }: Props) => {
   const { id } = route?.params || {};
-  const { palettes, spacing, colors } = useTheme();
+  const { palettes, spacing } = useTheme();
+  const pressableFeedback = usePressableFeedback();
   const { t } = useTranslation();
   const useNewsItemQuery = useGetNewsItem(id);
   const { data: newsItem, isLoading } = useNewsItemQuery;
@@ -132,13 +130,13 @@ export const NewsItemScreen = ({ route }: Props) => {
                   </Row>
                 )}
                 {links?.map((link, index) => (
-                  <TouchableHighlight
-                    underlayColor={colors.touchableHighlight}
+                  <Pressable
+                    android_ripple={pressableFeedback.androidRipple}
                     onPress={() => openInAppLink(link.url)}
                     key={index}
                     accessible
                     accessibilityRole="link"
-                    style={styles.infoRow}
+                    style={pressableFeedback.style(styles.infoRow)}
                   >
                     <Row align="center">
                       <Icon
@@ -150,7 +148,7 @@ export const NewsItemScreen = ({ route }: Props) => {
                         {link.description}
                       </Text>
                     </Row>
-                  </TouchableHighlight>
+                  </Pressable>
                 ))}
               </Col>
             </Card>
