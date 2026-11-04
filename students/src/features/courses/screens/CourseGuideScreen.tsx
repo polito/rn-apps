@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { Platform, SafeAreaView, ScrollView } from 'react-native';
+import { Platform, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   BottomBarSpacer,

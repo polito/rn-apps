@@ -1,4 +1,5 @@
-import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { Platform, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { getHtmlTextContent } from '@polito/lib/core';
 import {

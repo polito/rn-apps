@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { linkUrls, sanitizeHtml } from '@polito/lib/core';
 import { BottomBarSpacer, RefreshControl, useTheme } from '@polito/lib/ui';

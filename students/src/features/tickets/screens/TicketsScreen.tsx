@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import {
   AccessibilityInfo,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Defs, LinearGradient, Rect, Stop, Svg } from 'react-native-svg';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';

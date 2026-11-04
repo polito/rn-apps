@@ -2,14 +2,16 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AccessibilityInfo,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
   findNodeHandle,
   useWindowDimensions,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 import {
   IS_ANDROID,

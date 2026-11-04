@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { Platform, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   formatDate,

@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import {
   Alert,
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
   ViewProps,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   Card,

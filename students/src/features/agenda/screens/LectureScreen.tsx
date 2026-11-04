@@ -1,12 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Dimensions,
-  ListRenderItemInfo,
-  SafeAreaView,
-  ScrollView,
-  View,
-} from 'react-native';
+import { Dimensions, ListRenderItemInfo, ScrollView, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import {

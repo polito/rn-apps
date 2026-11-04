@@ -1,7 +1,8 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useTranslation } from 'react-i18next';
-import { Pressable, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';

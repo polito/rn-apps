@@ -1,11 +1,6 @@
 import { useCallback } from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from 'react-native';
+import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { DateTime } from 'luxon';
 

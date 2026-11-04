@@ -10,8 +10,11 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Image, Platform, SafeAreaView, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Image, Platform, StyleSheet, View } from 'react-native';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';

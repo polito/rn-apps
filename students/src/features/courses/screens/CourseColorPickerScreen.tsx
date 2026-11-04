@@ -5,8 +5,9 @@ import {
 
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { usePreferencesContext } from '@polito/lib/core';
 import { courseColors } from '@polito/lib/features/courses';
