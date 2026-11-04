@@ -166,6 +166,8 @@ export const BookingTopicScreen = ({ navigation }: Props) => {
                   borderTopRightRadius: isFirstItem ? shapes.lg : 0,
                   borderBottomRightRadius: isLastItem ? shapes.lg : 0,
                   borderBottomLeftRadius: isLastItem ? shapes.lg : 0,
+                  // Clips the Android ripple to the rounded corners
+                  overflow: 'hidden',
                 })}
               >
                 <Row

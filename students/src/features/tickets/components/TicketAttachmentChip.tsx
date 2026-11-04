@@ -92,10 +92,13 @@ export const TicketAttachmentChip = ({
   );
 };
 
-const createStyles = ({ spacing }: Theme) =>
+const createStyles = ({ shapes, spacing }: Theme) =>
   StyleSheet.create({
     container: {
       maxWidth: '100%',
       marginTop: spacing[4],
+      // Matches the chip shape, clipping the Android ripple to its corners
+      borderRadius: shapes.xl,
+      overflow: 'hidden',
     },
   });

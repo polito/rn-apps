@@ -71,5 +71,7 @@ const createStyles = ({ spacing }: Theme) =>
     trailingButton: {
       padding: spacing[2],
       borderRadius: spacing[2],
+      // Clips the Android ripple to the rounded corners
+      overflow: 'hidden',
     },
   });
