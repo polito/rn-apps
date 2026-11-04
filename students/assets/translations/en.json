@@ -418,6 +418,7 @@
     "fileSavedPrefix": "File saved in"
   },
   "courseFilesTab": {
+    "removedFileNotification": "Looks like a file with a notification badge was removed by the teacher.",
     "browseFiles": "Browse files",
     "empty": "There are no files",
     "navigateFolders": "Navigate folders",

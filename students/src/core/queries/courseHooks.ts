@@ -216,10 +216,11 @@ export const useGetCourseEditions = (courseId: number) => {
 
 const courseFilesStaleTime = 60000; // 1 minute
 
-export const useGetCourseFiles = (courseId: number) => {
+export const useGetCourseFiles = (courseId: number, enabled = true) => {
   const coursesClient = useCoursesClient();
 
   return useQuery({
+    enabled,
     queryKey: getCourseKey(courseId, CourseSectionEnum.Files),
     queryFn: () => {
       return coursesClient
@@ -288,7 +289,7 @@ const computeFileLocations = (
 /**
  * Extract a flat array of files contained into the given directory tree
  */
-const flattenFiles = (
+export const flattenFiles = (
   directoryContent:
     | CourseDirectoryContentWithLocations[]
     | CourseFileOverviewWithLocation[],

@@ -429,6 +429,20 @@ export const useMarkNotificationAsRead = (invalidate: boolean = true) => {
   });
 };
 
+/**
+ * Deletes a notification. Failures are only logged, since this is used for
+ * background cleanups the user didn't explicitly request.
+ */
+export const useDeleteNotification = () => {
+  const studentClient = useStudentClient();
+
+  return useMutation({
+    mutationFn: (notificationId: number) =>
+      studentClient.deleteNotification({ notificationId }),
+    onError: error => console.warn('Unable to delete notification', error),
+  });
+};
+
 export const useGetNotificationPreferences = () => {
   const studentClient = useStudentClient();
 

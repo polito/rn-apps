@@ -58,7 +58,7 @@ const courseTransactionsMapping: Record<
   matdid: { section: 'files', screen: 'CourseFilesScreen' },
 };
 
-const useUnreadNotificationsByScope = () => {
+export const useUnreadNotificationsByScope = () => {
   const { data: notifications } = useGetNotifications();
   return (notifications?.data
     ?.filter(n => !n.isRead)
