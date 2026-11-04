@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 
-import { useDeviceLanguage, usePreferencesContext } from '../../../core';
+import { usePreferencesContext } from '../../../core';
 import { UnsupportedIdentityTypeError } from '../errors/UnsupportedIdentityTypeError';
 import {
   useLogin,
@@ -12,9 +12,10 @@ import {
 
 export const useAuth = (ssoKey?: string) => {
   const { t } = useTranslation();
-  const { loginUid } = usePreferencesContext();
+  // The app language (which defaults to the device one) is sent on login, so
+  // that the server keeps using the language selected in the app settings
+  const { loginUid, language } = usePreferencesContext();
   const { mutateAsync: login, isPending: isLoading } = useLogin();
-  const language = useDeviceLanguage();
   const handleSSO = useSSOLoginInitiator();
   const viewChpass = useVisitChpass();
 
