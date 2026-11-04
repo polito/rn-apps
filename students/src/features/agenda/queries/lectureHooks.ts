@@ -7,11 +7,7 @@ import {
   toOASTruncable,
   usePreferencesContext,
 } from '@polito/lib/core';
-import {
-  Lecture as ApiLecture,
-  LecturesApi,
-  ResponseError,
-} from '@polito/student-api-client';
+import { LecturesApi, ResponseError } from '@polito/student-api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
 import { AppPreferences, CoursesPreferences } from '~/core/types/preferences';
@@ -25,38 +21,9 @@ import {
 import { CourseOverview } from '../../../core/types/api';
 import { Lecture } from '../types/Lecture';
 import { formatNextLecture } from '../utils/formatters';
+import { resolveLectureCourse } from '../utils/lectures';
 
 export const LECTURES_QUERY_PREFIX = 'lectures';
-
-const addUniqueShortcodeToLectures = (
-  lectures: ApiLecture[],
-  courses: CourseOverview[],
-): Lecture[] => {
-  return lectures.map(lecture => {
-    const parentCourse = courses!.find(c =>
-      c.modules?.some(module => module.id === lecture.courseId),
-    );
-
-    if (parentCourse) {
-      const moduleIndex = parentCourse.modules?.findIndex(
-        module => module.id === lecture.courseId,
-      );
-      if (moduleIndex !== undefined && moduleIndex >= 0) {
-        const moduleUniqueShortcode = `${parentCourse.uniqueShortcode}${moduleIndex + 1}`;
-        return {
-          ...lecture,
-          uniqueShortcode: moduleUniqueShortcode,
-        };
-      }
-    }
-
-    return {
-      ...lecture,
-      uniqueShortcode: courses!.find(course => course.id === lecture.courseId)
-        ?.uniqueShortcode,
-    };
-  });
-};
 
 const useLectureClient = (): LecturesApi => {
   return new LecturesApi();
@@ -123,7 +90,9 @@ const getLectureWeekQueryFn = async (
       courseIds: visibleCourseIds,
     })
     .then(pluckData)
-    .then(l => addUniqueShortcodeToLectures(l, courses!));
+    .then(lectures =>
+      lectures.map(lecture => resolveLectureCourse(lecture, courses)),
+    );
 };
 
 export const useGetLectureWeek = (
@@ -193,35 +162,7 @@ export const useGetNextLecture = (courseId: number) => {
       try {
         const response = await coursesClient.getNextLecture({ courseId });
         if (!response?.data) return null;
-        let lecture = response.data as Lecture;
-        if (courses) {
-          const parentCourse = courses.find(c =>
-            c.modules?.some(module => module.id === courseId),
-          );
-          if (parentCourse) {
-            const moduleIndex = parentCourse.modules?.findIndex(
-              module => module.id === courseId,
-            );
-            if (moduleIndex !== undefined && moduleIndex >= 0) {
-              const moduleUniqueShortcode = `${parentCourse.uniqueShortcode}${moduleIndex + 1}`;
-
-              lecture = {
-                ...lecture,
-                uniqueShortcode: moduleUniqueShortcode,
-              };
-            } else {
-              const course = courses.find(c => c.id === lecture.courseId);
-              lecture = {
-                ...lecture,
-                uniqueShortcode: course?.uniqueShortcode,
-              };
-            }
-          } else {
-            const course = courses.find(c => c.id === lecture.courseId);
-            lecture = { ...lecture, uniqueShortcode: course?.uniqueShortcode };
-          }
-        }
-        return lecture;
+        return resolveLectureCourse(response.data, courses ?? [], courseId);
       } catch (e) {
         if (e instanceof ResponseError && e.response.status === 404) {
           return null;
