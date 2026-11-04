@@ -260,13 +260,21 @@ const LanguageListItem = () => {
       })}
       onPressAction={({ nativeEvent: { event } }) => {
         const lang = event as 'it' | 'en';
+        const previousLang = language;
 
-        mutate({ updatePreferencesRequest: { language: lang } });
-        updatePreference('language', lang);
+        const applyLanguage = (l: 'it' | 'en') => {
+          updatePreference('language', l);
+          i18next.changeLanguage(l).then(() => (Settings.defaultLocale = l));
+        };
 
-        i18next
-          .changeLanguage(lang)
-          .then(() => (Settings.defaultLocale = lang));
+        // The language is applied right away so that the queries refetched
+        // after a successful update already use it, and restored if the
+        // server rejects the change, keeping the app and server in sync
+        applyLanguage(lang);
+        mutate(
+          { updatePreferencesRequest: { language: lang } },
+          { onError: () => applyLanguage(previousLang) },
+        );
       }}
     >
       <ListItem
