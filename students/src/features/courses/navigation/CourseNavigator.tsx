@@ -17,6 +17,7 @@ import { useNotifications } from '../../../core/hooks/useNotifications';
 import { useGetCourses } from '../../../core/queries/courseHooks';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseContext } from '../contexts/CourseContext';
+import { useClearRemovedFileNotifications } from '../hooks/useClearRemovedFileNotifications';
 import { CourseAssignmentsScreen } from '../screens/CourseAssignmentsScreen';
 import { CourseInfoScreen } from '../screens/CourseInfoScreen';
 import { CourseLecturesScreen } from '../screens/CourseLecturesScreen';
@@ -50,6 +51,7 @@ export const CourseNavigator = ({ route, navigation }: Props) => {
     lockEdition,
   } = route.params;
   const coursesQuery = useGetCourses();
+  useClearRemovedFileNotifications(id);
 
   useEffect(() => {
     if (!coursesQuery.data) return;

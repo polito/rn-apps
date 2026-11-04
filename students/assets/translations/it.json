@@ -430,6 +430,7 @@
     "fileSavedPrefix": "File salvato in"
   },
   "courseFilesTab": {
+    "removedFileNotification": "Sembra che un file con una notifica sia stato rimosso dal docente.",
     "browseFiles": "Esplora file",
     "empty": "Non ci sono file",
     "navigateFolders": "Sfoglia le cartelle",
