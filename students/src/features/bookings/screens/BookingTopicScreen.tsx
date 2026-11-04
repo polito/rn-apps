@@ -1,12 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Pressable,
-  SafeAreaView,
-  SectionList,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import { Pressable, SafeAreaView, SectionList, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -27,6 +21,8 @@ import {
 } from '@polito/lib/ui';
 import { BookingSubtopic } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { usePressableFeedback } from '~/core/hooks/usePressableFeedback';
 
 import { useGetBookingTopics } from '../../../core/queries/bookingHooks';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
@@ -50,6 +46,7 @@ export const BookingTopicScreen = ({ navigation }: Props) => {
 
   const [sections, setSections] = useState<TopicSection[]>([]);
   const { colors, fontWeights, spacing, shapes } = useTheme();
+  const pressableFeedback = usePressableFeedback();
 
   useEffect(() => {
     if (topicsQuery.data) {
@@ -157,10 +154,10 @@ export const BookingTopicScreen = ({ navigation }: Props) => {
             const isFirstItem = index === 0;
             const isLastItem = index === section.data.length - 1;
             return section?.isExpanded ? (
-              <TouchableHighlight
-                underlayColor={colors.touchableHighlight}
+              <Pressable
+                android_ripple={pressableFeedback.androidRipple}
                 onPress={() => onSelectTopic(subtopic.id, subtopic.title)}
-                style={{
+                style={pressableFeedback.style({
                   marginHorizontal: spacing[4],
                   marginBottom: isLastItem ? spacing[2] : 0,
                   backgroundColor: colors.background,
@@ -169,7 +166,7 @@ export const BookingTopicScreen = ({ navigation }: Props) => {
                   borderTopRightRadius: isFirstItem ? shapes.lg : 0,
                   borderBottomRightRadius: isLastItem ? shapes.lg : 0,
                   borderBottomLeftRadius: isLastItem ? shapes.lg : 0,
-                }}
+                })}
               >
                 <Row
                   justify="space-between"
@@ -182,7 +179,7 @@ export const BookingTopicScreen = ({ navigation }: Props) => {
                   </Text>
                   <Icon icon={faChevronRight} color={colors.secondaryText} />
                 </Row>
-              </TouchableHighlight>
+              </Pressable>
             ) : null;
           }}
         />

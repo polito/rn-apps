@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableHighlight } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import {
@@ -9,6 +9,8 @@ import {
   useStylesheet,
   useTheme,
 } from '@polito/lib/ui';
+
+import { usePressableFeedback } from '~/core/hooks/usePressableFeedback';
 
 type Props = {
   icon: IconDefinition;
@@ -28,6 +30,7 @@ export const GraduationCodeDetailRow = ({
   trailingAccessibilityLabel,
 }: Props) => {
   const { colors, fontSizes } = useTheme();
+  const pressableFeedback = usePressableFeedback();
   const styles = useStylesheet(createStyles);
 
   return (
@@ -42,15 +45,15 @@ export const GraduationCodeDetailRow = ({
         {value}
       </Text>
       {trailingIcon && onPressTrailing && (
-        <TouchableHighlight
+        <Pressable
           onPress={onPressTrailing}
-          underlayColor={colors.touchableHighlight}
-          style={styles.trailingButton}
+          android_ripple={pressableFeedback.androidRipple}
+          style={pressableFeedback.style(styles.trailingButton)}
           accessibilityRole="button"
           accessibilityLabel={trailingAccessibilityLabel}
         >
           <Icon icon={trailingIcon} size={fontSizes.lg} color={colors.title} />
-        </TouchableHighlight>
+        </Pressable>
       )}
     </Row>
   );

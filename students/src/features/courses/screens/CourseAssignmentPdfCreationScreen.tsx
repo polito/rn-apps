@@ -4,8 +4,8 @@ import {
   FlatList,
   Image,
   Platform,
+  Pressable,
   StyleSheet,
-  TouchableHighlight,
   View,
   useWindowDimensions,
 } from 'react-native';
@@ -34,6 +34,8 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { usePressableFeedback } from '~/core/hooks/usePressableFeedback';
 
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 
@@ -258,12 +260,13 @@ const Action = ({
   onPress,
 }: ActionProps) => {
   const styles = useStylesheet(createStyles);
-  const { colors, palettes, fontSizes } = useTheme();
+  const { palettes, fontSizes } = useTheme();
+  const pressableFeedback = usePressableFeedback();
   return (
-    <TouchableHighlight
+    <Pressable
       onPress={onPress}
-      style={styles.actionHighlight}
-      underlayColor={colors.touchableHighlight}
+      style={pressableFeedback.style(styles.actionHighlight)}
+      android_ripple={pressableFeedback.androidRipple}
       disabled={disabled}
     >
       <View style={styles.action}>
@@ -279,7 +282,7 @@ const Action = ({
         )}
         <Text>{label}</Text>
       </View>
-    </TouchableHighlight>
+    </Pressable>
   );
 };
 
