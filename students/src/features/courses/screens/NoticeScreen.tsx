@@ -30,6 +30,17 @@ export const NoticeScreen = ({ route }: Props) => {
     [noticesQuery, noticeId],
   );
 
+  const htmlRenderersProps = useMemo(
+    () => ({
+      table: {
+        webViewProps: {
+          style: { overflow: 'hidden' },
+        },
+      },
+    }),
+    [],
+  );
+
   useFocusEffect(
     useCallback(() => {
       clearNotificationScope([
@@ -55,6 +66,7 @@ export const NoticeScreen = ({ route }: Props) => {
             paddingTop: 0,
             paddingHorizontal: spacing[5],
           }}
+          renderersProps={htmlRenderersProps}
         />
         <BottomBarSpacer />
       </SafeAreaView>
