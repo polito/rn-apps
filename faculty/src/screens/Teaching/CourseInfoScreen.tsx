@@ -3,14 +3,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
+import { usePreferencesContext } from '@polito/lib/core';
 import {
   ActivityIndicator,
   BottomBarSpacer,
   Card,
-  DisclosureIndicator,
   GlobalStyles,
   IndentedDivider,
-  ListItem,
   Metric,
   OverviewList,
   PersonListItem,
@@ -24,12 +23,30 @@ import { Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 import { Person } from '@polito/student-api-client';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { SectionHeaderLink } from '../../core/components/SectionHeaderLink';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useGetCourse } from '../../core/queries/courseHooks';
 import { useGetPersons } from '../../core/queries/peopleHooks';
 import { CourseTabsParamList } from './CourseNavigator';
+import { CourseNextLecture } from './CourseNextLecture';
 import { ExamListItem } from './ExamListItem';
 import { MoodleStatusBadge } from './MoodleStatusBagde';
+import { getStaffRole } from './courseRole';
+
+const StaffSectionHeader = () => {
+  const { t } = useTranslation();
+  const title = t('courseInfoTab.staffSectionTitle');
+  const editLabel = t('common.edit');
+
+  return (
+    <SectionHeader
+      title={title}
+      linkTo="CourseStaffScreen"
+      accessibilityLabel={[title, editLabel].join(', ')}
+      trailingItem={<SectionHeaderLink label={editLabel} />}
+    />
+  );
+};
 
 const ApiCourseInfo = ({ courseId }: { courseId: number }) => {
   const { t } = useTranslation();
@@ -82,13 +99,14 @@ const ApiCourseInfo = ({ courseId }: { courseId: number }) => {
                 style={styles.periodMetric}
                 color={palettes.secondary[700]}
               />
+              <MoodleStatusBadge />
             </Row>
           </View>
         </Card>
 
         {course.staff.length > 0 && (
           <Section>
-            <SectionHeader title={t('courseInfoTab.staffSectionTitle')} />
+            <StaffSectionHeader />
             <OverviewList indented style={styles.listContainer}>
               {course.staff.map((member, index) => {
                 const person = staffQueries[index]?.data;
@@ -99,8 +117,8 @@ const ApiCourseInfo = ({ courseId }: { courseId: number }) => {
                       person={person}
                       subtitle={t(
                         member.role === 'Titolare'
-                          ? 'common.roleHolder'
-                          : 'common.roleCollaborator',
+                          ? 'teachingScreen.owner'
+                          : 'teachingScreen.collaborator',
                       )}
                     />
                     {index < course.staff.length - 1 && <IndentedDivider />}
@@ -111,16 +129,6 @@ const ApiCourseInfo = ({ courseId }: { courseId: number }) => {
           </Section>
         )}
 
-        <Section>
-          <SectionHeader title={t('other.other')} />
-          <OverviewList indented style={styles.listContainer}>
-            <ListItem
-              title={t('courseGuideScreen.title')}
-              linkTo={{ screen: 'CourseGuide', params: { courseId } }}
-              trailingItem={<DisclosureIndicator />}
-            />
-          </OverviewList>
-        </Section>
         <BottomBarSpacer />
       </SafeAreaView>
     </ScrollView>
@@ -142,6 +150,9 @@ const FakeCourseInfo = () => {
   const { t } = useTranslation();
   const { palettes, spacing, fontFamilies } = useTheme();
   const { selectedCourse } = useCourses();
+  const { courses: coursesPrefs } = usePreferencesContext();
+  const isExamCallsHidden =
+    !!selectedCourse && !!coursesPrefs[selectedCourse.code]?.isExamCallsHidden;
   const styles = useStylesheet(createStyles);
   const { setOptions } = useNavigation();
 
@@ -205,11 +216,10 @@ const FakeCourseInfo = () => {
           </View>
         </Card>
 
+        <CourseNextLecture lessons={selectedCourse.lessons} />
+
         <Section>
-          <SectionHeader
-            title={t('courseInfoTab.staffSectionTitle')}
-            linkTo="#"
-          />
+          <StaffSectionHeader />
           <OverviewList indented style={styles.listContainer}>
             {selectedCourse.staff.map((member, index) => {
               const person: Person = {
@@ -225,15 +235,13 @@ const FakeCourseInfo = () => {
                 profileUrl: '',
                 courses: [],
               };
-              const t_role =
-                member.role === 'Titolare' ? 'roleHolder' : 'roleCollaborator';
 
               return (
                 <React.Fragment key={member.id}>
                   <PersonListItem
                     key={`${member.id}`}
                     person={person}
-                    subtitle={t(`common.${t_role}`)}
+                    subtitle={t(`teachingScreen.${getStaffRole(member)}`)}
                   />
                   {index < selectedCourse.staff.length - 1 && (
                     <IndentedDivider />
@@ -244,68 +252,60 @@ const FakeCourseInfo = () => {
           </OverviewList>
         </Section>
 
-        <Section>
-          <SectionHeader title={t('examsScreen.title')} />
-          <OverviewList indented style={styles.listContainer}>
-            {selectedCourse.examcalls.map((call, index) => (
-              <React.Fragment key={call.id}>
-                <ExamListItem
-                  /* hardcoded exam object for the exam list item */
-                  exam={{
-                    courseId: selectedCourse.id,
-                    isTimeToBeDefined: false,
-                    uniqueShortcode: selectedCourse.code,
-                    id: call.idExam,
-                    courseShortcode: selectedCourse.code,
-                    courseName: selectedCourse.title,
-                    teacherId: 1,
-                    type: '',
-                    status: 'unavailable',
-                    bookingStartsAt: new Date('2025-12-09 09:00:00'),
-                    bookingEndsAt: new Date('2026-01-09 09:00:00'),
-                    examStartsAt:
-                      call.date === 'Oggi' || call.date === 'Today'
-                        ? new Date()
-                        : new Date(call.date),
-                    examEndsAt: new Date('2026-01-19 12:00:00'),
-                    bookedCount: 5,
-                    availableCount: 100,
-                    question: null,
-                    feedback: null,
-                    isReschedulable: false,
-                    notes: 'Bring your ID card.',
-                    moduleNumber: 1,
-                    places: [
-                      {
-                        buildingId: 'R2',
-                        name: 'Aula R2',
-                        floorId: '1',
-                        roomId: '101',
-                        siteId: 'Centrale',
-                      },
-                    ],
-                    requestReason: null,
-                    requestDetails: null,
-                  }}
-                />
-                {index < selectedCourse.examcalls.length - 1 && (
-                  <IndentedDivider />
-                )}
-              </React.Fragment>
-            ))}
-          </OverviewList>
-        </Section>
+        {!isExamCallsHidden && (
+          <Section>
+            <SectionHeader title={t('examsScreen.title')} />
+            <OverviewList indented style={styles.listContainer}>
+              {selectedCourse.examcalls.map((call, index) => (
+                <React.Fragment key={call.id}>
+                  <ExamListItem
+                    /* hardcoded exam object for the exam list item */
+                    exam={{
+                      courseId: selectedCourse.id,
+                      isTimeToBeDefined: false,
+                      uniqueShortcode: selectedCourse.code,
+                      id: call.idExam,
+                      courseShortcode: selectedCourse.code,
+                      courseName: selectedCourse.title,
+                      teacherId: 1,
+                      type: '',
+                      status: 'unavailable',
+                      bookingStartsAt: new Date('2025-12-09 09:00:00'),
+                      bookingEndsAt: new Date('2026-01-09 09:00:00'),
+                      examStartsAt:
+                        call.date === 'Oggi' || call.date === 'Today'
+                          ? new Date()
+                          : new Date(call.date),
+                      examEndsAt: new Date('2026-01-19 12:00:00'),
+                      bookedCount: 5,
+                      availableCount: 100,
+                      question: null,
+                      feedback: null,
+                      isReschedulable: false,
+                      notes: 'Bring your ID card.',
+                      moduleNumber: 1,
+                      places: [
+                        {
+                          buildingId: 'R2',
+                          name: 'Aula R2',
+                          floorId: '1',
+                          roomId: '101',
+                          siteId: 'Centrale',
+                        },
+                      ],
+                      requestReason: null,
+                      requestDetails: null,
+                    }}
+                  />
+                  {index < selectedCourse.examcalls.length - 1 && (
+                    <IndentedDivider />
+                  )}
+                </React.Fragment>
+              ))}
+            </OverviewList>
+          </Section>
+        )}
 
-        <Section>
-          <SectionHeader title={t('other.other')} linkTo="" />
-          <OverviewList indented style={styles.listContainer}>
-            <ListItem
-              title={t('courseGuideScreen.title')}
-              linkTo="CourseGuide"
-              trailingItem={<DisclosureIndicator />}
-            />
-          </OverviewList>
-        </Section>
         <BottomBarSpacer />
       </SafeAreaView>
     </ScrollView>

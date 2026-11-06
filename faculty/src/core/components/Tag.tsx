@@ -5,23 +5,28 @@ import { Row, Text, useTheme } from '@polito/lib/ui';
 
 import color from 'color';
 
+export type TagColor = 'primary' | 'success' | 'gray';
+
 type Props = {
   text: string;
   icon?: IconDefinition;
+  color?: TagColor;
 };
 
-export const Tag = ({ text }: Props) => {
+export const Tag = ({ text, color: tagColor = 'primary' }: Props) => {
   const { dark, palettes, fontSizes, spacing } = useTheme();
 
   const backgroundColor = useMemo(
     () =>
-      color(palettes.primary[dark ? 600 : 50])
+      color(palettes[tagColor][dark ? 600 : 50])
         .alpha(0.4)
         .toString(),
-    [dark, palettes],
+    [dark, palettes, tagColor],
   );
 
-  const foregroundColor = dark ? palettes.primary[400] : palettes.primary[500];
+  const foregroundColor = dark
+    ? palettes[tagColor][400]
+    : palettes[tagColor][tagColor === 'primary' ? 500 : 700];
 
   return (
     <Row

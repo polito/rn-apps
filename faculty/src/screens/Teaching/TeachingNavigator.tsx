@@ -1,13 +1,18 @@
 import { createContext, memo, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 
 import { TeachingNavigatorID } from '@polito/lib/core';
+import {
+  PlacesNavigator,
+  type PlacesStackParamList,
+} from '@polito/lib/features/places';
 import {
   createHeaderCloseButton,
   useTheme,
   useTitlesStyles,
 } from '@polito/lib/ui';
+import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { ModifyFileScreen } from '../../features/files/screens/ModifyFileScreen';
@@ -66,6 +71,7 @@ export type TeachingStackParamList = Omit<
   MyCourses: undefined;
   ManagedCourses: undefined;
   ExamsCalls: undefined;
+  PlacesTeachingStack: NavigatorScreenParams<PlacesStackParamList>;
   Exam: { id: number };
   Form: undefined;
   Lecture: undefined;
@@ -287,6 +293,15 @@ const TeachingNavigatorStack = memo(() => {
           headerTitle: t('common.transcript'),
         }}
       />
+      <Stack.Screen
+        name="PlacesTeachingStack"
+        options={{
+          title: t('other.places'),
+          headerShown: false,
+        }}
+      >
+        {() => <PlacesNavigator unreadMessagesModal={View} />}
+      </Stack.Screen>
       {CourseSharedScreens()}
     </Stack.Navigator>
   );

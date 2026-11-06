@@ -37,32 +37,38 @@ export const CoursesScreen = () => {
                 },
                 {} as Record<string, typeof fakeCourses>,
               ) as Record<string, typeof fakeCourses>,
-            ).map(([year, courses]) => (
-              <Section key={year}>
-                <SectionHeader
-                  title={
-                    year !== 'undefined'
-                      ? `${t('common.academicYearShort')} ${year}`
-                      : t('coursesScreen.otherCoursesSectionTitle')
-                  }
-                  accessibilityLabel={`${
-                    year !== 'undefined'
-                      ? `${t('common.academicYearShort')} ${year}`
-                      : t('coursesScreen.otherCoursesSectionTitle')
-                  }. ${t('coursesScreen.total', { total: courses.length })}`}
-                />
-                <OverviewList style={styles.listContainer}>
-                  {courses.map((course, index) => (
-                    <React.Fragment key={course.code}>
-                      <CourseListItem course={course} />
-                      {index < courses.length - 1 && (
-                        <IndentedDivider style={styles.divider} />
-                      )}
-                    </React.Fragment>
-                  ))}
-                </OverviewList>
-              </Section>
-            ))
+            )
+              .sort(([a], [b]) => {
+                if (a === 'undefined') return 1;
+                if (b === 'undefined') return -1;
+                return b.localeCompare(a);
+              })
+              .map(([year, courses]) => (
+                <Section key={year}>
+                  <SectionHeader
+                    title={
+                      year !== 'undefined'
+                        ? `${t('common.academicYearShort')} ${year}`
+                        : t('coursesScreen.otherCoursesSectionTitle')
+                    }
+                    accessibilityLabel={`${
+                      year !== 'undefined'
+                        ? `${t('common.academicYearShort')} ${year}`
+                        : t('coursesScreen.otherCoursesSectionTitle')
+                    }. ${t('coursesScreen.total', { total: courses.length })}`}
+                  />
+                  <OverviewList style={styles.listContainer}>
+                    {courses.map((course, index) => (
+                      <React.Fragment key={course.code}>
+                        <CourseListItem course={course} />
+                        {index < courses.length - 1 && (
+                          <IndentedDivider style={styles.divider} />
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </OverviewList>
+                </Section>
+              ))
           ) : (
             <OverviewList emptyStateText={t('coursesScreen.emptyState')} />
           ))}
@@ -71,7 +77,7 @@ export const CoursesScreen = () => {
   );
 };
 
-const createStyles = ({ palettes, spacing }: Theme) =>
+const createStyles = ({ colors, spacing }: Theme) =>
   StyleSheet.create({
     scrollContainer: {
       paddingHorizontal: spacing[5],
@@ -86,6 +92,6 @@ const createStyles = ({ palettes, spacing }: Theme) =>
     },
     divider: {
       marginLeft: spacing[4],
-      backgroundColor: palettes.gray[300],
+      backgroundColor: colors.divider,
     },
   });

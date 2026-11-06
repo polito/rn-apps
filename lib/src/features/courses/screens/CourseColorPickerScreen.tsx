@@ -8,20 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 
-import { usePreferencesContext } from '@polito/lib/core';
-import { courseColors } from '@polito/lib/features/courses';
-import {
-  BottomBarSpacer,
-  CtaButton,
-  OverviewList,
-  Section,
-  SectionHeader,
-  useBottomBarAwareStyles,
-  useTheme,
-} from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-
-import { AppPreferences } from '~/core/types/preferences';
 
 import ColorPicker, {
   HueSlider,
@@ -30,11 +17,22 @@ import ColorPicker, {
   Swatches,
 } from 'reanimated-color-picker';
 
-import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
-import CustomAlert from '../components/CourseColorWarningModal';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import {
+  BottomBarSpacer,
+  CtaButton,
+  OverviewList,
+  Section,
+  SectionHeader,
+} from '../../../ui/components';
+import { useBottomBarAwareStyles } from '../../../ui/hooks/useBottomBarAwareStyles';
+import { useTheme } from '../../../ui/hooks/useTheme';
+import { CourseColorWarningModal } from '../components/CourseColorWarningModal';
+import { courseColors } from '../constants';
+import { ColorWarningPreferences, CoursePickersParamList } from '../types';
 
 type Props = NativeStackScreenProps<
-  TeachingStackParamList,
+  CoursePickersParamList,
   'CourseColorPicker'
 >;
 
@@ -47,7 +45,7 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
     courses: coursesPrefs,
     updatePreference,
     showColorWarning,
-  } = usePreferencesContext<AppPreferences>();
+  } = usePreferencesContext<ColorWarningPreferences>();
 
   const [isSafeColor, setIsSafeColor] = useState(true);
   const [temporaryColor, setTemporaryColor] = useState(
@@ -194,7 +192,7 @@ export const CourseColorPickerScreen = ({ route, navigation }: Props) => {
           />
         </View>
       </GestureHandlerRootView>
-      <CustomAlert
+      <CourseColorWarningModal
         visible={showModal}
         onConfirm={handleConfirm}
         onCancel={handleCancel}

@@ -61,7 +61,7 @@ export const AddStaffModalContent = () => {
     useNavigation<NativeStackNavigationProp<CourseSharedScreensParamList>>();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
-  const { palettes, fontSizes } = useTheme();
+  const { colors, dark, palettes, fontSizes } = useTheme();
   const { fakeProfiles, selectedCourse, selectedLecture } = useCourses();
   const [mode] = useState<Mode>('search');
   const [searchText, setSearchText] = useState('');
@@ -260,24 +260,26 @@ export const AddStaffModalContent = () => {
                         subtitle={searchText && getProfileCode(item.profile.id)}
                         onPress={() => toggleSelection(item.profile.id)}
                         titleStyle={{
-                          color: palettes.text[800],
+                          color: colors.prose,
                         }}
                         subtitleStyle={{
-                          color: palettes.gray[600],
+                          color: dark
+                            ? colors.secondaryText
+                            : palettes.gray[600],
                         }}
                         containerStyle={styles.selectedRow}
                         leadingItem={
                           <Icon
                             icon={faCircleUser}
                             size={24}
-                            color={palettes.primary[700]}
+                            color={colors.title}
                           />
                         }
                         trailingItem={
                           <Icon
                             icon={faMinus}
                             size={fontSizes.md}
-                            color={palettes.primary[600]}
+                            color={dark ? colors.link : palettes.primary[600]}
                           />
                         }
                       />
@@ -298,23 +300,25 @@ export const AddStaffModalContent = () => {
                         subtitle={searchText && getProfileCode(item.profile.id)}
                         onPress={() => toggleSelection(item.profile.id)}
                         titleStyle={{
-                          color: palettes.text[800],
+                          color: colors.prose,
                         }}
                         subtitleStyle={{
-                          color: palettes.gray[600],
+                          color: dark
+                            ? colors.secondaryText
+                            : palettes.gray[600],
                         }}
                         leadingItem={
                           <Icon
                             icon={faCircleUser}
                             size={24}
-                            color={palettes.primary[700]}
+                            color={colors.title}
                           />
                         }
                         trailingItem={
                           <Icon
                             icon={faPlus}
                             size={fontSizes.md}
-                            color={palettes.primary[600]}
+                            color={dark ? colors.link : palettes.primary[600]}
                           />
                         }
                       />
@@ -359,6 +363,7 @@ export const AddStaffModalContent = () => {
 };
 
 const createStyles = ({
+  dark,
   colors,
   palettes,
   spacing,
@@ -379,7 +384,7 @@ const createStyles = ({
     },
     searchContainer: {
       borderWidth: 1,
-      borderColor: palettes.gray[300],
+      borderColor: colors.divider,
     },
 
     searchTitleText: {
@@ -393,7 +398,7 @@ const createStyles = ({
     },
 
     sectionTitle: {
-      color: palettes.primary[700],
+      color: colors.title,
       fontSize: fontSizes.md,
       lineHeight: fontSizes.md * 1.25,
       fontWeight: fontWeights.semibold,
@@ -403,12 +408,12 @@ const createStyles = ({
     },
     selectedCardContainer: {
       borderRadius: 18,
-      backgroundColor: palettes.gray[200],
+      backgroundColor: dark ? palettes.primary[600] : palettes.gray[200],
       overflow: 'hidden',
     },
 
     selectedRow: {
-      backgroundColor: palettes.gray[200],
+      backgroundColor: dark ? palettes.primary[600] : palettes.gray[200],
     },
     cardContainer: {
       borderRadius: 18,
@@ -419,7 +424,7 @@ const createStyles = ({
     divider: {
       marginLeft: 76,
       height: StyleSheet.hairlineWidth,
-      backgroundColor: palettes.gray[300],
+      backgroundColor: colors.divider,
     },
     emptyContainer: {
       padding: spacing[4],

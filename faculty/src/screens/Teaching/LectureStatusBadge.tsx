@@ -15,35 +15,35 @@ type Props = {
 export const LectureStatusBadge = ({ lecture, variant = 'filled' }: Props) => {
   const { t } = useTranslation();
   const [status, setStatus] = useState('');
-  const { palettes, spacing } = useTheme();
+  const { dark, palettes, spacing } = useTheme();
   const backgroundColor = useMemo(() => {
     switch (lecture?.status) {
       case 'compiled':
         setStatus(t('common.compiled'));
-        return '#F0FDF4';
+        return dark ? palettes.success[900] : '#F0FDF4';
       case 'to compile':
         setStatus(t('common.toCompile'));
-        return '#E0F2FE';
+        return dark ? palettes.primary[700] : '#E0F2FE';
       case 'draft':
         setStatus(t('common.draft'));
-        return '#FFF7ED';
+        return dark ? palettes.warning[900] : '#FFF7ED';
       default:
         return '';
     }
-  }, [lecture, t]);
+  }, [dark, lecture, palettes, t]);
 
   const foregroundColor = useMemo(() => {
     switch (lecture?.status) {
       case 'compiled':
-        return palettes.success[800];
+        return dark ? palettes.success[200] : palettes.success[800];
       case 'to compile':
-        return palettes.primary[600];
+        return dark ? palettes.primary[200] : palettes.primary[600];
       case 'draft':
-        return palettes.warning[800];
+        return dark ? palettes.warning[200] : palettes.warning[800];
       default:
         return '';
     }
-  }, [lecture, palettes]);
+  }, [dark, lecture, palettes]);
 
   const icon = useMemo(() => {
     switch (lecture?.status) {

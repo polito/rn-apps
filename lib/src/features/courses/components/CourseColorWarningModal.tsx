@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Modal, StyleSheet, Switch, Text, View } from 'react-native';
 
-import { usePreferencesContext } from '@polito/lib/core';
-import { useTheme } from '@polito/lib/ui';
+import { usePreferencesContext } from '../../../core/contexts/PreferencesContext';
+import { useTheme } from '../../../ui/hooks/useTheme';
+import { ColorWarningPreferences } from '../types';
 
-import { AppPreferences } from '~/core/types/preferences';
-
-type CustomAlertProps = {
+type CourseColorWarningModalProps = {
   visible: boolean;
   onConfirm: (dontShowAgain: boolean) => void;
   onCancel: () => void;
@@ -16,17 +15,17 @@ type CustomAlertProps = {
   dontShowAgainLabel?: string;
 };
 
-const CustomAlert = ({
+export const CourseColorWarningModal = ({
   visible,
   onConfirm,
   onCancel,
   footer,
   message,
   dontShowAgainLabel,
-}: CustomAlertProps) => {
+}: CourseColorWarningModalProps) => {
   const { t } = useTranslation();
   const { updatePreference, showColorWarning = true } =
-    usePreferencesContext<AppPreferences>();
+    usePreferencesContext<ColorWarningPreferences>();
   const { colors } = useTheme();
   const [dontShowAgain, setDontShowAgain] = useState(!showColorWarning);
 
@@ -112,5 +111,3 @@ const CustomAlert = ({
     </Modal>
   );
 };
-
-export default CustomAlert;

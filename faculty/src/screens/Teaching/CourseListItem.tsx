@@ -19,6 +19,7 @@ import { Tag } from '~/core/components/Tag';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { CourseIndicator } from '../../screens/Teaching/CourseIndicator';
 import { TeachingStackParamList } from './TeachingNavigator';
+import { COURSE_ROLE_TAG_COLOR, CourseRole, getCourseRole } from './courseRole';
 
 interface Props {
   course: any;
@@ -27,6 +28,7 @@ interface Props {
   badge?: number;
   showAllModules?: boolean;
   disabled?: boolean;
+  role?: CourseRole;
   onPress?: () => void;
 }
 
@@ -39,6 +41,7 @@ export const CourseListItem = ({
   course,
   accessible,
   disabled,
+  role: roleProp,
   onPress,
 }: Props) => {
   const { t } = useTranslation();
@@ -48,12 +51,13 @@ export const CourseListItem = ({
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
 
-  const role = t('teachingScreen.owner');
+  const courseRole: CourseRole = roleProp ?? getCourseRole(course) ?? 'owner';
+  const role = t(`teachingScreen.${courseRole}`);
 
   const subtitle = useMemo(() => {
     return (
       <Row style={styles.subtitle} pt={1}>
-        <Tag text={role} />
+        <Tag text={role} color={COURSE_ROLE_TAG_COLOR[courseRole]} />
         <Text
           style={[styles.subtitleText, { color: colors.secondaryText }]}
           numberOfLines={1}
@@ -62,7 +66,7 @@ export const CourseListItem = ({
         </Text>
       </Row>
     );
-  }, [styles, course.code, role, colors.secondaryText]);
+  }, [styles, course.code, role, courseRole, colors.secondaryText]);
 
   return (
     <ListItem

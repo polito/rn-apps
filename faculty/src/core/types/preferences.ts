@@ -21,6 +21,7 @@ export const editablePreferenceKeys = [
   'agendaScreen',
   'filesScreen',
   'hideGrades',
+  'showColorWarning',
 ] as const;
 
 // Specify here complex keys, that require serialization/deserialization
@@ -74,6 +75,7 @@ export type AppPreferences = {
   };
   filesScreen: 'filesView' | 'directoryView';
   hideGrades?: boolean;
+  showColorWarning?: boolean;
 };
 
 export const initialAppPreferences: AppPreferences = {

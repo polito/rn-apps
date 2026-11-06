@@ -240,7 +240,7 @@ export const HandleAccessModalContent = ({
   );
 };
 
-const createStyles = ({ palettes, spacing, fontSizes }: Theme) =>
+const createStyles = ({ dark, colors, palettes, spacing, fontSizes }: Theme) =>
   StyleSheet.create({
     container: {
       paddingHorizontal: spacing[5],
@@ -249,7 +249,7 @@ const createStyles = ({ palettes, spacing, fontSizes }: Theme) =>
     },
     headerText: {
       fontSize: fontSizes.md,
-      color: palettes.gray[800],
+      color: colors.prose,
       fontFamily: 'Montserrat-Medium',
     },
     boldText: {
@@ -262,10 +262,10 @@ const createStyles = ({ palettes, spacing, fontSizes }: Theme) =>
     },
 
     listItemContainer: {
-      backgroundColor: palettes.gray[100],
+      backgroundColor: dark ? colors.background : palettes.gray[100],
       borderRadius: 12,
       borderWidth: 1,
-      borderColor: palettes.gray[100],
+      borderColor: dark ? colors.background : palettes.gray[100],
     },
     listItemContainerSelected: {
       borderColor: palettes.primary[500],

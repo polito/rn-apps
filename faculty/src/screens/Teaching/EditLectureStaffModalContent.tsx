@@ -260,6 +260,7 @@ export const EditLectureStaffModalContent = () => {
 };
 
 const createStyles = ({
+  dark,
   spacing,
   colors,
   shapes,
@@ -298,11 +299,11 @@ const createStyles = ({
       paddingHorizontal: spacing[2],
       paddingVertical: spacing[0.5],
       borderRadius: shapes.lg,
-      backgroundColor: palettes.gray[200],
+      backgroundColor: dark ? palettes.gray[700] : palettes.gray[200],
     },
     selectedTypeText: {
       fontSize: 12,
-      color: palettes.gray[700],
+      color: dark ? palettes.gray[200] : palettes.gray[700],
       fontWeight: '600',
     },
     menuContainer: {
@@ -323,12 +324,12 @@ const createStyles = ({
       paddingRight: spacing[3],
     },
     menuItemIcon: {
-      color: palettes.primary[600],
+      color: dark ? colors.link : palettes.primary[600],
     },
     menuCaption: {
       paddingHorizontal: spacing[4],
       paddingTop: spacing[1],
-      color: palettes.gray[500],
+      color: colors.secondaryText,
       fontSize: 12,
     },
     dropDownIcon: {

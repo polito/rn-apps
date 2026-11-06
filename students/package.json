@@ -107,7 +107,7 @@
     "react-native-video": "^6.19.1",
     "react-native-worklets": "^0.8.1",
     "react-string-replace": "^1.1.1",
-    "reanimated-color-picker": "^4.1.1",
+    "reanimated-color-picker": "~4.2.0",
     "semver": "^7.7.3",
     "use-latest-callback": "^0.2.4"
   },

@@ -2,6 +2,7 @@ import {
   Children,
   PropsWithChildren,
   ReactElement,
+  Ref,
   cloneElement,
   isValidElement,
 } from 'react';
@@ -12,6 +13,7 @@ import { TabProps } from './Tab';
 
 interface Props {
   selectedIndexes?: number[];
+  ref?: Ref<ScrollView>;
 }
 
 /**

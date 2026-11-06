@@ -1,6 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { Platform, TouchableOpacity } from 'react-native';
 
+import {
+  CourseColorPickerScreen,
+  CourseIconPickerScreen,
+} from '@polito/lib/features/courses';
 import { Text, useTheme } from '@polito/lib/ui';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -31,6 +35,8 @@ export interface CourseSharedScreensParamList extends ParamListBase {
     uniqueShortcode?: string;
   };
   CoursePreferences: { courseId: number; uniqueShortcode: string };
+  CourseColorPicker: { courseId: number; uniqueShortcode: string };
+  CourseIconPicker: { courseId: number; uniqueShortcode: string };
   CourseGuide: { courseId: number };
   Notice: { noticeId: number; courseId: number };
   AddNoticeContent: { courseId: number };
@@ -94,7 +100,7 @@ const HeaderTextButton = ({ text, onPress }: HeaderTextButtonProps) => {
 };
 
 export const CourseSharedScreens = () => {
-  const { colors, fontSizes, fontWeights, fontFamilies, palettes } = useTheme();
+  const { colors, fontSizes, fontWeights, fontFamilies } = useTheme();
   const { t } = useTranslation();
   return (
     <>
@@ -128,8 +134,29 @@ export const CourseSharedScreens = () => {
             fontFamily: fontFamilies.heading + '-SemiBold',
             fontSize: fontSizes.md,
             // fontWeight: fontWeights.semibold,
-            color: palettes.primary[700],
+            color: colors.title,
           },
+        }}
+      />
+      <Stack.Screen
+        name="CourseColorPicker"
+        component={CourseColorPickerScreen}
+        getId={({ params }: { params: any }) => `${params.courseId}`}
+        options={{
+          title: t('courseColorPickerScreen.title'),
+          headerLargeTitle: false,
+          headerBackButtonDisplayMode: 'minimal',
+        }}
+      />
+      <Stack.Screen
+        name="CourseIconPicker"
+        component={CourseIconPickerScreen}
+        getId={({ params }: { params: any }) => `${params.courseId}`}
+        options={{
+          title: t('courseIconPickerScreen.title'),
+          headerLargeTitle: false,
+          headerBackButtonDisplayMode: 'minimal',
+          headerSearchBarOptions: {},
         }}
       />
       <Stack.Screen

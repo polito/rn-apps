@@ -2,35 +2,32 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, TouchableOpacity } from 'react-native';
 
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
 import {
   PreferencesContextBase,
   usePreferencesContext,
-} from '@polito/lib/core';
-import { courseIcons } from '@polito/lib/features/courses';
+} from '../../../core/contexts/PreferencesContext';
 import {
   BottomBarSpacer,
   CtaButton,
   CtaButtonSpacer,
   Icon,
-  useSafeAreaSpacing,
-  useTheme,
-} from '@polito/lib/ui';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-
-import { AppPreferences } from '~/core/types/preferences';
-
-import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
+} from '../../../ui/components';
+import { useSafeAreaSpacing } from '../../../ui/hooks/useSafeAreaSpacing';
+import { useTheme } from '../../../ui/hooks/useTheme';
+import { courseIcons } from '../constants';
+import { CoursePickersParamList } from '../types';
 
 const icons = Object.entries(courseIcons);
 
-type Props = NativeStackScreenProps<TeachingStackParamList, 'CourseIconPicker'>;
+type Props = NativeStackScreenProps<CoursePickersParamList, 'CourseIconPicker'>;
 
 export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const { spacing, fontSizes } = useTheme();
   const [searchFilter, setSearchFilter] = useState('');
-  const { courses: coursesPrefs, updatePreference } =
-    usePreferencesContext<AppPreferences>();
+  const { courses: coursesPrefs, updatePreference } = usePreferencesContext();
   const { marginHorizontal } = useSafeAreaSpacing();
   const { uniqueShortcode } = route.params;
   const coursePrefs = useMemo(
@@ -102,7 +99,7 @@ export const CourseIconPickerScreen = ({ navigation, route }: Props) => {
                 ...coursePrefs,
                 icon: null,
               },
-            } as PreferencesContextBase<AppPreferences>['courses']);
+            } as PreferencesContextBase['courses']);
             navigation.goBack();
           }}
         />

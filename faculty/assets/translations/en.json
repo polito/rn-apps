@@ -459,7 +459,12 @@
     "staffSectionTitle": "Staff",
     "teacherLabel": "Teacher",
     "title": "Info",
-    "yearLabel": "Year"
+    "yearLabel": "Year",
+    "nextLectureTitle": "Your next lecture",
+    "nextLectureEmptyState": "No upcoming lectures",
+    "showAll": "Show all",
+    "go": "Go",
+    "goHint": "Opens the room on the map"
   },
   "courseLecturesScreen": {
     "emptyState": "There are no lectures here",
@@ -507,7 +512,7 @@
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "You'll have to re-download the files in order to view them",
     "cleanCacheFeedback": "Files were successfully deleted",
-    "cleanCourseFiles": "Clean course files",
+    "cleanCourseFiles": "Clean local storage from course files",
     "cleanCourseFilesSubtitle": "This will free approximately {{size}} of memory",
     "colorSubtitle": "Select a color for the course",
     "iconSubtitle": "Select an icon for the course",
@@ -908,7 +913,9 @@
     "cpdTitle": "CPD Surveys",
     "examHint": "Opens the exam call details",
     "owner": "Owner",
-    "title": "Teaching"
+    "title": "Teaching",
+    "collaborator": "Collaborator",
+    "viewer": "Viewer"
   },
   "theme": {
     "dark": "Dark",
@@ -1146,7 +1153,7 @@
     "avtext3": "AUDIOVISUAL SYSTEMS",
     "avtext4": "Call 5003 from an internal phone",
     "avtext5": "or",
-    "myCourses": "My Courses",
+    "myCourses": "My courses",
     "managedCourses": "Managed Courses",
     "appeals": "Exam calls",
     "showMore": "Show More",
@@ -1335,5 +1342,13 @@
     "specialNeedsMoreDetails": "More Details",
     "specialNeedsMoreDetailsSubtitle": "Click here to view the list of requests for this course",
     "specialNeedsHandbook": "Reporting procedure handbook"
+  },
+  "courseColorPickerScreen": {
+    "accessibleColor": "Accessible colors",
+    "areYouSureMessage": "The color selected by the picker is not part of the tested palette and may not provide ideal contrast.",
+    "areYouSureTitle": "Do you want to proceed?",
+    "customColorTitle": "Custom colors",
+    "dontShowAgain": "Don't show again",
+    "title": "Pick a color"
   }
 }

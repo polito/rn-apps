@@ -109,6 +109,7 @@ export interface Lesson {
   content?: string;
   staff?: Staff[];
   room?: string;
+  placeId?: string;
   language?: string;
   status?: 'compiled' | 'to compile' | 'draft';
   team?: number;
@@ -579,6 +580,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
             },
           ],
           room: 'Aula 3',
+          placeId: 'TO_CEN03-XPTE-E002',
           language: 'Italiano',
           team: 1,
         },
@@ -607,6 +609,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
             },
           ],
           room: 'Aula 3',
+          placeId: 'TO_CEN03-XPTE-E002',
           language: 'Italiano',
           team: 2,
         },
@@ -635,6 +638,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
             },
           ],
           room: 'Aula 3',
+          placeId: 'TO_CEN03-XPTE-E002',
           language: 'Italiano',
         },
       ],

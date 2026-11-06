@@ -36,6 +36,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { DateTime } from 'luxon';
 
+import { SectionHeaderLink } from '../../core/components/SectionHeaderLink';
 import { useCourses } from '../../core/contexts/CoursesContext';
 import { useGetCourses } from '../../core/queries/courseHooks';
 import { AppPreferences } from '../../core/types/preferences';
@@ -50,6 +51,12 @@ const getUniqueShortcode = (course: {
   course.modules && course.modules.length > 0
     ? course.shortcode
     : `${course.shortcode}1`;
+
+const getCurrentAcademicYearLabel = () => {
+  const now = DateTime.now();
+  const startYear = now.month >= 9 ? now.year : now.year - 1;
+  return `${startYear}/${String(startYear + 1).slice(-2)}`;
+};
 
 const examTime = (date: string) => {
   if (date === 'Oggi') return DateTime.now().startOf('day').toMillis();
@@ -118,7 +125,9 @@ export const TeachingScreen = () => {
     if (!coursesQuery.data) return [];
 
     const hiddenCourses = Object.keys(coursePreferences).filter(
-      key => coursePreferences[key].isHidden,
+      key =>
+        coursePreferences[key].isHidden ||
+        coursePreferences[key].isExamCallsHidden,
     );
 
     return fakeExams
@@ -134,6 +143,17 @@ export const TeachingScreen = () => {
       .sort((a, b) => examTime(a.date) - examTime(b.date))
       .slice(0, 4);
   }, [coursePreferences, coursesQuery.data, fakeExams]);
+
+  const getSeeAllLabel = (moreCount?: number) =>
+    moreCount && moreCount > 0
+      ? `${t('sectionHeader.cta')} ${t('sectionHeader.ctaMoreSuffix', { count: moreCount })}`
+      : t('sectionHeader.cta');
+
+  const myCoursesTitle = `${t('other.myCourses')} (${t('common.academicYearShort')} ${getCurrentAcademicYearLabel()})`;
+  const myCoursesLinkLabel = getSeeAllLabel(hiddenCoursesCount);
+  const examsLinkLabel = getSeeAllLabel(
+    coursesQuery.data ? fakeExams.length - exams.length : undefined,
+  );
 
   return (
     <ScrollView
@@ -154,9 +174,10 @@ export const TeachingScreen = () => {
 
       <Section>
         <SectionHeader
-          title={t('other.myCourses')}
+          title={myCoursesTitle}
           linkTo="MyCourses"
-          linkToMoreCount={hiddenCoursesCount}
+          accessibilityLabel={[myCoursesTitle, myCoursesLinkLabel].join(', ')}
+          trailingItem={<SectionHeaderLink label={myCoursesLinkLabel} />}
         />
         <OverviewList
           loading={coursesQuery.isLoading && !isOffline}
@@ -181,7 +202,10 @@ export const TeachingScreen = () => {
               onPress={() => {
                 if (course.id === null) return;
                 setSelectedCourse(null);
-                navigation.navigate('Course', { id: course.id });
+                navigation.navigate('Course', {
+                  id: course.id,
+                  uniqueShortcode: getUniqueShortcode(course),
+                });
               }}
             />
           ))}
@@ -192,9 +216,8 @@ export const TeachingScreen = () => {
         <SectionHeader
           title={t('other.appeals')}
           linkTo="ExamsCalls"
-          linkToMoreCount={
-            coursesQuery.data ? fakeExams.length - exams.length : undefined
-          }
+          accessibilityLabel={[t('other.appeals'), examsLinkLabel].join(', ')}
+          trailingItem={<SectionHeaderLink label={examsLinkLabel} />}
         />
         <OverviewList
           loading={!isOffline && coursesQuery.isLoading}

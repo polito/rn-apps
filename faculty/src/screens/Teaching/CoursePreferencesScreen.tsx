@@ -5,19 +5,11 @@ import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import {
   faCircle as faCircleRegular,
   faEye,
-  faEyeSlash,
 } from '@fortawesome/free-regular-svg-icons';
-import {
-  faBell,
-  faBroom,
-  faCalendarDay,
-  faCircle,
-  faFile,
-  faVideoCamera,
-} from '@fortawesome/free-solid-svg-icons';
+import { faBroom, faCircle } from '@fortawesome/free-solid-svg-icons';
 // import { useFeedbackContext } from '../../core/contexts/FeedbackContext';
 import { usePreferencesContext } from '@polito/lib/core';
-import { courseColors } from '@polito/lib/features/courses';
+import { courseColors, courseIcons } from '@polito/lib/features/courses';
 import {
   BottomBarSpacer,
   Icon,
@@ -158,32 +150,15 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                     })
                   }
                   leadingItem={
-                    <Icon icon={faCircleRegular} size={fontSizes['2xl']} />
+                    <Icon
+                      icon={
+                        coursePrefs?.icon && coursePrefs.icon in courseIcons
+                          ? courseIcons[coursePrefs.icon]
+                          : faCircleRegular
+                      }
+                      size={fontSizes['2xl']}
+                    />
                   }
-                />
-                <IndentedDivider />
-                <SwitchListItem
-                  title={t('coursePreferencesScreen.showInExtracts')}
-                  subtitle={t('coursePreferencesScreen.showInExtractsSubtitle')}
-                  value={!coursePrefs?.isHidden}
-                  leadingItem={<Icon icon={faEye} size={fontSizes['2xl']} />}
-                  onChange={value => {
-                    updatePreference('courses', {
-                      ...coursesPrefs,
-                      [uniqueShortcode]: {
-                        ...defaultPrefs,
-                        ...coursePrefs,
-                        isHidden: !value,
-                      },
-                    });
-                    // updateCoursePreferences({
-                    //   notifications: {
-                    //     notices: value,
-                    //     lectures: value,
-                    //     files: value,
-                    //   },
-                    // });
-                  }}
                 />
                 <IndentedDivider />
                 <SwitchListItem
@@ -200,105 +175,6 @@ export const CoursePreferencesScreen = ({ navigation, route }: Props) => {
                       },
                     });
                   }}
-                />
-              </OverviewList>
-            </Section>
-
-            {/* Notifications */}
-            <Section>
-              <SectionHeader title={t('common.notifications')} />
-              <OverviewList style={styles.listContainer} indented>
-                <SwitchListItem
-                  title={t('common.news')}
-                  subtitle={t('coursePreferencesScreen.newsSubtitle')}
-                  subtitleProps={{ numberOfLines: 1 }}
-                  //   disabled={!courseQuery.data}
-                  //   value={courseQuery.data?.notifications.notices}
-                  leadingItem={<Icon icon={faBell} size={fontSizes['2xl']} />}
-                  //   onChange={() => {
-                  //     updateCoursePreferences({
-                  //       notifications: {
-                  //         notices: !courseQuery.data?.notifications.notices,
-                  //       },
-                  //     });
-                  //   }}
-                />
-                <IndentedDivider />
-                <SwitchListItem
-                  title={t('common.file_plural')}
-                  subtitle={t('coursePreferencesScreen.filesSubtitle')}
-                  subtitleProps={{ numberOfLines: 1 }}
-                  //   disabled={!courseQuery.data}
-                  //   value={courseQuery.data?.notifications.files}
-                  leadingItem={<Icon icon={faFile} size={fontSizes['2xl']} />}
-                  //   onChange={() => {
-                  //     updateCoursePreferences({
-                  //       notifications: {
-                  //         files: !courseQuery.data?.notifications.files,
-                  //       },
-                  //     });
-                  //   }}
-                />
-                <IndentedDivider />
-                <SwitchListItem
-                  title={t('common.lecture_plural')}
-                  subtitle={t('coursePreferencesScreen.lecturesSubtitle')}
-                  subtitleProps={{ numberOfLines: 1 }}
-                  //   disabled={!courseQuery.data}
-                  //   value={courseQuery.data?.notifications.lectures}
-                  leadingItem={
-                    <Icon icon={faVideoCamera} size={fontSizes['2xl']} />
-                  }
-                  //   onChange={() => {
-                  //     updateCoursePreferences({
-                  //       notifications: {
-                  //         lectures: !courseQuery.data?.notifications.lectures,
-                  //       },
-                  //     });
-                  //   }}
-                />
-              </OverviewList>
-            </Section>
-
-            {/* Agenda */}
-            <Section>
-              <SectionHeader title={t('common.agenda')} />
-              <OverviewList style={styles.listContainer} indented>
-                <SwitchListItem
-                  title={t('AgendaPreferences.hideInAgenda')}
-                  disabled={!coursePrefs}
-                  value={coursePrefs?.isHiddenInAgenda || coursePrefs?.isHidden}
-                  leadingItem={
-                    <Icon icon={faEyeSlash} size={fontSizes['2xl']} />
-                  }
-                  onChange={value => {
-                    updatePreference('courses', {
-                      ...coursesPrefs,
-                      [uniqueShortcode]: {
-                        ...defaultPrefs,
-                        ...coursePrefs,
-                        isHiddenInAgenda: value,
-                      },
-                    });
-                  }}
-                />
-                <IndentedDivider />
-                <ListItem
-                  title={t('common.hiddenEvents')}
-                  isAction
-                  onPress={() => {
-                    navigation.navigate('CourseHideEvent', {
-                      courseId,
-                      uniqueShortcode,
-                    });
-                  }}
-                  //   disabled={
-                  //     !coursePrefs?.itemsToHideInAgenda?.length &&
-                  //     !coursePrefs.singleItemsToHideInAgenda?.length
-                  //   }
-                  leadingItem={
-                    <Icon icon={faCalendarDay} size={fontSizes['2xl']} />
-                  }
                 />
               </OverviewList>
             </Section>

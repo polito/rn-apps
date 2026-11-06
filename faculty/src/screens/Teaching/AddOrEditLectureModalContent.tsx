@@ -97,7 +97,7 @@ export const AddOrEditLectureModalContent = () => {
     setSelectedLecture,
     updateCourseLecture,
   } = useCourses(); // Recupero i corsi dal context
-  const { fontSizes, palettes, spacing } = useTheme();
+  const { colors, fontSizes, palettes, spacing } = useTheme();
   const { t } = useTranslation();
   const { fakeProfiles } = useCourses();
   const { language } = usePreferencesContext<AppPreferences>();
@@ -532,19 +532,13 @@ export const AddOrEditLectureModalContent = () => {
                   <Icon
                     icon={faCalendar}
                     size={fontSizes['2xl']}
-                    color={
-                      isDateSelected
-                        ? palettes.primary[700]
-                        : palettes.gray[400]
-                    }
+                    color={isDateSelected ? colors.title : palettes.gray[400]}
                   />
                   <Col>
                     <Text
                       style={[
                         styles.cardTitle,
-                        isDateSelected && {
-                          color: palettes.primary[700],
-                        },
+                        isDateSelected && styles.cardTitleSelected,
                       ]}
                     >
                       {t('other.date')}
@@ -553,7 +547,11 @@ export const AddOrEditLectureModalContent = () => {
                       <Text style={styles.cardSubtitle}>
                         {date ? formatDate(date) : t('common.datePlaceholder')}
                       </Text>
-                      <Icon icon={faChevronDown} size={fontSizes.sm} />
+                      <Icon
+                        icon={faChevronDown}
+                        size={fontSizes.sm}
+                        color={colors.secondaryText}
+                      />
                     </Row>
                   </Col>
                 </Row>
@@ -569,19 +567,13 @@ export const AddOrEditLectureModalContent = () => {
                   <Icon
                     icon={faClock}
                     size={fontSizes['2xl']}
-                    color={
-                      isTimeSelected
-                        ? palettes.primary[700]
-                        : palettes.gray[400]
-                    }
+                    color={isTimeSelected ? colors.title : palettes.gray[400]}
                   />
                   <Col>
                     <Text
                       style={[
                         styles.cardTitle,
-                        isTimeSelected && {
-                          color: palettes.primary[700],
-                        },
+                        isTimeSelected && styles.cardTitleSelected,
                       ]}
                     >
                       {t('common.time')}
@@ -592,7 +584,11 @@ export const AddOrEditLectureModalContent = () => {
                           ? formatDateTimeAccessibility(time).time
                           : t('common.timePlaceholder')}
                       </Text>
-                      <Icon icon={faChevronDown} size={fontSizes.sm} />
+                      <Icon
+                        icon={faChevronDown}
+                        size={fontSizes.sm}
+                        color={colors.secondaryText}
+                      />
                     </Row>
                   </Col>
                 </Row>
@@ -609,6 +605,7 @@ export const AddOrEditLectureModalContent = () => {
             <TextInput
               style={styles.ContentText}
               placeholder={t('common.descriptionPlaceholder')}
+              placeholderTextColor={colors.secondaryText}
               value={topic}
               onChangeText={setTopic}
             />
@@ -779,7 +776,6 @@ const createStyles = ({
   fontSizes,
   fontWeights,
   colors,
-  palettes,
   fontFamilies,
 }: Theme) =>
   StyleSheet.create({
@@ -808,12 +804,15 @@ const createStyles = ({
       gap: spacing[3],
     },
     cardTitle: {
-      color: palettes.gray[500],
+      color: colors.secondaryText,
       fontSize: fontSizes.sm,
       fontFamily: fontFamilies.body,
     },
+    cardTitleSelected: {
+      color: colors.title,
+    },
     cardSubtitle: {
-      color: palettes.gray[500],
+      color: colors.secondaryText,
       fontSize: fontSizes.md,
       fontFamily: fontFamilies.heading,
     },
@@ -841,7 +840,7 @@ const createStyles = ({
     },
     ContentText: {
       fontSize: fontSizes.md,
-      color: palettes.gray[800],
+      color: colors.prose,
       fontFamily: 'Montserrat-Regular',
       padding: 0,
     },

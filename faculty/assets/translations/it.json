@@ -462,7 +462,12 @@
     "staffSectionTitle": "Docenti",
     "teacherLabel": "Docente",
     "title": "Info",
-    "yearLabel": "Anno"
+    "yearLabel": "Anno",
+    "nextLectureTitle": "La tua prossima lezione",
+    "nextLectureEmptyState": "Nessuna lezione in programma",
+    "showAll": "Mostra tutte",
+    "go": "Vai",
+    "goHint": "Apre l'aula sulla mappa"
   },
   "courseLecturesScreen": {
     "emptyState": "Non ci sono lezioni",
@@ -510,7 +515,7 @@
   "coursePreferencesScreen": {
     "cleanCacheConfirmMessage": "Dovrai nuovamente scaricare i file per poterli visualizzare",
     "cleanCacheFeedback": "I file sono stati rimossi correttamente",
-    "cleanCourseFiles": "Rimuovi file del corso",
+    "cleanCourseFiles": "Pulisci la memoria locale dai file del corso",
     "cleanCourseFilesSubtitle": "Libera circa {{size}} di memoria",
     "colorSubtitle": "Seleziona un colore per il corso",
     "iconSubtitle": "Seleziona un'icona per il corso",
@@ -911,7 +916,9 @@
     "cpdTitle": "Questionari CPD",
     "examHint": "Apre il dettaglio dell’appello",
     "owner": "Titolare",
-    "title": "Didattica"
+    "title": "Didattica",
+    "collaborator": "Collaboratore",
+    "viewer": "Visualizzatore"
   },
   "theme": {
     "dark": "Scuro",
@@ -1334,5 +1341,13 @@
     "specialNeedsMoreDetails": "Maggiori dettagli",
     "specialNeedsMoreDetailsSubtitle": "Clicca qui per visualizzare l'elenco delle richieste per questo corso",
     "specialNeedsHandbook": "Manuale della procedura di segnalazione"
+  },
+  "courseColorPickerScreen": {
+    "accessibleColor": "Colori accessibili",
+    "areYouSureMessage": "Il colore scelto dal selettore non fa parte della palette testata e potrebbe non garantire un contrasto ideale.",
+    "areYouSureTitle": "Vuoi procedere?",
+    "customColorTitle": "Colori a scelta",
+    "dontShowAgain": "Non mostrare più",
+    "title": "Seleziona un colore"
   }
 }

@@ -41,7 +41,7 @@ export const ChooseRoomModal = () => {
   const [searchRoom, setSearchRoom] = useState('');
   const [selectedRoomKey, setSelectedRoomKey] = useState<string | null>(null);
   const roomLabel = t('other.room');
-  const { palettes } = useTheme();
+  const { colors } = useTheme();
 
   const handleConfirmSelection = () => {
     if (selectedRoomKey) {
@@ -128,7 +128,7 @@ export const ChooseRoomModal = () => {
                         onPress={() => setSelectedRoomKey(roomKey)}
                         trailingItem={
                           selectedRoomKey === roomKey ? (
-                            <Icon icon={faCheck} color={palettes.gray[500]} />
+                            <Icon icon={faCheck} color={colors.secondaryText} />
                           ) : undefined
                         }
                       />
@@ -156,6 +156,7 @@ export const ChooseRoomModal = () => {
 };
 
 const createStyles = ({
+  dark,
   spacing,
   colors,
   shapes,
@@ -187,9 +188,9 @@ const createStyles = ({
       backgroundColor: colors.background,
     },
     searchField: {
-      backgroundColor: palettes.gray[200],
+      backgroundColor: dark ? colors.surface : palettes.gray[200],
       borderWidth: 1,
-      borderColor: palettes.gray[300],
+      borderColor: colors.divider,
       margin: spacing[5],
       marginTop: 0,
     },

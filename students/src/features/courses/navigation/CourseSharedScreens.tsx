@@ -1,6 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
+import {
+  CourseColorPickerScreen,
+  CourseIconPickerScreen,
+} from '@polito/lib/features/courses';
 import { createHeaderCloseButton, useTheme } from '@polito/lib/ui';
 import { ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -8,12 +12,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { CourseAssignmentPdfCreationScreen } from '../screens/CourseAssignmentPdfCreationScreen';
 import { CourseAssignmentUploadConfirmationScreen } from '../screens/CourseAssignmentUploadConfirmationScreen';
 import { CourseAssignmentUploadScreen } from '../screens/CourseAssignmentUploadScreen';
-import { CourseColorPickerScreen } from '../screens/CourseColorPickerScreen';
 import { CourseDirectoryScreen } from '../screens/CourseDirectoryScreen';
 import { CourseFileMultiSelectScreen } from '../screens/CourseFileMultiSelectScreen';
 import { CourseGuideScreen } from '../screens/CourseGuideScreen';
 import { CourseHideEventScreen } from '../screens/CourseHideEventScreen';
-import { CourseIconPickerScreen } from '../screens/CourseIconPickerScreen';
 import { CourseNoAssignmentScreen } from '../screens/CourseNoAssignmentScreen';
 import { CoursePreferencesScreen } from '../screens/CoursePreferencesScreen';
 import { CourseVideolectureScreen } from '../screens/CourseVideolectureScreen';
