@@ -629,6 +629,12 @@
     "title": "Degree",
     "tracks": "Tracks"
   },
+  "emergenciesScreen": {
+    "call112": "Call 112",
+    "howToBehave": "What to do",
+    "selectSite": "Choose a site",
+    "title": "Emergencies"
+  },
   "escRequestScreen": {
     "title": "European Student Card",
     "firstTitle": "What is the European Student Card?",

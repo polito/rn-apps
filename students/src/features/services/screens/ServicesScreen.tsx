@@ -5,6 +5,7 @@ import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import {
   faBookBookmark,
   faBriefcase,
+  faCircleExclamation,
   faClipboardQuestion,
   faComments,
   faEnvelope,
@@ -127,6 +128,13 @@ export const ServicesScreen = () => {
         disabled: isOffline && peopleSearched?.length === 0, // TODO why?
         linkTo: { screen: 'Contacts' },
         accessibilityLabel: t('contactsScreen.title'),
+      },
+      {
+        id: 'emergencies',
+        name: t('emergenciesScreen.title'),
+        icon: faCircleExclamation,
+        linkTo: { screen: 'Emergency' },
+        accessibilityLabel: t('emergenciesScreen.title'),
       },
       {
         id: 'guides',
