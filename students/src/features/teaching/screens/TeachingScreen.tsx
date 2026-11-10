@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useOfflineDisabled, usePreferencesContext } from '@polito/lib/core';
@@ -26,6 +26,7 @@ import {
 import { type Event, ExamStatusEnum } from '@polito/student-api-client';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { usePressableFeedback } from '~/core/hooks/usePressableFeedback';
 import { AppPreferences } from '~/core/types/preferences';
 
 import { DateTime } from 'luxon';
@@ -49,6 +50,7 @@ type Props = NativeStackScreenProps<TeachingStackParamList, 'Home'>;
 export const TeachingScreen = ({ navigation }: Props) => {
   const { t } = useTranslation();
   const { colors, palettes } = useTheme();
+  const pressableFeedback = usePressableFeedback();
   const styles = useStylesheet(createStyles);
   const { courses: coursePreferences, hideGrades } =
     usePreferencesContext<AppPreferences>();
@@ -240,9 +242,10 @@ export const TeachingScreen = ({ navigation }: Props) => {
                   <ActivityIndicator style={styles.loader} />
                 )
               ) : (
-                <TouchableHighlight
+                <Pressable
                   onPress={() => navigation.navigate('Transcript')}
-                  underlayColor={colors.touchableHighlight}
+                  android_ripple={pressableFeedback.androidRipple}
+                  style={pressableFeedback.style()}
                 >
                   <Row p={5} gap={5} align="center" justify="space-between">
                     <Col justify="center" flexShrink={1} gap={5}>
@@ -300,7 +303,7 @@ export const TeachingScreen = ({ navigation }: Props) => {
                       </View>
                     </Col>
                   </Row>
-                </TouchableHighlight>
+                </Pressable>
               )}
             </Card>
             {transcriptBadge && (
