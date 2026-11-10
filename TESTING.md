@@ -133,7 +133,7 @@ Which query to use ([queries docs](https://testing-library.com/docs/queries/abou
 
 If many tests repeat the same navigation, write a small helper (see `openCourse` in `faculty/__tests__/CourseScreen.flow.test.tsx`).
 
-Other utils in `src/testing/utils`: `mockConfirmAlert(message)` presses the first button of an `Alert` with that message, `buildCourseDetail` builds a course detail from a course overview.
+Other utils in `src/testing/utils`: `mockConfirmAlert(message)` presses the first button of an `Alert` with that message.
 
 ## Console output
 

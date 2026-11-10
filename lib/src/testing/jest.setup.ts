@@ -141,8 +141,8 @@ jest.mock('../ui/components/Grid', () => ({
   Grid: ({ children }: { children: React.ReactNode }) => children,
 }));
 
-beforeEach(() => {
+beforeEach(async () => {
   // clear storage between tests
-  require('@react-native-async-storage/async-storage').clear();
+  await require('@react-native-async-storage/async-storage').clear();
   require('./mocks/keychain').__resetKeychain();
 });
