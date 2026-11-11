@@ -24,6 +24,7 @@ import {
 import { useCourses } from '../../core/contexts/CoursesContext';
 
 type Props = {
+  examId: number;
   close: () => void;
 };
 
@@ -45,11 +46,11 @@ const generateStudentId = (): string => {
   return `${prefix}${padded}`;
 };
 
-export const AddStudentsToExamModalContent = ({ close }: Props) => {
+export const AddStudentsToExamModalContent = ({ examId, close }: Props) => {
   const { t } = useTranslation();
   const { palettes, colors } = useTheme();
   const styles = useStylesheet(createStyles);
-  const { addStudentsToExam, selectedExam } = useCourses();
+  const { addStudentsToExam } = useCourses();
   const [searchText, setSearchText] = useState('');
   const [selectedStaff, setSelectedStaff] = useState<string[]>([]);
 
@@ -126,8 +127,6 @@ export const AddStudentsToExamModalContent = ({ close }: Props) => {
         absolute={false}
         title={t('other.add')}
         action={() => {
-          if (!selectedExam) return;
-
           const newStaff = selectedStaff.map(fullName => {
             const [name, ...surnameParts] = fullName.trim().split(' ');
             const surname = surnameParts.join(' ');
@@ -145,7 +144,7 @@ export const AddStudentsToExamModalContent = ({ close }: Props) => {
             };
           });
 
-          addStudentsToExam(selectedExam.id, newStaff);
+          addStudentsToExam(examId, newStaff);
 
           close();
         }}

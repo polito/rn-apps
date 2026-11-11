@@ -11,11 +11,9 @@ import {
   View,
 } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import {
   Card,
   CtaButton,
-  IconButton,
   Row,
   Select,
   Text,
@@ -149,18 +147,7 @@ export const LectureFormScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text variant="heading" style={{ marginLeft: 80 }}>
-          {t('other.createLesson')}
-        </Text>
-      ),
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-      ),
+      headerTitle: t('other.createLesson'),
     });
   }, [navigation, t]);
 

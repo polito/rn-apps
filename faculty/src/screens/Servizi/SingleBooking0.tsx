@@ -1,10 +1,8 @@
 import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
-import { Platform } from 'react-native';
 
 import {
-  faArrowLeft,
   faLocationDot,
   faPeopleLine,
   faPlug,
@@ -15,7 +13,6 @@ import {
   Card,
   CtaButton,
   Icon,
-  IconButton,
   ListItem,
   OverviewList,
   Row,
@@ -41,25 +38,7 @@ export const SingleBooking0 = () => {
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.navigate('PrenotaAula')}
-        />
-      ),
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-            marginLeft: Platform.OS === 'android' ? -25 : -55,
-          }}
-        >
-          {t('other.request')}
-        </Text>
-      ),
+      headerTitle: t('other.request'),
     });
   }, [navigation, t]);
 

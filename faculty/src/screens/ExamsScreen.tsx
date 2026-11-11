@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
+import { formatDateFromString } from '@polito/lib/core';
 import {
   ListItem,
   Section,
@@ -17,11 +18,10 @@ import { TeachingStackParamList } from './Teaching/TeachingNavigator';
 
 export const ExamsScreen = () => {
   const { t } = useTranslation();
-  const { fakeExams, setSelectedExam } = useCourses();
+  const { fakeExams } = useCourses();
   const styles = useStylesheet(createStyles);
   const navigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
-  // 📌 Raggruppa appelli per periodo
   const examsByPeriod = fakeExams.reduce(
     (acc, exam) => {
       const period = exam.period || 'Altro';
@@ -32,29 +32,29 @@ export const ExamsScreen = () => {
     {} as Record<string, typeof fakeExams>,
   );
 
+  const formatExamDate = (date: string) =>
+    date === 'Oggi'
+      ? t('other.today')
+      : /^\d{4}-\d{2}-\d{2}/.test(date)
+        ? formatDateFromString(date)
+        : date;
+
   return (
-    <ScrollView>
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.sectionsContainer}>
         {Object.entries(examsByPeriod).map(([period, exams]) => (
           <Section key={period}>
-            <SectionHeader
-              title={`${period}° ${t('other.appeal')}`}
-              linkTo=""
-            />
+            <SectionHeader title={`${period}° ${t('other.appeal')}`} />
             <SectionList>
               {exams.map(exam => (
                 <ListItem
                   key={exam.id}
-                  title={<Text>{exam.subject}</Text>}
-                  subtitle={`${
-                    exam.date === 'Oggi'
-                      ? t('other.today')
-                      : exam.date.toLocaleString()
-                  } - ${exam.where}`}
-                  onPress={() => {
-                    navigation.navigate('Exam2');
-                    setSelectedExam(exam);
-                  }}
+                  title={exam.subject}
+                  subtitle={`${formatExamDate(exam.date)} - ${exam.where}`}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${exam.subject}, ${formatExamDate(exam.date)}, ${exam.where}`}
+                  accessibilityHint={t('examScreen.openHint')}
+                  onPress={() => navigation.navigate('Exam', { id: exam.id })}
                 />
               ))}
             </SectionList>

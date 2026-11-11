@@ -1,17 +1,13 @@
-import { useEffect, useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, ScrollView, View } from 'react-native';
-import { Platform } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import {
   Badge,
-  IconButton,
   IndentedDivider,
   ListItem,
   OverviewList,
   SectionHeader,
-  Text,
   useBottomBarAwareStyles,
   useSafeAreaSpacing,
   useTheme,
@@ -31,35 +27,9 @@ export const DigitalSignatureScreen = () => {
   const { setSelectedDoc } = useCourses();
   const { tbsDocs } = useCourses();
   const { paddingHorizontal } = useSafeAreaSpacing();
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', e => {
-      e.preventDefault();
-      navigation.navigate('Servizi');
-    });
-
-    return unsubscribe;
-  }, [navigation]);
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.navigate('Servizi')}
-        />
-      ),
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-            marginLeft: Platform.OS === 'android' ? -25 : -55,
-          }}
-        >
-          {t('other.digitalSignature')}
-        </Text>
-      ),
+      headerTitle: t('other.digitalSignature'),
     });
   }, [navigation, colors, t]);
 

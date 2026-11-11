@@ -4,22 +4,16 @@ import {
   Alert,
   Button,
   Modal,
-  Platform,
   ScrollView,
   StyleSheet,
   TextInput,
   View,
 } from 'react-native';
 
-import {
-  faArrowLeft,
-  faFilePdf,
-  faPen,
-} from '@fortawesome/free-solid-svg-icons';
+import { faFilePdf, faPen } from '@fortawesome/free-solid-svg-icons';
 import {
   Badge,
   CtaButton,
-  IconButton,
   Row,
   Section,
   Text,
@@ -47,25 +41,7 @@ export const SignatureScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.navigate('DigitalSignature')}
-        />
-      ),
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-            marginLeft: Platform.OS === 'android' ? -25 : -55,
-          }}
-        >
-          {t('other.digitalSignature')}
-        </Text>
-      ),
+      headerTitle: t('other.digitalSignature'),
     });
   }, [navigation, t]);
 

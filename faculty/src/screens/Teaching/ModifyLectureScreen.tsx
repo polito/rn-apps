@@ -10,11 +10,9 @@ import {
   View,
 } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import {
   Card,
   CtaButton,
-  IconButton,
   Row,
   Select,
   Text,
@@ -90,21 +88,7 @@ export const ModifyLectureScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{ marginLeft: Platform.OS === 'android' ? 70 : 0 }}
-        >
-          {t('other.modifyLecture')}
-        </Text>
-      ),
-      headerLeft: () => (
-        <IconButton
-          icon={faArrowLeft}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-      ),
+      headerTitle: t('other.modifyLecture'),
     });
   }, [navigation, t]);
 

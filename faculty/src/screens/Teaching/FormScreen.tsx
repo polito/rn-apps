@@ -1,6 +1,7 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import React, { useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Platform,
   StyleSheet,
@@ -10,7 +11,6 @@ import {
   View,
 } from 'react-native';
 
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { faFileUpload, faVideo } from '@fortawesome/free-solid-svg-icons';
 import {
   Card,
@@ -58,8 +58,9 @@ const availableSlots = [
 ];
 
 export const FormScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
-  const { colors, spacing } = useTheme();
+  const { spacing } = useTheme();
   const styles = useStylesheet(createStyles);
   const [formType, setFormType] = useState('');
   const [title, setTitle] = useState('');
@@ -170,12 +171,9 @@ export const FormScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: 'Crea Nuovo Elemento',
-      headerLeft: () => (
-        <IconButton icon={faArrowLeft} onPress={() => navigation.goBack()} />
-      ),
+      headerTitle: t('other.createNewItem'),
     });
-  }, [navigation, colors]);
+  }, [navigation, t]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
