@@ -10,9 +10,9 @@ export {
   CONSIGLIERA_FIDUCIA_ID,
   GARANTE_STUDENTI_ID,
   SPORTELLO_ANTIVIOLENZA_ID,
-  defaultUsefulContactsContent,
   defaultUsefulContactsList,
   studentsUsefulContactsList,
+  useUsefulContactsContent,
 } from './data/defaultUsefulContacts';
 export {
   getPersonKey,

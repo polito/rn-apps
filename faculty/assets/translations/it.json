@@ -883,6 +883,58 @@
     },
     "yourCareer": "La tua carriera"
   },
+  "usefulContacts": {
+    "consiglieraFiducia": {
+      "title": "Consigliera di fiducia",
+      "description": {
+        "paragraph1": "La Consigliera di fiducia è la consulente esterna di riferimento per i casi di violenza, molestie anche di natura sessuale e discriminazioni che si verificano all’interno dell’Ateneo. Fornisce un servizio gratuito di consulenza e assistenza su prenotazione a studenti e studentesse, docenti e PTAB.",
+        "paragraph2": "La Consigliera garantisce la privacy della persona segnalante e agisce esclusivamente con il suo consenso."
+      },
+      "info": {
+        "title": "Prenotare un colloquio",
+        "body": "La prenotazione del colloquio avviene via email. La Consigliera risponderà alla richiesta entro due giorni. Il colloquio potrà avvenire anche in modalità da remoto."
+      },
+      "contacts": {
+        "email": "Email"
+      }
+    },
+    "sportelloAntiviolenza": {
+      "title": "Sportello Antiviolenza",
+      "description": {
+        "paragraph1": "Lo sportello antiviolenza dell’Ateneo “Non sei sola”, gestito da <i>E.M.M.A. Onlus</i>, offre uno <b>spazio sicuro di ascolto</b> e <b>consulenza gratuita</b> per <b>prevenire e affrontare la violenza di genere</b>, garantendo sempre la privacy e il consenso della persona.",
+        "warning": "Anche episodi ambigui o apparentemente lievi vanno considerati: parlane con persone fidate e rivolgiti allo Sportello Antiviolenza dell’Ateneo, aperto a tutt* per informazioni, orientamento e prevenzione."
+      },
+      "info": {
+        "title": "Prenotare un colloquio",
+        "noBooking": "<b>Non</b> serve prenotazione!",
+        "openingHours": "Lo sportello, ad accesso diretto, è <b>aperto dalle 14:30 alle 17:30</b>:",
+        "firstWednesdays": "Primi tre mercoledì del mese: Atrio di ingresso del corridoio che conduce alla Biblioteca Centrale di Ingegneria, <b>Corso Duca degli Abruzzi 24</b>",
+        "lastWednesday": "Ultimo mercoledì del mese: Castello del Valentino, <b>Viale Mattioli 39</b>"
+      },
+      "contacts": {
+        "email": "Email",
+        "phone": "Telefono per informazioni o appuntamenti",
+        "emergency": "Numero per emergenze"
+      }
+    },
+    "garanteStudenti": {
+      "title": "Garante degli studenti",
+      "description": {
+        "paragraph1": "Il Garante studenti è il referente per le funzioni di garanzia della popolazione studentesca. Viene nominato dal Comitato Paritetico per la Didattica tra i docenti di I fascia dell’Ateneo che abbiano presentato la propria candidatura. Sulla base delle segnalazioni ricevute, approfondisce le problematiche e interviene per affrontare e risolvere le criticità riscontrate. A seguito dei necessari accertamenti, propone agli organi competenti le opportune iniziative e ne riferisce annualmente al Comitato Paritetico per la Didattica. Per le questioni che implicano problemi di riservatezza personale, riferisce direttamente al Rettore.",
+        "paragraph2": "Il Garante adotta ogni azione utile per salvaguardare, ove possibile, la riservatezza di chi si rivolge a questa figura."
+      },
+      "info": {
+        "title": "Come contattarlo",
+        "paragraph1": "È possibile inviare una segnalazione tramite email, descrivendo con ragionevole dettaglio il problema da esaminare.",
+        "paragraph2": "Il messaggio deve essere firmato e contenere i riferimenti necessari affinché il Garante possa mettersi in contatto con chi scrive, se necessario. Il testo della segnalazione deve essere scritto interamente nel corpo dell’email. Eventuali allegati sono consentiti esclusivamente in formato PDF."
+      },
+      "contacts": {
+        "email": "Email",
+        "moreInfo": "Maggiori informazioni",
+        "moreInfoValue": "Per maggiori informazioni, consulta la pagina dedicata sul sito del Politecnico."
+      }
+    }
+  },
   "videoControls": {
     "changePlaybackRate": "Cambia velocità di riproduzione",
     "tenSec": "10s",

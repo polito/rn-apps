@@ -12,7 +12,7 @@ export type UsefulContactsVisibility = 'always' | 'onSearchFocus';
 
 export type UsefulContact = {
   id: string;
-  title: string;
+  titleKey: string;
 };
 
 export type UsefulContactAction =

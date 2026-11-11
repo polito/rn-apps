@@ -31,7 +31,6 @@ import { useCheckMfa } from '@polito/lib/features/auth';
 import {
   Badge,
   BottomBarSpacer,
-  Col,
   DisclosureIndicator,
   Icon,
   ListItem,
@@ -40,7 +39,6 @@ import {
   SectionHeader,
   StatefulMenuView,
   SwitchListItem,
-  Text,
   type Theme,
   lightTheme,
   useStylesheet,
@@ -55,7 +53,6 @@ import { AppPreferences } from '~/core/types/preferences';
 import i18next from 'i18next';
 import { Settings } from 'luxon';
 
-import { version } from '../../../../package.json';
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
 import { formatFileSize } from '../../../utils/files';
@@ -638,9 +635,6 @@ export const SettingsScreen = () => {
               <CleanCacheListItem />
             </OverviewList>
           </Section>
-          <Col ph={4}>
-            <Text>{t('settingsScreen.appVersion', { version })}</Text>
-          </Col>
         </View>
         <BottomBarSpacer />
       </SafeAreaView>

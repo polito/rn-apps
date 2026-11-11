@@ -9,6 +9,7 @@ import {
   RefreshControl,
   Section,
   Theme,
+  useHideTabs,
   useStylesheet,
 } from '@polito/lib/ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -49,6 +50,7 @@ export const WhatsNewScreen = ({ route }: Props) => {
   const styles = useStylesheet(createStyles);
   const { isEnabled, announce } = useScreenReader();
   const announcementsQuery = useGetAnnouncements();
+  useHideTabs(undefined, undefined, { hideOnIos: true });
 
   const announcements = useMemo(
     () => config.getAnnouncements(announcementsQuery.data),
