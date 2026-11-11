@@ -1,15 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, useWindowDimensions } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import { faSliders } from '@fortawesome/free-solid-svg-icons';
-import { IconButton, Text, TopTabBar } from '@polito/lib/ui';
-import { useTheme, useTitlesStyles } from '@polito/lib/ui';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
+import {
+  IconButton,
+  Text,
+  TopTabBar,
+  useTheme,
+  useTitlesStyles,
+} from '@polito/lib/ui';
+import {
+  MaterialTopTabBarProps,
+  createMaterialTopTabNavigator,
+} from '@react-navigation/material-top-tabs';
 import { ParamListBase } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCourses } from '../../core/contexts/CoursesContext';
+import { StudentsNavigator } from '../../features/students';
 import { CourseAssignmentsTab } from './CourseAssignmentsTab';
 import { CourseFilesTab } from './CourseFilesTab';
 import { CourseInfoScreen } from './CourseInfoScreen';
@@ -17,7 +26,6 @@ import { CourseLecturesTab } from './CourseLecturesTab';
 import { CourseNoticesTab } from './CourseNoticesTab';
 import { CourseSharedScreensParamList } from './CourseSharedScreens';
 import { StaffScreen } from './CourseStaffScreen';
-import { CourseStudentsTab } from './CourseStudentsTab';
 import { TeachingStackParamList } from './TeachingNavigator';
 
 export interface CourseTabsParamList
@@ -33,186 +41,108 @@ export interface CourseTabsParamList
 
 const TopTabs = createMaterialTopTabNavigator<CourseTabsParamList>();
 
+const CourseTopTabBar = (props: MaterialTopTabBarProps) => {
+  const focusedRoute = props.state.routes[props.state.index];
+  const tabBarStyle = StyleSheet.flatten(
+    props.descriptors[focusedRoute.key].options.tabBarStyle,
+  );
+
+  if (tabBarStyle?.display === 'none') {
+    return null;
+  }
+
+  return <TopTabBar {...props} />;
+};
+
 type Props = NativeStackScreenProps<CourseSharedScreensParamList, 'Course'>;
 
 export const CourseNavigator = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { palettes, fontSizes, spacing } = theme;
-  const { width } = useWindowDimensions();
-
-  const { selectedCourse } = useCourses();
-
-  const [showPlusButton, setShowPlusButton] = useState<boolean>(false); // <--- Stato
-  const [_formPage, setFormPage] = useState('');
-  const [tab, setTab] = useState('Info');
+  const { palettes, fontSizes } = theme;
   const titleStyles = useTitlesStyles(theme);
+  const { selectedCourse } = useCourses();
+  const courseId = route.params?.id ?? selectedCourse?.id;
+  const uniqueShortcode =
+    route.params?.uniqueShortcode ?? selectedCourse?.code ?? '';
 
   useEffect(() => {
     navigation.setOptions({
+      headerTitleAlign: 'center',
       headerTitle: () => (
         <Text
-          variant="heading"
-          style={{
-            fontSize: fontSizes.md,
-            textAlign: 'center',
-            fontStyle: 'normal',
-          }}
-          weight="semibold"
+          variant="title"
+          style={[titleStyles.headerTitleStyle, { fontSize: 17 }]}
           numberOfLines={1}
         >
           {t('common.course')}
         </Text>
       ),
-      headerRight: () =>
-        tab === 'Info' ? (
-          <IconButton
-            icon={faSliders}
-            color={palettes.primary[400]}
-            size={fontSizes.lg}
-            accessibilityLabel={t('common.preferences')}
-            hitSlop={{ left: spacing[3], right: spacing[3] }}
-            onPress={() => {
-              if (selectedCourse) {
-                navigation.navigate('CoursePreferences', {
-                  courseId: selectedCourse?.id,
-                  uniqueShortcode: selectedCourse.code,
-                });
-              }
-            }}
-          />
-        ) : (
-          <View style={{ width: width * 0.1 }} />
-        ),
+      headerRight: () => (
+        <IconButton
+          icon={faCog}
+          color={palettes.primary[400]}
+          size={fontSizes.lg}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.preferences')}
+          adjustSpacing="right"
+          onPress={() => {
+            if (courseId == null) return;
+            navigation.navigate('CoursePreferences', {
+              courseId,
+              uniqueShortcode,
+            });
+          }}
+        />
+      ),
     });
   }, [
-    tab,
-    selectedCourse,
-    showPlusButton, // 🔥 Trigga il re-render dell'header
+    courseId,
     fontSizes.lg,
     navigation,
-    spacing,
-    t,
     palettes.primary,
+    t,
     titleStyles.headerTitleStyle,
-    width,
-    fontSizes,
+    uniqueShortcode,
   ]);
 
   return (
-    <TopTabs.Navigator tabBar={props => <TopTabBar {...props} />}>
+    <TopTabs.Navigator tabBar={props => <CourseTopTabBar {...props} />}>
       <TopTabs.Screen
         name="CourseInfoScreen"
         component={CourseInfoScreen}
         initialParams={{ courseId: route.params?.id }}
-        options={{ title: 'Info' }}
-        listeners={{
-          tabPress: () => {
-            setShowPlusButton(false);
-            setTab('Info');
-            setFormPage('');
-          },
-          focus: () => {
-            setShowPlusButton(false);
-            setFormPage('');
-          },
-        }}
+        options={{ title: t('courseInfoTab.title') }}
       />
       <TopTabs.Screen
         name="CourseStaffScreen"
         component={StaffScreen}
         options={{ title: t('courseStaffTab.title') }}
-        listeners={{
-          tabPress: () => {
-            setShowPlusButton(false);
-            setFormPage('');
-            setTab('Staff');
-          },
-          focus: () => {
-            setShowPlusButton(false);
-            setFormPage('');
-          },
-        }}
       />
       <TopTabs.Screen
         name="CourseNoticesScreen"
         component={CourseNoticesTab}
-        options={{ title: t('common.notice_plural') }}
-        listeners={{
-          tabPress: () => {
-            setShowPlusButton(false);
-            setFormPage('');
-            setTab('Notices');
-          },
-          focus: () => {
-            setShowPlusButton(false);
-            setFormPage('');
-          },
-        }}
+        options={{ title: t('courseNoticesTab.title') }}
       />
       <TopTabs.Screen
         name="CourseFilesScreen"
         component={CourseFilesTab}
         options={{ title: t('courseFilesTab.title') }}
-        listeners={{
-          tabPress: () => {
-            setShowPlusButton(true);
-            setFormPage('Files');
-            setTab('Files');
-          },
-          focus: () => {
-            setShowPlusButton(true);
-            setFormPage('Files');
-          },
-        }}
       />
       <TopTabs.Screen
         name="CourseLecturesScreen"
         component={CourseLecturesTab}
-        options={{ title: t('common.lecture_plural') }}
-        listeners={{
-          tabPress: () => {
-            setShowPlusButton(true);
-            setFormPage('Lecture');
-            setTab('Lectures');
-          },
-          focus: () => {
-            setShowPlusButton(true);
-            setFormPage('Lecture');
-          },
-        }}
+        options={{ title: t('courseLecturesTab.title') }}
       />
       <TopTabs.Screen
         name="CourseStudentsScreen"
-        component={CourseStudentsTab}
+        component={StudentsNavigator}
         options={{ title: t('other.students') }}
-        listeners={{
-          tabPress: () => {
-            setShowPlusButton(false);
-            setFormPage('Students');
-            setTab('Students');
-          },
-          focus: () => {
-            setShowPlusButton(false);
-            setFormPage('Students');
-          },
-        }}
       />
       <TopTabs.Screen
         name="CourseAssignmentsScreen"
         component={CourseAssignmentsTab}
         options={{ title: t('courseAssignmentsTab.title') }}
-        listeners={{
-          tabPress: () => {
-            setShowPlusButton(false);
-            setFormPage('');
-            setTab('Assignments');
-          },
-          focus: () => {
-            setShowPlusButton(false);
-            setFormPage('');
-          },
-        }}
       />
     </TopTabs.Navigator>
   );

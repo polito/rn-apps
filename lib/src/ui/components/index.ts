@@ -10,6 +10,7 @@ export * from './Callout';
 export * from './Card';
 export * from './CarouselDots';
 export * from './ChatBubble';
+export * from './Checkbox';
 export * from './Col';
 export * from './CtaButton';
 export * from './CtaButtonContainer';
