@@ -21,17 +21,15 @@ export const CourseIcon = ({ color, icon, isHidden }: Props) => {
               backgroundColor: color,
             }
           : undefined,
-        isHidden && {
-          backgroundColor: undefined,
-        },
+        isHidden && styles.hiddenContainer,
       ]}
     >
-      {isHidden && (
+      {(isHidden && (
         <Icon icon={faEyeSlash} color={styles.hiddenIcon.color} size={22} />
-      )}
-      {!isHidden && icon && icon in courseIcons && (
-        <Icon icon={courseIcons[icon]} color="white" />
-      )}
+      )) ||
+        (icon && icon in courseIcons && (
+          <Icon icon={courseIcons[icon]} color="white" />
+        ))}
     </View>
   );
 };
@@ -45,6 +43,10 @@ const createStyles = ({ colors, palettes }: Theme) =>
       backgroundColor: palettes.primary[400],
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    hiddenContainer: {
+      backgroundColor: colors.surface,
+      borderRadius: 15,
     },
     hiddenIcon: {
       color: colors.prose,
