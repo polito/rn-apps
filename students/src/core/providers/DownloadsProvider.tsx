@@ -21,6 +21,7 @@ import {
   usePreferencesContext,
 } from '@polito/lib/core';
 
+import { testingApiHeaders } from '../../config/api';
 import { dirname, mkdirRecursive } from '../../utils/files';
 import { buildCourseFilePath, stripIdInParentheses } from '../../utils/files';
 import {
@@ -126,7 +127,12 @@ export const DownloadsProvider = ({ children }: PropsWithChildren) => {
         const resumable = createResumableDownload(
           file.request.source,
           dest,
-          { headers: { Authorization: `Bearer ${token}` } },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              ...testingApiHeaders,
+            },
+          },
           ({
             totalBytesWritten,
             totalBytesExpectedToWrite,
