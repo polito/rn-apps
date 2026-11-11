@@ -30,7 +30,8 @@
     "title": "Agenda",
     "weeklyLayout": "Weekly layout",
     "hideEvent": "Agenda preferences",
-    "noHiddenEvents": "There are no hidden events"
+    "noHiddenEvents": "There are no hidden events",
+    "export": "Export Agenda"
   },
   "agendaDialog": {
     "hideEventTitle": "Hide event",
