@@ -42,7 +42,7 @@ export const ServiceScreen = () => {
       e.preventDefault();
       navigation.navigate({
         name: 'Didattica',
-        params: { screen: 'Roles' },
+        params: { screen: 'Home' },
         merge: true,
       });
     });

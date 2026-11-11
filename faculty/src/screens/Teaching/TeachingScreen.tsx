@@ -58,7 +58,7 @@ export const TeachingScreen = () => {
       <Section>
         <SectionHeader
           title={t('other.managedCourses')}
-          linkTo="CorsiInGestione"
+          linkTo="ManagedCourses"
         />
         <SectionList>
           {managedCourses.map(course => (
@@ -84,7 +84,7 @@ export const TeachingScreen = () => {
       </Section>
 
       <Section>
-        <SectionHeader title={t('other.appeals')} linkTo="Appelli" />
+        <SectionHeader title={t('other.appeals')} linkTo="ExamsCalls" />
         <SectionList>
           {fakeExams.slice(0, 3).map(exam => {
             return (
