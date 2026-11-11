@@ -11,6 +11,28 @@
     "title": "Agenda",
     "weeklyLayout": "Layout settimanale"
   },
+  "assignmentListItem": {
+    "openHint": "Apre il dettaglio dell’elaborato",
+    "removalRequested": "Rimozione richiesta dallo studente",
+    "unread": "Nuovo"
+  },
+  "assignmentScreen": {
+    "answer": "Rispondi",
+    "answerButtonHint": "Apre un modulo per rispondere allo studente",
+    "answerHint": "Scrivi la risposta da inviare allo studente",
+    "answerLabel": "Risposta",
+    "answerPlaceholder": "Scrivi qui il tuo messaggio",
+    "answerSent": "Risposta inviata",
+    "deleteHint": "Chiede conferma prima di eliminare l’elaborato",
+    "deleted": "Elaborato eliminato",
+    "downloadFile": "Scarica file",
+    "downloadUnavailableHint": "Il download non è ancora disponibile",
+    "metaLabel": "Consegnato il {{date}} da {{student}}",
+    "noDescription": "Nessuna descrizione",
+    "notFound": "Elaborato non trovato",
+    "sendAnswer": "Invia risposta",
+    "sendAnswerDisabledHint": "Scrivi una risposta per abilitare l’invio"
+  },
   "bookingScreen": {
     "barCodeTitle": "Barcode",
     "bookingStatus": {
@@ -195,6 +217,7 @@
     "newItems_plural": "Nuovi elementi",
     "next": "Avanti",
     "news": "News",
+    "no": "No",
     "noInternet": "Sei offline, alcune funzionalità potrebbero non essere disponibili",
     "noValue": "Nessun valore",
     "notFound": "Luogo inesistente",
@@ -267,6 +290,7 @@
     "virtualClassroom_plural": "Virtual classroom",
     "visualization": "Visualizzazione",
     "year": "anno",
+    "yes": "Sì",
     "yesterday": "Ieri",
     "fromTime": "dalle",
     "toTime": "alle",
