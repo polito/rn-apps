@@ -1,4 +1,4 @@
-import { PropsWithChildren, useCallback } from 'react';
+import { PropsWithChildren, ReactElement, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
@@ -13,6 +13,8 @@ import { Text } from './Text';
 type Props = {
   title: string;
   close: () => void;
+  closeColor?: string;
+  leadingItem?: ReactElement;
   scrollViewRef?: any;
   setScrollOffset?: (value: number) => void;
 };
@@ -20,6 +22,8 @@ type Props = {
 export const ModalContent = ({
   children,
   close,
+  closeColor,
+  leadingItem,
   title,
   scrollViewRef,
   setScrollOffset,
@@ -43,12 +47,13 @@ export const ModalContent = ({
         align="center"
         style={styles.header}
       >
-        <View style={styles.headerLeft} />
+        {leadingItem ?? <View style={styles.headerLeft} />}
         <Text style={styles.modalTitle}>{title}</Text>
         <IconButton
           accessibilityLabel={t('common.close')}
           accessibilityRole="button"
           icon={faTimes}
+          color={closeColor}
           onPress={close}
           adjustSpacing="left"
         />
