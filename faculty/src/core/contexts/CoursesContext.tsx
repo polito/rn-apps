@@ -185,14 +185,40 @@ interface Emergency {
   rules: string[];
 }
 
-interface User {
+export interface InstitutionalContact {
+  id: string;
+  type: 'email' | 'phone';
+  value: string;
+  isPublic: boolean;
+}
+
+export interface UploadedFile {
   name: string;
+  uploadedAt: string;
+}
+
+export interface User {
+  name: string;
+  serialNumber: string;
+  fiscalCode: string;
+  birthDate: string;
+  birthPlace: string;
+  civilStatus?: string;
   domicilie: string;
+  mailingAddress: string;
   taxDomicilie: string;
   IBAN: string;
+  bankDescription?: string;
   phone: string;
   email: string;
   privateMail: string;
+  pec?: string;
+  homePhone?: string;
+  residencePhone?: string;
+  website?: string;
+  cvIt?: UploadedFile;
+  cvEn?: UploadedFile;
+  institutionalContacts: InstitutionalContact[];
   role2?: string;
   role3?: string;
   sector: string;
@@ -6414,12 +6440,36 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
 
   const [user, setUser] = useState<User>({
     name: 'Marco Rossi',
-    domicilie: 'Corso Mediterraneo 89',
-    taxDomicilie: 'Via Accademia Albertina 1, Torino',
+    serialNumber: '000001',
+    fiscalCode: 'RSSMRC80A01L219X',
+    birthDate: '1980-01-01',
+    birthPlace: 'Torino (TO) - ITALIA',
+    domicilie: 'Corso Duca degli Abruzzi, 24, 10129, Torino (TO)',
+    mailingAddress: 'Corso Duca degli Abruzzi, 24, 10129, Torino (TO)',
+    taxDomicilie: 'Via Accademia Albertina 1, 10123, Torino (TO)',
     IBAN: 'IT22Z0306909402100000111122',
-    phone: '0110907198',
+    bankDescription: 'Intesa Sanpaolo',
+    phone: '3203203202',
     email: 'marco.rossi@polito.it',
     privateMail: 'marcorossi@gmail.com',
+    website: 'https://marcorossi.it',
+    cvIt: { name: 'cv_it.pdf', uploadedAt: '2025-01-19' },
+    cvEn: { name: 'cv_en.pdf', uploadedAt: '2025-01-19' },
+    institutionalContacts: [
+      {
+        id: 'email',
+        type: 'email',
+        value: 'marco.rossi@polito.it',
+        isPublic: true,
+      },
+      { id: 'phone', type: 'phone', value: '011-0907198', isPublic: true },
+      {
+        id: 'alias',
+        type: 'email',
+        value: 'rossi@polito.it',
+        isPublic: false,
+      },
+    ],
     role2: 'Vice direttore dipartimento di automatica e informatica',
     publications: [
       'Architetture efficienti per microservizi cloud-native',

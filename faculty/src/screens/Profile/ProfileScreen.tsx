@@ -1,23 +1,20 @@
 import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
-import { Platform } from 'react-native';
+import { Image, ScrollView, StyleSheet } from 'react-native';
 
 import {
-  faEnvelope,
+  faBell,
+  faCircleInfo,
   faGear,
-  faLock,
   faPersonThroughWindow,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { faBell, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import { useOfflineDisabled } from '@polito/lib/core';
+import { useOfflineDisabled, usePreferencesContext } from '@polito/lib/core';
 import { useLogout } from '@polito/lib/features/auth';
 import {
   Icon,
-  IconButton,
   ListItem,
   OverviewList,
-  Row,
   Section,
   SectionHeader,
   Text,
@@ -30,68 +27,45 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Logo } from '../../core/components/Logo';
-import { useCourses } from '../../core/contexts/CoursesContext';
 import { ProfileStackParamList } from './ProfileNavigator';
-import { PublicationListItem } from './PublicationsScreen';
-
-const MAX_PUBLICATIONS_PREVIEW = 3;
 
 export const ProfileScreen = () => {
   const { t } = useTranslation();
-  const { spacing, colors, fontSizes, palettes } = useTheme();
+  const { fontSizes, palettes } = useTheme();
   const navigation =
     useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
-  const { user } = useCourses();
+  const { username } = usePreferencesContext();
   const { mutate: handleLogout } = useLogout();
   const isOffline = useOfflineDisabled();
-  const publications = user.publications ?? [];
-  const visiblePublications = publications.slice(0, MAX_PUBLICATIONS_PREVIEW);
-  const publicationsMoreCount = Math.max(
-    0,
-    publications.length - MAX_PUBLICATIONS_PREVIEW,
-  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerTitle: t('other.profile'),
       headerLeft: () => <Logo />,
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{
-            textAlign: 'center',
-            width: '100%',
-            marginLeft: Platform.OS === 'android' ? 25 : 55,
-          }}
-        >
-          {t('other.profile')}
-        </Text>
-      ),
-      headerRight: () => (
-        <Row>
-          <View style={{ width: fontSizes.lg + spacing[6] }} />
-
-          <IconButton
-            icon={faPenToSquare}
-            color={colors.link}
-            size={fontSizes.lg}
-            accessibilityLabel={t('common.preferences')}
-            hitSlop={{ left: spacing[3], right: spacing[3] }}
-            onPress={() => navigation.navigate('ProfileForm')}
-          />
-
-          <IconButton
-            icon={faBell}
-            color={colors.link}
-            size={fontSizes.lg}
-            accessibilityLabel={t('common.preferences')}
-            hitSlop={{ left: spacing[3], right: spacing[3] }}
-          />
-        </Row>
-      ),
+      headerRight: () =>
+        username ? (
+          <Text
+            variant="link"
+            accessibilityLabel={`${t('common.username')}: ${username}`}
+          >
+            {username}
+          </Text>
+        ) : null,
     });
-  }, [navigation, t, colors, fontSizes, spacing]);
+  }, [navigation, t, username]);
+
+  const menuItems = [
+    { title: t('other.personalInfo'), icon: faUser, screen: 'PersonalInfo' },
+    { title: t('other.settings'), icon: faGear, screen: 'Settings' },
+    { title: t('appInfoScreen.title'), icon: faCircleInfo, screen: 'AppInfo' },
+    {
+      title: t('common.notifications'),
+      icon: faBell,
+      screen: 'Notifications',
+    },
+  ] as const;
 
   return (
     <ScrollView
@@ -108,59 +82,17 @@ export const ProfileScreen = () => {
       <Section>
         <SectionHeader title={t('other.general')} />
         <OverviewList indented>
-          <ListItem
-            isAction
-            title={t('other.personalInfo')}
-            leadingItem={<Icon icon={faLock} size={fontSizes.xl} />}
-            onPress={() => {
-              navigation.navigate('PersonalInfo');
-            }}
-          />
-          <ListItem
-            isAction
-            title={t('contactsScreen.title')}
-            leadingItem={<Icon icon={faEnvelope} size={fontSizes.xl} />}
-            onPress={() => {
-              navigation.navigate('Contacts');
-            }}
-          />
-          <ListItem
-            isAction
-            title={t('other.settings')}
-            leadingItem={<Icon icon={faGear} size={fontSizes.xl} />}
-            onPress={() => {
-              navigation.navigate('Settings');
-            }}
-          />
-          <ListItem
-            isAction
-            title={t('common.notifications')}
-            leadingItem={<Icon icon={faBell} size={fontSizes.xl} />}
-            onPress={() => {
-              navigation.navigate('Notifications');
-            }}
-          />
+          {menuItems.map(item => (
+            <ListItem
+              key={item.screen}
+              isAction
+              title={item.title}
+              leadingItem={<Icon icon={item.icon} size={fontSizes.xl} />}
+              onPress={() => navigation.navigate(item.screen)}
+            />
+          ))}
         </OverviewList>
       </Section>
-
-      {publications.length > 0 && (
-        <Section>
-          <SectionHeader
-            title={t('other.publications')}
-            {...(publicationsMoreCount > 0
-              ? {
-                  linkTo: { screen: 'Publications' } as const,
-                  linkToMoreCount: publicationsMoreCount,
-                }
-              : {})}
-          />
-          <OverviewList indented>
-            {visiblePublications.map((pub, index) => (
-              <PublicationListItem key={index} title={pub} />
-            ))}
-          </OverviewList>
-        </Section>
-      )}
 
       <Section>
         <OverviewList indented>

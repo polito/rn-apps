@@ -15,7 +15,8 @@ import {
   faCompass,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { usePreferencesContext } from '@polito/lib/core';
+import { usePreferencesContext, useSplashContext } from '@polito/lib/core';
+import { useCheckMfa } from '@polito/lib/features/auth';
 import {
   PlacesNavigator,
   PlacesStackParamList,
@@ -41,7 +42,10 @@ import {
   AgendaNavigator,
   AgendaStackParamList,
 } from '../../screens/Agenda/AgendaNavigator';
-import { ProfileNavigator } from '../../screens/Profile/ProfileNavigator';
+import {
+  ProfileNavigator,
+  ProfileStackParamList,
+} from '../../screens/Profile/ProfileNavigator';
 import { ServiceNavigator } from '../../screens/Servizi/ServiceNavigator';
 import {
   TeachingNavigator,
@@ -54,7 +58,7 @@ export type RootParamList = {
   Agenda: NavigatorScreenParams<AgendaStackParamList>;
   Places: NavigatorScreenParams<PlacesStackParamList>;
   Services: undefined;
-  Profile: undefined;
+  Profile: NavigatorScreenParams<ProfileStackParamList>;
 };
 const TabNavigator = createBottomTabNavigator<RootParamList>();
 const androidTabBarHeight = 60;
@@ -64,7 +68,13 @@ export const RootNavigator = () => {
   const { colors } = useTheme();
   const { bottom } = useSafeAreaInsets();
   const styles = useStylesheet(createStyles);
-  const { updatePreference } = usePreferencesContext<AppPreferences>();
+  const { updatePreference, politoAuthnEnrolmentStatus } =
+    usePreferencesContext<AppPreferences>();
+  const { isSplashLoaded } = useSplashContext();
+  const { data: mfaStatus } = useCheckMfa();
+  const showMfaPrompt =
+    mfaStatus?.status === 'available' &&
+    !politoAuthnEnrolmentStatus?.hideInitialPrompt;
   const campus = useGetCurrentCampus();
   const { data: sites } = useGetSites();
   useEffect(() => {
@@ -74,6 +84,17 @@ export const RootNavigator = () => {
   }, [campus, sites?.data, updatePreference]);
 
   const [isDID, setIsDID] = useState(true);
+
+  const rootNavigation =
+    useNavigation<NativeStackNavigationProp<RootParamList>>();
+  useEffect(() => {
+    if (!isSplashLoaded || !showMfaPrompt) return;
+    rootNavigation.navigate('Profile', {
+      screen: 'PolitoAuthenticator',
+      params: { activeView: 'enroll' },
+      initial: false,
+    });
+  }, [isSplashLoaded, showMfaPrompt, rootNavigation]);
 
   const teachingNavigation =
     useNavigation<NativeStackNavigationProp<TeachingStackParamList>>();
@@ -261,7 +282,7 @@ export const RootNavigator = () => {
                 setIsDID(false);
 
                 // Poi procedi con la navigazione
-                bottomNavigation.navigate('Profile'); // Se desideri navigare in modo esplicito
+                bottomNavigation.navigate('Profile', { screen: 'Profilo' }); // Se desideri navigare in modo esplicito
               }}
             >
               <View style={props.style} testID={props.testID}>

@@ -6,13 +6,16 @@ import {
   faBroom,
   faCircleHalfStroke,
   faFont,
+  faShieldHalved,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   PreferencesContextBase,
   useOfflineDisabled,
   usePreferencesContext,
 } from '@polito/lib/core';
+import { useCheckMfa } from '@polito/lib/features/auth';
 import {
+  Badge,
   BottomBarSpacer,
   Icon,
   ListItem,
@@ -106,6 +109,62 @@ const ThemeListItem = () => {
   );
 };
 
+const AuthenticatorListItem = () => {
+  const { t } = useTranslation();
+  const { palettes, fontSizes } = useTheme();
+  const { data: mfa, isPending } = useCheckMfa(true);
+
+  if (isPending || mfa?.status === 'unavailable') return null;
+
+  const badge =
+    mfa?.status === 'active'
+      ? {
+          text: t('mfaScreen.settings.active'),
+          bg: palettes.success[100],
+          fg: palettes.success[700],
+        }
+      : mfa?.status === 'locked'
+        ? {
+            text: t('mfaScreen.settings.locked'),
+            bg: palettes.warning[100],
+            fg: palettes.warning[700],
+          }
+        : mfa?.status === 'available' || mfa?.status === 'needsReauth'
+          ? {
+              text: t('mfaScreen.settings.disabled'),
+              bg: palettes.danger[100],
+              fg: palettes.danger[700],
+            }
+          : {
+              text: t('common.error'),
+              bg: palettes.danger[100],
+              fg: palettes.danger[700],
+            };
+
+  return (
+    <Section>
+      <SectionHeader title={t('settingsScreen.securityTitle')} />
+      <OverviewList indented>
+        <ListItem
+          isAction
+          title={t('settingsScreen.authenticatorTitle')}
+          accessibilityRole="button"
+          accessibilityLabel={`${t('settingsScreen.authenticatorTitle')}, ${badge.text}`}
+          leadingItem={<Icon icon={faShieldHalved} size={fontSizes['2xl']} />}
+          trailingItem={
+            <Badge
+              text={badge.text}
+              backgroundColor={badge.bg}
+              foregroundColor={badge.fg}
+            />
+          }
+          linkTo={{ screen: 'MfaSettings' }}
+        />
+      </OverviewList>
+    </Section>
+  );
+};
+
 const LanguageListItem = () => {
   const { t } = useTranslation();
   const { language, updatePreference } =
@@ -155,16 +214,7 @@ export const SettingsScreen = () => {
   const styles = useStylesheet(createStyles);
 
   useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: () => (
-        <Text
-          variant="heading"
-          style={{ marginLeft: i18next.language === 'it' ? 80 : 100 }}
-        >
-          {t('settingsScreen.title')}
-        </Text>
-      ),
-    });
+    navigation.setOptions({ headerTitle: t('settingsScreen.title') });
   }, [navigation, t]);
 
   return (
@@ -183,6 +233,8 @@ export const SettingsScreen = () => {
             <LanguageListItem />
           </OverviewList>
         </Section>
+
+        <AuthenticatorListItem />
 
         <Section>
           <SectionHeader title={t('common.accessibility')} />

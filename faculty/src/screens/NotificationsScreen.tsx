@@ -12,7 +12,6 @@ import {
   Section,
   SectionHeader,
   SwitchListItem,
-  Text,
   Theme,
   useBottomBarAwareStyles,
   useStylesheet,
@@ -20,8 +19,6 @@ import {
 } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-import i18next from 'i18next';
 
 import { ProfileStackParamList } from '../screens/Profile/ProfileNavigator';
 
@@ -36,14 +33,7 @@ export const NotificationsScreen = () => {
   const [reservationsEnabled, setReservationsEnabled] = useState(true);
 
   useLayoutEffect(() => {
-    const marginLeft = i18next.language === 'en' ? 80 : 65;
-    navigation.setOptions({
-      headerTitle: () => (
-        <Text variant="heading" style={{ marginLeft }}>
-          {t('notificationsScreen.title')}
-        </Text>
-      ),
-    });
+    navigation.setOptions({ headerTitle: t('notificationsScreen.title') });
   }, [navigation, t]);
 
   return (
