@@ -5857,7 +5857,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
       id: 'BookingPlaces',
       name: t('other.bookPlaces'),
       icon: faPersonCirclePlus,
-      linkTo: 'Prenotazione',
+      linkTo: 'Booking',
       favorite: false,
     },
     {
@@ -5871,7 +5871,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
       id: 'Support',
       name: t('other.support'),
       icon: faVideo,
-      linkTo: 'Supporto',
+      linkTo: 'Support',
       favorite: false,
     },
   ]);

@@ -38,7 +38,7 @@ export const SupportScreen = () => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
       e.preventDefault();
-      navigation.navigate('Servizi');
+      navigation.navigate('Services');
     });
 
     return unsubscribe;
@@ -49,7 +49,7 @@ export const SupportScreen = () => {
         <IconButton
           icon={faArrowLeft}
           size={22}
-          onPress={() => navigation.navigate('Servizi')}
+          onPress={() => navigation.navigate('Services')}
         />
       ),
       headerTitle: () => (

@@ -54,11 +54,11 @@ import {
 import { AppPreferences } from '../types/preferences';
 
 export type RootParamList = {
-  Didattica: NavigatorScreenParams<TeachingStackParamList>;
-  Agenda: NavigatorScreenParams<AgendaStackParamList>;
-  Places: NavigatorScreenParams<PlacesStackParamList>;
-  Services: undefined;
-  Profile: NavigatorScreenParams<ProfileStackParamList>;
+  TeachingTab: NavigatorScreenParams<TeachingStackParamList>;
+  AgendaTab: NavigatorScreenParams<AgendaStackParamList>;
+  PlacesTab: NavigatorScreenParams<PlacesStackParamList>;
+  ServicesTab: undefined;
+  ProfileTab: NavigatorScreenParams<ProfileStackParamList>;
 };
 const TabNavigator = createBottomTabNavigator<RootParamList>();
 const androidTabBarHeight = 60;
@@ -89,7 +89,7 @@ export const RootNavigator = () => {
     useNavigation<NativeStackNavigationProp<RootParamList>>();
   useEffect(() => {
     if (!isSplashLoaded || !showMfaPrompt) return;
-    rootNavigation.navigate('Profile', {
+    rootNavigation.navigate('ProfileTab', {
       screen: 'PolitoAuthenticator',
       params: { activeView: 'enroll' },
       initial: false,
@@ -127,7 +127,7 @@ export const RootNavigator = () => {
     >
       {isDID ? (
         <TabNavigator.Screen
-          name="Didattica"
+          name="TeachingTab"
           component={TeachingNavigator}
           options={{
             headerShown: false,
@@ -152,7 +152,7 @@ export const RootNavigator = () => {
         />
       ) : (
         <TabNavigator.Screen
-          name="Didattica"
+          name="TeachingTab"
           component={TeachingNavigator}
           options={{
             headerShown: false,
@@ -168,7 +168,7 @@ export const RootNavigator = () => {
 
                   // Poi procedi con la navigazione
                   bottomNavigation.navigate({
-                    name: 'Didattica',
+                    name: 'TeachingTab',
                     params: { screen: 'Roles' },
                     merge: true,
                   }); // Se desideri navigare in modo esplicito
@@ -183,7 +183,7 @@ export const RootNavigator = () => {
         />
       )}
       <TabNavigator.Screen
-        name="Agenda"
+        name="AgendaTab"
         component={AgendaNavigator}
         options={{
           headerShown: false,
@@ -198,7 +198,7 @@ export const RootNavigator = () => {
                 setIsDID(false);
 
                 // Poi procedi con la navigazione
-                bottomNavigation.navigate('Agenda', { screen: 'Agenda2' }); // Se desideri navigare in modo esplicito
+                bottomNavigation.navigate('AgendaTab', { screen: 'Agenda2' }); // Se desideri navigare in modo esplicito
               }}
             >
               <View style={props.style} testID={props.testID}>
@@ -210,7 +210,7 @@ export const RootNavigator = () => {
       />
 
       <TabNavigator.Screen
-        name="Places"
+        name="PlacesTab"
         options={{
           headerShown: false,
           tabBarLabel: t('other.places'),
@@ -225,7 +225,7 @@ export const RootNavigator = () => {
 
                 // Poi procedi con la navigazione
                 placesNavigation.navigate({
-                  name: 'Places',
+                  name: 'PlacesTab',
                   params: { screen: 'Places1' },
                   merge: true,
                 }); // Se desideri navigare in modo esplicito
@@ -241,7 +241,7 @@ export const RootNavigator = () => {
         {() => <PlacesNavigator unreadMessagesModal={View} />}
       </TabNavigator.Screen>
       <TabNavigator.Screen
-        name="Services"
+        name="ServicesTab"
         component={ServiceNavigator}
         options={{
           headerShown: false,
@@ -256,7 +256,7 @@ export const RootNavigator = () => {
                 setIsDID(false);
 
                 // Poi procedi con la navigazione
-                bottomNavigation.navigate('Services'); // Se desideri navigare in modo esplicito
+                bottomNavigation.navigate('ServicesTab'); // Se desideri navigare in modo esplicito
               }}
             >
               <View style={props.style} testID={props.testID}>
@@ -267,7 +267,7 @@ export const RootNavigator = () => {
         }}
       />
       <TabNavigator.Screen
-        name="Profile"
+        name="ProfileTab"
         component={ProfileNavigator}
         options={{
           headerShown: false,
@@ -282,7 +282,7 @@ export const RootNavigator = () => {
                 setIsDID(false);
 
                 // Poi procedi con la navigazione
-                bottomNavigation.navigate('Profile', { screen: 'Profilo' }); // Se desideri navigare in modo esplicito
+                bottomNavigation.navigate('ProfileTab', { screen: 'Profile' }); // Se desideri navigare in modo esplicito
               }}
             >
               <View style={props.style} testID={props.testID}>

@@ -16,7 +16,7 @@ import { SingleElementScreen } from './SingleElementScreen';
 
 export type AgendaStackParamList = {
   Agenda2: undefined;
-  Lezione: undefined;
+  Lecture: undefined;
   AgendaWeek: undefined;
   Form: undefined;
   SingleElement: undefined;
@@ -85,7 +85,7 @@ export const AgendaNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="Lezione"
+        name="Lecture"
         component={LectureScreen}
         options={{
           headerTitle: 'Lezione',

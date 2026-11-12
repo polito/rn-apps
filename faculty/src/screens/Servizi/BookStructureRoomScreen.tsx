@@ -31,7 +31,7 @@ export const BookStructureRoomScreen = () => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
       e.preventDefault();
-      navigation.navigate('Prenotazione');
+      navigation.navigate('Booking');
     });
 
     return unsubscribe;
@@ -43,7 +43,7 @@ export const BookStructureRoomScreen = () => {
         <IconButton
           icon={faArrowLeft}
           size={22}
-          onPress={() => navigation.navigate('Prenotazione')}
+          onPress={() => navigation.navigate('Booking')}
         />
       ),
       headerTitle: () => (
@@ -139,7 +139,7 @@ export const BookStructureRoomScreen = () => {
       <CtaButton
         title={t('bookingsScreen.newBooking')}
         action={() => {
-          navigation.navigate('PrenotaStruttureForm');
+          navigation.navigate('BookStructureForm');
         }}
         absolute={false}
         variant="filled"

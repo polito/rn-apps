@@ -57,7 +57,7 @@ export const AppInfoScreen = ({ navigation }: Props) => {
   const communication = communications[0];
 
   const openSupport = () =>
-    navigation.getParent()?.navigate('Services', { screen: 'Supporto' });
+    navigation.getParent()?.navigate('ServicesTab', { screen: 'Support' });
 
   const feedbackItem = (
     titleKey: string,

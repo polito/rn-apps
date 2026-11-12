@@ -44,7 +44,7 @@ export const SingleBooking1 = () => {
         <IconButton
           icon={faArrowLeft}
           size={22}
-          onPress={() => navigation.navigate('PrenotaSpaziEventi')}
+          onPress={() => navigation.navigate('BookEventsRoom')}
         />
       ),
       headerTitle: () => (
@@ -172,7 +172,7 @@ export const SingleBooking1 = () => {
                 style: 'destructive',
                 onPress: () => {
                   removeBooking(selectedBooking.id);
-                  navigation.navigate('PrenotaSpaziEventi');
+                  navigation.navigate('BookEventsRoom');
                 },
               },
             ]);

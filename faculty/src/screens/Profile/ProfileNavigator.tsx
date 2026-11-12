@@ -30,7 +30,7 @@ import { SettingsScreen } from './SettingsScreen';
 import { WhatsNewScreen } from './WhatsNewScreen';
 
 export type ProfileStackParamList = {
-  Profilo: undefined;
+  Profile: undefined;
   Settings: undefined;
   PersonalInfo: undefined;
   AddressForm: { target: AddressTarget };
@@ -66,8 +66,8 @@ const PolitoAuthenticatorScreen = ({
     onClose={() => navigation.goBack()}
     onMissingKey={() => navigation.navigate('Settings')}
     onSettingsEnrollmentComplete={() =>
-      resetNavigationStatusTo(navigation, 'Profile', [
-        { name: 'Profilo' },
+      resetNavigationStatusTo(navigation, 'ProfileTab', [
+        { name: 'Profile' },
         { name: 'Settings' },
         { name: 'MfaSettings' },
       ])
@@ -109,7 +109,7 @@ export const ProfileNavigator = () => {
         ...useTitlesStyles(theme),
       }}
     >
-      <Stack.Screen name="Profilo" component={ProfileScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="PersonalInfo" component={PersonalInfoScreen} />
       <Stack.Screen
         name="AddressForm"

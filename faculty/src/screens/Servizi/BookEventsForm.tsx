@@ -136,7 +136,7 @@ export const BookEventsForm = () => {
         <IconButton
           icon={faArrowLeft}
           size={22}
-          onPress={() => navigation.navigate('PrenotaSpaziEventi')}
+          onPress={() => navigation.navigate('BookEventsRoom')}
         />
       ),
       headerTitle: () => (
