@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import { PillButton, Text, useTheme } from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
+import { PillButton, Text, useTheme } from '../../../ui';
+import { BookingsStackParamList } from '../types';
 
 type Props = {
   onPress?: () => void;
@@ -15,7 +15,7 @@ export const BookingSlotsStatusLegend = ({ onPress }: Props) => {
   const { t } = useTranslation();
   const { spacing } = useTheme();
   const navigation =
-    useNavigation<NativeStackNavigationProp<ServiceStackParamList>>();
+    useNavigation<NativeStackNavigationProp<BookingsStackParamList>>();
 
   return (
     <PillButton

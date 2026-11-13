@@ -2,7 +2,14 @@ import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { APP_TIMEZONE, usePreferencesContext } from '@polito/lib/core';
-import { Col, Row, Text, Theme, useStylesheet } from '@polito/lib/ui';
+import {
+  Col,
+  EmptyWeek,
+  Row,
+  Text,
+  Theme,
+  useStylesheet,
+} from '@polito/lib/ui';
 
 import { AppPreferences } from '~/core/types/preferences';
 
@@ -12,7 +19,6 @@ import { processLectures } from '../hooks/useProcessedLectures';
 import { AgendaDay } from '../types/AgendaDay';
 import { AgendaWeek } from '../types/AgendaWeek';
 import { DailyAgenda } from './DailyAgenda';
-import { EmptyWeek } from './EmptyWeek';
 
 interface Props {
   agendaWeek: AgendaWeek;

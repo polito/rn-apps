@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 
-import { setTimeoutAccessibilityInfoHelper } from '@polito/lib/core';
+import { setTimeoutAccessibilityInfoHelper } from '../utils/setTimeoutAccessibilityInfo';
 
 interface Options {
   title?: string;

@@ -16,6 +16,7 @@
     "bookingStatus": {
       "available": "Prenotabile",
       "booked": "Prenotato",
+      "concluded": "Concluso",
       "full": "Non prenotabile",
       "notAvailable": "Non ancora prenotabile",
       "notAvailableBooking": "Non prenotabile"
@@ -51,6 +52,7 @@
   },
   "bookingsScreen": {
     "emptyState": "Non hai prenotazioni attive",
+    "emptyWeek": "Non hai eventi disponibili in questa settimana",
     "newBooking": "Nuova prenotazione",
     "sectionTitle": "Attive",
     "title": "Prenotazioni"
@@ -916,6 +918,7 @@
     "enterMail": "Inserisci la tua mail",
     "enterPrivateMail": "Inserisci la tua mail privata",
     "places": "Luoghi",
+    "bookActivities": "Prenotazione Attività",
     "bookPlaces": "Prenotazione Spazi",
     "emergencies": "Emergenze",
     "support": "Supporto audio-video in aula",

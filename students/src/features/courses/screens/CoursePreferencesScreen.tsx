@@ -13,7 +13,11 @@ import {
   faIcons,
   faVideoCamera,
 } from '@fortawesome/free-solid-svg-icons';
-import { useFeedbackContext, usePreferencesContext } from '@polito/lib/core';
+import {
+  useConfirmationDialog,
+  useFeedbackContext,
+  usePreferencesContext,
+} from '@polito/lib/core';
 import { courseColors, courseIcons } from '@polito/lib/features/courses';
 import {
   BottomBarSpacer,
@@ -44,7 +48,6 @@ import {
 import { AppPreferences } from '~/core/types/preferences';
 import { formatFileSize } from '~/utils/files';
 
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { TeachingStackParamList } from '../../teaching/components/TeachingNavigator';
 import { CourseContext, useCourseContext } from '../contexts/CourseContext';
 

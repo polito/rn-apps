@@ -1,13 +1,12 @@
 import { useTranslation } from 'react-i18next';
 
-import { useFeedbackContext } from '@polito/lib/core';
+import { useConfirmationDialog, useFeedbackContext } from '@polito/lib/core';
 import { CtaButton } from '@polito/lib/ui';
 import { ExamStatusEnum } from '@polito/student-api-client';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { onlineManager } from '@tanstack/react-query';
 
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import {
   useBookExam,
   useCancelExamBooking,

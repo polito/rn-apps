@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import { AgendaNavigatorID, usePreferencesContext } from '@polito/lib/core';
+import { BookingSeatScreen } from '@polito/lib/features/bookings';
 import {
   PlacesNavigator,
   type PlacesStackParamList,
@@ -19,7 +20,6 @@ import {
   SharedScreensParamList,
 } from '~/shared/navigation/SharedScreens.tsx';
 
-import { BookingSeatScreen } from '../../bookings/screens/BookingSeatScreen';
 import {
   CourseSharedScreens,
   CourseSharedScreensParamList,

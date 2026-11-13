@@ -22,6 +22,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {
   PreferencesContextBase,
+  useConfirmationDialog,
   useFeedbackContext,
   useOfflineDisabled,
   usePolitoAppMfaPrivateKeyKeychain,
@@ -56,7 +57,6 @@ import i18next from 'i18next';
 import { Settings } from 'luxon';
 
 import { version } from '../../../../package.json';
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useUpdateDevicePreferences } from '../../../core/queries/studentHooks';
 import { formatFileSize } from '../../../utils/files';
 

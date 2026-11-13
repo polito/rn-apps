@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   IconDefinition,
   faBullhorn,
+  faCalendarCheck,
   faCircleExclamation,
   faCircleRadiation,
   faComments,
@@ -5832,6 +5833,13 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
       name: t('other.bookPlaces'),
       icon: faPersonCirclePlus,
       linkTo: 'Prenotazione',
+      favorite: false,
+    },
+    {
+      id: 'BookingsActivity',
+      name: t('other.bookActivities'),
+      icon: faCalendarCheck,
+      linkTo: 'Bookings',
       favorite: false,
     },
     {

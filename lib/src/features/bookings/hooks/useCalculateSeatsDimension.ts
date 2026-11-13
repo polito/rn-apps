@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { SCREEN_WIDTH } from '@polito/lib/core';
-import { useTheme } from '@polito/lib/ui';
 import { BookingSeats } from '@polito/student-api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import { isEmpty } from 'lodash';
 
-import { minBookableCellSize } from '../constant';
+import { SCREEN_WIDTH } from '../../../core';
+import { useTheme } from '../../../ui';
+import { minBookableCellSize } from '../constants';
 
 export const useCalculateSeatsDimension = (
   seats?: BookingSeats,

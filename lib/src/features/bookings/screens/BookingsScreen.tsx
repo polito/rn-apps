@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView } from 'react-native';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { setTimeoutAccessibilityInfoHelper } from '@polito/lib/core';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { setTimeoutAccessibilityInfoHelper } from '../../../core';
 import {
   BottomBarSpacer,
   CtaButton,
@@ -12,14 +14,12 @@ import {
   Section,
   SectionHeader,
   useTheme,
-} from '@polito/lib/ui';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+} from '../../../ui';
+import { BookingListItem } from '../components/BookingListItem';
+import { useGetBookings } from '../queries/bookingHooks';
+import { BookingsStackParamList } from '../types';
 
-import { useGetBookings } from '../../../core/queries/bookingHooks';
-import { BookingListItem } from '../../bookings/components/BookingListItem';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
-
-type Props = NativeStackScreenProps<ServiceStackParamList, 'Bookings'>;
+type Props = NativeStackScreenProps<BookingsStackParamList, 'Bookings'>;
 const createBookingEnabled = true;
 
 export const BookingsScreen = ({ navigation }: Props) => {

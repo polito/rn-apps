@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+
 import {
   Col,
   Icon,
@@ -10,7 +11,7 @@ import {
   Theme,
   useStylesheet,
   useTheme,
-} from '@polito/lib/ui';
+} from '../../../ui';
 
 type BookingDetailProps = {
   icon: IconProp;

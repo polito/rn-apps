@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { ModalContent } from '@polito/lib/ui';
-
+import { ModalContent } from '../../../ui';
 import { BookingSlotsLegendContent } from './BookingSlotsLegendContent';
 
 type Props = {

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { useTheme } from '@polito/lib/ui';
+import { useTheme } from '../../../ui';
 
 type BookingDeskCellProps = {
   seatSize: number;

@@ -1,11 +1,11 @@
-import { APP_TIMEZONE } from '@polito/lib/core';
-import { Theme } from '@polito/lib/ui';
 import { Booking, BookingTopic } from '@polito/student-api-client';
 
 import { inRange } from 'lodash';
 import { DateTime } from 'luxon';
 
-import { BookingCalendarEvent } from '../features/bookings/screens/BookingSlotScreen';
+import { APP_TIMEZONE } from '../../../core';
+import { Theme } from '../../../ui';
+import { BookingCalendarEvent } from '../types';
 
 export const MIN_CELL_HEIGHT = 20;
 

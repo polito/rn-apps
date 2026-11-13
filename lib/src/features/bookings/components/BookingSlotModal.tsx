@@ -11,10 +11,11 @@ import {
   faHourglassEnd,
   faHourglassStart,
 } from '@fortawesome/free-solid-svg-icons';
-import {
-  APP_TIMEZONE,
-  setTimeoutAccessibilityInfoHelper,
-} from '@polito/lib/core';
+
+import { inRange } from 'lodash';
+import { DateTime } from 'luxon';
+
+import { APP_TIMEZONE, setTimeoutAccessibilityInfoHelper } from '../../../core';
 import {
   EmptyState,
   ModalContent,
@@ -23,13 +24,9 @@ import {
   Theme,
   useStylesheet,
   useTheme,
-} from '@polito/lib/ui';
-
-import { inRange } from 'lodash';
-import { DateTime } from 'luxon';
-
-import { isSlotBookable, isSlotFull } from '../../../utils/bookings';
-import { BookingCalendarEvent } from '../screens/BookingSlotScreen';
+} from '../../../ui';
+import { BookingCalendarEvent } from '../types';
+import { isSlotBookable, isSlotFull } from '../utils/bookings';
 import { BookingField } from './BookingField';
 import { BookingSeatsCta } from './BookingSeatsCta';
 

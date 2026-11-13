@@ -6,9 +6,13 @@ import {
   faChevronLeft,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
-import { IconButton, Row, Text, useTheme } from '@polito/lib/ui';
 
 import { DateTime } from 'luxon';
+
+import { useTheme } from '../hooks/useTheme';
+import { IconButton } from './IconButton';
+import { Row } from './Row';
+import { Text } from './Text';
 
 interface Props {
   current: DateTime;

@@ -2,11 +2,11 @@ import { ScrollView } from 'react-native';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { BookingSlotsLegendContent } from '../components/BookingSlotsLegendContent';
+import { BookingsStackParamList } from '../types';
 
 type Props = NativeStackScreenProps<
-  ServiceStackParamList,
+  BookingsStackParamList,
   'BookingSlotsLegend'
 >;
 

@@ -1,4 +1,5 @@
 export * from './useAccessibility';
+export * from './useConfirmationDialog';
 export * from './useDebounceValue';
 export * from './useDeviceDimension';
 export * from './useDeviceLanguage';

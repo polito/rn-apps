@@ -2,18 +2,18 @@ import { PropsWithChildren, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
-import { setTimeoutAccessibilityInfoHelper } from '@polito/lib/core';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { setTimeoutAccessibilityInfoHelper } from '../../../core';
 import {
   CtaButton,
   CtaButtonContainer,
   Theme,
   useStylesheet,
-} from '@polito/lib/ui';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-import { useCreateBooking } from '../../../core/queries/bookingHooks';
-import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
+} from '../../../ui';
+import { useCreateBooking } from '../queries/bookingHooks';
+import { BookingsStackParamList } from '../types';
 
 type BookingSeatsCtaProps = PropsWithChildren<{
   seatId?: string;
@@ -39,7 +39,7 @@ export const BookingSeatsCta = ({
   const { t } = useTranslation();
   const createBookingMutation = useCreateBooking();
   const navigation =
-    useNavigation<NativeStackNavigationProp<ServiceStackParamList>>();
+    useNavigation<NativeStackNavigationProp<BookingsStackParamList>>();
 
   const ctaEnabled = useMemo(
     () => (hasSeatSelection ? !!seatId : true),
@@ -63,9 +63,9 @@ export const BookingSeatsCta = ({
               seatId: seatId ? Number(seatId) : undefined,
               slotId: Number(slotId),
             })
-            .then(async () => {
+            .then(() => {
               onCloseModal?.();
-              await navigation.pop(2);
+              navigation.popTo('Bookings');
               setTimeoutAccessibilityInfoHelper(
                 t('bookingSeatScreen.confirmSuccess'),
                 2000,

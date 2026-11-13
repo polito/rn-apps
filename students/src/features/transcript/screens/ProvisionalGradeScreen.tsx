@@ -5,6 +5,7 @@ import { Platform, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import {
   formatDate,
   formatDateWithTimeIfNotNull,
+  useConfirmationDialog,
   useFeedbackContext,
   useOfflineDisabled,
   usePreferencesContext,
@@ -29,7 +30,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { AppPreferences } from '~/core/types/preferences.ts';
 
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import {
   useAcceptProvisionalGrade,
   useGetProvisionalGrades,

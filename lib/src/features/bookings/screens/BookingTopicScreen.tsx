@@ -14,7 +14,10 @@ import {
   faChevronRight,
   faChevronUp,
 } from '@fortawesome/free-solid-svg-icons';
-import { sanitizeHtml } from '@polito/lib/core';
+import { BookingSubtopic } from '@polito/student-api-client';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { sanitizeHtml } from '../../../core';
 import {
   Icon,
   IndentedDivider,
@@ -24,12 +27,9 @@ import {
   SectionHeader,
   Text,
   useTheme,
-} from '@polito/lib/ui';
-import { BookingSubtopic } from '@polito/student-api-client';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-
-import { useGetBookingTopics } from '../../../core/queries/bookingHooks';
-import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
+} from '../../../ui';
+import { useGetBookingTopics } from '../queries/bookingHooks';
+import { BookingsStackParamList } from '../types';
 
 type TopicSection = {
   title: string;
@@ -40,7 +40,7 @@ type TopicSection = {
   data: BookingSubtopic[];
 };
 
-type Props = NativeStackScreenProps<ServiceStackParamList, 'BookingTopic'>;
+type Props = NativeStackScreenProps<BookingsStackParamList, 'BookingTopic'>;
 
 export const BookingTopicScreen = ({ navigation }: Props) => {
   const topicsQuery = useGetBookingTopics();

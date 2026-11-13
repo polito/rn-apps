@@ -13,10 +13,17 @@ import Barcode from 'react-native-barcode-svg';
 import { faCheckCircle, faLocation } from '@fortawesome/free-solid-svg-icons';
 import {
   APP_TIMEZONE,
+  useConfirmationDialog,
   useFeedbackContext,
   useOfflineDisabled,
 } from '@polito/lib/core';
 import { useOpenInAppLink } from '@polito/lib/core';
+import {
+  BookingDateTime,
+  useDeleteBooking,
+  useGetBookings,
+  useUpdateBooking,
+} from '@polito/lib/features/bookings';
 import { resolvePlaceId } from '@polito/lib/features/places';
 import {
   BottomBarSpacer,
@@ -44,15 +51,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { inRange } from 'lodash';
 import { DateTime } from 'luxon';
 
-import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
 import { useGeolocation } from '../../../core/hooks/useGeolocation';
-import {
-  useDeleteBooking,
-  useGetBookings,
-  useUpdateBooking,
-} from '../../../core/queries/bookingHooks';
 import { useGetProfile } from '../../../core/queries/studentHooks';
-import { BookingDateTime } from '../../bookings/components/BookingDateTime';
 import { AgendaStackParamList } from '../components/AgendaNavigator';
 
 type Props = NativeStackScreenProps<AgendaStackParamList, 'Booking'>;

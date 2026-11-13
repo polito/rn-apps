@@ -19,6 +19,7 @@ import {
   useOfflineDisabled,
   usePreferencesContext,
 } from '@polito/lib/core';
+import { BOOKINGS_QUERY_KEY } from '@polito/lib/features/bookings';
 import {
   ActivityIndicator,
   BottomBarSpacer,
@@ -35,7 +36,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { BOOKINGS_QUERY_KEY } from '~/core/queries/bookingHooks.ts';
 import { EXAMS_QUERY_KEY } from '~/core/queries/examHooks.ts';
 import { DEADLINES_QUERY_PREFIX } from '~/core/queries/studentHooks.ts';
 import { AppPreferences } from '~/core/types/preferences';

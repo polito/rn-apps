@@ -16,6 +16,7 @@
     "bookingStatus": {
       "available": "Available",
       "booked": "Booked",
+      "concluded": "Concluded",
       "full": "Full",
       "notAvailable": "Not available"
     },
@@ -46,6 +47,7 @@
   },
   "bookingsScreen": {
     "emptyState": "You have no active bookings",
+    "emptyWeek": "You have no events available during this week",
     "newBooking": "New booking",
     "sectionTitle": "Active",
     "title": "Bookings"
@@ -889,6 +891,7 @@
     "enterMail": "Enter your mail",
     "enterPrivateMail": "Enter your private mail",
     "places": "Places",
+    "bookActivities": "Book Activities",
     "bookPlaces": "Book Places",
     "emergencies": "Emergencies",
     "support": "Audio-video support in the classroom",

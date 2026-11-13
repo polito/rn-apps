@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, View, ViewProps } from 'react-native';
 
 import { faBan, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { useDeviceOrientation } from '@polito/lib/core';
+import { useConfirmationDialog, useDeviceOrientation } from '@polito/lib/core';
 import {
   Card,
   Col,
@@ -17,7 +17,6 @@ import {
   useTheme,
 } from '@polito/lib/ui';
 
-import { useConfirmationDialog } from '~/core/hooks/useConfirmationDialog.ts';
 import { useDeleteEsc } from '~/core/queries/escHooks.ts';
 
 type Props = PropsWithChildren<

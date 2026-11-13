@@ -19,6 +19,7 @@ import {
   usePreferencesContext,
 } from '@polito/lib/core';
 import { useOpenInAppLink } from '@polito/lib/core';
+import { BOOKINGS_QUERY_KEY } from '@polito/lib/features/bookings';
 import {
   BottomBarSpacer,
   Grid,
@@ -31,7 +32,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { AppPreferences } from '~/core/types/preferences.ts';
 
 import { useNotifications } from '../../../core/hooks/useNotifications';
-import { BOOKINGS_QUERY_KEY } from '../../../core/queries/bookingHooks';
 import {
   WEBMAIL_LINK_QUERY_KEY,
   useGetWebmailLink,

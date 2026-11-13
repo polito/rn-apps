@@ -7,6 +7,7 @@ import {
   formatMachineDate,
   usePreferencesContext,
 } from '@polito/lib/core';
+import { useGetBookings } from '@polito/lib/features/bookings';
 import { Booking, Deadline, ExamStatusEnum } from '@polito/student-api-client';
 import { useQueries, useQuery } from '@tanstack/react-query';
 
@@ -14,7 +15,6 @@ import { AppPreferences, CoursesPreferences } from '~/core/types/preferences';
 
 import { DateTime, Interval } from 'luxon';
 
-import { useGetBookings } from '../../../core/queries/bookingHooks';
 import { useGetExams } from '../../../core/queries/examHooks';
 import {
   useGetDeadlineWeek,

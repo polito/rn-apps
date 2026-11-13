@@ -21,6 +21,7 @@ import {
   IconButton,
   Tabs,
   Theme,
+  WeekFilter,
   WeekNum,
   useStylesheet,
   useTheme,
@@ -39,7 +40,6 @@ import { BookingCard } from '../components/BookingCard';
 import { DeadlineCard } from '../components/DeadlineCard';
 import { ExamCard } from '../components/ExamCard';
 import { LectureCard } from '../components/LectureCard';
-import { WeekFilter } from '../components/WeekFilter';
 import { useProcessedLectures } from '../hooks/useProcessedLectures.ts';
 import {
   getAgendaWeekQueryKey,

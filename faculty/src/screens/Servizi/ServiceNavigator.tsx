@@ -4,12 +4,25 @@ import { Platform, TouchableOpacity } from 'react-native';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
+  BookingSeatScreen,
+  BookingSeatSelectionScreen,
+  BookingSlotScreen,
+  BookingSlotsLegendScreen,
+  BookingTopicScreen,
+  BookingsScreen,
+  BookingsStackParamList,
+} from '@polito/lib/features/bookings';
+import {
   ContactsScreen as LibContactsScreen,
   PersonScreen,
   UsefulContactScreen,
   defaultUsefulContactsList,
 } from '@polito/lib/features/people';
-import { useTheme, useTitlesStyles } from '@polito/lib/ui';
+import {
+  createHeaderCloseButton,
+  useTheme,
+  useTitlesStyles,
+} from '@polito/lib/ui';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -19,6 +32,7 @@ import { BookRoomForm } from './BookRoomForm';
 import { BookRoomScreen } from './BookRoomScreen';
 import { BookStructureForm } from './BookStructureForm';
 import { BookStructureRoomScreen } from './BookStructureRoomScreen';
+import { BookingDetailScreen } from './BookingDetailScreen';
 import { BookingScreen } from './BookingScreen';
 import { ContactScreen } from './ContactScreen';
 import { DigitalSignatureScreen } from './DigitalSignatureScreen';
@@ -34,7 +48,7 @@ import { SingleBooking1 } from './SingleBooking1';
 import { SingleBooking2 } from './SingleBooking2';
 import { SupportScreen } from './SupportScreen';
 
-export type ProfileStackParamList = {
+export type ProfileStackParamList = BookingsStackParamList & {
   Servizi: undefined;
   Contatto: undefined;
   Contacts: undefined;
@@ -147,6 +161,86 @@ export const ServiceNavigator = () => {
         options={{
           headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
+        }}
+      />
+
+      <Stack.Screen
+        name="Bookings"
+        component={BookingsScreen}
+        options={{
+          headerTitle: t('other.bookActivities'),
+          headerShown: true,
+          headerBackButtonDisplayMode: 'minimal',
+        }}
+      />
+
+      <Stack.Screen
+        name="Booking"
+        component={BookingDetailScreen}
+        getId={({ params: { id } }) => id.toString()}
+        options={{
+          headerTitle: t('common.booking'),
+          headerShown: true,
+          headerBackButtonDisplayMode: 'minimal',
+        }}
+      />
+
+      <Stack.Screen
+        name="BookingTopic"
+        component={BookingTopicScreen}
+        options={{
+          headerTitle: t('bookingsScreen.newBooking'),
+          headerShown: true,
+          headerBackButtonDisplayMode: 'minimal',
+        }}
+      />
+
+      <Stack.Screen
+        name="BookingSlot"
+        component={BookingSlotScreen}
+        options={({ route }) => ({
+          headerTitle: route.params.topicName,
+          headerShown: true,
+          headerBackButtonDisplayMode: 'minimal',
+          headerShadowVisible: false,
+        })}
+      />
+
+      <Stack.Screen
+        name="BookingSlotsLegend"
+        component={BookingSlotsLegendScreen}
+        options={({ navigation }) => ({
+          presentation: Platform.OS === 'ios' ? 'formSheet' : 'modal',
+          ...(Platform.OS === 'ios'
+            ? {
+                sheetAllowedDetents: 'fitToContents',
+                sheetGrabberVisible: true,
+              }
+            : {}),
+          headerTitle: t('common.legend'),
+          headerShown: true,
+          headerShadowVisible: false,
+          headerRight: createHeaderCloseButton(navigation),
+        })}
+      />
+
+      <Stack.Screen
+        name="BookingSeatSelection"
+        component={BookingSeatSelectionScreen}
+        options={{
+          headerTitle: t('bookingSeatScreen.title'),
+          headerShown: true,
+          headerBackButtonDisplayMode: 'minimal',
+        }}
+      />
+
+      <Stack.Screen
+        name="BookingSeat"
+        component={BookingSeatScreen}
+        options={{
+          headerTitle: t('common.seat'),
+          headerShown: true,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
 

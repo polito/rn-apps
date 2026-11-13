@@ -2,6 +2,15 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import {
+  BookingSeatScreen,
+  BookingSeatSelectionScreen,
+  BookingSlotScreen,
+  BookingSlotsLegendScreen,
+  BookingTopicScreen,
+  BookingsScreen,
+  BookingsStackParamList,
+} from '@polito/lib/features/bookings';
+import {
   ContactsScreen as LibContactsScreen,
   studentsUsefulContactsList,
 } from '@polito/lib/features/people';
@@ -26,11 +35,6 @@ import {
   SharedScreensParamList,
 } from '../../../shared/navigation/SharedScreens';
 import { BookingScreen } from '../../agenda/screens/BookingScreen';
-import { BookingSeatScreen } from '../../bookings/screens/BookingSeatScreen';
-import { BookingSeatSelectionScreen } from '../../bookings/screens/BookingSeatSelectionScreen';
-import { BookingSlotScreen } from '../../bookings/screens/BookingSlotScreen';
-import { BookingSlotsLegendScreen } from '../../bookings/screens/BookingSlotsLegendScreen';
-import { BookingTopicScreen } from '../../bookings/screens/BookingTopicScreen';
 import { GuideScreen } from '../../guides/screens/GuideScreen';
 import { GuidesScreen } from '../../guides/screens/GuidesScreen';
 import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsNavigator';
@@ -45,7 +49,6 @@ import { TicketInfoScreen } from '../../tickets/screens/TicketInfoScreen';
 import { TicketResolvedScreen } from '../../tickets/screens/TicketResolvedScreen';
 import { TicketScreen } from '../../tickets/screens/TicketScreen';
 import { TicketsScreen } from '../../tickets/screens/TicketsScreen';
-import { BookingsScreen } from '../screens/BookingsScreen';
 import { JobOfferScreen } from '../screens/JobOfferScreen';
 import { JobOffersScreen } from '../screens/JobOffersScreen';
 import { NewsItemScreen } from '../screens/NewsItemScreen';
@@ -57,51 +60,33 @@ export type OfferingStackParamList = SharedScreensParamList & {
   Degree: { id: string; year?: string };
 };
 
-export type ServiceStackParamList = OfferingStackParamList & {
-  Services: undefined;
-  Tickets: undefined;
-  Ticket: { id: number };
-  TicketInfo: { id: number };
-  TicketResolved: { ticketId: number; markAsResolved?: boolean };
-  TicketAutoResolved: { ticketId: number };
-  CreateTicket: {
-    topicId?: number;
-    subtopicId?: number;
+export type ServiceStackParamList = OfferingStackParamList &
+  BookingsStackParamList & {
+    Services: undefined;
+    Tickets: undefined;
+    Ticket: { id: number };
+    TicketInfo: { id: number };
+    TicketResolved: { ticketId: number; markAsResolved?: boolean };
+    TicketAutoResolved: { ticketId: number };
+    CreateTicket: {
+      topicId?: number;
+      subtopicId?: number;
+    };
+    TicketFaqs: undefined;
+    TicketFaq: { faq: TicketFAQ };
+    JobOffers: undefined;
+    JobOffer: {
+      id: number;
+    };
+    News: undefined;
+    NewsItem: { id: number };
+    Contacts: undefined;
+    Guides: undefined;
+    Guide: { id: string };
+    Surveys: undefined;
+    SurveyList: { isCompiled: boolean };
+    PlacesAgendaStack: NavigatorScreenParams<PlacesStackParamList>;
   };
-  TicketFaqs: undefined;
-  TicketFaq: { faq: TicketFAQ };
-  JobOffers: undefined;
-  JobOffer: {
-    id: number;
-  };
-  News: undefined;
-  NewsItem: { id: number };
-  Contacts: undefined;
-  Bookings: undefined;
-  Booking: { id: number };
-  BookingTopic: undefined;
-  BookingSlot: { topicId: string; topicName: string };
-  BookingSlotsLegend: undefined;
-  BookingSeatSelection: {
-    slotId: string;
-    topicId: string;
-    startHour: string;
-    endHour: string;
-    day: string;
-    hasSeatSelection: boolean | undefined;
-  };
-  BookingSeat: {
-    bookingId: number;
-    topicId: string;
-    slotId: string;
-    seatId: number;
-  };
-  Guides: undefined;
-  Guide: { id: string };
-  Surveys: undefined;
-  SurveyList: { isCompiled: boolean };
-  PlacesAgendaStack: NavigatorScreenParams<PlacesStackParamList>;
-};
 
 const Stack = createNativeStackNavigator<ServiceStackParamList>();
 

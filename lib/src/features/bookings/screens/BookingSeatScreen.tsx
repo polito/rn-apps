@@ -1,80 +1,96 @@
-import { useEffect, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, StyleSheet, View } from 'react-native';
 
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
-import {
-  SCREEN_WIDTH,
-  useFeedbackContext,
-  useScreenReader,
-} from '@polito/lib/core';
-import { Row, Theme, faSeat, useStylesheet } from '@polito/lib/ui';
-import { BookingSeatCell as BookingSeatCellType } from '@polito/student-api-client';
+import { Booking } from '@polito/student-api-client';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { isEmpty } from 'lodash';
+import { DateTime } from 'luxon';
 
-import { useGetBookingSeats } from '../../../core/queries/bookingHooks';
-import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
+import {
+  APP_TIMEZONE,
+  SCREEN_WIDTH,
+  useConfirmationDialog,
+  useFeedbackContext,
+  useOfflineDisabled,
+} from '../../../core';
+import {
+  Col,
+  CtaButton,
+  CtaButtonContainer,
+  Row,
+  Theme,
+  faSeat,
+  useStylesheet,
+} from '../../../ui';
 import { BookingDeskCell } from '../components/BookingDeskCell';
 import { BookingField } from '../components/BookingField';
 import { BookingSeatCell } from '../components/BookingSeatCell';
-import { BookingSeatsCta } from '../components/BookingSeatsCta';
-import { maxSeatZoom, minBookableCellSize, minSeatZoom } from '../constant';
 import { useCalculateSeatsDimension } from '../hooks/useCalculateSeatsDimension';
+import {
+  useDeleteBooking,
+  useGetBookingSeats,
+  useGetBookings,
+} from '../queries/bookingHooks';
+import { BookingsStackParamList } from '../types';
+import { canBeCancelled } from '../utils/bookings';
 
-type Props = NativeStackScreenProps<
-  ServiceStackParamList,
-  'BookingSeatSelection'
->;
-export const BookingSeatSelectionScreen = ({ route }: Props) => {
-  const { slotId, topicId, hasSeatSelection, startHour, endHour, day } =
-    route.params;
+type Props = NativeStackScreenProps<BookingsStackParamList, 'BookingSeat'>;
+
+export const BookingSeatScreen = ({ route, navigation }: Props) => {
   const { t } = useTranslation();
+  const { topicId, slotId, seatId, bookingId } = route.params;
   const bookingSeatsQuery = useGetBookingSeats(topicId, slotId);
   const styles = useStylesheet(createStyles);
-  const [seat, setSeat] = useState<BookingSeatCellType | undefined>(undefined);
   const [viewHeight, setViewHeight] = useState<number | undefined>();
-  const { setFeedback } = useFeedbackContext();
+  const bookingsQuery = useGetBookings();
   const headerHeight = useHeaderHeight();
   const bottomTabBarHeight = useBottomTabBarHeight();
-  const { isEnabled } = useScreenReader();
-  const currentZoom = useRef(minSeatZoom);
+  const booking = bookingsQuery.data?.find((e: Booking) => e.id === bookingId);
+  const deleteBookingMutation = useDeleteBooking(bookingId);
+  const confirmCancel = useConfirmationDialog({
+    title: t('bookingScreen.cancelBooking'),
+    message: t('bookingScreen.cancelBookingText'),
+  });
+  const isDisabled = useOfflineDisabled();
+  const { setFeedback } = useFeedbackContext();
   const { seatSize, gap } = useCalculateSeatsDimension(
     bookingSeatsQuery.data,
     viewHeight,
   );
 
-  useEffect(() => {
-    if (
-      isEnabled &&
-      bookingSeatsQuery.data &&
-      bookingSeatsQuery?.data?.rows?.length > 0
-    ) {
-      const firstAvailableSeat = bookingSeatsQuery.data?.rows?.find(row =>
-        row.seats?.some(seatCell => seatCell.status === 'available'),
-      );
-      if (firstAvailableSeat) {
-        const cell = firstAvailableSeat.seats?.find(
-          seatCell => seatCell.status === 'available',
-        );
-        cell && setSeat(cell);
-      }
-    }
-  }, [bookingSeatsQuery.data, isEnabled]);
+  const timeOptions = {
+    zone: APP_TIMEZONE,
+  };
 
-  const isSeatSizeValidForBooking = () => {
-    const currentSeatSize = seatSize * currentZoom.current;
-    if (currentSeatSize < minBookableCellSize) {
-      setFeedback({
-        text: t('bookingSeatScreen.zoomInToEnableSeatSelection'),
-      });
-      return false;
+  const bookingStartAtTime =
+    booking?.startsAt &&
+    DateTime.fromJSDate(booking?.startsAt, timeOptions).toFormat('HH:mm');
+  const bookingEndsAtTime =
+    booking?.endsAt &&
+    DateTime.fromJSDate(booking?.endsAt, timeOptions).toFormat('HH:mm');
+  const bookingDay =
+    booking?.startsAt &&
+    DateTime.fromJSDate(booking?.endsAt, timeOptions).toFormat('d MMMM');
+
+  const cancelEnabled = useMemo(() => canBeCancelled(booking), [booking]);
+
+  const onPressDelete = async () => {
+    if (await confirmCancel()) {
+      navigation.goBack();
+      navigation.goBack();
+      return deleteBookingMutation
+        .mutateAsync()
+        .then(() => {
+          setFeedback({ text: t('bookingScreen.cancelFeedback') });
+        })
+        .then(() => setFeedback({ text: t('bookingScreen.cancelFeedback') }));
     }
-    return true;
   };
 
   return (
@@ -93,26 +109,17 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
         onLayout={e => setViewHeight(Math.round(e.nativeEvent.layout.height))}
       >
         <ReactNativeZoomableView
-          maxZoom={maxSeatZoom}
-          minZoom={minSeatZoom}
-          bindToBorders={true}
+          accessible={true}
           contentWidth={SCREEN_WIDTH}
           contentHeight={viewHeight}
-          disablePanOnInitialZoom={true}
-          onTransform={zoomableViewEventObject => {
-            currentZoom.current = zoomableViewEventObject.zoomLevel;
-          }}
-          doubleTapZoomToCenter={true}
-          visualTouchFeedbackEnabled={true}
-          onDoubleTapAfter={(_, zoomableViewEventObject) => {
-            currentZoom.current = zoomableViewEventObject.zoomLevel;
-          }}
-          onZoomEnd={(_, _g, zoomableViewEventObject) => {
-            currentZoom.current = zoomableViewEventObject.zoomLevel;
-          }}
-          onSingleTap={() => isSeatSizeValidForBooking()}
+          bindToBorders={true}
+          disablePanOnInitialZoom
+          maxZoom={2}
+          minZoom={1}
         >
-          <View
+          <Col
+            align="flex-start"
+            justify="flex-start"
             style={StyleSheet.compose(styles.rowsContainer, {
               height: viewHeight,
               gap,
@@ -129,51 +136,53 @@ export const BookingSeatSelectionScreen = ({ route }: Props) => {
               </Row>
             )}
             {bookingSeatsQuery.data?.rows?.map((row, index) => (
-              <Row align="center" key={`row-${index}`} style={{ gap: gap }}>
+              <Row align="center" key={`row-${index}`} style={{ gap }}>
                 {row?.seats?.map(seatCell => (
                   <BookingSeatCell
                     seat={seatCell}
                     size={seatSize}
-                    isSelected={seat?.id === seatCell.id}
+                    isSelected={seatId === seatCell.id}
                     key={seatCell.id}
-                    disabled={seatCell.status !== 'available'}
-                    onPress={() => {
-                      if (isSeatSizeValidForBooking()) {
-                        seat?.id === seatCell.id
-                          ? setSeat(undefined)
-                          : setSeat(seatCell);
-                      }
-                    }}
                   />
                 ))}
               </Row>
             ))}
-          </View>
+          </Col>
         </ReactNativeZoomableView>
       </View>
-      <BookingSeatsCta
-        seatId={seat?.id?.toString()}
-        slotId={slotId}
+      <CtaButtonContainer
         absolute={false}
-        modal={false}
-        hasSeatSelection={hasSeatSelection}
         style={[styles.ctaButtonContainer, { bottom: bottomTabBarHeight }]}
       >
         <Row gap={2} style={styles.recapContainer}>
           <BookingField
             icon={faSeat}
             label={t('common.seat')}
-            value={seat?.label}
+            value={`${booking?.seat?.row}${booking?.seat?.column}`}
             emptyText={t('bookingSeatScreen.noSeatSelected')}
           />
           <BookingField
             icon={faClock}
             label={t('common.hour')}
-            value={`${startHour} - ${endHour}`}
+            value={`${bookingStartAtTime} - ${bookingEndsAtTime}`}
           />
-          <BookingField icon={faCalendar} value={day} label={t('common.day')} />
+          <BookingField
+            icon={faCalendar}
+            value={bookingDay}
+            label={t('common.day')}
+          />
         </Row>
-      </BookingSeatsCta>
+        {cancelEnabled && (
+          <CtaButton
+            title={t('bookingScreen.cancelBooking')}
+            action={onPressDelete}
+            loading={deleteBookingMutation.isPending}
+            absolute={false}
+            disabled={isDisabled || deleteBookingMutation.isPending}
+            destructive={true}
+          />
+        )}
+      </CtaButtonContainer>
     </View>
   );
 };
@@ -192,9 +201,6 @@ const createStyles = ({ spacing, colors }: Theme) =>
       padding: spacing[2],
       width: '100%',
       backgroundColor: colors.surface,
-      justifyContent: 'flex-start',
-      alignItems: 'flex-start',
-      flexDirection: 'column',
     },
     recapContainer: {
       marginHorizontal: spacing[4],

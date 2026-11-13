@@ -9,7 +9,7 @@ import {
   pluckData,
   setTimeoutAccessibilityInfoHelper,
   toOASTruncable,
-} from '../../../../lib/src/core/utils';
+} from '../../../core';
 
 export const BOOKINGS_QUERY_KEY = ['bookings'];
 const BOOKINGS_TOPICS_QUERY_KEY = ['booking', 'topics'];

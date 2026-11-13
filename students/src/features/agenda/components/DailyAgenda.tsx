@@ -1,13 +1,19 @@
 import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 
 import { isCurrentMonth, isCurrentYear } from '@polito/lib/core';
-import { Col, Row, Text, Theme, useStylesheet } from '@polito/lib/ui';
+import {
+  Col,
+  EmptyWeek,
+  Row,
+  Text,
+  Theme,
+  useStylesheet,
+} from '@polito/lib/ui';
 
 import { AgendaDay } from '../types/AgendaDay';
 import { BookingCard } from './BookingCard';
 import { DeadlineCard } from './DeadlineCard';
 import { EmptyDay } from './EmptyDay';
-import { EmptyWeek } from './EmptyWeek';
 import { ExamCard } from './ExamCard';
 import { LectureCard } from './LectureCard';
 

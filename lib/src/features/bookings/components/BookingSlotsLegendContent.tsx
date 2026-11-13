@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
-import { Text, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
+import { Text, Theme, useStylesheet, useTheme } from '../../../ui';
 
 type LegendItem = {
   id: 'available' | 'booked' | 'full' | 'notAvailable' | 'concluded';

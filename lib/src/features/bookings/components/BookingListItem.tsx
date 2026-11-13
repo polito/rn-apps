@@ -1,13 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
-import { APP_TIMEZONE, getHtmlTextContent } from '@polito/lib/core';
-import { useAccessibility } from '@polito/lib/core';
-import { ListItem, Theme, useStylesheet } from '@polito/lib/ui';
 import { Booking } from '@polito/student-api-client';
 
 import { DateTime } from 'luxon';
 
+import {
+  APP_TIMEZONE,
+  getHtmlTextContent,
+  useAccessibility,
+} from '../../../core';
+import { ListItem, Theme, useStylesheet } from '../../../ui';
 import { BookingDateTime } from './BookingDateTime';
 
 interface Props {

@@ -15,6 +15,21 @@ import {
 } from 'react-native';
 
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
+import { useFocusEffect } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
+
+import { DateTime } from 'luxon';
+
+import {
+  APP_TIMEZONE,
+  formatDate,
+  isCurrentMonth,
+  isCurrentYear,
+  useOfflineDisabled,
+  usePreferencesContext,
+} from '../../../core';
 import {
   ActivityIndicator,
   AgendaCard,
@@ -24,43 +39,30 @@ import {
   Calendar,
   CalendarHeader,
   Col,
+  EmptyWeek,
   HeaderAccessory,
   Icon,
   IconButton,
   Row,
   Tabs,
   Text,
+  WeekFilter,
   WeekNum,
   faSeat,
   useBottomModal,
   useStylesheet,
   useTheme,
-} from '@polito/lib/ui';
-import { BookingSlot } from '@polito/student-api-client';
-import { MenuView, NativeActionEvent } from '@react-native-menu/menu';
-import { useFocusEffect } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useQueryClient } from '@tanstack/react-query';
-
-import { AppPreferences } from '~/core/types/preferences';
-import { EmptyWeek } from '~/features/agenda/components/EmptyWeek';
-
-import { DateTime } from 'luxon';
-
-import { usePreferencesContext } from '../../../../../lib/src/core/contexts';
-import { useOfflineDisabled } from '../../../../../lib/src/core/hooks';
-import {
-  APP_TIMEZONE,
-  formatDate,
-  isCurrentMonth,
-  isCurrentYear,
-} from '../../../../../lib/src/core/utils';
+} from '../../../ui';
+import { BookingSlotModal } from '../components/BookingSlotModal';
+import { BookingSlotsLegendModal } from '../components/BookingSlotsLegendModal';
+import { BookingSlotsStatusLegend } from '../components/BookingSlotsStatusLegend';
 import {
   BOOKINGS_SLOTS_QUERY_KEY,
   useGetBookingSlots,
   useGetBookingTopics,
   useGetBookings,
-} from '../../../core/queries/bookingHooks';
+} from '../queries/bookingHooks';
+import { BookingCalendarEvent, BookingsStackParamList } from '../types';
 import {
   canBeBookedWithSeatSelection,
   getBookingSlotStatus,
@@ -68,26 +70,14 @@ import {
   getCalendarHours,
   getCalendarPropsFromTopic,
   isPastSlot,
-} from '../../../utils/bookings';
-import { WeekFilter } from '../../agenda/components/WeekFilter';
-import { AgendaOption } from '../../agenda/types/AgendaOption';
-import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
-import { BookingSlotModal } from '../components/BookingSlotModal';
-import { BookingSlotsLegendModal } from '../components/BookingSlotsLegendModal';
-import { BookingSlotsStatusLegend } from '../components/BookingSlotsStatusLegend';
+} from '../utils/bookings';
 
 const MIN_SLOT_HEIGHT = 40;
 const SMALL_SLOT_MAX_DURATION = 15;
 
 const START_DATE = DateTime.now().setZone(APP_TIMEZONE).startOf('day');
 
-type Props = NativeStackScreenProps<ServiceStackParamList, 'BookingSlot'>;
-export type BookingCalendarEvent = BookingSlot & {
-  start: DateTime;
-  end: DateTime;
-  duration: number;
-  title: string;
-};
+type Props = NativeStackScreenProps<BookingsStackParamList, 'BookingSlot'>;
 
 export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const { topicId } = route.params;
@@ -95,7 +85,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
   const styles = useStylesheet(createStyles);
   const { t } = useTranslation();
   const isOffline = useOfflineDisabled();
-  const { language } = usePreferencesContext<AppPreferences>();
+  const { language } = usePreferencesContext();
   const queryClient = useQueryClient();
 
   const [showAgenda, setShowAgenda] = useState<boolean | null>(null);
@@ -246,7 +236,7 @@ export const BookingSlotScreen = ({ route, navigation }: Props) => {
     setCurrentWeekStart(START_DATE.startOf('week'));
   }, [showAgendaLayout]);
 
-  const screenOptions = useMemo<AgendaOption[]>(
+  const screenOptions = useMemo<{ id: string; title: string }[]>(
     () => [
       {
         id: 'refresh',
