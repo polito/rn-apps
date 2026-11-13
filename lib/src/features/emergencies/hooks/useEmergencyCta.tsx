@@ -1,9 +1,7 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Linking } from 'react-native';
 
-import { faPhone } from '@fortawesome/free-solid-svg-icons';
 import {
   EmergencyCta,
   EmergencyCtaType,
@@ -11,19 +9,14 @@ import {
 } from '@polito/student-api-client';
 
 import { useFeedbackContext } from '../../../core/contexts/FeedbackContext';
-import { Icon } from '../../../ui/components/Icon';
-import { ListItem } from '../../../ui/components/ListItem';
-import { ModalContent } from '../../../ui/components/ModalContent';
 import { useBottomModal } from '../../../ui/hooks/useBottomModal';
-import { useTheme } from '../../../ui/hooks/useTheme';
+import { EmergencySitesModalContent } from '../components/EmergencySitesModalContent';
 
 const toPhoneUrl = (phoneNumber: string) =>
   `tel:${phoneNumber.replace(/[^+\d]/g, '')}`;
 
 export const useEmergencyCta = (sites: EmergencySite[] = []) => {
   const { t } = useTranslation();
-  const { palettes } = useTheme();
-  const { bottom } = useSafeAreaInsets();
   const { setFeedback } = useFeedbackContext();
   const { open, close, modal } = useBottomModal();
 
@@ -47,23 +40,13 @@ export const useEmergencyCta = (sites: EmergencySite[] = []) => {
 
   const openSites = useCallback(() => {
     open(
-      <ModalContent title={t('emergenciesScreen.selectSite')} close={close}>
-        <View style={{ paddingBottom: bottom }}>
-          {sites.map(site => (
-            <ListItem
-              key={site.siteId}
-              title={site.name}
-              subtitle={site.phoneNumber}
-              trailingItem={
-                <Icon icon={faPhone} color={palettes.danger[600]} />
-              }
-              onPress={() => openUrl(toPhoneUrl(site.phoneNumber))}
-            />
-          ))}
-        </View>
-      </ModalContent>,
+      <EmergencySitesModalContent
+        sites={sites}
+        close={close}
+        onCallSite={site => openUrl(toPhoneUrl(site.phoneNumber))}
+      />,
     );
-  }, [bottom, close, open, openUrl, palettes.danger, sites, t]);
+  }, [close, open, openUrl, sites]);
 
   const onCtaPress = useCallback(
     (cta: EmergencyCta) => {

@@ -646,9 +646,13 @@
   },
   "emergenciesScreen": {
     "call112": "Chiama il 112",
+    "callNearestSite": "Chiama la sede più vicina",
+    "hideOtherSites": "Nascondi altre sedi",
     "howToBehave": "Come comportarsi",
-    "selectSite": "Scegli la sede",
-    "title": "Emergenze"
+    "or": "Oppure",
+    "title": "Emergenze",
+    "viewOtherSites": "Visualizza altre sedi",
+    "yourCurrentLocation": "La tua posizione attuale"
   },
   "escRequestScreen": {
     "title": "European Student Card",

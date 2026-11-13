@@ -437,9 +437,13 @@
   },
   "emergenciesScreen": {
     "call112": "Call 112",
+    "callNearestSite": "Call the nearest site",
+    "hideOtherSites": "Hide other sites",
     "howToBehave": "What to do",
-    "selectSite": "Choose a site",
-    "title": "Emergencies"
+    "or": "Or",
+    "title": "Emergencies",
+    "viewOtherSites": "Show other sites",
+    "yourCurrentLocation": "Your current location"
   },
   "escRequestScreen": {
     "title": "European Student Card",
