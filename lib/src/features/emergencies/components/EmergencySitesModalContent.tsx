@@ -39,12 +39,14 @@ export const EmergencySitesModalContent = ({
   onCallSite,
 }: Props) => {
   const { t } = useTranslation();
-  const { colors, fontSizes, palettes } = useTheme();
+  const { colors, fontSizes } = useTheme();
   const styles = useStylesheet(createStyles);
   const { bottom } = useSafeAreaInsets();
   const [showOtherSites, setShowOtherSites] = useState(false);
   const [position, setPosition] = useState<Coordinates>();
-  const { getCurrentPosition, computeDistance } = useGeolocation();
+  const { getCurrentPosition, computeDistance } = useGeolocation({
+    silent: true,
+  });
   const { data: placesSites } = useGetSites();
 
   useEffect(() => {
@@ -103,7 +105,7 @@ export const EmergencySitesModalContent = ({
         )
       }
       style={styles.field}
-      trailingItem={<Icon icon={faPhone} color={palettes.danger[600]} />}
+      trailingItem={<Icon icon={faPhone} color={colors.secondaryText} />}
       accessibilityLabel={`${site.name}, ${site.phoneNumber}`}
       onPress={() => onCallSite(site)}
     />
@@ -123,6 +125,7 @@ export const EmergencySitesModalContent = ({
                   : 'emergenciesScreen.viewOtherSites',
               )}
               style={styles.field}
+              titleStyle={styles.otherSitesTitle}
               accessibilityState={{ expanded: showOtherSites }}
               trailingItem={
                 <Icon
@@ -155,6 +158,9 @@ const createStyles = ({ colors, shapes, spacing, fontSizes }: Theme) =>
     currentLocation: {
       fontSize: fontSizes.sm,
       color: colors.secondaryText,
+    },
+    otherSitesTitle: {
+      fontSize: fontSizes.sm,
     },
     or: {
       textAlign: 'center',
