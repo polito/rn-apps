@@ -15,6 +15,7 @@ import {
   Icon,
   ListItem,
   OverviewList,
+  RefreshControl,
   Section,
   SectionHeader,
   Text,
@@ -27,6 +28,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Logo } from '../../core/components/Logo';
+import { useMfaChallengeHandler } from '../../core/hooks/useMfaChallengeHandler';
 import { ProfileStackParamList } from './ProfileNavigator';
 
 export const ProfileScreen = () => {
@@ -39,6 +41,7 @@ export const ProfileScreen = () => {
   const { username } = usePreferencesContext();
   const { mutate: handleLogout } = useLogout();
   const isOffline = useOfflineDisabled();
+  const mfaChallengeQuery = useMfaChallengeHandler();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -72,7 +75,7 @@ export const ProfileScreen = () => {
       style={{ flex: 1 }}
       contentContainerStyle={bottomBarAwareStyles}
       contentInsetAdjustmentBehavior="automatic"
-      bounces={false}
+      refreshControl={<RefreshControl manual queries={[mfaChallengeQuery]} />}
     >
       <Image
         source={require('../../core/contexts/smartcard.png')}

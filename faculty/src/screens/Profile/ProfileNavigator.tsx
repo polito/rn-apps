@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
-import { resetNavigationStatusTo } from '@polito/lib/core';
+import { MfaChallenge, resetNavigationStatusTo } from '@polito/lib/core';
 import {
   MfaSettings,
   PolitoAuthenticatorContent,
@@ -42,7 +42,10 @@ export type ProfileStackParamList = {
   WhatsNew: undefined;
   NewOverlay: { id: string };
   MfaSettings: undefined;
-  PolitoAuthenticator: { activeView: 'enroll' };
+  PolitoAuthenticator: {
+    activeView: 'enroll' | 'auth';
+    challenge?: MfaChallenge;
+  };
 };
 
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
@@ -63,6 +66,7 @@ const PolitoAuthenticatorScreen = ({
 }: NativeStackScreenProps<ProfileStackParamList, 'PolitoAuthenticator'>) => (
   <PolitoAuthenticatorContent
     activeView={route.params.activeView}
+    challenge={route.params.challenge}
     onClose={() => navigation.goBack()}
     onMissingKey={() => navigation.navigate('Settings')}
     onSettingsEnrollmentComplete={() =>

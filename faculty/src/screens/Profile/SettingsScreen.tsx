@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 
@@ -11,6 +11,7 @@ import {
 import {
   PreferencesContextBase,
   useOfflineDisabled,
+  usePolitoAppMfaPrivateKeyKeychain,
   usePreferencesContext,
 } from '@polito/lib/core';
 import { useCheckMfa } from '@polito/lib/features/auth';
@@ -113,11 +114,17 @@ const AuthenticatorListItem = () => {
   const { t } = useTranslation();
   const { palettes, fontSizes } = useTheme();
   const { data: mfa, isPending } = useCheckMfa(true);
+  const { hasPrivateKeyMFA } = usePolitoAppMfaPrivateKeyKeychain();
+  const [hasLocalKey, setHasLocalKey] = useState(false);
+
+  useEffect(() => {
+    hasPrivateKeyMFA().then(setHasLocalKey).catch(console.error);
+  }, [hasPrivateKeyMFA, mfa]);
 
   if (isPending || mfa?.status === 'unavailable') return null;
 
   const badge =
-    mfa?.status === 'active'
+    mfa?.status === 'active' && hasLocalKey
       ? {
           text: t('mfaScreen.settings.active'),
           bg: palettes.success[100],

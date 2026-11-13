@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
-import { Linking } from 'react-native';
+import { DeviceEventEmitter } from 'react-native';
 
 import * as WebBrowser from 'expo-web-browser';
 
 import { useTheme } from '../../ui/hooks/useTheme';
+import { POLITO_AUTH_REDIRECT_EVENT, getPolitoDeepLinkPrefix } from '../config';
 import { IS_IOS } from '../constants';
 
 export enum WebviewType {
@@ -31,11 +32,11 @@ export const useOpenInAppLink = (type: WebviewType = WebviewType.NORMAL) => {
       if (type === WebviewType.LOGIN) {
         const out = (await WebBrowser.openAuthSessionAsync(
           url,
-          null,
+          getPolitoDeepLinkPrefix(),
           opts,
         )) as WebBrowser.WebBrowserRedirectResult;
         if (IS_IOS && out.url) {
-          await Linking.openURL(out.url);
+          DeviceEventEmitter.emit(POLITO_AUTH_REDIRECT_EVENT, out.url);
         }
       } else {
         await WebBrowser.openBrowserAsync(url, opts);
