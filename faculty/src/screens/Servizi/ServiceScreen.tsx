@@ -41,7 +41,7 @@ export const ServiceScreen = () => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
       e.preventDefault();
       navigation.navigate({
-        name: 'Didattica',
+        name: 'TeachingTab',
         params: { screen: 'Roles' },
         merge: true,
       });

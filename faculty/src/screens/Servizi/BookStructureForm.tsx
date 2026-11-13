@@ -163,7 +163,7 @@ export const BookStructureForm = () => {
         <IconButton
           icon={faArrowLeft}
           size={22}
-          onPress={() => navigation.navigate('PrenotaSpaziStrutture')}
+          onPress={() => navigation.navigate('BookStructureRoom')}
         />
       ),
       headerTitle: () => (

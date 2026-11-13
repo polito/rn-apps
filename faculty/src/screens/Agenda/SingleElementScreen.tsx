@@ -126,7 +126,7 @@ export const SingleElementScreen = () => {
                   title={t('other.lessonRoom')}
                   subtitle={selectedAgendaItem.location}
                   onPress={() => {
-                    placesNavigation.navigate('Places', {
+                    placesNavigation.navigate('PlacesTab', {
                       screen: 'Place',
                       params: { placeId: 'TO_CEN03-XPTE-E002' },
                     });
@@ -142,7 +142,7 @@ export const SingleElementScreen = () => {
                   title={t('common.course')}
                   subtitle={selectedCourse.title}
                   onPress={() => {
-                    bottomNavigation.navigate('Didattica', {
+                    bottomNavigation.navigate('TeachingTab', {
                       screen: 'Course',
                       params: { from: 'Agenda' },
                     });

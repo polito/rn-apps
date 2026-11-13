@@ -35,19 +35,19 @@ import { SingleBooking2 } from './SingleBooking2';
 import { SupportScreen } from './SupportScreen';
 
 export type ProfileStackParamList = {
-  Servizi: undefined;
-  Contatto: undefined;
+  Services: undefined;
+  Contact: undefined;
   Contacts: undefined;
   Person: { id: number };
   UsefulContact: { id: string };
-  Supporto: undefined;
-  Prenotazione: undefined;
-  PrenotaSpaziStrutture: undefined;
-  PrenotaAula: undefined;
-  PrenotaSpaziEventi: undefined;
-  PrenotaAulaForm: undefined;
-  PrenotaEventiForm: undefined;
-  PrenotaStruttureForm: undefined;
+  Support: undefined;
+  Booking: undefined;
+  BookStructureRoom: undefined;
+  BookRoom: undefined;
+  BookEventsRoom: undefined;
+  BookRoomForm: undefined;
+  BookEventsForm: undefined;
+  BookStructureForm: undefined;
   DigitalSignature: undefined;
   Booking0: undefined;
   Booking1: undefined;
@@ -99,7 +99,7 @@ export const ServiceNavigator = () => {
         ...useTitlesStyles(theme),
       }}
     >
-      <Stack.Screen name="Servizi" component={ServiceScreen} />
+      <Stack.Screen name="Services" component={ServiceScreen} />
       <Stack.Screen
         name="Contacts"
         component={ContactsScreen}
@@ -133,7 +133,7 @@ export const ServiceNavigator = () => {
       />
 
       <Stack.Screen
-        name="Contatto"
+        name="Contact"
         component={ContactScreen}
         options={{
           headerLeft: () => <CustomBackButton2 />,
@@ -142,7 +142,7 @@ export const ServiceNavigator = () => {
       />
 
       <Stack.Screen
-        name="Supporto"
+        name="Support"
         component={SupportScreen}
         options={{
           headerLeft: () => <CustomBackButton2 />,
@@ -151,7 +151,7 @@ export const ServiceNavigator = () => {
       />
 
       <Stack.Screen
-        name="Prenotazione"
+        name="Booking"
         component={BookingScreen}
         options={{
           headerLeft: () => <CustomBackButton2 />,
@@ -160,7 +160,7 @@ export const ServiceNavigator = () => {
       />
 
       <Stack.Screen
-        name="PrenotaAula"
+        name="BookRoom"
         component={BookRoomScreen}
         options={{
           headerLeft: () => <CustomBackButton2 />,
@@ -169,7 +169,7 @@ export const ServiceNavigator = () => {
       />
 
       <Stack.Screen
-        name="PrenotaSpaziEventi"
+        name="BookEventsRoom"
         component={BookEventsRoomScreen}
         options={{
           headerLeft: () => <CustomBackButton2 />,
@@ -178,7 +178,7 @@ export const ServiceNavigator = () => {
       />
 
       <Stack.Screen
-        name="PrenotaSpaziStrutture"
+        name="BookStructureRoom"
         component={BookStructureRoomScreen}
         options={{
           headerLeft: () => <CustomBackButton2 />,
@@ -187,7 +187,7 @@ export const ServiceNavigator = () => {
       />
 
       <Stack.Screen
-        name="PrenotaAulaForm"
+        name="BookRoomForm"
         component={BookRoomForm}
         options={{
           headerLeft: () => <CustomBackButton2 />,
@@ -196,7 +196,7 @@ export const ServiceNavigator = () => {
       />
 
       <Stack.Screen
-        name="PrenotaEventiForm"
+        name="BookEventsForm"
         component={BookEventsForm}
         options={{
           headerLeft: () => <CustomBackButton2 />,
@@ -205,7 +205,7 @@ export const ServiceNavigator = () => {
       />
 
       <Stack.Screen
-        name="PrenotaStruttureForm"
+        name="BookStructureForm"
         component={BookStructureForm}
         options={{
           headerLeft: () => <CustomBackButton2 />,

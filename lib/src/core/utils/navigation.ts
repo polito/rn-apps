@@ -1,3 +1,5 @@
+import { DeviceEventEmitter, Linking } from 'react-native';
+
 import {
   CommonActions,
   LinkingOptions,
@@ -7,13 +9,30 @@ import {
   Route,
 } from '@react-navigation/native';
 
-import { PolitoAppConfig, getPolitoDeepLinkPrefix } from '../config';
+import {
+  POLITO_AUTH_REDIRECT_EVENT,
+  PolitoAppConfig,
+  getPolitoDeepLinkPrefix,
+} from '../config';
 
 export const createPolitoLinking = <T extends ParamListBase = ParamListBase>(
   appConfig: PolitoAppConfig,
 ): LinkingOptions<T> => {
   return {
     prefixes: [getPolitoDeepLinkPrefix(appConfig.id)],
+    subscribe: (listener: (url: string) => void) => {
+      const linkingSubscription = Linking.addEventListener('url', ({ url }) =>
+        listener(url),
+      );
+      const authRedirectSubscription = DeviceEventEmitter.addListener(
+        POLITO_AUTH_REDIRECT_EVENT,
+        listener,
+      );
+      return () => {
+        linkingSubscription.remove();
+        authRedirectSubscription.remove();
+      };
+    },
     config: {
       screens: {
         SSO: {

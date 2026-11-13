@@ -78,7 +78,7 @@ export type TeachingStackParamList = {
   FilesForm: undefined;
   LectureForm: undefined;
   StudentsForm: undefined;
-  Contatto: undefined;
+  Contact: undefined;
 };
 
 export const CustomBackButton = () => {
@@ -281,7 +281,7 @@ export const TeachingNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="Contatto"
+        name="Contact"
         component={ContactScreen2}
         options={{
           headerTitle: t('Transcript'),

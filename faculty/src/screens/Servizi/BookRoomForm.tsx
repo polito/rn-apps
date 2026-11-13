@@ -138,7 +138,7 @@ export const BookRoomForm = () => {
         <IconButton
           icon={faArrowLeft}
           size={22}
-          onPress={() => navigation.navigate('PrenotaAula')}
+          onPress={() => navigation.navigate('BookRoom')}
         />
       ),
       headerTitle: () => (

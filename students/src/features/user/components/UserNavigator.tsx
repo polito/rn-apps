@@ -3,7 +3,12 @@ import { Platform } from 'react-native';
 
 import { UserNavigatorID } from '@polito/lib/core';
 import { MfaSettings } from '@polito/lib/features/auth';
-import { HeaderLogoNoProps, useTheme, useTitlesStyles } from '@polito/lib/ui';
+import {
+  AccessibilitySettingsScreen,
+  HeaderLogoNoProps,
+  useTheme,
+  useTitlesStyles,
+} from '@polito/lib/ui';
 import {
   NativeStackScreenProps,
   createNativeStackNavigator,
@@ -14,7 +19,6 @@ import { DegreeTopTabsNavigator } from '../../offering/navigation/DegreeTopTabsN
 import { OfferingStackParamList } from '../../services/components/ServicesNavigator';
 import { NewsItemScreen } from '../../services/screens/NewsItemScreen';
 import { CreateTicketScreen } from '../../tickets/screens/CreateTicketScreen';
-import { AccessibilitySettingsScreen } from '../screens/AccessibilityFontSettingsScreen.tsx';
 import { AppInfoScreen } from '../screens/AppInfoScreen.tsx';
 import { MessageScreen } from '../screens/MessageScreen';
 import { MessagesScreen } from '../screens/MessagesScreen';

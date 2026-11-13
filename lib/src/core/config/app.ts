@@ -5,7 +5,12 @@ export type PolitoAppConfig = {
   keychainService: string;
 };
 
-export const getPolitoDeepLinkPrefix = (appId: string) => `polito://${appId}`;
+const POLITO_DEEP_LINK_SCHEME = 'polito://';
+
+export const POLITO_AUTH_REDIRECT_EVENT = 'politoAuthRedirect';
+
+export const getPolitoDeepLinkPrefix = (appId: string = '') =>
+  `${POLITO_DEEP_LINK_SCHEME}${appId}`;
 
 export const getPolitoMfaKeychainService = (keychainService: string) =>
   `${keychainService}.mfa`;

@@ -30,7 +30,7 @@ export const BookingScreen = () => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
       e.preventDefault();
-      navigation.navigate('Servizi');
+      navigation.navigate('Services');
     });
 
     return unsubscribe;
@@ -40,21 +40,21 @@ export const BookingScreen = () => {
       id: '1',
       title: t('other.requestRoom'),
       onPress: () => {
-        navigation.navigate('PrenotaAula');
+        navigation.navigate('BookRoom');
       },
     },
     {
       id: '2',
       title: t('other.requestEventsPlaces'),
       onPress: () => {
-        navigation.navigate('PrenotaSpaziEventi');
+        navigation.navigate('BookEventsRoom');
       },
     },
     {
       id: '3',
       title: t('other.bookStructurePlaces'),
       onPress: () => {
-        navigation.navigate('PrenotaSpaziStrutture');
+        navigation.navigate('BookStructureRoom');
       },
     },
   ];
@@ -65,7 +65,7 @@ export const BookingScreen = () => {
         <IconButton
           icon={faArrowLeft}
           size={22}
-          onPress={() => navigation.navigate('Servizi')}
+          onPress={() => navigation.navigate('Services')}
         />
       ),
       headerTitle: () => (

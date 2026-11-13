@@ -52,7 +52,7 @@ export const PersoneScreen = () => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', e => {
       e.preventDefault();
-      navigation.navigate('Servizi');
+      navigation.navigate('Services');
     });
 
     return unsubscribe;
@@ -64,7 +64,7 @@ export const PersoneScreen = () => {
         <IconButton
           icon={faArrowLeft}
           size={22}
-          onPress={() => navigation.navigate('Servizi')}
+          onPress={() => navigation.navigate('Services')}
         />
       ),
       headerTitle: () => (
@@ -125,7 +125,7 @@ export const PersoneScreen = () => {
               subtitle={item.role}
               onPress={() => {
                 setSelectedProfile(item);
-                navigation.navigate('Contatto');
+                navigation.navigate('Contact');
               }}
               leadingItem={<FontAwesomeIcon icon={faPerson} size={20} />}
             />
@@ -153,7 +153,7 @@ export const PersoneScreen = () => {
                 subtitle={item.role}
                 onPress={() => {
                   setSelectedProfile(item);
-                  navigation.navigate('Contatto');
+                  navigation.navigate('Contact');
                 }}
                 leadingItem={<FontAwesomeIcon icon={faPerson} size={20} />}
               />
