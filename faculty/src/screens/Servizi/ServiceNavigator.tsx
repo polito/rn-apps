@@ -265,6 +265,7 @@ export const ServiceNavigator = () => {
         component={EmergencyScreen}
         options={{
           headerTitle: t('emergenciesScreen.title'),
+          headerTitleAlign: 'center',
           headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
@@ -274,6 +275,7 @@ export const ServiceNavigator = () => {
         name="EmergencyDetails"
         component={EmergencyDetails}
         options={{
+          headerTitleAlign: 'center',
           headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}

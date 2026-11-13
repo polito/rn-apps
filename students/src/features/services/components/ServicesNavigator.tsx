@@ -379,6 +379,7 @@ export const ServicesNavigator = () => {
         component={EmergencyScreen}
         options={{
           headerTitle: t('emergenciesScreen.title'),
+          headerTitleAlign: 'center',
           headerLargeTitle: false,
           headerBackButtonDisplayMode: 'minimal',
         }}
@@ -388,6 +389,7 @@ export const ServicesNavigator = () => {
         component={EmergencyDetails}
         options={{
           headerTitle: '',
+          headerTitleAlign: 'center',
           headerLargeTitle: false,
           headerBackButtonDisplayMode: 'minimal',
         }}
