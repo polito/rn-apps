@@ -97,7 +97,7 @@ export const PersonalInfoScreen = ({ navigation }: Props) => {
     title: string;
     subtitle?: string;
     icon: IconDefinition;
-    onPress: () => void;
+    onPress?: () => void;
     trailingIcon?: IconDefinition;
   }): ReactElement => (
     <ListItem
@@ -106,16 +106,20 @@ export const PersonalInfoScreen = ({ navigation }: Props) => {
       subtitle={subtitle || '-'}
       subtitleProps={{ numberOfLines: 2 }}
       leadingItem={leading(icon)}
-      trailingItem={trailing(trailingIcon)}
+      trailingItem={onPress ? trailing(trailingIcon) : undefined}
       onPress={onPress}
-      accessibilityRole="button"
+      accessibilityRole={onPress ? 'button' : undefined}
       accessibilityLabel={`${title}, ${subtitle || t('common.noValue')}`}
-      accessibilityHint={t(
-        trailingIcon === faPen
-          ? 'personalInfoScreen.edit'
-          : 'personalInfoScreen.upload',
-        { field: title },
-      )}
+      accessibilityHint={
+        onPress
+          ? t(
+              trailingIcon === faPen
+                ? 'personalInfoScreen.edit'
+                : 'personalInfoScreen.upload',
+              { field: title },
+            )
+          : undefined
+      }
     />
   );
 
@@ -214,14 +218,20 @@ export const PersonalInfoScreen = ({ navigation }: Props) => {
     { label: t('personalInfoScreen.fiscalCode'), value: user.fiscalCode },
     {
       label: t('personalInfoScreen.birth'),
-      value: t('personalInfoScreen.birthValue', {
-        date: formatDate(user.birthDate),
-        place: user.birthPlace,
-      }),
+      value:
+        user.birthDate && user.birthPlace
+          ? t('personalInfoScreen.birthValue', {
+              date: formatDate(user.birthDate),
+              place: user.birthPlace,
+              interpolation: { escapeValue: false },
+            })
+          : user.birthDate
+            ? formatDate(user.birthDate)
+            : user.birthPlace,
     },
     {
       label: t('personalInfoScreen.civilStatus'),
-      value: user.civilStatus || '-',
+      value: user.civilStatus,
     },
   ];
 
@@ -251,11 +261,11 @@ export const PersonalInfoScreen = ({ navigation }: Props) => {
                 gap={4}
                 style={styles.registryRow}
                 accessible
-                accessibilityLabel={`${row.label}: ${row.value}`}
+                accessibilityLabel={`${row.label}: ${row.value || t('common.noValue')}`}
               >
                 <Text style={styles.registryLabel}>{row.label}</Text>
                 <Text weight="semibold" style={styles.registryValue}>
-                  {row.value}
+                  {row.value || '-'}
                 </Text>
               </Row>
             ))}
@@ -266,8 +276,6 @@ export const PersonalInfoScreen = ({ navigation }: Props) => {
                 title: t('personalInfoScreen.residence'),
                 subtitle: user.domicilie,
                 icon: faHouse,
-                onPress: () =>
-                  navigation.navigate('AddressForm', { target: 'residence' }),
               })}
             </OverviewList>
           </View>
@@ -291,6 +299,7 @@ export const PersonalInfoScreen = ({ navigation }: Props) => {
                 subtitle: user[key]
                   ? t('personalInfoScreen.uploadedOn', {
                       date: formatDate(user[key]!.uploadedAt),
+                      interpolation: { escapeValue: false },
                     })
                   : t('personalInfoScreen.notUploaded'),
                 icon: faFile,
@@ -338,11 +347,11 @@ export const PersonalInfoScreen = ({ navigation }: Props) => {
                 <ListItem
                   key={contact.id}
                   title={title}
-                  subtitle={contact.value}
+                  subtitle={contact.value || '-'}
                   leadingItem={leading(
                     contact.type === 'email' ? faEnvelope : faPhone,
                   )}
-                  accessibilityLabel={`${title}, ${contact.value}, ${visibility}`}
+                  accessibilityLabel={`${title}, ${contact.value || t('common.noValue')}, ${visibility}`}
                   trailingItem={
                     <Badge
                       text={visibility}
@@ -452,14 +461,11 @@ export const PersonalInfoScreen = ({ navigation }: Props) => {
               title: t('personalInfoScreen.iban'),
               subtitle: user.IBAN,
               icon: faCreditCard,
-              onPress: () => navigation.navigate('IbanForm'),
             })}
             {editableItem({
               title: t('personalInfoScreen.taxDomicile'),
               subtitle: user.taxDomicilie,
               icon: faBuildingColumns,
-              onPress: () =>
-                navigation.navigate('AddressForm', { target: 'tax' }),
             })}
           </OverviewList>
         </Section>
