@@ -16,7 +16,7 @@ import {
   useFeedbackContext,
   useOfflineDisabled,
 } from '@polito/lib/core';
-import { useOpenInAppLink } from '@polito/lib/core';
+import { useGeolocation, useOpenInAppLink } from '@polito/lib/core';
 import { resolvePlaceId } from '@polito/lib/features/places';
 import {
   BottomBarSpacer,
@@ -45,7 +45,6 @@ import { inRange } from 'lodash';
 import { DateTime } from 'luxon';
 
 import { useConfirmationDialog } from '../../../core/hooks/useConfirmationDialog';
-import { useGeolocation } from '../../../core/hooks/useGeolocation';
 import {
   useDeleteBooking,
   useGetBookings,

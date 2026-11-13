@@ -20,6 +20,7 @@
     "@gorhom/bottom-sheet": "^5.2.6",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-community/blur": "^4.4.1",
+    "@react-native-community/geolocation": "^3.4.0",
     "@react-native-community/netinfo": "^11.4.1",
     "@react-native-menu/menu": "2.0.0",
     "@react-navigation/bottom-tabs": "^7.4.2",
@@ -77,6 +78,7 @@
     "expo-image": "~3.0.11",
     "expo-sqlite": "~16.0.10",
     "expo-web-browser": "~15.0.10",
+    "geopoint": "^1.0.1",
     "htmlparser2": "^10.1.0",
     "lodash": "^4.17.23",
     "luxon": "^3.7.2",
@@ -87,6 +89,7 @@
   },
   "devDependencies": {
     "@types/geojson": "^7946.0.16",
+    "@types/geopoint": "^1.0.3",
     "@types/lodash": "^4.17.9",
     "@types/luxon": "^3.4.2",
     "@types/react": "19.1.17"
