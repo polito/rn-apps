@@ -24,9 +24,6 @@ import { useGetSites } from '../../places/queries/placesHooks';
 
 type Coordinates = { latitude: number; longitude: number };
 
-/** Max distance (km) to consider the user to be at the nearest site */
-const CURRENT_SITE_MAX_DISTANCE_KM = 2;
-
 type Props = {
   sites: EmergencySite[];
   close: () => void;
@@ -76,10 +73,7 @@ export const EmergencySitesModalContent = ({
       .sort((a, b) => a.distance - b.distance)[0];
 
     if (!nearest) return { mainSite: fallback, isCurrentSite: false };
-    return {
-      mainSite: nearest.site,
-      isCurrentSite: nearest.distance <= CURRENT_SITE_MAX_DISTANCE_KM,
-    };
+    return { mainSite: nearest.site, isCurrentSite: true };
   }, [computeDistance, placesSites?.data, position, sites]);
 
   const otherSites = sites.filter(site => site !== mainSite);
