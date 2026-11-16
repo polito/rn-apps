@@ -4,6 +4,11 @@ import { Platform, TouchableOpacity } from 'react-native';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
+  NewsItemScreen,
+  NewsScreen,
+  NewsStackParamList,
+} from '@polito/lib/features/news';
+import {
   ContactsScreen as LibContactsScreen,
   PersonScreen,
   UsefulContactScreen,
@@ -34,7 +39,7 @@ import { SingleBooking1 } from './SingleBooking1';
 import { SingleBooking2 } from './SingleBooking2';
 import { SupportScreen } from './SupportScreen';
 
-export type ProfileStackParamList = {
+export type ProfileStackParamList = NewsStackParamList & {
   Servizi: undefined;
   Contatto: undefined;
   Contacts: undefined;
@@ -138,6 +143,27 @@ export const ServiceNavigator = () => {
         options={{
           headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
+        }}
+      />
+
+      <Stack.Screen
+        name="News"
+        component={NewsScreen}
+        options={{
+          headerTitle: t('newsScreen.title'),
+          headerShown: true,
+          headerBackButtonDisplayMode: 'minimal',
+        }}
+      />
+
+      <Stack.Screen
+        name="NewsItem"
+        component={NewsItemScreen}
+        getId={({ params: { id } }) => id.toString()}
+        options={{
+          headerTitle: t('newsScreen.title'),
+          headerShown: true,
+          headerBackButtonDisplayMode: 'minimal',
         }}
       />
 

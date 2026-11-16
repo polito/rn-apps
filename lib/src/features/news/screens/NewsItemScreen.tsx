@@ -11,8 +11,13 @@ import {
   faFileAlt,
   faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons';
-import { formatDate, formatDateFromString } from '@polito/lib/core';
-import { useOpenInAppLink } from '@polito/lib/core';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import {
+  formatDate,
+  formatDateFromString,
+  useOpenInAppLink,
+} from '../../../core';
 import {
   ActivityIndicator,
   BottomBarSpacer,
@@ -29,13 +34,11 @@ import {
   Theme,
   useStylesheet,
   useTheme,
-} from '@polito/lib/ui';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+} from '../../../ui';
+import { useGetNewsItem } from '../queries/newsHooks';
+import { NewsStackParamList } from '../types';
 
-import { useGetNewsItem } from '../../../core/queries/newsHooks';
-import { ServiceStackParamList } from '../components/ServicesNavigator';
-
-type Props = NativeStackScreenProps<ServiceStackParamList, 'NewsItem'>;
+type Props = NativeStackScreenProps<NewsStackParamList, 'NewsItem'>;
 
 export const NewsItemScreen = ({ route }: Props) => {
   const { id } = route?.params || {};
