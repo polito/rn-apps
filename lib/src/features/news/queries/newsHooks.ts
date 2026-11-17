@@ -1,6 +1,7 @@
-import { pluckData } from '@polito/lib/core';
 import { NewsApi } from '@polito/student-api-client';
 import { useQuery } from '@tanstack/react-query';
+
+import { pluckData } from '../../../core';
 
 const NEWS_ITEM_QUERY_PREFIX = 'news';
 const NEWS_QUERY_KEY = [NEWS_ITEM_QUERY_PREFIX];

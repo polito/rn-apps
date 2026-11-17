@@ -5,12 +5,15 @@ import {
   OverviewList,
   RefreshControl,
   Section,
-} from '@polito/lib/ui';
-
-import { useGetNews } from '../../../core/queries/newsHooks';
+} from '../../../ui';
 import { NewsListItem } from '../components/NewsListItem';
+import { useGetNews } from '../queries/newsHooks';
 
-export const NewsScreen = () => {
+type Props = {
+  isUnread?: (newsItemId: number) => boolean;
+};
+
+export const NewsScreen = ({ isUnread }: Props) => {
   const newsQuery = useGetNews();
 
   return (
@@ -27,6 +30,7 @@ export const NewsScreen = () => {
                 key={newsItem.id}
                 index={index}
                 totalData={newsQuery?.data?.length || 0}
+                unread={isUnread?.(newsItem.id)}
               />
             ))}
           </OverviewList>

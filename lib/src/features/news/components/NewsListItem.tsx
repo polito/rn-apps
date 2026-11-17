@@ -1,25 +1,32 @@
 import { StyleSheet } from 'react-native';
 
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { formatDate, getHtmlTextContent } from '@polito/lib/core';
-import { useAccessibility } from '@polito/lib/core';
-import { Icon, ListItem, Theme, useStylesheet, useTheme } from '@polito/lib/ui';
 import { NewsItemOverview } from '@polito/student-api-client';
 
-import { useNotifications } from '../../../core/hooks/useNotifications';
+import {
+  formatDate,
+  getHtmlTextContent,
+  useAccessibility,
+} from '../../../core';
+import { Icon, ListItem, Theme, useStylesheet, useTheme } from '../../../ui';
 
 interface Props {
   newsItem: NewsItemOverview;
   index: number;
   totalData: number;
+  unread?: boolean;
 }
 
-export const NewsListItem = ({ newsItem, index, totalData }: Props) => {
+export const NewsListItem = ({
+  newsItem,
+  index,
+  totalData,
+  unread = false,
+}: Props) => {
   const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
 
   const { accessibilityListLabel } = useAccessibility();
-  const { getUnreadsCount } = useNotifications();
 
   const accessibilityLabel = accessibilityListLabel(index, totalData);
   const title = getHtmlTextContent(newsItem?.title);
@@ -48,7 +55,7 @@ export const NewsListItem = ({ newsItem, index, totalData }: Props) => {
           style={styles.icon}
         />
       }
-      unread={!!getUnreadsCount(['services', 'news', newsItem?.id.toString()])}
+      unread={unread}
     />
   );
 };

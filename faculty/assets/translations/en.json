@@ -620,6 +620,13 @@
     "important": "Important",
     "reservationPresence": "Reservations"
   },
+  "newsScreen": {
+    "createdAt": "Published on ",
+    "eventStartTime": "Starts on ",
+    "information": "Information",
+    "logo": "Logo",
+    "title": "News & Events"
+  },
   "notificationsScreen": {
     "title": "Notifications",
     "perCourseTitle": "Courses",
