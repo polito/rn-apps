@@ -51,6 +51,9 @@ npm-debug.*
 # ESLint
 .eslintcache
 
+# Jest
+.jest-cache
+
 # Bundle artifact
 *.jsbundle
 

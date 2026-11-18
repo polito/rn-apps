@@ -5,7 +5,10 @@
   "exports": {
     "./core": "./src/core/index.ts",
     "./features/*": "./src/features/*/index.ts",
-    "./ui": "./src/ui/index.ts"
+    "./ui": "./src/ui/index.ts",
+    "./testing/jest.setup": "./src/testing/jest.setup.ts",
+    "./testing/mocks/keychain": "./src/testing/mocks/keychain.ts",
+    "./testing/utils/mockRoute": "./src/testing/utils/mockRoute.ts"
   },
   "scripts": {
     "add": "node ../tools/scripts/installDeps.js",
@@ -86,9 +89,14 @@
     "superjson": "^2.2.6"
   },
   "devDependencies": {
+    "@testing-library/react-native": "^14.0.1",
     "@types/geojson": "^7946.0.16",
+    "@types/jest": "^29.5.14",
+    "@types/js-yaml": "^4.0.9",
     "@types/lodash": "^4.17.9",
     "@types/luxon": "^3.4.2",
-    "@types/react": "19.1.17"
+    "@types/react": "19.1.17",
+    "js-yaml": "^4.3.0",
+    "msw": "^2.15.0"
   }
 }
