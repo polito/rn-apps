@@ -144,6 +144,15 @@ These console outputs give useful information.
 
 For a quiet run pass `--silent`, for example `npm test --workspace=students -- --silent`.
 
+## Transform cache
+
+Jest transforms every file with babel and keeps the result in `students/.jest-cache` and `faculty/.jest-cache`. Changed files are transformed again.
+
+- The first run on an empty cache is about 3-5 times slower than the next ones.
+- Locally `--maxWorkers=4` is the fastest setting.
+
+The key is built from `package-lock.json` and the `jest.config.js` and `babel.config.js` of both apps. If results look stale delete `.jest-cache`.
+
 ## Common problems
 
 - **act warnings**: usually a missing `await` on `render` or `fireEvent`.
