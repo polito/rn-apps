@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 
 import {
   faCircleExclamation,
@@ -20,6 +20,7 @@ import { Icon } from '../../../ui/components/Icon';
 import { Text } from '../../../ui/components/Text';
 import { useBottomBarAwareStyles } from '../../../ui/hooks/useBottomBarAwareStyles';
 import { useStylesheet } from '../../../ui/hooks/useStylesheet';
+import { useTheme } from '../../../ui/hooks/useTheme';
 import { Theme } from '../../../ui/types/Theme';
 import { EmergencyCard } from '../components/EmergencyCard';
 import { useEmergencyCta } from '../hooks/useEmergencyCta';
@@ -33,6 +34,7 @@ export const EmergencyScreen = () => {
     useNavigation<NativeStackNavigationProp<EmergenciesStackParamList>>();
   const bottomBarAwareStyles = useBottomBarAwareStyles();
   const styles = useStylesheet(createStyles);
+  const { palettes } = useTheme();
   const { data, isLoading } = useGetEmergencies();
   const { onCtaPress, modal } = useEmergencyCta(data?.sites);
 
@@ -97,17 +99,20 @@ export const EmergencyScreen = () => {
           .filter(cta => cta.primary)
           .map(cta => (
             <View key={cta.text} style={styles.primaryCtaContainer}>
-              <TouchableOpacity
+              <TouchableHighlight
                 accessibilityRole="button"
                 accessibilityLabel={cta.text}
                 style={styles.primaryCta}
+                underlayColor={palettes.danger[700]}
                 onPress={() => onCtaPress(cta)}
               >
-                <Icon icon={faPhone} color="white" size={24} />
-                <Text variant="heading" style={styles.primaryCtaText}>
-                  {cta.text}
-                </Text>
-              </TouchableOpacity>
+                <View style={styles.primaryCtaContent}>
+                  <Icon icon={faPhone} color="white" size={24} />
+                  <Text variant="heading" style={styles.primaryCtaText}>
+                    {cta.text}
+                  </Text>
+                </View>
+              </TouchableHighlight>
             </View>
           ))}
         {secondaryCtas.map(cta => (
@@ -157,11 +162,13 @@ const createStyles = ({ colors, fontSizes, palettes, spacing }: Theme) =>
       width: PRIMARY_CTA_SIZE,
       height: PRIMARY_CTA_SIZE,
       borderRadius: PRIMARY_CTA_SIZE / 2,
-      alignItems: 'center',
       justifyContent: 'center',
-      gap: spacing[2],
       padding: spacing[4],
       backgroundColor: palettes.danger[600],
+    },
+    primaryCtaContent: {
+      alignItems: 'center',
+      gap: spacing[2],
     },
     primaryCtaText: {
       color: colors.white,
