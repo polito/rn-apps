@@ -4,6 +4,10 @@ import { Platform, TouchableOpacity } from 'react-native';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
+  EmergencyDetails,
+  EmergencyScreen,
+} from '@polito/lib/features/emergencies';
+import {
   ContactsScreen as LibContactsScreen,
   PersonScreen,
   UsefulContactScreen,
@@ -22,8 +26,6 @@ import { BookStructureRoomScreen } from './BookStructureRoomScreen';
 import { BookingScreen } from './BookingScreen';
 import { ContactScreen } from './ContactScreen';
 import { DigitalSignatureScreen } from './DigitalSignatureScreen';
-import { EmergencyDetails } from './EmergencyDetails';
-import { EmergencyScreen } from './EmergencyScreen';
 import { IssueDetails } from './IssueDetails';
 import { IssueReport } from './IssueReport';
 import { IssueReportForm } from './IssueReportForm';
@@ -54,7 +56,7 @@ export type ProfileStackParamList = {
   Booking2: undefined;
   SignatureScreen: undefined;
   Emergency: undefined;
-  EmergencyDetails: undefined;
+  EmergencyDetails: { id: string };
   IssueReport: undefined;
   IssueDetails: undefined;
   IssueReportForm: undefined;
@@ -262,6 +264,8 @@ export const ServiceNavigator = () => {
         name="Emergency"
         component={EmergencyScreen}
         options={{
+          headerTitle: t('emergenciesScreen.title'),
+          headerTitleAlign: 'center',
           headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}
@@ -271,6 +275,7 @@ export const ServiceNavigator = () => {
         name="EmergencyDetails"
         component={EmergencyDetails}
         options={{
+          headerTitleAlign: 'center',
           headerLeft: () => <CustomBackButton2 />,
           headerShown: true,
         }}

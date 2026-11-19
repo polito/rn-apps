@@ -214,7 +214,7 @@ const createCustomTextRenderer = (variant: string) => {
         : originalText;
 
     const dynamicStyle = {
-      fontSize: fontSizes.md,
+      fontSize: variant === 'compact' ? fontSizes.sm : fontSizes.md,
       ...(accessibility?.letterSpacing &&
         accessibility.fontSize && {
           letterSpacing:

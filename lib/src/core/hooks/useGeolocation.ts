@@ -2,10 +2,12 @@ import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking } from 'react-native';
 
-import { IS_ANDROID, useFeedbackContext } from '@polito/lib/core';
 import Geolocation from '@react-native-community/geolocation';
 
 import GeoPoint from 'geopoint';
+
+import { IS_ANDROID } from '../constants';
+import { useFeedbackContext } from '../contexts/FeedbackContext';
 
 type Coordinates = {
   latitude: number;
@@ -38,7 +40,14 @@ const computeDistance = (a?: Coordinates, b?: Coordinates) => {
   return pointA.distanceTo(pointB, true);
 };
 
-export const useGeolocation = () => {
+type UseGeolocationOptions = {
+  /** Skip feedback messages when the position is optional */
+  silent?: boolean;
+};
+
+export const useGeolocation = ({
+  silent = false,
+}: UseGeolocationOptions = {}) => {
   const { setFeedback } = useFeedbackContext();
   const { t } = useTranslation();
 
@@ -49,7 +58,7 @@ export const useGeolocation = () => {
           resolve({ latitude, longitude });
         },
         error => {
-          if (error.code === 2) {
+          if (!silent && error.code === 2) {
             setFeedback({
               text: t('common.enableLocationServiceFeedback'),
               isPersistent: false,
@@ -59,13 +68,13 @@ export const useGeolocation = () => {
         },
       );
     });
-  }, [t, setFeedback]);
+  }, [silent, t, setFeedback]);
 
   useEffect(() => {
     Geolocation.requestAuthorization(
       () => console.debug('Geolocation permission granted'),
       error => {
-        if (error.code === 1) {
+        if (!silent && error.code === 1) {
           setFeedback({
             text: t('common.enableLocationPermissionFeedback'),
             action: {
@@ -77,7 +86,7 @@ export const useGeolocation = () => {
         }
       },
     );
-  }, [t, setFeedback]);
+  }, [silent, t, setFeedback]);
 
   return {
     getCurrentPosition,
