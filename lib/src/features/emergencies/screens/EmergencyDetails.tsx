@@ -73,6 +73,7 @@ export const EmergencyDetails = () => {
                   props={{
                     source: { html: card.htmlContent },
                     baseStyle: styles.html,
+                    tagsStyles: { ul: styles.list, li: styles.listItem },
                   }}
                 />
                 {card.cta.map(cta => (
@@ -156,6 +157,14 @@ const createStyles = ({
     html: {
       padding: 0,
       fontSize: fontSizes.sm,
+    },
+    // Figma: one blank line between bullets, none after the last one
+    list: {
+      marginTop: 0,
+      marginBottom: -spacing[3],
+    },
+    listItem: {
+      marginBottom: spacing[3],
     },
     cardCta: {
       flexDirection: 'row',
