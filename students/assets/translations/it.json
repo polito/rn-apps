@@ -644,6 +644,16 @@
     "title": "Corso di laurea",
     "tracks": "Piano studi"
   },
+  "emergenciesScreen": {
+    "call112": "Chiama il 112",
+    "callNearestSite": "Chiama la sede più vicina",
+    "hideOtherSites": "Nascondi altre sedi",
+    "howToBehave": "Come comportarsi",
+    "or": "Oppure",
+    "title": "Emergenze",
+    "viewOtherSites": "Visualizza altre sedi",
+    "yourCurrentLocation": "La tua posizione attuale"
+  },
   "escRequestScreen": {
     "title": "European Student Card",
     "firstTitle": "Che cos'è la Carta europea dello studente?",

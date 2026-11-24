@@ -50,6 +50,7 @@ class MainApplication : Application(), ReactApplication {
     } catch (e: IllegalArgumentException) {
       ReleaseLevel.STABLE
     }
+    ReactFontManager.getInstance().addCustomFont(this, "Montserrat", R.font.montserrat)
     loadReactNative(this)
     ApplicationLifecycleDispatcher.onApplicationCreate(this)
   }

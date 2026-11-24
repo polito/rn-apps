@@ -4,6 +4,7 @@ export * from './useDeviceDimension';
 export * from './useDeviceLanguage';
 export * from './useDeviceOrientation';
 export * from './useDeviceRotation';
+export * from './useGeolocation';
 export * from './useKeyboardVisibile';
 export * from './useOfflineDisabled';
 export * from './useOpenInAppLink';

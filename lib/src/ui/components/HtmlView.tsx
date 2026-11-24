@@ -214,7 +214,7 @@ const createCustomTextRenderer = (variant: string) => {
         : originalText;
 
     const dynamicStyle = {
-      fontSize: fontSizes.md,
+      fontSize: variant === 'compact' ? fontSizes.sm : fontSizes.md,
       ...(accessibility?.letterSpacing &&
         accessibility.fontSize && {
           letterSpacing:
@@ -381,6 +381,7 @@ export const HtmlView = ({ variant, props }: HtmlViewProps) => {
         h4: styles.h4,
         h5: styles.h5,
         h6: styles.h6,
+        ...props.tagsStyles,
       }}
       ignoredStyles={
         variant === 'onboarding'

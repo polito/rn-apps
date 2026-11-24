@@ -629,6 +629,16 @@
     "title": "Degree",
     "tracks": "Tracks"
   },
+  "emergenciesScreen": {
+    "call112": "Call 112",
+    "callNearestSite": "Call the nearest site",
+    "hideOtherSites": "Hide other sites",
+    "howToBehave": "What to do",
+    "or": "Or",
+    "title": "Emergencies",
+    "viewOtherSites": "Show other sites",
+    "yourCurrentLocation": "Your current location"
+  },
   "escRequestScreen": {
     "title": "European Student Card",
     "firstTitle": "What is the European Student Card?",

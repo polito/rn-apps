@@ -5,17 +5,11 @@ import {
   IconDefinition,
   faBullhorn,
   faCircleExclamation,
-  faCircleRadiation,
   faComments,
   faEnvelope,
   faFileSignature,
-  faHouseCrack,
-  faHouseFire,
   faIdCard,
-  faPeopleRobbery,
   faPersonCirclePlus,
-  faPersonWalkingArrowRight,
-  faTruckMedical,
   faVideo,
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -178,13 +172,6 @@ interface Profile {
   preferred: boolean;
 }
 
-interface Emergency {
-  id: string;
-  name: string;
-  icon: IconDefinition;
-  rules: string[];
-}
-
 interface User {
   name: string;
   domicilie: string;
@@ -233,10 +220,7 @@ interface CoursesContextType {
   setSelectedIssue: (is: Issue | null) => void;
   removeIssue: (id: number) => void;
   addIssue: (issue: Issue) => void;
-  emergencies: Emergency[];
   selectedDoc: TbsDoc | null;
-  selectedEmergency: Emergency | null;
-  setSelectedEmergency: (em: Emergency | null) => void;
   setSelectedDoc: (doc: TbsDoc | null) => void;
   selectedStudent: Student | null;
   setSelectedStudent: (stu: Student | null) => void;
@@ -5836,7 +5820,7 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
     },
     {
       id: 'Emergency',
-      name: t('other.emergencies'),
+      name: t('emergenciesScreen.title'),
       icon: faCircleExclamation,
       linkTo: 'Emergency',
       favorite: false,
@@ -6096,99 +6080,6 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
   const removeAgendaItem = (itemId: number) => {
     setAgendaItems(prevItems => prevItems.filter(item => item.id !== itemId));
   };
-
-  const [emergencies] = useState<Emergency[]>([
-    {
-      id: '1',
-      name: 'Incendio',
-      icon: faHouseFire,
-      rules: [
-        'Non utilizzare gli ascensori.',
-        'Se l’incendio si è sviluppato all’interno del locale dove ci si trova, uscire subito e chiudere la porta.',
-        'Se l’incendio si è sviluppato fuori dal locale e le vie di fuga sono impraticabili, chiudere la porta e sigillare le fessure con panni bagnati.',
-        'Se il fumo rende difficoltosa la respirazione, filtrare l’aria con un fazzoletto bagnato e sdraiarsi sul pavimento.',
-        'Do not use elevators.',
-        'If the fire has started in the room you are in, leave immediately and close the door.',
-        'If the fire is outside and escape routes are blocked, close the door and seal gaps with wet cloths.',
-        'If smoke makes breathing difficult, filter the air with a wet cloth and lie on the floor.',
-      ],
-    },
-    {
-      id: '2',
-      name: 'Evacuazione',
-      icon: faPersonWalkingArrowRight,
-      rules: [
-        'Segui le vie di fuga indicate dalle segnalazioni luminose.',
-        'Non tornare indietro per recuperare oggetti personali.',
-        'Mantieni la calma e aiuta chi ha bisogno.',
-        'Raggiungi il punto di raccolta designato in modo ordinato.',
-        'Follow escape routes indicated by emergency lights.',
-        'Do not go back to retrieve personal belongings.',
-        'Stay calm and assist those in need.',
-        'Reach the designated assembly point in an orderly manner.',
-      ],
-    },
-    {
-      id: '3',
-      name: 'Terremoto',
-      icon: faHouseCrack,
-      rules: [
-        'Durante la scossa, riparati sotto un tavolo o una struttura solida.',
-        'Allontanati da finestre e oggetti che possono cadere.',
-        'Non usare ascensori.',
-        'Dopo la scossa, esci con calma e segui le indicazioni di evacuazione.',
-        'During the shaking, take cover under a table or sturdy structure.',
-        'Stay away from windows and objects that may fall.',
-        'Do not use elevators.',
-        'After the shaking, exit calmly and follow evacuation instructions.',
-      ],
-    },
-    {
-      id: '4',
-      name: 'Rapina/Aggressione',
-      icon: faPeopleRobbery,
-      rules: [
-        'Non reagire e mantieni la calma.',
-        'Osserva attentamente ma discretamente per poter descrivere l’aggressore.',
-        'Allontanati in sicurezza appena possibile.',
-        'Chiama immediatamente le forze dell’ordine e segnala l’accaduto.',
-        'Do not react and stay calm.',
-        'Observe carefully but discreetly so you can describe the attacker.',
-        'Move away safely as soon as possible.',
-        'Immediately call the police and report the incident.',
-      ],
-    },
-    {
-      id: '5',
-      name: 'Sostanze pericolose',
-      icon: faCircleRadiation,
-      rules: [
-        'Evita il contatto diretto e non inalare vapori o fumi.',
-        'Allontanati dall’area interessata e avvisa immediatamente il personale competente.',
-        'Chiudi porte e finestre per contenere la dispersione.',
-        'Attiva le procedure di emergenza previste dal piano di sicurezza.',
-        'Avoid direct contact and do not inhale vapors or fumes.',
-        'Move away from the affected area and immediately alert trained personnel.',
-        'Close doors and windows to contain the spread.',
-        'Activate the emergency procedures as outlined in the safety plan.',
-      ],
-    },
-    {
-      id: '6',
-      name: 'Infortunio',
-      icon: faTruckMedical,
-      rules: [
-        'Non spostare l’infortunato se non strettamente necessario.',
-        'Allerta immediatamente il personale di primo soccorso.',
-        'Rassicura l’infortunato e mantieni la calma.',
-        'Se necessario, chiama il numero unico di emergenza 112.',
-        'Do not move the injured person unless absolutely necessary.',
-        'Immediately alert first aid personnel.',
-        'Reassure the injured person and stay calm.',
-        'If needed, call the emergency number 112.',
-      ],
-    },
-  ]);
 
   const [fakeProfiles, setFakeProfiles] = useState<Profile[]>([
     {
@@ -6576,10 +6467,6 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
   ]);
 
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
-
-  const [selectedEmergency, setSelectedEmergency] = useState<Emergency | null>(
-    null,
-  );
 
   const [selectedAgendaItem, setSelectedAgendaItem] =
     useState<AgendaItem | null>(null);
@@ -7410,9 +7297,6 @@ export const CoursesProvider = ({ children }: CoursesProviderProps) => {
         removeBooking,
         selectedDoc,
         setSelectedDoc,
-        emergencies,
-        selectedEmergency,
-        setSelectedEmergency,
         issues,
         selectedIssue,
         setSelectedIssue,
