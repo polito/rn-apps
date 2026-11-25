@@ -66,7 +66,7 @@ export const CourseGradesChart = ({
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
 
-  const chartColors = [palettes.secondary[600], palettes.navy[500]];
+  const chartColors = [palettes.secondary[600], palettes.gray[500]];
 
   const firstYearTotal =
     statistics?.firstYear?.grades?.reduce(

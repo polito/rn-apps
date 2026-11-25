@@ -28,7 +28,11 @@ export const EnrolledExamChart = ({
   const { fontWeights } = useTheme();
 
   const selectedSwitchColor = dark ? palettes.primary[600] : colors.surface;
-  const chartColors = [palettes.green[500], palettes.red[500]];
+  const passedBarColor = dark ? palettes.success[600] : palettes.success[400];
+  const passedBarBorderColor = dark
+    ? palettes.success[400]
+    : palettes.success[600];
+  const chartColors = [passedBarColor, palettes.red[500]];
   const topLabelSpacing = spacing['1'];
   const barRadius = spacing[1];
   const [mode, setMode] = useState<VisualizationMode>('single');
@@ -54,7 +58,9 @@ export const EnrolledExamChart = ({
     barData = [
       {
         value: statistics?.totalSucceeded ?? 0,
-        frontColor: palettes.green[500],
+        frontColor: passedBarColor,
+        barBorderWidth: 2,
+        barBorderColor: passedBarBorderColor,
         topLabelComponent: () => (
           <Text
             style={{
@@ -105,7 +111,9 @@ export const EnrolledExamChart = ({
                 textAlign: 'center' as const,
                 color: colors.title,
               },
-              frontColor: `${palettes.green[500]}a6`,
+              frontColor: `${passedBarColor}a6`,
+              barBorderWidth: 2,
+              barBorderColor: `${passedBarBorderColor}a6`,
               topLabelComponent: () => (
                 <Text
                   style={{
@@ -151,7 +159,9 @@ export const EnrolledExamChart = ({
           textAlign: 'center',
           color: colors.title,
         },
-        frontColor: palettes.green[500],
+        frontColor: passedBarColor,
+        barBorderWidth: 2,
+        barBorderColor: passedBarBorderColor,
         topLabelComponent: () => (
           <Text
             style={{
@@ -275,6 +285,7 @@ export const EnrolledExamChart = ({
       <Col>
         <LegendItem
           bulletColor={chartColors[0]}
+          bulletBorderColor={passedBarBorderColor}
           text={t('courseStatisticsScreen.enrolledExamChartLegend.passed')}
         />
         <LegendItem
