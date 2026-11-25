@@ -19,11 +19,15 @@ export const EnrolledExamDetailChart = ({
   statistics: undefined | CourseStatistics;
   noOfSections?: number;
 }) => {
-  const { palettes, colors, fontSizes, spacing } = useTheme();
+  const { dark, palettes, colors, fontSizes, spacing } = useTheme();
   const { t } = useTranslation();
   const styles = useStylesheet(createStyles);
   const { fontWeights } = useTheme();
-  const chartColors = [palettes.green[500], palettes.red[500]];
+  const passedBarColor = dark ? palettes.success[600] : palettes.success[400];
+  const passedBarBorderColor = dark
+    ? palettes.success[400]
+    : palettes.success[600];
+  const chartColors = [passedBarColor, palettes.red[500]];
   const topLabelSpacing = spacing['3'];
   const barRadius = spacing[1];
 
@@ -45,7 +49,9 @@ export const EnrolledExamDetailChart = ({
         left: barWidth / 2 + (barWidth > 60 ? 10 : 0),
         color: colors.title,
       },
-      frontColor: palettes.green[500],
+      frontColor: passedBarColor,
+      barBorderWidth: 2,
+      barBorderColor: passedBarBorderColor,
       topLabelComponent: () => (
         <Text
           style={{
@@ -85,7 +91,9 @@ export const EnrolledExamDetailChart = ({
         left: barWidth / 2 + (barWidth > 60 ? 10 : 0),
         color: colors.title,
       },
-      frontColor: palettes.green[500],
+      frontColor: passedBarColor,
+      barBorderWidth: 2,
+      barBorderColor: passedBarBorderColor,
       topLabelComponent: () => (
         <Text
           style={{
@@ -147,6 +155,7 @@ export const EnrolledExamDetailChart = ({
       <Col>
         <LegendItem
           bulletColor={chartColors[0]}
+          bulletBorderColor={passedBarBorderColor}
           text={t('courseStatisticsScreen.enrolledExamChartLegend.passed')}
         />
         <LegendItem
