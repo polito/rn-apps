@@ -283,14 +283,18 @@ export const EnrolledExamChart = ({
         <LegendItem
           bulletColor={chartColors[0]}
           text={t('courseStatisticsScreen.enrolledExamChartLegend.passed')}
-          trailingText={`${passedCount}`}
-          trailingPercent={`(${passedPercent}%)`}
+          trailingText={mode === 'single' ? `${passedCount}` : undefined}
+          trailingPercent={
+            mode === 'single' ? `(${passedPercent}%)` : undefined
+          }
         />
         <LegendItem
           bulletColor={chartColors[1]}
           text={t('courseStatisticsScreen.enrolledExamChartLegend.failed')}
-          trailingText={`${failedCount}`}
-          trailingPercent={`(${failedPercent}%)`}
+          trailingText={mode === 'single' ? `${failedCount}` : undefined}
+          trailingPercent={
+            mode === 'single' ? `(${failedPercent}%)` : undefined
+          }
         />
       </Col>
     </View>
