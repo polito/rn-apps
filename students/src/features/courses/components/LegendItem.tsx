@@ -7,10 +7,12 @@ export const LegendItem = ({
   bulletColor,
   text,
   trailingText,
+  trailingPercent,
 }: {
   bulletColor: string;
   text: string;
   trailingText?: string;
+  trailingPercent?: string;
 }) => {
   const styles = useStylesheet(createStyles);
   return (
@@ -28,20 +30,44 @@ export const LegendItem = ({
       >
         {text}
       </Text>
-      {trailingText && (
-        <Text
-          variant="prose"
-          style={styles.chartLegendTrailingText}
-          accessibilityLabel={trailingText}
-        >
-          {trailingText}
-        </Text>
+      {trailingPercent ? (
+        <Row gap={1} align="baseline" style={styles.chartLegendTrailingGroup}>
+          {trailingText && (
+            <Text
+              variant="prose"
+              style={styles.chartLegendTrailingText}
+              accessibilityLabel={trailingText}
+            >
+              {trailingText}
+            </Text>
+          )}
+          <Text
+            variant="secondaryText"
+            style={styles.chartLegendPercent}
+            accessibilityLabel={trailingPercent}
+          >
+            {trailingPercent}
+          </Text>
+        </Row>
+      ) : (
+        trailingText && (
+          <Text
+            variant="prose"
+            style={[
+              styles.chartLegendTrailingText,
+              styles.chartLegendTrailingEnd,
+            ]}
+            accessibilityLabel={trailingText}
+          >
+            {trailingText}
+          </Text>
+        )
       )}
     </Row>
   );
 };
 
-const createStyles = ({ fontSizes, fontWeights }: Theme) =>
+const createStyles = ({ fontSizes, fontWeights, colors }: Theme) =>
   StyleSheet.create({
     chartLegendBullet: {
       height: 8,
@@ -51,9 +77,19 @@ const createStyles = ({ fontSizes, fontWeights }: Theme) =>
     chartLegendText: {
       fontSize: fontSizes.xs,
     },
-    chartLegendTrailingText: {
+    chartLegendTrailingGroup: {
       marginLeft: 'auto',
+    },
+    chartLegendTrailingEnd: {
+      marginLeft: 'auto',
+    },
+    chartLegendTrailingText: {
       fontSize: fontSizes.sm,
       fontWeight: fontWeights.medium,
+    },
+    chartLegendPercent: {
+      color: colors.secondaryText,
+      fontSize: fontSizes.xs,
+      lineHeight: fontSizes.xs * 1.5,
     },
   });
