@@ -204,6 +204,13 @@ export const EnrolledExamChart = ({
 
   const hasData = barData.some(it => it.value !== undefined && it.value > 0);
 
+  const passedCount = statistics?.totalSucceeded ?? 0;
+  const failedCount = statistics?.totalFailed ?? 0;
+  const examTotal = passedCount + failedCount;
+  const passedPercent =
+    examTotal === 0 ? 0 : Math.round((passedCount / examTotal) * 100);
+  const failedPercent = examTotal === 0 ? 0 : 100 - passedPercent;
+
   return (
     <View
       style={styles.graphCard}
@@ -276,10 +283,18 @@ export const EnrolledExamChart = ({
         <LegendItem
           bulletColor={chartColors[0]}
           text={t('courseStatisticsScreen.enrolledExamChartLegend.passed')}
+          trailingText={mode === 'single' ? `${passedCount}` : undefined}
+          trailingPercent={
+            mode === 'single' ? `(${passedPercent}%)` : undefined
+          }
         />
         <LegendItem
           bulletColor={chartColors[1]}
           text={t('courseStatisticsScreen.enrolledExamChartLegend.failed')}
+          trailingText={mode === 'single' ? `${failedCount}` : undefined}
+          trailingPercent={
+            mode === 'single' ? `(${failedPercent}%)` : undefined
+          }
         />
       </Col>
     </View>
