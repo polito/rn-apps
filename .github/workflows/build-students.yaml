@@ -156,7 +156,6 @@ jobs:
       CI: 'true'
       BUILD_NO: ${{ needs.configure.outputs.build_no }}
       APP_VERSION: ${{ needs.configure.outputs.version }}
-      SUPPLY_GOOGLE_JSON_PATH: './pc-api-secret.json'
       KEYSTORE_PW: ${{ secrets.STUDENTS_ANDROID_KEYSTORE_PW }}
       KEYSTORE_PATH: './keystore.jks'
       CCACHE_CONFIGPATH: '${{ github.workspace }}/node_modules/react-native/scripts/xcode/ccache.conf'
@@ -206,13 +205,16 @@ jobs:
       - name: Install npm dependencies
         working-directory: ${{ github.workspace }}
         run: npm ci
+      - name: Setup Fastlane Env
+        env:
+          FASTLANE_ENV: ${{ secrets.FASTLANE_ENV }}
+        run: printf "%s\n" "${{ secrets.FASTLANE_ENV }}" > tools/fastlane/.env
       - name: Prepare fastlane
         run: |
           cd android
-          echo "${{ secrets.SUPPLY_GOOGLE_JSON_SECRET }}" | base64 -d > ${SUPPLY_GOOGLE_JSON_PATH}
           echo "${{ secrets.ANDROID_KEYSTORE_B64 }}" | base64 -d > ${KEYSTORE_PATH}
           echo "${{ secrets.SENTRY_DOT_PROPERTIES }}" | base64 -d > sentry.properties
-          chmod 600 ${KEYSTORE_PATH} ${SUPPLY_GOOGLE_JSON_PATH}
+          chmod 600 ${KEYSTORE_PATH}
       - name: Fastlane VERIFY lane
         if: needs.configure.outputs.push_to_playstore == 'false'
         env:
@@ -253,10 +255,6 @@ jobs:
       BUILD_NO: ${{ needs.configure.outputs.build_no }}
       APP_VERSION: ${{ needs.configure.outputs.version }}
       MATCH_PASSWORD: ${{ secrets.FASTLANE_MATCH_KEY }}
-      MATCH_GIT_PRIVATE_KEY: './github_access.pk'
-      FASTLANE_USERNAME: ${{ secrets.FASTLANE_POLI_MOBILE_USER }}
-      FASTLANE_PASSWORD: ${{ secrets.FASTLANE_POLI_MOBILE_PW }}
-      FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_DEV_PW }}
       SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH: './GoogleService-Info.plist'
       CCACHE_CONFIGPATH: '${{ github.workspace }}/node_modules/react-native/scripts/xcode/ccache.conf'
       SENTRY_ALLOW_FAILURE: 'true'
@@ -305,6 +303,10 @@ jobs:
       - name: Install npm dependencies
         working-directory: ${{github.workspace}}
         run: npm install
+      - name: Setup Fastlane Env
+        env:
+          FASTLANE_ENV: ${{ secrets.FASTLANE_ENV }}
+        run: printf "%s\n" "${{ secrets.FASTLANE_ENV }}" > tools/fastlane/.env
       - name: Prepare fastlane
         run: |
           cd ios

@@ -1,3 +1,5 @@
 node_modules
 tools/vendor/bundle
 .eslintcache
+tools/fastlane/.env
+tools/fastlane/report.xml

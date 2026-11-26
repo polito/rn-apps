@@ -1,40 +1,80 @@
+@monorepo_root = File.expand_path("../..", __dir__)
 
-# def android_build_props(app)
-#     KEYSTORE_PATH = Dir.pwd+'/../'+ENV['KEYSTORE_PATH']
-#     buildProps = {
-#     "android.injected.signing.store.file" => KEYSTORE_PATH,
-#     "android.injected.signing.store.password" => ENV['KEYSTORE_PW'],
-#     "android.injected.signing.key.alias" => "key0",
-#     "android.injected.signing.key.password" => ENV['KEYSTORE_PW'],
-#     }
-# end
 
-before_all do
+APP_STORE_IDS = {
+    "students" => ENV['FL_APP_STORE_ID_STUDENTS'],
+    "faculty" => ENV['FL_APP_STORE_ID_FACULTY'],
+}
+
+def build_props(app)
+    keystore_filename = ENV['FL_KEYSTORE_PATH']
+    keystore_password = ENV["FL_#{app.upcase}_KEYSTORE_PW"]
+    {
+        "android.injected.signing.store.file"     => File.expand_path(keystore_filename, __dir__),
+        "android.injected.signing.store.password" => keystore_password,
+        "android.injected.signing.key.alias"      => "key0",
+        "android.injected.signing.key.password"   => keystore_password,
+    }
+end
+# -------------------------------------------
+
+before_all do |lane, options|
     setup_ci if ENV['CI']
 end
 
 lane :build do |options|
     app = options[:app]
     platform = options[:platform]
+    is_release = options[:is_release] || false
 
     case platform
     when "ios"
-        Dir.chdir("../#{app}/ios") do
-            sync_code_signing(type: "appstore", readonly: true)
-            cocoapods(use_bundle_exec: true)
+        app_ios_dir             = "#{@monorepo_root}/#{app}/ios"
+        podfile_absolute_path   = "#{app_ios_dir}/Podfile"
+        workspace_absolute_path = "#{app_ios_dir}/#{app}.xcworkspace"
+        build_absolute_path     = "#{app_ios_dir}/build"
+        expo_plist_absolute_path = "#{app_ios_dir}/#{app}/Supporting/Expo.plist"
+
+        Dir.chdir(app_ios_dir) do
+            # Only attempt to update the plist if the Expo.plist file actually exists.
+            if File.exist?(expo_plist_absolute_path)
+                update_plist(
+                    plist_path: expo_plist_absolute_path,
+                    block: proc do |plist|
+                        plist["EXUpdatesRuntimeVersion"] = ENV["RUNTIME_VERSION"] || "1.0.0"
+                    end
+                )
+            end
+            sync_code_signing(
+                git_url: ENV['FL_GIT_SECRETS_URL'],
+                app_identifier: "it.polito.#{app}",
+                type: "appstore", 
+                readonly: true,
+                git_private_key: ENV['FL_MATCH_GIT_PRIVATE_KEY']
+            )
+            cocoapods(
+                use_bundle_exec: true, 
+                podfile: podfile_absolute_path
+            )
             build_app(
-            scheme: "#{app}",
-            export_method: "app-store",
-            workspace: "#{app}.xcworkspace",
-            output_directory: "./build",
-            silent: true,
+                scheme: "#{app}",
+                export_method: "app-store",
+                workspace: workspace_absolute_path,
+                output_directory: build_absolute_path,
+                silent: true,
             )
         end
     when "android"
-        Dir.chdir("../#{app}/android") do
+        app_android_dir = "#{@monorepo_root}/#{app}/android"
+        Dir.chdir(app_android_dir) do
+            final_props = build_props(app)
+            unless is_release
+                final_props = final_props.merge({ "reactNativeArchitectures" => "x86_64" })
+            end
             gradle(
-            task: "bundleRelease",
-            properties: buildProps,
+                task: "bundleRelease",
+                project_dir: app_android_dir,
+                properties: final_props,
             )
         end
     else
@@ -45,35 +85,38 @@ end
 lane :release do |options|
     app = options[:app]
     platform = options[:platform]
+    target_apple_id = APP_STORE_IDS[app]
 
-    build(app: app, platform: platform)
     case platform
     when "ios"
-        Dir.chdir("../#{app}/ios") do
-            increment_build_number(xcodeproj: "#{app}.xcodeproj", build_number: ENV['BUILD_NO'])
-            increment_version_number(xcodeproj: "#{app}.xcodeproj", version_number: ENV['APP_VERSION'])
+        app_ios_dir = "#{@monorepo_root}/#{app}/ios"
+        xcodeproj_absolute_path = "#{app_ios_dir}/#{app}.xcodeproj"
+        Dir.chdir(app_ios_dir) do
+            increment_build_number(xcodeproj: xcodeproj_absolute_path, build_number: ENV['BUILD_NO'])
+            increment_version_number(xcodeproj: xcodeproj_absolute_path, version_number: ENV['APP_VERSION'])
+            build(app: app, platform: platform)
             upload_to_testflight(
                 skip_submission: true,
                 skip_waiting_for_build_processing: true,
                 submit_beta_review: false,
-                apple_id: "6443913305",
+                apple_id: target_apple_id,
+                username: ENV['FL_APPLE_ID'],
+                team_id: ENV['FL_ITC_TEAM_ID'],
+                dev_portal_team_id: ENV['FL_DEV_PORTAL_TEAM_ID']
             )
         end
     when "android"
-        Dir.chdir("../#{app}/android") do
-            android_set_version_name(version_name: ENV['APP_VERSION'])
-            android_set_version_code(version_code: ENV['BUILD_NO'])
-            gradle(
-                task: "bundleRelease",
-                properties: buildProps,
-            )
+        app_android_dir = "#{@monorepo_root}/#{app}/android"
+        app_gradle_file = "#{app_android_dir}/app/build.gradle"
+        Dir.chdir(app_android_dir) do
+            android_set_version_name(version_name: ENV['APP_VERSION'], gradle_file: app_gradle_file)
+            android_set_version_code(version_code: ENV['BUILD_NO'], gradle_file: app_gradle_file)
+            build(app: app, platform: platform, is_release: true)
             upload_to_play_store(
-                track: ENV['STORE_TRACK'],
+                track: ENV['STORE_TRACK'] || "internal",
+                package_name: "it.polito.#{app}",
                 release_status: "draft",
-            )
-            upload_to_play_store(
-                track: ENV['STORE_TRACK'],
-                release_status: "draft",
+                json_key: ENV['FL_ANDROID_JSON_KEY'],
             )
         end
     else
@@ -81,11 +124,17 @@ lane :release do |options|
     end    
 end
 
-lane :apk do
-    android_set_version_name(version_name: ENV['APP_VERSION'])
-    android_set_version_code(version_code: ENV['BUILD_NO'])
-    gradle(
-        task: "assembleRelease",
-        properties: buildProps,
-    )
+lane :apk do |options|
+    app = options[:app]
+    app_android_dir = "#{@monorepo_root}/#{app}/android"
+    app_gradle_file = "#{app_android_dir}/app/build.gradle"
+    Dir.chdir(app_android_dir) do
+        android_set_version_name(version_name: ENV['APP_VERSION'], gradle_file: app_gradle_file)
+        android_set_version_code(version_code: ENV['BUILD_NO'], gradle_file: app_gradle_file)
+        gradle(
+            task: "assembleRelease",
+            project_dir: app_android_dir,
+            properties: build_props(app),
+        )
+    end
 end
