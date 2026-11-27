@@ -591,10 +591,16 @@
     "total": "There are {{ total }} surveys"
   },
   "createTicketScreen": {
+    "addAttachment": "Add attachment",
+    "attachmentDescription": "Attach a file to the ticket",
+    "attachmentLabel": "Attachment",
     "duplicateMessage": "You have already created a similar ticket.",
     "duplicateTitle": "Ticket already exists",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Enter a description of the ticket",
     "insert": "Insert ticket",
     "messageLabel": "Describe your problem and, if you want, attach a file",
+    "remainingCharacters": "{{count}} characters remaining",
     "sendTicket": "Send ticket",
     "subject": "Subject",
     "subjectLabel": "Enter the subject of the ticket",

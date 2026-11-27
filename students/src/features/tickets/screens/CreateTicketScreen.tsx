@@ -1,23 +1,26 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert } from 'react-native';
-import { StyleSheet } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 
-import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
+import {
+  faCircleXmark,
+  faPaperPlane,
+} from '@fortawesome/free-regular-svg-icons';
+import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import { ApiError } from '@polito/lib/core';
 import {
-  ChatBubble,
   CtaButton,
+  IconButton,
   OverviewList,
   ScreenContainer,
   Section,
   SectionHeader,
   Select,
+  Text,
   TextField,
   type Theme,
-  ThemeContext,
-  darkTheme,
   useStylesheet,
+  useTheme,
 } from '@polito/lib/ui';
 import { CreateTicketRequest } from '@polito/student-api-client';
 import { MenuAction } from '@react-native-menu/menu';
@@ -31,9 +34,10 @@ import {
 import type { RootParamList } from '../../../core/types/navigation';
 import { ServiceStackParamList } from '../../services/components/ServicesNavigator';
 import { Attachment } from '../../services/types/Attachment';
-import { MessagingView } from '../components/MessagingView';
+import { AttachmentMenu } from '../components/AttachmentMenu';
 
 type Props = NativeStackScreenProps<ServiceStackParamList, 'CreateTicket'>;
+const DESCRIPTION_MAX_LENGTH = 128;
 
 export const CreateTicketScreen = ({ navigation, route }: Props) => {
   const { t } = useTranslation();
@@ -44,6 +48,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     if (!ticketTopicQuery.data) return [];
     return ticketTopicQuery.data;
   }, [ticketTopicQuery.data]);
+  const { colors } = useTheme();
   const styles = useStylesheet(createStyles);
 
   const [topicId, setTopicId] = useState(initialTopicId?.toString());
@@ -53,6 +58,10 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
     subtopicId: initialSubtopicId,
     attachment: undefined,
   });
+  const attachment = ticketBody.attachment as unknown as Attachment | undefined;
+  const hasSubject = !!ticketBody.subject?.trim();
+  const remainingCharacters =
+    DESCRIPTION_MAX_LENGTH - (ticketBody.message?.length ?? 0);
   const {
     mutateAsync: handleCreateTicket,
     isPending,
@@ -61,9 +70,9 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   } = useCreateTicket();
 
   const createTopicEnabled = useMemo(() => {
-    const { subject, message, subtopicId } = ticketBody;
-    return !!subject && !!message && !!subtopicId;
-  }, [ticketBody]);
+    const { message, subtopicId } = ticketBody;
+    return hasSubject && !!message?.trim() && !!subtopicId;
+  }, [hasSubject, ticketBody]);
 
   useEffect(() => {
     if (isSuccess && data?.id) {
@@ -133,7 +142,7 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   );
 
   const subjectAccessibilityLabel = useMemo(() => {
-    const baseText = t('createTicketScreen.subjectLabel');
+    const baseText = t('createTicketScreen.subject');
     if (ticketBody?.subtopicId) {
       return baseText;
     } else {
@@ -199,33 +208,122 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
         </OverviewList>
 
         <OverviewList style={styles.objectSection}>
-          <TextField
-            accessibilityLabel={subjectAccessibilityLabel}
-            autoCapitalize="sentences"
-            label={t('createTicketScreen.subjectLabel')}
-            inputStyle={styles.textFieldInput}
-            editable={!!ticketBody?.subtopicId}
-            value={ticketBody.subject}
-            onChangeText={updateTicketBodyField('subject')}
-          />
+          <View style={styles.objectContent}>
+            <Text
+              style={[
+                styles.fieldLabel,
+                !ticketBody?.subtopicId && styles.disabledFieldLabel,
+              ]}
+              weight="medium"
+            >
+              {t('createTicketScreen.subject')}
+            </Text>
+            <TextField
+              accessibilityLabel={subjectAccessibilityLabel}
+              autoCapitalize="sentences"
+              label={t('createTicketScreen.subjectLabel')}
+              style={styles.textField}
+              inputStyle={[styles.textFieldInput, styles.objectInput]}
+              editable={!!ticketBody?.subtopicId}
+              value={ticketBody.subject}
+              onChangeText={updateTicketBodyField('subject')}
+            />
+          </View>
         </OverviewList>
 
-        <ChatBubble style={styles.bubbleContainer} bubbleStyle={styles.bubble}>
-          <ThemeContext.Provider value={darkTheme}>
-            <MessagingView
-              translucent={false}
-              showSendButton={false}
-              message={ticketBody.message}
-              onMessageChange={updateTicketBodyField('message')}
-              attachment={ticketBody.attachment as unknown as Attachment}
-              onAttachmentChange={updateTicketBodyField('attachment') as any}
-              disabled={!ticketBody.subtopicId}
+        <OverviewList style={styles.descriptionSection}>
+          <View style={styles.descriptionContent}>
+            <View style={styles.descriptionHeader}>
+              <Text
+                style={[
+                  styles.fieldLabel,
+                  styles.descriptionTitle,
+                  !hasSubject && styles.disabledFieldLabel,
+                ]}
+                weight="medium"
+              >
+                {t('createTicketScreen.descriptionLabel')}
+              </Text>
+              <Text
+                accessibilityLabel={t(
+                  'createTicketScreen.remainingCharacters',
+                  { count: remainingCharacters },
+                )}
+                style={[styles.fieldCaption, styles.descriptionCounter]}
+                variant="secondaryText"
+              >
+                {remainingCharacters}
+              </Text>
+            </View>
+            <TextField
+              accessibilityLabel={t('createTicketScreen.descriptionLabel')}
+              autoCapitalize="sentences"
+              label={t('createTicketScreen.descriptionPlaceholder')}
+              multiline
               numberOfLines={5}
-              style={styles.bubbleInput}
-              textFieldStyle={styles.textField}
+              maxLength={DESCRIPTION_MAX_LENGTH}
+              style={styles.textField}
+              inputStyle={[styles.textFieldInput, styles.descriptionInput]}
+              editable={hasSubject}
+              value={ticketBody.message}
+              onChangeText={updateTicketBodyField('message')}
             />
-          </ThemeContext.Provider>
-        </ChatBubble>
+          </View>
+        </OverviewList>
+
+        {hasSubject && (
+          <OverviewList style={styles.attachmentSection}>
+            <View style={styles.attachmentField}>
+              <View style={styles.attachmentDescription}>
+                <Text style={styles.fieldLabel} weight="medium">
+                  {t('createTicketScreen.attachmentLabel')}
+                </Text>
+                <Text
+                  style={[
+                    styles.fieldCaption,
+                    !!attachment && styles.attachmentFileName,
+                  ]}
+                  variant="secondaryText"
+                  numberOfLines={1}
+                  ellipsizeMode="middle"
+                  weight="medium"
+                >
+                  {attachment?.name ??
+                    t('createTicketScreen.attachmentDescription')}
+                </Text>
+              </View>
+              <AttachmentMenu
+                disabled={!!attachment}
+                onAttachmentChange={value =>
+                  updateTicketBodyField('attachment')(value as unknown as Blob)
+                }
+              >
+                <IconButton
+                  accessibilityRole="button"
+                  accessibilityLabel={t(
+                    attachment
+                      ? 'common.removeAttachment'
+                      : 'createTicketScreen.addAttachment',
+                  )}
+                  icon={attachment ? faCircleXmark : faPaperclip}
+                  color={colors.secondaryText}
+                  size={16}
+                  noPadding
+                  hitSlop={{ top: 14, bottom: 14, left: 14, right: 14 }}
+                  onPress={
+                    attachment
+                      ? () =>
+                          setTicketBody(prevState => ({
+                            ...prevState,
+                            attachment: undefined,
+                          }))
+                      : undefined
+                  }
+                />
+              </AttachmentMenu>
+            </View>
+          </OverviewList>
+        )}
       </Section>
 
       <CtaButton
@@ -249,26 +347,85 @@ export const CreateTicketScreen = ({ navigation, route }: Props) => {
   );
 };
 
-const createStyles = ({ shapes, spacing }: Theme) =>
+const createStyles = ({ colors, fontFamilies, fontSizes, spacing }: Theme) =>
   StyleSheet.create({
-    bubble: {
-      marginTop: spacing[2],
-      padding: 0,
-      width: '100%',
+    attachmentDescription: {
+      flex: 1,
+      gap: 1,
     },
-    bubbleContainer: {
+    attachmentField: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      gap: 9,
+      paddingLeft: spacing[5],
+      paddingRight: spacing[4],
+      paddingVertical: 7,
+    },
+    attachmentFileName: {
+      color: colors.prose,
+    },
+    attachmentSection: {
+      height: 60,
       marginHorizontal: spacing[5],
     },
-    bubbleInput: {
-      paddingRight: 0,
+    fieldCaption: {
+      fontSize: fontSizes.sm,
+      lineHeight: 21,
+    },
+    objectContent: {
+      gap: 1,
+      paddingLeft: spacing[5],
+      paddingRight: spacing[4],
+      paddingVertical: 7,
+    },
+    objectInput: {
+      fontFamily: fontFamilies.title,
+      fontSize: fontSizes.sm,
+      lineHeight: 21,
+      paddingHorizontal: 0,
+      paddingVertical: 0,
+    },
+    descriptionContent: {
+      gap: 1,
+      paddingHorizontal: spacing[5],
+      paddingVertical: 9,
+    },
+    descriptionHeader: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      gap: 5,
+      height: 24,
+    },
+    descriptionSection: {
+      height: 175,
+      marginHorizontal: spacing[5],
+    },
+    descriptionCounter: {
+      textAlign: 'right',
+    },
+    descriptionTitle: {
+      flex: 1,
+    },
+    descriptionInput: {
+      fontFamily: fontFamilies.title,
+      fontSize: fontSizes.sm,
+      lineHeight: 21,
+      minHeight: 42,
+      paddingHorizontal: 0,
+      paddingVertical: 0,
+    },
+    disabledFieldLabel: {
+      color: colors.secondaryText,
+    },
+    fieldLabel: {
+      lineHeight: 24,
     },
     objectSection: {
       height: 60,
-      justifyContent: 'center',
+      marginHorizontal: spacing[5],
     },
     textField: {
-      borderRadius: shapes.md,
-      marginRight: 0,
+      paddingVertical: 0,
     },
     textFieldInput: {
       borderBottomWidth: 0,
