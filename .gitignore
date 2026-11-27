@@ -3,3 +3,5 @@ tools/vendor/bundle
 .eslintcache
 tools/fastlane/.env
 tools/fastlane/report.xml
+tools/.env
+tools/*.jks
