@@ -7,7 +7,7 @@ APP_STORE_IDS = {
 }
 
 def build_props(app)
-    keystore_filename = ENV['FL_KEYSTORE_PATH']
+    keystore_filename = ENV["FL_#{app.upcase}_KEYSTORE_PATH"]
     keystore_password = ENV["FL_#{app.upcase}_KEYSTORE_PW"]
     {
         "android.injected.signing.store.file"     => File.expand_path(keystore_filename, __dir__),

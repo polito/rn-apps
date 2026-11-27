@@ -157,7 +157,7 @@ jobs:
       BUILD_NO: ${{ needs.configure.outputs.build_no }}
       APP_VERSION: ${{ needs.configure.outputs.version }}
       KEYSTORE_PW: ${{ secrets.STUDENTS_ANDROID_KEYSTORE_PW }}
-      KEYSTORE_PATH: './keystore.jks'
+      KEYSTORE_PATH: './students-keystore.jks'
       CCACHE_CONFIGPATH: '${{ github.workspace }}/node_modules/react-native/scripts/xcode/ccache.conf'
       SENTRY_ALLOW_FAILURE: 'true'
     steps:
@@ -206,26 +206,29 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: npm ci
       - name: Setup Fastlane Env
+        working-directory: ${{ github.workspace }}
         env:
           FASTLANE_ENV: ${{ secrets.FASTLANE_ENV }}
         run: printf "%s\n" "${{ secrets.FASTLANE_ENV }}" > tools/fastlane/.env
       - name: Prepare fastlane
         run: |
           cd android
-          echo "${{ secrets.ANDROID_KEYSTORE_B64 }}" | base64 -d > ${KEYSTORE_PATH}
+          echo "${{ secrets.ANDROID_STUDENTS_KEYSTORE_B64 }}" | base64 -d > ${KEYSTORE_PATH}
           echo "${{ secrets.SENTRY_DOT_PROPERTIES }}" | base64 -d > sentry.properties
           chmod 600 ${KEYSTORE_PATH}
       - name: Fastlane VERIFY lane
+        working-directory: ${{ github.workspace }}
         if: needs.configure.outputs.push_to_playstore == 'false'
         env:
           SENTRY_DISABLE_AUTO_UPLOAD: 'true'
         run: cd android && bundle exec fastlane verify
       - name: Fastlane RELEASE lane
         id: fastlane_release_android
+        working-directory: ${{ github.workspace }}
         if: contains(fromJSON('["internal", "beta", "production"]'), needs.configure.outputs.push_to_playstore)
         env:
           STORE_TRACK: ${{ needs.configure.outputs.push_to_playstore }}
-        run: cd android && bundle exec fastlane release
+        run: bundle exec fastlane android release app:students --fastfile tools/fastlane/Fastfile
       - name: Fastlane APK lane
         if: |
           (github.event_name == 'push' && github.ref_type == 'tag') ||
@@ -304,6 +307,7 @@ jobs:
         working-directory: ${{github.workspace}}
         run: npm install
       - name: Setup Fastlane Env
+        working-directory: ${{ github.workspace }}
         env:
           FASTLANE_ENV: ${{ secrets.FASTLANE_ENV }}
         run: printf "%s\n" "${{ secrets.FASTLANE_ENV }}" > tools/fastlane/.env
@@ -316,14 +320,16 @@ jobs:
           echo "${{ secrets.SENTRY_DOT_PROPERTIES }}" | base64 -d > sentry.properties
           chmod 600 ${MATCH_GIT_PRIVATE_KEY} ${SUPPLY_GOOGLE_SERVICE_INFO_PLIST_PATH}
       - name: Fastlane VERIFY lane
+        working-directory: ${{ github.workspace }}
         if: needs.configure.outputs.push_to_testflight == 'false'
         env:
           SENTRY_DISABLE_AUTO_UPLOAD: 'true'
-        run: cd ios && bundle exec fastlane verify
+        run: bundle exec fastlane ios verify app:students --fastfile tools/fastlane/Fastfile
       - name: Fastlane RELEASE lane
         id: fastlane_release_ios
+        working-directory: ${{ github.workspace }}
         if: needs.configure.outputs.push_to_testflight == 'true'
-        run: cd ios && bundle exec fastlane release
+        run: bundle exec fastlane ios release app:students --fastfile tools/fastlane/Fastfile
 
   create-release:
     name: Create GitHub Release
